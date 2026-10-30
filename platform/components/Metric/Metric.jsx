@@ -40,6 +40,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
+import { dataWhenText } from '../../utils/dataText.jsx';
 import { Card } from '../Card/Card.jsx';
 import { Sparkline } from '../../charts/Sparkline.jsx';
 
@@ -72,7 +73,7 @@ export function Metric({ value, label, unit, change, changeTone = 'neutral', des
     <div className={cx('plx-metric', 'plx-metric--' + size, className)} {...rest}>
       {figure}
       <div className="plx-metric__label">{label}</div>
-      {description ? <div className="plx-metric__description">{description}</div> : null}
+      {description ? <div className="plx-metric__description">{dataWhenText(description)}</div> : null}
       {spark}
     </div>
   );

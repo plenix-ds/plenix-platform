@@ -34,6 +34,7 @@
 import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatNumber } from '../utils/format.js';
+import { dataWhenText } from '../utils/dataText.jsx';
 import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Badge } from '../components/Badge/Badge.jsx';
@@ -76,7 +77,7 @@ export function Gauge({ title, description, value, min = 0, max = 100, format, l
     <figure className={cx('plx-chart', 'plx-gauge', 'plx-gauge--' + s, bands.length && 'plx-gauge--thresholds', className)}>
       <figcaption className={cx('plx-chart__caption', hideCaption && 'plx-visually-hidden')}>
         <span id={uid + '-title'} className="plx-chart__title">{title}</span>
-        {description ? <span id={uid + '-desc'} className="plx-chart__description">{description}</span> : null}
+        {description ? <span id={uid + '-desc'} className="plx-chart__description">{dataWhenText(description)}</span> : null}
       </figcaption>
       <div className="plx-gauge__meter" role="meter" aria-labelledby={uid + '-title'} aria-describedby={description ? uid + '-desc' : undefined}
         aria-valuenow={v} aria-valuemin={min} aria-valuemax={max} aria-valuetext={valueText}>

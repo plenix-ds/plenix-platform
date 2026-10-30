@@ -10614,6 +10614,102 @@ function Count({
   }, rest), shown);
 }
   } },
+  "platform/utils/dataText.jsx": { deps: {"react":null,"../components/Text/Text.jsx":"platform/components/Text/Text.jsx","./format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.dataNumber = dataNumber;
+exports.dataPhrase = dataPhrase;
+exports.dataWhenText = exports.dataText = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Text = require("../components/Text/Text.jsx");
+var _format = require("./format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · dataText, dataPhrase, dataNumber (platform/utils/dataText.jsx)
+   Summary: A phrase with its numbers in the data font and its words in the normal font (owner, 2026-10-24, issue 260):
+     "7 files" is [7 in Reddit Mono] + " files" in DM Sans. Dates, times, sizes and money inside a phrase too.
+   Usage:
+     dataPhrase('{n} files', { n: 7 })                    // [<Text variant="data">7</Text>, ' files'], the number formatted
+     dataPhrase(fill(t.range, { first, last, total }))    // a phrase already filled: each number found in it
+     dataPhrase(strings.selected, { n: count })           // a catalog template, filled here
+     dataNumber(1284)                                     // <Text variant="data">1,284</Text>
+     dataText('4,546 assets | 12.4 GB')                   // the same as dataPhrase(text)
+   Props:
+     dataPhrase(text, values, options): text is a template ({name} placeholders) or a finished phrase. A number in values
+       is written with formatNumber (options: formatNumber's: locale, digits, …) and set in the data font; a text value
+       is written as it is and searched for numbers like the rest. Every date, time, size, percentage, money amount and
+       number left in the words is set in the data font too. Returns a node (a fragment): a phrase inside a span, which
+       keeps the data font at the phrase's own size.
+     dataNumber(value, options): one number, formatted (formatNumber) and in the data font.
+     dataText(text): a finished phrase, its numbers in the data font (dataPhrase(text) without values).
+     dataWhenText(content): for a component's text prop: a string goes through dataText, anything else is returned as it is.
+   Behavior:
+     The data font takes the size of the text around it (the span carries plx-text, the Text component's base class,
+     so the data span inherits the phrase's size and baseline; the phrase keeps its own color and weight).
+     Arabic-Indic digits (٠-٩) count as digits; a number formatted for an Arabic locale stays in its digits, and the Text
+     component writes ASCII digits in the reader's numerals as everywhere else. The order of the words never changes, so
+     right to left reads as written.
+     A value that is null or undefined leaves its placeholder empty.
+   Notes:
+     check-system's count-phrases rule (check-system.rules/count-phrases.js) finds a count joined to words in code; these
+     helpers are what it asks for. A text for screen readers (aria-label, an announcement) stays a plain string. */
+
+const D = '[0-9\\u0660-\\u0669]';
+const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
+// a date, a time, a size, money, a percentage, a measure or a number: each is one data run
+const DATUM = new RegExp('(' + D + '{4}-' + D + '{2}-' + D + '{2}(?:[ T]' + D + '{1,2}:' + D + '{2})?|' + MONTH + ' ' + D + '{1,2}(?:, ' + D + '{4})?|' + D + '{1,2}:' + D + '{2}(?:\\s?[AP]M)?|[$€£]?' + D + '[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|٪|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?' + D + '[0-9\\u0660-\\u0669,.]*)?)', 'g');
+const HAS_DIGIT = new RegExp(D);
+
+// a finished text -> its runs: words as text, data in the data font
+function runs(text, key) {
+  if (typeof text !== 'string' || !HAS_DIGIT.test(text)) return [text];
+  return text.split(DATUM).map((p, i) => i % 2 ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    key: key + '-' + i,
+    variant: "data"
+  }, p) : p || null);
+}
+function dataNumber(value, options) {
+  if (value === null || value === undefined || value === '') return null;
+  return /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, typeof value === 'number' ? (0, _format.formatNumber)(value, options) : String(value));
+}
+function dataPhrase(text, values, options) {
+  if (text === null || text === undefined) return null;
+  if (typeof text === 'number') return dataNumber(text, options);
+  const s = String(text),
+    out = [];
+  if (values && typeof values === 'object') {
+    s.split(/(\{\w+\})/).forEach((part, i) => {
+      const m = /^\{(\w+)\}$/.exec(part);
+      if (!m || !(m[1] in values)) {
+        out.push(...runs(part, i));
+        return;
+      }
+      const v = values[m[1]];
+      if (v === null || v === undefined) return;
+      if (typeof v === 'number') out.push(/*#__PURE__*/_react.default.createElement(_Text.Text, {
+        key: i,
+        variant: "data"
+      }, (0, _format.formatNumber)(v, options)));else if (/*#__PURE__*/_react.default.isValidElement(v)) out.push(/*#__PURE__*/_react.default.cloneElement(v, {
+        key: i
+      }));else out.push(...runs(String(v), i));
+    });
+  } else out.push(...runs(s, 0));
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-text"
+  }, out);
+}
+const dataText = text => dataPhrase(text);
+
+// what a component draws for a text a page gave it: a plain string gets its numbers in the data font (a count in a hint, a banner, a
+// description: issue 260, owner 2026-10-30); anything else (an element, a list of them) is the page's own markup and stays as given
+exports.dataText = dataText;
+const dataWhenText = content => typeof content === 'string' ? dataPhrase(content) : content;
+exports.dataWhenText = dataWhenText;
+  } },
   "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -12816,7 +12912,7 @@ function Sparkline({
   }) : null);
 }
   } },
-  "platform/components/Metric/Metric.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Card/Card.jsx":"platform/components/Card/Card.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Metric/Metric.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12826,6 +12922,7 @@ exports.Metric = Metric;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _dataText = require("../../utils/dataText.jsx");
 var _Card = require("../Card/Card.jsx");
 var _Sparkline = require("../../charts/Sparkline.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -12925,7 +13022,7 @@ function Metric({
     className: "plx-metric__label"
   }, label), description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-metric__description"
-  }, description) : null, spark);
+  }, (0, _dataText.dataWhenText)(description)) : null, spark);
 }
 Metric.Group = function MetricGroup({
   label,
@@ -14351,102 +14448,6 @@ function useInBar(ref, not) {
   }, [ref, not]);
   return bar;
 }
-  } },
-  "platform/utils/dataText.jsx": { deps: {"react":null,"../components/Text/Text.jsx":"platform/components/Text/Text.jsx","./format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.dataNumber = dataNumber;
-exports.dataPhrase = dataPhrase;
-exports.dataWhenText = exports.dataText = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _Text = require("../components/Text/Text.jsx");
-var _format = require("./format.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · dataText, dataPhrase, dataNumber (platform/utils/dataText.jsx)
-   Summary: A phrase with its numbers in the data font and its words in the normal font (owner, 2026-10-24, issue 260):
-     "7 files" is [7 in Reddit Mono] + " files" in DM Sans. Dates, times, sizes and money inside a phrase too.
-   Usage:
-     dataPhrase('{n} files', { n: 7 })                    // [<Text variant="data">7</Text>, ' files'], the number formatted
-     dataPhrase(fill(t.range, { first, last, total }))    // a phrase already filled: each number found in it
-     dataPhrase(strings.selected, { n: count })           // a catalog template, filled here
-     dataNumber(1284)                                     // <Text variant="data">1,284</Text>
-     dataText('4,546 assets | 12.4 GB')                   // the same as dataPhrase(text)
-   Props:
-     dataPhrase(text, values, options): text is a template ({name} placeholders) or a finished phrase. A number in values
-       is written with formatNumber (options: formatNumber's: locale, digits, …) and set in the data font; a text value
-       is written as it is and searched for numbers like the rest. Every date, time, size, percentage, money amount and
-       number left in the words is set in the data font too. Returns a node (a fragment): a phrase inside a span, which
-       keeps the data font at the phrase's own size.
-     dataNumber(value, options): one number, formatted (formatNumber) and in the data font.
-     dataText(text): a finished phrase, its numbers in the data font (dataPhrase(text) without values).
-     dataWhenText(content): for a component's text prop: a string goes through dataText, anything else is returned as it is.
-   Behavior:
-     The data font takes the size of the text around it (the span carries plx-text, the Text component's base class,
-     so the data span inherits the phrase's size and baseline; the phrase keeps its own color and weight).
-     Arabic-Indic digits (٠-٩) count as digits; a number formatted for an Arabic locale stays in its digits, and the Text
-     component writes ASCII digits in the reader's numerals as everywhere else. The order of the words never changes, so
-     right to left reads as written.
-     A value that is null or undefined leaves its placeholder empty.
-   Notes:
-     check-system's count-phrases rule (check-system.rules/count-phrases.js) finds a count joined to words in code; these
-     helpers are what it asks for. A text for screen readers (aria-label, an announcement) stays a plain string. */
-
-const D = '[0-9\\u0660-\\u0669]';
-const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
-// a date, a time, a size, money, a percentage, a measure or a number: each is one data run
-const DATUM = new RegExp('(' + D + '{4}-' + D + '{2}-' + D + '{2}(?:[ T]' + D + '{1,2}:' + D + '{2})?|' + MONTH + ' ' + D + '{1,2}(?:, ' + D + '{4})?|' + D + '{1,2}:' + D + '{2}(?:\\s?[AP]M)?|[$€£]?' + D + '[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|٪|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?' + D + '[0-9\\u0660-\\u0669,.]*)?)', 'g');
-const HAS_DIGIT = new RegExp(D);
-
-// a finished text -> its runs: words as text, data in the data font
-function runs(text, key) {
-  if (typeof text !== 'string' || !HAS_DIGIT.test(text)) return [text];
-  return text.split(DATUM).map((p, i) => i % 2 ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    key: key + '-' + i,
-    variant: "data"
-  }, p) : p || null);
-}
-function dataNumber(value, options) {
-  if (value === null || value === undefined || value === '') return null;
-  return /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data"
-  }, typeof value === 'number' ? (0, _format.formatNumber)(value, options) : String(value));
-}
-function dataPhrase(text, values, options) {
-  if (text === null || text === undefined) return null;
-  if (typeof text === 'number') return dataNumber(text, options);
-  const s = String(text),
-    out = [];
-  if (values && typeof values === 'object') {
-    s.split(/(\{\w+\})/).forEach((part, i) => {
-      const m = /^\{(\w+)\}$/.exec(part);
-      if (!m || !(m[1] in values)) {
-        out.push(...runs(part, i));
-        return;
-      }
-      const v = values[m[1]];
-      if (v === null || v === undefined) return;
-      if (typeof v === 'number') out.push(/*#__PURE__*/_react.default.createElement(_Text.Text, {
-        key: i,
-        variant: "data"
-      }, (0, _format.formatNumber)(v, options)));else if (/*#__PURE__*/_react.default.isValidElement(v)) out.push(/*#__PURE__*/_react.default.cloneElement(v, {
-        key: i
-      }));else out.push(...runs(String(v), i));
-    });
-  } else out.push(...runs(s, 0));
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-text"
-  }, out);
-}
-const dataText = text => dataPhrase(text);
-
-// what a component draws for a text a page gave it: a plain string gets its numbers in the data font (a count in a hint, a banner, a
-// description: issue 260, owner 2026-10-30); anything else (an element, a list of them) is the page's own markup and stays as given
-exports.dataText = dataText;
-const dataWhenText = content => typeof content === 'string' ? dataPhrase(content) : content;
-exports.dataWhenText = dataWhenText;
   } },
   "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -32190,7 +32191,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../hooks/usePressable.js":"platform/hooks/usePressable.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/field-currency":"platform/dist/icons/plenix/field-currency.js","plenix-platform/icons/plenix/field-long-text":"platform/dist/icons/plenix/field-long-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/select":"platform/dist/icons/plenix/select.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../hooks/usePressable.js":"platform/hooks/usePressable.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/field-currency":"platform/dist/icons/plenix/field-currency.js","plenix-platform/icons/plenix/field-long-text":"platform/dist/icons/plenix/field-long-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/select":"platform/dist/icons/plenix/select.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32199,6 +32200,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.DataGridEngine = DataGridEngine;
 var _react = _interopRequireDefault(require("react"));
 var _unread = require("./unread.js");
+var _dataText = require("../../utils/dataText.jsx");
 var _room = require("./room.js");
 var _reactDom = require("react-dom");
 var _scrollbars = require("./scrollbars.jsx");
@@ -32550,7 +32552,7 @@ const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
   const content = column.render(record, cell);
   return /*#__PURE__*/_react.default.isValidElement(content) ? ownContent(content, block) : /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)(block + '__value', mods)
-  }, content);
+  }, (0, _dataText.dataWhenText)(content));
 }, (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block && a.mods === b.mods);
 // Window-only updates reuse complete record rows; view, selection and edit changes invalidate their closures.
 const MemoGridRow = /*#__PURE__*/_react.default.memo(function MemoGridRow({
@@ -34752,7 +34754,7 @@ function Details({
   }, children));
 }
   } },
-  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/warning":"platform/dist/icons/plenix/warning.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataText.jsx":"platform/utils/dataText.jsx","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/warning":"platform/dist/icons/plenix/warning.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34762,6 +34764,7 @@ exports.Gauge = Gauge;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../utils/cx.js");
 var _format = require("../utils/format.js");
+var _dataText = require("../utils/dataText.jsx");
 var _Details = require("../components/Details/Details.jsx");
 var _Table = require("../components/Table/Table.jsx");
 var _Badge = require("../components/Badge/Badge.jsx");
@@ -34906,7 +34909,7 @@ function Gauge({
   }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
     id: uid + '-desc',
     className: "plx-chart__description"
-  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-gauge__meter",
     role: "meter",
     "aria-labelledby": uid + '-title',
@@ -35003,7 +35006,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/dataText.jsx":"platform/utils/dataText.jsx","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35012,6 +35015,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ChartFrame = ChartFrame;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../utils/cx.js");
+var _dataText = require("../utils/dataText.jsx");
 var _direction = require("../utils/direction.js");
 var _Details = require("../components/Details/Details.jsx");
 var _Table = require("../components/Table/Table.jsx");
@@ -35193,7 +35197,7 @@ function ChartFrame({
   }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
     id: descId,
     className: "plx-chart__description"
-  }, description) : null);
+  }, (0, _dataText.dataWhenText)(description)) : null);
   // the legend (chart parts): before the plot, after it, or beside it in a row with it
   const lp = ['top', 'bottom', 'end'].indexOf(legendPosition) >= 0 ? legendPosition : 'bottom';
   const key = legend ? /*#__PURE__*/_react.default.createElement("div", {
@@ -42815,7 +42819,7 @@ function Persona({
   }, secondary) : null));
 }
   } },
-  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42824,6 +42828,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ActivityList = ActivityList;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _dataText = require("../../utils/dataText.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ActivityList
@@ -42916,7 +42921,7 @@ ActivityList.Item = function ActivityListItem({
   }, opener), meta ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__meta",
     "data-plx-text-follow": stacked ? 'size' : undefined
-  }, meta) : null), time ? /*#__PURE__*/_react.default.createElement("time", {
+  }, (0, _dataText.dataWhenText)(meta)) : null), time ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-activity-list__time",
     dateTime: dateTime
   }, time) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
@@ -46707,7 +46712,7 @@ PropertyList.Item = function PropertyListItem({
   }, children) : children));
 };
   } },
-  "platform/patterns/RecordPage/RecordPage.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RecordPage/RecordPage.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46717,6 +46722,7 @@ exports.RecordPage = RecordPage;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _dataText = require("../../utils/dataText.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · RecordPage, RecordPage.Header
    Summary: The Object / record page structure (11 › Page structures): a header region over the record's body and an
@@ -46769,7 +46775,7 @@ function Header({
     className: "plx-record-page__title"
   }, title), description ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-record-page__description"
-  }, description) : null, meta ? /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null, meta ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-record-page__meta"
   }, meta) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-record-page__actions"

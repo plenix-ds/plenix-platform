@@ -24,6 +24,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
+import { dataWhenText } from '../../utils/dataText.jsx';
 
 function Header({ title, description, meta, media, actions, size = 'lg', surface = 'none', headingLevel = 1, className }) {
   devWarn('RecordPage.Header', { size }, { size: ['lg','md'] });
@@ -33,7 +34,7 @@ function Header({ title, description, meta, media, actions, size = 'lg', surface
       {media ? <div className="plx-record-page__media">{media}</div> : null}
       <div className="plx-record-page__text">
         <H className="plx-record-page__title">{title}</H>
-        {description ? <p className="plx-record-page__description">{description}</p> : null}
+        {description ? <p className="plx-record-page__description">{dataWhenText(description)}</p> : null}
         {meta ? <div className="plx-record-page__meta">{meta}</div> : null}
       </div>
       {actions ? <div className="plx-record-page__actions">{actions}</div> : null}
