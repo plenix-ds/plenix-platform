@@ -1540,9 +1540,9 @@
             h(P.Chat.Divider, { unread: true }), h(P.Chat.Message, { author: 'Maya Chen', time: '10:31' }, 'One more thing.'))); }, 'plx-chat__group', 'Chat.Group']]],
         ['Status', [['Sending, sent, delivered, read', function () { return box(360, h(P.Stack, { gap: 'sm' }, ['sending', 'sent', 'delivered', 'read'].map(function (s) { return h(P.Chat.Message, { key: s, mine: true, time: '10:26', status: s, readTime: s === 'read' ? '10:27' : undefined }, 'Status: ' + s); }))); }, 'plx-chat__status', 'status']]],
         ['Attachments', [['A picture, two pictures, a file and a picture that did not load', function () {
-          var svg = function (a, b) { return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 170"><rect width="260" height="170" fill="' + a + '"/><rect x="150" y="40" width="80" height="130" fill="' + b + '"/></svg>'); };
+          var ART = function (n) { return '../../dam/assets/thumb-' + n + '.svg'; };
           return box(420, h(P.Chat.Thread, { label: 'Conversation' },
-            h(P.Chat.Message, { author: 'Maya Chen', time: '10:24' }, h(P.Chat.Attachments, null, h(P.Chat.Attachment, { src: svg('#6b8fb5', '#9bb3cf'), name: 'wall.png' }), h(P.Chat.Attachment, { src: svg('#b58a6b', '#d3b59d'), name: 'east.png' }), h(P.Chat.Attachment, { src: 'data:image/png;base64,x', name: 'gone.png' }))),
+            h(P.Chat.Message, { author: 'Maya Chen', time: '10:24' }, h(P.Chat.Attachments, null, h(P.Chat.Attachment, { src: ART(21), name: 'wall.svg' }), h(P.Chat.Attachment, { src: ART(10), name: 'east.svg' }), h(P.Chat.Attachment, { src: 'data:image/png;base64,x', name: 'gone.png' }))),
             h(P.Chat.Message, { mine: true, time: '10:26' }, h(P.Chat.Attachment, { type: 'file', name: 'cabinet-quotes.pdf', size: 2400000, href: '#quotes' })))); }, 'plx-chat__media', 'Chat.Attachment']]],
         ['Voice', [['A voice message, and the composer’s record control (a placeholder: recording is not built yet)', function () {
           var wav = (function () { var rate = 8000, n = rate * 23, buf = new Uint8Array(44 + n), dv = new DataView(buf.buffer), w = function (o, s) { for (var i = 0; i < s.length; i++) buf[o + i] = s.charCodeAt(i); };
