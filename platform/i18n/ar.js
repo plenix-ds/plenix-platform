@@ -1608,6 +1608,7 @@ export default {
     "playVoice": "تشغيل الرسالة الصوتية",
     "pauseVoice": "إيقاف الرسالة الصوتية مؤقتا",
     "voiceSeek": "موضع الرسالة الصوتية",
+    "voicePosition": "{time} من {total}",
     "voiceSpeed": "سرعة التشغيل، {rate} مرة",
     "voiceFailed": "تعذر تشغيل هذه الرسالة الصوتية",
     "record": "تسجيل رسالة صوتية",

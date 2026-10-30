@@ -5,8 +5,8 @@
    The probe is proved able to see the old failure first: the old build has no Chat.Attachment or Chat.Voice, so every case below fails on it; and its composer icon buttons were ghost
      buttons (border width 0), so the border cases fail on it too.
    Cases: a picture opens the viewer; a broken picture becomes the "could not be loaded" card; a file card has a bordered icon and a Download link; Play turns into Pause and one voice
-     message plays at a time; End on the seek slider moves to the end (aria-valuetext "0:23 / 0:23"); the speed button cycles 1×, 1.5×, 2×; the waveform stays left to right in an
-     Arabic page; the record control is disabled, does nothing and has the tooltip; the composer's icon buttons and the Download button have a 1px border.
+     message plays at a time; End on the seek slider moves to the end (aria-valuetext "23 seconds of 23 seconds"); the speed button cycles 1×, 1.5×, 2×; the waveform stays left to right in an
+     Arabic page, and there the time, the speed and the spoken time use Arabic-Indic digits (8848087d wrote Latin ones, so that case fails on it); the record control is disabled, does nothing and has the tooltip; the composer's icon buttons and the Download button have a 1px border.
    Usage: node tests/chat-media-s5.test.js   (run by layout.test.js when the Chat, the MediaViewer or the Button changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
 (async () => {
@@ -50,7 +50,7 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     await page.click('#v2 > button'); await sleep(500);
     assert.equal(await label('#v1'), 'Play voice message', 'starting the second pauses the first'); assert.equal(await label('#v2'), 'Pause voice message');
     await page.focus('#v1 .plx-chat__voice-seek'); await page.keyboard.press('End'); await sleep(300);
-    assert.equal(await page.evaluate(() => document.querySelector('#v1 .plx-chat__voice-seek').getAttribute('aria-valuetext')), '0:23 / 0:23', 'End seeks to the end');
+    assert.equal(await page.evaluate(() => document.querySelector('#v1 .plx-chat__voice-seek').getAttribute('aria-valuetext')), '23 seconds of 23 seconds', 'End seeks to the end; the slider reads the time as words');
     assert.equal(await page.evaluate(() => document.querySelectorAll('#v1 .plx-chat__bar--played').length), 24, 'every bar is played at the end');
     await page.click('#v1 > button:last-of-type');
     assert.equal(await page.evaluate(() => document.querySelector('#v1 audio').playbackRate), 1.5, 'the speed button goes to 1.5×');
@@ -63,6 +63,11 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     // an Arabic page: the waveform stays left to right
     await page.evaluate(() => { document.documentElement.setAttribute('dir', 'rtl'); document.documentElement.setAttribute('lang', 'ar'); }); await sleep(300);
     assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('#v1 .plx-chat__voice-wave')).direction), 'ltr', 'the waveform stays left to right');
+    // an Arabic page: the time, the speed and the spoken time use Arabic-Indic digits, like the file size (8848087d wrote Latin ones); the speed click re-renders the player
+    await page.click('#v1 > button:last-of-type'); await sleep(300);
+    const ar = await page.evaluate(() => ({ time: document.querySelector('#v1 .plx-chat__voice-time').textContent, speed: document.querySelector('#v1 > button:last-of-type').textContent, spoken: document.querySelector('#v1 .plx-chat__voice-seek').getAttribute('aria-valuetext') }));
+    for (const [what, text] of Object.entries(ar)) { assert.match(text, /[٠-٩]/, 'the ' + what + ' has Arabic-Indic digits: ' + text); assert.doesNotMatch(text, /[0-9]/, 'the ' + what + ' has no Latin digits: ' + text); }
+    assert.match(ar.spoken, / من /, 'the spoken time uses the catalog\'s Arabic "of"');
     assert.deepEqual(errors, [], 'no script errors');
     console.log('chat-media-s5: OK');
   } finally { if (browser) await browser.close(); server.close(); }

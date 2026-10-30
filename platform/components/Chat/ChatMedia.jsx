@@ -13,9 +13,10 @@ import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Text } from '../Text/Text.jsx';
 import { MediaViewer } from '../MediaViewer/MediaViewer.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useDigits } from '../../providers/LocaleProvider.jsx';
 import { announce } from '../../utils/announce.jsx';
-import { formatBytes } from '../../utils/format.js';
+import { formatBytes, formatNumber, formatDuration, formatLocale, numeralLocale } from '../../utils/format.js';
+import { localDigits } from '../../utils/digits.js';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';
 import FilePdfIcon from 'plenix-platform/icons/plenix/file-pdf';
 import FileJpgIcon from 'plenix-platform/icons/plenix/file-jpg';
@@ -105,6 +106,10 @@ let playing = null; // one voice message plays at a time
 
 function Voice({ src, duration, peaks, label, rates = RATES, strings, className, ...rest }) {
   const t = useStrings('chat', strings);
+  // the time and the speed in the page's digits (Arabic-Indic in Arabic, like the file size); the slider reads the time as words ("8 seconds of 23 seconds")
+  const digits = useDigits(), locale = numeralLocale(formatLocale(), digits);
+  const shown = (s) => localDigits(clock(s), { digits });
+  const spoken = (s) => formatDuration(Math.max(0, Math.floor(Number(s) || 0)), { locale, display: 'long' });
   const audio = React.useRef(null);
   const [on, setOn] = React.useState(false), [time, setTime] = React.useState(0), [total, setTotal] = React.useState(Number(duration) || 0), [rate, setRate] = React.useState(0), [failed, setFailed] = React.useState(false), [focus, setFocus] = React.useState(false);
   const bars = (peaks && peaks.length ? peaks.slice(0, 48) : DEFAULT_PEAKS), reached = total ? Math.round((time / total) * bars.length) : 0;
@@ -119,7 +124,7 @@ function Voice({ src, duration, peaks, label, rates = RATES, strings, className,
   };
   const seek = (value) => { const a = audio.current; if (a) a.currentTime = value; setTime(value); };
   const cycle = () => { const next = (rate + 1) % rates.length; setRate(next); if (audio.current) audio.current.playbackRate = rates[next]; };
-  const name = label || t.playVoice;
+  const name = label || t.playVoice, speed = formatNumber(rates[rate], { locale });
   return (
     <span className={cx('plx-chat__voice', className)} {...rest}>
       <audio ref={audio} src={src} preload="metadata"
@@ -133,12 +138,12 @@ function Voice({ src, duration, peaks, label, rates = RATES, strings, className,
       <span className={cx('plx-chat__voice-wave', focus && 'plx-chat__voice-wave--focus')} dir="ltr">
         <span className="plx-chat__voice-bars" aria-hidden="true">{bars.map((p, i) => <span key={i} className={cx('plx-chat__bar', 'plx-chat__bar--h' + levelOf(p), i < reached && 'plx-chat__bar--played')} />)}</span>
         <input type="range" className="plx-chat__voice-seek" min={0} max={total || 0} step={1} value={Math.min(Math.floor(time), Math.floor(total || 0))} disabled={!total}
-          aria-label={t.voiceSeek} aria-valuetext={clock(time) + ' / ' + clock(total)} onChange={(e) => seek(Number(e.target.value))}
+          aria-label={t.voiceSeek} aria-valuetext={fill(t.voicePosition, { time: spoken(time), total: spoken(total) })} onChange={(e) => seek(Number(e.target.value))}
           onFocus={(e) => setFocus(e.target.matches(':focus-visible'))} onBlur={() => setFocus(false)} />
       </span>
-      <span className="plx-chat__voice-time" dir="ltr">{on || time ? clock(time) + ' / ' + clock(total) : clock(total)}</span>
-      <Button variant="secondary" size="sm" aria-label={fill(t.voiceSpeed, { rate: rates[rate] })} onClick={cycle}>{rates[rate]}×</Button>
-      {failed ? <Text variant="caption" role="status">{t.voiceFailed}</Text> : null}
+      <span className="plx-chat__voice-time" dir="ltr">{on || time ? shown(time) + ' / ' + shown(total) : shown(total)}</span>
+      <Button variant="secondary" size="sm" aria-label={fill(t.voiceSpeed, { rate: speed })} onClick={cycle}>{speed}×</Button>
+      {failed ? <Text variant="caption">{t.voiceFailed}</Text> : null}
     </span>
   );
 }

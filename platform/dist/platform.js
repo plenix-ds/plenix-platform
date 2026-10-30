@@ -1916,6 +1916,7 @@ var _default = exports.default = {
     "playVoice": "Play voice message",
     "pauseVoice": "Pause voice message",
     "voiceSeek": "Voice message position",
+    "voicePosition": "{time} of {total}",
     "voiceSpeed": "Playback speed, {rate} times",
     "voiceFailed": "This voice message could not be played",
     "record": "Record a voice message",
@@ -5583,6 +5584,7 @@ var _default = exports.default = {
     "playVoice": "تشغيل الرسالة الصوتية",
     "pauseVoice": "إيقاف الرسالة الصوتية مؤقتا",
     "voiceSeek": "موضع الرسالة الصوتية",
+    "voicePosition": "{time} من {total}",
     "voiceSpeed": "سرعة التشغيل، {rate} مرة",
     "voiceFailed": "تعذر تشغيل هذه الرسالة الصوتية",
     "record": "تسجيل رسالة صوتية",
@@ -39816,7 +39818,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Chat/ChatMedia.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/file-pdf":"platform/dist/icons/plenix/file-pdf.js","plenix-platform/icons/plenix/file-jpg":"platform/dist/icons/plenix/file-jpg.js","plenix-platform/icons/plenix/file-png":"platform/dist/icons/plenix/file-png.js","plenix-platform/icons/plenix/file-svg":"platform/dist/icons/plenix/file-svg.js","plenix-platform/icons/plenix/file-psd":"platform/dist/icons/plenix/file-psd.js","plenix-platform/icons/plenix/file-ai":"platform/dist/icons/plenix/file-ai.js","plenix-platform/icons/material/play-arrow":"platform/dist/icons/material/play-arrow.js","plenix-platform/icons/material/pause":"platform/dist/icons/material/pause.js","plenix-platform/icons/material/download":"platform/dist/icons/material/download.js","plenix-platform/icons/material/broken-image":"platform/dist/icons/material/broken-image.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/ChatMedia.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/file-pdf":"platform/dist/icons/plenix/file-pdf.js","plenix-platform/icons/plenix/file-jpg":"platform/dist/icons/plenix/file-jpg.js","plenix-platform/icons/plenix/file-png":"platform/dist/icons/plenix/file-png.js","plenix-platform/icons/plenix/file-svg":"platform/dist/icons/plenix/file-svg.js","plenix-platform/icons/plenix/file-psd":"platform/dist/icons/plenix/file-psd.js","plenix-platform/icons/plenix/file-ai":"platform/dist/icons/plenix/file-ai.js","plenix-platform/icons/material/play-arrow":"platform/dist/icons/material/play-arrow.js","plenix-platform/icons/material/pause":"platform/dist/icons/material/pause.js","plenix-platform/icons/material/download":"platform/dist/icons/material/download.js","plenix-platform/icons/material/broken-image":"platform/dist/icons/material/broken-image.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39836,6 +39838,7 @@ var _MediaViewer = require("../MediaViewer/MediaViewer.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
 var _document = _interopRequireDefault(require("plenix-platform/icons/plenix/document"));
 var _filePdf = _interopRequireDefault(require("plenix-platform/icons/plenix/file-pdf"));
 var _fileJpg = _interopRequireDefault(require("plenix-platform/icons/plenix/file-jpg"));
@@ -40037,6 +40040,16 @@ function Voice({
   ...rest
 }) {
   const t = (0, _LocaleProvider.useStrings)('chat', strings);
+  // the time and the speed in the page's digits (Arabic-Indic in Arabic, like the file size); the slider reads the time as words ("8 seconds of 23 seconds")
+  const digits = (0, _LocaleProvider.useDigits)(),
+    locale = (0, _format.numeralLocale)((0, _format.formatLocale)(), digits);
+  const shown = s => (0, _digits.localDigits)(clock(s), {
+    digits
+  });
+  const spoken = s => (0, _format.formatDuration)(Math.max(0, Math.floor(Number(s) || 0)), {
+    locale,
+    display: 'long'
+  });
   const audio = _react.default.useRef(null);
   const [on, setOn] = _react.default.useState(false),
     [time, setTime] = _react.default.useState(0),
@@ -40076,7 +40089,10 @@ function Voice({
     setRate(next);
     if (audio.current) audio.current.playbackRate = rates[next];
   };
-  const name = label || t.playVoice;
+  const name = label || t.playVoice,
+    speed = (0, _format.formatNumber)(rates[rate], {
+      locale
+    });
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-chat__voice', className)
   }, rest), /*#__PURE__*/_react.default.createElement("audio", {
@@ -40131,23 +40147,25 @@ function Voice({
     value: Math.min(Math.floor(time), Math.floor(total || 0)),
     disabled: !total,
     "aria-label": t.voiceSeek,
-    "aria-valuetext": clock(time) + ' / ' + clock(total),
+    "aria-valuetext": fill(t.voicePosition, {
+      time: spoken(time),
+      total: spoken(total)
+    }),
     onChange: e => seek(Number(e.target.value)),
     onFocus: e => setFocus(e.target.matches(':focus-visible')),
     onBlur: () => setFocus(false)
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__voice-time",
     dir: "ltr"
-  }, on || time ? clock(time) + ' / ' + clock(total) : clock(total)), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+  }, on || time ? shown(time) + ' / ' + shown(total) : shown(total)), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "secondary",
     size: "sm",
     "aria-label": fill(t.voiceSpeed, {
-      rate: rates[rate]
+      rate: speed
     }),
     onClick: cycle
-  }, rates[rate], "\xD7"), failed ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "caption",
-    role: "status"
+  }, speed, "\xD7"), failed ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "caption"
   }, t.voiceFailed) : null);
 }
   } },
@@ -40589,6 +40607,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        rates: playback speeds the speed button cycles (default [1, 1.5, 2]); strings: the words
        The player: Play and Pause (one voice message plays at a time), the waveform of bars with the played part in the accent color, the time ("0:23"; "0:08 / 0:23" while
        playing or paused part-way) and the speed. The waveform is a range slider (arrows, Home and End, drag or tap) named "Voice message position"; it is drawn left to right in every language.
+       The time and the speed are written in the page's digits (Arabic-Indic in Arabic), and the slider reads the time as words ("8 seconds of 23 seconds"). A voice message
+       that cannot be played says so once (announce()).
      Chat.Composer.value / onChange(text): the message being written
      Chat.Composer.onSend(text, files): runs on Send and, by default, on Enter (Shift+Enter starts a new line); files are the attachments that are ready
      Chat.Composer.sendOn: "enter" (default: Enter sends) | "mod-enter" (Ctrl or Command with Enter sends; Enter starts a new line)

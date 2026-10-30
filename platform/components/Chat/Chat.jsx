@@ -47,6 +47,8 @@
        rates: playback speeds the speed button cycles (default [1, 1.5, 2]); strings: the words
        The player: Play and Pause (one voice message plays at a time), the waveform of bars with the played part in the accent color, the time ("0:23"; "0:08 / 0:23" while
        playing or paused part-way) and the speed. The waveform is a range slider (arrows, Home and End, drag or tap) named "Voice message position"; it is drawn left to right in every language.
+       The time and the speed are written in the page's digits (Arabic-Indic in Arabic), and the slider reads the time as words ("8 seconds of 23 seconds"). A voice message
+       that cannot be played says so once (announce()).
      Chat.Composer.value / onChange(text): the message being written
      Chat.Composer.onSend(text, files): runs on Send and, by default, on Enter (Shift+Enter starts a new line); files are the attachments that are ready
      Chat.Composer.sendOn: "enter" (default: Enter sends) | "mod-enter" (Ctrl or Command with Enter sends; Enter starts a new line)

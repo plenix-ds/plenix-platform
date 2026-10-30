@@ -512,6 +512,7 @@ export default {
     "playVoice": "Play voice message",
     "pauseVoice": "Pause voice message",
     "voiceSeek": "Voice message position",
+    "voicePosition": "{time} of {total}",
     "voiceSpeed": "Playback speed, {rate} times",
     "voiceFailed": "This voice message could not be played",
     "record": "Record a voice message",
