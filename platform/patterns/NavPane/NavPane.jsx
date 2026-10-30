@@ -7,9 +7,11 @@
    Props:
      label: names the navigation landmark (also the rail and the splitter)
      title: the pane's title, the application's or the page's name (Messages, Asset Manager, System Settings)
-     actions: the pane's actions in the title row: small icon buttons such as Filter and New
+     actions: the pane's actions in the title row: small icon buttons such as Filter and New, or a field such as a project switcher (a Select).
+       They fit the pane (issue 677): a field shrinks to the fit-field minimum (--plx-sys-fit-field-min-width) and shows its cut text in full in a
+       tooltip; a button with words ends in an ellipsis; with no title the actions fill the row
      as: "nav" (default; a navigation landmark) | "div" (when the content brings its own landmark, a NavList)
-     header: a second row under the title row, for the pane's own shortcuts (the asset browser's Home and Files)
+     header: a second row under the title row, for the pane's own shortcuts (the asset browser's Home and Files); they fit the pane the same way
      footer: a row pinned to the bottom (--plx-comp-pane-footer-height, its divider drawn inside): the app's or section's
        settings, or the way back from a settings screen
      rail: the page's rail items (<ToolRail.Item…/>), shown when the pane is collapsed; at Narrow, the destinations of the
@@ -131,7 +133,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
         <div className="plx-nav-pane__header">
           {collapseAt === 'start' ? collapse : null}
           {title ? <span className="plx-nav-pane__title">{title}</span> : null}
-          {actions ? <span className="plx-nav-pane__actions">{actions}</span> : null}
+          {actions ? <span className={cx('plx-nav-pane__actions', !title && 'plx-nav-pane__actions--fill')}>{actions}</span> : null}
           {collapseAt !== 'start' ? collapse : null}
         </div>) : null}
       {header ? <div className="plx-nav-pane__subheader">{header}</div> : null}
