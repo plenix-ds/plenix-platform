@@ -94,7 +94,8 @@ function first(part, what, m) {
       ReactDOM.createRoot(document.getElementById('t')).render(h(P.Table, { label: 'Rows', data, columns, index: 'id' }));
       await new Promise((r) => setTimeout(r, 900));
     });
-    const row = (box, id) => '#' + box + ' [role="row"][data-plx-record="' + id + '"]';
+    // a row's data-plx-record is its typed record key (DataGrid state.js recordKey: "string:r5", since 0.49), in the DataGrid and the Table alike
+    const row = (box, id) => '#' + box + ' [role="row"][data-plx-record="string:' + id + '"]';
     const away = () => page.mouse.move(1, 1);
     const settle = () => new Promise((r) => setTimeout(r, 150));
 
