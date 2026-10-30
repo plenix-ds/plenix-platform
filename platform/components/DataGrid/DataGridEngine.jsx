@@ -21,6 +21,7 @@
      contents and titles, the body, the table, rows, cells, values and the placeholder. */
 import React from 'react';
 import { useUnread } from './unread.js';
+import { dataWhenText } from '../../utils/dataText.jsx';
 import { GridPane } from './room.js';
 import { flushSync } from 'react-dom';
 import { Scrollbars } from './scrollbars.jsx';
@@ -144,7 +145,7 @@ const Width = React.forwardRef(function Width({ as: Element='div', width, frozen
 function RowMenuContent({build,items,record,rowApi}){return build(typeof items==='function'?items(record):items||[],record,rowApi);}
 // a custom cell's own elements (each element of a fragment too) take __cell-content: the grid's class on what it places in the cell
 const ownContent=(node,block)=>!React.isValidElement(node)?node:node.type===React.Fragment?React.cloneElement(node,{},React.Children.map(node.props.children,child=>ownContent(child,block))):React.cloneElement(node,{className:cx(node.props.className,block+'__cell-content')});
-const CustomCell=React.memo(function CustomCell({column,record,cell,block,mods}){const content=column.render(record,cell);return React.isValidElement(content)?ownContent(content,block):<span className={cx(block+'__value',mods)}>{content}</span>;},(a,b)=>a.column===b.column&&a.record===b.record&&a.rowId===b.rowId&&a.selected===b.selected&&a.block===b.block&&a.mods===b.mods);
+const CustomCell=React.memo(function CustomCell({column,record,cell,block,mods}){const content=column.render(record,cell);return React.isValidElement(content)?ownContent(content,block):<span className={cx(block+'__value',mods)}>{dataWhenText(content)}</span>;},(a,b)=>a.column===b.column&&a.record===b.record&&a.rowId===b.rowId&&a.selected===b.selected&&a.block===b.block&&a.mods===b.mods);
 // Window-only updates reuse complete record rows; view, selection and edit changes invalidate their closures.
 const MemoGridRow=React.memo(function MemoGridRow({row,render}){return render(row);},(a,b)=>a.row===b.row&&a.version===b.version&&a.selected===b.selected);
 const RowTarget=React.forwardRef(function RowTarget({onAttach,...props},forwarded){return <div {...props} ref={node=>{onAttach?.(node);if(typeof forwarded==='function')forwarded(node);else if(forwarded)forwarded.current=node;}}/>;});

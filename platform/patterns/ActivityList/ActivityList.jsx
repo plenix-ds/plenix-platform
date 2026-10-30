@@ -32,6 +32,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { dataWhenText } from '../../utils/dataText.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // stacked lists set the meta's text in the smallest type: text inside the meta follows it (data-plx-text-follow)
@@ -53,7 +54,7 @@ ActivityList.Item = function ActivityListItem({ leading, title, meta, time, date
       {leading ? <span className="plx-activity-list__leading">{leading}</span> : null}
       <span className="plx-activity-list__text">
         <span className="plx-activity-list__title">{opener}</span>
-        {meta ? <span className="plx-activity-list__meta" data-plx-text-follow={stacked ? 'size' : undefined}>{meta}</span> : null}
+        {meta ? <span className="plx-activity-list__meta" data-plx-text-follow={stacked ? 'size' : undefined}>{dataWhenText(meta)}</span> : null}
       </span>
       {time ? <time className="plx-activity-list__time" dateTime={dateTime}>{time}</time> : null}
       {actions ? <span className="plx-activity-list__actions">{actions}</span> : null}
