@@ -26,7 +26,7 @@
 /* the footer line at the bottom of a bubble (the owner's slice 2, issue 637): "Sent <time> | Read <time>" and the status
    (sending: a clock; sent: one gray check; delivered: two gray checks; read: two green checks), small and in a second gray */
 .plx-chat__footer{align-items:center;color:var(--plx-comp-chat-time-text);column-gap:var(--plx-comp-chat-footer-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-chat-footer-font-size);line-height:var(--plx-sys-text-caption-line-height);}
-.plx-chat__time{font-variant-numeric:tabular-nums;}
+.plx-chat__time{font-family:var(--plx-comp-chat-time-font-family);font-variant-numeric:tabular-nums;word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-chat__status{display:inline-flex;}
 .plx-chat__status--read{color:var(--plx-comp-chat-status-read-icon);}
 /* a run of messages from one sender (Chat.Group): one photo and one name, the messages closer together */
