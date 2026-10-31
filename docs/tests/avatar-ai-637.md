@@ -34,9 +34,9 @@ An avatar for an AI assistant (Claude, Gemini and others) shows that provider's 
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. (Its header's Usage line names no runner; the wiring is in `tests/layout.test.js`.)
-- In changed mode (`npm test` and CI), Layout starts it only when the Avatar changes (or a part it is built on), or the icon set changes (icons are a global file, so any icon change reaches the small fixed slice).
+- In changed mode (`npm test` and CI), Layout starts it when the Avatar changes (or a part it is built on), or the icon set changes (icons are a global file, so any icon change reaches the small fixed slice).
 - Layout also starts it when any other global file changes or when `tests/layout.test.js` itself changes.
-- A change to this test's own file alone does not start it through Layout: Layout checks only the parts listed above. Run it by hand: `node tests/avatar-ai-637.test.js`.
+- Layout also starts it when this test's own file, or a fixture it loads, changes (issue #756). By hand: `node tests/avatar-ai-637.test.js`.
 - A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
 - CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 

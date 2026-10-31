@@ -27,7 +27,7 @@ This test makes sure long section and navigation group headings stay readable in
 
 ## When it runs
 - A child test, started by `tests/layout.test.js` (AUTOMATIC in `tests/run.js`).
-- In changed mode, layout starts it only when CollapsibleSection, NavList, Tooltip, Field, PropertyList or `utils/overflow.js` changes, when a global file changes, or when `layout.test.js` itself changes. A change to this file alone does not start it in changed mode.
+- In changed mode, layout starts it when CollapsibleSection, NavList, Tooltip, Field, PropertyList or `utils/overflow.js` changes, when a global file changes, or when `layout.test.js` itself changes. It also starts it when this test's own file, or a fixture it loads, changes (issue #756).
 - In a full run it always runs.
 - CI: with layout in the "fixtures" browser job (every pull request, and pushes to styling/phase-2 and main). The full suite: its "fixtures" job.
 

@@ -78,9 +78,13 @@ if (!ONLY) {
 
 // the regression tests of the grid fixes merged 2026-10-25 and 26 (each the only check of its fix), when the DataGrid or the
 // Table changed: cut text opens in a popover (#312), Filter by this field (#269), header labels at the start edge (#326),
-// an empty grid or table is a row with one cell (#313); the top line of a hovered or selected row equals its bottom line (#559)
+// an empty grid or table is a row with one cell (#313); the top line of a hovered or selected row equals its bottom line (#559).
+// Joined in issue 756 (each was started by hand only): rows from a server load as the person scrolls (#522) and stop,
+// reset and drop a late page (#614); ListingPage fills the room (#522; templates/ is not a unit, so the grid's units and
+// the test's own file start it); the independent renderer keeps every capability and runs with no old grid code
 if (!ONLY) {
-  for (const regression of ['cut-popover.test.js', 'filter-by-field-269.test.js', 'header-labels-start-326.test.js', 'empty-table-a11y-313.test.js', 'row-line-559.test.js'].filter((r) => runs(r, GRIDS))) {
+  for (const regression of ['cut-popover.test.js', 'filter-by-field-269.test.js', 'header-labels-start-326.test.js', 'empty-table-a11y-313.test.js', 'row-line-559.test.js',
+    'remote-fill-522.test.js', 'remote-fill-614.test.js', 'listing-page-522.test.js', 'data-grid-next-capabilities.test.js', 'data-grid-next-independent.test.js'].filter((r) => runs(r, GRIDS))) {
     const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
     if (result.status !== 0) process.exit(result.status || 1);
   }

@@ -33,10 +33,10 @@ The Messages app shows conversations with the shared chat parts (date lines, gro
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`.
-- In changed mode (`npm test` and CI), Layout starts it when Chat or Avatar changes, or a part built on one of them changes.
-  - The start line also lists `messages`, as a part name. `tests/changed.js` records a change in the `messages/` folder as an app, not as a part, so a change to the Messages app alone does not appear to start this test.
+- In changed mode (`npm test` and CI), Layout starts it when the Messages app (the `messages/` folder) changes, when Chat or Avatar changes, or a part built on one of them changes.
+  - Since issue #756 the start line names Messages as an app (`apps: ['messages']`), the way `tests/changed.js` records it, so a change to the Messages app alone starts this test.
 - Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes.
-- A change to this test's own file alone does not start it through Layout: Layout checks only the parts listed above. Run it by hand: `node tests/messages-chat-s6.test.js`.
+- Layout also starts it when this test's own file, or a fixture it loads, changes (issue #756). By hand: `node tests/messages-chat-s6.test.js`.
 - A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
 - CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 

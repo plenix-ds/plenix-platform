@@ -25,8 +25,10 @@ This test makes sure every word Plenix writes on its own (buttons, labels, messa
 - A spec example could show a raw key instead of a word.
 
 ## When it runs
-- Started by hand only: `node tests/arabic-catalog-427.test.js`.
-- It is not in any group of `tests/run.js`, no other test starts it, and no `package.json` script or workflow names it. It does not run in CI or the full suite.
+- AUTOMATIC in `tests/run.js` since issue #756 (before, it was started by hand only), so `npm test` and `npm run test:full` run it. It has no changed mode: it runs all its checks every time.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests without a browser", on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
+- By hand: `node tests/arabic-catalog-427.test.js`.
 
 ## What it needs
 - Node only. No browser, no server.

@@ -28,9 +28,12 @@ The Plenix packages that apps download stay under fixed size limits, so pages th
 - A package an app loads would have grown past its limit, so pages built on it could load more slowly for the people using them.
 
 ## When it runs
-- Started by hand only: `node tests/perf.test.js` (the Usage in its header). Its header says it "runs only when the owner starts it ... never inside the build".
-- It is in no group of `tests/run.js`, no `package.json` script and no workflow in `.github/workflows/`.
-- `tests/w15c-packages.test.js` loads it as a module; that test is itself in no group or workflow either.
+- In the RELEASE group of `tests/run.js` since issue #756 (before, it was started by hand only): `node tests/run.js --release` runs it with the other tests of the release build, or by name: `node tests/run.js perf`.
+- It is not in `npm test` or `npm run test:full`, because it needs the release build (`node build-packages.js`) first.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests of the release build", after the release build, on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
+- `tests/w15c-packages.test.js` (also in RELEASE) loads it as a module.
+- By hand: `node tests/perf.test.js`. Its header still says it runs "never inside the build"; since #756 the CI build job runs it.
 
 ## What it needs
 - The built packages: `node build-app.js`, then `node build-packages.js`.

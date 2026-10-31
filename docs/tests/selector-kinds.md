@@ -21,7 +21,8 @@ The style checker that keeps Plenix's stylesheets in order judges each style rul
 
 ## When it runs
 - AUTOMATIC group in `tests/run.js`, so `npm test` and `npm run test:full` run it. It has no changed-mode filter: it always runs when started.
-- It is NOT in the `ci.yml` build job or browser matrix and NOT in `full.yml`, so CI never runs it.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests without a browser" (since issue #756), on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
 - By hand: `node tests/selector-kinds.test.js`.
 
 ## What it needs

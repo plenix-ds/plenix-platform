@@ -31,8 +31,11 @@ The table's independent renderer (DataGridEngine) can still do everything the gr
 - If the app moves to the independent renderer, a person could lose grouping, editing, tree rows, moving rows, or loading from a server, or meet accessibility problems in grouped tables.
 
 ## When it runs
-- Started by hand only: `node tests/data-grid-next-capabilities.test.js`.
-- It is not in any group of `tests/run.js`, no other test starts it, and no workflow or package.json script runs it.
+- A child of `data-grid` (AUTOMATIC in `tests/run.js`): data-grid starts it as a separate process before its own checks. Before issue #756 it was started by hand only.
+- In changed mode it runs when the DataGrid, DataGridEngine or Table changes, or when this test's own file (or a fixture it loads) changes. In a full run it always runs.
+- It is skipped when data-grid is started with `DT_ONLY`.
+- CI: the "behavior" browser job (`ci.yml`), on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "behavior" job.
+- By hand: `node tests/data-grid-next-capabilities.test.js`.
 - The DataGrid README (`platform/components/DataGrid/README.md`) lists it under the grid's validation.
 
 ## What it needs

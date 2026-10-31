@@ -25,8 +25,11 @@ The Plenix icons package carries every Plenix icon as its own importable piece, 
 - A developer who installs the icons package cannot import some icons, gets broken aliases, or gets icons with missing drawings.
 
 ## When it runs
-- No run group and no parent test start it. CI does not run it.
-- Started by hand only: `node build-app.js && node build-packages.js && node tests/icons-package-282.test.js` (the Usage line in its header). No package.json script or workflow names it.
+- In the RELEASE group of `tests/run.js` since issue #756 (before, it was started by hand only): `node tests/run.js --release` runs it with the other tests of the release build, or by name: `node tests/run.js icons-package-282`.
+- It is not in `npm test` or `npm run test:full`, because it needs the release build (`node build-packages.js`) first.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests of the release build", after the release build, on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
+- By hand: `node build-app.js && node build-packages.js && node tests/icons-package-282.test.js` (the Usage line in its header).
 
 ## What it needs
 - Node only (no browser, no server).

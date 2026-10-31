@@ -32,8 +32,12 @@ The files Plenix publishes for developers (change notes, token list, component d
 - The token checker warns about real tokens, or makes network requests on live pages.
 
 ## When it runs
-- No run group and no parent test start it. CI does not run it.
-- Started by hand only: `node tests/cdn-devx.test.js`, after building the packages (its header says "Build packages first"). No package.json script or workflow names it; `build-packages.js` mentions it in a comment only.
+- In the RELEASE group of `tests/run.js` since issue #756 (before, it was started by hand only): `node tests/run.js --release` runs it with the other tests of the release build, or by name: `node tests/run.js cdn-devx`.
+- It is not in `npm test` or `npm run test:full`, because it needs the release build (`node build-packages.js`) first.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests of the release build", after the release build, on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
+- Without the design system (in CI, when the DS_TOKEN secret is not set) it prints `CDN_DEVX_SKIP no design system` and passes.
+- By hand: `node tests/cdn-devx.test.js`, after building the packages (its header says "Build packages first").
 
 ## What it needs
 - Node only (no browser, no server).

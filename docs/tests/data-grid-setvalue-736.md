@@ -22,8 +22,7 @@ When an app changes a table cell from its own code, the change reaches the right
 - An app that updates a cell from code (for example after saving) would report the edit with no record, so the change could be lost or saved to nothing.
 
 ## When it runs
-- A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the DataGrid (components/DataGrid) changes. In a full run it always runs.
-- The start condition names only the DataGrid; it does not check for a change to this file itself.
+- A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the DataGrid (components/DataGrid) changes, or when this test's own file, or a fixture it loads, changes (issue #756). In a full run it always runs.
 - CI: the "fixtures" browser job (`ci.yml`), which runs layout, on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "fixtures" job.
 
 ## What it needs

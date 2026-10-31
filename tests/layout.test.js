@@ -12,141 +12,99 @@ const fs = require('fs');
 const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
-// sizes past the generated grid lines land on the caps, never on the default size (#375 review): its own test, when
-// Resizable, SplitView or a pane of the shell changed
-if (changed.wants({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'resize-caps.test.js')], { stdio: 'inherit', env: process.env });
+// The child tests, each run as its own process before Layout's own checks. A child runs when what it covers changed
+// (changed.wants), or when its own file or a fixture it loads changed (changed.child; issue 756), and always in a full
+// run. Its file name stays written out ('<name>.test.js'): tests/changed.js finds a group's children by those names.
+function child(what, file) {
+  if (!changed.wants(what) && !changed.child(file)) return;
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, file)], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-// a pane or a table column is never dragged wider than 90% of the window (of the table): its own test, when Resizable, SplitView, a pane
+// sizes past the generated grid lines land on the caps, never on the default size (#375 review): when Resizable, SplitView or a pane of the shell changed
+child({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'resize-caps.test.js');
+// a pane or a table column is never dragged wider than 90% of the window (of the table): when Resizable, SplitView, a pane
 // of the shell or the DataGrid changed (issue 463, option C, step 1)
-if (changed.wants({ units: ['components/Resizable', 'components/DataGrid', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pane-limit.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the panes start wider on larger windows (issue 463, option C, step 2): its own test, when AppShell or a pane of the shell changed
-if (changed.wants({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pane-defaults.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): its own test, when AppShell or the side panel changed
-if (changed.wants({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns/NavPane'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'monitor-widths.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the toolbar and footer ladder (issue 477, stage 4): its own test, when the Toolbar, the ActionBar, the fold helpers or Button changed
-if (changed.wants({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar', 'utils/barFit.js', 'utils/foldOrder.js'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'toolbar-ladder.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// field sizing in bars (issues 558 and 554): its own test, when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
-if (changed.wants({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.js', 'utils/overflow.js', 'system/layout-modes.css'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'field-sizing.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// controls follow read-only (issue 262, PR 1): its own test, when one of them, the ReadOnly provider or the test changed
-if (changed.wants({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'providers/ReadOnly.jsx'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'readonly-adoption.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// descriptions through useDescribedBy (issue 262, PR 3): its own test, when one of those controls or the helper changed
-if (changed.wants({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.js'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'describedby-adoption.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// pressing through usePressable (issue 262, PR 4): its own test, when the DataGrid or the hook changed
-if (changed.wants({ units: ['components/DataGrid', 'hooks/usePressable.js', 'components/Menu', 'components/Popover'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pressing-adoption.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// hand-made live regions through LiveRegion (issue 262, PR 7): its own test, when one of those units or the helper changed
-if (changed.wants({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.jsx'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'announce-adoption.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// every suite page has one level-1 heading (issue 603): its own test, when a suite page or the hidden-text component changed
-if (changed.wants({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'], apps: ['dashboard', 'projects', 'contacts', 'notes', 'messages', 'calendar', 'tasks', 'bookmarks', 'files', 'settings'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'page-h1.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-if (changed.wants({ units: ['components/Chat', 'components/Avatar'] })) { const r637 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-s1-637.test.js')], { stdio: 'inherit', env: process.env }); if (r637.status !== 0) process.exit(r637.status || 1); }   // the chat bubbles and photos (issue 637)
-if (changed.wants({ units: ['components/Chat'] })) { const r637b = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-s2-637.test.js')], { stdio: 'inherit', env: process.env }); if (r637b.status !== 0) process.exit(r637b.status || 1); }   // chat runs, lines and the Sent/Read footer (issue 637)
-if (changed.wants({ units: ['components/Chat'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-s4-637.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // chat actions and reactions (issue 637 slice 4)
-if (changed.wants({ units: ['components/Avatar', 'icons'] })) { const r637l = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'avatar-ai-637.test.js')], { stdio: 'inherit', env: process.env }); if (r637l.status !== 0) process.exit(r637l.status || 1); }   // the AI provider logos (issue 637)
-if (changed.wants({ apps: ['projects'] })) { const r632 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'project-notes-632.test.js')], { stdio: 'inherit', env: process.env }); if (r632.status !== 0) process.exit(r632.status || 1); }   // a project's notes show (issue 632)
-// computed identifiers read 01-20261020 on a right-to-left page (issue 606): its own test, when one of those parts changed
-if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'components/DataPill', 'patterns/PropertyList', 'patterns/EntityHeader'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'ids-rtl-606.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// button label centering and the Danger pressed step (issue 610): its own test, when the Button changed
-if (changed.wants({ units: ['components/Button'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'button-610.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the self-hosting archive draws icons with no network (issue 284): its own test, when the Icon component changed
-if (changed.wants({ units: ['components/Icon'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-offline-archive-284.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the ES module build finds its icons beside itself (issue 284): its own test, when the Icon component changed
-if (changed.wants({ units: ['components/Icon'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-module-url-284.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// a failed icon file is asked for once more (issue 283): its own test, when the Icon component changed
-if (changed.wants({ units: ['components/Icon'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-retry-283.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// a Chrome Manifest V3 extension draws icons with no remote code (issue 284): its own test, when the Icon component changed
-if (changed.wants({ units: ['components/Icon'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-mv3-284.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the self-hosting package carries every documented icon (issue 284): its own test, when the Icon component changed
-if (changed.wants({ units: ['components/Icon'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-package-assets-284.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the Card accent is removed (issue 621): its own test, when the Card or one of the application pages that used it changed
-if (changed.wants({ units: ['components/Card'], apps: ['dashboard', 'calendar', 'settings', 'projects'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'card-accent-621.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// a fetched icon asks for one file, a few at a time (issue 642): its own test, when the Icon component changed
-if (changed.wants({ units: ['components/Icon'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-fetch-642.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// the Chat composer: one box, attachments, emoji and dictation (issue 637, slice 3): its own test, when the Chat, the Input or the Popover changed
-if (changed.wants({ units: ['components/Chat', 'components/Input', 'components/Popover'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-composer-s3.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// a pill in a DataGrid or Table cell has equal padding at both sides (issue 649): its own test, when the DataPill, the DataGrid or the Table changed
-if (changed.wants({ units: ['components/DataPill', 'components/DataGrid', 'components/Table'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pill-padding-649.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-if (changed.wants({ units: ['components/Button'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'button-selected-645.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a selected button is readable in dark (issue 645)
-if (changed.wants({ units: ['components/Chat', 'components/MediaViewer', 'components/Button'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-media-s5.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // Chat: pictures, files and voice in a bubble (issue 637, slice 5)
-if (changed.wants({ units: ['components/Button', 'components/Toolbar'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'button-elevation-610.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // raised action buttons (issue 610)
-if (changed.wants({ units: ['patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel', 'components/Button', 'components/Input'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'navpane-fit-677.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // controls in a pane's header fit the pane (issue 677)
-if (changed.wants({ units: ['components/DataGrid', 'patterns/SplitView', 'patterns/ReadingPane'] }, 'splitworkspace-grid-681') && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'splitworkspace-grid-681.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // SplitWorkspace passes its list's DataGrid options (issue 681; templates/ is not a unit in changed.js, so the test's own file and the grid's units trigger it)
-if (changed.wants({ units: ['components/Banner', 'components/Field', 'components/Checkbox', 'utils/dataText.jsx'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-feedback.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a banner, hint or check description is in the data font (issue 260)
-if (changed.wants({ units: ['patterns/SettingsLayout'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-settings.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a settings description is in the data font (issue 260)
-if (changed.wants({ units: ['components/Metric', 'charts', 'patterns/RecordPage', 'patterns/ActivityList', 'components/DataGrid', 'components/Table'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-data.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a metric, chart, record header, activity row or table value is in the data font (issue 260)
-if (changed.wants({ units: ['messages', 'components/Chat', 'components/Avatar'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'messages-chat-s6.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the Messages app on the Chat parts and the Chat spec page (issue 637, slice 6)
-if (changed.wants({ units: ['utils/richTextClean.js', 'components/RichText', 'components/RichTextEditor'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'rich-text-clean-689.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the rich-text sanitizer against hostile input (issue 689)
-if (changed.wants({ units: ['components/Menu', 'components/SplitButton', 'components/Combobox', 'components/Dialog', 'components/Sheet', 'components/Popover', 'patterns/Popconfirm', 'components/Slider', 'components/Checkbox', 'patterns/SplitView', 'components/Resizable', 'components/Calendar', 'components/OtpInput'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'keyboard-apg-691.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the keyboard patterns of the parts keyboard.test.js does not cover (issue 691)
-if (changed.wants({ units: ['components/CommandMenu', 'components/EntityPicker', 'components/MillerColumns', 'components/RowButton', 'patterns/AssignControl', 'patterns/ImageUpload', 'patterns/RenameAction', 'components/InlineEdit', 'patterns/SessionTimeout', 'patterns/DeleteFlow', 'patterns/DraftState', 'patterns/QueryBuilder', 'patterns/FilterBar', 'patterns/SearchWorkspace', 'components/ProductOptions', 'components/RadioTiles', 'components/ColorSwatch', 'components/Combobox', 'components/Menu'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'keyboard-706.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the last parts without a keyboard test, and the APG gaps (issue 706)
-if (changed.wants({ units: ['components/DataGrid'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-grid-setvalue-736.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
-// section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
-if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
-  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
+child({ units: ['components/Resizable', 'components/DataGrid', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-limit.test.js');
+// the panes start wider on larger windows (issue 463, option C, step 2): when AppShell or a pane of the shell changed
+child({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-defaults.test.js');
+// the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): when AppShell or the side panel changed
+child({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns/NavPane'] }, 'monitor-widths.test.js');
+// the toolbar and footer ladder (issue 477, stage 4): when the Toolbar, the ActionBar, the fold helpers or Button changed
+child({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar', 'utils/barFit.js', 'utils/foldOrder.js'] }, 'toolbar-ladder.test.js');
+// field sizing in bars (issues 558 and 554): when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
+child({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.js', 'utils/overflow.js', 'system/layout-modes.css'] }, 'field-sizing.test.js');
+// controls follow read-only (issue 262, PR 1): when one of them or the ReadOnly provider changed
+child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'providers/ReadOnly.jsx'] }, 'readonly-adoption.test.js');
+// descriptions through useDescribedBy (issue 262, PR 3): when one of those controls or the helper changed
+child({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.js'] }, 'describedby-adoption.test.js');
+// pressing through usePressable (issue 262, PR 4): when the DataGrid or the hook changed
+child({ units: ['components/DataGrid', 'hooks/usePressable.js', 'components/Menu', 'components/Popover'] }, 'pressing-adoption.test.js');
+// hand-made live regions through LiveRegion (issue 262, PR 7): when one of those units or the helper changed
+child({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.jsx'] }, 'announce-adoption.test.js');
+// every suite page has one level-1 heading (issue 603): when a suite page or the hidden-text component changed
+child({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'], apps: ['dashboard', 'projects', 'contacts', 'notes', 'messages', 'calendar', 'tasks', 'bookmarks', 'files', 'settings'] }, 'page-h1.test.js');
+child({ units: ['components/Chat', 'components/Avatar'] }, 'chat-s1-637.test.js');   // the chat bubbles and photos (issue 637)
+child({ units: ['components/Chat'] }, 'chat-s2-637.test.js');   // chat runs, lines and the Sent/Read footer (issue 637)
+child({ units: ['components/Chat'] }, 'chat-s4-637.test.js');   // chat actions and reactions (issue 637 slice 4)
+child({ units: ['components/Avatar', 'icons'] }, 'avatar-ai-637.test.js');   // the AI provider logos (issue 637)
+child({ apps: ['projects'] }, 'project-notes-632.test.js');   // a project's notes show (issue 632)
+// computed identifiers read 01-20261020 on a right-to-left page (issue 606): when one of those parts changed
+child({ units: ['components/Isolate', 'components/DataGrid', 'components/DataPill', 'patterns/PropertyList', 'patterns/EntityHeader'] }, 'ids-rtl-606.test.js');
+// button label centering and the Danger pressed step (issue 610): when the Button changed
+child({ units: ['components/Button'] }, 'button-610.test.js');
+// the icon tests (issues 283, 284 and 642), when the Icon component changed: the self-hosting archive draws icons with no
+// network; the ES module build finds its icons beside itself; a failed icon file is asked for once more; a Chrome Manifest
+// V3 extension draws icons with no remote code; the self-hosting package carries every documented icon
+child({ units: ['components/Icon'] }, 'icon-offline-archive-284.test.js');
+child({ units: ['components/Icon'] }, 'icon-module-url-284.test.js');
+child({ units: ['components/Icon'] }, 'icon-retry-283.test.js');
+child({ units: ['components/Icon'] }, 'icon-mv3-284.test.js');
+child({ units: ['components/Icon'] }, 'icon-package-assets-284.test.js');
+// the Card accent is removed (issue 621): when the Card or one of the application pages that used it changed
+child({ units: ['components/Card'], apps: ['dashboard', 'calendar', 'settings', 'projects'] }, 'card-accent-621.test.js');
+// a fetched icon asks for one file, a few at a time (issue 642): when the Icon component changed
+child({ units: ['components/Icon'] }, 'icon-fetch-642.test.js');
+// the Chat composer: one box, attachments, emoji and dictation (issue 637, slice 3): when the Chat, the Input or the Popover changed
+child({ units: ['components/Chat', 'components/Input', 'components/Popover'] }, 'chat-composer-s3.test.js');
+// a pill in a DataGrid or Table cell has equal padding at both sides (issue 649): when the DataPill, the DataGrid or the Table changed
+child({ units: ['components/DataPill', 'components/DataGrid', 'components/Table'] }, 'pill-padding-649.test.js');
+child({ units: ['components/Button'] }, 'button-selected-645.test.js');   // a selected button is readable in dark (issue 645)
+child({ units: ['components/Chat', 'components/MediaViewer', 'components/Button'] }, 'chat-media-s5.test.js');   // Chat: pictures, files and voice in a bubble (issue 637, slice 5)
+child({ units: ['components/Button', 'components/Toolbar'] }, 'button-elevation-610.test.js');   // raised action buttons (issue 610)
+child({ units: ['patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel', 'components/Button', 'components/Input'] }, 'navpane-fit-677.test.js');   // controls in a pane's header fit the pane (issue 677)
+// SplitWorkspace passes its list's DataGrid options (issue 681): when the grid's units or the test's own file changed; a
+// change under templates/ is not a unit in changed.js and reaches the slice, which starts it too
+child({ units: ['components/DataGrid', 'patterns/SplitView', 'patterns/ReadingPane'] }, 'splitworkspace-grid-681.test.js');
+child({ units: ['components/Banner', 'components/Field', 'components/Checkbox', 'utils/dataText.jsx'] }, 'data-phrase-260b-feedback.test.js');   // a count in a banner, hint or check description is in the data font (issue 260)
+child({ units: ['patterns/SettingsLayout'] }, 'data-phrase-260b-settings.test.js');   // a count in a settings description is in the data font (issue 260)
+child({ units: ['components/Metric', 'charts', 'patterns/RecordPage', 'patterns/ActivityList', 'components/DataGrid', 'components/Table'] }, 'data-phrase-260b-data.test.js');   // a count in a metric, chart, record header, activity row or table value is in the data font (issue 260)
+// the Messages app on the Chat parts and the Chat spec page (issue 637, slice 6): messages/ is an app in changed.js, not a unit (issue 756)
+child({ units: ['components/Chat', 'components/Avatar'], apps: ['messages'] }, 'messages-chat-s6.test.js');
+child({ units: ['utils/richTextClean.js', 'components/RichText', 'components/RichTextEditor'] }, 'rich-text-clean-689.test.js');   // the rich-text sanitizer against hostile input (issue 689)
+// the keyboard patterns of the parts keyboard.test.js does not cover (issue 691)
+child({ units: ['components/Menu', 'components/SplitButton', 'components/Combobox', 'components/Dialog', 'components/Sheet', 'components/Popover', 'patterns/Popconfirm', 'components/Slider', 'components/Checkbox', 'patterns/SplitView', 'components/Resizable', 'components/Calendar', 'components/OtpInput'] }, 'keyboard-apg-691.test.js');
+// the last parts without a keyboard test, and the APG gaps (issue 706)
+child({ units: ['components/CommandMenu', 'components/EntityPicker', 'components/MillerColumns', 'components/RowButton', 'patterns/AssignControl', 'patterns/ImageUpload', 'patterns/RenameAction', 'components/InlineEdit', 'patterns/SessionTimeout', 'patterns/DeleteFlow', 'patterns/DraftState', 'patterns/QueryBuilder', 'patterns/FilterBar', 'patterns/SearchWorkspace', 'components/ProductOptions', 'components/RadioTiles', 'components/ColorSwatch', 'components/Combobox', 'components/Menu'] }, 'keyboard-706.test.js');
+child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
+// section headings wrap, then end in an ellipsis with a tooltip (issue 502): when CollapsibleSection, NavList, Tooltip or the truncation helper changed
+child({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] }, 'section-headings-502.test.js');
+// Joined in issue 756 (each was started by hand only). A change under platform/charts/, platform/templates/ or
+// platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
+// a date with no time is that calendar day in every time zone (issue 342)
+child({ units: ['components/DatePicker', 'components/Time', 'utils/format.js'] }, 'date-only.test.js');
+// ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
+child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.js'] }, 'focus-group-6a.test.js');
+// charts of whole days get day ticks, never "12:00 AM" (issue 593)
+child({ units: ['utils/format.js'] }, 'line-ticks-593.test.js');
+// a Select or Combobox holding a number or a date shows it in the data font (issue 252)
+child({ units: ['components/Input', 'components/Combobox', 'utils/dataText.jsx'] }, 'select-data-font.test.js');
+// right to left (issue 413): the app frame; charts (time runs left to right); CTM's question block in a page of the other
+// direction; the editing and time parts; every suite page
+child({ units: ['patterns/AppShell', 'patterns/AppHeader', 'patterns/NavPane', 'patterns/SidePanel', 'patterns/CommandBar', 'components/Tooltip', 'components/Toast'], apps: ['projects', 'dam'] }, 'rtl-app-frame.test.js');
+child({ units: ['providers/DirectionProvider'] }, 'rtl-charts.test.js');
+child({ units: ['components/NavList', 'components/Fieldset', 'components/Checkbox', 'providers/DirectionProvider'] }, 'rtl-ctm-question.test.js');
+child({ units: ['components/RichTextEditor', 'components/DatePicker', 'patterns/TimeGrid', 'components/Carousel', 'components/DocumentViewer'] }, 'rtl-editing-time.test.js');
+child({ units: ['patterns/AppShell'], apps: ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'] }, 'rtl-whole-page.test.js');
 if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/Toolbar', 'patterns/ActionBar', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset', 'components/Icon'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
@@ -156,9 +114,16 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   + '<link rel="stylesheet" href="' + P + 'platform.css"><script src="' + P + 'vendor/react.production.min.js"></script>'
   + '<script src="' + P + 'vendor/react-dom.production.min.js"></script><script src="' + P + 'dist/platform.js"></script></head><body><div id="root"></div></body></html>';
 
+// the browser and the page file are closed and deleted however the run ends: after the last check, or when a check throws
+// (issue 756, QA note on #752)
+let browser = null, file = null;
+async function cleanup() {
+  if (browser) { const b = browser; browser = null; try { await b.close(); } catch (e) { /* already gone */ } }
+  if (file) { const f = file; file = null; try { fs.unlinkSync(f); } catch (e) { /* already gone */ } }
+}
 (async () => {
-  const file = path.join(__dirname, '.layout-test.html'); fs.writeFileSync(file, html);
-  const browser = await launch();
+  file = path.join(__dirname, '.layout-test.html'); fs.writeFileSync(file, html);
+  browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 900 });
   await page.goto('file://' + (file.startsWith('/') ? '' : '/') + file.replace(/\\/g, '/'));
   const out = {};
@@ -352,7 +317,7 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     document.documentElement.setAttribute('dir', 'ltr'); root.innerHTML = '';
     return out;
   });
-  await browser.close(); fs.unlinkSync(file);
+  await cleanup();
   check('VisuallyHidden: a page with drag-and-drop instructions and a live region is no taller or wider than the window, left to right and right to left #288',
     ['ltr', 'rtl'].every((d) => quietBoth[d].instructions && quietBoth[d].hidden >= 2 && quietBoth[d].taller <= 0 && quietBoth[d].wider <= 0 && quietBoth[d].biggest <= 1), JSON.stringify(quietBoth));
   check('standard: a SettingsLayout page is contained without saying so', claimed.mode === 'contained', claimed.mode);
@@ -362,4 +327,4 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   res.forEach(([n, ok, d]) => console.log((ok ? '  ok   ' : '  FAIL ') + n + (ok ? '' : ' · ' + d)));
   console.log((bad.length ? 'LAYOUT_FAIL ' : 'LAYOUT_OK ') + (res.length - bad.length) + '/' + res.length);
   process.exit(bad.length ? 1 : 0);
-})().catch((e) => { console.error(e); process.exit(1); });
+})().catch(async (e) => { console.error(e); await cleanup(); process.exit(1); });

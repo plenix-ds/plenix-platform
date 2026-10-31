@@ -29,6 +29,7 @@ A 600-row table with rich cells opens, sorts, filters and scrolls quickly, with 
 ## When it runs
 - Started by `data-grid-next-perf` (which is itself started by hand only), or by hand: `node tests/data-grid-perf.test.js`.
 - It is not in any group of `tests/run.js`, and no workflow or package.json script runs it.
+- It stays started by hand on purpose (decided in issue #756): it measures time, and its results depend on the machine's speed, which varies on shared CI machines.
 - Without Chrome it prints DATA_GRID_PERF_SKIP and passes.
 
 ## What it needs

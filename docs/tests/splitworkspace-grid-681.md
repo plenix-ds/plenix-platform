@@ -26,7 +26,7 @@ In a list-and-detail screen (SplitWorkspace), clicking a row opens it beside the
 
 ## When it runs
 - A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the DataGrid, the SplitView or the ReadingPane changes, or when this test file changes. In a full run it always runs.
-- A comment in layout explains why: the templates folder (where SplitWorkspace lives) is not a unit that changed mode can map, so the grid's parts and the test's own file trigger it.
+- A comment in layout explains why: the templates folder (where SplitWorkspace lives) is not a unit that changed mode can map, so the grid's parts and the test's own file trigger it. A change under `platform/templates/` also reaches the small fixed slice, which starts every Layout child, this one included.
 - CI: the "fixtures" browser job (`ci.yml`), which runs layout, on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "fixtures" job.
 
 ## What it needs

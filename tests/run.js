@@ -8,6 +8,7 @@
 //                                          "Tabs:" (tests/check.js, TEST_ONLY); the test still runs once. tests/parts.json lists each
 //                                          test's parts. TEST_RESULTS=<file> collects every counted check (tools/file-failures.js)
 //   node tests/run.js --on-demand          the on-demand tests only (npm run test:on-demand; add --full for every page)
+//   node tests/run.js --release            the tests of the release build only (after node build-packages.js)
 // Where (owner, 2026-10-25: "make the test site ... no longer using the design spec for testing"): the browser tests open the
 // St. John the Beloved test site (test-site/, tests/site.js) and the suite applications, never the design spec.
 // On demand (owner, 2026-10-25: "Reserve only for as on demand test by owner and take out from the tests"):
@@ -19,15 +20,21 @@ const { spawnSync } = require('child_process');
 const AUTOMATIC = ['site-coverage', 'visual', 'layout', 'pages', 'keyboard', 'data-grid', 'typography', 'component-tokens', 'reflow',
   'formats', 'icon-safety', 'utilities', 'focus-order', 'semantic-html', 'navigation', 'one-primary', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types', 'fill-693',
   // the ECharts charts and sparklines (owner, codex-q3-27: they join the automatic check; #382 F9)
-  'charts-echarts-353', 'sparkline-echarts-353', 'treechart-echarts'];
+  'charts-echarts-353', 'sparkline-echarts-353', 'treechart-echarts',
+  // tests without a browser that were started by hand only (issue 756): the Arabic catalog, the baseline scanner, the site icon files
+  'arabic-catalog-427', 'baseline-scan-273', 'site-icons'];
 const ON_DEMAND = ['a11y', 'high-contrast', 'contrast', 'theme', 'density'];
+// the tests of the release build (packages/ and release/cdn/, written by node build-packages.js), by name or with --release:
+// the CI build job runs them after its release build (issue 756). They are not in the default run, which needs no release build
+const RELEASE = ['perf', 'w15c-packages', 'icons-package-282', 'cdn-devx'];
 // the design spec's own checks, by name only: the spec's component labs (its Edit dialog's tokens) belong to the spec
 // (platform/design-system), which loads Plenix from the CDN; the automatic runs never open the spec (owner, 2026-10-25)
 const SPEC_ONLY = ['labs'];
-const ALL = AUTOMATIC.concat(ON_DEMAND, SPEC_ONLY);
+const ALL = AUTOMATIC.concat(ON_DEMAND, SPEC_ONLY, RELEASE);
 const args = process.argv.slice(2);
 const full = args.includes('--full');
 const onDemand = args.includes('--on-demand');
+const release = args.includes('--release');
 // a name may carry its parts: keyboard:Toolbar,Tabs (the parts are passed to that test only, as TEST_ONLY)
 const parts = {};
 const names = args.filter((a) => !/^--/.test(a)).map((a) => {
@@ -37,7 +44,7 @@ const names = args.filter((a) => !/^--/.test(a)).map((a) => {
 const bad = names.filter((n) => ALL.indexOf(n) < 0);
 if (bad.length) { console.error('No such test: ' + bad.join(', ') + ' (tests: ' + ALL.join(', ') + ')'); process.exit(2); }
 const env = Object.assign({}, process.env, full ? { TEST_SCOPE: 'full' } : {});
-const list = names.length ? names : onDemand ? ON_DEMAND : AUTOMATIC;
+const list = names.length ? names : onDemand ? ON_DEMAND : release ? RELEASE : AUTOMATIC;
 const failed = [], times = [];
 const t0 = Date.now();
 for (const n of list) {

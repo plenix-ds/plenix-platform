@@ -25,7 +25,7 @@ This test makes sure every Plenix app page has exactly one main title for screen
 
 ## When it runs
 - A child test, started by `tests/layout.test.js` (AUTOMATIC in `tests/run.js`).
-- In changed mode, layout starts it only when VisuallyHidden or EntityHeader changes, or one of the suite apps (dashboard, projects, contacts, notes, messages, calendar, tasks, bookmarks, files, settings) changes, when a global file changes, or when `layout.test.js` itself changes. A change to this file alone does not start it in changed mode.
+- In changed mode, layout starts it when VisuallyHidden or EntityHeader changes, or one of the suite apps (dashboard, projects, contacts, notes, messages, calendar, tasks, bookmarks, files, settings) changes, when a global file changes, or when `layout.test.js` itself changes. It also starts it when this test's own file, or a fixture it loads, changes (issue #756).
 - In a full run it always runs.
 - CI: with layout in the "fixtures" browser job. The full suite: its "fixtures" job.
 

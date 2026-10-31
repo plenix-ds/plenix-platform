@@ -36,7 +36,8 @@ An icon file cannot be used to sneak harmful code into a Plenix page.
 
 ## When it runs
 - AUTOMATIC group in `tests/run.js`, so `npm test` and `npm run test:full` run it. It has no changed-mode filter: it always runs when started.
-- It is NOT in the `ci.yml` build job or browser matrix and NOT in `full.yml`, so CI never runs it.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests without a browser" (since issue #756), on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
 - By hand: `node tests/icon-safety.test.js`.
 
 ## What it needs
