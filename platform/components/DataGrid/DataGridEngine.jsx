@@ -40,7 +40,6 @@ import {
 import { isRtl } from '../../utils/direction.js';
 import { formatNumber } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
 import { SIZE_STEPS } from '../../utils/sizeSteps.js';
 import { shareOf } from '../../utils/paneLimit.js';
@@ -55,7 +54,7 @@ import { Input, Select } from '../Input/Input.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Pagination } from '../Pagination/Pagination.jsx';
 import { EmptyState } from '../EmptyState/EmptyState.jsx';
-import { opening, writeView, recordKey, normalizeSort, valueAt } from './state.js';
+import { opening, writeView, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 import { CellValue, byteFilter, textFilter, listFilter, valueText } from './cells.jsx';
 import { recordsOf, groupDisplay, groupValue, valueKey } from './records.js';
@@ -90,6 +89,10 @@ import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
 import { useColumns } from './engine/useColumns.js';
 import { useEditedRows, editActions, useEditEffect } from './engine/useEditing.js';
+import { useSorting } from './engine/useSorting.js';
+import { sortActions } from './engine/sortActions.js';
+import { useGrouping } from './engine/useGrouping.js';
+import { groupActions } from './engine/groupActions.js';
 import { headerKeys, resizeKeys, makeFocusCell, groupKeys, rowKeys, cellKeys, tableKeys } from './engine/keys.js';
 import {
   CellEditor,
@@ -157,10 +160,8 @@ function NextEngine(props) {
   const listeners = React.useRef(new Map()),
     rowElements = React.useRef(new Map()),
     headerElements = React.useRef(new Map());
-  const [localSort, setSorting] = React.useState(initial.sorting);
-  const sortSignal = JSON.stringify(props.sort);
-  const [sortOwner, setSortOwner] = React.useState(null);
 
+  const { setSorting, sortSignal, setSortOwner, sorting, sortingRef } = useSorting({ initial, props });
   const [rowHeight, setRowHeight] = React.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = React.useState(initial.wrapHeaders);
   // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
@@ -186,24 +187,15 @@ function NextEngine(props) {
   const [filterField, setFilterField] = React.useState(null),
     [managing, setManaging] = React.useState(false);
   const [expanded, setExpanded] = React.useState(props.treeExpanded ?? false);
-  const [localGroups, setGroups] = React.useState(() => initial.groupBy),
-    [groupOwner, setGroupOwner] = React.useState(null),
-    [collapsed, setCollapsed] = React.useState(() => new Set(initial.collapsed));
+
+  const { setGroups, setGroupOwner, collapsed, setCollapsed, groupSignal, groupBy } = useGrouping({
+    initial,
+    props,
+    options,
+  });
   const [loaded, setLoaded] = React.useState(props.pageSize || 50),
     [printing, setPrinting] = React.useState(false);
-  const collapsedSignal = JSON.stringify(props.collapsedGroups || []);
-  React.useEffect(() => {
-    if (props.onViewChange)
-      setCollapsed((old) =>
-        JSON.stringify([...old]) === collapsedSignal ? old : new Set(props.collapsedGroups || [])
-      );
-  }, [collapsedSignal, !!props.onViewChange]);
-  const groupSignal = JSON.stringify(props.groupBy),
-    groupBy = props.onViewChange
-      ? (props.groupBy ?? false)
-      : groupOwner === groupSignal
-        ? localGroups
-        : (props.groupBy ?? options.groupBy ?? localGroups);
+
   const childField = props.tree ? props.childrenField || 'children' : null;
   const [filters, setFilters] = React.useState([]),
     [page, setPage] = React.useState(0),
@@ -233,30 +225,9 @@ function NextEngine(props) {
   }, [metrics]);
   const effectiveStep = props.rowHeight || rowHeight,
     effectiveWrap = props.wrapHeaders ?? wrapHeaders;
-  const controlledSort = React.useMemo(() => normalizeSort(props.sort), [sortSignal]);
-  const deferredFilter = React.useDeferredValue(props.filter);
-  const initiallyControlledSort = React.useRef(!!props.sort?.length),
-    appliedSort = React.useRef(false);
-  if (
-    props.sort?.length &&
-    (initiallyControlledSort.current || JSON.stringify(controlledSort) !== JSON.stringify(initial.sorting))
-  )
-    appliedSort.current = true;
-  React.useEffect(() => {
-    if (props.sort?.length && sortOwner !== sortSignal) setSortOwner(null);
-  }, [sortSignal]);
-  const sorting = props.onViewChange
-    ? controlledSort
-    : sortOwner === sortSignal || (!props.sort?.length && sortOwner !== null)
-      ? localSort
-      : props.sort?.length
-        ? controlledSort
-        : appliedSort.current
-          ? EMPTY_ROWS
-          : localSort;
 
-  const sortingRef = React.useRef(sorting);
-  sortingRef.current = sorting;
+  const deferredFilter = React.useDeferredValue(props.filter);
+
   // rows from a server: a page at a time ("pages"), appended by Load more ("load-more"), or appended as the person scrolls
   // near the end ("fill", issue 522: one list, no page controls)
   const remoteMode =
@@ -312,23 +283,16 @@ function NextEngine(props) {
     mutations,
     pendingEdit
   });
-  const changeGroups = (value) => {
-    setGroupOwner(groupSignal);
-    setGroups(() => value);
-    setCollapsed(new Set());
-    props.onViewChange?.({ groupBy: value, collapsed: [] });
-  };
-  const toggleGroup = (id, open) => {
-    const next = new Set(live.current.collapsed),
-      expand = open ?? next.has(id),
-      changed = expand === next.has(id);
-    if (expand) next.delete(id);
-    else next.add(id);
-    live.current.collapsed = next;
-    setCollapsed(next);
-    if (changed) announce(expand ? S.expanded : S.collapsed);
-    props.onViewChange?.({ collapsed: [...next] });
-  };
+
+  const { changeGroups, toggleGroup } = groupActions({
+    setGroupOwner,
+    groupSignal,
+    setGroups,
+    setCollapsed,
+    props,
+    live,
+    S,
+  });
   const emit = (name, ...args) => {
     live.current.props.on?.[name]?.(...args);
     listeners.current.get(name)?.forEach((fn) => fn(...args));
@@ -372,17 +336,8 @@ function NextEngine(props) {
     emit,
     api
   });
-  const changeSort = (update) => {
-    const next = typeof update === 'function' ? update(sorting) : update;
-    setSortOwner(sortSignal);
-    setSorting(next);
-    setPage(0);
-    props.onViewChange?.({ sort: sorted(next) });
-    emit(
-      'dataSorted',
-      next.map((s) => ({ field: s.id, dir: s.desc ? 'desc' : 'asc' }))
-    );
-  };
+
+  const { changeSort } = sortActions({ sorting, setSortOwner, sortSignal, setSorting, setPage, props, emit });
   const leafDefs = React.useMemo(
     () =>
       columns.map((c) => ({
