@@ -53,6 +53,7 @@
 import React from 'react';
 import { announce } from '../utils/announce.jsx';
 import { cx } from '../utils/cx.js';
+import { fill } from '../utils/fill.js';
 
 export const CHART_INTERACTION_STRINGS = Object.freeze({
   hint: 'Use the arrow keys to move between the values.',
@@ -68,7 +69,6 @@ export const CHART_INTERACTION_STRINGS = Object.freeze({
   selected: 'Selected. {text}',
 });
 
-const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (m, k) => (o[k] === undefined ? m : o[k]));
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 export function chartAnnounce(text) { if (text) announce(text); }

@@ -47,10 +47,8 @@ import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.jsx';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';

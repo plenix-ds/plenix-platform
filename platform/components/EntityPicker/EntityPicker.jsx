@@ -52,10 +52,8 @@ import { IconTile } from '../IconTile/IconTile.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { formatNumber } from '../../utils/format.js';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
@@ -63,10 +61,9 @@ import DocumentIcon from 'plenix-platform/icons/plenix/document';
 import OpenIcon from 'plenix-platform/icons/plenix/open';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
+import { fill } from '../../utils/fill.js';
 
 const NAMES = { people: 'people', teams: 'teams', records: 'records' };
-const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => (map[k] !== undefined ? map[k] : m));
-
 export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'records', options = [], value, values, onChange, multiple = false,
   loadOptions, loadDelay = 300, minChars = 1, entityName, placeholder, onBrowse, label, invalid, disabled, id, strings, className, ...rest }, ref) {
   const t = useStrings('entityPicker', strings);

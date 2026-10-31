@@ -62,9 +62,9 @@ import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import EdCropIcon from 'plenix-platform/icons/plenix/ed-crop';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
+import { fill } from '../../utils/fill.js';
 
 const RATIOS = { '1-1': 1, '4-3': 4 / 3, '3-2': 3 / 2, '16-9': 16 / 9, '21-9': 21 / 9, '3-4': 3 / 4, '9-16': 9 / 16 };
-const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => (map[k] !== undefined ? map[k] : m));
 let seq = 0;
 
 /* ImageCrop: the picture drawn in the frame's ratio on a canvas off the page; the frame shows the result as an Image */

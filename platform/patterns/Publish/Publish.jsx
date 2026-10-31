@@ -53,8 +53,8 @@ import { Text } from '../../components/Text/Text.jsx';
 import { WorkflowStatus, useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const q = (x) => '“' + x + '”';
 
 // a status line with its date in the data font: the words around {at} stay in the UI font

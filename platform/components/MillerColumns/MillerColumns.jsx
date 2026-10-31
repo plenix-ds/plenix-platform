@@ -45,9 +45,9 @@ import { Icon } from '../Icon/Icon.jsx';
 import { tokenPx } from '../../patterns/AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
+import { fill } from '../../utils/fill.js';
 
 const MIN_STEP = 1, MAX_STEP = 6, DEFAULT_STEP = 3;
-const fill = (s, label) => s.replace('{label}', label);
 const hasKids = (it) => !!(it && Array.isArray(it.children));
 
 export const MillerColumns = React.forwardRef(function MillerColumns({ items = [], path, defaultPath = [], onPathChange, onOpen, renderPreview,
@@ -185,13 +185,13 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items = [
                 }) : <li className="plx-miller-columns__empty" role="presentation">{t.empty}</li>}
               </ul>
             </div>
-            {resizable ? <div className="plx-miller-columns__resizer" role="separator" aria-orientation="vertical" tabIndex={0} aria-label={fill(t.resize, name)}
+            {resizable ? <div className="plx-miller-columns__resizer" role="separator" aria-orientation="vertical" tabIndex={0} aria-label={fill(t.resize, { label: name })}
               aria-valuemin={MIN_STEP} aria-valuemax={MAX_STEP} aria-valuenow={widthOf(level)} onKeyDown={onResizeKey(level)} onPointerDown={onResizeDown(level)} /> : null}
           </React.Fragment>
         );
       })}
       {preview ? (
-        <div ref={(el) => { columns.current[cols.length] = el; }} className="plx-miller-columns__preview" role="region" tabIndex={0} aria-label={fill(t.preview, preview.label)}>
+        <div ref={(el) => { columns.current[cols.length] = el; }} className="plx-miller-columns__preview" role="region" tabIndex={0} aria-label={fill(t.preview, { label: preview.label })}>
           {renderPreview(preview)}
         </div>
       ) : null}

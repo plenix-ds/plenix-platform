@@ -97,8 +97,8 @@ jobs:
       - name: What changed (the scope of the browser tests)
         run: node tests/changed.js
 
-      - name: "Tests without a browser (formats, brand rules, login, types)"
-        run: node tests/run.js formats brand-rules login types
+      - name: "Tests without a browser (formats, brand rules, login, types, fill)"
+        run: node tests/run.js formats brand-rules login types fill-693
 
   browser:
     name: Browser tests (${{ matrix.name }})

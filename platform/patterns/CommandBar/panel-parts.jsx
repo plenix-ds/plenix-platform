@@ -27,10 +27,9 @@ import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 import DragIcon from 'plenix-platform/icons/plenix/drag';
+import { fill } from '../../utils/fill.js';
 
 export const toggle = (list, v) => (list.indexOf(v) >= 0 ? list.filter((x) => x !== v) : list.concat(v));
-export const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
-
 // the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in
 // force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge; open and
 // onOpenChange control the panel from outside
