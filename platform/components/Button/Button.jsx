@@ -72,7 +72,6 @@ const TONES = ['success', 'danger', 'neutral'];
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
 // open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = stateIcon;
 
 // a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
 const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
@@ -103,10 +102,10 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
   const spinner = (cls) => <span className={cls} aria-hidden="true"><Spinner size="sm" label={t.working} /></span>;
   const content = (
     <>
-      {loading && !over ? spinner('plx-button__icon') : (icon ? <span className="plx-button__icon">{asIcon(icon, on)}</span> : null)}
+      {loading && !over ? spinner('plx-button__icon') : (icon ? <span className="plx-button__icon">{stateIcon(icon, on)}</span> : null)}
       {over ? <span className="plx-button__stack"><span className={cx(labelClass, 'plx-button__label--waiting')}>{children}</span>{spinner('plx-button__icon plx-button__icon--over')}</span>
         : (hasLabel ? <span className={labelClass}>{children}</span> : null)}
-      {iconEnd ? <span className="plx-button__icon">{asIcon(iconEnd, on)}</span> : null}
+      {iconEnd ? <span className="plx-button__icon">{stateIcon(iconEnd, on)}</span> : null}
       {caret ? <span className={caretClass} aria-hidden="true"><Icon icon={ChevronDownIcon} filled={false} /></span> : null}
     </>
   );

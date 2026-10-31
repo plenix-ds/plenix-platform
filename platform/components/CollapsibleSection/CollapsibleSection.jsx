@@ -34,7 +34,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
-import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
+import { Icon, asIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.js';
@@ -43,7 +43,6 @@ import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import { dataPhrase } from '../../utils/dataText.jsx';
 
-const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
 export function CollapsibleSection({ title, icon, expanded, defaultExpanded = true, onToggle, actions, headingLevel = 3, className, bodyClassName, children }) {
   const id = useUid('plx-collapsible-section');
