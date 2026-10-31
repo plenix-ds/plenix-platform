@@ -25,10 +25,10 @@
    Notes:
      Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
        keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
-     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
+     Script reads the direction where it measures or handles arrow keys (utils/direction.ts: arrowStep, physicalSide).
 */
 import React from 'react';
-import { directionOf, getDirection } from '../utils/direction.js';
+import { directionOf, getDirection } from '../utils/direction.ts';
 
 export const DirectionContext = React.createContext(null);
 

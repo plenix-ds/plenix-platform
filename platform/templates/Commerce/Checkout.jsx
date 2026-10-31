@@ -16,10 +16,10 @@
      See Commerce.jsx.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber } from '../../utils/format.ts';
 import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
 import { DeleteFlow } from '../../patterns/DeleteFlow/DeleteFlow.jsx';
 import { Wizard } from '../../patterns/Wizard/Wizard.jsx';
@@ -38,7 +38,7 @@ import { CopyButton } from '../../components/CopyButton/CopyButton.jsx';
 import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { StatusIcon } from '../../components/Icon/Icon.jsx';
 import { CommerceLine, OrderSummary, orderTotals, money, useCommercePage } from './shared.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import BriefcaseIcon from 'plenix-platform/icons/plenix/briefcase';
 import EdUndoIcon from 'plenix-platform/icons/plenix/ed-undo';

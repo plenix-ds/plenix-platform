@@ -18,7 +18,7 @@
      Other props pass through to the element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function EventChip({ title, time, color, fill = false, onClick, className, ...rest }) {
   const Tag = onClick ? 'button' : 'span';

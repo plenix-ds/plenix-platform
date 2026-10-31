@@ -38,8 +38,8 @@
        and fonts the page checks allow inside .plx-chart__engine (font weights from the font-weight tokens).
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { snapToGrid } from '../utils/grid.js';
+import { cx } from '../utils/cx.ts';
+import { snapToGrid } from '../utils/grid.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { useChartInteraction } from './interaction.js';
 import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';

@@ -12,7 +12,7 @@
      The caller must authorize and persist decisions and reflect them in steps. This UI never grants approval on its own.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { ReviewFlow, WorkflowStatus } from '../ReviewFlow/ReviewFlow.jsx';
 import { ProgressSteps } from '../../components/ProgressSteps/ProgressSteps.jsx';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
@@ -21,7 +21,7 @@ import { Textarea } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 

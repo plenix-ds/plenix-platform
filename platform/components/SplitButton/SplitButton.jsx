@@ -33,8 +33,8 @@
        most common; when all are equally likely, use a menu button (Button with caret and Menu).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Menu } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

@@ -19,7 +19,7 @@ import { byteFilter, listFilter, textFilter } from '../cells.jsx';
 import { compare, kinds } from './helpers.jsx';
 import { tokenPixels } from '../environment.js';
 import { SIZE_STEPS } from '../../../utils/sizeSteps.js';
-import { shareOf } from '../../../utils/paneLimit.js';
+import { shareOf } from '../../../utils/paneLimit.ts';
 import {
   useReactTable,
   getExpandedRowModel,
@@ -29,7 +29,7 @@ import {
   getFacetedUniqueValues,
   getPaginationRowModel,
 } from '@tanstack/react-table';
-import { isRtl } from '../../../utils/direction.js';
+import { isRtl } from '../../../utils/direction.ts';
 
 export function useTableModel({
   columns,

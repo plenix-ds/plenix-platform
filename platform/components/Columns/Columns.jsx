@@ -25,7 +25,7 @@
      Other props pass through to the <div>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function Columns({ count = 2, divided = false, gap = 'md', ratio = 'equal', collapseBelow, className, children, ...rest }) {
   return (

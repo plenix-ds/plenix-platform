@@ -6,7 +6,7 @@
      WidgetGrid: Arrow Right on a widget's handle says "Alpha, position 2 of 2"; CodeBlock: Copy says "Copied"; Resizable: Arrow Left on its handle
      past the smallest width says the limit. Each region must be a LiveRegion (data-plx-live="status", role="status", aria-live="polite") and say that text.
    ColumnsMenu and the CommandBar panels (Sort, Filter) draw the same region inside a popup; they are held by the hook-adoption rule (LiveRegion is imported and drawn).
-   Usage: node tests/announce-adoption.test.js   (run by layout.test.js when one of these units or utils/announce.jsx changed) */
+   Usage: node tests/announce-adoption.test.js   (run by layout.test.js when one of these units or utils/announce.tsx changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {

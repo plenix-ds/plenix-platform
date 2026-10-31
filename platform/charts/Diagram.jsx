@@ -40,8 +40,8 @@
        labels do). For data values use a chart; for a few steps in order, a numbered list.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatList } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatList } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';

@@ -40,7 +40,7 @@ function scan(text) {
 
 function check({ files, add }) {
   for (const { file } of files) {
-    if (SKIP_FILE.test(file) || !/\.(js|jsx|html)$/.test(file)) continue;
+    if (SKIP_FILE.test(file) || !/\.(js|jsx|ts|tsx|html)$/.test(file)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (!/plx-icon\s+plx-icon--/.test(text)) continue;
     for (const f of scan(text)) add(NAME, file, f.line, 'a bare icon class (retired, issue 557: it draws nothing): use <Icon name>, or iconMarkup(icon) where the code writes HTML: ' + f.text);

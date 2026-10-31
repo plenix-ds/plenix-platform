@@ -19,7 +19,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { WizardDialog } from '../WizardDialog/WizardDialog.jsx';
 import { ExportDialog } from '../ExportDialog/ExportDialog.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Offboarding({ open, onClose, accountName, action = 'cancel', onConfirm, onExport, formats = [], children, strings, className }) {

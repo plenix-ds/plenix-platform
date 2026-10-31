@@ -1,5 +1,5 @@
 /* Plenix · Drag and drop (platform/system/dnd.css; library plan wave 10, foundation dnd): the states the drag-and-drop
-   engine (utils/dnd.js) sets as attributes, drawn on the drag-and-drop tokens (tokens/semantic/dnd.tokens.json):
+   engine (utils/dnd.ts) sets as attributes, drawn on the drag-and-drop tokens (tokens/semantic/dnd.tokens.json):
      data-plx-dnd-state="dragging"   the item follows the pointer: the Dragged treatment (raised, the overlay shadow, a
                                      little transparent) and it lets the pointer through to the place under it
      data-plx-dnd-state="picked"     the item is picked up with the keyboard: raised the same way, fully opaque

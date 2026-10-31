@@ -38,10 +38,10 @@
      Duplicate never copies people's comments or members unless they choose it: those belong to the original's history.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -52,9 +52,9 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { createTranslator } from '../../providers/LocaleProvider.jsx';
-import { formatLocale } from '../../utils/format.js';
+import { formatLocale } from '../../utils/format.ts';
 import EdCopyIcon from 'plenix-platform/icons/plenix/ed-copy';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const q = (x) => '“' + x + '”';
 

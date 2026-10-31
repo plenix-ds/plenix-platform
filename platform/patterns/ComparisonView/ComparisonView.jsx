@@ -46,7 +46,7 @@
      Compare at most four items side by side; let people choose which (a picker above the view) when there are more.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { SegmentedControl } from '../../components/SegmentedControl/SegmentedControl.jsx';
 import { Switch } from '../../components/Checkbox/Checkbox.jsx';

@@ -57,14 +57,14 @@
      For one choice from several, use SegmentedControl instead of ButtonGroup.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
-import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.js';
+import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 

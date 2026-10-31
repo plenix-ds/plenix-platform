@@ -96,7 +96,7 @@ One layout and one naming for every icon source, written by `layout.js` (generat
 
 ## Untrusted icon files (#285, stage 4)
 
-- **One allow-list:** every icon file and every module drawing goes through `platform/utils/iconSafety.js`. That covers the run-time fetch, `registerIcons`, the `icon` prop, `layout.js` and `build-icons.js`.
+- **One allow-list:** every icon file and every module drawing goes through `platform/utils/iconSafety.ts`. That covers the run-time fetch, `registerIcons`, the `icon` prop, `layout.js` and `build-icons.js`.
 - **The shape:** one `<svg>` (`xmlns` = the SVG namespace, `width`, `height`, `viewBox`) holding exactly one `<path>` (`d`, `transform`, `fill-rule`, `clip-rule`).
 - **Values by grammar:**
   - `viewBox`: four numbers, with a positive width and height

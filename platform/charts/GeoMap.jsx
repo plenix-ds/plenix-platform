@@ -39,9 +39,9 @@
        markers' ring are --plx-comp-geo-map-* tokens.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
-import { datavizStep } from '../utils/dataviz.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
+import { datavizStep } from '../utils/dataviz.ts';
 import { Button, ButtonGroup } from '../components/Button/Button.jsx';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';

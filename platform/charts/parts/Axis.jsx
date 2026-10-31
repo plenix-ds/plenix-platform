@@ -28,7 +28,7 @@
        plx-chart__tick-label), the offset and the title their tokens (chart-parts.css).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { scalePosition, scaleTicks, scaleLabel } from './position.js';
 
 const ORIENTS = ['bottom', 'left', 'right', 'top'];

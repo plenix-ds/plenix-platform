@@ -34,11 +34,11 @@
      For one fixed date, use a date picker.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
+import { cx } from '../../utils/cx.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
 import { Select } from '../Input/Input.jsx';
 import { NumberInput } from '../NumberInput/NumberInput.jsx';
-import { formatRange, formatDate } from '../../utils/format.js';
+import { formatRange, formatDate } from '../../utils/format.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // presets: [id, direction, amount, unit, offset] (offset: whole units before or after today, for yesterday and tomorrow)

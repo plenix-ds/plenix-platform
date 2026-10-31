@@ -1,5 +1,5 @@
 {
-  "$description": "Drag and drop (library plan wave 10, foundation dnd): the distances and rates of the drag-and-drop engine (platform/utils/dnd.js) and the treatments system/dnd.css draws while something is dragged: the lifted item (the Dragged treatment's roles), the insertion line of a sortable list and the state of a drop target. Every color is an existing role.",
+  "$description": "Drag and drop (library plan wave 10, foundation dnd): the distances and rates of the drag-and-drop engine (platform/utils/dnd.ts) and the treatments system/dnd.css draws while something is dragged: the lifted item (the Dragged treatment's roles), the insertion line of a sortable list and the state of a drop target. Every color is an existing role.",
   "plx-sys": {
     "dnd-autoscroll-edge": {
       "$value": "{plx-ref.size-48px}",

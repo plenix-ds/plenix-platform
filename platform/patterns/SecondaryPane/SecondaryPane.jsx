@@ -54,14 +54,14 @@
      Other props go on its aside element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShell/AppShell.jsx';
-import { focusables } from '../../utils/layer.js';
-import { gridWithin } from '../../utils/grid.js';
-import { paneMax } from '../../utils/paneLimit.js';
+import { focusables } from '../../utils/layer.ts';
+import { gridWithin } from '../../utils/grid.ts';
+import { paneMax } from '../../utils/paneLimit.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

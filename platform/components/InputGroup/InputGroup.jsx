@@ -35,8 +35,8 @@
      For a number with a unit, a currency or a percentage, use NumberInput: it builds on this group.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
+import { cx } from '../../utils/cx.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
 import { Icon } from '../Icon/Icon.jsx';
 
 // the field's own ref, so the group's ref callback can pass the node on: React 19 keeps a ref in the element's props (reading

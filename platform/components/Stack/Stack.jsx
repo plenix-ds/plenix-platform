@@ -56,7 +56,7 @@
      Applications build their layouts from these (and the Platform's patterns) instead of styles.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 function layout(kind, { as: As = 'div', gap, equal, align, justify, wrap, inset, grow, scroll, width, maxHeight, indent, push, reverse, reverseBelow, order, orderBelow, className, children, ...rest }, defaults) {
   return (

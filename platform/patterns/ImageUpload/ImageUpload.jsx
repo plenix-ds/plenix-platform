@@ -46,7 +46,7 @@
      For profile pictures use AvatarUpload; for other files, FileInput or a drop zone.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { DropZone } from '../../components/DropZone/DropZone.jsx';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { Image } from '../../components/Image/Image.jsx';
@@ -56,13 +56,13 @@ import { Slider } from '../../components/Slider/Slider.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { formatBytes, formatNumber } from '../../utils/format.js';
+import { announce } from '../../utils/announce.tsx';
+import { formatBytes, formatNumber } from '../../utils/format.ts';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import EdCropIcon from 'plenix-platform/icons/plenix/ed-crop';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const RATIOS = { '1-1': 1, '4-3': 4 / 3, '3-2': 3 / 2, '16-9': 16 / 9, '21-9': 21 / 9, '3-4': 3 / 4, '9-16': 9 / 16 };
 let seq = 0;

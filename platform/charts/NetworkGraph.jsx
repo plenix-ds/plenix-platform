@@ -39,8 +39,8 @@
      the categorical data-viz colors. Hundreds of nodes: filter or cluster first; a strict hierarchy: a tree view.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatList } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatList } from '../utils/format.ts';
 import { Button } from '../components/Button/Button.jsx';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';

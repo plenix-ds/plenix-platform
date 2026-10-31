@@ -28,7 +28,7 @@
        a series color, and its name says what it is, so color is not the only cue.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { scalePosition } from './position.js';
 
 const LEVELS = ['warning', 'critical'];

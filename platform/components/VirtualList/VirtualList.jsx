@@ -42,10 +42,10 @@
 */
 import React from 'react';
 import { useUnread } from '../DataGrid/unread.js';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber } from '../../utils/format.ts';
 import { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS } from '../../hooks/useVirtualizer.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 

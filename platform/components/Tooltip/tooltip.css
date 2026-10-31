@@ -22,7 +22,7 @@
 .plx-tooltip__bubble--end::before{--plx-state-tooltip-arrow-end:var(--plx-comp-tooltip-bubble-end-arrow-color);inset-block-start:50%;inset-inline-end:100%;inset-inline-start:auto;transform:translateY(-50%);}
 .plx-tooltip__bubble--start{inset-block-start:50%;inset-inline-end:var(--plx-comp-tooltip-bubble-start-inset-inline-end);inset-inline-start:auto;transform:translateY(-50%);}
 .plx-tooltip__bubble--start::before{--plx-state-tooltip-arrow-start:var(--plx-comp-tooltip-bubble-start-arrow-color);inset-block-start:50%;inset-inline-end:auto;inset-inline-start:100%;transform:translateY(-50%);}
-/* placed by anchor positioning (utils/floating.js writes data-plx-floating while it shows): system/floating.css places
+/* placed by anchor positioning (utils/floating.ts writes data-plx-floating while it shows): system/floating.css places
    it against the trigger; the wrapper-relative insets and the centering shift of the rules above step aside */
 .plx-tooltip__bubble[data-plx-floating]{inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;position:fixed;transform:none;}
 /* the rich tooltip: the popover's surface (overlay surface, border, menu radius and shadow), a title, the body and one

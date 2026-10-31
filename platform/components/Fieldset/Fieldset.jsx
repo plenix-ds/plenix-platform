@@ -25,7 +25,7 @@
        reverse (<Fieldset dir="rtl" lang="ar" legend="…">). Use the dir attribute, never the CSS direction property.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function Fieldset({ legend, layout = 'stack', gap = 'xs', hideLegend = false, className, children, ...rest }) {
   const row = layout === 'row';

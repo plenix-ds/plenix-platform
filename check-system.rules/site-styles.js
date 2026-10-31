@@ -58,7 +58,7 @@ function walk(dir, out) {
     const f = path.join(dir, e.name);
     if (SKIP_DIR.test(f)) continue;
     if (e.isDirectory()) walk(f, out);
-    else if (/\.(html|htm|js|jsx|mjs)$/.test(e.name)) out.push(f);
+    else if (/\.(html|htm|js|jsx|ts|tsx|mjs)$/.test(e.name)) out.push(f);
   }
   return out;
 }

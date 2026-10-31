@@ -18,8 +18,8 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Kbd } from '../../components/Kbd/Kbd.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
-import { useHotkeyList, hotkeyLabel } from '../../utils/hotkey.js';
-import { cx } from '../../utils/cx.js';
+import { useHotkeyList, hotkeyLabel } from '../../utils/hotkey.ts';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ShortcutsDialog({ open, onClose, searchable = true, strings, className }) {

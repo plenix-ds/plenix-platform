@@ -22,7 +22,7 @@ import SortDescendingIcon from 'plenix-platform/icons/plenix/sort-descending';
 import FilterIcon from 'plenix-platform/icons/plenix/filter';
 import GroupByIcon from 'plenix-platform/icons/plenix/group-by';
 import { Width, PressTrigger } from '../engine/parts.jsx';
-import { cx } from '../../../utils/cx.js';
+import { cx } from '../../../utils/cx.ts';
 import { headerKeys, resizeKeys } from '../engine/keys.js';
 import { Icon } from '../../Icon/Icon.jsx';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';

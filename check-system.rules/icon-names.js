@@ -36,7 +36,7 @@ function known(root) {
 function check({ files, add }) {
   const names = known(ROOT);
   for (const { file } of files) {
-    if (!/\.(jsx?|mjs|html)$/.test(file) || SKIP_FILE.test(file)) continue;
+    if (!/\.([jt]sx?|mjs|html)$/.test(file) || /\.d\.ts$/.test(file) || SKIP_FILE.test(file)) continue;
     let text; try { text = fs.readFileSync(file, 'utf8'); } catch (e) { continue; }
     if (!/icon/i.test(text)) continue;
     const lines = text.split('\n');

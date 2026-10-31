@@ -34,7 +34,7 @@ function walk(dir, flat, out) {
     const f = path.join(dir, e.name);
     if (SKIP.test(f)) continue;
     if (e.isDirectory()) { if (!flat) walk(f, false, out); }
-    else if (/\.(css|js|jsx|html)$/.test(e.name)) out.push(f);
+    else if (/\.(css|js|jsx|ts|tsx|html)$/.test(e.name)) out.push(f);
   }
   return out;
 }

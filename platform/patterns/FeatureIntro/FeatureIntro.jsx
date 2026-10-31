@@ -18,7 +18,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 

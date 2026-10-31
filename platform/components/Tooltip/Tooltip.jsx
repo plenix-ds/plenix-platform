@@ -26,7 +26,7 @@
      and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
      release is dropped): a long press asks what a control is, it does not use it.
      The trigger is described by the tooltip (aria-describedby), added to any it already has.
-     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+     Placement: where the browser has CSS anchor positioning (utils/floating.ts) the bubble is placed against the trigger by
        useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
        on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
        the window.
@@ -44,9 +44,9 @@
      The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
-import { useDescriptionId, useDescribedBy } from '../../utils/describedBy.js';
+import { cx } from '../../utils/cx.ts';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.ts';
+import { useDescriptionId, useDescribedBy } from '../../utils/describedBy.ts';
 
 const SIDES = ['bottom', 'top', 'start', 'end'];
 
@@ -70,7 +70,7 @@ const listen = () => {
 };
 
 export function Tooltip({ content, placement = 'bottom', title, action, rich = false, disabled = false, describe = true, className, children }) {
-  const id = useDescriptionId('tt');   // plx-tt<id> (utils/describedBy.js)
+  const id = useDescriptionId('tt');   // plx-tt<id> (utils/describedBy.ts)
   const [open, setOpen] = React.useState(false);
   const wrap = React.useRef(null);
   const bubble = React.useRef(null);

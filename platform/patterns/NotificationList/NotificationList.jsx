@@ -23,7 +23,7 @@
      It lives in the page (the dashboard's Notifications section), not in the header: the header carries no notifications.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useSession } from '../../providers/SessionProvider.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { Button } from '../../components/Button/Button.jsx';

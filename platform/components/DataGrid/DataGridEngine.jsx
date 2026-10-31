@@ -24,10 +24,10 @@ import { useUnread } from './unread.js';
 import { GridPane } from './room.js';
 import { flushSync } from 'react-dom';
 import { Scrollbars } from './scrollbars.jsx';
-import { useSortable } from '../../utils/dnd.js';
+import { useSortable } from '../../utils/dnd.ts';
 
-import { cx } from '../../utils/cx.js';
-import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
+import { cx } from '../../utils/cx.ts';
+import { gridPx, snapToGrid, gridStep } from '../../utils/grid.ts';
 
 import { tokenPixels } from './environment.js';
 

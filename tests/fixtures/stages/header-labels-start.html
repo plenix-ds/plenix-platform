@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header labels stage · Plenix review</title>
+<!-- The stage for #326: a DataGrid and a Table with number columns ("Quantity on the shelf", "Price"), the way apps
+     write them today (align and headerAlign "right"), the grid with Wrap headers as in the spec's example. capture.js photographs it before and after. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="stage.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="../../../platform/engines/plenix-engines.js"></script>
+</head>
+<body class="rv-page">
+<div id="root" class="rv-doc"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  const rows = [
+    { id: 1, item: 'Copper pipe 15mm', vendor: 'ABC Plumbing', qty: 1240, price: '$4.80' },
+    { id: 2, item: 'Brass elbow', vendor: 'Apex Co', qty: 86, price: '$2.15' },
+    { id: 3, item: 'PTFE tape', vendor: 'Herrera Supply', qty: 3, price: '$0.95' },
+    { id: 4, item: 'Ball valve 22mm', vendor: 'ABC Plumbing', qty: 412, price: '$18.40' }];
+  const columns = [{ title: 'Item', field: 'item', kind: 'name' }, { title: 'Vendor', field: 'vendor' },
+    { title: 'Quantity on the shelf', field: 'qty', kind: 'data', type: 'number', width: 120, align: 'right', headerAlign: 'right' },
+    { title: 'Price', field: 'price', kind: 'data', align: 'right', headerAlign: 'right' }];
+  function Stage() {
+    return h('div', { id: 'stage' }, h(P.Stack, { gap: 'lg' },
+      h('div', { id: 'grid' }, h(P.DataGrid, { label: 'Stock', wrapHeaders: true, data: rows, columns, height: '--plx-ref-size-240px' })),
+      h('div', { id: 'table' }, h(P.Table, { label: 'Stock (Table)', data: rows, columns }))));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Stage));
+})();
+</script>
+</body>
+</html>

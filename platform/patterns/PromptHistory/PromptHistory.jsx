@@ -15,7 +15,7 @@ import { Stack,Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Time } from '../../components/Time/Time.jsx';
 export function PromptHistory({items=[],searchable=true,onSelect,strings,className}){

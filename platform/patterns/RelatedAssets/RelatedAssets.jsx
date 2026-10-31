@@ -6,13 +6,13 @@
    Notes: Reuses MediaCard, Carousel and ContentGrid; recommendations and their order belong to the caller.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Carousel } from '../../components/Carousel/Carousel.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function RelatedAssets({ items = [], variant = 'strip', label, onOpen, strings, className }) {

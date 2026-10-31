@@ -61,8 +61,8 @@
      cards (MediaCard type and status) in the grid.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatBytes, formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatBytes, formatNumber } from '../../utils/format.ts';
 import { Breadcrumbs } from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import { Tree } from '../../components/Tree/Tree.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
@@ -78,7 +78,7 @@ import { ViewMenu } from '../ViewMenu/ViewMenu.jsx';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { FileList, sortFiles } from '../FileList/FileList.jsx';
-import { useDraggable, useDropTarget } from '../../utils/dnd.js';
+import { useDraggable, useDropTarget } from '../../utils/dnd.ts';
 import { useSelection } from '../../hooks/useSelection.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
@@ -88,12 +88,12 @@ import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import MoveIcon from 'plenix-platform/icons/plenix/move';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const ROOT = '__plx-root';
 const DRAG = 'plx-file';
 const keyOf = (id) => (id === null || id === undefined ? ROOT : id);
-// the fields Sort offers (utils/fields.js)
+// the fields Sort offers (utils/fields.ts)
 const SORT_FIELDS = [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'size', label: 'Size', kind: 'number' }, { value: 'modified', label: 'Modified', kind: 'date' }];
 const CARD_SIZE = { s: 'sm', m: 'md', l: 'lg' };
 

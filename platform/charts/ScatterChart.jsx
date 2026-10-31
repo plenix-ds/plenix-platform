@@ -31,8 +31,8 @@
        the categorical colors by their order; the trend line is dashed, so it is told from the points by more than color.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleLinear, seriesColor } from './scales.js';
 import { Axis } from './parts/Axis.jsx';

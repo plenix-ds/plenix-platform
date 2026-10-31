@@ -51,9 +51,9 @@
        transitions use the motion tokens, so reduced motion removes them.
 */
 import React from 'react';
-import { announce } from '../utils/announce.jsx';
-import { cx } from '../utils/cx.js';
-import { fill } from '../utils/fill.js';
+import { announce } from '../utils/announce.tsx';
+import { cx } from '../utils/cx.ts';
+import { fill } from '../utils/fill.ts';
 
 export const CHART_INTERACTION_STRINGS = Object.freeze({
   hint: 'Use the arrow keys to move between the values.',

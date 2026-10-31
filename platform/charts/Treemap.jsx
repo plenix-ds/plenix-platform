@@ -30,8 +30,8 @@
      For precise comparison use a bar chart; for two to five parts a donut or bars.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber, formatPercent } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber, formatPercent } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';

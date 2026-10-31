@@ -42,15 +42,15 @@
        action and Close are drawn in it; the pair meets the text contrast in light and dark.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Spotlight } from '../Spotlight/Spotlight.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
-import { fillNodes } from '../../utils/fillNodes.jsx';
+import { fillNodes } from '../../utils/fillNodes.tsx';
 
 
 // a string with {name} places filled by numbers in the data font (counts are technical values)

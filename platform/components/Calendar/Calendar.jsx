@@ -53,9 +53,9 @@
      Other props pass through to the outer <div>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { arrowStep } from '../../utils/direction.js';
-import { formatLocale, numeralLocale } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { arrowStep } from '../../utils/direction.ts';
+import { formatLocale, numeralLocale } from '../../utils/format.ts';
 import { Button } from '../Button/Button.jsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';

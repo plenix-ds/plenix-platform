@@ -1,5 +1,5 @@
 // Plenix · which icon names a body of source draws (#280, stage 5a). Build-time only (Node); no page loads this file.
-// Reads the JSX source with Babel's parser (no regular expressions over code) and collects every icon name written in an
+// Reads the JSX (and TypeScript) source with Babel's parser (no regular expressions over code) and collects every icon name written in an
 // icon slot:
 //   - a JSX attribute icon, iconEnd or <anything>Icon (stateIcon, typeIcon), and name on <Icon> or <StatusIcon>
 //   - an object property with one of those keys (a toolbar's { icon: 'format_bold' }), and name in h(Icon, { name })
@@ -21,9 +21,9 @@ const ICON_ELEMENT = /(^|\.)(Icon|StatusIcon)$/;
 const MARK = /plx-icons:\s*([a-z0-9_\- ]+)/;
 
 let parser = null;
-function parse(code) {
+function parse(code, rel = '') {
   if (!parser) parser = require('@babel/standalone');
-  return parser.transform(code, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: ['jsx'] } }).ast;
+  return parser.transform(code, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: /\.ts$/.test(rel) ? ['typescript'] : /\.tsx$/.test(rel) ? ['jsx', 'typescript'] : ['jsx'] } }).ast;
 }
 const jsxName = (n) => (!n ? '' : n.type === 'JSXIdentifier' ? n.name : n.type === 'JSXMemberExpression' ? jsxName(n.object) + '.' + n.property.name : '');
 const exprName = (n) => (!n ? '' : n.type === 'Identifier' ? n.name : n.type === 'MemberExpression' && !n.computed ? exprName(n.object) + '.' + n.property.name : '');
@@ -55,7 +55,7 @@ function scanFile(file, rel, report, opts = {}) { scanText(fs.readFileSync(file,
 // the same scan over source text (a page's inline script: tools/icons/site-icons.js); rel names it in file:line
 function scanText(text, rel, report, opts = {}) {
   const lines = text.split('\n');
-  const ast = parse(text);
+  const ast = parse(text, rel);
   // a scope per function (and the program): what its parameters bind, and its own declarations by name (not those of a
   // nested function); a name declared twice in one scope resolves to all its values
   const scopes = new Map();
@@ -185,7 +185,7 @@ function files(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
   for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) { if (!/^(node_modules|dist|vendor|design-system|icons)$/.test(e.name)) files(p, out); } else if (/\.jsx?$/.test(e.name)) out.push(p);
+    if (e.isDirectory()) { if (!/^(node_modules|dist|vendor|design-system|icons)$/.test(e.name)) files(p, out); } else if (/\.[jt]sx?$/.test(e.name) && !/\.d\.ts$/.test(e.name)) out.push(p);
   }
   return out;
 }
@@ -210,7 +210,7 @@ function scan(root, folders, { names, withIcon = false }) {
   return { found, unresolved, unknown, literals: [...literals.values()] };
 }
 
-// the Platform's own source: platform/components, patterns, hooks, providers, templates, charts and utils (.js and .jsx) (the Icon component itself excluded: it
+// the Platform's own source: platform/components, patterns, hooks, providers, templates, charts and utils (.js, .jsx, .ts and .tsx) (the Icon component itself excluded: it
 // draws what it is given)
 const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers', 'platform/templates', 'platform/charts', 'platform/utils'];
 

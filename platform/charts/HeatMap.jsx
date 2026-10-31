@@ -34,9 +34,9 @@
        the tooltip and the table carry them. Cell gaps, edges and the legend's swatches are --plx-comp-heat-map-* tokens.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber, formatDate, formatLocale, numeralLocale, parseDate } from '../utils/format.js';
-import { datavizStep, DATAVIZ_SCALES } from '../utils/dataviz.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber, formatDate, formatLocale, numeralLocale, parseDate } from '../utils/format.ts';
+import { datavizStep, DATAVIZ_SCALES } from '../utils/dataviz.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand } from './scales.js';
 import { scalePosition } from './parts/position.js';
@@ -49,7 +49,7 @@ const DAY = 24 * 60 * 60 * 1000;
 // the gap between cells, as a fraction of a cell (band padding: geometry)
 const GAP = 0.1;
 
-// a value's day where the reader is: a date-only "YYYY-MM-DD" through the shared reader (utils/format.js parseDate, issue 342)
+// a value's day where the reader is: a date-only "YYYY-MM-DD" through the shared reader (utils/format.ts parseDate, issue 342)
 const dayStart = (d) => { const x = new Date((parseDate(d) || new Date(NaN)).getTime()); x.setHours(0, 0, 0, 0); return x; };
 const keyOf = (d) => d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
 

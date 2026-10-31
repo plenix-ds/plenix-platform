@@ -145,6 +145,7 @@ Sample pages and code the tests open instead of a real app.
 - `redsave-types.tsx`: correct TypeScript app code that must compile against the type descriptions, for `types.test.js` (#170, #171).
 - `rtl-ctm-question.html` and `rtl-ctm-question.js`: CTM's question block drawn with the Platform alone (issue 413), for `rtl-ctm-question.test.js`.
 - `zero-overlap/`: `audit.html` and `pilot.html` with `pilot.js` for `zero-overlap.test.js`; `selector-kinds.css` for `selector-kinds.test.js`.
+- `stages/`: the stage pages of three tests (`commandbar-find-fold.html`, `segmented-fold.html`, `header-labels-start.html`) and their page and pane widths (`stage.css`). They moved here from `docs/briefs/` in issue #772, because when #694 archived `docs/briefs/review.css` the stages lost their narrow widths.
 - `collection-types-201.ts`: no test or file references it. It was added in commit 1ff1f1c2 "Take #213 (task 201): … collection state docs and types …". No recorded reason for keeping it.
 
 ## baselines/

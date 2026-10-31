@@ -7284,17 +7284,18 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = typeof max2 === "number" && Number(value) > max2 ? max2 + "+" : String(value);
     return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-count", "plx-count--" + variant, variant === "pill" ? "plx-count--" + tone : null, className), "aria-label": label2 || (typeof max2 === "number" && Number(value) > max2 ? moreThan.replace("{max}", String(max2)) : void 0), ...rest }, shown);
   }
+  const DataText$1 = Text;
   const D = "[0-9\\u0660-\\u0669]";
   const MONTH$2 = "(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?";
   const DATUM$1 = new RegExp("(" + D + "{4}-" + D + "{2}-" + D + "{2}(?:[ T]" + D + "{1,2}:" + D + "{2})?|" + MONTH$2 + " " + D + "{1,2}(?:, " + D + "{4})?|" + D + "{1,2}:" + D + "{2}(?:\\s?[AP]M)?|[$€£]?" + D + "[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|٪|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?" + D + "[0-9\\u0660-\\u0669,.]*)?)", "g");
   const HAS_DIGIT = new RegExp(D);
   function runs(text2, key) {
     if (typeof text2 !== "string" || !HAS_DIGIT.test(text2)) return [text2];
-    return text2.split(DATUM$1).map((p, i) => i % 2 ? /* @__PURE__ */ React$1.createElement(Text, { key: key + "-" + i, variant: "data" }, p) : p || null);
+    return text2.split(DATUM$1).map((p, i) => i % 2 ? /* @__PURE__ */ React$1.createElement(DataText$1, { key: key + "-" + i, variant: "data" }, p) : p || null);
   }
   function dataNumber(value, options) {
     if (value === null || value === void 0 || value === "") return null;
-    return /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, typeof value === "number" ? formatNumber(value, options) : String(value));
+    return /* @__PURE__ */ React$1.createElement(DataText$1, { variant: "data" }, typeof value === "number" ? formatNumber(value, options) : String(value));
   }
   function dataPhrase(text2, values, options) {
     if (text2 === null || text2 === void 0) return null;
@@ -7309,7 +7310,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         }
         const v = values[m[1]];
         if (v === null || v === void 0) return;
-        if (typeof v === "number") out.push(/* @__PURE__ */ React$1.createElement(Text, { key: i, variant: "data" }, formatNumber(v, options)));
+        if (typeof v === "number") out.push(/* @__PURE__ */ React$1.createElement(DataText$1, { key: i, variant: "data" }, formatNumber(v, options)));
         else if (React$1.isValidElement(v)) out.push(React$1.cloneElement(v, { key: i }));
         else out.push(...runs(String(v), i));
       });
@@ -11563,13 +11564,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (!mine) {
         if (!pickKey(e) || e.target !== e.currentTarget) return;
         e.preventDefault();
-        const list3 = takers();
-        if (!list3.length) {
+        const list22 = takers();
+        if (!list22.length) {
           announce(fill(t.noTargets, { name: o.name }));
           return;
         }
-        setSession({ kind: "item", mode: "keyboard", id, data: o.data, type: o.type, name: o.name, over: list3[0].id });
-        announce(fill(t.itemPickedUp, { name: o.name, count: list3.length }) + " " + fill(t.over, { target: list3[0].o.name }));
+        setSession({ kind: "item", mode: "keyboard", id, data: o.data, type: o.type, name: o.name, over: list22[0].id });
+        announce(fill(t.itemPickedUp, { name: o.name, count: list22.length }) + " " + fill(t.over, { target: list22[0].o.name }));
         return;
       }
       if (pickKey(e) || e.key === "Tab") {
@@ -19275,7 +19276,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     return collapsed ? /* @__PURE__ */ React$1.createElement(Collapsed, { ref, ...props }) : /* @__PURE__ */ React$1.createElement(SearchInput, { ref, ...props });
   });
   const over = (row) => {
-    const flat = (el) => Array.prototype.reduce.call(el.children, (out, k) => getComputedStyle(k).display === "contents" ? out.concat(flat(k)) : out.concat(k), []);
+    const flat = (el) => Array.prototype.reduce.call(el.children, ((out, k) => getComputedStyle(k).display === "contents" ? out.concat(flat(k)) : out.concat(k)), []);
     const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
     if (!kids.length) return false;
     const box = row.getBoundingClientRect();
@@ -27022,9 +27023,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const path = code.bars.map(([x, w]) => "M" + (x + BARCODE_QUIET_ZONE) + " 0h" + w + "v" + HEIGHT_MODULES + "h-" + w + "z").join("");
     return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-barcode", "plx-barcode--" + size, className), role: "img", "aria-label": label2 || fill(t.label, { format: name, value: code.value }), ...rest }, /* @__PURE__ */ React$1.createElement("svg", { className: "plx-barcode__svg", viewBox: "0 0 " + width + " " + HEIGHT_MODULES, preserveAspectRatio: "xMidYMid meet", shapeRendering: "crispEdges", "aria-hidden": "true", focusable: "false" }, /* @__PURE__ */ React$1.createElement("rect", { className: "plx-barcode__background", x: "0", y: "0", width, height: HEIGHT_MODULES }), /* @__PURE__ */ React$1.createElement("path", { className: "plx-barcode__bars", d: path })), showText ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-barcode__text", "aria-hidden": "true" }, code.text) : null);
   }
+  const DataText = Text;
   const fillNodes = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
     const m = /^\{(\w+)\}$/.exec(part);
-    return m && values[m[1]] !== void 0 ? /* @__PURE__ */ React$1.createElement(Text, { key: i, variant: "data" }, values[m[1]]) : part;
+    return m && values[m[1]] !== void 0 ? /* @__PURE__ */ React$1.createElement(DataText, { key: i, variant: "data" }, values[m[1]]) : part;
   });
   function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, immediate = true } = {}) {
     const [state, setState] = React$1.useState({ status: immediate ? "running" : "idle", attempt: immediate ? 1 : 0, seconds: 0, error: null, result: void 0 });

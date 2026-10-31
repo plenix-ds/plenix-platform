@@ -72,14 +72,14 @@
      All three forward their ref to the native element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { gridPx } from '../../utils/grid.js';
-import { isDataValue } from '../../utils/dataValue.js';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
+import { cx } from '../../utils/cx.ts';
+import { gridPx } from '../../utils/grid.ts';
+import { isDataValue } from '../../utils/dataValue.ts';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useTruncated, useInBar } from '../../utils/overflow.js';
+import { useTruncated, useInBar } from '../../utils/overflow.ts';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 

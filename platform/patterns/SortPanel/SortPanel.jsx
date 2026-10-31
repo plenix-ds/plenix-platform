@@ -7,7 +7,7 @@
      <SortPanel fields={fields} value={sort} onChange={setSort} grouped={groups.length > 0} />
      <DataGrid … sort={sort} />      (or useCollectionView)
    Props:
-     fields: the collection's fields (utils/fields.js)
+     fields: the collection's fields (utils/fields.ts)
      value: the levels: [{ field, dir: "asc" | "desc" }], the first the main sort
      onChange(value): runs on every change
      grouped: the collection is grouped: the title reads "Sort within groups by"; default false
@@ -28,8 +28,8 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { PanelTrigger, PanelHead, Pick, useReorder } from '../CommandBar/panel-parts.jsx';
-import { fill } from '../../utils/fill.js';
-import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.js';
+import { fill } from '../../utils/fill.ts';
+import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';

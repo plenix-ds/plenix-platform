@@ -1,4 +1,4 @@
-// Plenix · tests/fill-693.test.js: the one shared fill() (platform/utils/fill.js) and the one TOP_LAYER (platform/utils/floating.js)
+// Plenix · tests/fill-693.test.js: the one shared fill() (platform/utils/fill.ts) and the one TOP_LAYER (platform/utils/floating.ts)
 // (issue 693, audit finding #684). Node only, no browser.
 //   node tests/fill-693.test.js   → FILL_693_OK
 // The helper was copied into 44 files in four versions. They agreed on a text with every value given and differed on the rest:
@@ -9,7 +9,7 @@
 // Cases: a value is written; every occurrence is replaced; 0, false and the empty string are values (they are written); undefined and null leave the
 //   placeholder (never the words "undefined" or "null"); a key the text does not name is ignored; a text that is not a string is read as text;
 //   only word characters name a placeholder; the replacement text is taken as written (no $ pattern of String.replace); and then the source:
-//   no file of the Platform defines a local fill() or a local TOP_LAYER (the check-system rule shared-fill), and floating.js exports TOP_LAYER.
+//   no file of the Platform defines a local fill() or a local TOP_LAYER (the check-system rule shared-fill), and floating.ts exports TOP_LAYER.
 const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const path = require('path');
@@ -18,9 +18,9 @@ const Babel = require('@babel/standalone');
 require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.join(__dirname, '..');
-const src = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'fill.js'), 'utf8');
+const src = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'fill.ts'), 'utf8');
 const mod = { exports: {} };
-new Function('exports', 'module', Babel.transform(src, { presets: ['env'], sourceType: 'module' }).code)(mod.exports, mod);
+new Function('exports', 'module', Babel.transform(src, { presets: ['env', 'typescript'], filename: 'fill.ts', sourceType: 'module' }).code)(mod.exports, mod);
 const { fill } = mod.exports;
 
 let passed = 0, failed = 0;
@@ -39,8 +39,8 @@ check('only word characters name a placeholder', () => assert.strictEqual(fill('
 check('the replacement is taken as written', () => assert.strictEqual(fill('{a}', { a: "$& $1 $'" }), "$& $1 $'"));
 check('a number is written as the number', () => assert.strictEqual(fill('{n} of {total}', { n: 2, total: 5 }), '2 of 5'));
 
-const floating = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'floating.js'), 'utf8');
-check('floating.js exports TOP_LAYER', () => assert.ok(/export const TOP_LAYER\s*=\s*FLOATING_ANCHOR\b/.test(floating)));
+const floating = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'floating.ts'), 'utf8');
+check('floating.ts exports TOP_LAYER', () => assert.ok(/export const TOP_LAYER\s*=\s*FLOATING_ANCHOR\b/.test(floating)));
 check('no local fill, TOP_LAYER or asIcon (the shared-fill rule, issues 693 and 719)', () => {
   const found = [], files = [];
   const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) { if (!/^(node_modules|\.git|release|Archived|dist|vendor)$/.test(e.name)) walk(p); } else files.push({ file: p }); } };

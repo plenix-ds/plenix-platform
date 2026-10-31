@@ -49,10 +49,10 @@
        to the workspace's audit log (onChange's change says what to record).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber } from '../../utils/format.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Checkbox, RadioGroup } from '../../components/Checkbox/Checkbox.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
@@ -78,7 +78,7 @@ import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permi
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const ROLE_ICONS = { owner: SettingsPermissionsIcon, editor: PencilIcon, viewer: VisibilityIcon };
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };

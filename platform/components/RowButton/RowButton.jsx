@@ -21,7 +21,7 @@
      Lay out the content with the style prop or children; the button is a block that fills its column and aligns to the start.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { usePressable } from '../../hooks/usePressable.js';
 
 export const RowButton = React.forwardRef(function RowButton({ selected = false, current, pressed, expanded, hover = true,

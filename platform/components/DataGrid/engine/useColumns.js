@@ -21,8 +21,8 @@ import React from 'react';
 import { visibilityOf } from '../state.js';
 import { tokenPixels } from '../environment.js';
 import { SIZE_STEPS, snapSize } from '../../../utils/sizeSteps.js';
-import { shareOf } from '../../../utils/paneLimit.js';
-import { snapToGrid } from '../../../utils/grid.js';
+import { shareOf } from '../../../utils/paneLimit.ts';
+import { snapToGrid } from '../../../utils/grid.ts';
 
 export function useColumns({ initial, props, columns, frame, live, emit, api }) {
   const [order, setOrder] = React.useState(initial.order),

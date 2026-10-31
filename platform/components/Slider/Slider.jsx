@@ -31,14 +31,14 @@
      A range or marked slider draws its own track (the plain slider is the browser's control): the filled part between
        the thumbs and each mark sit where the thumbs' centers are, measured from the track and placed on the 4px grid.
    Notes:
-     The fill and the marks are placed by JavaScript (inline inset and inline size through gridPx, utils/grid.js); every
+     The fill and the marks are placed by JavaScript (inline inset and inline size through gridPx, utils/grid.ts); every
        other value is a --plx-comp-slider-* token.
      Mark labels are values: they use the data font.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { gridPx } from '../../utils/grid.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { gridPx } from '../../utils/grid.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 

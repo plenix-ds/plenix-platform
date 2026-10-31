@@ -1,5 +1,5 @@
 {
-  "$description": "Data visualization colors (library plan wave 1, foundation dataviz-colors): categorical, sequential, diverging, status and alert scales for charts, from existing roles and palette shades only (no new colors). utils/dataviz.js names them; [data-plx-dataviz=\"<scale>-<step>\"] (system/dataviz.css) applies one as the element’s data color.",
+  "$description": "Data visualization colors (library plan wave 1, foundation dataviz-colors): categorical, sequential, diverging, status and alert scales for charts, from existing roles and palette shades only (no new colors). utils/dataviz.ts names them; [data-plx-dataviz=\"<scale>-<step>\"] (system/dataviz.css) applies one as the element’s data color.",
   "plx-sys": {
     "dataviz-categorical-1": {
       "$value": "{plx-sys.data-color-blue}",

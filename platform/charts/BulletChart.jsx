@@ -28,8 +28,8 @@
        a line across and the ranges are named in the tooltip and the table.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand, scaleLinear, niceTicks } from './scales.js';
 import { Axis } from './parts/Axis.jsx';

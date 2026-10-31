@@ -5,7 +5,7 @@
      help and error; a FileInput's help, error and then the chosen file). The move must change none of them, and must leave no empty aria-describedby behind.
    The probe is proved able to see a difference first: the same FileInput drawn with an owner's own description reads that text before its own line, so a control that
      dropped the owner's ids, or put its own first, would show.
-   Usage: node tests/describedby-adoption.test.js   (run by layout.test.js when one of these controls or utils/describedBy.js changed) */
+   Usage: node tests/describedby-adoption.test.js   (run by layout.test.js when one of these controls or utils/describedBy.ts changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
 const EXPECTED = {
   Cascader: ['Choose', 'Help text for Cascader', 'Error text for Cascader'],

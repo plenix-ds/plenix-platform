@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command bar find fold stage · Plenix review</title>
+<!-- The stage for #274: the side panel's command bar (RedSave: Save, Scan page, Export and a search) in a card;
+     ?find=more adds Filter and Sort to the find side.
+     ?w=narrow puts it in a 360px side panel, ?w=tiny in a 200px pane; the test toggles the class. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="stage.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="../../../platform/engines/plenix-engines.js"></script>
+</head>
+<body class="rv-page">
+<div id="root" class="rv-doc"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  function Stage() {
+    const [q, setQ] = React.useState('');
+    const more = new URLSearchParams(location.search).get('find') === 'more';
+    window.__q274 = q;
+    const actions = [{ id: 'save', label: 'Save', icon: 'save', onSelect: () => {} }, { id: 'scan', label: 'Scan page', icon: 'refresh', onSelect: () => {} },
+      { id: 'export', label: 'Export', icon: 'download', onSelect: () => {} }];
+    return h('div', { id: 'stage', className: { narrow: 'rv-narrow', tiny: 'rv-tiny' }[new URLSearchParams(location.search).get('w')] },
+      h(P.Card, null, h(P.CommandBar, { label: 'People on this page', actions,
+        find: h(React.Fragment, null, h(P.CommandBarSearch, { value: q, onChange: (e) => setQ(e.target.value), onClear: () => setQ(''), placeholder: 'Search people' }),
+          more ? h(P.CommandBarButton, { icon: 'filter', label: 'Filter' }) : null, more ? h(P.CommandBarButton, { icon: 'sort', label: 'Sort' }) : null) })));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Stage));
+})();
+</script>
+</body>
+</html>

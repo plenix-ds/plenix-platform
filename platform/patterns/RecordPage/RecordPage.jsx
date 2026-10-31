@@ -22,9 +22,9 @@
      RecordPage.Header.className: more classes on the header
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { dataWhenText } from '../../utils/dataText.jsx';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { dataWhenText } from '../../utils/dataText.tsx';
 
 function Header({ title, description, meta, media, actions, size = 'lg', surface = 'none', headingLevel = 1, className }) {
   devWarn('RecordPage.Header', { size }, { size: ['lg','md'] });

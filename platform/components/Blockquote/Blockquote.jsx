@@ -22,8 +22,8 @@
      Other props pass through to the <figure>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 
 export function Blockquote({ variant = 'default', citation, cite, className, children, ...rest }) {
   devWarn('Blockquote', { variant }, { variant: ['default','pull'] });

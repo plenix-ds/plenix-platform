@@ -1,5 +1,5 @@
 /* Plenix tests · the rich-text sanitizer against hostile input (issue 689, audit finding #684).
-   Summary: cleanRichText (platform/utils/richTextClean.js, published as Plenix.cleanRichText) is the allow-list that RichText and RichTextEditor pass every piece of HTML from people through. It had no test
+   Summary: cleanRichText (platform/utils/richTextClean.ts, published as Plenix.cleanRichText) is the allow-list that RichText and RichTextEditor pass every piece of HTML from people through. It had no test
      with hostile input. This one feeds it an OWASP-style list and asserts two things: nothing executable survives, and the allowed formatting still does.
    The probe is proved able to see a failure first: a sanitizer that returned its input unchanged fails the structural check on the first payload (a script element), the execution check (the counter
      goes up when the output is put on the page) and the scheme checks.

@@ -21,7 +21,7 @@ import { Stack,Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { AILabel } from '../AILabel/AILabel.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

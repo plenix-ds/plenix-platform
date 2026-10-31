@@ -33,9 +33,9 @@
        right); Text, which is dir="auto". Use Isolate for such a value inside running text.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useDigits } from '../../providers/LocaleProvider.jsx';
-import { localDigits } from '../../utils/digits.js';
+import { localDigits } from '../../utils/digits.ts';
 
 export function Isolate({ dir, as, kind, className, children, ...rest }) {
   const digits = useDigits();

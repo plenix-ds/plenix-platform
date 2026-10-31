@@ -9,7 +9,7 @@
    Notes: The caller owns schema and server validation. Saved prop updates reset a clean draft; dirty edits are retained.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { InlineEdit } from '../../components/InlineEdit/InlineEdit.jsx';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -19,7 +19,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 

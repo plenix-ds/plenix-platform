@@ -43,13 +43,13 @@
      Other props pass through to the <button> or <span>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { DATA_COLORS } from './dataColors.js';
 import { CATEGORY_COLORS } from './categoryColors.js';
 import { Button } from '../Button/Button.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
-import { useOverflow, splitAt } from '../../utils/overflow.js';
+import { useOverflow, splitAt } from '../../utils/overflow.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 

@@ -35,14 +35,14 @@
        footer under them that people need to reach. For "page 3", use Pagination. DataGrid has its own load more.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { useIntersection } from '../../hooks/useIntersection.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber } from '../../utils/format.ts';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
-import { dataPhrase } from '../../utils/dataText.jsx';
+import { dataPhrase } from '../../utils/dataText.tsx';
 
 
 export const LoadMore = React.forwardRef(function LoadMore({ onLoadMore, hasMore = true, loading = false, shown, total, mode = 'button', root, pageSize,

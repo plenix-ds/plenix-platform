@@ -101,9 +101,9 @@
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useOverflow, splitAt } from '../../utils/overflow.js';
-import { useBarFit } from '../../utils/barFit.js';
+import { cx } from '../../utils/cx.ts';
+import { useOverflow, splitAt } from '../../utils/overflow.ts';
+import { useBarFit } from '../../utils/barFit.ts';
 import { SIZE_STEPS } from '../../utils/sizeSteps.js';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Button } from '../../components/Button/Button.jsx';
