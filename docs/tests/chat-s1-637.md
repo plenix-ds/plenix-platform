@@ -27,6 +27,7 @@ Chat bubbles use the owner's chosen colors, outlines and corners, and each sende
 - Opens `tests/fixtures/platform-host.html` and draws a chat thread with messages from two people with the real Platform, in light left to right, then right to left, then dark.
 - Reads colors, borders, corners, padding and the photo's position against its bubble and the text.
 - No baseline file: the expected colors are written in the test.
+- Issue #768: the drawing area used to have the same name ("c") as the third message. The check for your own message read the first message's bubble by mistake and failed although the colors were right. The area now has its own name; the expected colors did not change.
 
 ## What a failure means
 - Chat messages could show the wrong colors, lose their outline, or have a photo overlapping the message text.

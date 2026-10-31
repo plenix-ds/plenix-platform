@@ -28,8 +28,9 @@ const rgb = (h) => 'rgb(' + [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)
       return page.evaluate(async (mode, dir) => {
         document.documentElement.setAttribute('data-plx-mode', mode); document.documentElement.setAttribute('dir', dir);
         const h = React.createElement, P = window.Plenix;
-        document.getElementById('main').innerHTML = '<div id="c"></div>';
-        ReactDOM.createRoot(document.getElementById('c')).render(h(P.Chat.Thread, { label: 'Conversation', follow: false },
+        // the host is not "c": message c's own id would lose to it in getElementById (issue 768: "yours" read message a's bubble)
+        document.getElementById('main').innerHTML = '<div id="chat-host"></div>';
+        ReactDOM.createRoot(document.getElementById('chat-host')).render(h(P.Chat.Thread, { label: 'Conversation', follow: false },
           h(P.Chat.Message, { id: 'a', author: 'Maya Chen', time: '10:24', avatar: h(P.Avatar, { name: 'Maya Chen', size: 'sm' }) }, 'Are the renders ready?'),
           h(P.Chat.Message, { id: 'b' }, 'The meeting moved.'),
           h(P.Chat.Message, { id: 'c', mine: true, time: '10:26', avatar: h(P.Avatar, { name: 'John Doe', size: 'sm' }) }, 'Thank you! I will review the changes.')));
