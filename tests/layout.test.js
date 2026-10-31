@@ -189,9 +189,6 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     return { mode: document.querySelector('.plx-app-shell').getAttribute('data-plx-layout'), inner: Math.round(inner), center: Math.round(r.left + parseFloat(st.paddingLeft) + inner / 2), mainCenter: Math.round(q.left + q.width / 2),
       card: sec.borderTopStyle === 'solid' && parseFloat(sec.borderTopWidth) > 0 && parseFloat(sec.borderTopLeftRadius) > 0 };
   });
-  {
-  }
-  await browser.close(); fs.unlinkSync(file);
   // SplitView stacks under 900px of its own border-box width and sits side by side from 900px (#410; its container query
   // measures inside its 16px room, so the query is 868px): one split view drawn at 899px and at 900px
   const split = await page.evaluate(async () => {
@@ -355,6 +352,7 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     document.documentElement.setAttribute('dir', 'ltr'); root.innerHTML = '';
     return out;
   });
+  await browser.close(); fs.unlinkSync(file);
   check('VisuallyHidden: a page with drag-and-drop instructions and a live region is no taller or wider than the window, left to right and right to left #288',
     ['ltr', 'rtl'].every((d) => quietBoth[d].instructions && quietBoth[d].hidden >= 2 && quietBoth[d].taller <= 0 && quietBoth[d].wider <= 0 && quietBoth[d].biggest <= 1), JSON.stringify(quietBoth));
   check('standard: a SettingsLayout page is contained without saying so', claimed.mode === 'contained', claimed.mode);
