@@ -10,6 +10,8 @@
 //   - icon modules (plenix-platform/icons/<set>/<name>) resolve to platform/dist/icons/<set>/<name>.js, written by
 //     build-icons.js (a pre-step of build-app.js); a Material one is written on demand
 //   - the GENERATED FILE banner, no minifying
+//   - the friendly error when React or ReactDOM is missing: the guard after the banner throws the old bundle's
+//     words (Plenix: "react" is not loaded before this script) before the bundle reads either global
 //   - window.Plenix is a plain frozen object: Object.freeze(Object.assign({}, the exports))
 //   - the public-API check: every name exported by platform/index.js is defined on window.Plenix, once, and nothing else is
 // The source map is hidden (no sourceMappingURL in the bundle): build-app.js writes it to the ignored build/vite/, and
@@ -26,6 +28,9 @@ const require = createRequire(import.meta.url);
 const ENTRY = path.join(ROOT, 'platform', 'index.js');
 const GLOBALS = { 'react': 'React', 'react-dom': 'ReactDOM', 'react-dom/client': 'ReactDOM' };
 const BANNER = '/*\n * GENERATED FILE — DO NOT EDIT\n * Source: platform/index.js and the modules it imports\n * Build: node build-app.js (Vite, vite.platform.config.mjs)\n */\n';
+// the old bundle's error for a missing global, in its words; it runs before the bundle passes React and ReactDOM in
+const GUARD = Object.entries({ 'react': 'React', 'react-dom': 'ReactDOM' })
+  .map(([spec, name]) => 'if (!window.' + name + ') throw new Error(\'Plenix: "' + spec + '" is not loaded before this script\');\n').join('');
 const FOOTER = 'window.Plenix = Object.freeze(Object.assign({}, Plenix));\n';
 const ICON = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+|[a-z0-9]+(?:_[a-z0-9]+)+)$/;
 
@@ -68,16 +73,17 @@ function checkPublicApi(text) {
   return names;
 }
 
-// last: the banner (Vite's own final pass drops rollup's output.banner from an iife library), the frozen global, the
+// last: the banner and the guard (Vite's own final pass drops rollup's output.banner from an iife library), the frozen global, the
 // source map shifted by the banner's lines, then the public-API check. A failure stops the build before anything is written.
 const finish = {
   name: 'plenix-finish',
   enforce: 'post',
   generateBundle(options, bundle) {
-    const shift = ';'.repeat(BANNER.split('\n').length - 1);
+    const head = BANNER + GUARD;
+    const shift = ';'.repeat(head.split('\n').length - 1);
     for (const chunk of Object.values(bundle)) {
       if (chunk.type !== 'chunk') continue;
-      chunk.code = BANNER + chunk.code + (chunk.code.endsWith('\n') ? '' : '\n') + FOOTER;
+      chunk.code = head + chunk.code + (chunk.code.endsWith('\n') ? '' : '\n') + FOOTER;
       if (chunk.map) {
         chunk.map.mappings = shift + chunk.map.mappings;
         const asset = bundle[chunk.fileName + '.map'];
