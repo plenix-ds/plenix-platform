@@ -26,8 +26,8 @@ This test makes sure that when a form or field is set to read-only, a person can
 
 ## When it runs
 - A child test, started by `tests/layout.test.js` (AUTOMATIC in `tests/run.js`).
-- In changed mode, layout starts it when SegmentedControl, ColorSwatch, PromptInput, TimeZoneSelect, SearchField, Rating, NumberInput, DatePicker, Combobox, CountrySelect, TreeSelect, TransferList, InlineEdit, RichTextEditor, CodeEditor, MentionInput or the ReadOnly provider changes, when a global file changes, when `layout.test.js` itself changes, or when this test's own file, or a fixture it loads, changes (issue #756).
-- That list leaves out TimePicker, Cascader and RelativeDateInput, which the test also checks: a change to only those does not start it in changed mode.
+- In changed mode, layout starts it when SegmentedControl, ColorSwatch, PromptInput, TimeZoneSelect, SearchField, Rating, NumberInput, DatePicker, Combobox, CountrySelect, TreeSelect, TransferList, InlineEdit, RichTextEditor, CodeEditor, MentionInput, TimePicker, Cascader, RelativeDateInput or the ReadOnly provider changes, when a global file changes, when `layout.test.js` itself changes, or when this test's own file, or a fixture it loads, changes (issue #756).
+- TimePicker, Cascader and RelativeDateInput joined the list in issue #762, so every control the test checks now starts it.
 - In a full run it always runs.
 - CI: with layout in the "fixtures" browser job (every pull request, and pushes to styling/phase-2 and main). The full suite: its "fixtures" job.
 
