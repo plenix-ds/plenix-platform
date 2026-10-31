@@ -16,7 +16,7 @@ const PORT = +process.env.TEST_PORT || 8878;
       const find = bar.querySelector('.plx-command-bar__find');
       return { out, folded: !!(find && find.querySelector('button[aria-label="Find and view"]')), field: !!(find && find.querySelector('input')) };
     });
-    await page.goto('http://localhost:' + PORT + '/Plenix/docs/briefs/commandbar-find-fold/stage.html?find=more', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/stages/commandbar-find-fold.html?find=more', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.plx-command-bar'); await new Promise((r) => setTimeout(r, 600));
     let s = await state();
     assert.equal(s.folded, false, 'wide: the find side is in the bar'); assert.equal(s.out, false);
