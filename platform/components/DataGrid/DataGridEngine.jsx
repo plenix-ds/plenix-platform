@@ -87,6 +87,7 @@ import {
 } from './engine/helpers.jsx';
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
+import { useSelection, selectionActions } from './engine/useSelection.js';
 import {
   CellEditor,
   Check,
@@ -145,8 +146,6 @@ function NextEngine(props) {
     live = React.useRef({}),
     ready = React.useRef(false);
   const warnedActions = React.useRef(new Set()),
-    selectionInfo = React.useRef({ hidden: 0 }),
-    selectionAnchor = React.useRef(null),
     viewportId = React.useId(),
     displayElements = React.useRef(new Map()),
     parkedFocus = React.useRef(null),
@@ -228,8 +227,7 @@ function NextEngine(props) {
         ? localGroups
         : (props.groupBy ?? options.groupBy ?? localGroups);
   const childField = props.tree ? props.childrenField || 'children' : null;
-  const [ownSelection, setSelection] = React.useState({}),
-    [filters, setFilters] = React.useState([]),
+  const [filters, setFilters] = React.useState([]),
     [page, setPage] = React.useState(0),
     [pageSize, setPageSize] = React.useState(props.pageSize || 50);
   const fetching = React.useRef(false);
@@ -257,9 +255,6 @@ function NextEngine(props) {
   }, [metrics]);
   const effectiveStep = props.rowHeight || rowHeight,
     effectiveWrap = props.wrapHeaders ?? wrapHeaders;
-  const selection = Array.isArray(selected)
-    ? Object.fromEntries(selected.map((k) => [recordKey(k), true]))
-    : ownSelection;
   const controlledSort = React.useMemo(() => normalizeSort(props.sort), [sortSignal]);
   const deferredFilter = React.useDeferredValue(props.filter);
   const initiallyControlledSort = React.useRef(!!props.sort?.length),
@@ -426,41 +421,16 @@ function NextEngine(props) {
     changeOrder(current);
     emit('columnMoved', api.column(field), current.map(api.column));
   };
-  const notifySelection = (next) => {
-    live.current.selection = next;
-    setSelection(next);
-    const active = new Set(live.current.table.getFilteredRowModel().flatRows.map((r) => r.id)),
-      records = canonical.filter((r) => next[recordKey(r[index])]);
-    selectionInfo.current = { hidden: records.filter((r) => !active.has(recordKey(r[index]))).length };
-    onSelectionChange?.(
-      records.map((r) => r[index]),
-      { count: records.length, hidden: selectionInfo.current.hidden }
-    );
-    emit(
-      'rowSelectionChanged',
-      records,
-      records.map((r) => api.row(recordKey(r[index])))
-    );
-  };
-  const pick = (key, value) => {
-    const now = live.current;
-    if (!!now.selection[key] === !!value) return;
-    let row = null;
-    try {
-      row = now.table.getRow(key, true);
-    } catch (e) {
-      row = null;
-    }
-    if (row && row.getIsSelected() === !!now.selection[key]) row.toggleSelected(!!value, { selectChildren: false });
-    else
-      now.table.setRowSelection((old) => {
-        const next = { ...old };
-        if (options.selectableRows === 1 && value) Object.keys(next).forEach((k) => delete next[k]);
-        if (value) next[key] = true;
-        else delete next[key];
-        return next;
-      });
-  };
+  const { selection, notifySelection, pick, selectionInfo, selectionAnchor } = useSelection({
+    selected,
+    live,
+    canonical,
+    index,
+    options,
+    onSelectionChange,
+    emit,
+    api
+  });
   const changeSort = (update) => {
     const next = typeof update === 'function' ? update(sorting) : update;
     setSortOwner(sortSignal);
@@ -1265,55 +1235,15 @@ function NextEngine(props) {
   const openId = props.openKey !== undefined ? (props.openKey == null ? null : recordKey(props.openKey)) : ownOpen;
   const isOpen = (id) => openId != null && String(id) === String(openId),
     marked = (id) => !!selection[id] || (!selectable && !options.selectableRows && isOpen(id));
-  const selectionRows = table.getPrePaginationRowModel().rows,
-    selectedVisible = selectionRows.filter((r) => selection[r.id]),
-    allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
-  const selectAll = (value) => {
-    const next = { ...selection };
-    selectionRows.forEach((r) => {
-      if (value) next[r.id] = true;
-      else delete next[r.id];
-    });
-    table.setRowSelection(next);
-  };
-  const pickCheckbox = (row, event) => {
-    const wanted = event.target.checked,
-      from = selectionRows.findIndex((r) => r.id === selectionAnchor.current),
-      to = selectionRows.indexOf(row);
-    if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
-      const next = { ...live.current.selection };
-      selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach((record) => {
-        if (wanted) next[record.id] = true;
-        else delete next[record.id];
-      });
-      table.setRowSelection(next);
-    } else pick(row.id, wanted);
-    selectionAnchor.current = row.id;
-  };
-  // a click on the row (or Enter on it), not on its checkbox (#452, as a file manager): a plain one selects only that row,
-  // Ctrl or ⌘ toggles it, Shift extends from the anchor, Ctrl or ⌘ with Shift adds the range to the selection; the
-  // checkbox and select all keep toggling
-  const chooseRow = (row, e) => {
-    if (!selectable && !options.selectableRows) return;
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && selectable) {
-      pickCheckbox(row, { target: { checked: true }, nativeEvent: e.nativeEvent, shiftKey: true });
-      return;
-    } // Ctrl/⌘+Shift adds the range
-    if (e.ctrlKey || e.metaKey) {
-      if (selectable)
-        pickCheckbox(row, { target: { checked: !selection[row.id] }, nativeEvent: e.nativeEvent, shiftKey: false });
-      else pick(row.id, !selection[row.id]);
-      return;
-    }
-    if (e.shiftKey && selectable) {
-      pickCheckbox(row, { target: { checked: !selection[row.id] }, nativeEvent: e.nativeEvent, shiftKey: true });
-      return;
-    }
-    const now = live.current.selection,
-      keys = Object.keys(now).filter((k) => now[k]);
-    if (!(keys.length === 1 && keys[0] === String(row.id))) table.setRowSelection({ [row.id]: true });
-    selectionAnchor.current = row.id;
-  };
+  const { selectionRows, selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow } = selectionActions({
+    table,
+    live,
+    selection,
+    selectionAnchor,
+    pick,
+    selectable,
+    options
+  });
   const fit = (field) => {
     const c = columns.find((c) => c.field === field),
       ctx = document.createElement('canvas').getContext('2d'),
