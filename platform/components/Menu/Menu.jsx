@@ -52,7 +52,7 @@
      ContextMenu.children: the items, as Menu's
    Behavior:
      Enter, Space or Arrow Down on the trigger opens the menu on the first item; Arrow Up opens it on the last.
-     Arrow keys, Home and End move between items.
+     Arrow keys, Home and End move between items. Typing a letter moves to the next item whose label starts with it (type-ahead).
      Escape closes the menu and returns focus to the trigger.
      Tab closes the menu and moves on.
      A click outside closes the menu.
@@ -99,7 +99,16 @@ function moveIn(list, e) {
   else if (e.key === 'ArrowUp') next = (at - 1 + items.length) % items.length;
   else if (e.key === 'Home') next = 0;
   else if (e.key === 'End') next = items.length - 1;
-  else return false;
+  else if (e.key.length === 1 && /\S/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    // type-ahead (issue 706): a letter moves to the next item whose label starts with it, wrapping; nothing matches, nothing moves.
+    // Only when focus is on one of this list's own items: a letter from a sub menu or a text field inside the menu is not this list's to take
+    if (at < 0) return false;
+    const k = e.key.toLocaleLowerCase();
+    const label = (el) => ((el.querySelector('.plx-menu__label') || el).textContent || '').trim().toLocaleLowerCase();
+    const hit = items.slice(at + 1).concat(items.slice(0, at + 1)).find((el) => label(el).startsWith(k));
+    if (!hit) return false;
+    next = items.indexOf(hit);
+  } else return false;
   e.preventDefault();
   if (items[next]) items[next].focus();
   return true;
