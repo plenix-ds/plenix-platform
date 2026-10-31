@@ -5,7 +5,7 @@ This test makes sure numbers, dates, times, money, sizes, names, addresses and p
 - File: `tests/formats.test.js`
 
 ## What it checks
-- The written Formats standard (`platform/standards/formats.json`) matches the formats built into the code (`utils/format.js`), word for word.
+- The written Formats standard (`platform/standards/formats.json`) matches the formats built into the code (`utils/format.ts`), word for word.
 - The formatters write what the standard says, in US English and German, for example:
   - numbers: 1,234,567.891 and 1.234.567,891; signed "+12"; a non-number writes nothing;
   - file sizes: "1.2 MB", "24 kB"; durations: "1 hr, 5 min" and "1:05:00"; compact: "1.2K", "3.5M";
@@ -23,7 +23,7 @@ This test makes sure numbers, dates, times, money, sizes, names, addresses and p
 - The date-only checks come from issue #342 (a date-only value showed as the day before in US time zones) and the owner's option A, 2026-10-29 (recorded in `tests/date-only.test.js`).
 
 ## How it checks
-- Node only, no browser. Loads `platform/utils/format.js` (converted with Babel) and compares its output with fixed expected strings.
+- Node only, no browser. Loads `platform/utils/format.ts` (converted with Babel) and compares its output with fixed expected strings.
 - For the Time check it bundles `Time.jsx` with esbuild and renders it to HTML with React's server renderer.
 - Switches the time zone to Los Angeles for the date-only checks.
 
@@ -38,4 +38,4 @@ This test makes sure numbers, dates, times, money, sizes, names, addresses and p
 ## What it needs
 - Node with full international support (Intl with full ICU).
 - From `node_modules`: `@babel/standalone`, `esbuild`, and React with its server renderer.
-- `platform/standards/formats.json` and `platform/utils/format.js`.
+- `platform/standards/formats.json` and `platform/utils/format.ts`.

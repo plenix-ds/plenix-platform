@@ -30,15 +30,15 @@
      The live text changes in place without moving the layout and is never announced (it is not a live region).
      A value that is not a valid date renders nothing.
    Notes:
-     The words and the order come from utils/format.js (Intl): never build a date by hand.
+     The words and the order come from utils/format.ts (Intl): never build a date by hand.
      The <time> carries dateTime: the ISO 8601 moment, or the calendar day ("2026-10-08") for date and label.
      It is set in the data font (Reddit Mono) at the size and line height of the text around it.
      Other props pass through to the <time>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, numeralLocale, dateTimeAttr, parseDate } from '../../utils/format.js';
-import { tokenMs } from '../../utils/tokenTime.js';
+import { cx } from '../../utils/cx.ts';
+import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, numeralLocale, dateTimeAttr, parseDate } from '../../utils/format.ts';
+import { tokenMs } from '../../utils/tokenTime.ts';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 

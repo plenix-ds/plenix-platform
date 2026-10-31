@@ -27,8 +27,8 @@
      Start closed; put only optional detail inside: what everyone needs stays on the page. Never nest one in another.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';

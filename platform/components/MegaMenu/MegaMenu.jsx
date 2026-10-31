@@ -29,8 +29,8 @@
      Group headings are short; link names do not repeat the button's text.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.jsx';
 import { Link } from '../Link/Link.jsx';
 import { NavList } from '../NavList/NavList.jsx';

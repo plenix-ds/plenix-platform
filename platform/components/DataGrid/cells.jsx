@@ -14,9 +14,9 @@ import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { DataPill } from '../DataPill/DataPill.jsx';
-import { formatBytes } from '../../utils/format.js';
+import { formatBytes } from '../../utils/format.ts';
 import { Isolate } from '../Isolate/Isolate.jsx';
-import { localDigits } from '../../utils/digits.js';
+import { localDigits } from '../../utils/digits.ts';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 export const valueText=value=>value==null?'':Array.isArray(value)?value.map(valueText).join(', '):typeof value==='object'?String(value.label??value.name??''):String(value);
 export function textFilter(row,field,search) {return valueText(row.getValue(field)).toLocaleLowerCase().includes(String(search??'').toLocaleLowerCase());}

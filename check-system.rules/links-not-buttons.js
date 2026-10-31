@@ -115,7 +115,7 @@ function scan(source) {
 function check({ files, add }) {
   for (const f of files) {
     const file = f.file || f;
-    if (!/\.(jsx|js|html|css)$/.test(file) || SKIP_FILE.test(file) || path.resolve(file) === path.resolve(__filename)) continue;
+    if (!/\.(jsx|js|tsx|ts|html|css)$/.test(file) || SKIP_FILE.test(file) || path.resolve(file) === path.resolve(__filename)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (!/<a[\s>]|Link|link|['"]a['"]/.test(text)) continue;
     scan(text).forEach((x) => add(NAME, file, x.line, x.text));

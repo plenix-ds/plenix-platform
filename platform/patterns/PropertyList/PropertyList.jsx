@@ -27,8 +27,8 @@
      Other props (aria-label) reach the <dl>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useTruncated } from '../../utils/overflow.js';
+import { cx } from '../../utils/cx.ts';
+import { useTruncated } from '../../utils/overflow.ts';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Isolate } from '../../components/Isolate/Isolate.jsx';
 

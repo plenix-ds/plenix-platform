@@ -29,8 +29,8 @@
        diagram when items can skip or repeat stages, a bar chart for categories that are not steps.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber, formatPercent } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber, formatPercent } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleLinear, scaleBand, seriesColor } from './scales.js';
 import { Axis } from './parts/Axis.jsx';

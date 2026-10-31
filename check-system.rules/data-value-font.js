@@ -1,6 +1,6 @@
 // Plenix · check-system rule "data-value-font" (owner, #252 choice A): a Select or Combobox that holds a number or a date shows it in the data font.
 // What it rejects:
-//   helper   utils/dataValue.js without isDataValue, or the helper no longer recognizing a number, a date and a size, or recognizing a plain word
+//   helper   utils/dataValue.ts without isDataValue, or the helper no longer recognizing a number, a date and a size, or recognizing a plain word
 //   use      Select (Input.jsx) or Combobox no longer asking isDataValue when their data prop is not set, or going back to `data && 'plx-input--data'`
 // Alone: node check-system.rules/data-value-font.js     -> DATA_VALUE_FONT_OK, or the findings and exit 1
 const fs = require('fs');
@@ -11,8 +11,8 @@ const ROOT = path.join(__dirname, '..');
 const read = (f) => { try { return fs.readFileSync(path.join(ROOT, f), 'utf8'); } catch (e) { return ''; } };
 
 function check({ add }) {
-  const hf = path.join(ROOT, 'platform/utils/dataValue.js'), h = read('platform/utils/dataValue.js');
-  if (!/export const isDataValue/.test(h)) add(NAME, hf, 0, 'dataValue.js must export isDataValue');
+  const hf = path.join(ROOT, 'platform/utils/dataValue.ts'), h = read('platform/utils/dataValue.ts');
+  if (!/export const isDataValue/.test(h)) add(NAME, hf, 0, 'dataValue.ts must export isDataValue');
   else {
     const fn = new Function(h.replace(/export const isDataValue/, 'const isDataValue') + '; return isDataValue;')();
     for (const yes of ['10', '1,000', '2026-10-25', 'Oct 25, 2026', 'September 3, 2026', '25 Oct 2026', '10:42 AM', '12 MB', '3 kB', 'v1.2.3', 'report.csv', 'IMG_2041.jpg', 'plenix-0.73.0.zip', '#1234']) if (!fn(yes)) add(NAME, hf, 0, '"' + yes + '" must be a data value');

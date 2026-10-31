@@ -29,9 +29,9 @@
      To switch between panels of content, use Tabs (variant "segmented").
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { arrowStep } from '../../utils/direction.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { arrowStep } from '../../utils/direction.ts';
+import { cx } from '../../utils/cx.ts';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { stateIcon } from '../Icon/Icon.jsx';
 import { Select } from '../Input/Input.jsx';

@@ -12,7 +12,7 @@
      Dialog owns focus trapping and restoration. The caller closes after successful persistence.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Wizard } from '../Wizard/Wizard.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';

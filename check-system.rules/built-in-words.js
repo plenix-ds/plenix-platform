@@ -29,7 +29,7 @@ const CLASSY = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;   // a key, a class or an id ("p
 function files() {
   const out = [];
   const walk = (d) => { let es = []; try { es = fs.readdirSync(d, { withFileTypes: true }); } catch (e) { return; }
-    for (const e of es) { const p = path.join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.jsx$/.test(e.name)) out.push(p); } };
+    for (const e of es) { const p = path.join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.[jt]sx$/.test(e.name)) out.push(p); } };
   DIRS.forEach((d) => walk(path.join(ROOT, d)));
   return out.sort();
 }

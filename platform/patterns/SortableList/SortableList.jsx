@@ -2,7 +2,7 @@
    Summary: A list people put in their own order (10 Patterns › Selection and organization › Sortable list; also
      Reordering): each item drags by its handle, moves with the keyboard (pick up, arrows, drop) and has a way without
      dragging, its handle's menu of moves or move buttons. A column of rows (vertical) or tiles in a grid; lists of one
-     group take each other's items. Built on the drag-and-drop engine (utils/dnd.js) with DragHandle, Menu and Button.
+     group take each other's items. Built on the drag-and-drop engine (utils/dnd.ts) with DragHandle, Menu and Button.
    Usage:
      <SortableList label="Steps" items={steps} onReorder={setSteps} renderItem={(s) => s.title} />
      <SortableList label="Pinned views" layout="grid" items={views} onReorder={setViews} renderItem={(v) => <Persona … />} />
@@ -44,15 +44,15 @@
        widgets with WidgetGrid. Other props pass through to the <ul>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useSortable } from '../../utils/dnd.js';
+import { cx } from '../../utils/cx.ts';
+import { useSortable } from '../../utils/dnd.ts';
 import { DragHandle } from '../../components/DragHandle/DragHandle.jsx';
 import { Menu, MenuItem, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 // after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
 const keep = (dir) => (itemEl) => {

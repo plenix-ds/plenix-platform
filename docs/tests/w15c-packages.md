@@ -41,4 +41,4 @@ The Plenix add-on packages (the AI assistant connector, web components) work, st
 
 ## What it needs
 - Node only (no browser, no server).
-- The design-system submodule, the MCP package (`packages/mcp/`), the built packages (`node build-packages.js`), `platform/utils/format.js`, `platform/i18n/`, and `tests/perf.test.js`.
+- The design-system submodule, the MCP package (`packages/mcp/`), the built packages (`node build-packages.js`), `platform/utils/format.ts`, `platform/i18n/`, and `tests/perf.test.js`.

@@ -32,8 +32,8 @@
        (a primary Button) instead.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon, asIcon } from '../Icon/Icon.jsx';
 
 const SIZES = ['sm', 'md', 'lg'];

@@ -32,7 +32,7 @@ Toolbars and footer button bars stay on one line as space runs out, folding butt
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`.
-- In changed mode (`npm test` and CI), Layout starts it only when Toolbar, Button, ActionBar, `utils/barFit.js` or `utils/foldOrder.js` changes, or a part built on one of them changes.
+- In changed mode (`npm test` and CI), Layout starts it only when Toolbar, Button, ActionBar, `utils/barFit.ts` or `utils/foldOrder.ts` changes, or a part built on one of them changes.
 - Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes.
 - A change to this test's own file alone does not start it through Layout: Layout checks only the parts listed above. Run it by hand: `node tests/toolbar-ladder.test.js`.
 - A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.

@@ -1,6 +1,6 @@
 /* Plenix · DragHandle
    Summary: The grip an item is moved by (13 Interaction › Interaction foundations › Drag handle): a small button with the
-     drag icon (six dots) that the drag-and-drop engine (utils/dnd.js) turns into a drag for the pointer and a pick-up
+     drag icon (six dots) that the drag-and-drop engine (utils/dnd.ts) turns into a drag for the pointer and a pick-up
      for the keyboard. Vertical (the dots stand) for rows that move up and down; horizontal (the dots lie) for columns,
      tabs and cards that move sideways.
    Usage:
@@ -29,8 +29,8 @@
      Other props pass through to the <button>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { mergeDndProps } from '../../utils/dnd.js';
+import { cx } from '../../utils/cx.ts';
+import { mergeDndProps } from '../../utils/dnd.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import DragIcon from 'plenix-platform/icons/plenix/drag';
 

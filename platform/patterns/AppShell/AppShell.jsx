@@ -81,11 +81,11 @@
 */
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { pageLayout } from '../../providers/pageLayouts.js';
 import { PanelSplitter } from '../../components/Resizable/Resizable.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useMonitorWidth } from '../../utils/monitorWidths.js';
+import { useMonitorWidth } from '../../utils/monitorWidths.ts';
 
 // the five layout modes (the Layout foundation; app-shell.css draws them)
 const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
@@ -125,7 +125,7 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   const [barEl, setBarEl] = React.useState(null);         // where NavPane puts the bottom navigation bar at Narrow
   const [parentEl, setParentEl] = React.useState(null);   // where it puts the parent row (the way to the pane) at Narrow
   const [expanded, setExpanded] = React.useState(() => readPref('plenix.sideNav.expanded', true));
-  // the navigation pane's dragged width, remembered per monitor (utils/monitorWidths.js); the single value saved before is this monitor's first value
+  // the navigation pane's dragged width, remembered per monitor (utils/monitorWidths.ts); the single value saved before is this monitor's first value
   const [width, setWidth] = useMonitorWidth('nav', { legacy: () => readPref('plenix.sideNav.width', null), min: () => tokenPx('--plx-sys-shell-nav-min-width'), max: () => tokenPx('--plx-sys-shell-nav-max-width') });
   const [overlay, setOverlay] = React.useState(false);
   const [slotEl, setSlotEl] = React.useState(null);   // the side-navigation area a screen fills through SideNavPortal

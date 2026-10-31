@@ -41,10 +41,10 @@
      The status is the item's own; whether it may be published (an approval) is ReviewFlow's.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatDateTime } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatDateTime } from '../../utils/format.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { ConfirmDialog, Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -53,7 +53,7 @@ import { Text } from '../../components/Text/Text.jsx';
 import { WorkflowStatus, useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const q = (x) => '“' + x + '”';
 

@@ -12,10 +12,10 @@
      Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
 */
 import React from 'react';
-import { dataWhenText } from '../../../utils/dataText.jsx';
-import { cx } from '../../../utils/cx.js';
+import { dataWhenText } from '../../../utils/dataText.tsx';
+import { cx } from '../../../utils/cx.ts';
 import { usePressable } from '../../../hooks/usePressable.js';
-import { gridPx } from '../../../utils/grid.js';
+import { gridPx } from '../../../utils/grid.ts';
 import { gapPieces } from '../../../hooks/useVirtualizer.js';
 import { useStrings } from '../../../providers/LocaleProvider.jsx';
 import { GRID } from './helpers.jsx';

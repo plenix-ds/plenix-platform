@@ -34,8 +34,8 @@
      A kind sets defaults only: an explicit tone, icon, title or children wins.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';

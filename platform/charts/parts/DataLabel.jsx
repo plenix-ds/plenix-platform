@@ -22,8 +22,8 @@
        set. Values are technical: the data font; no color is written (the label's tokens).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatNumber } from '../../utils/format.ts';
 
 const POSITIONS = ['top', 'end', 'center'];
 

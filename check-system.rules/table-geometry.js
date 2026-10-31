@@ -29,7 +29,7 @@ function scan(text) {
 function check({ files, add }) {
   for (const f of files) {
     const file = f.file || f;
-    if (!/\.(jsx|js)$/.test(file) || SKIP_FILE.test(file)) continue;
+    if (!/\.(jsx|js|tsx|ts)$/.test(file) || SKIP_FILE.test(file)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (text.indexOf('redraw(') < 0) continue;
     scan(text).forEach((x) => add(NAME, file, x.line, 'a forced redraw measures every row again: ' + x.text + ' (use redraw(), or the DataGrid\'s own re-measure of column widths)'));

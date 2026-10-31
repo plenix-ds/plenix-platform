@@ -18,7 +18,7 @@
      onAccent: the caption and value in the accent colors, for an accent surface; the code keeps its light plate (default false)
      className: more classes on the wrapper
    Behavior:
-     The matrix comes from qrEncode (platform/utils/qr.js): byte mode, the smallest version that holds the value, the mask
+     The matrix comes from qrEncode (platform/utils/qr.ts): byte mode, the smallest version that holds the value, the mask
        with the lowest penalty. It is one SVG path drawn on the plate; the quiet zone is four modules on every side.
      The plate and the modules keep their colors in dark mode: scanners read dark on light.
      A value too long for a QR code draws nothing and warns in the console.
@@ -27,9 +27,9 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { qrEncode } from '../../utils/qr.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { qrEncode } from '../../utils/qr.ts';
 
 const SIZES = ['sm', 'md', 'lg'];
 const QUIET = 4;          // the quiet zone, in modules

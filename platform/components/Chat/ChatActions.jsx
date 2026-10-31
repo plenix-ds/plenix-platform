@@ -10,13 +10,13 @@
      Chat.Composer: replyTo, onCancelReply).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Text } from '../Text/Text.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 import ReplyIcon from 'plenix-platform/icons/plenix/reply';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 import QuoteIcon from 'plenix-platform/icons/plenix/format-quote';

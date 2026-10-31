@@ -45,7 +45,7 @@
        settle after it is .plx-gesture-settle (--plx-sys-gesture-settle-duration and -easing). Reduced motion settles at once.
 */
 import React from 'react';
-import { isRtl } from '../utils/direction.js';
+import { isRtl } from '../utils/direction.ts';
 
 const VELOCITY_WINDOW = 100;   // the last 100 ms of movement give the release velocity (a sampling window, not a look)
 

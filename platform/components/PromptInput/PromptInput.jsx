@@ -16,7 +16,7 @@
    Notes: Attachments stay local until onSend; the caller owns upload policy, model access and cancellation.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Input, Textarea } from '../Input/Input.jsx';
 import { Stack, Inline } from '../Stack/Stack.jsx';
 import { Field } from '../Field/Field.jsx';

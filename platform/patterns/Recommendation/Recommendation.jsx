@@ -12,12 +12,12 @@
    Notes: Caller owns ranking and explanations; a recommendation does not assert verified suitability.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Stack,Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { SuggestedAction } from '../../components/SuggestedAction/SuggestedAction.jsx';
 import { Carousel } from '../../components/Carousel/Carousel.jsx';
 import { Link } from '../../components/Link/Link.jsx';

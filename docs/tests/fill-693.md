@@ -5,7 +5,7 @@ Messages with blanks in them ("Go to page {n}") are filled in the same correct w
 - File: `tests/fill-693.test.js`
 
 ## What it checks
-- The shared helper `fill()` (`platform/utils/fill.js`):
+- The shared helper `fill()` (`platform/utils/fill.ts`):
   - A value is written into its placeholder; every occurrence of a placeholder is replaced.
   - 0, false and an empty text are values, and are written.
   - An undefined or null value, or a missing key, leaves the placeholder; the words "undefined" and "null" never appear.
@@ -14,7 +14,7 @@ Messages with blanks in them ("Go to page {n}") are filled in the same correct w
   - Only letters, digits and underscores name a placeholder.
   - The replacement is taken exactly as written (special `$` patterns are not expanded).
   - A number is written as the number.
-- `platform/utils/floating.js` exports the one shared `TOP_LAYER`.
+- `platform/utils/floating.ts` exports the one shared `TOP_LAYER`.
 - No file in the Platform defines its own `fill`, `TOP_LAYER` or `asIcon` (the check-system rule shared-fill, issues 693 and 719).
 
 ## Why it exists
@@ -25,8 +25,8 @@ Messages with blanks in them ("Go to page {n}") are filled in the same correct w
 
 ## How it checks
 - Runs in Node only, with no browser.
-- Loads `platform/utils/fill.js` through Babel and calls `fill()` with each case.
-- Reads `platform/utils/floating.js` as text, and runs the check-system rule `check-system.rules/shared-fill.js` over every file under `platform/`.
+- Loads `platform/utils/fill.ts` through Babel and calls `fill()` with each case.
+- Reads `platform/utils/floating.ts` as text, and runs the check-system rule `check-system.rules/shared-fill.js` over every file under `platform/`.
 - No baseline.
 
 ## What a failure means

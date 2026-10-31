@@ -43,8 +43,8 @@
      Sections are separated by space only (no lines or frames), so a form inside a card or a dialog stays two frames deep.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { FieldLayoutContext } from '../../components/Field/Field.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Text } from '../../components/Text/Text.jsx';

@@ -76,11 +76,11 @@
      A context menu is a shortcut: every action in it is also reachable another way (a toolbar, a row's More menu).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useLayer, useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useLayer, useUid } from '../../utils/layer.ts';
 import { Icon, asIcon } from '../Icon/Icon.jsx';
-import { Portal } from '../../utils/portal.jsx';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
+import { Portal } from '../../utils/portal.tsx';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useGesture } from '../../hooks/useGesture.js';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

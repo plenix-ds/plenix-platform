@@ -27,10 +27,10 @@ const literal = (n) => n && (n.type === 'StringLiteral' ? n.value : n.type === '
   : n.type === 'JSXExpressionContainer' ? literal(n.expression) : n.type === 'TemplateLiteral' && !n.expressions.length ? n.quasis.map((q) => q.value.cooked).join('') : null);
 const nameOf = (n) => n && (n.name || n.value || (n.object && nameOf(n.object) + '.' + nameOf(n.property)));
 function scanSource(text, file = 'source.jsx') {
-  if (!/\.(?:jsx?|mjs)$/.test(file)) return [];
+  if (!/\.(?:[jt]sx?|mjs)$/.test(file) || /\.d\.ts$/.test(file)) return [];
   const Babel = require('@babel/standalone'), out = [], seen = new Set();
   let ast;
-  try { ast = Babel.transform(text, { ast: true, code: false, parserOpts: { sourceType: 'unambiguous', plugins: ['jsx'] } }).ast; }
+  try { ast = Babel.transform(text, { ast: true, code: false, parserOpts: { sourceType: 'unambiguous', plugins: /\.ts$/.test(file) ? ['typescript'] : /\.tsx$/.test(file) ? ['jsx', 'typescript'] : ['jsx'] } }).ast; }
   catch (error) { return [{ rule: 'parse', line: error.loc ? error.loc.line : 1, text: '', message: error.message }]; }
   const add = (node, value, kind) => {
     if (value === null || value === undefined) return;
@@ -69,7 +69,7 @@ function scanSource(text, file = 'source.jsx') {
   visit(ast); return out;
 }
 function collect(root = ROOT) {
-  const files = [], walk = (dir) => { if (!fs.existsSync(dir)) return; for (const entry of fs.readdirSync(dir, { withFileTypes: true })) { const f = path.join(dir, entry.name); if (entry.isDirectory()) walk(f); else if (/\.(?:jsx?|mjs)$/.test(f)) files.push(f); } };
+  const files = [], walk = (dir) => { if (!fs.existsSync(dir)) return; for (const entry of fs.readdirSync(dir, { withFileTypes: true })) { const f = path.join(dir, entry.name); if (entry.isDirectory()) walk(f); else if (/\.(?:[jt]sx?|mjs)$/.test(f) && !/\.d\.ts$/.test(f)) files.push(f); } };
   for (const dir of ['platform/components', 'platform/patterns', 'platform/providers', 'platform/hooks']) walk(path.join(root, dir));
   const spec = path.join(root, 'platform/design-system');
   if (fs.existsSync(spec)) { for (const file of ['inventory.js', 'inventory-docs.js', 'inventory-guidance.js']) if (fs.existsSync(path.join(spec, file))) files.push(path.join(spec, file)); walk(path.join(spec, 'parts')); }

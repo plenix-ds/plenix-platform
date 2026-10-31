@@ -1,4 +1,4 @@
-/* Plenix · Scroll lock (platform/system/scroll-lock.css): a target that holds a lock (utils/scrollLock.js sets
+/* Plenix · Scroll lock (platform/system/scroll-lock.css): a target that holds a lock (utils/scrollLock.ts sets
    data-plx-scroll-lock="locked" on the page or on one scroll container) does not scroll; the scrollbar's space stays
    reserved so nothing shifts, and scrolling at its edge does not reach the page behind it. */
 [data-plx-scroll-lock="locked"]{overflow-x:hidden;overflow-y:hidden;overscroll-behavior-x:contain;overscroll-behavior-y:contain;scrollbar-gutter:stable;}

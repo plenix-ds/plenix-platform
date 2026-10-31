@@ -12,7 +12,7 @@ import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Tree } from '../../components/Tree/Tree.jsx';
 import { FileRow,FileRowList } from '../../components/FileRow/FileRow.jsx';

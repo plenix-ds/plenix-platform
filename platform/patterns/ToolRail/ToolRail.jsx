@@ -27,7 +27,7 @@
 */
 import React from 'react';
 import { useFocusGroup } from '../../hooks/useFocusable.js';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 

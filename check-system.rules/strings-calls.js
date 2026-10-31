@@ -23,7 +23,7 @@ function catalog() {
 }
 const at = (o, p) => p.split('.').reduce((a, k) => (a && typeof a === 'object' ? a[k] : undefined), o);
 function files() {
-  try { return execFileSync('git', ['ls-files', 'platform/components', 'platform/patterns', 'platform/templates', 'platform/charts', 'platform/utils'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 }).split('\n').filter((f) => /\.jsx?$/.test(f)); }
+  try { return execFileSync('git', ['ls-files', 'platform/components', 'platform/patterns', 'platform/templates', 'platform/charts', 'platform/utils'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 }).split('\n').filter((f) => /\.[jt]sx?$/.test(f) && !/\.d\.ts$/.test(f)); }
   catch (e) { return []; }
 }
 

@@ -12,6 +12,10 @@ This is the one inventory of every custom tool in this repository (owner decisio
 - Vite builds all JavaScript: the Platform bundle, the 10 suite applications, the Asset Manager and `@plenix-ds/react`'s ES module, CommonJS and CDN files (#709).
 - esbuild minifies the CSS: `build-packages.js` bundles `platform.css` into `plenix.css` and writes `plenix.min.css` with it (owner, #711). Vite also runs esbuild inside it, to compile JSX.
 - esbuild also stays the stand-in for an application's bundler in `tools/agent/one-part-sizes.js`, and the tests' helpers (`tests/icon-modules.js`, `tests/next-source.js`) and a few tests bundle with it, so it stays in `package.json`.
+- TypeScript (#708) checks types and builds nothing. `tsconfig.json` is strict, with `noEmit`; `npm run typecheck` runs `tsc --noEmit`. Vite's esbuild strips the types as it bundles, so the output is the same as from JavaScript.
+- The source moves to TypeScript in slices (#708). Slice 1 is `platform/utils/` (36 files; `sizeSteps.js` stays JavaScript, since `build-steps.js` generates it). The files not converted yet stay JavaScript: `allowJs` reads them and `checkJs` is off.
+- `platform/icons/modules.d.ts` types the icon modules (`plenix-platform/icons/<set>/<name>`) that Vite resolves.
+- Every check and build step that reads source by its file name reads `.ts` and `.tsx` as well (slice 1 of #708). Babel's `typescript` preset strips the types where a build step or a test loads a utility in Node (`platform/icons/layout.js` loads `iconSafety.ts`).
 - `@babel/standalone` bundles nothing any more: it is the parser of `check-bundle.js` (it reads `plenix.js`), `check-copy.js`, `build-types.js` and the check-system rules `count-phrases`, `icon-imports` and `composition`, so it stays in `package.json`.
 - The old bundler of `build-app.js` (Babel compiled each file into a table of modules, joined into one script) is gone: Vite replaced it in #709 steps 2 to 4, and step 6 removed its last leftover, the one-time comparison script; nothing in the repository still uses it.
 
@@ -28,7 +32,7 @@ This is the one inventory of every custom tool in this repository (owner decisio
 | `build-mobile.js` | The native token files: `PlenixTokens.swift`, `PlenixTokens.kt`, `plenix_tokens.dart` | R | Style Dictionary |
 | `build-icons.js` | `icon.css`, `glyphs.js` and the icon asset layout, from `platform/icons/` | R in part | svgo plus a small script |
 | `build-brand.js` | The brand stylesheet and favicon, from the owner's brand kit | R | Vite |
-| `build-types.js` | `packages/react/index.d.ts`, read from the header comments of the source files | R | `tsc`, after the source moves to TypeScript |
+| `build-types.js` | `packages/react/index.d.ts`, read from the header comments of the source files (a TypeScript component's props type after its braces is read past) | R | `tsc`, once the components are TypeScript (#708 slices) |
 | `build-standards.js` | Code from `platform/standards/*.json`: page layouts and the layout-mode stylesheet | N | none |
 | `build-steps.js` | `platform/system/steps.css`: one rule per allowed size step, so no value is ever passed in a style attribute ★ | N | maybe Style Dictionary later |
 | `build-usage.js` | The usage index: which Plenix applications use each export | N | none |
@@ -48,7 +52,8 @@ This is the one inventory of every custom tool in this repository (owner decisio
 | `check-spec.js` | The design spec against its own standard | N | none |
 | `check-bundle.js` and `check-bundle.baseline.json` | The built CDN files against the size and content rules; parses `plenix.js` with `@babel/standalone`, so it reads the code and not the comments, and traces each finding to its source file through the Platform bundle's source map (`build/vite/platform.js.map`) | R | size-limit |
 | `tools/agent/one-part-sizes.js` | The size of one import from the npm package (`{ Button }`, `{ Badge }`, `{ DataGrid }`, `* as P`); `check-bundle.js` calls it, and it prints the same numbers on its own (#685). It bundles each import with esbuild, minified, React external, on purpose: esbuild stands in for the application's bundler, not for Plenix's build. esbuild is a standard bundler many applications use and tree-shakes the package as a typical application bundler would, and keeping it keeps every limit comparable with the audit's numbers (#684, #685) | R | size-limit |
-| `tools/agent/types-any.js` and `types-any.baseline.json` | The count of `any` props in `packages/react/index.d.ts` never goes up (CI, #687) | R | `tsc` with `noImplicitAny`, after the source moves to TypeScript |
+| `tools/agent/types-any.js` and `types-any.baseline.json` | The count of `any` props in `packages/react/index.d.ts` never goes up (CI, #687) | R | `tsc` with `noImplicitAny`, once the components are TypeScript (#708 slices) |
+| `tsconfig.json` (`npm run typecheck`: `tsc --noEmit`) | Types of the TypeScript source under `platform/`, strict (#708). Not custom: TypeScript's own checker | standard | none needed |
 | `tools/fixtures/` | The fixtures a check proves its own rule on (`spec-color-samples/`: the good and the shrunk color sample of `check-spec.js`) | N | none |
 | `tools/check-live-cdn.js` | After a release, whether the live CDN serves what the release built | N | none |
 | `tools/check-readiness.js` | A release stops while a `priority:1` issue is open | N | none (a GitHub required check could replace it) |
@@ -67,7 +72,7 @@ This is the one inventory of every custom tool in this repository (owner decisio
 | `tests/clash-audit.js` (the styling-proof workflow), `compare.js`, `style-compare.js`, `compare-styles.js` | Before and after comparisons of two copies of the repository: computed styles and pixels | R | Playwright Test screenshots |
 | `tests/a11y-report.js` | The accessibility work list (axe-core findings grouped by rule), run by the owner | R | axe-core's own reporter |
 | `tests/typography-181-compare.js`, `typography-197-compare.js`, `ci197-paired.cjs`, `ci197-results.cjs`, `tests/lane-198-proof/**/*.cjs` | One-time proofs of past pull requests, named in their proof folders' READMEs | R | delete in the next clean-up |
-| 37 npm scripts in `package.json` (24 of them alias one test or one test group) | Commands | R | one test command, plus build, lint and release |
+| 38 npm scripts in `package.json` (24 of them alias one test or one test group) | Commands | R | one test command, plus build, lint and release |
 
 ## Other tools
 

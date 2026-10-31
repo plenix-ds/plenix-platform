@@ -103,12 +103,12 @@
      Other props pass through to the outer element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
-import { formatNumber } from '../../utils/format.js';
-import { development } from '../../utils/devWarn.js';
+import { formatNumber } from '../../utils/format.ts';
+import { development } from '../../utils/devWarn.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 

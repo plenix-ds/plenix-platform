@@ -38,7 +38,7 @@
      Say where the code was sent and how long it lasts in the Field's description; give a way to send a new one.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const KEEP = { numeric: /[^0-9]/g, alphanumeric: /[^0-9a-zA-Z]/g };

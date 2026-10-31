@@ -52,8 +52,8 @@
      Up to about five series; more lines tangle: use small multiples. Unordered categories: a bar or column chart.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber, formatDate, formatPercent, parseDate } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber, formatDate, formatPercent, parseDate } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor, scaleTime, wholeDays } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
@@ -61,7 +61,7 @@ import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction, ChartFocusMark, ChartBrush } from './interaction.js';
 import { useEChartsPlot, plotGrid } from './echarts/EChartsPlot.jsx';
 import { tickLineHeight } from './echarts/engine.js';
-import { snapToGrid } from '../utils/grid.js';
+import { snapToGrid } from '../utils/grid.ts';
 import { halfRoom } from './chart-kit.js';
 import { useStrings } from '../providers/LocaleProvider.jsx';
 

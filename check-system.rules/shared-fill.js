@@ -1,11 +1,11 @@
 // Plenix · check-system rule "shared-fill" (issues 693 and 719, audit finding #684): one helper fills the {name} placeholders of a
 // catalog text, one constant says whether the browser opens floating parts in the top layer, and one helper turns an icon name or
 // an imported icon module into an element. A new local copy is refused.
-//   import { fill } from '../../utils/fill.js'                  the one filler (utils/fill.js; nodes in the data font: utils/fillNodes.jsx)
-//   import { useFloating, TOP_LAYER } from '../../utils/floating.js'   the one top-layer check
-//   const fill = (s, v) => s.replace(/\{(\w+)\}/g, …)           finding: use utils/fill.js (a copy behaved four ways: an undefined
+//   import { fill } from '../../utils/fill.ts'                  the one filler (utils/fill.ts; nodes in the data font: utils/fillNodes.tsx)
+//   import { useFloating, TOP_LAYER } from '../../utils/floating.ts'   the one top-layer check
+//   const fill = (s, v) => s.replace(/\{(\w+)\}/g, …)           finding: use utils/fill.ts (a copy behaved four ways: an undefined
 //                                                               value wrote "undefined" in some of them)
-//   const TOP_LAYER = FLOATING_ANCHOR && …                      finding: import TOP_LAYER from utils/floating.js
+//   const TOP_LAYER = FLOATING_ANCHOR && …                      finding: import TOP_LAYER from utils/floating.ts
 //   const asIcon = (i) => iconElement(i)                         finding: import { asIcon } from Icon.jsx (a state icon: stateIcon)
 // A function named fill that does not fill a placeholder (Icon's fill is a flag; a counter in useVirtualizer) is not read.
 //   require('./check-system.rules/shared-fill.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
@@ -39,11 +39,11 @@ function check({ files, add }) {
     FILL_DEF.lastIndex = 0;
     while ((m = FILL_DEF.exec(text))) {
       const near = text.slice(m.index, m.index + 360);
-      if (/\.(replace|split)\(/.test(near) && PLACEHOLDER.test(near)) add(NAME, abs, lineOf(text, m.index), 'a local fill(): import { fill } from utils/fill.js (one filler for every text; fillNodes for nodes in the data font)');
+      if (/\.(replace|split)\(/.test(near) && PLACEHOLDER.test(near)) add(NAME, abs, lineOf(text, m.index), 'a local fill(): import { fill } from utils/fill.ts (one filler for every text; fillNodes for nodes in the data font)');
     }
     if (!/[\\/]components[\\/]Icon[\\/]Icon\.jsx$/.test(abs)) { const a = ASICON_DEF.exec(text); if (a) add(NAME, abs, lineOf(text, a.index), 'a local asIcon: import { asIcon } from components/Icon/Icon.jsx (a state icon: stateIcon)'); }
     const t = TOP_LAYER_DEF.exec(text);
-    if (t) add(NAME, abs, lineOf(text, t.index), 'a local TOP_LAYER: import { TOP_LAYER } from utils/floating.js');
+    if (t) add(NAME, abs, lineOf(text, t.index), 'a local TOP_LAYER: import { TOP_LAYER } from utils/floating.ts');
   }
 }
 

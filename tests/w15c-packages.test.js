@@ -56,7 +56,7 @@ if (!fs.existsSync(path.join(ROOT, 'platform/design-system/inventory.js'))) { co
   const messages = output.trim().split('\n').map((s) => JSON.parse(s));
   check(messages.length === 4 && messages[1].result.structuredContent.components[0].id === 'button' && messages[2].error.code === -32700 && messages[3].id === 3, 'Actual stdio is clean JSON-RPC and recovers after parse errors');
 
-  const dateSource = fs.readFileSync(path.join(ROOT, 'platform/utils/format.js'), 'utf8');
+  const dateSource = require('@babel/standalone').transform(fs.readFileSync(path.join(ROOT, 'platform/utils/format.ts'), 'utf8'), { filename: 'format.ts', presets: ['typescript'] }).code;
   const url = 'data:text/javascript;base64,' + Buffer.from(dateSource).toString('base64');
   for (const tz of ['America/Los_Angeles', 'America/New_York', 'Asia/Tokyo', 'Europe/London']) {
     const script = '(async()=>{const F=await import(' + JSON.stringify(url) + ');console.log(JSON.stringify({normal:F.formatDate("2026-03-08",{locale:"en-US",dateStyle:"long"}),leap:F.formatDate("2024-02-29",{locale:"en-US",dateStyle:"long"}),bad:F.formatDate("2026-02-30"),instant:F.formatDate("2026-03-08T00:00:00Z",{locale:"en-US",dateStyle:"long",timeZone:"America/Los_Angeles"})}));})()';

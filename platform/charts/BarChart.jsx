@@ -50,8 +50,8 @@
        through the ECharts theme (echarts/engine.js). The plot is drawn by Apache ECharts (issue 353); no style is written here.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber, formatPercent } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber, formatPercent } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { niceTicks } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
@@ -62,7 +62,7 @@ import { labelRoom, withColors, legendItems } from './chart-kit.js';
 import { useEChartsPlot, plotGrid, NO_MARGIN } from './echarts/EChartsPlot.jsx';
 import { tickLineHeight } from './echarts/engine.js';
 import { gridRoom } from './LineChart.jsx';
-import { snapToGrid } from '../utils/grid.js';
+import { snapToGrid } from '../utils/grid.ts';
 import { useStrings } from '../providers/LocaleProvider.jsx';
 
 const LAYOUTS = ['grouped', 'stacked', 'percent'];

@@ -40,13 +40,13 @@
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatLocale, formatNumber } from '../../utils/format.js';
-import { localDigits, toLatinDigits } from '../../utils/digits.js';
+import { cx } from '../../utils/cx.ts';
+import { formatLocale, formatNumber } from '../../utils/format.ts';
+import { localDigits, toLatinDigits } from '../../utils/digits.ts';
 import { useDigits } from '../../providers/LocaleProvider.jsx';
 import { Isolate } from '../Isolate/Isolate.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
+import { announce } from '../../utils/announce.tsx';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
 import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.jsx';
 import { Icon } from '../Icon/Icon.jsx';

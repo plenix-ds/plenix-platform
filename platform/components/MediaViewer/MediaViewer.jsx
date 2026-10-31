@@ -31,12 +31,12 @@
 */
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { cx } from '../../utils/cx.js';
-import { useLayer, useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useLayer, useUid } from '../../utils/layer.ts';
 import { MediaPlayer } from '../MediaPlayer/MediaPlayer.jsx';
 import { useGesture } from '../../hooks/useGesture.js';
 import { Icon } from '../Icon/Icon.jsx';
-import { arrowStep } from '../../utils/direction.js';
+import { arrowStep } from '../../utils/direction.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

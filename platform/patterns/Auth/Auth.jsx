@@ -69,9 +69,9 @@
      services/login is the Plenix sign-in service; it draws this layout with the release's classes (no stylesheet of its own).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Checkbox, RadioGroup } from '../../components/Checkbox/Checkbox.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -85,8 +85,8 @@ import { Form } from '../Form/Form.jsx';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
-import { dataPhrase } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

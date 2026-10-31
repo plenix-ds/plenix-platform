@@ -11,7 +11,7 @@ The owner's standard for every Arabic word Plenix shows (2026-10-29, issue 427).
 
 ## Dates, numbers and currency
 
-- Dates, times, numbers, percentages and currency follow the Unicode CLDR profile for Egypt, `ar-EG`, through the browser's `Intl` formatters (`utils/format.js`).
+- Dates, times, numbers, percentages and currency follow the Unicode CLDR profile for Egypt, `ar-EG`, through the browser's `Intl` formatters (`utils/format.ts`).
 - That profile writes Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩) and Arabic month and day names.
 - Values that are identifiers stay in their own characters, as decided for #421 and #606: emails, web addresses, codes and computed IDs.
 

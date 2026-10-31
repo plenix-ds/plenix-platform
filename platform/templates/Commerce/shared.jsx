@@ -35,8 +35,8 @@
      The templates never charge, store or send anything: every change goes to the page through its handlers.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatCurrency, formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatCurrency, formatNumber } from '../../utils/format.ts';
 import { useAppLayout } from '../../patterns/AppShell/AppShell.jsx';
 import { Panel } from '../../components/Card/Card.jsx';
 import { Image } from '../../components/Image/Image.jsx';
@@ -48,8 +48,8 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { ProductPrice } from '../../patterns/ProductCard/ProductCard.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
-import { dataPhrase } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 export const COMMERCE_PAGES = {
   'product-discovery': 'workspace', 'product-listing': 'workspace', 'product-detail': 'detail', cart: 'workspace', checkout: 'form',

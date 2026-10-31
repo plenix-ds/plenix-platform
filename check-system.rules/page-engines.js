@@ -20,7 +20,7 @@ function check({ add }) {
     const text = fs.readFileSync(path.join(ROOT, f), 'utf8');
     if (/<script\b[^>]*\bsrc="[^"]*(dist\/platform|plenix)\.js(\?[^"]*)?"/.test(text) && !/<script\b[^>]*\bsrc="[^"]*plenix-engines\.js(\?[^"]*)?"/.test(text)) add(NAME, path.join(ROOT, f), 0, 'loads the Platform script (platform.js or plenix.js) but not platform/engines/plenix-engines.js: a rich-text editor, chart or PDF on this page would have no engine (#456 to #458)');
   }
-  for (const f of tracked('platform/*.js').concat(tracked('platform/**/*.js'), tracked('platform/**/*.jsx'))) {
+  for (const f of tracked('platform/*.js').concat(tracked('platform/**/*.js'), tracked('platform/**/*.jsx'), tracked('platform/**/*.ts'), tracked('platform/**/*.tsx'))) {
     if (/^platform\/(engines|vendor|dist|design-system|dev)\//.test(f)) continue;
     const lines = fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/\/\*[^]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')).split('\n');   // code, not comments
     lines.forEach((l, i) => {

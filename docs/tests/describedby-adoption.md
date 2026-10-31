@@ -30,7 +30,7 @@ This test makes sure screen readers keep reading a form field's help text, error
 
 ## When it runs
 - A child test, started by `tests/layout.test.js` (AUTOMATIC in `tests/run.js`).
-- In changed mode, layout starts it only when Cascader, CodeEditor, FileInput, InputGroup, RelativeDateInput, AvatarUpload, Field or `utils/describedBy.js` changes, when a global file changes, or when `layout.test.js` itself changes. A change to this file alone does not start it in changed mode.
+- In changed mode, layout starts it only when Cascader, CodeEditor, FileInput, InputGroup, RelativeDateInput, AvatarUpload, Field or `utils/describedBy.ts` changes, when a global file changes, or when `layout.test.js` itself changes. A change to this file alone does not start it in changed mode.
 - In a full run it always runs.
 - CI: with layout in the "fixtures" browser job (every pull request, and pushes to styling/phase-2 and main). The full suite: its "fixtures" job.
 

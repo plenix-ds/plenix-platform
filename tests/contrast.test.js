@@ -1,4 +1,4 @@
-// Plenix tests · contrast (platform/utils/contrast.js, the Contrast rules page): every role pair in CONTRAST_PAIRS meets its
+// Plenix tests · contrast (platform/utils/contrast.ts, the Contrast rules page): every role pair in CONTRAST_PAIRS meets its
 // rule (WCAG 2.2: 4.5:1 text, 3:1 large text and non-text) in every theme of platform/standards/themes.json, light and
 // dark, read from the token source (platform/tokens/*.tokens.json) with the palette resolved. Also checks the functions on
 // known values. No browser; the repository is never changed.
@@ -13,8 +13,8 @@ const ROOT = path.join(__dirname, '..');
 const TOK = path.join(ROOT, 'platform', 'tokens');
 const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, ok, d]); };
 
-// the module, run as a script (its exports become globals of the context)
-const src = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'contrast.js'), 'utf8').replace(/^export (const|function) /gm, '$1 ');
+// the module (TypeScript; Babel strips the types), run as a script (its exports become globals of the context)
+const src = require('@babel/standalone').transform(fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'contrast.ts'), 'utf8'), { filename: 'contrast.ts', presets: ['typescript'] }).code.replace(/^export (const|function) /gm, '$1 ');
 const C = {}; vm.createContext(C);
 vm.runInContext(src + '\nthis.api = { CONTRAST_MINIMUMS, CONTRAST_PAIRS, parseColor, relativeLuminance, contrastRatio, meetsContrast };', C);
 const { CONTRAST_PAIRS, contrastRatio, meetsContrast, parseColor } = C.api;

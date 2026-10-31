@@ -36,8 +36,8 @@
      unmodified components keep their existing defaults. Catalog translations are application-owned. */
 import React from 'react';
 import { DirectionProvider } from './DirectionProvider.jsx';
-import { directionOf } from '../utils/direction.js';
-import * as F from '../utils/format.js';
+import { directionOf } from '../utils/direction.ts';
+import * as F from '../utils/format.ts';
 import english from '../i18n/en.js';
 import arabic from '../i18n/ar.js';
 

@@ -28,7 +28,7 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';

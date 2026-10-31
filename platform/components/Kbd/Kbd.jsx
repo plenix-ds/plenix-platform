@@ -13,7 +13,7 @@
      Other props pass through to the <kbd>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function Kbd({ onAccent = false, className, children, ...rest }) {
   return <kbd className={cx('plx-kbd', onAccent && 'plx-kbd--on-accent', className)} dir="ltr" {...rest}>{children}</kbd>;

@@ -76,10 +76,10 @@
      More than eight table rows, or rows people sort and filter, is a DataGrid in a Panel, not a card.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { devWarn } from '../../utils/devWarn.js';
-import { useUid } from '../../utils/layer.js';
-import { formatPercent } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { devWarn } from '../../utils/devWarn.ts';
+import { useUid } from '../../utils/layer.ts';
+import { formatPercent } from '../../utils/format.ts';
 import { Icon, asIcon as iconElement, isIconModule } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
@@ -103,8 +103,8 @@ import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
-import { dataPhrase } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison', 'list', 'summary', 'person', 'week', 'month', 'table'];
 const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];

@@ -20,7 +20,7 @@
      Other props pass through to the <code>. forwardRef: the ref is the <code>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export const Code = React.forwardRef(function Code({ onAccent = false, truncate = false, className, children, ...rest }, ref) {
   const title = truncate && typeof children === 'string' ? children : undefined;

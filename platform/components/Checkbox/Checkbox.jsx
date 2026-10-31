@@ -53,9 +53,9 @@
        Use the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
-import { dataWhenText } from '../../utils/dataText.jsx';
+import { dataWhenText } from '../../utils/dataText.tsx';
 
 export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
   const locked = useReadOnly(readOnly);

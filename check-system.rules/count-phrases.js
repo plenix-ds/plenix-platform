@@ -25,7 +25,7 @@ const ROOT = path.join(__dirname, '..');
 // where it looks (relative to the repository), and what it skips: generated bundles, the design spec's labs (they draw
 // markup samples), the data-font helpers themselves
 const SCOPE = /[\\/](platform[\\/](components|patterns|templates|charts)|suite|dashboard|projects|messages|contacts|calendar|tasks|notes|bookmarks|files|settings|dam[\\/]app)[\\/]/;
-const SKIP_FILE = /[\\/](dist|vendor|node_modules)[\\/]|(^|[\\/])(app|assets|plenix-icons-[a-z0-9-]+)\.js$|[\\/]utils[\\/]dataText\.jsx$/;
+const SKIP_FILE = /[\\/](dist|vendor|node_modules)[\\/]|(^|[\\/])(app|assets|plenix-icons-[a-z0-9-]+)\.js$|[\\/]utils[\\/]dataText\.tsx$/;
 const TEXT_PROPS = /^(meta|subtitle|description|caption|summary|hint|helper|status|start|end|children)$/;
 const DATA_FIELDS = /^(summary|meta)$/;
 const COUNT_NAME = /^(n|count|total|length|size|shown|selected|num|number|qty|quantity)$|(Count|Total)$/;
@@ -111,7 +111,7 @@ function scan(text) {
 
 function check({ files, add }) {
   for (const { file } of files) {
-    if (!SCOPE.test(file) || SKIP_FILE.test(file) || !/\.(js|jsx)$/.test(file)) continue;
+    if (!SCOPE.test(file) || SKIP_FILE.test(file) || !/\.(js|jsx|ts|tsx)$/.test(file)) continue;
     for (const f of scan(fs.readFileSync(file, 'utf8'))) add(NAME, file, f.line, 'a count in the normal font inside a phrase (issue 260: the number in the data font): use dataPhrase or dataNumber: ' + f.text);
   }
 }

@@ -27,7 +27,7 @@ In a phrase such as "40 days" in a banner, a field's hint or a checkbox's descri
 - Counts inside messages and hints would not stand out as data the way the owner decided, or the words around them would wrongly switch to the data font.
 
 ## When it runs
-- A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the Banner, the Field, the Checkbox or the shared text helper (`utils/dataText.jsx`) changes. In a full run it always runs.
+- A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the Banner, the Field, the Checkbox or the shared text helper (`utils/dataText.tsx`) changes. In a full run it always runs.
 - The start condition names only those parts; it does not check for a change to this file itself.
 - CI: the "fixtures" browser job (`ci.yml`), which runs layout, on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "fixtures" job.
 

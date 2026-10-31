@@ -46,7 +46,7 @@ function scan(text) {
 function check({ files, add }) {
   for (const f of files) {
     const file = f.file || f;
-    if (!/\.(jsx|js|html)$/.test(file) || SKIP_FILE.test(file)) continue;
+    if (!/\.(jsx|js|tsx|ts|html)$/.test(file) || SKIP_FILE.test(file)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (text.indexOf('StatusDot') < 0) continue;
     scan(text).forEach((x) => add(NAME, file, x.line, 'a status dot with a tone and no words (label, or text beside it): ' + x.text));

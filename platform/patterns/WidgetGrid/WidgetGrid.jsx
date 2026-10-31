@@ -29,14 +29,14 @@
      The grid never changes the order by itself: onReorder hands the new order to the page, which keeps it.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../../components/Icon/Icon.jsx';
-import { LiveRegion } from '../../utils/announce.jsx';
-import { arrowStep } from '../../utils/direction.js';
+import { LiveRegion } from '../../utils/announce.tsx';
+import { arrowStep } from '../../utils/direction.ts';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import DragIcon from 'plenix-platform/icons/plenix/drag';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const move = (ids, from, to) => { const next = ids.slice(); const [x] = next.splice(from, 1); next.splice(to, 0, x); return next; };
 

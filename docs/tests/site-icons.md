@@ -26,7 +26,7 @@ Each site and app loads a small file with exactly the icons it uses, and those f
 
 ## How it checks
 - Runs each icon file in Node against a stand-in `window.Plenix` that records what it registers. No browser.
-- Checks every registered drawing with `platform/utils/iconSafety.js`.
+- Checks every registered drawing with `platform/utils/iconSafety.ts`.
 - Writes small sample sites into a temporary folder and runs the generator on them.
 
 ## What a failure means

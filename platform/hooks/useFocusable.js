@@ -33,7 +33,7 @@
      focusVisible follows the browser's :focus-visible: true after Tab, an arrow key or focus moved by a keyboard command,
        false after a mouse click or a tap on a non-text element. A text field is always focus-visible (it shows its caret).
      A focus group has one Tab stop: the item focused last (else the first) has tabIndex 0 and the others -1 (the roving
-       focus of utils/roving.js), so Tab enters and leaves the group in one step. The arrows move to the next and previous
+       focus of utils/roving.ts), so Tab enters and leaves the group in one step. The arrows move to the next and previous
        items in reading order (right to left reverses Left and Right), Home and End to the first and last. In a text field
        Left and Right move the caret instead. Hidden items are skipped.
    Notes:
@@ -44,8 +44,8 @@
        on fields; never remove it without the replacement.
 */
 import React from 'react';
-import { useRovingFocus, roveTo } from '../utils/roving.js';
-import { arrowStep } from '../utils/direction.js';
+import { useRovingFocus, roveTo } from '../utils/roving.ts';
+import { arrowStep } from '../utils/direction.ts';
 
 const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
 

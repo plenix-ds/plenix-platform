@@ -40,8 +40,8 @@
        Plenix; ask before adding one.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
+import { cx } from '../../utils/cx.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
 import { highlight } from '../CodeBlock/CodeBlock.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';

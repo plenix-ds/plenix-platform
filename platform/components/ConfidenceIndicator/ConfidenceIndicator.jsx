@@ -6,14 +6,14 @@
    Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../Stack/Stack.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Badge } from '../Badge/Badge.jsx';
-import { formatPercent } from '../../utils/format.js';
+import { formatPercent } from '../../utils/format.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function ConfidenceIndicator({level,variant='qualitative',value,locale,strings,className,...rest}){

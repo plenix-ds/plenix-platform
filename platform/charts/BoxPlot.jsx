@@ -29,8 +29,8 @@
        whiskers the subtle content color, outliers the frame's point (box-plot tokens). For a few values plot the points.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand, scaleLinear, niceTicks } from './scales.js';
 import { Axis } from './parts/Axis.jsx';

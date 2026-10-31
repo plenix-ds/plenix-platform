@@ -39,7 +39,7 @@
      Other props pass through to the <img>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ImageAN2Icon from 'plenix-platform/icons/plenix/image-a-2';

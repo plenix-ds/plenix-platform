@@ -25,7 +25,7 @@
      For a problem that is not about a field (the server did not answer), use a Notice or a Banner instead.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Notice } from '../Notice/Notice.jsx';
 import { Link } from '../Link/Link.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

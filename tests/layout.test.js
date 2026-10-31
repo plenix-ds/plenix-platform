@@ -35,12 +35,12 @@ if (changed.wants({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // the toolbar and footer ladder (issue 477, stage 4): its own test, when the Toolbar, the ActionBar, the fold helpers or Button changed
-if (changed.wants({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar', 'utils/barFit.js', 'utils/foldOrder.js'] })) {
+if (changed.wants({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar', 'utils/barFit.ts', 'utils/foldOrder.ts'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'toolbar-ladder.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // field sizing in bars (issues 558 and 554): its own test, when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
-if (changed.wants({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.js', 'utils/overflow.js', 'system/layout-modes.css'] })) {
+if (changed.wants({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.ts', 'utils/overflow.ts', 'system/layout-modes.css'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'field-sizing.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
@@ -50,7 +50,7 @@ if (changed.wants({ units: ['components/SegmentedControl', 'components/ColorSwat
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // descriptions through useDescribedBy (issue 262, PR 3): its own test, when one of those controls or the helper changed
-if (changed.wants({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.js'] })) {
+if (changed.wants({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.ts'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'describedby-adoption.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
@@ -60,7 +60,7 @@ if (changed.wants({ units: ['components/DataGrid', 'hooks/usePressable.js', 'com
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // hand-made live regions through LiveRegion (issue 262, PR 7): its own test, when one of those units or the helper changed
-if (changed.wants({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.jsx'] })) {
+if (changed.wants({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.tsx'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'announce-adoption.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
@@ -134,16 +134,16 @@ if (changed.wants({ units: ['components/Chat', 'components/MediaViewer', 'compon
 if (changed.wants({ units: ['components/Button', 'components/Toolbar'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'button-elevation-610.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // raised action buttons (issue 610)
 if (changed.wants({ units: ['patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel', 'components/Button', 'components/Input'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'navpane-fit-677.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // controls in a pane's header fit the pane (issue 677)
 if (changed.wants({ units: ['components/DataGrid', 'patterns/SplitView', 'patterns/ReadingPane'] }, 'splitworkspace-grid-681') && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'splitworkspace-grid-681.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // SplitWorkspace passes its list's DataGrid options (issue 681; templates/ is not a unit in changed.js, so the test's own file and the grid's units trigger it)
-if (changed.wants({ units: ['components/Banner', 'components/Field', 'components/Checkbox', 'utils/dataText.jsx'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-feedback.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a banner, hint or check description is in the data font (issue 260)
+if (changed.wants({ units: ['components/Banner', 'components/Field', 'components/Checkbox', 'utils/dataText.tsx'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-feedback.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a banner, hint or check description is in the data font (issue 260)
 if (changed.wants({ units: ['patterns/SettingsLayout'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-settings.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a settings description is in the data font (issue 260)
 if (changed.wants({ units: ['components/Metric', 'charts', 'patterns/RecordPage', 'patterns/ActivityList', 'components/DataGrid', 'components/Table'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-phrase-260b-data.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a count in a metric, chart, record header, activity row or table value is in the data font (issue 260)
 if (changed.wants({ units: ['messages', 'components/Chat', 'components/Avatar'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'messages-chat-s6.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the Messages app on the Chat parts and the Chat spec page (issue 637, slice 6)
-if (changed.wants({ units: ['utils/richTextClean.js', 'components/RichText', 'components/RichTextEditor'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'rich-text-clean-689.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the rich-text sanitizer against hostile input (issue 689)
+if (changed.wants({ units: ['utils/richTextClean.ts', 'components/RichText', 'components/RichTextEditor'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'rich-text-clean-689.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the rich-text sanitizer against hostile input (issue 689)
 if (changed.wants({ units: ['components/Menu', 'components/SplitButton', 'components/Combobox', 'components/Dialog', 'components/Sheet', 'components/Popover', 'patterns/Popconfirm', 'components/Slider', 'components/Checkbox', 'patterns/SplitView', 'components/Resizable', 'components/Calendar', 'components/OtpInput'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'keyboard-apg-691.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the keyboard patterns of the parts keyboard.test.js does not cover (issue 691)
 if (changed.wants({ units: ['components/CommandMenu', 'components/EntityPicker', 'components/MillerColumns', 'components/RowButton', 'patterns/AssignControl', 'patterns/ImageUpload', 'patterns/RenameAction', 'components/InlineEdit', 'patterns/SessionTimeout', 'patterns/DeleteFlow', 'patterns/DraftState', 'patterns/QueryBuilder', 'patterns/FilterBar', 'patterns/SearchWorkspace', 'components/ProductOptions', 'components/RadioTiles', 'components/ColorSwatch', 'components/Combobox', 'components/Menu'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'keyboard-706.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // the last parts without a keyboard test, and the APG gaps (issue 706)
 if (changed.wants({ units: ['components/DataGrid'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'data-grid-setvalue-736.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
-if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
+if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.ts'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
@@ -333,7 +333,7 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     extra.remove(); return out;
   });
   check('VisuallyHidden: screen-reader texts at the page end take no room, so the page does not scroll #288', quiet.scroll <= 0 && quiet.box[0] <= 1 && quiet.box[1] <= 1, JSON.stringify(quiet));
-  // #288, the bug as RedSave met it: a page with a sortable list (dnd.js appends its keyboard instructions to the body) and
+  // #288, the bug as RedSave met it: a page with a sortable list (dnd.ts appends its keyboard instructions to the body) and
   // a live region that has spoken, left to right and right to left: the document is no taller and no wider than the window
   const quietBoth = await page.evaluate(async () => {
     const P = window.Plenix, h = React.createElement, root = document.getElementById('root'), out = {};

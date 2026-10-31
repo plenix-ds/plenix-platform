@@ -10,7 +10,7 @@ const { useState } = React;
 // the grid's rows: each file with its place in the list as its id
 const ROWS = ALL_FILES.map((f, i) => ({ ...f, id: i }));
 const uniq = (values) => Array.from(new Set(values)).sort();
-// the command bar's fields (utils/fields.js)
+// the command bar's fields (utils/fields.ts)
 const FIELDS = [
   { value: 'name', label: 'Name', kind: 'text' }, { value: 't', label: 'Type', kind: 'select', options: uniq(ALL_FILES.map((f) => f.t)) },
   { value: 'folder', label: 'Folder', kind: 'select', options: uniq(ALL_FILES.map((f) => f.folder)) }, { value: 's', label: 'Size', kind: 'text' }, { value: 'd', label: 'Modified', kind: 'text' },
