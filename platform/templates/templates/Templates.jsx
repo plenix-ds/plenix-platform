@@ -16,7 +16,10 @@
        (the list as a DataGrid, which brings its own frame) or pane (framed as a ReadingPane titled paneTitle); the
        item is children, shown in a ReadingPane while detailOpen (default true), else empty (default: an EmptyState);
        actions: the reading pane's actions row; toolbar: a CommandBar above both; orientation, defaultSize, size,
-       onSizeChange: SplitView's.
+       onSizeChange: SplitView's. grid (with rows and columns; issue 681): the list's DataGrid options, passed to it as given:
+       onRowClick (open the row in the detail side), openKey (the open row, marked aria-current), selectable, selected and
+       onSelectionChange (a plain click selects only that row; ticks pick several), rowMenu, index, and any other DataGrid
+       prop; grid.label renames the list (default paneTitle). The grid keeps its own fill and scroll.
      sections: [{id,title,content}] for detail navigation; query, onQueryChange: controlled search.
      strings: visible fallback words, all overridable; error: 404, 403 or 500; onRetry: retry callback.
      auth: Auth properties; form: authentication form slot; toolbar, tools, inspector: workspace slots.
@@ -76,9 +79,10 @@ export function MasterDetailPage({ pane, paneTitle, detailOpen = false, onBack, 
   const t = { ...WORDS, ...strings }, id = React.useId();
   return <AppShell page="master-detail" header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}><div className="plx-page-panes"><SecondaryPane title={paneTitle || t.pane} detailOpen={detailOpen} onBack={onBack}>{pane}</SecondaryPane><PageContent>{children}</PageContent></div></AppShell>;
 }
-export function SplitWorkspace({ pane, paneTitle, rows, columns, detailOpen = true, title, actions, toolbar, empty, orientation, defaultSize, size, onSizeChange, strings, children, header, sideNav, footer, mainId }) {
+export function SplitWorkspace({ pane, paneTitle, rows, columns, grid, detailOpen = true, title, actions, toolbar, empty, orientation, defaultSize, size, onSizeChange, strings, children, header, sideNav, footer, mainId }) {
   const t = { ...WORDS, ...strings }, id = React.useId(), list = paneTitle || t.pane;
-  const first = columns ? <DataGrid label={list} data={rows || []} columns={columns} /> : <ReadingPane label={list}>{pane}</ReadingPane>;
+  // grid: the list's own DataGrid options (issue 681), spread last, so grid.label may rename the list; the fill and scroll stay the grid's defaults
+  const first = columns ? <DataGrid label={list} data={rows || []} columns={columns} {...grid} /> : <ReadingPane label={list}>{pane}</ReadingPane>;
   const second = <ReadingPane label={title || t.detail} actions={detailOpen ? actions : null} empty={empty || <EmptyState title={t.noSelection}>{t.noSelectionDescription}</EmptyState>}>{detailOpen ? children : null}</ReadingPane>;
   return <AppShell page="master-detail" header={header} sideNav={sideNav} footer={footer} mainId={mainId || 'plx-template-' + id}><PageContent>{toolbar}<SplitView label={title || list} firstLabel={list} orientation={orientation} defaultSize={defaultSize} size={size} onSizeChange={onSizeChange} first={first} second={second} /></PageContent></AppShell>;
 }
