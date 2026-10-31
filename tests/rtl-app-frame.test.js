@@ -54,9 +54,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       function Toaster() { const t = P.useToast(); React.useEffect(() => { t.show('تم الحفظ', { tone: 'success', duration: 0 }); }, []); return null; }
       ReactDOM.createRoot(document.getElementById('c')).render(h(P.ToastProvider, null, h(Toaster),
         h(P.Stack, { gap: 'xl' },
-          h(P.Inline, { gap: 'xl' },
+          // room on both sides (issue 777): a plain tooltip does not flip by design (only a rich one does), and anchor
+          // positioning keeps the bubble inside the window, so a trigger at the window's edge would read as "over"
+          h('div', { style: { paddingInline: '240px' } }, h(P.Inline, { gap: 'xl' },
             h(P.Tooltip, { content: 'بداية', placement: 'start' }, h(P.Button, { id: 'tip-start' }, 'البداية')),
-            h(P.Tooltip, { content: 'نهاية', placement: 'end' }, h(P.Button, { id: 'tip-end' }, 'النهاية'))),
+            h(P.Tooltip, { content: 'نهاية', placement: 'end' }, h(P.Button, { id: 'tip-end' }, 'النهاية')))),
           h('div', { id: 'bar' }, h(P.CommandBar, { label: 'أدوات', actions: ['جديد', 'رفع', 'تنزيل', 'مشاركة', 'نقل', 'حذف', 'نسخ', 'تصدير'].map((x, i) => ({ id: 'i' + i, label: x, icon: 'add', onSelect: noop })) })))));
       await new Promise((r) => setTimeout(r, 800));
     });

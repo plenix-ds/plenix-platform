@@ -10,7 +10,7 @@ This test makes sure the text editor, date picker, week grid, carousel and docum
   - DatePicker: in the range calendar, "Previous month" is right of "Next month" and its arrow is mirrored;
   - TimeGrid (week view): the days run from the right (the first day is the rightmost column);
   - Carousel: "Previous" is right of "Next", both arrows mirrored;
-  - DocumentViewer: "Previous page" is right of "Next page";
+  - DocumentViewer: once the sample PDF has loaded, "Previous page" is right of "Next page" (the buttons are found by their text);
   - the page does not scroll sideways.
 - In a left-to-right page with one Arabic editor (dir and lang set on that editor only): that editor writes right to left in Arabic with its toolbar from the right, and the other editor stays left to right.
 - No script errors.

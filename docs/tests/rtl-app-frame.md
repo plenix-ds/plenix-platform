@@ -10,7 +10,7 @@ This test makes sure the frame around every Plenix app (header, navigation pane,
   - AppHeader: its start (brand, apps) is at the right and its end (account, tools) at the left; the account menu's sign-out arrow is mirrored;
   - NavPane: the navigation pane sits at the right edge, its collapse arrow mirrored; collapsed, the rail stays at the right and its arrow is mirrored;
   - SidePanel: the Asset Manager's details panel is at the left (the end side), its arrow mirrored, with no sideways scroll;
-  - Tooltip: "start" opens to the right of its button, "end" to the left;
+  - Tooltip: "start" opens to the right of its button, "end" to the left (the buttons have room on both sides: a plain tooltip does not flip by design, issue #777);
   - Toast (pop-up message): at the left (end) corner, its colored stripe on its right (start) edge;
   - CommandBar: commands run from the right; when narrowed, the "More" button is the leftmost.
 - No script errors.
