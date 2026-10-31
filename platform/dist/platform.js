@@ -20,7 +20,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: devWarn('Tabs', { variant }, { variant: ['contained', 'folder', 'segmented'] });
    Props: component: public name; values: supplied props; choices: valid values by prop.
    Behavior: Optional null/undefined values are ignored. Each complete message is warned once per module instance.
-   Notes: Requires React 18's development runtime marker; unknown/production React defaults off. An explicit runtime
+   Notes: Requires a development React's runtime marker (React 18's or React 19's); unknown/production React defaults off. An explicit runtime
      NODE_ENV=production always disables warnings. Runtime env is read indirectly so package bundlers cannot replace it
      with their build mode. The existing react=dev loader selects development React; no new production opt-in exists.
      This is a runtime guard, not compile-time removal. Never changes rendering, props or CSS.
@@ -33,8 +33,11 @@ function development() {
     const env = Reflect.get(process, 'env');
     if (env && Reflect.get(env, 'NODE_ENV') === 'production') return false;
   }
+  // React 18's development build has ReactDebugCurrentFrame; React 19 renamed its internals, and its development build has
+  // getCurrentStack (issue 686). A production build has neither, so warnings stay off there
   const internal = _react.default && _react.default.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-  return !!(internal && internal.ReactDebugCurrentFrame);
+  const client = _react.default && _react.default.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+  return !!(internal && internal.ReactDebugCurrentFrame || client && typeof client.getCurrentStack === 'function');
 }
 function devWarn(component, values, choices) {
   if (!development()) return;
@@ -55490,6 +55493,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the outer <div>.
      For a number with a unit, a currency or a percentage, use NumberInput: it builds on this group.
 */
+// the field's own ref, so the group's ref callback can pass the node on: React 19 keeps a ref in the element's props (reading
+// element.ref warns there, issue 686); React 18 keeps it on the element and never in its props
+const REACT_19 = parseInt(String(_react.default.version || '18').split('.')[0], 10) >= 19;
+const childRef = child => REACT_19 ? child.props.ref : child.ref;
 const list = x => x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x];
 function InputGroup({
   prefix,
@@ -55529,7 +55536,7 @@ function InputGroup({
     className: (0, _cx.cx)(own.className, 'plx-input-group__input', (icon || prefix != null) && 'plx-input-group__input--after-affix', suffix != null && 'plx-input-group__input--before-affix'),
     ref: node => {
       inputRef.current = node;
-      const r = child.ref;
+      const r = childRef(child);
       if (typeof r === 'function') r(node);else if (r) r.current = node;
     }
   };
