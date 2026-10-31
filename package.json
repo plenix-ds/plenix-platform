@@ -5,6 +5,7 @@
   "description": "Plenix Platform: the design system, component library and apps",
   "scripts": {
     "build:app": "node build-app.js && node build-usage.js",
+    "build:vite-platform": "vite build --config vite.platform.config.mjs",
     "lint:system": "node check-system.js",
     "lint:style": "node check-style.js",
     "lint:spec": "node check-spec.js",
@@ -51,7 +52,8 @@
     "postcss": "^8.5.32",
     "puppeteer-core": "25.12.0",
     "stylelint": "^17.16.0",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "vite": "7.3.7"
   },
   "dependencies": {
     "@tanstack/react-table": "8.21.3",

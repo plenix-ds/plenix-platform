@@ -5,6 +5,9 @@
 // The files the build writes (node build-app.js and its steps). A task branch never commits them: every branch would
 // change them, so every pull request would conflict with the next. The integrator rebuilds them when it merges
 // (tools/agent/take-pr.js, take-lane.js) and release.sh commits them. Owner, 2026-10-15 (the Claude + Codex pilot).
+// package.json is the one partly generated file: release.sh writes only its "version" field. --check fails on package.json
+// only when that field differs from the merge base, so a branch may change its devDependencies, scripts and the rest
+// (Dependabot, the Vite steps of #709). package-lock.json is not on the list: npm writes it with the dependencies.
 const { execSync } = require('child_process');
 const path = require('path');
 const GENERATED = [
@@ -40,7 +43,8 @@ if (require.main === module) {
     // (which also holds the base's newer commits, e.g. "Generated files rebuilt", and read as the branch's own: #623)
     const base = process.argv[3], head = process.argv[4] || 'HEAD'; if (!base) { console.error('usage: --check <base ref> [<head ref>]'); process.exit(2); }
     const from = sh('git merge-base ' + base + ' ' + head).trim();
-    const changed = sh('git diff --name-only ' + from + ' ' + head).split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'platform/components/DataGrid/data-grid-steps.css' && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/DataGrid.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/data-grid-steps.css').trim()));
+    const version = (ref) => { try { return JSON.parse(sh('git show ' + ref + ':package.json')).version; } catch (e) { return undefined; } };
+    const changed = sh('git diff --name-only ' + from + ' ' + head).split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'package.json' && version(from) === version(head)) && !(file === 'platform/components/DataGrid/data-grid-steps.css' && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/DataGrid.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/data-grid-steps.css').trim()));
     for (const file of PARTIAL) if (generatedBlock(sh('git show ' + from + ':' + file)) !== generatedBlock(sh('git show ' + head + ':' + file))) changed.push(file);
     if (changed.length) {
       console.log('GENERATED_FAIL: this branch commits generated files (the integrator rebuilds them at merge):\n  ' + changed.join('\n  ') +
