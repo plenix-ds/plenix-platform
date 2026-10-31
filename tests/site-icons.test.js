@@ -63,9 +63,23 @@ check('Compatibility file: without plenix.js it warns and registers nothing #553
   assert.strictEqual(r.registered.length, 0);
   assert.ok(/load it after plenix\.js/.test(r.warnings[0] || ''), 'no warning: ' + r.warnings.join(' | '));
 });
+// Code that loads or runs something, not words inside the icon data: the icon named "import" is a string value
+// ("name":"import"), so the patterns need a call, a statement or a URL, never the bare word (issue 756).
+const LOADS = [
+  ['an import() call', /(^|[^\w$."'])import\s*\(/m],
+  ['an import ... from statement', /(^|[;{}\s])import\s+[\w$*{][^;]*?\bfrom\s*['"`]/m],
+  ["an import '...' statement", /(^|[;{}\s])import\s*['"`]/m],
+  ['a fetch() call', /\bfetch\s*\(/],
+  ['XMLHttpRequest', /\bXMLHttpRequest\b/],
+  ['innerHTML', /\.innerHTML\b/],
+  ['an eval() call', /\beval\s*\(/],
+  ['a URL (http: or https:)', /https?:/],
+  ['a // URL in a src or href', /\b(src|href)\b['"]?\s*[=:]\s*['"`]\s*\/\//],
+];
 check('Compatibility file: it loads nothing (no fetch, no import, no URL) #553', () => {
-  const text = fs.readFileSync(COMPAT, 'utf8');
-  assert.ok(!/\b(fetch|import|XMLHttpRequest|innerHTML|eval)\b|https?:/.test(text.replace(/^\/\*[\s\S]*?\*\//, '')), 'the file reaches outside itself');
+  const text = fs.readFileSync(COMPAT, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '');
+  const found = LOADS.filter(([, re]) => re.test(text)).map(([what]) => what);
+  assert.deepStrictEqual(found, [], 'the file reaches outside itself: ' + found.join(', '));
 });
 
 check('Page icon files: each application, the Asset Manager and the login service are up to date #557', () => {

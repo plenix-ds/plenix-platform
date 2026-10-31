@@ -27,8 +27,11 @@ A table whose rows come from a server loads more rows as the person scrolls, wit
 - A long server list could stop loading, load the same page twice, show a blank table, or hide everything behind an error when one page fails.
 
 ## When it runs
-- Started by hand only: `node tests/remote-fill-522.test.js` (its Usage line).
-- It is not in any group of `tests/run.js`, no other test starts it, and no workflow or package.json script runs it.
+- A child of `data-grid` (AUTOMATIC in `tests/run.js`): data-grid starts it as a separate process before its own checks. Before issue #756 it was started by hand only.
+- In changed mode it runs when the DataGrid, DataGridEngine or Table changes, or when this test's own file (or a fixture it loads) changes. In a full run it always runs.
+- It is skipped when data-grid is started with `DT_ONLY`.
+- CI: the "behavior" browser job (`ci.yml`), on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "behavior" job.
+- By hand: `node tests/remote-fill-522.test.js`.
 
 ## What it needs
 - Headless Chrome and the local test server (`tests/lib.js`).

@@ -28,8 +28,12 @@ This test makes sure the text editor, date picker, week grid, carousel and docum
 - On Arabic pages, "previous" and "next" buttons could be on the wrong sides, the week could read backwards, or Arabic text could be typed left to right.
 
 ## When it runs
-- Started by hand only: `node tests/rtl-editing-time.test.js`.
-- It is not in any group of `tests/run.js`, no other test starts it, and no `package.json` script or workflow names it. It does not run in CI or the full suite.
+- A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
+- In changed mode (`npm test` and CI), Layout starts it when RichTextEditor, DatePicker, TimeGrid, Carousel or DocumentViewer changes, or a part built on one of them changes.
+- Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches that slice too.
+- Layout also starts it when this test's own file, or a fixture it loads, changes. By hand: `node tests/rtl-editing-time.test.js`.
+- A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
+- CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 
 ## What it needs
 - Headless Chrome (CHROME_PATH) and the local test server (`tests/lib.js`).

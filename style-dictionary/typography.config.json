@@ -1,0 +1,25 @@
+{
+  "source": [
+    "platform/tokens/reference.tokens.json",
+    "platform/tokens/reference/*.tokens.json",
+    "platform/tokens/theme-default.tokens.json",
+    "platform/tokens/semantic.tokens.json",
+    "platform/tokens/semantic/typography.tokens.json"
+  ],
+  "platforms": {
+    "css": {
+      "transforms": ["name/kebab"],
+      "buildPath": "build/sd/",
+      "files": [
+        {
+          "destination": "typography.css",
+          "format": "css/variables",
+          "options": {
+            "selector": ":root",
+            "outputReferences": true
+          }
+        }
+      ]
+    }
+  }
+}

@@ -13,9 +13,10 @@ Run each command from the repository folder.
 - `npm test`: every automatic test, only for what changed since the last commit (changed mode).
 - `npm run test:full`: every automatic test on every page. This is the final gate.
 - `npm run test:on-demand`: the on-demand tests (accessibility, high contrast, color contrast, themes, density) for what changed. Add `:full` (`npm run test:on-demand:full`) for every page.
+- `node tests/run.js --release`: the tests of the release build (perf, w15c-packages, icons-package-282, cdn-devx), after `node build-packages.js`. They are not in `npm test`, because they need the release build.
 - `node tests/run.js <name> <name>`: only the tests named, for example `node tests/run.js pages typography`.
 - `node tests/run.js keyboard:Toolbar,Tabs`: only some parts of one test (the parts are listed in `tests/parts.json`).
-- `node tests/<name>.test.js`: one test file by itself. The tests marked "started by hand" below run only this way.
+- `node tests/<name>.test.js`: one test file by itself. Only two tests run only this way: data-grid-perf and data-grid-next-perf, which measure time and depend on the machine's speed (issue #756).
 - `npm run test:scope` (`node tests/changed.js`): prints what changed mode will check, without running anything.
 - On GitHub:
   - "Checks" (`ci.yml`) runs the changed-mode tests on every pull request and on pushes to styling/phase-2 and main.
@@ -103,7 +104,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 
 - [field-sizing](field-sizing.md): Fields inside toolbars (drop-down lists, search boxes, text boxes) size to their content within sensible limits, give way only after buttons have folded, and show cut-off text in full in a tooltip.
 - [fill-693](fill-693.md): Messages with blanks in them ("Go to page {n}") are filled in the same correct way everywhere in Plenix, and never show the words "undefined" or "null" to a person.
-- [layout](layout.md): Plenix pages keep the right shape for their kind (full width, a centered column, panes, or a distraction-free editor), and split views, right-to-left rows and hidden screen-reader text behave on every page. Known defect: #750, being fixed.
+- [layout](layout.md): Plenix pages keep the right shape for their kind (full width, a centered column, panes, or a distraction-free editor), and split views, right-to-left rows and hidden screen-reader text behave on every page.
 - [monitor-widths](monitor-widths.md): A side panel remembers the width a person dragged it to separately for each monitor, so moving between a laptop and a large screen keeps the right width on each.
 - [navpane-fit-677](navpane-fit-677.md): Controls placed in the header of a side pane (a drop-down list, a button with long words) stay inside the pane instead of sticking out past its edge.
 - [pages](pages.md): Every Plenix application page and every page of the St. John test site opens cleanly, with no errors, no plain tables, no boxes nested three deep and no inline styles the system forbids.

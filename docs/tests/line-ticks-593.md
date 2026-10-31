@@ -26,8 +26,12 @@ Charts of whole days label their time axis with dates (Oct 1, Oct 2), never with
 - A person reading a chart of daily figures could see confusing "12:00 AM / 12:00 PM" labels, repeated days, or no dates at all.
 
 ## When it runs
-- Started by hand only: `node tests/line-ticks-593.test.js` (the Usage in its header).
-- It is in no group of `tests/run.js`, no other test starts it, and no `package.json` script or workflow in `.github/workflows/` names it.
+- A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
+- In changed mode (`npm test` and CI), Layout starts it when `utils/format.js` changes, or a part built on it changes.
+- Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/` (the chart engine), `platform/templates/` or `platform/providers/` reaches that slice too.
+- Layout also starts it when this test's own file, or a fixture it loads, changes. By hand: `node tests/line-ticks-593.test.js`.
+- A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
+- CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 
 ## What it needs
 - Headless Chrome (`launch` in `tests/lib.js`, CHROME_PATH).

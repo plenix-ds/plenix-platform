@@ -31,9 +31,9 @@ Cards no longer draw a colored edge, and the suite pages that used that edge sti
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`.
-- In changed mode (`npm test` and CI), Layout starts it only when the Card changes (or a part it is built on), or when the dashboard, calendar, settings or projects application changes.
+- In changed mode (`npm test` and CI), Layout starts it when the Card changes (or a part it is built on), or when the dashboard, calendar, settings or projects application changes.
 - Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes.
-- A change to this test's own file alone does not start it through Layout: Layout checks only the parts listed above. Run it by hand: `node tests/card-accent-621.test.js`.
+- Layout also starts it when this test's own file, or a fixture it loads, changes (issue #756). By hand: `node tests/card-accent-621.test.js`.
 - A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
 - CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 

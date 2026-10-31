@@ -22,8 +22,12 @@ A dropdown that shows a number or a date shows it in the data font, while one th
 - Numbers and dates in dropdowns would not match how numbers look elsewhere, or words would wrongly appear in the data font.
 
 ## When it runs
-- Started by hand only: `node tests/select-data-font.test.js` (its Usage line).
-- It is not in any group of `tests/run.js`, no other test starts it, and no workflow or package.json script runs it.
+- A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
+- In changed mode (`npm test` and CI), Layout starts it when Input, Combobox or `utils/dataText.jsx` changes, or a part built on one of them changes.
+- Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches that slice too.
+- Layout also starts it when this test's own file, or a fixture it loads, changes. By hand: `node tests/select-data-font.test.js`.
+- A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
+- CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 
 ## What it needs
 - Headless Chrome and the local test server (`tests/lib.js`).

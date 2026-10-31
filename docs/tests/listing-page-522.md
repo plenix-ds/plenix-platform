@@ -25,8 +25,12 @@ A list page (ListingPage) fills the window with its table, scrolls only inside t
 - On a list page, the whole page could scroll along with the table, page buttons could appear, or the record's detail could be missing or misplaced.
 
 ## When it runs
-- Started by hand only: `node tests/listing-page-522.test.js` (its Usage line).
-- It is not in any group of `tests/run.js`, no other test starts it, and no workflow or package.json script runs it.
+- A child of `data-grid` (AUTOMATIC in `tests/run.js`): data-grid starts it as a separate process before its own checks. Before issue #756 it was started by hand only.
+- In changed mode it runs when the DataGrid, DataGridEngine or Table changes, or when this test's own file (or a fixture it loads) changes. In a full run it always runs.
+  - ListingPage lives in `platform/templates/`, which changed mode does not map to a part, so the grid's parts and the test's own file start it (as the comment in `tests/data-grid.test.js` says). A change there reaches the small fixed slice, which also starts it.
+- It is skipped when data-grid is started with `DT_ONLY`.
+- CI: the "behavior" browser job (`ci.yml`), on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "behavior" job.
+- By hand: `node tests/listing-page-522.test.js`.
 
 ## What it needs
 - Headless Chrome and the local test server (`tests/lib.js`).

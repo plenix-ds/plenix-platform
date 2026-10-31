@@ -22,6 +22,7 @@ Large tables (600 rows with rich cells) open, sort, filter and scroll within tim
 ## When it runs
 - Started by hand only: `PERF_REPORT=<path> node tests/data-grid-next-perf.test.js` (its Usage line).
 - It is not in any group of `tests/run.js`, no other test starts it, and no workflow or package.json script runs it.
+- It stays started by hand on purpose (decided in issue #756): it measures time, and its results depend on the machine's speed, which varies on shared CI machines.
 - The DataGrid README lists it under the grid's validation.
 
 ## What it needs
