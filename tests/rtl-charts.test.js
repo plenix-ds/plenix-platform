@@ -44,7 +44,11 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     const line = await read('line');
     const dates = line.texts.filter((l) => !digits.test(l.t)), values = line.texts.filter((l) => digits.test(l.t));
     assert.ok(increasing(dates.map((l) => l.x)), 'LineChart (time): the dates run left to right: ' + JSON.stringify(dates));
-    assert.ok(/يناير/.test(dates[0].t) && /يونيو/.test(dates[dates.length - 1].t), 'LineChart (time): January first (left), June last (right): ' + JSON.stringify(dates));
+    // the data runs Jan 15 to Jun 15. Since #593 (21f931d3) date-only values get day ticks or coarser, never hours: for this
+    // five-month span the step is two weeks on whole days, so the first tick is the first one inside the data, 1 February,
+    // and the last 7 June (the CI run of #771 drew exactly these). The earliest date is at the left (issue 777)
+    assert.equal(dates[0].t, '١ فبراير', 'LineChart (time): the first tick, at the left, is 1 February: ' + JSON.stringify(dates));
+    assert.equal(dates[dates.length - 1].t, '٧ يونيو', 'LineChart (time): the last tick, at the right, is 7 June: ' + JSON.stringify(dates));
     assert.ok(values.length > 1 && values.every((l) => l.x < line.mid), 'LineChart (time): the value axis is at the left: ' + JSON.stringify(values));
     assert.ok(dates.every((l) => /[٠-٩]/.test(l.t) && !/[0-9]/.test(l.t)), 'LineChart (time): the dates keep their Arabic-Indic digits: ' + JSON.stringify(dates));
 

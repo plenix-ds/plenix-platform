@@ -51,7 +51,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const prevM = await btn('body', ['previous month', 'الشهر السابق']), nextM = await btn('body', ['next month', 'الشهر التالي']);
     assert.ok(prevM && nextM && prevM.left > nextM.left && prevM.scale === '-1 1', 'DatePicker: Previous month is right of Next, its arrow mirrored: ' + JSON.stringify({ prevM, nextM }));
     await page.keyboard.press('Escape');
-    const days = await page.evaluate(() => [...document.querySelectorAll('#tg [class*="day"]')].filter((e) => /السبت|الأحد|الاثنين/.test(e.textContent) && e.children.length <= 3).map((e) => [e.textContent.trim().slice(0, 6), e.getBoundingClientRect().left]));
+    const days = await page.evaluate(() => [...document.querySelectorAll('#tg [class*="day"]')].filter((e) => /السبت|الأحد|الاثنين/.test(e.textContent) && e.children.length <= 3).map((e) => [e.textContent.trim().slice(0, 8), e.getBoundingClientRect().left]));   // 8: the whole "الاثنين" (7 letters; issue 777)
     const sat = days.find((d) => d[0].startsWith('السبت')), mon = days.find((d) => d[0].startsWith('الاثنين'));
     assert.ok(sat && mon && sat[1] > mon[1], 'TimeGrid: the days run from the right: ' + JSON.stringify(days));
     const prevS = await btn('#car', ['previous', 'السابقة']), nextS = await btn('#car', ['next', 'التالية']);
