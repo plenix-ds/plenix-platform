@@ -142,12 +142,32 @@ Each line links to the test's page. A test that a group test starts is listed un
 
 ### Tokens and style
 
-- Described in a following pull request (issue #748).
+- [baseline-scan-273](baseline-scan-273.md): The tool that lists what an application must change to follow the newest Plenix finds every problem, and never touches the application it reads.
+- [brand-rules](brand-rules.md): The Plenix logo is never shown too small, too crowded or on a wrong background, because the brand rules and the logo's design settings agree.
+- [component-tokens](component-tokens.md): Every design setting a component offers really changes what it says it changes, so adjusting a component's look in Plenix works.
+- [density](density.md): A compact or comfortable area on a page (for example a compact table on a normal page) really shows its controls at that area's size.
+- [selector-kinds](selector-kinds.md): The style checker that keeps Plenix's stylesheets in order judges each style rule correctly, so a badly written rule cannot slip into the product.
+- [theme](theme.md): A new color theme can be added to Plenix, and people can switch to it and keep it.
+- [typography](typography.md): Text in Plenix uses the right typeface: DM Sans for words, Reddit Mono for codes, dates, sizes and other technical values, and the two sit neatly on one line.
+- [utilities](utilities.md): Long lists scroll smoothly, keyboard shortcuts work, and copying a value tells the person (and a screen reader) that it was copied.
+- [zero-overlap](zero-overlap.md): Each part of the Plenix interface gets each style from exactly one rule, so changing one component's look never changes another by accident.
 
 ### Icons
 
-- Described in a following pull request (issue #748).
+- [icon-fetch-642](icon-fetch-642.md): A page with many icons loads them all without overwhelming the server, so no icon is left blank.
+- [icon-module-url-284](icon-module-url-284.md): Icons still show when a website renames the Plenix files while bundling them.
+- [icon-mv3-284](icon-mv3-284.md): Plenix icons work inside a Chrome extension, which may not load any code from the internet.
+- [icon-offline-archive-284](icon-offline-archive-284.md): A website that hosts its own copy of Plenix shows every icon with no internet connection.
+- [icon-package-assets-284](icon-package-assets-284.md): The downloadable Plenix package holds the files for every documented icon, so no icon is missing for a site that hosts Plenix itself.
+- [icon-retry-283](icon-retry-283.md): An icon that fails to load once because of a network hiccup is tried again, so it still appears.
+- [icon-safety](icon-safety.md): An icon file cannot be used to sneak harmful code into a Plenix page.
+- [icons-package-282](icons-package-282.md): The Plenix icons package carries every Plenix icon as its own importable piece, so developers can load only the icons they use.
+- [site-icons](site-icons.md): Each site and app loads a small file with exactly the icons it uses, and those files are safe and up to date.
 
 ### Build, packages and security
 
-- Described in a following pull request (issue #748).
+- [cdn-devx](cdn-devx.md): The files Plenix publishes for developers (change notes, token list, component documentation, the token checker) are complete and correct.
+- [login](login.md): Signing in to Plenix is safe: only the right password works, sessions cannot be forged, and attackers are slowed down and cannot redirect people elsewhere.
+- [rich-text-clean-689](rich-text-clean-689.md): Formatted text that people write (notes, comments, descriptions) cannot carry harmful code into Plenix, while bold, links, lists and tables still work.
+- [types](types.md): Developers who write Plenix apps in TypeScript can write correct code without false errors from Plenix's type descriptions.
+- [w15c-packages](w15c-packages.md): The Plenix add-on packages (the AI assistant connector, web components) work, stay within their size budgets, and dates show the same day in every time zone.
