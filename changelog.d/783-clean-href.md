@@ -1,0 +1,2 @@
+### Fixed
+- cleanRichText (#783): a link whose unsafe address was dropped (`javascript:`, in all 17 of its disguises) came out as `<a>x</a>`, and cleaning that again gave `<a href="">x</a>`, a link to the page itself. One pass is now final: an `href` is written only when the source has a non-empty, safe one, and an empty `href=""` is dropped too. Nothing could run before or after; the fix makes the cleaner's output stable.

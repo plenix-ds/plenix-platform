@@ -44,7 +44,9 @@ export function cleanRichText(html: unknown): string {
       const styles = (USER_STYLE[tag] || []).map((p) => [p, n.style ? n.style.getPropertyValue(p) : '']).filter((s) => s[1] && !/url\(|expression|[<>]/i.test(s[1]));
       if (!ALLOWED[tag] || (tag === 'SPAN' && !mention && !styles.length)) { copy(n, into, task); return; }
       const el = document.createElement(tag.toLowerCase());
-      if (tag === 'A') { const href = (n.getAttribute('href') || '').trim(); if (SAFE_HREF.test(href)) el.setAttribute('href', href); }
+      // an href only when there is one: SAFE_HREF's "no scheme" branch also matches the empty string, so a link whose unsafe
+      // href was dropped came back as href="" on a second pass (issue 783: one pass must be final)
+      if (tag === 'A') { const href = (n.getAttribute('href') || '').trim(); if (href && SAFE_HREF.test(href)) el.setAttribute('href', href); }
       if (tag === 'IMG') {
         const src = (n.getAttribute('src') || '').trim();
         if (!src || !SAFE_SRC.test(src)) return;
