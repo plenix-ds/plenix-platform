@@ -27,6 +27,9 @@
 //               is in the Plenix set (platform/icons/map.json); an unknown name draws nothing
 //   icon-imports (check-system.rules/icon-imports.js) a Platform component draws its icons from imported modules, never from a
 //               name written as text (#280; three named exceptions, each with its reason)
+//   token-sets  (check-system.rules/token-sets.js) the checks the token build made (#372 step 2): themes write no color literal
+//               and define the same roles and foundations, a token is defined in one file only, glob sets and their file
+//               names, print values without contrast values, no typography composite
 //   site-styles (check-system.rules/site-styles.js) sites have no stylesheet, style block or style attribute of their own (#381): a tracked
 //               .css file outside the exempt list fails, and so does a <style> block or style attribute in services/ or the St. John site
 //   and the other modules of check-system.rules/ that are not style rules (check-common.js, STYLE_MODULES): composition,
@@ -87,8 +90,11 @@ for (const kind of ['components', 'patterns']) {
 }
 // generated: the code made from the design system's standards matches its JSON source (platform/standards/*.json)
 for (const f of require('./build-standards.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/standards: edit the standard (JSON) and run node build-app.js, never the generated file');
-// generated: the token stylesheets match their JSON source
-for (const f of require('./build-tokens.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/tokens: edit the .tokens.json, then build');
+// generated: the token stylesheets match their JSON source. When the token source breaks a rule of the token sets, the
+// build stops; the rule token-sets (check-system.rules/token-sets.js, #372 step 2) lists every finding, with the build's messages
+let tokenBuild = { stale: [] };
+try { tokenBuild = require('./build-tokens.js')(ROOT, { check: true }); } catch (e) { add('generated', path.join(ROOT, 'build-tokens.js'), 0, 'the token build stopped (see the rule token-sets): ' + String(e.message).split('\n')[0]); }
+for (const f of tokenBuild.stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/tokens: edit the .tokens.json, then build');
 // generated: the compatibility icon file (every Plenix icon, #553) matches the icon set (platform/icons/map.json)
 for (const f of require('./tools/icons/site-icons.js').buildCompat(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/icons: run node build-app.js, never edit the generated file');
 // generated: each page's icon file (#557) holds exactly the icons its source names

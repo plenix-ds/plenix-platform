@@ -37,7 +37,7 @@ This test makes sure the last group of Plenix controls that had no keyboard chec
 
 ## When it runs
 - A child test, started by `tests/layout.test.js` (AUTOMATIC in `tests/run.js`).
-- In changed mode, layout starts it only when CommandMenu, EntityPicker, MillerColumns, RowButton, AssignControl, ImageUpload, RenameAction, InlineEdit, SessionTimeout, DeleteFlow, DraftState, QueryBuilder, FilterBar, SearchWorkspace, ProductOptions, RadioTiles, ColorSwatch, Combobox or Menu changes, when a global file changes, or when `layout.test.js` itself changes. A change to this file alone does not start it in changed mode.
+- In changed mode, layout starts it when CommandMenu, EntityPicker, MillerColumns, RowButton, AssignControl, ImageUpload, RenameAction, InlineEdit, SessionTimeout, DeleteFlow, DraftState, QueryBuilder, FilterBar, SearchWorkspace, ProductOptions, RadioTiles, ColorSwatch, Combobox or Menu changes, when a global file changes, or when `layout.test.js` itself changes. It also starts it when this test's own file, or a fixture it loads, changes (issue #756).
 - In a full run it always runs.
 - CI: with layout in the "fixtures" browser job. The full suite: its "fixtures" job.
 

@@ -25,8 +25,7 @@ In a settings description such as "469 members in 120 families", the numbers are
 - Counts in settings descriptions would not stand out as data the way the owner decided, or the words around them would wrongly switch to the data font.
 
 ## When it runs
-- A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the SettingsLayout (patterns/SettingsLayout) changes. In a full run it always runs.
-- The start condition names only that part; it does not check for a change to this file itself.
+- A child of `layout` (AUTOMATIC in `tests/run.js`): layout starts it as a separate process when the SettingsLayout (patterns/SettingsLayout) changes, or when this test's own file, or a fixture it loads, changes (issue #756). In a full run it always runs.
 - CI: the "fixtures" browser job (`ci.yml`), which runs layout, on every pull request and on pushes to styling/phase-2 and main. Full suite (`full.yml`): the "fixtures" job.
 
 ## What it needs

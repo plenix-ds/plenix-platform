@@ -21,7 +21,7 @@ Developers who write Plenix apps in TypeScript can write correct code without fa
 
 ## When it runs
 - AUTOMATIC group in `tests/run.js`. It has no changed-mode filter: it always runs when started.
-- CI (`ci.yml`): the "Build and checks" job (`node tests/run.js formats brand-rules login types fill-693`), on every pull request and on pushes to styling/phase-2 and main.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests without a browser", on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`full.yml`): the build job.
 - By hand: `node tests/types.test.js`, or `npm run test:types`.
 

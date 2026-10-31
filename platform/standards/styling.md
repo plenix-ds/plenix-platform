@@ -255,17 +255,17 @@ height, the focus border, a font family, internal paddings. Plenix's own applica
 ## 6. Typography: documented text contracts
 
 **Text roles.**
-- Each text role (body, label, heading levels, caption/eyebrow, data, code, and component roles that differ) is a W3C
-  `typography` composite token: `fontFamily`, `fontSize`, `fontWeight`, `letterSpacing` and `lineHeight`.
-- Word spacing is not part of that standard type. Plenix keeps it as a companion token, recorded in the role's
-  `$extensions.plenix`:
+- Each text role (body, label, heading levels, caption/eyebrow, data, code, and component roles that differ) is six
+  separate tokens, one per property: `font-family`, `font-size`, `font-weight`, `letter-spacing`, `line-height` and
+  `word-spacing`.
+- Word spacing is part of every role:
   - the data and code roles carry the fitted word spacing (`--plx-sys-font-data-word-spacing`);
   - the DM Sans roles carry `normal`.
-- The generator writes each role as coordinated longhand declarations, the companion word spacing included.
-- The roles are generated from the existing tokens, not maintained by hand: `platform/tokens/semantic/typography.tokens.json`
-  holds them (body, secondary, caption, label, heading, title, eyebrow, display, lead), and `build-tokens.js`
-  writes each as six longhand tokens, `--plx-sys-text-<role>-font-family`, `-font-size`, `-font-weight`,
-  `-letter-spacing`, `-line-height` and `-word-spacing`.
+- A role is never a W3C `typography` composite token: plain Style Dictionary writes no composite (issue 372, step 3), and the
+  check `check-system.rules/token-sets.js` fails on one.
+- The roles point to the existing tokens, never to new values: `platform/tokens/semantic/typography.tokens.json` holds
+  them (body, secondary, caption, label, heading, title, eyebrow, display, lead) as `--plx-sys-text-<role>-font-family`,
+  `-font-size`, `-font-weight`, `-letter-spacing`, `-line-height` and `-word-spacing`.
 - **One uniform type system** (owner, 2026-10-20): a role sets the metrics (size, weight, letter spacing, line height)
   in DM Sans. Reddit Mono is not a role: it is a switch, `--plx-sys-text-mono-font-family` with
   `--plx-sys-text-mono-word-spacing`, that any role takes for a technical value or code. Mono is fitted to DM Sans (its

@@ -28,8 +28,10 @@ The tool that lists what an application must change to follow the newest Plenix 
 - Worse, the scan could change or add files inside the application it was only meant to read.
 
 ## When it runs
-- No run group and no parent test start it. CI does not run it.
-- Started by hand only: `node tests/baseline-scan-273.test.js` (the Usage line in its header). No package.json script or workflow names it.
+- AUTOMATIC in `tests/run.js` since issue #756 (before, it was started by hand only), so `npm test` and `npm run test:full` run it. It has no changed mode: it runs all its checks every time.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests without a browser", on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
+- By hand: `node tests/baseline-scan-273.test.js`.
 
 ## What it needs
 - Node only (no browser, no server).

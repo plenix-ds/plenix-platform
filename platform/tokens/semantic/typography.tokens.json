@@ -1,149 +1,275 @@
 {
-  "$description": "Text roles (Plenix Styling Standard, section 6; owner, 2026-10-20: one uniform type system): each a W3C typography composite of existing tokens, with its word spacing as the companion ($extensions.plenix.wordSpacing). build-tokens.js writes each as six longhand tokens (--plx-sys-text-<role>-font-family, -font-size, -font-weight, -letter-spacing, -line-height, -word-spacing). A role sets the metrics (size, weight, letter spacing, line height) in DM Sans; Reddit Mono is not a role but a switch, text-mono-font-family with text-mono-word-spacing, that any role takes for a technical value or code. A component that establishes a role applies all six (the two font properties from the role or from the Mono switch); one that adjusts a role sets only the properties its contract names.",
+  "$description": "Text roles (Plenix Styling Standard, section 6; owner, 2026-10-20: one uniform type system): each role is six separate tokens, --plx-sys-text-<role>-font-family, -font-size, -font-weight, -letter-spacing, -line-height and -word-spacing, each pointing to an existing token (#372 step 3: written by hand, so plain Style Dictionary writes the same custom properties as build-tokens.js; a W3C typography composite is not used, because its word spacing would need an extension and plain Style Dictionary writes no composite). A role sets the metrics (size, weight, letter spacing, line height) in DM Sans; Reddit Mono is not a role but a switch, text-mono-font-family with text-mono-word-spacing, that any role takes for a technical value or code. A component that establishes a role applies all six (the two font properties from the role or from the Mono switch); one that adjusts a role sets only the properties its contract names.",
   "plx-sys": {
-    "text-body": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-body}",
-        "fontSize": "{plx-ref.font-size-13}",
-        "fontWeight": "{plx-sys.font-weight-regular}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "Running text: the page's body text.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-body-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Running text: the page's body text. The text-body role's font family."
     },
-    "text-secondary": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-body}",
-        "fontSize": "{plx-ref.font-size-12}",
-        "fontWeight": "{plx-sys.font-weight-regular}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "Supporting text one step below the body: descriptions, metadata in words.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-body-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "The text-body role's font size."
     },
-    "text-caption": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-body}",
-        "fontSize": "{plx-ref.font-size-11}",
-        "fontWeight": "{plx-sys.font-weight-regular}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "The smallest running text: captions, hints, help under a field.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-body-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "The text-body role's font weight."
     },
-    "text-label": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-label}",
-        "fontSize": "{plx-ref.font-size-12}",
-        "fontWeight": "{plx-sys.font-weight-semibold}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "A label: names a field, a group or a value.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-body-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-body role's letter spacing."
     },
-    "text-heading": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-heading}",
-        "fontSize": "{plx-ref.font-size-13}",
-        "fontWeight": "{plx-sys.font-weight-semibold}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "A section heading inside a page or a card.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-body-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-body role's line height."
     },
-    "text-title": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-heading}",
-        "fontSize": "{plx-ref.font-size-20}",
-        "fontWeight": "{plx-sys.font-weight-bold}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "A page's title.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-body-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-body role's word spacing (the companion of the typography token)."
     },
-    "text-eyebrow": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-label}",
-        "fontSize": "{plx-ref.font-size-11}",
-        "fontWeight": "{plx-sys.font-weight-bold}",
-        "letterSpacing": "{plx-sys.letter-spacing-widest}",
-        "lineHeight": "{plx-ref.line-height-normal}"
-      },
-      "$description": "A small spaced label above a heading.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-secondary-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Supporting text one step below the body: descriptions, metadata in words. The text-secondary role's font family."
     },
-    "text-display": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-heading}",
-        "fontSize": "{plx-ref.font-size-20}",
-        "fontWeight": "{plx-sys.font-weight-semibold}",
-        "letterSpacing": "{plx-sys.letter-spacing-tight}",
-        "lineHeight": "{plx-ref.line-height-tight}"
-      },
-      "$description": "The largest style: one key figure or a sign-in heading.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-secondary-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "The text-secondary role's font size."
     },
-    "text-lead": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "{plx-sys.font-body}",
-        "fontSize": "{plx-ref.font-size-15}",
-        "fontWeight": "{plx-sys.font-weight-regular}",
-        "letterSpacing": "normal",
-        "lineHeight": "{plx-ref.line-height-relaxed}"
-      },
-      "$description": "Body text one step up: the opening paragraph of a page.",
-      "$extensions": {
-        "plenix": {
-          "wordSpacing": "normal"
-        }
-      }
+    "text-secondary-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "The text-secondary role's font weight."
+    },
+    "text-secondary-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-secondary role's letter spacing."
+    },
+    "text-secondary-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-secondary role's line height."
+    },
+    "text-secondary-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-secondary role's word spacing (the companion of the typography token)."
+    },
+    "text-caption-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "The smallest running text: captions, hints, help under a field. The text-caption role's font family."
+    },
+    "text-caption-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "The text-caption role's font size."
+    },
+    "text-caption-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "The text-caption role's font weight."
+    },
+    "text-caption-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-caption role's letter spacing."
+    },
+    "text-caption-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-caption role's line height."
+    },
+    "text-caption-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-caption role's word spacing (the companion of the typography token)."
+    },
+    "text-label-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "A label: names a field, a group or a value. The text-label role's font family."
+    },
+    "text-label-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "The text-label role's font size."
+    },
+    "text-label-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "The text-label role's font weight."
+    },
+    "text-label-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-label role's letter spacing."
+    },
+    "text-label-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-label role's line height."
+    },
+    "text-label-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-label role's word spacing (the companion of the typography token)."
+    },
+    "text-heading-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "A section heading inside a page or a card. The text-heading role's font family."
+    },
+    "text-heading-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "The text-heading role's font size."
+    },
+    "text-heading-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "The text-heading role's font weight."
+    },
+    "text-heading-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-heading role's letter spacing."
+    },
+    "text-heading-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-heading role's line height."
+    },
+    "text-heading-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-heading role's word spacing (the companion of the typography token)."
+    },
+    "text-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "A page's title. The text-title role's font family."
+    },
+    "text-title-font-size": {
+      "$value": "{plx-ref.font-size-20}",
+      "$type": "dimension",
+      "$description": "The text-title role's font size."
+    },
+    "text-title-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight",
+      "$description": "The text-title role's font weight."
+    },
+    "text-title-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-title role's letter spacing."
+    },
+    "text-title-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-title role's line height."
+    },
+    "text-title-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-title role's word spacing (the companion of the typography token)."
+    },
+    "text-eyebrow-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "A small spaced label above a heading. The text-eyebrow role's font family."
+    },
+    "text-eyebrow-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "The text-eyebrow role's font size."
+    },
+    "text-eyebrow-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight",
+      "$description": "The text-eyebrow role's font weight."
+    },
+    "text-eyebrow-letter-spacing": {
+      "$value": "{plx-sys.letter-spacing-widest}",
+      "$type": "dimension",
+      "$description": "The text-eyebrow role's letter spacing."
+    },
+    "text-eyebrow-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "The text-eyebrow role's line height."
+    },
+    "text-eyebrow-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-eyebrow role's word spacing (the companion of the typography token)."
+    },
+    "text-display-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "The largest style: one key figure or a sign-in heading. The text-display role's font family."
+    },
+    "text-display-font-size": {
+      "$value": "{plx-ref.font-size-20}",
+      "$type": "dimension",
+      "$description": "The text-display role's font size."
+    },
+    "text-display-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "The text-display role's font weight."
+    },
+    "text-display-letter-spacing": {
+      "$value": "{plx-sys.letter-spacing-tight}",
+      "$type": "dimension",
+      "$description": "The text-display role's letter spacing."
+    },
+    "text-display-line-height": {
+      "$value": "{plx-ref.line-height-tight}",
+      "$type": "number",
+      "$description": "The text-display role's line height."
+    },
+    "text-display-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-display role's word spacing (the companion of the typography token)."
+    },
+    "text-lead-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Body text one step up: the opening paragraph of a page. The text-lead role's font family."
+    },
+    "text-lead-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "The text-lead role's font size."
+    },
+    "text-lead-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "The text-lead role's font weight."
+    },
+    "text-lead-letter-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-lead role's letter spacing."
+    },
+    "text-lead-line-height": {
+      "$value": "{plx-ref.line-height-relaxed}",
+      "$type": "number",
+      "$description": "The text-lead role's line height."
+    },
+    "text-lead-word-spacing": {
+      "$value": "normal",
+      "$type": "dimension",
+      "$description": "The text-lead role's word spacing (the companion of the typography token)."
     },
     "text-mono-font-family": {
       "$value": "{plx-sys.font-data}",

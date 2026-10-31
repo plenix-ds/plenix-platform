@@ -36,8 +36,12 @@ The Plenix add-on packages (the AI assistant connector, web components) work, st
 - Package downloads grow too big without anyone noticing.
 
 ## When it runs
-- No run group and no parent test start it. CI does not run it.
-- Started by hand only: `node tests/w15c-packages.test.js`. It has no Usage line. No package.json script or workflow names it; `build-packages.d/web-components.js` mentions it in a comment only.
+- In the RELEASE group of `tests/run.js` since issue #756 (before, it was started by hand only): `node tests/run.js --release` runs it with the other tests of the release build, or by name: `node tests/run.js w15c-packages`.
+- It is not in `npm test` or `npm run test:full`, because it needs the release build (`node build-packages.js`) first.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests of the release build", after the release build, on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the same step of its build job.
+- Without the design system (in CI, when the DS_TOKEN secret is not set) it prints `W15C_PACKAGES_OK skipped: no design system` and passes.
+- By hand: `node tests/w15c-packages.test.js`.
 
 ## What it needs
 - Node only (no browser, no server).

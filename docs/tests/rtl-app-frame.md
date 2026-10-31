@@ -27,8 +27,12 @@ This test makes sure the frame around every Plenix app (header, navigation pane,
 - On Arabic pages the navigation could sit on the wrong side, arrows could point the wrong way, or the page could scroll sideways.
 
 ## When it runs
-- Started by hand only: `node tests/rtl-app-frame.test.js`.
-- It is not in any group of `tests/run.js`, no other test starts it, and no `package.json` script or workflow names it. It does not run in CI or the full suite.
+- A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
+- In changed mode (`npm test` and CI), Layout starts it when AppShell, AppHeader, NavPane, SidePanel, CommandBar, Tooltip or Toast changes, or a part built on one of them changes, or when the Projects app or the Asset Manager changes.
+- Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches that slice too.
+- Layout also starts it when this test's own file, or a fixture it loads, changes. By hand: `node tests/rtl-app-frame.test.js`.
+- A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
+- CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 
 ## What it needs
 - Headless Chrome (CHROME_PATH) and the local test server (`tests/lib.js`).

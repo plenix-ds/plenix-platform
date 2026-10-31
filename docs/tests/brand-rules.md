@@ -30,7 +30,7 @@ The Plenix logo is never shown too small, too crowded or on a wrong background, 
 ## When it runs
 - AUTOMATIC group in `tests/run.js`.
 - In changed mode it runs only when the brand files (`platform/brand`) or the Brand component change, a global file changes, or this test's own file changes.
-- CI (`ci.yml`): the "Build and checks" job (`node tests/run.js formats brand-rules login types fill-693`), on every pull request and on pushes to styling/phase-2 and main.
+- CI (`ci.yml`): the "Build and checks" job, in the step "Tests without a browser", on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`full.yml`): the build job.
 - By hand: `node tests/brand-rules.test.js`, or `npm run test:brand-rules`.
 

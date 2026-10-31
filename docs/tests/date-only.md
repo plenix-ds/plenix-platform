@@ -27,8 +27,12 @@ This test makes sure a date with no time, such as a due date of October 18, show
 - People in the Americas would see dates one day early, for example a deadline or an event shown on the wrong day, and date filters could drop or add the wrong rows.
 
 ## When it runs
-- Started by hand only: `node tests/date-only.test.js`.
-- It is not in any group of `tests/run.js`, no other test starts it, and no `package.json` script or workflow names it. It does not run in CI or the full suite.
+- A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
+- In changed mode (`npm test` and CI), Layout starts it when DatePicker, Time or `utils/format.ts` changes, or a part built on one of them changes.
+- Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches that slice too.
+- Layout also starts it when this test's own file, or a fixture it loads, changes. By hand: `node tests/date-only.test.js`.
+- A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
+- CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 - Related #342 checks in `tests/formats.test.js` (parseDate in a US time zone, no private date-only readers, Time's output) do run automatically.
 
 ## What it needs

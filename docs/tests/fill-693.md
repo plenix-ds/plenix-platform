@@ -34,8 +34,8 @@ Messages with blanks in them ("Go to page {n}") are filled in the same correct w
 
 ## When it runs
 - AUTOMATIC in `tests/run.js`: part of `npm test` and `npm run test:full`. It has no changed mode: it runs all its checks every time.
-- CI: the "Build and checks" job, in the step "Tests without a browser" (`node tests/run.js formats brand-rules login types fill-693`), on every pull request and on pushes to styling/phase-2 and main.
-- Full suite (`.github/workflows/full.yml`): its build job runs formats, brand-rules, login and types only; fill-693 is not listed there.
+- CI: the "Build and checks" job, in the step "Tests without a browser", on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`.github/workflows/full.yml`): the same step of its build job (since issue #756).
 
 ## What it needs
 - Node with the `@babel/standalone` package (a development dependency in `package.json`).

@@ -51,8 +51,11 @@ jobs:
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; fi
           node build-packages.js
 
-      - name: "Tests without a browser (formats, brand rules, login, types)"
-        run: node tests/run.js formats brand-rules login types
+      - name: "Tests without a browser (formats, brand rules, login, types, fill, icon safety, selector kinds, Arabic catalog, baseline scan, site icons)"
+        run: node tests/run.js formats brand-rules login types fill-693 icon-safety selector-kinds arabic-catalog-427 baseline-scan-273 site-icons
+
+      - name: "Tests of the release build (package sizes, add-on packages, icons package, CDN files; issue 756)"
+        run: node tests/run.js --release
 
   browser:
     name: Full ${{ matrix.name }}

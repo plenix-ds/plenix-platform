@@ -27,7 +27,7 @@ let checks=0;const ok=(value,message)=>{assert.ok(value,message);checks++;};
  ok(catalog.versions.some(v=>v.breaking.length>0),'Actual historical Changed/Removed entries are published');
  const tokens=load('tokens.json'),index=JSON.parse(fs.readFileSync(path.join(ROOT,'platform/tokens/tokens.index.json'),'utf8'));
  ok(tokens.count===index.tokens.length&&tokens.tokens.length===tokens.count,'Published token list contains every source-index token');
- ok(tokens.tokens.every(t=>typeof t.name==='string'&&['plx-ref','plx-sys','plx-comp'].includes(t.tier)&&typeof t.purpose==='string'&&t.value!==undefined&&Array.isArray(t.values)),'Token metadata includes names, tiers, purposes and contextual values');
+ ok(tokens.tokens.every(t=>typeof t.name==='string'&&['plx-ref','plx-sys','plx-comp','plx-state','plx-ctx'].includes(t.tier)&&typeof t.purpose==='string'&&t.value!==undefined&&Array.isArray(t.values)),'Token metadata includes names, tiers, purposes and contextual values');
  const contextual=index.tokens.find(t=>t.resolved&&Object.keys(t.resolved).length>1);
  ok(!contextual||JSON.stringify(tokens.tokens.find(t=>t.name===contextual.name).value)===JSON.stringify(contextual.resolved),'Resolved theme/density values are preserved rather than flattened');
  const docs=load('docs/index.json'),components=JSON.parse(fs.readFileSync(path.join(ROOT,'release/api/v1/components.json'),'utf8')).components;
