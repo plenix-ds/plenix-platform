@@ -11,15 +11,15 @@
      description: help text under the control (under the label with "row")
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
-     info: content for a small (i) button next to the label
+     info: an element: content for a small (i) button next to the label
      infoLabel: the accessible name of the (i) button (default the catalog's field.about, "About {label}")
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end); without it, the layout of the Form around the
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
-     counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
+     counter: true or a number: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
        as a number; default none
      strings: the counter's words for screen readers: { left: '{n} characters left', over: '{n} characters too many' }
-     labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
+     labelWidth: a string: the width of the label column, as a size name (adds plx-field--label-<value>)
      type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
        unless it sets its own
      children: exactly one control

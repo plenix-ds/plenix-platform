@@ -18,7 +18,7 @@
      Radio.className: more classes on the row
      RadioGroup.label: the legend of the group
      RadioGroup.name: the radio name (default a generated one)
-     RadioGroup.value: the selected option value
+     RadioGroup.value: a string: the selected option value
      RadioGroup.onChange(value): runs with the chosen option value
      RadioGroup.options: the choices: [{ value, label, description, disabled }]
      RadioGroup.layout: "column" (default) | "row"

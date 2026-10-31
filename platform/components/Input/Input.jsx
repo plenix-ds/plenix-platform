@@ -6,13 +6,13 @@
      <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
      <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
-     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
+     Input.size: "sm" | "md" (default) | a number: "sm" uses the existing toolbar control height; "md" keeps today’s standard height; a number keeps the native size attribute.
      Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
        leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
-     Select.width: the same values
+     Select.width: as Input.width
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
