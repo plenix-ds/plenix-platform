@@ -1,0 +1,158 @@
+/* Plenix · DataGrid engine · keyboard and focus
+   Summary: The grid's keyboard paths and the cell focus they use: sorting a column with Enter or Space, resizing a column
+     with the arrow keys, Home and End, a group row (Enter, Space, the arrows), a record row (Enter chooses and opens it,
+     Arrow Down and Up move to the next row), a cell (Ctrl or Command with C copies; Enter edits; the arrows move across
+     cells, mirrored in right to left), and the table body (Arrow Down enters the first cell).
+   Usage:
+     import { rowKeys, cellKeys, makeFocusCell } from './engine/keys.js';
+     const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
+     <div role="row" onKeyDown={rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })} />
+   Props:
+     Each export takes one object of what the handler reads from the engine and returns the handler (or, for makeFocusCell,
+     the function focusCell(rowIndex, columnIndex, step) that scrolls a cell into view and focuses it):
+     headerKeys({ column }); resizeKeys({ resize, c, column }); groupKeys({ toggleGroup, group, model, virtual, holder, B });
+     rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model });
+     cellKeys({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell });
+     tableKeys({ focusCell, first }).
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the handlers' code (issue 714, the keyboard concern): each handler
+     was an inline function of the engine's markup; it is the same function text, built from the same names, at the same place.
+     The engine is documented in DataGridEngine.jsx.
+*/
+import { stepSize } from '../../../utils/sizeSteps.js';
+import { valueText } from '../cells.jsx';
+import { isRtl } from '../../../utils/direction.js';
+
+export const headerKeys =
+  ({ column }) =>
+  (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+      e.preventDefault();
+      column.toggleSorting();
+    }
+  };
+
+export const resizeKeys =
+  ({ resize, c, column }) =>
+  (e) => {
+    if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+      e.preventDefault();
+      resize(
+        c.field,
+        e.key === 'Home'
+          ? column.columnDef.minSize
+          : e.key === 'End'
+            ? column.columnDef.maxSize
+            : stepSize(
+                column.getSize(),
+                e.key === 'ArrowRight' ? 1 : -1,
+                column.columnDef.minSize,
+                column.columnDef.maxSize
+              )
+      );
+    }
+  };
+
+export const makeFocusCell =
+  ({ model, ordered, virtualized, virtual, displayElements }) =>
+  (rowIndex, columnIndex, step = 1) => {
+    while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
+    const record = model[rowIndex],
+      column = ordered[columnIndex];
+    if (!record || (columnIndex !== null && !column)) return;
+    if (virtualized) virtual.scrollToIndex(rowIndex, { align: 'auto' });
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const node = displayElements.current.get(record.displayKey || record.id);
+        (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
+          preventScroll: true
+        });
+      })
+    );
+  };
+
+export const groupKeys =
+  ({ toggleGroup, group, model, virtual, holder, B }) =>
+  (event) => {
+    if (event.target !== event.currentTarget) return;
+    if (['Enter', ' ', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
+      event.preventDefault();
+      toggleGroup(group.id, event.key === 'ArrowRight' ? true : event.key === 'ArrowLeft' ? false : undefined);
+    } else if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
+      event.preventDefault();
+      const headers = model.filter((row) => row.__group),
+        next = headers[headers.findIndex((row) => row.id === group.id) + (event.key === 'ArrowDown' ? 1 : -1)];
+      if (next) {
+        virtual.scrollToIndex(model.indexOf(next), { align: 'center' });
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() =>
+            holder.current
+              ?.querySelector('.' + B + '__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')
+              ?.focus({ preventScroll: true })
+          )
+        );
+      }
+    }
+  };
+
+export const rowKeys =
+  ({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model }) =>
+  (e) => {
+    if (
+      e.key === 'Enter' &&
+      !e.defaultPrevented &&
+      (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')
+    ) {
+      e.preventDefault();
+      chooseRow(row, e);
+      emit('rowClick', e, rowApi);
+      props.onRowClick?.(record, e);
+      if (props.onRowClick || on.rowClick) {
+        unread.open(record);
+        setOwnOpen(row.id);
+      }
+    }
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
+      e.preventDefault();
+      const step = e.key === 'ArrowDown' ? 1 : -1;
+      focusCell(model.indexOf(row) + step, null, step);
+    }
+  };
+
+export const cellKeys =
+  ({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell }) =>
+  (event) => {
+    if (isStatic || event.target !== event.currentTarget) return;
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
+      if (document.getSelection()?.toString()) return;
+      event.preventDefault();
+      navigator.clipboard.writeText(valueText(value));
+      return;
+    }
+    if (event.key === 'Enter' && canEdit) {
+      event.preventDefault();
+      setEditing({ key: row.id, field: c.field, value });
+      return;
+    }
+    const index = model.indexOf(row),
+      at = ordered.indexOf(column),
+      keys = {
+        ArrowDown: [index + 1, at],
+        ArrowUp: [index - 1, at],
+        ArrowLeft: [index, at + (isRtl(frame.current) ? 1 : -1)],
+        ArrowRight: [index, at + (isRtl(frame.current) ? -1 : 1)]
+      };
+    if (keys[event.key]) {
+      event.preventDefault();
+      focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
+    }
+  };
+
+export const tableKeys =
+  ({ focusCell, first }) =>
+  (event) => {
+    if (event.target === event.currentTarget && event.key === 'ArrowDown') {
+      event.preventDefault();
+      focusCell(first, 0);
+    }
+  };
