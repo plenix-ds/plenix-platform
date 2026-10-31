@@ -1,7 +1,14 @@
 /* CDN artifact and development token-check regressions. Build packages first; no publishing occurs. */
 const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert');
 const ROOT=path.resolve(__dirname,'..');
-if(!fs.existsSync(path.join(ROOT,'platform/design-system/inventory.js'))){console.log('CDN_DEVX_SKIP no design system');process.exit(0);}
+// without the design system nothing here can be checked: a visible skip, never an OK (issue 762); on GitHub also a warning
+// on the run's summary, so a green run never hides an unchecked one
+if(!fs.existsSync(path.join(ROOT,'platform/design-system/inventory.js'))){
+  const why='skipped: design system not available (platform/design-system is not checked out); nothing was checked';
+  console.log('CDN_DEVX_SKIPPED '+why);
+  if(process.env.GITHUB_ACTIONS)console.log('::warning title=cdn-devx skipped::'+why);
+  process.exit(0);
+}
 let checks=0;const ok=(value,message)=>{assert.ok(value,message);checks++;};
 (async()=>{
  const builder=fs.readFileSync(path.join(ROOT,'build-packages.js'),'utf8'),start=builder.indexOf('// CDN documentation helpers:'),end=builder.indexOf('// End CDN documentation helpers.');
