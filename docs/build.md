@@ -29,16 +29,19 @@ This is the one inventory of every custom tool in this repository (owner decisio
 
 | Tool | What it checks | N or R | Standard replacement |
 |---|---|---|---|
-| `check-system.js` and `check-system.rules/` (30 rule modules today, 31 with the shared-fill rule of #693) | Structure, markup, generated files, icon names and imports, hook adoption, built-in words, count phrases and more | N | ESLint plugins, later |
+| `check-system.js` and `check-system.rules/` (31 rule modules, the shared-fill rule of #693 among them) | Structure, markup, generated files, icon names and imports, hook adoption, built-in words, count phrases and more | N | ESLint plugins, later |
 | `check-system.rules/token-definitions`, `color-groups`, `site-styles` and the style modules | No new colors, the 4px grid, corners 2 to 6px, tokens only ★ | N | an ESLint or Stylelint plugin |
 | `check-style.js`, `tools/stylelint/plenix.mjs` and `.stylelintrc.json` | Tokens only, raw values, palette colors, class names, token tiers, logical properties ★ | N | already a Stylelint plugin; `check-style.js` holds what Stylelint cannot read |
 | `check-common.js` | The file list and the reporter the two checks share | N | none |
 | `check-copy.js` | Wording of the default texts | N | none |
 | `check-spec.js` | The design spec against its own standard | N | none |
 | `check-bundle.js` and `check-bundle.baseline.json` | The built CDN files against the size and content rules | R | size-limit |
+| `tools/agent/one-part-sizes.js` | The size of one import from the npm package (`{ Button }`, `{ Badge }`, `{ DataGrid }`, `* as P`); `check-bundle.js` calls it, and it prints the same numbers on its own (#685) | R | size-limit |
+| `tools/agent/types-any.js` and `types-any.baseline.json` | The count of `any` props in `packages/react/index.d.ts` never goes up (CI, #687) | R | `tsc` with `noImplicitAny`, after the source moves to TypeScript |
+| `tools/fixtures/` | The fixtures a check proves its own rule on (`spec-color-samples/`: the good and the shrunk color sample of `check-spec.js`) | N | none |
 | `tools/check-live-cdn.js` | After a release, whether the live CDN serves what the release built | N | none |
 | `tools/check-readiness.js` | A release stops while a `priority:1` issue is open | N | none (a GitHub required check could replace it) |
-| `tools/check-overflow.js` | The overflow audit of every page, run by the owner | N | Playwright Test |
+| `tools/check-overflow.js` and `tools/overflow-allow.json` | The overflow audit of every page, run by the owner; the allow-list holds the intentional cases | N | Playwright Test |
 | `tools/baseline/scan.js` | The baseline scan of an application against the newest Plenix (#273) | N | none |
 
 ## Tests
@@ -46,8 +49,13 @@ This is the one inventory of every custom tool in this repository (owner decisio
 | Tool | What it does | N or R | Standard replacement |
 |---|---|---|---|
 | `tests/lib.js`, `run.js`, `changed.js`, `check.js`, `limit.js`, `pixels.js` | The Puppeteer runner, the changed-mode scope, the results file, the screenshots | R | Playwright Test |
-| `tests/*.test.js` (117 files) and the `layout.test.js` wiring | The tests themselves. They are not tooling: they are the product's checks | N | none |
-| `tools/build-test-parts.js`, `tools/file-failures.js` | The parts list of each test; one GitHub issue per check still failing after an owner-started run | N | none |
+| `tests/*.test.js` (118 files), their `tests/fixtures/` and the `layout.test.js` wiring | The tests themselves. They are not tooling: they are the product's checks | N | none |
+| `tools/build-test-parts.js`, `tools/file-failures.js` and `tools/file-failures-example/` | The parts list of each test; one GitHub issue per check still failing after an owner-started run; the example folder is a dry run of it (its results, the open issues and the printed output) | N | none |
+| `tests/site.js`, `site-guard.js`, `site-check.js` | The St. John test site for the browser tests: starting and stopping it, and a static check of its source | N | none |
+| `tests/icon-modules.js`, `next-engine.js`, `next-source.js` | Helpers the tests import: the icon modules for esbuild, the alternate DataGrid engine and its source fixture | N | none |
+| `tests/clash-audit.js` (the styling-proof workflow), `compare.js`, `style-compare.js`, `compare-styles.js` | Before and after comparisons of two copies of the repository: computed styles and pixels | R | Playwright Test screenshots |
+| `tests/a11y-report.js` | The accessibility work list (axe-core findings grouped by rule), run by the owner | R | axe-core's own reporter |
+| `tests/typography-181-compare.js`, `typography-197-compare.js`, `ci197-paired.cjs`, `ci197-results.cjs`, `tests/lane-198-proof/**/*.cjs` | One-time proofs of past pull requests, named in their proof folders' READMEs | R | delete in the next clean-up |
 | 37 npm scripts in `package.json` (24 of them alias one test or one test group) | Commands | R | one test command, plus build, lint and release |
 
 ## Other tools
@@ -56,12 +64,15 @@ This is the one inventory of every custom tool in this repository (owner decisio
 |---|---|---|---|
 | `tools/icons/` (inventory, restyle, fetch, measure, site icon files, brand logos) | The owner's icon rules: restyling icons from other libraries, per-site icon files | N; R in part | svgo |
 | `tokenize-component.js` | Moves a component's design values into component tokens (a one-time migration tool; keeps one declaration per line) | R | Style Dictionary and Stylelint fixes |
+| `deploy.sh` | Publishes the apps, the design system, the release's CDN files and the JSON API to the publish host | N | none |
 | `tools/publish-config.sh` | The publish host and account for the deploy scripts | N | none |
+| `services/login/deploy.sh`, `services/save/deploy.sh`, `services/registry/add-user.sh`, `prefetch.sh`, `services/auth/*.mjs` | Build and start the login and save services on the publish host; the package registry's accounts and prefetch; the proxy hosts' configuration | N | none |
+| `.github/phase-guard/phase-guard.js` and `labels.json` | Checks a phase label change on an issue against the allowed table (the phase-guard workflow) | N | none |
 | `tools/agent/generated.js`, `take-pr.js`, `release.sh` | The generated-file guard, merging of a pull request, releases | R | stop committing generated files (#692); Changesets |
 | `tools/agent/lane-overlay.js` and `lanes/` | Carries spec changes around the separate spec repository | R | bring the spec into this repository (the owner's call) |
-| `tools/agent/datagrid/`, `native/`, `library/`, `spec-merge/`, `web/s3/addtok.js`, `web/s3/merge-base.js`, `build-study.js`, `native/merge.js` | Measuring and comparison probes, the native-guidance and Figma generators, the library plan generators, small helpers. Kept after the clean-up because a person may still run them by hand | R in part | delete when no one runs them |
+| `tools/agent/datagrid/`, `native/`, `library/`, `spec-merge/`, `web/s3/addtok.js` (with its entry files `web/s3/*.json`), `web/s3/merge-base.js`, `build-study.js`, `native/merge.js` | Measuring and comparison probes, the native-guidance and Figma generators, the library plan generators, small helpers. Kept after the clean-up because a person may still run them by hand | R in part | delete when no one runs them |
 
 ## What is deleted when it has been used
 
 - One-time scripts (migrations, one-off patches, throwaway probes) are deleted in the pull request that used them.
-- The clean-up of 2026-10-31 (issue #712) removed 56 scripts from `tools/agent` that no build, check, workflow, test or npm script referenced. The pull request lists each file and why.
+- The clean-up of 2026-10-31 (issue #712) removed 59 scripts from `tools/agent` that no build, check, workflow, test or npm script referenced, with the data only they read (`web/s3/reflow-base.json`, `color-migration.report.txt`). The pull request lists each file and why.
