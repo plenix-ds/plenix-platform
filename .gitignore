@@ -20,3 +20,5 @@ tests/.density-test.html
 # the publish host, account and key (tools/publish-config.sh); never committed
 publish.config
 tools/overflow-report/
+# the side-by-side Vite build (#709, steps 1 to 2); never committed
+build/vite/
