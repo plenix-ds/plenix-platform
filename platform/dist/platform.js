@@ -91497,7 +91497,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (the list as a DataGrid, which brings its own frame) or pane (framed as a ReadingPane titled paneTitle); the
        item is children, shown in a ReadingPane while detailOpen (default true), else empty (default: an EmptyState);
        actions: the reading pane's actions row; toolbar: a CommandBar above both; orientation, defaultSize, size,
-       onSizeChange: SplitView's.
+       onSizeChange: SplitView's. grid (with rows and columns; issue 681): the list's DataGrid options, passed to it as given:
+       onRowClick (open the row in the detail side), openKey (the open row, marked aria-current), selectable, selected and
+       onSelectionChange (a plain click selects only that row; ticks pick several), rowMenu, index, and any other DataGrid
+       prop; grid.label renames the list (default paneTitle). The grid keeps its own fill and scroll.
      sections: [{id,title,content}] for detail navigation; query, onQueryChange: controlled search.
      strings: visible fallback words, all overridable; error: 404, 403 or 500; onRetry: retry callback.
      auth: Auth properties; form: authentication form slot; toolbar, tools, inspector: workspace slots.
@@ -91730,6 +91733,7 @@ function SplitWorkspace({
   paneTitle,
   rows,
   columns,
+  grid,
   detailOpen = true,
   title,
   actions,
@@ -91752,11 +91756,12 @@ function SplitWorkspace({
     },
     id = _react.default.useId(),
     list = paneTitle || t.pane;
-  const first = columns ? /*#__PURE__*/_react.default.createElement(_DataGrid.DataGrid, {
+  // grid: the list's own DataGrid options (issue 681), spread last, so grid.label may rename the list; the fill and scroll stay the grid's defaults
+  const first = columns ? /*#__PURE__*/_react.default.createElement(_DataGrid.DataGrid, _extends({
     label: list,
     data: rows || [],
     columns: columns
-  }) : /*#__PURE__*/_react.default.createElement(_SplitView.ReadingPane, {
+  }, grid)) : /*#__PURE__*/_react.default.createElement(_SplitView.ReadingPane, {
     label: list
   }, pane);
   const second = /*#__PURE__*/_react.default.createElement(_SplitView.ReadingPane, {
