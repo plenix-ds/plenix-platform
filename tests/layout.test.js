@@ -15,11 +15,15 @@ const changed = require('./changed.js');
 // The child tests, each run as its own process before Layout's own checks. A child runs when what it covers changed
 // (changed.wants), or when its own file or a fixture it loads changed (changed.child; issue 756), and always in a full
 // run. Its file name stays written out ('<name>.test.js'): tests/changed.js finds a group's children by those names.
+// Every child runs, even after one fails; the failures are listed at the end and make Layout fail (issue 768: one red
+// child must not hide the others).
+const failedChildren = [];
 function child(what, file) {
   if (!changed.wants(what) && !changed.child(file)) return;
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, file)], { stdio: 'inherit', env: process.env });
-  if (result.status !== 0) process.exit(result.status || 1);
+  if (result.status !== 0) failedChildren.push(file.replace(/\.test\.js$/, ''));
 }
+const childSummary = () => (failedChildren.length ? 'LAYOUT_FAIL children: ' + failedChildren.join(', ') : '');
 // sizes past the generated grid lines land on the caps, never on the default size (#375 review): when Resizable, SplitView or a pane of the shell changed
 child({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'resize-caps.test.js');
 // a pane or a table column is never dragged wider than 90% of the window (of the table): when Resizable, SplitView, a pane
@@ -34,7 +38,7 @@ child({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar',
 // field sizing in bars (issues 558 and 554): when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
 child({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.ts', 'utils/overflow.ts', 'system/layout-modes.css'] }, 'field-sizing.test.js');
 // controls follow read-only (issue 262, PR 1): when one of them or the ReadOnly provider changed
-child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'providers/ReadOnly.jsx'] }, 'readonly-adoption.test.js');
+child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'components/TimePicker', 'components/Cascader', 'components/RelativeDateInput', 'providers/ReadOnly.jsx'] }, 'readonly-adoption.test.js');   // the last three added in issue 762: the test checks them too
 // descriptions through useDescribedBy (issue 262, PR 3): when one of those controls or the helper changed
 child({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.ts'] }, 'describedby-adoption.test.js');
 // pressing through usePressable (issue 262, PR 4): when the DataGrid or the hook changed
@@ -105,7 +109,10 @@ child({ units: ['providers/DirectionProvider'] }, 'rtl-charts.test.js');
 child({ units: ['components/NavList', 'components/Fieldset', 'components/Checkbox', 'providers/DirectionProvider'] }, 'rtl-ctm-question.test.js');
 child({ units: ['components/RichTextEditor', 'components/DatePicker', 'patterns/TimeGrid', 'components/Carousel', 'components/DocumentViewer'] }, 'rtl-editing-time.test.js');
 child({ units: ['patterns/AppShell'], apps: ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'] }, 'rtl-whole-page.test.js');
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/Toolbar', 'patterns/ActionBar', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset', 'components/Icon'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/Toolbar', 'patterns/ActionBar', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset', 'components/Icon'] })) {
+  if (failedChildren.length) { console.log(childSummary() + ' (Layout\'s own checks: nothing in scope)'); process.exit(1); }
+  changed.none('LAYOUT_OK 0/0');
+}
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -326,5 +333,6 @@ async function cleanup() {
   const bad = res.filter((x) => !x[1]);
   res.forEach(([n, ok, d]) => console.log((ok ? '  ok   ' : '  FAIL ') + n + (ok ? '' : ' · ' + d)));
   console.log((bad.length ? 'LAYOUT_FAIL ' : 'LAYOUT_OK ') + (res.length - bad.length) + '/' + res.length);
-  process.exit(bad.length ? 1 : 0);
-})().catch(async (e) => { console.error(e); await cleanup(); process.exit(1); });
+  if (failedChildren.length) console.log(childSummary());
+  process.exit(bad.length || failedChildren.length ? 1 : 0);
+})().catch(async (e) => { console.error(e); if (failedChildren.length) console.log(childSummary()); await cleanup(); process.exit(1); });

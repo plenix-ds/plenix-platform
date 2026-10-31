@@ -11785,1304 +11785,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
     return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
   }
-  const Checkbox = React$1.forwardRef(function Checkbox2({ label: label2, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
-    const locked = useReadOnly(readOnly);
-    const inner = React$1.useRef(null);
-    React$1.useImperativeHandle(ref, () => inner.current);
-    React$1.useEffect(() => {
-      if (inner.current) inner.current.indeterminate = indeterminate;
-    }, [indeterminate]);
-    return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref: inner, type: "checkbox", className: "plx-check__input", ...readOnlyProps(locked, rest) }), label2 || description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
-  });
-  const Radio = React$1.forwardRef(function Radio2({ label: label2, description, className, readOnly, dir, lang, ...rest }, ref) {
-    const locked = useReadOnly(readOnly);
-    return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref, type: "radio", className: "plx-check__input", ...readOnlyProps(locked, rest, { aria: false }) }), label2 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
-  });
-  function RadioGroup({ label: label2, name, value, onChange, options, layout: layout2 = "column", className, readOnly, ...rest }) {
-    const auto = "plx-r" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
-    return /* @__PURE__ */ React$1.createElement("fieldset", { className: cx("plx-radio-group", "plx-radio-group--" + layout2, className), ...rest }, label2 ? /* @__PURE__ */ React$1.createElement("legend", { className: "plx-radio-group__legend" }, label2) : null, options.map((o) => /* @__PURE__ */ React$1.createElement(Radio, { key: o.value, name: name || auto, value: o.value, label: o.label, description: o.description, checked: o.value === value, onChange: () => onChange(o.value), disabled: o.disabled, readOnly })));
-  }
-  function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
-    const locked = useReadOnly(readOnly);
-    const auto = "plx-c" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
-    return /* @__PURE__ */ React$1.createElement("fieldset", { className: cx("plx-choice-list", className), ...rest }, legend ? /* @__PURE__ */ React$1.createElement("legend", { className: "plx-choice-list__legend" }, legend) : null, options.map((o) => /* @__PURE__ */ React$1.createElement("label", { key: o.value, className: cx("plx-choice", o.value === value && "is-selected"), hidden: o.hidden || void 0 }, /* @__PURE__ */ React$1.createElement("input", { type: "radio", className: "plx-choice__input", ...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false }) }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-choice__text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-choice__label" }, o.label), o.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-choice__description" }, o.description) : null))));
-  }
-  const Switch = React$1.forwardRef(function Switch2({ label: label2, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
-    const locked = useReadOnly(readOnly);
-    return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-switch", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref, type: "checkbox", role: "switch", className: "plx-switch__input", "aria-label": labelHidden ? label2 : void 0, ...readOnlyProps(locked, rest) }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" }), label2 && !labelHidden ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__label" }, label2) : null);
-  });
-  const d0$13 = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
-  const d1$12 = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
-  const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$13 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$13 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$12 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$12 } } } };
-  const asItem = (kind) => (x) => typeof x === "string" ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind });
-  function marked(label2, text2) {
-    const s = String(label2), q2 = String(text2 || "").trim();
-    const at2 = q2 ? s.toLowerCase().indexOf(q2.toLowerCase()) : -1;
-    if (at2 < 0) return s;
-    return [s.slice(0, at2), /* @__PURE__ */ React$1.createElement("strong", { key: "m", className: "plx-search__match" }, s.slice(at2, at2 + q2.length)), s.slice(at2 + q2.length)];
-  }
-  const SearchInput = React$1.forwardRef(function SearchInput2({
-    value,
-    onChange,
-    onClear,
-    placeholder,
-    label: label2,
-    shortcut,
-    loading = false,
-    onAccent = false,
-    suggestions,
-    recent,
-    onSelect,
-    onSubmitSearch,
-    onRemoveRecent,
-    onClearRecent,
-    strings,
-    className,
-    onKeyDown: onKeyDown2,
-    onFocus,
-    width = "auto",
-    size,
-    ...rest
-  }, ref) {
-    const t = useStrings("searchField", strings);
-    if (placeholder === void 0) placeholder = t.placeholder;
-    if (label2 === void 0) label2 = t.label;
-    const auto = "plx-sf" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
-    const listId = auto + "-list";
-    const wrap = React$1.useRef(null), input = React$1.useRef(null), list2 = React$1.useRef(null);
-    React$1.useImperativeHandle(ref, () => input.current);
-    const hasList = !!(suggestions || recent);
-    const text2 = value == null ? "" : String(value);
-    const showRecent = !text2;
-    const items = showRecent ? (recent || []).map(asItem("recent")) : (suggestions || []).map(asItem("suggestion"));
-    const [open, setOpen] = React$1.useState(false);
-    const [active, setActive] = React$1.useState(-1);
-    const [cell, setCell] = React$1.useState(0);
-    const shown = hasList && open && items.length > 0;
-    const grid = showRecent && !!onRemoveRecent;
-    React$1.useEffect(() => {
-      setActive(-1);
-      setCell(0);
-    }, [text2, showRecent]);
-    React$1.useEffect(() => {
-      if (!open) return void 0;
-      const off2 = (e) => {
-        if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-      };
-      document.addEventListener("mousedown", off2);
-      return () => document.removeEventListener("mousedown", off2);
-    }, [open]);
-    React$1.useEffect(() => {
-      if (shown && !showRecent) announce(t.results.replace("{n}", formatNumber(items.length)));
-    }, [shown, showRecent, items.length, t.results]);
-    React$1.useEffect(() => {
-      const el = active >= 0 && list2.current ? list2.current.querySelector("#" + auto + "-r" + active + ", #" + auto + "-o" + active) : null;
-      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
-    }, [active, auto]);
-    const setText = (v) => {
-      if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current });
-    };
-    const choose = (item) => {
-      setOpen(false);
-      if (onSelect) onSelect(item);
-      else {
-        setText(item.value);
-        if (onSubmitSearch) onSubmitSearch(item.value);
-      }
-    };
-    const removeRecent = (i) => {
-      const it = items[i];
-      if (!it || !onRemoveRecent) return;
-      onRemoveRecent(it.value);
-      if (active >= 0) setActive((a) => Math.min(a, items.length - 2));
-      if (items.length <= 1) setCell(0);
-      announce(t.removed.replace("{query}", it.value));
-    };
-    const keys = (e) => {
-      if (onKeyDown2) onKeyDown2(e);
-      if (e.defaultPrevented || !hasList) {
-        if (e.key === "Enter" && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text2);
-        return;
-      }
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        if (!open) setOpen(true);
-        else if (items.length) setActive((a) => (a + 1) % items.length);
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        if (!open) setOpen(true);
-        else if (items.length) setActive((a) => a <= 0 ? items.length - 1 : a - 1);
-      } else if (grid && shown && active >= 0 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
-        const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === "rtl";
-        e.preventDefault();
-        setCell(e.key === "ArrowRight" !== rtl ? 1 : 0);
-      } else if (e.key === "Enter") {
-        if (shown && items[active] && grid && cell === 1) {
-          e.preventDefault();
-          removeRecent(active);
-        } else if (shown && items[active]) {
-          e.preventDefault();
-          choose(items[active]);
-        } else {
-          setOpen(false);
-          if (onSubmitSearch) onSubmitSearch(text2);
-        }
-      } else if (e.key === "Escape") {
-        if (shown) {
-          e.preventDefault();
-          setOpen(false);
-        }
-      } else if (e.key === "Delete" && shown && showRecent && items[active] && onRemoveRecent) {
-        e.preventDefault();
-        removeRecent(active);
-      } else if (!open && e.key.length === 1) setOpen(true);
-    };
-    const bar = useInBar(input);
-    const cut = useTruncated(input, text2, bar) && !!text2;
-    const optId = (i) => auto + "-o" + i;
-    const cellId = (i, c) => auto + "-o" + i + (c ? "-x" : "");
-    const comboProps = hasList ? {
-      role: "combobox",
-      "aria-expanded": shown,
-      "aria-controls": listId,
-      "aria-autocomplete": "list",
-      "aria-haspopup": grid ? "grid" : void 0,
-      "aria-activedescendant": shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : void 0
-    } : {};
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-search", size === "sm" && "plx-search--size-sm", width === "bar" && "plx-search--bar", width === "fill" && "plx-search--fill", ["xs", "sm", "md", "lg"].includes(width) && "plx-search--width-" + width, onAccent && "plx-search--on-accent", shown && "is-open", className), role: "search" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__icon", "aria-hidden": "true" }, loading ? /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.searching }) : /* @__PURE__ */ React$1.createElement(Icon, { name: SearchIcon })), /* @__PURE__ */ React$1.createElement(Tooltip, { content: text2, disabled: !cut || shown, describe: false, className: "plx-search__tip" }, /* @__PURE__ */ React$1.createElement(
-      "input",
-      {
-        ref: input,
-        size: size === "sm" || size === "md" ? void 0 : size,
-        type: "search",
-        inputMode: "search",
-        enterKeyHint: "search",
-        autoComplete: "off",
-        className: "plx-search__input",
-        "aria-label": label2,
-        placeholder,
-        value,
-        onChange: (e) => {
-          if (hasList) setOpen(true);
-          if (onChange) onChange(e);
-        },
-        onKeyDown: keys,
-        onFocus: (e) => {
-          if (hasList) setOpen(true);
-          if (onFocus) onFocus(e);
-        },
-        ...comboProps,
-        ...rest
-      }
-    )), onClear && value ? /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-search__clear", "aria-label": t.clear, onClick: onClear }, /* @__PURE__ */ React$1.createElement(Icon, { name: CloseIcon })) : null, shortcut && !value ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__kbd" }, /* @__PURE__ */ React$1.createElement(Kbd, { onAccent }, shortcut)) : null, hasList ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-search__popup", hidden: !shown }, showRecent ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-search__popup-head" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__popup-title", id: listId + "-t" }, t.recent), onClearRecent ? /* @__PURE__ */ React$1.createElement(
-      Button,
-      {
-        variant: "ghost",
-        size: "2xs",
-        className: "plx-search__popup-action",
-        onMouseDown: (e) => e.preventDefault(),
-        onClick: () => {
-          onClearRecent();
-          setOpen(false);
-          if (input.current) input.current.focus();
-        }
-      },
-      t.clearRecent
-    ) : null) : null, grid ? /* @__PURE__ */ React$1.createElement("div", { ref: list2, id: listId, role: "grid", className: "plx-search__list plx-search__grid", "aria-labelledby": listId + "-t" }, items.map((it, i) => /* @__PURE__ */ React$1.createElement(
-      "div",
-      {
-        key: it.kind + ":" + it.value,
-        id: auto + "-r" + i,
-        role: "row",
-        className: cx("plx-search__option", "plx-search__option--recent", "plx-search__row", i === active && "is-active"),
-        onMouseDown: (e) => e.preventDefault(),
-        onMouseEnter: () => setActive(i)
-      },
-      /* @__PURE__ */ React$1.createElement("span", { id: cellId(i, 0), role: "gridcell", "aria-selected": i === active && cell === 0, className: "plx-search__cell", onClick: () => choose(it) }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: ClockIcon })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-label" }, it.label))),
-      /* @__PURE__ */ React$1.createElement("span", { id: cellId(i, 1), role: "gridcell", "aria-selected": i === active && cell === 1, className: "plx-search__remove-cell" }, /* @__PURE__ */ React$1.createElement(
-        Button,
-        {
-          variant: "ghost",
-          size: "xs",
-          iconOnly: true,
-          icon: CloseIcon,
-          tabIndex: -1,
-          label: t.remove.replace("{query}", it.value),
-          className: cx("plx-search__remove", i === active && cell === 1 && "is-focus-visible"),
-          onMouseDown: (e) => e.preventDefault(),
-          onClick: (e) => {
-            e.stopPropagation();
-            removeRecent(i);
-            if (input.current) input.current.focus();
-          }
-        }
-      ))
-    ))) : /* @__PURE__ */ React$1.createElement("ul", { ref: list2, id: listId, role: "listbox", className: "plx-search__list", "aria-label": showRecent ? void 0 : t.suggestions, "aria-labelledby": showRecent ? listId + "-t" : void 0 }, items.map((it, i) => /* @__PURE__ */ React$1.createElement(
-      "li",
-      {
-        key: it.kind + ":" + it.value,
-        id: optId(i),
-        role: "option",
-        "aria-selected": i === active,
-        className: cx("plx-search__option", it.kind === "recent" && "plx-search__option--recent", i === active && "is-active"),
-        onMouseDown: (e) => e.preventDefault(),
-        onClick: () => choose(it),
-        onMouseEnter: () => setActive(i)
-      },
-      /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: it.kind === "recent" ? ClockIcon : SearchIcon })),
-      /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-label" }, it.kind === "recent" ? it.label : marked(it.label, text2)), it.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-description" }, it.description) : null)
-    )))) : null);
-  });
-  function CollapsedSearch({ value, label: label2, onKeyDown: onKeyDown2, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
-    const tw = useStrings("searchField");
-    if (label2 === void 0) label2 = tw.label;
-    const [own2, setOwn] = React$1.useState(false);
-    const open = openProp === void 0 ? own2 : openProp;
-    const setOpen = (v) => {
-      setOwn(v);
-      if (onOpenChange) onOpenChange(v);
-    };
-    const field = React$1.useRef(null), button = React$1.useRef(null);
-    React$1.useImperativeHandle(ref, () => open ? field.current : button.current);
-    React$1.useEffect(() => {
-      if (open && field.current) field.current.focus();
-    }, [open]);
-    const close = (refocus) => {
-      setOpen(false);
-      if (refocus) setTimeout(() => {
-        if (button.current) button.current.focus();
-      }, 0);
-    };
-    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(Tooltip, { content: label2 }, /* @__PURE__ */ React$1.createElement(
-      Button,
-      {
-        ref: button,
-        size: "sm",
-        variant: "ghost",
-        icon: SearchIcon,
-        iconOnly: true,
-        label: label2,
-        selected: !!value,
-        "aria-expanded": open,
-        className: cx("plx-search__toggle", className),
-        onClick: () => setOpen(true)
-      }
-    )), open ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-search__over" }, /* @__PURE__ */ React$1.createElement(
-      SearchInput,
-      {
-        ref: field,
-        value,
-        label: label2,
-        width: "fill",
-        ...rest,
-        onKeyDown: (e) => {
-          if (onKeyDown2) onKeyDown2(e);
-          if (e.key === "Escape" && !e.defaultPrevented && e.currentTarget.getAttribute("aria-expanded") !== "true") {
-            e.preventDefault();
-            close(true);
-          }
-        },
-        onBlur: (e) => {
-          if (onBlur) onBlur(e);
-          if (!e.currentTarget.value) close(false);
-        }
-      }
-    )) : null);
-  }
-  const Collapsed = React$1.forwardRef(CollapsedSearch);
-  const SearchField = React$1.forwardRef(function SearchField2({ collapsed = false, ...props }, ref) {
-    return collapsed ? /* @__PURE__ */ React$1.createElement(Collapsed, { ref, ...props }) : /* @__PURE__ */ React$1.createElement(SearchInput, { ref, ...props });
-  });
-  const over = (row) => {
-    const flat = (el) => Array.prototype.reduce.call(el.children, (out, k) => getComputedStyle(k).display === "contents" ? out.concat(flat(k)) : out.concat(k), []);
-    const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
-    if (!kids.length) return false;
-    const box = row.getBoundingClientRect();
-    const top = Math.min.apply(null, kids.map((k) => k.offsetTop));
-    const tall = Math.max.apply(null, kids.map((k) => k.offsetHeight));
-    return kids.some((k) => {
-      const r = k.getBoundingClientRect();
-      return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
-    });
-  };
-  function useBarFit(ref, key, max2, min2 = 0, rows = "[data-plx-bar-row]", hold = false) {
-    const [step, setStep] = React$1.useState(min2);
-    const [width, setWidth] = React$1.useState(0);
-    const measured2 = React$1.useRef(null);
-    React$1.useLayoutEffect(() => {
-      if (!hold) setStep(min2);
-    }, [width, key, min2, hold]);
-    React$1.useLayoutEffect(() => {
-      const el = ref.current;
-      if (!el || typeof ResizeObserver === "undefined") return void 0;
-      const ro = new ResizeObserver(() => setWidth(el.clientWidth));
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, [ref]);
-    React$1.useLayoutEffect(() => {
-      const el = ref.current;
-      if (!el || step >= max2 || hold) return;
-      const signature = [el, width, key, max2, min2, rows, step, el.textContent];
-      if (measured2.current && signature.every((value, i) => value === measured2.current[i])) return;
-      measured2.current = signature;
-      if (Array.prototype.some.call(rows === ":self" ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
-    });
-    return Math.max(min2, Math.min(step, max2));
-  }
-  function apply(items, current2) {
-    items.forEach((el) => {
-      const on = el === current2;
-      if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
-      el.setAttribute("data-plx-roving", on ? "current" : "");
-    });
-  }
-  function roveTo(ref, items, el) {
-    if (!ref.current || items.indexOf(el) < 0) return;
-    apply(items, el);
-  }
-  function useRovingFocus(ref, getItems) {
-    React$1.useEffect(() => {
-      if (!ref.current) return;
-      const items = getItems();
-      if (!items.length) return;
-      const current2 = items.filter((el) => el.getAttribute("data-plx-roving") === "current")[0] || items[0];
-      apply(items, current2);
-    });
-  }
-  const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
-  function isVisibleFocus(el) {
-    try {
-      return el.matches(":focus-visible");
-    } catch (e) {
-      return true;
-    }
-  }
-  function useFocusable(options = {}) {
-    const { tabStop = "tab", disabled = false, onFocusChange, handlers = {} } = options;
-    const [state, setState] = React$1.useState({ focused: false, visible: false });
-    const set2 = (focused, visible2) => {
-      setState((s) => s.focused === focused && s.visible === visible2 ? s : { focused, visible: visible2 });
-      if (onFocusChange) onFocusChange(focused, visible2);
-    };
-    const focusProps = {
-      onFocus: (e) => {
-        if (handlers.onFocus) handlers.onFocus(e);
-        if (e.target === e.currentTarget) set2(true, isVisibleFocus(e.currentTarget));
-      },
-      onBlur: (e) => {
-        if (handlers.onBlur) handlers.onBlur(e);
-        if (e.target === e.currentTarget) set2(false, false);
-      }
-    };
-    if (tabStop !== "none") focusProps.tabIndex = disabled ? void 0 : tabStop === "target" ? -1 : 0;
-    return { focused: state.focused, focusVisible: state.focused && state.visible, focusProps };
-  }
-  function useFocusGroup(ref, options = {}) {
-    const { orientation = "horizontal", loop = true, items: selector = ITEMS, onKeyDown: onKeyDown2, ignore, modifiers = false } = options;
-    const itemsOf2 = () => typeof selector === "function" ? selector() : ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el) => el.getClientRects().length > 0 && !el.closest("[hidden]")) : [];
-    useRovingFocus(ref, itemsOf2);
-    const KEYS2 = orientation === "vertical" ? ["ArrowUp", "ArrowDown"] : orientation === "both" ? ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] : ["ArrowLeft", "ArrowRight"];
-    const groupProps = {
-      onKeyDown: (e) => {
-        if (onKeyDown2) onKeyDown2(e);
-        if (e.defaultPrevented || !modifiers && (e.altKey || e.ctrlKey || e.metaKey)) return;
-        if (KEYS2.indexOf(e.key) < 0 && e.key !== "Home" && e.key !== "End") return;
-        const t = e.target;
-        if ((t.tagName === "INPUT" || t.tagName === "TEXTAREA") && (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Home" || e.key === "End")) return;
-        if (ignore && ignore(e)) return;
-        const list2 = itemsOf2();
-        const i = list2.indexOf(document.activeElement);
-        if (i < 0 || !list2.length) return;
-        let n;
-        if (e.key === "Home") n = 0;
-        else if (e.key === "End") n = list2.length - 1;
-        else {
-          const step = arrowStep(e, ref.current, { vertical: orientation !== "horizontal" });
-          if (!step) return;
-          n = i + step;
-          if (n < 0 || n >= list2.length) {
-            if (!loop) return;
-            n = (n + list2.length) % list2.length;
-          }
-        }
-        e.preventDefault();
-        list2[n].focus();
-      },
-      onFocus: (e) => {
-        roveTo(ref, itemsOf2(), e.target);
-      }
-    };
-    return { groupProps };
-  }
-  const RANKS = ["low", "normal", "high"];
-  const foldOrder = (actions) => {
-    const foldable = actions.filter((a) => !a.primary);
-    const out = [];
-    RANKS.forEach((p) => {
-      const group = foldable.filter((a) => (RANKS.indexOf(a.priority) >= 0 ? a.priority : "normal") === p);
-      out.push(...group.filter((a) => !a.danger).reverse(), ...group.filter((a) => a.danger).reverse());
-    });
-    return out;
-  };
-  const menuOrder = (actions) => actions.filter((a) => !a.danger).concat(actions.filter((a) => a.danger));
-  const d0$12 = "M479.79-221.23q-21.54 0-36.66-15.34Q428-251.91 428-273.44q0-21.54 15.34-36.67 15.34-15.12 36.87-15.12 21.54 0 36.66 15.34Q532-294.56 532-273.02t-15.34 36.66q-15.34 15.13-36.87 15.13Zm0-206.77q-21.54 0-36.66-15.34Q428-458.68 428-480.21q0-21.54 15.34-36.66Q458.68-532 480.21-532q21.54 0 36.66 15.34Q532-501.32 532-479.79q0 21.54-15.34 36.66Q501.32-428 479.79-428Zm0-206.77q-21.54 0-36.66-15.34Q428-665.44 428-686.98t15.34-36.66q15.34-15.13 36.87-15.13 21.54 0 36.66 15.34Q532-708.09 532-686.56q0 21.54-15.34 36.67-15.34 15.12-36.87 15.12Z";
-  const d1$11 = "M480-189.23q-24.75 0-42.37-17.63Q420-224.48 420-249.23q0-24.75 17.63-42.38 17.62-17.62 42.37-17.62 24.75 0 42.37 17.62Q540-273.98 540-249.23q0 24.75-17.63 42.37-17.62 17.63-42.37 17.63ZM480-420q-24.75 0-42.37-17.63Q420-455.25 420-480q0-24.75 17.63-42.37Q455.25-540 480-540q24.75 0 42.37 17.63Q540-504.75 540-480q0 24.75-17.63 42.37Q504.75-420 480-420Zm0-230.77q-24.75 0-42.37-17.62Q420-686.02 420-710.77q0-24.75 17.63-42.37 17.62-17.63 42.37-17.63 24.75 0 42.37 17.63Q540-735.52 540-710.77q0 24.75-17.63 42.38-17.62 17.62-42.37 17.62Z";
-  const MoreIcon = { "name": "more", "set": "plenix", "symbol": "more_vert", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$12 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$12 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$11 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$11 } } } };
-  const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
-  const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
-  const nameOf$4 = (p) => typeof p.children === "string" ? p.children : p.iconOnly && typeof p.label === "string" ? p.label : null;
-  const isFoldable = (el) => React$1.isValidElement(el) && el.type === Button && nameOf$4(el.props) !== null && !el.props.href && !el.props.caret;
-  const isTrimmable = (el) => React$1.isValidElement(el) && el.type === Menu && React$1.isValidElement(el.props.trigger) && el.props.trigger.type === Button && typeof el.props.trigger.props.children === "string" && !!el.props.trigger.props.icon && !el.props.trigger.props.iconOnly;
-  const collect$1 = (nodes, out) => {
-    React$1.Children.forEach(nodes, (el) => {
-      if (!React$1.isValidElement(el)) return;
-      if (el.type === Toolbar.Group || el.type === React$1.Fragment) collect$1(el.props.children, out);
-      else if (isFoldable(el)) out.push({ id: out.length, label: nameOf$4(el.props), iconOnly: !!el.props.iconOnly, icon: el.props.icon, primary: el.props.variant === "primary", danger: /^danger/.test(el.props.variant || "") || !!el.props.danger, priority: el.props.priority, props: el.props });
-    });
-    return out;
-  };
-  function Toolbar({ label: label2, variant = "default", className, children, onKeyDown: onKeyDown2, onFocus, ...rest }) {
-    const ref = React$1.useRef(null);
-    const t = useStrings("commandBar");
-    const ladder = variant !== "bar";
-    const acts = ladder ? collect$1(children, []) : [];
-    const step = useBarFit(ref, acts.map((a) => a.label).join("|"), ladder && acts.length ? 1 + acts.length : 0, 0, ":self");
-    const iconOnly = ladder && step >= 1;
-    const folded = new Set(foldOrder(acts).slice(0, ladder ? Math.max(0, step - 1) : 0).map((a) => a.id));
-    let n = 0;
-    const walk = (nodes) => React$1.Children.map(nodes, (el) => {
-      if (!React$1.isValidElement(el)) return el;
-      if (el.type === Toolbar.Group) return React$1.cloneElement(el, void 0, walk(el.props.children));
-      if (el.type === React$1.Fragment) return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, walk(el.props.children));
-      if (ladder && isTrimmable(el)) return iconOnly ? React$1.cloneElement(el, { trigger: React$1.cloneElement(el.props.trigger, { children: void 0, "aria-label": el.props.trigger.props.children }) }) : el;
-      if (!ladder || !isFoldable(el)) return el;
-      const id = n++;
-      if (folded.has(id)) return null;
-      const a = acts[id];
-      if (!a.icon || a.primary || a.iconOnly) return el;
-      return /* @__PURE__ */ React$1.createElement(Tooltip, { content: a.label, disabled: !iconOnly }, iconOnly ? React$1.cloneElement(el, { iconOnly: true, label: a.label, priority: void 0 }) : React$1.cloneElement(el, { priority: void 0 }));
-    });
-    const away = menuOrder(acts.filter((a) => folded.has(a.id)));
-    const more = away.length ? /* @__PURE__ */ React$1.createElement(Menu, { label: t.moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: MoreIcon, variant: "ghost", iconOnly: true, label: t.moreLabel, size: acts[0] && acts[0].props.size }) }, away.map((a, i) => [
-      a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React$1.createElement(MenuDivider, { key: a.id + "d" }) : null,
-      /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id, icon: a.icon, danger: a.danger, disabled: a.props.disabled, onSelect: a.props.onClick }, a.label)
-    ])) : null;
-    const itemsOf2 = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === "visible" && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute("data-plx-roving"))) : [];
-    React$1.useEffect(() => {
-      const root = ref.current;
-      if (!root) return;
-      const refresh = () => {
-        root.querySelectorAll("[data-plx-toolbar-layout]").forEach((el) => {
-          if (el.closest('[role="toolbar"]') === root) el.removeAttribute("data-plx-toolbar-layout");
-        });
-        const visit = (parent) => Array.from(parent.children).forEach((el) => {
-          if (el.matches(".plx-stack,.plx-inline") && getComputedStyle(el).display !== "none") {
-            el.setAttribute("data-plx-toolbar-layout", "");
-            visit(el);
-          } else if (el.classList.contains("plx-toolbar__group")) visit(el);
-        });
-        visit(root);
-        const items = itemsOf2();
-        roveTo(ref, items, items.find((el) => el.getAttribute("data-plx-roving") === "current") || items[0]);
-      };
-      refresh();
-      const observer2 = new MutationObserver(refresh);
-      observer2.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "inert", "aria-hidden", "aria-disabled", "class"] });
-      const resize = typeof ResizeObserver === "function" ? new ResizeObserver(refresh) : null;
-      if (resize) resize.observe(root);
-      window.addEventListener("resize", refresh);
-      return () => {
-        observer2.disconnect();
-        if (resize) resize.disconnect();
-        window.removeEventListener("resize", refresh);
-      };
-    }, []);
-    const { groupProps } = useFocusGroup(ref, {
-      items: itemsOf2,
-      orientation: "horizontal",
-      loop: true,
-      modifiers: true,
-      onKeyDown: onKeyDown2,
-      ignore: (e) => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP)) || e.target.closest('[role="toolbar"]') !== ref.current
-    });
-    const onFocusIn = (e) => {
-      if (onFocus) onFocus(e);
-      groupProps.onFocus(e);
-    };
-    return /* @__PURE__ */ React$1.createElement("div", { ref, role: "toolbar", "aria-label": label2, className: cx("plx-toolbar", variant === "bar" && "plx-toolbar--bar", className), onKeyDown: groupProps.onKeyDown, onFocus: onFocusIn, "data-plx-fit-shrink": ladder ? (acts.length ? step >= 1 + acts.length : true) || void 0 : void 0, ...rest }, ladder ? walk(children) : children, more);
-  }
-  Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
-    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-toolbar__group", className), ...rest }, children);
-  };
-  Toolbar.Spacer = function ToolbarSpacer() {
-    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-toolbar__spacer", "aria-hidden": "true" });
-  };
-  function Divider$1({ orientation = "horizontal", className, ...rest }) {
-    return /* @__PURE__ */ React$1.createElement("div", { role: "separator", "aria-orientation": orientation, className: cx("plx-divider", "plx-divider--" + orientation, className), ...rest });
-  }
-  function HintTarget({ children, "aria-describedby": description }) {
-    const wrap = React$1.useRef(null);
-    React$1.useLayoutEffect(() => {
-      const button = wrap.current && wrap.current.querySelector("button,a[href]");
-      if (!button || !description) return void 0;
-      const before = button.getAttribute("aria-describedby");
-      const ids = [...new Set((before || "").split(" ").concat(description.split(" ")).filter(Boolean))];
-      button.setAttribute("aria-describedby", ids.join(" "));
-      return () => {
-        if (before) button.setAttribute("aria-describedby", before);
-        else button.removeAttribute("aria-describedby");
-      };
-    });
-    return /* @__PURE__ */ React$1.createElement("span", { ref: wrap, className: "plx-bar-actions__hint-target" }, children);
-  }
-  function ActionHint({ content, children, className }) {
-    return /* @__PURE__ */ React$1.createElement(Tooltip, { content, className }, /* @__PURE__ */ React$1.createElement(HintTarget, null, children));
-  }
-  const PanelMenuTrigger = React$1.forwardRef(function PanelMenuTrigger2(props, ref) {
-    const wrap = React$1.useRef(null);
-    React$1.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector("[data-plx-menu-item]"));
-    return /* @__PURE__ */ React$1.createElement("span", { ref: wrap, className: "plx-bar-actions__panel-item" }, /* @__PURE__ */ React$1.createElement(MenuItem, { ...props, keepOpen: true }));
-  });
-  function ActionPanel({ action, trigger }) {
-    const [open, setOpen] = React$1.useState(false);
-    const holder = React$1.useRef(null);
-    const unavailable = !!action.disabled || !!action.loading;
-    const show2 = open && !unavailable;
-    const close = () => setOpen(false);
-    React$1.useEffect(() => {
-      if (!show2) return void 0;
-      const menu = holder.current && holder.current.closest('[role="menu"]');
-      const more = menu && menu.parentElement.querySelector(":scope > button");
-      return () => {
-        requestAnimationFrame(() => {
-          if (more && more.isConnected && document.activeElement === document.body) more.focus({ preventScroll: true });
-        });
-      };
-    }, [show2]);
-    React$1.useEffect(() => {
-      if (unavailable) setOpen(false);
-    }, [unavailable]);
-    const contain = (e) => {
-      const dialog = e.target.closest('[role="dialog"]');
-      if (!dialog) return;
-      if (e.type === "keydown" && e.key === "Tab" && !e.shiftKey && dialog.getAttribute("aria-modal") !== "true") {
-        const controls = focusables(dialog).filter((el) => el.tabIndex >= 0);
-        const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
-        if (toolbar && e.target === controls[controls.length - 1]) {
-          const next = focusables(document.body).find((el) => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
-          if (next) {
-            e.preventDefault();
-            next.focus();
-          }
-        }
-      }
-      e.stopPropagation();
-    };
-    const leave = (e) => {
-      const next = e.relatedTarget, menu = e.currentTarget.closest('[role="menu"]');
-      if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
-      const more = menu.parentElement.querySelector(":scope > button");
-      if (more) more.click();
-    };
-    return /* @__PURE__ */ React$1.createElement("span", { ref: holder, className: "plx-bar-actions__panel", onKeyDown: contain, onFocus: contain, onMouseDown: contain, onBlur: leave }, /* @__PURE__ */ React$1.createElement(
-      Popover,
-      {
-        trigger,
-        title: action.label,
-        closeButton: true,
-        open: show2,
-        onOpenChange: (next) => {
-          if (!next || !unavailable) setOpen(next);
-        }
-      },
-      show2 ? action.panel({ close }) : null
-    ));
-  }
-  const itemsOf = (a, off2) => {
-    const list2 = a.items;
-    if (!Array.isArray(list2) || !list2.length || React$1.isValidElement(list2[0])) return list2;
-    return list2.map((it) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: it.id || it.label, icon: it.icon, danger: it.danger, disabled: off2(it), onSelect: it.onSelect }, it.label));
-  };
-  function BarActions({
-    actions = [],
-    iconOnly = false,
-    fold: fold2 = 0,
-    off: off2 = (a) => !!a.disabled,
-    why = (a) => a.why,
-    moreLabel,
-    dangerClass,
-    size = "sm",
-    extra = []
-  }) {
-    const t = useStrings("commandBar");
-    moreLabel = moreLabel ?? t.moreLabel;
-    const folded = new Set(foldOrder(actions).slice(0, fold2).map((a) => a.id || a.label));
-    const kept = actions.filter((a) => !folded.has(a.id || a.label));
-    const away = menuOrder(actions.filter((a) => folded.has(a.id || a.label)));
-    const radios = (a) => /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: a.label, value: a.value, onChange: (v) => a.onChange && a.onChange(v) }, (a.choices || []).map((c) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: c.value, value: c.value, icon: c.icon }, c.label)));
-    const current2 = (a) => {
-      const c = (a.choices || []).find((x) => x.value === a.value);
-      return c ? c.label : "";
-    };
-    const one = (a) => {
-      const disabled = off2(a), loading = !!a.loading;
-      const filled = !!a.primary;
-      const only = iconOnly && !filled && !!a.icon;
-      const panel = typeof a.panel === "function";
-      const menu = !!a.items || !!a.choices;
-      const name = a.choices ? a.label + ": " + current2(a) : a.label;
-      const text2 = a.choices ? current2(a) || a.label : a.label;
-      const click = panel ? void 0 : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? void 0 : a.onSelect;
-      const button = /* @__PURE__ */ React$1.createElement(
-        Button,
-        {
-          size,
-          variant: filled ? "primary" : "ghost",
-          icon: a.icon,
-          iconOnly: only,
-          label: only || a.choices ? name : void 0,
-          caret: menu && !only,
-          "aria-haspopup": panel ? "dialog" : menu ? "menu" : void 0,
-          expanded: loading && (panel || menu) ? false : void 0,
-          pressed: a.toggle ? !!a.pressed : void 0,
-          disabled,
-          loading,
-          className: a.danger && !filled ? dangerClass : void 0,
-          onClick: click
-        },
-        text2
-      );
-      const el = loading ? button : panel ? /* @__PURE__ */ React$1.createElement(ActionPanel, { action: Object.assign({}, a, { disabled }), trigger: button }) : a.choices ? /* @__PURE__ */ React$1.createElement(Menu, { label: a.label, trigger: button }, radios(a)) : a.items ? /* @__PURE__ */ React$1.createElement(Menu, { label: a.label, trigger: button }, itemsOf(a, off2)) : button;
-      const tip = disabled && why(a) || a.tooltip || (only ? name : null);
-      return /* @__PURE__ */ React$1.createElement(React$1.Fragment, { key: a.id || a.label }, tip ? /* @__PURE__ */ React$1.createElement(ActionHint, { content: tip }, el) : el);
-    };
-    const plain = kept.filter((a) => !a.danger), danger = kept.filter((a) => a.danger);
-    const allOff = away.length > 0 && !extra.length && away.every((a) => off2(a));
-    const more = away.length || extra.length ? /* @__PURE__ */ React$1.createElement(Tooltip, { key: "plx-more", content: allOff ? why(away[0]) : moreLabel }, /* @__PURE__ */ React$1.createElement(Menu, { label: moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(Button, { size, variant: "ghost", icon: MoreIcon, iconOnly: true, label: moreLabel, disabled: allOff }) }, away.map((a, i) => {
-      const sep = a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React$1.createElement(MenuDivider, { key: (a.id || a.label) + "-sep" }) : null;
-      const busy = !!a.loading, disabled = off2(a) || busy;
-      const item = busy ? /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id || a.label, icon: /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: a.label }), danger: a.danger, checked: a.toggle ? !!a.pressed : void 0, "aria-label": a.choices ? a.label + ": " + current2(a) : a.label, "aria-busy": true, disabled: true }, a.choices ? a.label + ": " + current2(a) : a.label) : typeof a.panel === "function" ? /* @__PURE__ */ React$1.createElement(
-        ActionPanel,
-        {
-          key: a.id || a.label,
-          action: Object.assign({}, a, { disabled }),
-          trigger: /* @__PURE__ */ React$1.createElement(PanelMenuTrigger, { icon: a.icon, danger: a.danger, disabled }, a.label)
-        }
-      ) : a.choices ? /* @__PURE__ */ React$1.createElement(MenuSub, { key: a.id || a.label, label: a.label + ": " + current2(a), icon: a.icon, disabled: off2(a) }, radios(a)) : a.toggle ? /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, checked: !!a.pressed, disabled: off2(a), onSelect: () => a.onSelect && a.onSelect(!a.pressed) }, a.label) : a.items ? /* @__PURE__ */ React$1.createElement(MenuGroup, { key: a.id || a.label, label: a.label }, itemsOf(a, off2)) : /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, danger: a.danger, disabled: off2(a), onSelect: a.onSelect }, a.label);
-      const tip = off2(a) && why(a) || a.tooltip;
-      const described2 = tip ? /* @__PURE__ */ React$1.createElement(ActionHint, { key: a.id || a.label, content: tip, className: "plx-bar-actions__tooltip" }, item) : item;
-      return sep ? [sep, described2] : described2;
-    }), away.length && extra.length ? /* @__PURE__ */ React$1.createElement(MenuDivider, { key: "plx-extra-sep" }) : null, extra)) : null;
-    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /* @__PURE__ */ React$1.createElement("span", { key: "plx-danger-divider", className: cx("plx-bar-actions__divider"), "aria-hidden": "true" }) : null, danger.map(one));
-  }
-  function singleChoice(options, value, required) {
-    const values = (options || []).map((option) => typeof option === "string" ? option : option.value);
-    const selected = (Array.isArray(value) ? value : value === void 0 || value === null ? [] : [value]).find((item) => values.includes(item));
-    return selected !== void 0 ? [selected] : required && values.length ? [values[0]] : [];
-  }
-  const CalendarIcon = { "name": "calendar", "set": "plenix", "symbol": "calendar_month", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M448.62-380.92v-62.77h62.76v62.77h-62.76Zm-156 0v-62.77h62.76v62.77h-62.76Zm312 0v-62.77h62.76v62.77h-62.76ZM448.62-240v-62.77h62.76V-240h-62.76Zm-156 0v-62.77h62.76V-240h-62.76Zm312 0v-62.77h62.76V-240h-62.76ZM164-116v-632h151.69v-100.61h53.54V-748h223.08v-100.61h52V-748H796v632H164Zm52-52h528v-347.69H216V-168Zm0-399.69h528V-696H216v128.31Zm0 0V-696v128.31Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M448.62-380.92v-62.77h62.76v62.77h-62.76Zm-156 0v-62.77h62.76v62.77h-62.76Zm312 0v-62.77h62.76v62.77h-62.76ZM448.62-240v-62.77h62.76V-240h-62.76Zm-156 0v-62.77h62.76V-240h-62.76Zm312 0v-62.77h62.76V-240h-62.76ZM164-116v-632h151.69v-100.61h53.54V-748h223.08v-100.61h52V-748H796v632H164Zm52-52h528v-347.69H216V-168Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M444.62-396.92v-70.77h70.76v70.77h-70.76Zm-160 0v-70.77h70.76v70.77h-70.76Zm320 0v-70.77h70.76v70.77h-70.76ZM444.62-240v-70.77h70.76V-240h-70.76Zm-160 0v-70.77h70.76V-240h-70.76Zm320 0v-70.77h70.76V-240h-70.76ZM140-100v-680h127.69v-84.61h61.54V-780h303.08v-84.61h60V-780H820v680H140Zm60-60h560v-387.69H200V-160Zm0-447.69h560V-720H200v112.31Zm0 0V-720v112.31Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M444.62-396.92v-70.77h70.76v70.77h-70.76Zm-160 0v-70.77h70.76v70.77h-70.76Zm320 0v-70.77h70.76v70.77h-70.76ZM444.62-240v-70.77h70.76V-240h-70.76Zm-160 0v-70.77h70.76V-240h-70.76Zm320 0v-70.77h70.76V-240h-70.76ZM140-100v-680h127.69v-84.61h61.54V-780h303.08v-84.61h60V-780H820v680H140Zm60-60h560v-387.69H200V-160Z" } } } };
-  const d0$11 = "M305.69-209.69v-480h-192v-60.62h444.62v60.62h-192v480h-60.62Zm360 0v-288h-120v-60.62h300.62v60.62h-120v288h-60.62Z";
-  const d1$10 = "M297.69-177.69v-520h-200v-84.62h484.62v84.62h-200v520h-84.62Zm360 0v-320h-120v-84.62h324.62v84.62h-120v320h-84.62Z";
-  const EdTextIcon = { "name": "ed-text", "set": "plenix", "symbol": "text_fields", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$11 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$11 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$10 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$10 } } } };
-  const d0$10 = "m286.69-210.46 30-120h-142.3l13-52h142.3l42.77-171.08h-154.3l13-52h154.3l36-144h51.23l-36 144h149.39l36-144h51.23l-36 144h148.3l-13 52h-148.3l-42.77 171.08h160.3l-13 52h-160.3l-30 120h-51.23l30-120H367.92l-30 120h-51.23Zm94.23-172h149.39l42.77-171.08H423.69l-42.77 171.08Z";
-  const d1$$ = "m262.69-178.46 40-160h-152.3l15-60h152.3l40.77-163.08h-152.3l15-60h152.3l40-160h59.23l-40 160h165.39l40-160h59.23l-40 160h152.3l-15 60h-152.3l-40.77 163.08h152.3l-15 60h-152.3l-40 160h-59.23l40-160H361.92l-40 160h-59.23Zm114.23-220h165.39l40.77-163.08H417.69l-40.77 163.08Z";
-  const FieldNumberIcon = { "name": "field-number", "set": "plenix", "symbol": "numbers", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$10 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$10 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$$ }, "fill": { "viewBox": "0 -960 960 960", "d": d1$$ } } } };
-  const FieldSelectIcon = { "name": "field-select", "set": "plenix", "symbol": "arrow_drop_down_circle", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m480-394.77 125.54-125.54H354.46L480-394.77Zm.34 278.77q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Zm-.34-52q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Zm0-312Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m480-394.77 125.54-125.54H354.46L480-394.77Zm.34 278.77q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m480-370.77 141.54-141.54H338.46L480-370.77Zm.07 270.77q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Zm-.07-60q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m480-370.77 141.54-141.54H338.46L480-370.77Zm.07 270.77q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z" } } } };
-  const TagsIcon = { "name": "tags", "set": "plenix", "symbol": "sell", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08Zm0-73.92 283.31-283.31-346.46-345.31H168v283.31L514.46-163ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm217.69 167.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08Zm0-84.92 288.31-288.31-356.46-356.31H160v288.31L516.46-155ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm221.69 171.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } } } };
-  const KIND_ICONS = { text: EdTextIcon, select: FieldSelectIcon, multi: TagsIcon, number: FieldNumberIcon, date: CalendarIcon };
-  const DIRECTIONS = english.fields.directions;
-  const OP_ORDER = {
-    text: ["contains", "ncontains", "is", "isnot", "empty", "nempty"],
-    select: ["any", "none", "empty", "nempty"],
-    multi: ["any", "none", "empty", "nempty"],
-    number: ["eq", "ne", "lt", "gt", "empty", "nempty"],
-    date: ["is", "before", "after", "within", "empty", "nempty"]
-  };
-  const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops]) => [kind, ops.map((op) => [op, english.fields.operators[kind][op]])]));
-  const WITHIN = [{ value: "week", label: english.fields.within.week, days: 7 }, { value: "month", label: english.fields.within.month, days: 30 }, { value: "year", label: english.fields.within.year, days: 365 }];
-  const CATEGORY_ORDER = ["blue", "green", "purple", "orange", "teal", "magenta", "yellow", "navy", "red", "cyan", "lavender", "brown", "olive", "pink", "apricot", "mint", "maroon", "lime", "beige", "grey"];
-  const fieldOf = (fields, key) => fields.find((f) => f.value === key) || fields[0];
-  const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
-  const kindOf$1 = (f) => OPERATORS[f && f.kind] ? f.kind : "text";
-  const optionsOf = (f) => (f && f.options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
-  const blank$2 = (x) => x === null || x === void 0 || x === "" || Array.isArray(x) && !x.length;
-  const iso = isoDay;
-  const daysBefore = (n, today) => {
-    const d = new Date((parseDate(today) || /* @__PURE__ */ new Date()).getTime());
-    d.setDate(d.getDate() - n);
-    return iso(d);
-  };
-  function matchesCondition(c, row, fields, today) {
-    const f = fieldOf(fields, c.field), v = valueOf(f, row), val = c.value, k = kindOf$1(f);
-    if (c.op === "empty") return blank$2(v);
-    if (c.op === "nempty") return !blank$2(v);
-    if (blank$2(val)) return true;
-    if (k === "text") {
-      const s = String(v == null ? "" : v).toLowerCase(), q2 = String(val).toLowerCase();
-      return c.op === "contains" ? s.includes(q2) : c.op === "ncontains" ? !s.includes(q2) : c.op === "is" ? s === q2 : s !== q2;
-    }
-    if (k === "select") {
-      const list2 = [].concat(val);
-      return c.op === "any" ? list2.indexOf(v) >= 0 : list2.indexOf(v) < 0;
-    }
-    if (k === "multi") {
-      const list2 = [].concat(val), hit = [].concat(v || []).some((x) => list2.indexOf(x) >= 0);
-      return c.op === "any" ? hit : !hit;
-    }
-    if (k === "number") {
-      const n = Number(v), q2 = parseFloat(val);
-      if (isNaN(q2)) return true;
-      return c.op === "eq" ? n === q2 : c.op === "ne" ? n !== q2 : c.op === "lt" ? n < q2 : n > q2;
-    }
-    const d = blank$2(v) ? "" : String(v).slice(0, 10);
-    if (c.op === "within") {
-      const w = WITHIN.find((x) => x.value === val) || WITHIN[0];
-      return d >= daysBefore(w.days, today);
-    }
-    return c.op === "is" ? d === val : c.op === "before" ? d < val : d > val;
-  }
-  function matchesFilter(node, row, fields, today) {
-    if (!node || !node.items || !node.items.length) return true;
-    const t = (x) => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
-    return node.join === "or" ? node.items.some(t) : node.items.every(t);
-  }
-  const conditionsOf = (node) => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
-  let uid = 0;
-  const nextId$2 = () => "c" + ++uid;
-  const newCondition = (f) => ({ id: nextId$2(), field: f.value, op: OPERATORS[kindOf$1(f)][0][0], value: kindOf$1(f) === "select" || kindOf$1(f) === "multi" ? [] : "" });
-  function compareLevels(fields, levels) {
-    return (a, b) => {
-      for (const l of levels || []) {
-        const f = fields.find((x2) => x2.value === l.field);
-        if (!f) continue;
-        let x = valueOf(f, a), y = valueOf(f, b);
-        if (kindOf$1(f) === "select" && f.options) {
-          const o = optionsOf(f).map((p) => p.value);
-          x = o.indexOf(x);
-          y = o.indexOf(y);
-        }
-        if (Array.isArray(x)) x = x.join(", ");
-        if (Array.isArray(y)) y = y.join(", ");
-        const c = x < y ? -1 : x > y ? 1 : 0;
-        if (c) return l.dir === "desc" ? -c : c;
-      }
-      return 0;
-    };
-  }
-  const DATE_PRESETS = [{ value: "any", label: english.fields.presets.any }, { value: "7", label: english.fields.presets["7"] }, { value: "30", label: english.fields.presets["30"] }, { value: "year", label: english.fields.presets.year }];
-  function matchesDate(range, value, today) {
-    if (!range || range.preset === "any" || !range.preset) return true;
-    const d = blank$2(value) ? "" : String(value).slice(0, 10);
-    if (!d) return false;
-    const now = today || iso(/* @__PURE__ */ new Date());
-    if (range.preset === "7" || range.preset === "30") return d >= daysBefore(Number(range.preset), now) && d <= now;
-    if (range.preset === "year") return d.slice(0, 4) === now.slice(0, 4);
-    return (!range.from || d >= range.from) && (!range.to || d <= range.to);
-  }
-  const fieldWords = {
-    operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
-    within: (fw) => WITHIN.map((w) => Object.assign({}, w, { label: (fw.within || {})[w.value] || w.label })),
-    presets: (fw) => DATE_PRESETS.map((d) => Object.assign({}, d, { label: (fw.presets || {})[d.value] || d.label })),
-    directions: (fw, kind) => (fw.directions || {})[kind] || DIRECTIONS[kind]
-  };
-  const FilterOffIcon = { "name": "filter-off", "set": "plenix", "symbol": "filter_alt_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 518-544l125-152H366l-52-52h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15ZM518-544Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 314-748h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 535-538l143-182H353l-60-60h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15ZM535-538Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 293-780h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15Z" } } } };
-  const nameOf$3 = (list2, chosen) => {
-    if (!chosen || !chosen.length) return void 0;
-    const o = list2.find((x) => x.value === chosen[0]);
-    return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? " +" + (chosen.length - 1) : "");
-  };
-  const asOptions = (options) => (options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
-  function QuickFilter({ kind = "list", label: label2, icon, noun = "value", options, value, onChange, counts: counts2, required = false, inline = false, strings }) {
-    const fw = useStrings("fields");
-    const t = Object.assign({ presets: fieldWords.presets(fw) }, useStrings("quickFilter", strings));
-    const [q2, setQ] = React$1.useState("");
-    const first = (options || [])[0], firstValue = typeof first === "string" ? first : first && first.value;
-    React$1.useEffect(() => {
-      if (kind === "single" && required && (!value || !value.length) && firstValue !== void 0 && onChange) onChange([firstValue]);
-    }, [kind, required, value, firstValue, onChange]);
-    const countOf2 = (o) => o.count !== void 0 ? o.count : counts2 instanceof Map ? counts2.get(o.value) || 0 : counts2 ? Object.prototype.hasOwnProperty.call(counts2, o.value) ? counts2[o.value] : 0 : void 0;
-    const counted = (o, label22) => {
-      const n = countOf2(o);
-      return n === void 0 || n === null ? label22 : /* @__PURE__ */ React$1.createElement(Inline$1, { as: "span", gap: "xs" }, label22, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(n)));
-    };
-    if (kind === "date") {
-      const d = Object.assign({ preset: "any", from: "", to: "" }, value);
-      const range = (k, v) => onChange(Object.assign({}, d, { preset: "custom", [k]: v }));
-      const on = d.preset && d.preset !== "any";
-      const body2 = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--date" }, /* @__PURE__ */ React$1.createElement(
-        RadioGroup,
-        {
-          label: label2,
-          value: d.preset,
-          onChange: (v) => onChange(Object.assign({}, d, { preset: v })),
-          options: t.presets.map((x) => ({ value: x.value, label: counted(x, x.label) })).concat({ value: "custom", label: counted({ value: "custom" }, t.custom) })
-        }
-      ), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__range" }, /* @__PURE__ */ React$1.createElement(Field, { label: t.from }, /* @__PURE__ */ React$1.createElement(Input, { type: "date", data: true, value: d.from, onChange: (e) => range("from", e.target.value) })), /* @__PURE__ */ React$1.createElement(Field, { label: t.to }, /* @__PURE__ */ React$1.createElement(Input, { type: "date", data: true, value: d.to, onChange: (e) => range("to", e.target.value) }))));
-      const footer2 = /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !on, onClick: () => onChange({ preset: "any", from: "", to: "" }) }, t.clear);
-      const preset = t.presets.find((x) => x.value === d.preset);
-      const current2 = !on ? void 0 : d.preset === "custom" ? [d.from, d.to].filter(Boolean).join(" – ") || t.custom : preset ? preset.label : void 0;
-      return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon: icon || CalendarIcon, label: label2, current: current2, title: label2, count: on ? 1 : 0, caret: true, size: "sm", footer: footer2, inline }, body2);
-    }
-    const list2 = asOptions(options);
-    if (kind === "single") {
-      const chosen2 = singleChoice(list2, value, required);
-      const choices2 = list2.map((o) => ({ value: o.value, label: counted(o, /* @__PURE__ */ React$1.createElement(Pill, { color: o.color }, o.label)) }));
-      if (!required) choices2.unshift({ value: "", label: t.all });
-      const body2 = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel" }, /* @__PURE__ */ React$1.createElement(RadioGroup, { label: label2, value: chosen2.length ? chosen2[0] : "", options: choices2, onChange: (v) => onChange(v === "" ? [] : [v]) }));
-      const footer2 = required ? null : /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen2.length, onClick: () => onChange([]) }, t.clear);
-      return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon, label: label2, current: nameOf$3(list2, chosen2), title: label2, count: chosen2.length, caret: true, size: "sm", footer: footer2, inline }, body2);
-    }
-    const chosen = value || [];
-    const shown = list2.filter((o) => String(o.label).toLowerCase().indexOf(q2.trim().toLowerCase()) >= 0);
-    const body = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--checklist" }, /* @__PURE__ */ React$1.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: fill(t.find, { noun }), label: fill(t.find, { noun }) }), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__checklist" }, shown.length ? shown.map((o) => /* @__PURE__ */ React$1.createElement(Checkbox, { key: o.value, label: counted(o, /* @__PURE__ */ React$1.createElement(Pill, { color: o.color }, o.label)), checked: chosen.indexOf(o.value) >= 0, onChange: () => onChange(toggle(chosen, o.value)) })) : /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, fill(t.none, { noun }))));
-    const footer = /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen.length, onClick: () => onChange([]) }, t.clear);
-    return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon, label: label2, current: nameOf$3(list2, chosen), title: label2, count: chosen.length, caret: true, size: "sm", footer, inline }, body);
-  }
-  function SingleQuickFilterMenu({ label: label2, options = [], value, required, onChange, counts: counts2, strings }) {
-    const chosen = singleChoice(options, value, required);
-    const items = options.map((option) => typeof option === "string" ? { value: option, label: option } : option);
-    if (!required) items.unshift({ value: "", label: strings && strings.all || "All" });
-    return /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: label2, value: chosen.length ? chosen[0] : "", onChange: (v) => onChange && onChange(v === "" ? [] : [v]) }, items.map((option) => {
-      const count2 = option.count !== void 0 ? option.count : counts2 instanceof Map ? counts2.get(option.value) || 0 : counts2 ? counts2[option.value] || 0 : void 0;
-      return /* @__PURE__ */ React$1.createElement(MenuItem, { key: option.value, value: option.value }, count2 === void 0 ? option.label || option.value : /* @__PURE__ */ React$1.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(count2))));
-    }));
-  }
-  const ICONS$2 = 1, SEARCH = 2;
-  const BarContext$1 = React$1.createContext({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen: () => {
-  } });
-  const useCommandBar = () => React$1.useContext(BarContext$1);
-  const CommandBarButton = React$1.forwardRef(function CommandBarButton2({ icon, label: label2, count: count2 = 0, active = false, caret = false, iconOnly, className, children, ...rest }, ref) {
-    const ctx = useCommandBar();
-    const only = iconOnly === void 0 ? ctx.iconOnly : iconOnly;
-    const n = Number(count2) || 0;
-    const badge = n ? /* @__PURE__ */ React$1.createElement(Badge, { size: "sm", tone: "active" }, n) : null;
-    const name = n ? label2 + ", " + n : label2;
-    return /* @__PURE__ */ React$1.createElement(
-      Button,
-      {
-        ref,
-        size: "sm",
-        variant: "ghost",
-        icon,
-        caret: caret && !only,
-        selected: active || n > 0,
-        iconOnly: only && !n,
-        label: only ? name : void 0,
-        className: cx("plx-command-bar__button", className),
-        ...rest
-      },
-      only ? n ? badge : label2 : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, children || label2, badge ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, " ", badge) : null)
-    );
-  });
-  const CommandBarSearch = React$1.forwardRef(function CommandBarSearch2(props, ref) {
-    const { collapsed, searchOpen, setSearchOpen } = useCommandBar();
-    return /* @__PURE__ */ React$1.createElement(SearchField, { ref, width: "bar", collapsed, open: collapsed ? searchOpen : void 0, onOpenChange: collapsed ? setSearchOpen : void 0, ...props });
-  });
-  function CommandBar({ label: label2, actions = [], find, quickFilters = [], view, count: count2, status, end, selection, layout: layout2 = "auto", sticky = "auto", narrow = false, strings, className }) {
-    const t = useStrings("commandBar", strings);
-    const fw = useStrings("fields");
-    const root = React$1.useRef(null);
-    const sel = selection && !React$1.isValidElement(selection) && typeof selection === "object" ? selection : null;
-    const selCount = sel ? Number(sel.count) || 0 : 0;
-    const selecting = selCount > 0;
-    const selActs = selecting ? sel.actions || [] : [];
-    const shape = layout2 === "auto" || layout2 === "split" ? actions.length ? "one" : "view" : layout2;
-    const shown = selecting ? selActs : shape === "view" ? [] : actions;
-    const quick = quickFilters;
-    const ending = end && !React$1.isValidElement(end) && !Array.isArray(end) && typeof end === "object" && ("content" in end || "fold" in end) ? end : null;
-    const endContent = ending ? ending.content : end;
-    const endFold = !selecting && ending && ending.fold;
-    const finding = !!find || quick.length > 0;
-    const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
-    const [searchOpen, setSearchOpen] = React$1.useState(false);
-    const key = [shape, narrow, selecting ? "sel" : "rest", shown.map((a) => a.label + (a.disabled ? "0" : "") + (a.loading ? "busy" : "")).join("|"), quickFilters.map((q2) => q2.label + (q2.value && q2.value.length ? q2.value.length : "")).join("|"), endFold && endFold.label].join("§");
-    const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ":scope > .plx-command-bar__bar > [data-plx-bar-row]", searchOpen);
-    const ctx = React$1.useMemo(() => ({ iconOnly: step >= ICONS$2, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
-    const foldAll = Math.max(0, step - SEARCH);
-    const fold2 = Math.min(foldAll, foldOrder(shown).length);
-    const endAway = !!endFold && foldAll > fold2;
-    const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold2 - (endAway ? 1 : 0)));
-    const findAway = finding && foldAll > fold2 + (endAway ? 1 : 0) + quickAway;
-    const quickKept = quick.slice(0, quick.length - quickAway), quickFolded = quick.slice(quick.length - quickAway);
-    const quickMenu = quickFolded.map((q2) => {
-      const id = q2.id || q2.label;
-      const counted = (option) => {
-        const count22 = option.count !== void 0 ? option.count : q2.counts instanceof Map ? q2.counts.get(option.value) || 0 : q2.counts ? q2.counts[option.value] || 0 : void 0;
-        return count22 === void 0 ? option.label || option.value : /* @__PURE__ */ React$1.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(count22)));
-      };
-      if (q2.kind === "single") return /* @__PURE__ */ React$1.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React$1.createElement(SingleQuickFilterMenu, { ...q2 }));
-      if (q2.kind === "date") {
-        const d = Object.assign({ preset: "any", from: "", to: "" }, q2.value);
-        return /* @__PURE__ */ React$1.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: q2.label, value: d.preset, onChange: (v) => q2.onChange && q2.onChange(Object.assign({}, d, { preset: v })) }, fieldWords.presets(fw).map((p) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: p.value, value: p.value }, counted(p)))));
-      }
-      const chosen = q2.value || [];
-      return /* @__PURE__ */ React$1.createElement(MenuSub, { key: id, label: chosen.length ? q2.label + " (" + chosen.length + ")" : q2.label, icon: q2.icon }, (q2.options || []).map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => /* @__PURE__ */ React$1.createElement(
-        MenuItem,
-        {
-          key: o.value,
-          checked: chosen.indexOf(o.value) >= 0,
-          keepOpen: true,
-          onSelect: () => q2.onChange && q2.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter((x) => x !== o.value) : chosen.concat(o.value))
-        },
-        counted(o)
-      )));
-    });
-    const endMenu = endAway ? /* @__PURE__ */ React$1.createElement(MenuSub, { key: "plx-end", label: endFold.label, icon: endFold.icon }, Array.isArray(endFold.items) && endFold.items.length && !React$1.isValidElement(endFold.items[0]) ? endFold.items.map((item) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: item.id || item.label, icon: item.icon, checked: item.checked, disabled: item.disabled, danger: item.danger, onSelect: item.onSelect }, item.label)) : endFold.items) : null;
-    const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
-    const was = React$1.useRef(selecting);
-    React$1.useEffect(() => {
-      const el = root.current;
-      if (!el || typeof window === "undefined") return void 0;
-      const scrollerOf = (node) => {
-        for (let p = node.parentElement; p; p = p.parentElement) {
-          const o = getComputedStyle(p).overflowY;
-          if (o === "auto" || o === "scroll") return p;
-        }
-        return null;
-      };
-      const check = () => {
-        const scroller = scrollerOf(el);
-        const sticky2 = getComputedStyle(el).position === "sticky";
-        const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0, scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
-        const stuck = sticky2 && scrolled && el.getBoundingClientRect().top <= top + 1;
-        if (stuck) el.setAttribute("data-plx-stuck", "");
-        else el.removeAttribute("data-plx-stuck");
-      };
-      const schedule = check;
-      document.addEventListener("scroll", schedule, { capture: true, passive: true });
-      window.addEventListener("resize", schedule);
-      check();
-      return () => {
-        document.removeEventListener("scroll", schedule, { capture: true });
-        window.removeEventListener("resize", schedule);
-      };
-    }, [sticky]);
-    React$1.useEffect(() => {
-      if (was.current !== selecting) announce(selecting ? fill(t.swapped, { n: formatNumber(selCount) }) : t.cleared);
-      was.current = selecting;
-    }, [selecting]);
-    const words2 = { noun: sel && sel.noun || "item", plural: sel && sel.plural || (sel && sel.noun || "item") + "s" };
-    const off2 = (a) => !!a.disabled || !!(a.single && selCount > 1);
-    const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words2));
-    const acts = shown.length || extraMenu.length ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__actions" }, /* @__PURE__ */ React$1.createElement(
-      BarActions,
-      {
-        actions: shown,
-        iconOnly: ctx.iconOnly,
-        fold: fold2,
-        moreLabel: t.more,
-        dangerClass: "plx-command-bar__danger",
-        off: selecting ? off2 : void 0,
-        why: selecting ? why : void 0,
-        extra: extraMenu
-      }
-    )) : null;
-    const quickEls = quickKept.map((q2) => /* @__PURE__ */ React$1.createElement(QuickFilter, { key: q2.id || q2.label, ...q2 }));
-    const fullCtx = React$1.useMemo(() => ({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen }), []);
-    const findEl = !(find || quickEls.length) ? null : findAway ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, /* @__PURE__ */ React$1.createElement(Popover, { title: t.find, placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(CommandBarButton, { icon: SearchIcon, label: t.find, iconOnly: true }) }, /* @__PURE__ */ React$1.createElement(BarContext$1.Provider, { value: fullCtx }, /* @__PURE__ */ React$1.createElement(Stack, { gap: "sm", align: "start" }, find, quickEls)))) : /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, find, quickEls);
-    const viewEl = view ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__view" }, view) : null;
-    const countEl = selecting || count2 === void 0 || count2 === null || ctx.collapsed ? null : typeof count2 === "string" || typeof count2 === "number" ? /* @__PURE__ */ React$1.createElement(Text, { variant: "data", className: "plx-command-bar__count" }, count2) : count2;
-    const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, { n: formatNumber(sel.hidden) }) : "";
-    const [hiddenBefore, hiddenAfter] = String(t.hidden).split("{n}");
-    const [before, after] = String(t.selected).split("{n}");
-    const clearEl = selecting ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: t.clear }, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: CloseIcon, className: "plx-command-bar__clear", "aria-label": fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText, onClick: () => sel.onClear && sel.onClear() }, before, /* @__PURE__ */ React$1.createElement(Text, { variant: "data", className: "plx-command-bar__number" }, formatNumber(selCount)), after, hiddenText ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, hiddenBefore, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(sel.hidden)), hiddenAfter) : null)) : null;
-    const statusEl = selecting || !status || ctx.collapsed ? null : /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary", className: "plx-command-bar__status" }, status);
-    const keptEnd = !selecting && !endAway ? endContent : null;
-    const tail = countEl || statusEl || keptEnd || clearEl ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__end" }, selecting && viewEl ? /* @__PURE__ */ React$1.createElement(Divider$1, { orientation: "vertical" }) : null, countEl, statusEl, keptEnd, clearEl) : null;
-    const onKeyDown2 = selecting && sel.onClear ? (e) => {
-      if (e.key === "Escape" && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
-        e.preventDefault();
-        sel.onClear();
-      }
-    } : void 0;
-    const parts = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, acts, acts && findEl ? /* @__PURE__ */ React$1.createElement(Divider$1, { orientation: "vertical" }) : null, findEl, /* @__PURE__ */ React$1.createElement(Toolbar.Spacer, null), viewEl, tail);
-    const name = selecting ? sel.label || fill(t.actions, { label: label2 || "" }).trim() : label2;
-    return /* @__PURE__ */ React$1.createElement(BarContext$1.Provider, { value: ctx }, /* @__PURE__ */ React$1.createElement("div", { ref: root, className: cx("plx-command-bar", ctx.iconOnly && "plx-command-bar--icons", selecting && "plx-command-bar--selecting", className), "data-plx-layout": shape, "data-plx-position": sticky === true ? "sticky" : sticky === false ? "static" : "auto", onKeyDown: onKeyDown2 }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-command-bar__bar" }, /* @__PURE__ */ React$1.createElement(Toolbar, { label: name, variant: "bar", className: "plx-command-bar__row", "data-plx-bar-row": "", "data-plx-fit-shrink": step >= SEARCH + folds || void 0 }, parts)), React$1.isValidElement(selection) ? selection : null));
-  }
-  const d0$$ = "M359.79-207.39q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Z";
-  const d1$_ = "M360-175.39q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Z";
-  const DragIcon = { "name": "drag", "set": "plenix", "symbol": "drag_indicator", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$$ }, "fill": { "viewBox": "0 -960 960 960", "d": d0$$ } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$_ }, "fill": { "viewBox": "0 -960 960 960", "d": d1$_ } } } };
-  const toggle = (list2, v) => list2.indexOf(v) >= 0 ? list2.filter((x) => x !== v) : list2.concat(v);
-  function PanelTrigger({ icon, label: label2, current: current2, count: count2 = 0, active, caret = false, size = "auto", title, footer, inline = false, placement, className, open, onOpenChange, children }) {
-    const ctx = useCommandBar();
-    const box = React$1.useRef(null);
-    const first = { get current() {
-      const el = box.current;
-      return el ? el.querySelector("[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input") : null;
-    } };
-    const body = /* @__PURE__ */ React$1.createElement("div", { ref: box, className: cx("plx-find-panel-body", className) }, children);
-    if (inline) return /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel-frame" }, children);
-    const words2 = current2 ? label2 + ": " + current2 : label2;
-    const trigger = current2 && !ctx.iconOnly ? /* @__PURE__ */ React$1.createElement(CommandBarButton, { icon, label: label2, active: true, caret, "aria-label": words2 }, words2) : /* @__PURE__ */ React$1.createElement(CommandBarButton, { icon, label: label2, count: count2, active, caret });
-    const pop = /* @__PURE__ */ React$1.createElement(Popover, { label: title ? void 0 : label2, title, size, trigger, footer, placement, initialFocus: first, ...open === void 0 ? null : { open }, onOpenChange }, body);
-    return ctx.iconOnly ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: words2 }, pop) : pop;
-  }
-  function PanelHead({ title, info, infoLabel, sub, actions }) {
-    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__head" }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__title-row" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-panel__title" }, /* @__PURE__ */ React$1.createElement(Text, { variant: "heading", as: "span" }, title), info ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: info }, /* @__PURE__ */ React$1.createElement(Button, { size: "xs", variant: "ghost", icon: CircleInfoIcon, iconOnly: true, label: infoLabel || title })) : null), actions ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-panel__actions" }, actions) : null), sub ? /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, sub) : null);
-  }
-  function Pick({ label: label2, value, options, onChange, size = "field", disabled }) {
-    const cur = options.find((o) => o.value === value) || options[0] || { label: "" };
-    return /* @__PURE__ */ React$1.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: cur.icon, caret: true, truncate: true, disabled, className: cx("plx-find-pick", "plx-find-pick--" + size), title: cur.label, "aria-label": label2 + ": " + cur.label }, cur.label) }, /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: label2, value, onChange }, options.map((o) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: o.value, value: o.value, icon: o.icon }, o.label))));
-  }
-  const Pill = ({ color, children }) => /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-pill", "data-plx-category": color || "grey" }, children);
-  function MultiPick({ label: label2, options, value, onChange, placeholder }) {
-    const chosen = value.map((v) => options.find((o) => o.value === v) || { value: v, label: v });
-    return /* @__PURE__ */ React$1.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React$1.createElement(Button, { caret: true, truncate: true, className: "plx-find-pick plx-find-pick--value", "aria-label": label2 + ": " + (chosen.length ? chosen.map((o) => o.label).join(", ") : placeholder) }, chosen.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-pick__pills" }, chosen.map((o) => /* @__PURE__ */ React$1.createElement(Pill, { key: o.value, color: o.color }, o.label))) : /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-pick__placeholder" }, placeholder)) }, options.map((o) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: o.value, checked: value.indexOf(o.value) >= 0, keepOpen: true, onSelect: () => onChange(toggle(value, o.value)) }, /* @__PURE__ */ React$1.createElement(Pill, { color: o.color }, o.label))));
-  }
-  function useReorder(items, setItems, nameOf2, t) {
-    const [msg, setMsg] = React$1.useState("");
-    const drag = React$1.useRef(null);
-    const box = React$1.useRef(null);
-    const [dragging, setDragging] = React$1.useState(-1);
-    const move2 = (i, to, focus) => {
-      if (to < 0 || to >= items.length || to === i) return;
-      const next = items.slice();
-      const [x] = next.splice(i, 1);
-      next.splice(to, 0, x);
-      setItems(next);
-      setMsg(fill(t.moved, { name: nameOf2(x), position: to + 1, total: items.length }));
-      if (focus) setTimeout(() => {
-        const el = box.current && box.current.querySelectorAll(":scope > [data-plx-row]")[to];
-        if (el) el.focus();
-      }, 0);
-    };
-    const rowProps = (i, name) => ({
-      "data-plx-row": "",
-      tabIndex: 0,
-      draggable: true,
-      "aria-label": fill(t.row, { name, position: i + 1, total: items.length }),
-      "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
-      className: cx("plx-find-panel__row", dragging === i && "is-dragging"),
-      onKeyDown: (e) => {
-        if (e.target !== e.currentTarget || !e.altKey) return;
-        if (e.key === "ArrowUp") {
-          e.preventDefault();
-          move2(i, i - 1, true);
-        }
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          move2(i, i + 1, true);
-        }
-      },
-      onDragStart: (e) => {
-        e.stopPropagation();
-        drag.current = i;
-        setDragging(i);
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", String(i));
-      },
-      onDragEnd: () => {
-        drag.current = null;
-        setDragging(-1);
-      },
-      onDragOver: (e) => e.preventDefault(),
-      onDrop: (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const from = drag.current;
-        drag.current = null;
-        setDragging(-1);
-        if (from !== null && from !== i) move2(from, i);
-      }
-    });
-    const handle = (i, name) => /* @__PURE__ */ React$1.createElement(Menu, { label: fill(t.reorder, { name }), placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.reorder, { name }), className: "plx-find-panel__handle" }) }, /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(i, i - 1, true) }, t.moveUp), /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === items.length - 1, onSelect: () => move2(i, i + 1, true) }, t.moveDown));
-    const status = /* @__PURE__ */ React$1.createElement(LiveRegion, { kind: "status" }, msg);
-    return { box, rowProps, handle, status };
-  }
-  const FieldsIcon = { "name": "fields", "set": "plenix", "symbol": "list_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Z" } } } };
-  const PinFilledIcon = { "name": "pin-filled", "set": "plenix", "symbol": "push_pin", "fillOutline": true, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 0 20 20", "d": "m12.875 10.021 1.5 1.521v1.333h-3.729v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.458V4.25h-.833Zm-5.396 1.521h5l-.937-.917V4.25H8.417v6.375Zm2.5 0Z" }, "fill": { "viewBox": "0 0 20 20", "d": "m12.896 10.021 1.5 1.521v1.333h-3.75v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.479V4.25h-.833Z" } }, "24": { "outline": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1ZM8.85 14h6.3L14 12.85V5h-4v7.85ZM12 14Z" }, "fill": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1Z" } } } };
-  const VisibilityIcon = { "name": "visibility", "set": "plenix", "symbol": "visibility", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212ZM480-480Zm0 216q112 0 207-58t146-158q-51-100-146-158t-207-58q-112 0-207 58T127-480q51 100 146 158t207 58Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220ZM480-500Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220Z" } } } };
-  const moveTo = (order, f, i) => {
-    const rest = order.filter((x) => x !== f);
-    rest.splice(i, 0, f);
-    return rest;
-  };
-  const nameIn = (fields) => (f) => {
-    const x = fields.find((y) => y.value === f);
-    return x ? x.label : f;
-  };
-  function ColumnsList({ fields, value, onChange, filter = "", t }) {
-    const [msg, setMsg] = React$1.useState("");
-    const [drag, setDrag] = React$1.useState(null);
-    const box = React$1.useRef(null);
-    const name = nameIn(fields);
-    const order = value.order, hidden = value.hidden || [];
-    const put = (o, h2, words2, focus) => {
-      onChange({ order: o, hidden: h2 });
-      setMsg(words2);
-      if (focus) setTimeout(() => {
-        const el = box.current && box.current.querySelector('[data-plx-field="' + focus + '"]');
-        if (el) el.focus();
-      }, 0);
-    };
-    const move2 = (f, to, focus) => {
-      if (to < 0 || to >= order.length) return;
-      put(
-        moveTo(order, f, to),
-        to === 0 ? hidden.filter((x) => x !== f) : hidden,
-        to === 0 ? fill(t.isFirst, { name: name(f) }) : fill(t.moved, { name: name(f), position: to + 1, total: order.length }),
-        focus ? f : null
-      );
-    };
-    const q2 = filter.trim().toLowerCase();
-    const shown = order.filter((f) => !q2 || name(f).toLowerCase().indexOf(q2) >= 0);
-    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-columns-list", ref: box }, shown.length ? null : /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, t.none), shown.map((f) => {
-      const i = order.indexOf(f);
-      return /* @__PURE__ */ React$1.createElement(
-        "div",
-        {
-          key: f,
-          "data-plx-field": f,
-          tabIndex: 0,
-          draggable: true,
-          "aria-label": fill(t.row, { name: name(f), first: i === 0 ? t.firstMark : "" }),
-          "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
-          className: cx("plx-columns-list__row", drag === f && "is-dragging"),
-          onKeyDown: (e) => {
-            if (e.target !== e.currentTarget || !e.altKey) return;
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              move2(f, i - 1, true);
-            }
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              move2(f, i + 1, true);
-            }
-          },
-          onDragStart: (e) => {
-            setDrag(f);
-            e.dataTransfer.effectAllowed = "move";
-            e.dataTransfer.setData("text/plain", f);
-          },
-          onDragEnd: () => setDrag(null),
-          onDragOver: (e) => e.preventDefault(),
-          onDrop: (e) => {
-            e.preventDefault();
-            const from = e.dataTransfer.getData("text/plain") || drag;
-            setDrag(null);
-            if (from && from !== f) move2(from, i);
-          }
-        },
-        /* @__PURE__ */ React$1.createElement(Menu, { label: fill(t.moveMenu, { name: name(f) }), trigger: /* @__PURE__ */ React$1.createElement(Button, { size: "xs", variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.moveMenu, { name: name(f) }), className: "plx-columns-list__handle" }), placement: "bottom-start" }, /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(f, i - 1, true) }, t.up), /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === order.length - 1, onSelect: () => move2(f, i + 1, true) }, t.down)),
-        /* @__PURE__ */ React$1.createElement(
-          Checkbox,
-          {
-            label: name(f),
-            checked: hidden.indexOf(f) < 0,
-            disabled: i === 0,
-            onChange: () => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))
-          }
-        ),
-        i === 0 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-columns-list__first" }, /* @__PURE__ */ React$1.createElement(Icon, { name: PinFilledIcon }), /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, t.first)) : null
-      );
-    }), /* @__PURE__ */ React$1.createElement(LiveRegion, { kind: "status" }, msg));
-  }
-  function ColumnsMenu({ fields = [], value, onChange, inline = false, strings }) {
-    const t = useStrings("columnsMenu", strings);
-    const v = value || { order: fields.map((f) => f.value), hidden: [] };
-    const name = nameIn(fields);
-    const first = /* @__PURE__ */ React$1.createElement(Field, { label: t.first }, /* @__PURE__ */ React$1.createElement(
-      Select,
-      {
-        value: v.order[0],
-        options: v.order.map((f) => ({ value: f, label: name(f) })),
-        onChange: (e) => onChange({ order: moveTo(v.order, e.target.value, 0), hidden: (v.hidden || []).filter((x) => x !== e.target.value) })
-      }
-    ));
-    const list2 = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--columns" }, first, /* @__PURE__ */ React$1.createElement(ColumnsList, { fields, value: v, onChange, t }));
-    return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon: FieldsIcon, label: t.label, title: t.label, count: (v.hidden || []).length, caret: true, size: "lg", inline }, list2);
-  }
-  function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
-    const t = useStrings("columnsMenu", strings);
-    const v = value || { order: fields.map((f) => f.value), hidden: [] };
-    const controlled = openProp !== void 0;
-    const [own2, setOwn] = React$1.useState(false), open = controlled ? !!openProp : own2;
-    const setOpen = (next) => {
-      if (!controlled) setOwn(next);
-      if (onOpenChange) onOpenChange(next);
-    };
-    const [draft, setDraft] = React$1.useState(v);
-    const [q2, setQ] = React$1.useState("");
-    const name = nameIn(fields);
-    React$1.useEffect(() => {
-      if (controlled && openProp) {
-        setDraft(v);
-        setQ("");
-      }
-    }, [controlled, openProp]);
-    const start2 = () => {
-      setDraft(v);
-      setQ("");
-      setOpen(true);
-    };
-    const button = trigger === null ? null : trigger ? React$1.cloneElement(trigger, { onClick: start2 }) : /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FieldsIcon, onClick: start2 }, t.manage);
-    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, button, /* @__PURE__ */ React$1.createElement(
-      Dialog,
-      {
-        open,
-        onClose: () => setOpen(false),
-        title: t.manage,
-        icon: FieldsIcon,
-        size: "md",
-        footer: /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(Button, { onClick: () => setOpen(false) }, t.cancel), /* @__PURE__ */ React$1.createElement(Button, { variant: "primary", onClick: () => {
-          onChange(draft);
-          setOpen(false);
-        } }, t.apply))
-      },
-      /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--dialog" }, /* @__PURE__ */ React$1.createElement(Field, { label: t.first }, /* @__PURE__ */ React$1.createElement(
-        Select,
-        {
-          value: draft.order[0],
-          options: draft.order.map((f) => ({ value: f, label: name(f) })),
-          onChange: (e) => setDraft({ order: moveTo(draft.order, e.target.value, 0), hidden: (draft.hidden || []).filter((x) => x !== e.target.value) })
-        }
-      )), /* @__PURE__ */ React$1.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: t.find, label: t.find }), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityIcon, onClick: () => setDraft({ order: draft.order, hidden: [] }) }, t.showAll), /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityOffIcon, onClick: () => setDraft({ order: draft.order, hidden: draft.order.slice(1) }) }, t.hideAll)), /* @__PURE__ */ React$1.createElement(ColumnsList, { fields, value: draft, onChange: setDraft, filter: q2, t }))
-    ));
-  }
-  function pagesToShow(page, count2) {
-    const set2 = new Set([1, count2, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count2));
-    const list2 = Array.from(set2).sort((a, b) => a - b), out = [];
-    list2.forEach((p, i) => {
-      if (i && p - list2[i - 1] > 1) out.push("gap-" + p);
-      out.push(p);
-    });
-    return out;
-  }
-  function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPage, perPageOptions, onPerPageChange, label: label2, strings, className, ...rest }) {
-    const t = useStrings("pagination", strings);
-    const go = (p) => {
-      if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
-    };
-    const first = total ? (page - 1) * (perPage || 0) + 1 : null;
-    const last = total ? Math.min(total, page * (perPage || total)) : null;
-    return /* @__PURE__ */ React$1.createElement("nav", { className: cx("plx-pagination", className), "aria-label": label2 || t.label, ...rest }, total ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__info" }, dataPhrase(t.range, { first, last, total })) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__pages" }, /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.previous, disabled: page <= 1, onClick: () => go(page - 1) }, "‹"), pagesToShow(page, pageCount).map((p) => typeof p === "string" ? /* @__PURE__ */ React$1.createElement("span", { key: p, className: "plx-pagination__gap", "aria-hidden": "true" }, "…") : /* @__PURE__ */ React$1.createElement("button", { type: "button", key: p, className: "plx-pagination__page", "aria-current": p === page ? "page" : void 0, "aria-label": fill(t.page, { n: p }), onClick: () => go(p) }, p)), /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.next, disabled: page >= pageCount, onClick: () => go(page + 1) }, "›")), perPageOptions && onPerPageChange ? /* @__PURE__ */ React$1.createElement("label", { className: "plx-pagination__per-page" }, /* @__PURE__ */ React$1.createElement("span", null, t.perPage), /* @__PURE__ */ React$1.createElement("select", { className: "plx-pagination__select", value: perPage, onChange: (e) => onPerPageChange(Number(e.target.value)) }, perPageOptions.map((n) => /* @__PURE__ */ React$1.createElement("option", { key: n, value: n }, n)))) : null);
-  }
-  const CloudOffIcon = { "name": "cloud-off", "set": "plenix", "symbol": "cloud_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-72.21 0-122.11-49.89Q68-311.79 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 2.18-14.24 7.82-31.66 5.65-17.41 14.11-30.88L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15ZM240-264h382.46L305.69-580.77q-7.46 15.69-13.07 35.35Q287-525.77 283-507l-51 4q-48 4-80 37.68T120-384q0 49.71 35.14 84.86Q190.29-264 240-264Zm223.69-158.77Zm362.46 186.92L787.77-274Q810-286.38 825-309.08q15-22.7 15-50.92 0-40.32-27.84-68.16Q784.32-456 744-456h-66l-6-65q-7-74-62-124.5T479.78-696q-24.47 0-47.12 6Q410-684 389-673l-37.38-37.77q32-18.46 62.64-27.84Q444.91-748 480-748q94.64 0 164.82 63.68Q715-620.64 724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77ZM588.38-474Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-71.92 0-121.96-50.04Q68-312.08 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 1.85-14.46 7.66-31.77 5.81-17.3 14.27-30.77L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15Zm45.07-131.23L351.62-710.77q32-18.46 62.5-27.84Q444.62-748 480-748q94.54 0 164.77 63.73T724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15ZM260-240h374.46L291.69-582.77q-5.46 13.69-8.57 29.85Q280-536.77 280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41Zm202.69-171.77Zm387.46 187.92L806.77-266q16.23-14.38 24.73-32.77Q840-317.15 840-340q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-27 0-52 6.5T380-693l-43.38-43.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.64 0 184.32 75.68Q740-628.64 740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27ZM593.38-479Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15Zm45.07-153.23L336.62-736.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.54 0 184.27 75.73T740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27Z" } } } };
-  const DocSearchIcon = { "name": "doc-search", "set": "plenix", "symbol": "find_in_page", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m605.85-168 52 52H212v-728h354.77L748-665.08v541.39h4.15L547.61-329q-15 10.38-32.29 14.69Q498.03-310 480-310q-51.75 0-87.87-36.13Q356-382.25 356-434q0-51.75 36.13-87.87Q428.25-558 480-558q51.75 0 87.87 36.13Q604-485.75 604-434q0 18.85-5 36.62-5 17.76-15 31.99l112 112.01V-642L546-792H264v624h341.85ZM480-362q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21Zm0-118Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M212-116v-728h354.77L748-665.08v462.93L584-365.39q10-14.23 15-31.99 5-17.77 5-36.62 0-51.75-36.13-87.87Q531.75-558 480-558q-51.75 0-87.87 36.13Q356-485.75 356-434q0 51.75 36.13 87.87Q428.25-310 480-310q18.03 0 35.32-4.31T547.61-329l204.54 204.92v8.08H212Zm267.79-246Q450-362 429-383.21t-21-51Q408-464 429.21-485t51-21Q510-506 531-484.79t21 51Q552-404 530.79-383t-51 21Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m603.85-160 60 60H180v-760h410.77L780-633.08v525.39h-9.85L554.61-322q-17 11.38-35.29 16.69Q501.03-300 480-300q-57.75 0-98.87-41.13Q340-382.25 340-440q0-57.75 41.13-98.87Q422.25-580 480-580q57.75 0 98.87 41.13Q620-497.75 620-440q0 21.85-5.5 40.12-5.5 18.26-16.5 34.49l122 124.01V-612L562-800H240v640h363.85ZM480-360q33 0 56.5-23.5T560-440q0-33-23.5-56.5T480-520q-33 0-56.5 23.5T400-440q0 33 23.5 56.5T480-360Zm0-120Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M180-100v-760h410.77L780-633.08v452.93L598-365.39q11-16.23 16.5-34.49Q620-418.15 620-440q0-57.75-41.13-98.87Q537.75-580 480-580q-57.75 0-98.87 41.13Q340-497.75 340-440q0 57.75 41.13 98.87Q422.25-300 480-300q21.03 0 39.32-5.31T554.61-322l215.54 213.92v8.08H180Zm300-260q-33 0-56.5-23.5T400-440q0-33 23.5-56.5T480-520q33 0 56.5 23.5T560-440q0 33-23.5 56.5T480-360Z" } } } };
-  const SettingsMaintenanceIcon = { "name": "settings-maintenance", "set": "plenix", "symbol": "build", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Zm0-73.53 44.61-43.62-225.38-223.39q18.84-24.77 24.84-53.27 6-28.5 6-44.88 0-73.54-56.54-129.77Q446.61-761 363.84-754l118 117-158.15 157.15-120-120q-8.85 89 47.77 144.93Q308.08-399 381.69-399q17.39 0 47.58-6.81 30.19-6.8 56.96-27.42l223.39 223.39ZM476-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Zm0-85.53 36.61-36.62-266.38-266.39q16.84-20.77 24.84-47.27 8-26.5 8-53.88 0-66.54-47.54-117.77Q432.61-769 359.84-768l112 112-170.15 170.15-112-112q.15 77 51.77 122.43Q293.08-430 357.69-430q26.39 0 52.58-7.81 26.19-7.8 47.96-24.42l266.39 266.39ZM472-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Z" } } } };
-  const d0$_ = "M793.08-80.62 439.39-436.31q-53.93 6.77-101.93 29.92-48 23.16-83.46 60.39l-62.46-63.69q35.46-35.46 79.96-61.39Q316-497 365.7-510L247.23-628.46q-43.31 19.46-85.54 48.23Q119.46-551.46 84-516l-61.69-63.69q35.85-35.85 76.5-65 40.65-29.16 81.96-50.23l-87.84-87.85 42.15-42.15 702.15 702.15-44.15 42.15ZM716-358l-23.04-23.04-23.04-23.04-113.61-113.61q57.54 8 112.65 35.42 55.12 27.43 99.5 71.81L716-358Zm160-158q-77-77-178.5-120.5T480-680q-21 0-41.08 1.5Q418.85-677 400-674l-76.61-76.61q35.15-9.31 73.92-13.96 38.77-4.66 82.69-4.66 135.46 0 252.69 50.5 117.23 50.5 205.77 139.04L876-516ZM480-120 360.54-240.08q23.77-23.76 54.69-36.46 30.92-12.69 64.77-12.69 33.85 0 64.77 12.69 30.92 12.7 54.69 36.46L480-120Z";
-  const WifiOffIcon = { "name": "wifi-off", "set": "plenix", "symbol": "wifi_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-20.76 56.19-32.46 30.42-11.69 62.27-11.69 32.85 0 62.77 12.19 29.92 12.2 56.69 31.96L480-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-19.76 56.19-31.96 30.42-12.19 62.27-12.19 32.85 0 62.77 12.69 29.92 12.7 56.69 31.46L480-144Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d0$_ }, "fill": { "viewBox": "0 -960 960 960", "d": d0$_ } } } };
-  const KINDS = {
-    offline: { tone: "warning", icon: WifiOffIcon },
-    degraded: { tone: "warning", icon: CloudOffIcon },
-    "permission-denied": { tone: "neutral", icon: LockIcon },
-    "not-found": { tone: "neutral", icon: DocSearchIcon },
-    maintenance: { tone: "neutral", icon: SettingsMaintenanceIcon },
-    completion: { tone: "success", icon: CircleCheckIcon }
-  };
-  const TONE_ICONS = { error: WarningIcon, warning: WarningIcon, success: CircleCheckIcon };
-  const ROLES$1 = { error: "alert", warning: "status", success: "status" };
-  function EmptyState({ size = "inline", tone, kind, icon, title, action, strings, className, children, ...rest }) {
-    devWarn("EmptyState", { size, tone }, { size: ["inline", "page"], tone: ["neutral", "error", "warning", "success"] });
-    const preset = KINDS[kind];
-    const all = useStrings("emptyState", strings);
-    const words2 = preset ? all[kind] : null;
-    const t = tone || (preset ? preset.tone : "neutral");
-    const mark = icon !== void 0 ? icon : preset ? preset.icon : TONE_ICONS[t];
-    const head = title !== void 0 ? title : words2 ? words2.title : null;
-    const text2 = children !== void 0 && children !== null ? children : words2 ? words2.text : null;
-    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-empty-state", "plx-empty-state--" + size, t !== "neutral" && "plx-empty-state--" + t, className), role: ROLES$1[t], ...rest }, mark ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__icon", "aria-hidden": "true" }, asIcon(mark)) : null, head ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__title" }, head) : null, text2 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__text" }, text2) : null, action ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__action" }, action) : null);
-  }
   const recordKey = (value) => typeof value + ":" + String(value);
   const normalizeSort = (value) => (Array.isArray(value) ? value : []).filter((x) => x && (x.field || x.column)).map((x) => ({ id: x.field || x.column, desc: x.dir === "desc" }));
   function readView$1(key) {
@@ -13127,9 +11829,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       wrapHeaders: saved.wrapHeaders ?? props.wrapHeaders ?? false
     };
   }
-  const d0$Z = "M454-454H260v-52h194v-194h52v194h194v52H506v194h-52v-194Z";
-  const d1$Z = "M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z";
-  const AddIcon = { "name": "add", "set": "plenix", "symbol": "add", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Z }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Z } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Z }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Z } } } };
+  const d0$13 = "M454-454H260v-52h194v-194h52v194h194v52H506v194h-52v-194Z";
+  const d1$12 = "M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z";
+  const AddIcon = { "name": "add", "set": "plenix", "symbol": "add", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$13 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$13 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$12 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$12 } } } };
   function RemoveButton({ label: label2, onClick }) {
     return /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-tag__remove", "aria-label": label2, onClick }, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "×"));
   }
@@ -13513,22 +12215,27 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     siblings(groups);
     return display2;
   }
-  const d0$Y = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
-  const d1$Y = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
-  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Y } } } };
-  const d0$X = "M682.92-316.23q0 83.29-57.88 141.76-57.88 58.47-141 58.47-84.27 0-141.77-60.9-57.5-60.89-57.5-146.33v-378.62q0-59.23 41.08-100.69Q366.92-844 426.15-844q60.23 0 100.81 43.96 40.58 43.96 40.58 105.19v355.39q0 34.76-24.22 59.42-24.22 24.65-59.03 24.65-35.67 0-59.9-25.62-24.23-25.62-24.23-62.45v-361.15h51.99v365.15q0 13.48 9.11 22.78t22.59 9.3q13.47 0 22.58-9.3 9.11-9.3 9.11-22.78v-362.77q.38-37.31-25.78-63.54Q463.6-792 425.96-792q-37.46 0-63.33 27.42-25.86 27.43-25.86 64.73v383.62q.38 61.54 43.15 104.38Q422.69-169 484.18-168q61.46 1 104.49-44.35 43.02-45.34 42.25-108.88v-383.38h52v388.38Z";
-  const d1$X = "M706.92-334.23q0 97.44-67.81 165.83-67.8 68.4-165.07 68.4t-165.27-68.4q-68-68.39-68-165.83v-359.62q0-69.23 48.08-117.69Q336.92-860 406.15-860q69.23 0 117.31 48.46t48.08 117.69v340.39q0 40.61-28.29 69.34-28.3 28.73-68.96 28.73-40.67 0-69.4-28.53-28.73-28.53-28.73-69.54v-351.15h59.99v351.15q0 16.08 10.81 27.08t26.89 11q16.07 0 26.88-11 10.81-11 10.81-27.08v-340.77q-.62-44.31-30.78-75.04Q450.6-800 406.15-800q-44.26 0-74.82 30.92-30.56 30.93-30.56 75.23v359.62q-.62 72.54 50.15 123.38Q401.69-160 474.18-160q71.46 0 121.49-50.85 50.02-50.84 51.25-123.38v-370.38h60v370.38Z";
-  const AttachmentIcon = { "name": "attachment", "set": "plenix", "symbol": "attach_file", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
-  const d0$W = "M453.23-154v-77.69Q403-240 367.27-272.5t-50.73-79.11l55.54-23.08q9.15 34.46 42.03 62.58Q447-284 483.92-284q41.31 0 70.93-22.11 29.61-22.12 29.61-59.89 0-33.85-25.38-56.54-25.39-22.69-80.46-41.92-73.77-26.85-109.58-57.46-35.81-30.62-35.81-82.08 0-45.38 32.89-80.04 32.88-34.65 87.11-44.5V-806h52v77.46q67.77 10.08 90.92 48.27 23.16 38.19 26.46 37.12l-50.76 22.07Q562.69-644 537.15-661q-25.53-17-54.92-17-36.15 0-63.58 20.5-27.42 20.5-27.42 51.5 0 27.92 23.08 48.35 23.07 20.42 93.38 45.34 71.92 24.54 103.35 57.89 31.42 33.34 31.42 89.19 0 51.61-37.19 89.84-37.19 38.24-100.04 45.93V-154h-52Z";
-  const d1$W = "M450.23-130v-83.69Q398-223 360.27-254.5t-55.73-88.11l55.54-23.08q16.15 46.46 46.03 71.08Q436-270 485.92-270q43.31 0 76.43-20.61 33.11-20.62 33.11-65.39 0-38.85-24.88-62.04-24.89-23.19-102.96-48.42-81.77-25.85-113.58-60.46-31.81-34.62-31.81-87.08 0-60.38 42.39-95.04 42.38-34.65 85.61-38.5V-830h60v82.46q45.77 6.08 76.92 29.77 31.16 23.69 48.46 61.62l-54.76 25.07Q567.69-660 544.15-676q-23.53-16-61.92-16-45.15 0-72.58 22-27.42 22-27.42 56 0 34.92 28.08 55.85 28.07 20.92 104.38 43.84 70.92 21.54 105.85 61.39 34.92 39.84 34.92 95.69 0 65.61-42.19 101.84-42.19 36.24-103.04 42.93V-130h-60Z";
-  const FieldCurrencyIcon = { "name": "field-currency", "set": "plenix", "symbol": "attach_money", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
-  const d0$V = "M164-278.62v-51.99h392v51.99H164ZM164-454v-52h632v52H164Zm0-175.39v-51.99h632v51.99H164Z";
-  const d1$V = "M140-254.62v-59.99h440v59.99H140ZM140-450v-60h680v60H140Zm0-195.39v-59.99h680v59.99H140Z";
-  const FieldLongTextIcon = { "name": "field-long-text", "set": "plenix", "symbol": "notes", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
+  const d0$12 = "M682.92-316.23q0 83.29-57.88 141.76-57.88 58.47-141 58.47-84.27 0-141.77-60.9-57.5-60.89-57.5-146.33v-378.62q0-59.23 41.08-100.69Q366.92-844 426.15-844q60.23 0 100.81 43.96 40.58 43.96 40.58 105.19v355.39q0 34.76-24.22 59.42-24.22 24.65-59.03 24.65-35.67 0-59.9-25.62-24.23-25.62-24.23-62.45v-361.15h51.99v365.15q0 13.48 9.11 22.78t22.59 9.3q13.47 0 22.58-9.3 9.11-9.3 9.11-22.78v-362.77q.38-37.31-25.78-63.54Q463.6-792 425.96-792q-37.46 0-63.33 27.42-25.86 27.43-25.86 64.73v383.62q.38 61.54 43.15 104.38Q422.69-169 484.18-168q61.46 1 104.49-44.35 43.02-45.34 42.25-108.88v-383.38h52v388.38Z";
+  const d1$11 = "M706.92-334.23q0 97.44-67.81 165.83-67.8 68.4-165.07 68.4t-165.27-68.4q-68-68.39-68-165.83v-359.62q0-69.23 48.08-117.69Q336.92-860 406.15-860q69.23 0 117.31 48.46t48.08 117.69v340.39q0 40.61-28.29 69.34-28.3 28.73-68.96 28.73-40.67 0-69.4-28.53-28.73-28.53-28.73-69.54v-351.15h59.99v351.15q0 16.08 10.81 27.08t26.89 11q16.07 0 26.88-11 10.81-11 10.81-27.08v-340.77q-.62-44.31-30.78-75.04Q450.6-800 406.15-800q-44.26 0-74.82 30.92-30.56 30.93-30.56 75.23v359.62q-.62 72.54 50.15 123.38Q401.69-160 474.18-160q71.46 0 121.49-50.85 50.02-50.84 51.25-123.38v-370.38h60v370.38Z";
+  const AttachmentIcon = { "name": "attachment", "set": "plenix", "symbol": "attach_file", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$12 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$12 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$11 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$11 } } } };
+  const CalendarIcon = { "name": "calendar", "set": "plenix", "symbol": "calendar_month", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M448.62-380.92v-62.77h62.76v62.77h-62.76Zm-156 0v-62.77h62.76v62.77h-62.76Zm312 0v-62.77h62.76v62.77h-62.76ZM448.62-240v-62.77h62.76V-240h-62.76Zm-156 0v-62.77h62.76V-240h-62.76Zm312 0v-62.77h62.76V-240h-62.76ZM164-116v-632h151.69v-100.61h53.54V-748h223.08v-100.61h52V-748H796v632H164Zm52-52h528v-347.69H216V-168Zm0-399.69h528V-696H216v128.31Zm0 0V-696v128.31Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M448.62-380.92v-62.77h62.76v62.77h-62.76Zm-156 0v-62.77h62.76v62.77h-62.76Zm312 0v-62.77h62.76v62.77h-62.76ZM448.62-240v-62.77h62.76V-240h-62.76Zm-156 0v-62.77h62.76V-240h-62.76Zm312 0v-62.77h62.76V-240h-62.76ZM164-116v-632h151.69v-100.61h53.54V-748h223.08v-100.61h52V-748H796v632H164Zm52-52h528v-347.69H216V-168Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M444.62-396.92v-70.77h70.76v70.77h-70.76Zm-160 0v-70.77h70.76v70.77h-70.76Zm320 0v-70.77h70.76v70.77h-70.76ZM444.62-240v-70.77h70.76V-240h-70.76Zm-160 0v-70.77h70.76V-240h-70.76Zm320 0v-70.77h70.76V-240h-70.76ZM140-100v-680h127.69v-84.61h61.54V-780h303.08v-84.61h60V-780H820v680H140Zm60-60h560v-387.69H200V-160Zm0-447.69h560V-720H200v112.31Zm0 0V-720v112.31Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M444.62-396.92v-70.77h70.76v70.77h-70.76Zm-160 0v-70.77h70.76v70.77h-70.76Zm320 0v-70.77h70.76v70.77h-70.76ZM444.62-240v-70.77h70.76V-240h-70.76Zm-160 0v-70.77h70.76V-240h-70.76Zm320 0v-70.77h70.76V-240h-70.76ZM140-100v-680h127.69v-84.61h61.54V-780h303.08v-84.61h60V-780H820v680H140Zm60-60h560v-387.69H200V-160Z" } } } };
+  const d0$11 = "M305.69-209.69v-480h-192v-60.62h444.62v60.62h-192v480h-60.62Zm360 0v-288h-120v-60.62h300.62v60.62h-120v288h-60.62Z";
+  const d1$10 = "M297.69-177.69v-520h-200v-84.62h484.62v84.62h-200v520h-84.62Zm360 0v-320h-120v-84.62h324.62v84.62h-120v320h-84.62Z";
+  const EdTextIcon = { "name": "ed-text", "set": "plenix", "symbol": "text_fields", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$11 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$11 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$10 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$10 } } } };
+  const d0$10 = "M453.23-154v-77.69Q403-240 367.27-272.5t-50.73-79.11l55.54-23.08q9.15 34.46 42.03 62.58Q447-284 483.92-284q41.31 0 70.93-22.11 29.61-22.12 29.61-59.89 0-33.85-25.38-56.54-25.39-22.69-80.46-41.92-73.77-26.85-109.58-57.46-35.81-30.62-35.81-82.08 0-45.38 32.89-80.04 32.88-34.65 87.11-44.5V-806h52v77.46q67.77 10.08 90.92 48.27 23.16 38.19 26.46 37.12l-50.76 22.07Q562.69-644 537.15-661q-25.53-17-54.92-17-36.15 0-63.58 20.5-27.42 20.5-27.42 51.5 0 27.92 23.08 48.35 23.07 20.42 93.38 45.34 71.92 24.54 103.35 57.89 31.42 33.34 31.42 89.19 0 51.61-37.19 89.84-37.19 38.24-100.04 45.93V-154h-52Z";
+  const d1$$ = "M450.23-130v-83.69Q398-223 360.27-254.5t-55.73-88.11l55.54-23.08q16.15 46.46 46.03 71.08Q436-270 485.92-270q43.31 0 76.43-20.61 33.11-20.62 33.11-65.39 0-38.85-24.88-62.04-24.89-23.19-102.96-48.42-81.77-25.85-113.58-60.46-31.81-34.62-31.81-87.08 0-60.38 42.39-95.04 42.38-34.65 85.61-38.5V-830h60v82.46q45.77 6.08 76.92 29.77 31.16 23.69 48.46 61.62l-54.76 25.07Q567.69-660 544.15-676q-23.53-16-61.92-16-45.15 0-72.58 22-27.42 22-27.42 56 0 34.92 28.08 55.85 28.07 20.92 104.38 43.84 70.92 21.54 105.85 61.39 34.92 39.84 34.92 95.69 0 65.61-42.19 101.84-42.19 36.24-103.04 42.93V-130h-60Z";
+  const FieldCurrencyIcon = { "name": "field-currency", "set": "plenix", "symbol": "attach_money", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$10 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$10 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$$ }, "fill": { "viewBox": "0 -960 960 960", "d": d1$$ } } } };
+  const d0$$ = "M164-278.62v-51.99h392v51.99H164ZM164-454v-52h632v52H164Zm0-175.39v-51.99h632v51.99H164Z";
+  const d1$_ = "M140-254.62v-59.99h440v59.99H140ZM140-450v-60h680v60H140Zm0-195.39v-59.99h680v59.99H140Z";
+  const FieldLongTextIcon = { "name": "field-long-text", "set": "plenix", "symbol": "notes", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$$ }, "fill": { "viewBox": "0 -960 960 960", "d": d0$$ } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$_ }, "fill": { "viewBox": "0 -960 960 960", "d": d1$_ } } } };
+  const d0$_ = "m286.69-210.46 30-120h-142.3l13-52h142.3l42.77-171.08h-154.3l13-52h154.3l36-144h51.23l-36 144h149.39l36-144h51.23l-36 144h148.3l-13 52h-148.3l-42.77 171.08h160.3l-13 52h-160.3l-30 120h-51.23l30-120H367.92l-30 120h-51.23Zm94.23-172h149.39l42.77-171.08H423.69l-42.77 171.08Z";
+  const d1$Z = "m262.69-178.46 40-160h-152.3l15-60h152.3l40.77-163.08h-152.3l15-60h152.3l40-160h59.23l-40 160h165.39l40-160h59.23l-40 160h152.3l-15 60h-152.3l-40.77 163.08h152.3l-15 60h-152.3l-40 160h-59.23l40-160H361.92l-40 160h-59.23Zm114.23-220h165.39l40.77-163.08H417.69l-40.77 163.08Z";
+  const FieldNumberIcon = { "name": "field-number", "set": "plenix", "symbol": "numbers", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$_ }, "fill": { "viewBox": "0 -960 960 960", "d": d0$_ } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Z }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Z } } } };
+  const FieldSelectIcon = { "name": "field-select", "set": "plenix", "symbol": "arrow_drop_down_circle", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m480-394.77 125.54-125.54H354.46L480-394.77Zm.34 278.77q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Zm-.34-52q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Zm0-312Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m480-394.77 125.54-125.54H354.46L480-394.77Zm.34 278.77q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m480-370.77 141.54-141.54H338.46L480-370.77Zm.07 270.77q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Zm-.07-60q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m480-370.77 141.54-141.54H338.46L480-370.77Zm.07 270.77q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z" } } } };
   const ImageA2Icon = { "name": "image-a-2", "set": "plenix", "symbol": "image", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Z" } } } };
-  const d0$U = "M424.31-306.46H289.54q-72.02 0-122.78-50.82Q116-408.1 116-480.2q0-72.11 50.76-122.72 50.76-50.62 122.78-50.62h134.77v52H289.54q-50.39 0-85.96 35.58Q168-530.38 168-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h134.77v52ZM346-454v-52h268v52H346Zm189.69 147.54v-52h134.77q50.39 0 85.96-35.58Q792-429.62 792-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H535.69v-52h134.77q72.02 0 122.78 50.82Q844-551.9 844-479.8q0 72.11-50.76 122.72-50.76 50.62-122.78 50.62H535.69Z";
-  const d1$U = "M432.31-298.46H281.54q-75.34 0-128.44-53.1Q100-404.65 100-479.98q0-75.33 53.1-128.44 53.1-53.12 128.44-53.12h150.77v60H281.54q-50.39 0-85.96 35.58Q160-530.38 160-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h150.77v60ZM330-450v-60h300v60H330Zm197.69 151.54v-60h150.77q50.39 0 85.96-35.58Q800-429.62 800-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H527.69v-60h150.77q75.34 0 128.44 53.1Q860-555.35 860-480.02q0 75.33-53.1 128.44-53.1 53.12-128.44 53.12H527.69Z";
-  const LinkIcon = { "name": "link", "set": "plenix", "symbol": "link", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
+  const d0$Z = "M424.31-306.46H289.54q-72.02 0-122.78-50.82Q116-408.1 116-480.2q0-72.11 50.76-122.72 50.76-50.62 122.78-50.62h134.77v52H289.54q-50.39 0-85.96 35.58Q168-530.38 168-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h134.77v52ZM346-454v-52h268v52H346Zm189.69 147.54v-52h134.77q50.39 0 85.96-35.58Q792-429.62 792-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H535.69v-52h134.77q72.02 0 122.78 50.82Q844-551.9 844-479.8q0 72.11-50.76 122.72-50.76 50.62-122.78 50.62H535.69Z";
+  const d1$Y = "M432.31-298.46H281.54q-75.34 0-128.44-53.1Q100-404.65 100-479.98q0-75.33 53.1-128.44 53.1-53.12 128.44-53.12h150.77v60H281.54q-50.39 0-85.96 35.58Q160-530.38 160-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h150.77v60ZM330-450v-60h300v60H330Zm197.69 151.54v-60h150.77q50.39 0 85.96-35.58Q800-429.62 800-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H527.69v-60h150.77q75.34 0 128.44 53.1Q860-555.35 860-480.02q0 75.33-53.1 128.44-53.1 53.12-128.44 53.12H527.69Z";
+  const LinkIcon = { "name": "link", "set": "plenix", "symbol": "link", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Z }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Z } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Y } } } };
   const SelectIcon = { "name": "select", "set": "plenix", "symbol": "check_box", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Z" } } } };
   const cellDirection = (enabled, content) => enabled ? /* @__PURE__ */ React$1.createElement("span", { className: GRID + "__cell-direction", dir: "auto" }, content) : content;
   const EMPTY_ROWS = [];
@@ -19581,6 +18288,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     );
   });
+  const d0$Y = "M359.79-207.39q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Z";
+  const d1$X = "M360-175.39q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Z";
+  const DragIcon = { "name": "drag", "set": "plenix", "symbol": "drag_indicator", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
   const DragHandle = React$1.forwardRef(function DragHandle2({ label: label2, orientation = "vertical", dnd, disabled = false, className, ...rest }, ref) {
     const props = mergeDndProps(dnd || {}, rest);
     return /* @__PURE__ */ React$1.createElement(
@@ -19596,9 +18306,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       /* @__PURE__ */ React$1.createElement(Icon, { name: DragIcon })
     );
   });
-  const d0$T = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
-  const d1$T = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
-  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
+  const d0$X = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
+  const d1$W = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
+  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
+  const d0$W = "M479.79-221.23q-21.54 0-36.66-15.34Q428-251.91 428-273.44q0-21.54 15.34-36.67 15.34-15.12 36.87-15.12 21.54 0 36.66 15.34Q532-294.56 532-273.02t-15.34 36.66q-15.34 15.13-36.87 15.13Zm0-206.77q-21.54 0-36.66-15.34Q428-458.68 428-480.21q0-21.54 15.34-36.66Q458.68-532 480.21-532q21.54 0 36.66 15.34Q532-501.32 532-479.79q0 21.54-15.34 36.66Q501.32-428 479.79-428Zm0-206.77q-21.54 0-36.66-15.34Q428-665.44 428-686.98t15.34-36.66q15.34-15.13 36.87-15.13 21.54 0 36.66 15.34Q532-708.09 532-686.56q0 21.54-15.34 36.67-15.34 15.12-36.87 15.12Z";
+  const d1$V = "M480-189.23q-24.75 0-42.37-17.63Q420-224.48 420-249.23q0-24.75 17.63-42.38 17.62-17.62 42.37-17.62 24.75 0 42.37 17.62Q540-273.98 540-249.23q0 24.75-17.63 42.37-17.62 17.63-42.37 17.63ZM480-420q-24.75 0-42.37-17.63Q420-455.25 420-480q0-24.75 17.63-42.37Q455.25-540 480-540q24.75 0 42.37 17.63Q540-504.75 540-480q0 24.75-17.63 42.37Q504.75-420 480-420Zm0-230.77q-24.75 0-42.37-17.62Q420-686.02 420-710.77q0-24.75 17.63-42.37 17.62-17.63 42.37-17.63 24.75 0 42.37 17.63Q540-735.52 540-710.77q0 24.75-17.63 42.38-17.62 17.62-42.37 17.62Z";
+  const MoreIcon = { "name": "more", "set": "plenix", "symbol": "more_vert", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
   function bodyRows({
     B,
     semanticIndex,
@@ -20033,12 +18746,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     return { groupNode, rowNode };
   }
-  const d0$S = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
-  const d1$S = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
-  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
-  const d0$R = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
-  const d1$R = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
-  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  const d0$V = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
+  const d1$U = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
+  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
+  const d0$U = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
+  const d1$T = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
+  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
   const FilterIcon = { "name": "filter", "set": "plenix", "symbol": "filter_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Zm28-286 162-198H317l163 198Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Zm60-288 198-252H282l198 252Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Z" } } } };
   const GroupByIcon = { "name": "group-by", "set": "plenix", "symbol": "view_agenda", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm52-52h528v-144H216v144Zm-52-307.38v-248h632v248H164Zm52-52h528v-144H216v144Zm0 215.38v144-144Zm0-359.38v144-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm0-359.38v-248h632v248H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm60-60h560v-160H200v160Zm-60-315.38v-280h680v280H140Zm60-60h560v-160H200v160Zm0 215.38v160-160Zm0-375.38v160-160Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm0-375.38v-280h680v280H140Z" } } } };
   function headerRows({
@@ -20252,6 +18965,1460 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return headerMenu ? /* @__PURE__ */ React.createElement(ContextMenu, { key: c.field, target: node, label: S2.columns }, columnChooser(column)) : node;
     };
     return { chooserColumns, headerCell };
+  }
+  const Checkbox = React$1.forwardRef(function Checkbox2({ label: label2, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
+    const locked = useReadOnly(readOnly);
+    const inner = React$1.useRef(null);
+    React$1.useImperativeHandle(ref, () => inner.current);
+    React$1.useEffect(() => {
+      if (inner.current) inner.current.indeterminate = indeterminate;
+    }, [indeterminate]);
+    return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref: inner, type: "checkbox", className: "plx-check__input", ...readOnlyProps(locked, rest) }), label2 || description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
+  });
+  const Radio = React$1.forwardRef(function Radio2({ label: label2, description, className, readOnly, dir, lang, ...rest }, ref) {
+    const locked = useReadOnly(readOnly);
+    return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref, type: "radio", className: "plx-check__input", ...readOnlyProps(locked, rest, { aria: false }) }), label2 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
+  });
+  function RadioGroup({ label: label2, name, value, onChange, options, layout: layout2 = "column", className, readOnly, ...rest }) {
+    const auto = "plx-r" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
+    return /* @__PURE__ */ React$1.createElement("fieldset", { className: cx("plx-radio-group", "plx-radio-group--" + layout2, className), ...rest }, label2 ? /* @__PURE__ */ React$1.createElement("legend", { className: "plx-radio-group__legend" }, label2) : null, options.map((o) => /* @__PURE__ */ React$1.createElement(Radio, { key: o.value, name: name || auto, value: o.value, label: o.label, description: o.description, checked: o.value === value, onChange: () => onChange(o.value), disabled: o.disabled, readOnly })));
+  }
+  function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
+    const locked = useReadOnly(readOnly);
+    const auto = "plx-c" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
+    return /* @__PURE__ */ React$1.createElement("fieldset", { className: cx("plx-choice-list", className), ...rest }, legend ? /* @__PURE__ */ React$1.createElement("legend", { className: "plx-choice-list__legend" }, legend) : null, options.map((o) => /* @__PURE__ */ React$1.createElement("label", { key: o.value, className: cx("plx-choice", o.value === value && "is-selected"), hidden: o.hidden || void 0 }, /* @__PURE__ */ React$1.createElement("input", { type: "radio", className: "plx-choice__input", ...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false }) }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-choice__text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-choice__label" }, o.label), o.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-choice__description" }, o.description) : null))));
+  }
+  const Switch = React$1.forwardRef(function Switch2({ label: label2, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
+    const locked = useReadOnly(readOnly);
+    return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-switch", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref, type: "checkbox", role: "switch", className: "plx-switch__input", "aria-label": labelHidden ? label2 : void 0, ...readOnlyProps(locked, rest) }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" }), label2 && !labelHidden ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__label" }, label2) : null);
+  });
+  const d0$T = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
+  const d1$S = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
+  const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
+  const asItem = (kind) => (x) => typeof x === "string" ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind });
+  function marked(label2, text2) {
+    const s = String(label2), q2 = String(text2 || "").trim();
+    const at2 = q2 ? s.toLowerCase().indexOf(q2.toLowerCase()) : -1;
+    if (at2 < 0) return s;
+    return [s.slice(0, at2), /* @__PURE__ */ React$1.createElement("strong", { key: "m", className: "plx-search__match" }, s.slice(at2, at2 + q2.length)), s.slice(at2 + q2.length)];
+  }
+  const SearchInput = React$1.forwardRef(function SearchInput2({
+    value,
+    onChange,
+    onClear,
+    placeholder,
+    label: label2,
+    shortcut,
+    loading = false,
+    onAccent = false,
+    suggestions,
+    recent,
+    onSelect,
+    onSubmitSearch,
+    onRemoveRecent,
+    onClearRecent,
+    strings,
+    className,
+    onKeyDown: onKeyDown2,
+    onFocus,
+    width = "auto",
+    size,
+    ...rest
+  }, ref) {
+    const t = useStrings("searchField", strings);
+    if (placeholder === void 0) placeholder = t.placeholder;
+    if (label2 === void 0) label2 = t.label;
+    const auto = "plx-sf" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
+    const listId = auto + "-list";
+    const wrap = React$1.useRef(null), input = React$1.useRef(null), list2 = React$1.useRef(null);
+    React$1.useImperativeHandle(ref, () => input.current);
+    const hasList = !!(suggestions || recent);
+    const text2 = value == null ? "" : String(value);
+    const showRecent = !text2;
+    const items = showRecent ? (recent || []).map(asItem("recent")) : (suggestions || []).map(asItem("suggestion"));
+    const [open, setOpen] = React$1.useState(false);
+    const [active, setActive] = React$1.useState(-1);
+    const [cell, setCell] = React$1.useState(0);
+    const shown = hasList && open && items.length > 0;
+    const grid = showRecent && !!onRemoveRecent;
+    React$1.useEffect(() => {
+      setActive(-1);
+      setCell(0);
+    }, [text2, showRecent]);
+    React$1.useEffect(() => {
+      if (!open) return void 0;
+      const off2 = (e) => {
+        if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+      };
+      document.addEventListener("mousedown", off2);
+      return () => document.removeEventListener("mousedown", off2);
+    }, [open]);
+    React$1.useEffect(() => {
+      if (shown && !showRecent) announce(t.results.replace("{n}", formatNumber(items.length)));
+    }, [shown, showRecent, items.length, t.results]);
+    React$1.useEffect(() => {
+      const el = active >= 0 && list2.current ? list2.current.querySelector("#" + auto + "-r" + active + ", #" + auto + "-o" + active) : null;
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
+    }, [active, auto]);
+    const setText = (v) => {
+      if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current });
+    };
+    const choose = (item) => {
+      setOpen(false);
+      if (onSelect) onSelect(item);
+      else {
+        setText(item.value);
+        if (onSubmitSearch) onSubmitSearch(item.value);
+      }
+    };
+    const removeRecent = (i) => {
+      const it = items[i];
+      if (!it || !onRemoveRecent) return;
+      onRemoveRecent(it.value);
+      if (active >= 0) setActive((a) => Math.min(a, items.length - 2));
+      if (items.length <= 1) setCell(0);
+      announce(t.removed.replace("{query}", it.value));
+    };
+    const keys = (e) => {
+      if (onKeyDown2) onKeyDown2(e);
+      if (e.defaultPrevented || !hasList) {
+        if (e.key === "Enter" && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text2);
+        return;
+      }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!open) setOpen(true);
+        else if (items.length) setActive((a) => (a + 1) % items.length);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!open) setOpen(true);
+        else if (items.length) setActive((a) => a <= 0 ? items.length - 1 : a - 1);
+      } else if (grid && shown && active >= 0 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+        const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === "rtl";
+        e.preventDefault();
+        setCell(e.key === "ArrowRight" !== rtl ? 1 : 0);
+      } else if (e.key === "Enter") {
+        if (shown && items[active] && grid && cell === 1) {
+          e.preventDefault();
+          removeRecent(active);
+        } else if (shown && items[active]) {
+          e.preventDefault();
+          choose(items[active]);
+        } else {
+          setOpen(false);
+          if (onSubmitSearch) onSubmitSearch(text2);
+        }
+      } else if (e.key === "Escape") {
+        if (shown) {
+          e.preventDefault();
+          setOpen(false);
+        }
+      } else if (e.key === "Delete" && shown && showRecent && items[active] && onRemoveRecent) {
+        e.preventDefault();
+        removeRecent(active);
+      } else if (!open && e.key.length === 1) setOpen(true);
+    };
+    const bar = useInBar(input);
+    const cut = useTruncated(input, text2, bar) && !!text2;
+    const optId = (i) => auto + "-o" + i;
+    const cellId = (i, c) => auto + "-o" + i + (c ? "-x" : "");
+    const comboProps = hasList ? {
+      role: "combobox",
+      "aria-expanded": shown,
+      "aria-controls": listId,
+      "aria-autocomplete": "list",
+      "aria-haspopup": grid ? "grid" : void 0,
+      "aria-activedescendant": shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : void 0
+    } : {};
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-search", size === "sm" && "plx-search--size-sm", width === "bar" && "plx-search--bar", width === "fill" && "plx-search--fill", ["xs", "sm", "md", "lg"].includes(width) && "plx-search--width-" + width, onAccent && "plx-search--on-accent", shown && "is-open", className), role: "search" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__icon", "aria-hidden": "true" }, loading ? /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.searching }) : /* @__PURE__ */ React$1.createElement(Icon, { name: SearchIcon })), /* @__PURE__ */ React$1.createElement(Tooltip, { content: text2, disabled: !cut || shown, describe: false, className: "plx-search__tip" }, /* @__PURE__ */ React$1.createElement(
+      "input",
+      {
+        ref: input,
+        size: size === "sm" || size === "md" ? void 0 : size,
+        type: "search",
+        inputMode: "search",
+        enterKeyHint: "search",
+        autoComplete: "off",
+        className: "plx-search__input",
+        "aria-label": label2,
+        placeholder,
+        value,
+        onChange: (e) => {
+          if (hasList) setOpen(true);
+          if (onChange) onChange(e);
+        },
+        onKeyDown: keys,
+        onFocus: (e) => {
+          if (hasList) setOpen(true);
+          if (onFocus) onFocus(e);
+        },
+        ...comboProps,
+        ...rest
+      }
+    )), onClear && value ? /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-search__clear", "aria-label": t.clear, onClick: onClear }, /* @__PURE__ */ React$1.createElement(Icon, { name: CloseIcon })) : null, shortcut && !value ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__kbd" }, /* @__PURE__ */ React$1.createElement(Kbd, { onAccent }, shortcut)) : null, hasList ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-search__popup", hidden: !shown }, showRecent ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-search__popup-head" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__popup-title", id: listId + "-t" }, t.recent), onClearRecent ? /* @__PURE__ */ React$1.createElement(
+      Button,
+      {
+        variant: "ghost",
+        size: "2xs",
+        className: "plx-search__popup-action",
+        onMouseDown: (e) => e.preventDefault(),
+        onClick: () => {
+          onClearRecent();
+          setOpen(false);
+          if (input.current) input.current.focus();
+        }
+      },
+      t.clearRecent
+    ) : null) : null, grid ? /* @__PURE__ */ React$1.createElement("div", { ref: list2, id: listId, role: "grid", className: "plx-search__list plx-search__grid", "aria-labelledby": listId + "-t" }, items.map((it, i) => /* @__PURE__ */ React$1.createElement(
+      "div",
+      {
+        key: it.kind + ":" + it.value,
+        id: auto + "-r" + i,
+        role: "row",
+        className: cx("plx-search__option", "plx-search__option--recent", "plx-search__row", i === active && "is-active"),
+        onMouseDown: (e) => e.preventDefault(),
+        onMouseEnter: () => setActive(i)
+      },
+      /* @__PURE__ */ React$1.createElement("span", { id: cellId(i, 0), role: "gridcell", "aria-selected": i === active && cell === 0, className: "plx-search__cell", onClick: () => choose(it) }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: ClockIcon })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-label" }, it.label))),
+      /* @__PURE__ */ React$1.createElement("span", { id: cellId(i, 1), role: "gridcell", "aria-selected": i === active && cell === 1, className: "plx-search__remove-cell" }, /* @__PURE__ */ React$1.createElement(
+        Button,
+        {
+          variant: "ghost",
+          size: "xs",
+          iconOnly: true,
+          icon: CloseIcon,
+          tabIndex: -1,
+          label: t.remove.replace("{query}", it.value),
+          className: cx("plx-search__remove", i === active && cell === 1 && "is-focus-visible"),
+          onMouseDown: (e) => e.preventDefault(),
+          onClick: (e) => {
+            e.stopPropagation();
+            removeRecent(i);
+            if (input.current) input.current.focus();
+          }
+        }
+      ))
+    ))) : /* @__PURE__ */ React$1.createElement("ul", { ref: list2, id: listId, role: "listbox", className: "plx-search__list", "aria-label": showRecent ? void 0 : t.suggestions, "aria-labelledby": showRecent ? listId + "-t" : void 0 }, items.map((it, i) => /* @__PURE__ */ React$1.createElement(
+      "li",
+      {
+        key: it.kind + ":" + it.value,
+        id: optId(i),
+        role: "option",
+        "aria-selected": i === active,
+        className: cx("plx-search__option", it.kind === "recent" && "plx-search__option--recent", i === active && "is-active"),
+        onMouseDown: (e) => e.preventDefault(),
+        onClick: () => choose(it),
+        onMouseEnter: () => setActive(i)
+      },
+      /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: it.kind === "recent" ? ClockIcon : SearchIcon })),
+      /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-label" }, it.kind === "recent" ? it.label : marked(it.label, text2)), it.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-description" }, it.description) : null)
+    )))) : null);
+  });
+  function CollapsedSearch({ value, label: label2, onKeyDown: onKeyDown2, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
+    const tw = useStrings("searchField");
+    if (label2 === void 0) label2 = tw.label;
+    const [own2, setOwn] = React$1.useState(false);
+    const open = openProp === void 0 ? own2 : openProp;
+    const setOpen = (v) => {
+      setOwn(v);
+      if (onOpenChange) onOpenChange(v);
+    };
+    const field = React$1.useRef(null), button = React$1.useRef(null);
+    React$1.useImperativeHandle(ref, () => open ? field.current : button.current);
+    React$1.useEffect(() => {
+      if (open && field.current) field.current.focus();
+    }, [open]);
+    const close = (refocus) => {
+      setOpen(false);
+      if (refocus) setTimeout(() => {
+        if (button.current) button.current.focus();
+      }, 0);
+    };
+    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(Tooltip, { content: label2 }, /* @__PURE__ */ React$1.createElement(
+      Button,
+      {
+        ref: button,
+        size: "sm",
+        variant: "ghost",
+        icon: SearchIcon,
+        iconOnly: true,
+        label: label2,
+        selected: !!value,
+        "aria-expanded": open,
+        className: cx("plx-search__toggle", className),
+        onClick: () => setOpen(true)
+      }
+    )), open ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-search__over" }, /* @__PURE__ */ React$1.createElement(
+      SearchInput,
+      {
+        ref: field,
+        value,
+        label: label2,
+        width: "fill",
+        ...rest,
+        onKeyDown: (e) => {
+          if (onKeyDown2) onKeyDown2(e);
+          if (e.key === "Escape" && !e.defaultPrevented && e.currentTarget.getAttribute("aria-expanded") !== "true") {
+            e.preventDefault();
+            close(true);
+          }
+        },
+        onBlur: (e) => {
+          if (onBlur) onBlur(e);
+          if (!e.currentTarget.value) close(false);
+        }
+      }
+    )) : null);
+  }
+  const Collapsed = React$1.forwardRef(CollapsedSearch);
+  const SearchField = React$1.forwardRef(function SearchField2({ collapsed = false, ...props }, ref) {
+    return collapsed ? /* @__PURE__ */ React$1.createElement(Collapsed, { ref, ...props }) : /* @__PURE__ */ React$1.createElement(SearchInput, { ref, ...props });
+  });
+  const over = (row) => {
+    const flat = (el) => Array.prototype.reduce.call(el.children, (out, k) => getComputedStyle(k).display === "contents" ? out.concat(flat(k)) : out.concat(k), []);
+    const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
+    if (!kids.length) return false;
+    const box = row.getBoundingClientRect();
+    const top = Math.min.apply(null, kids.map((k) => k.offsetTop));
+    const tall = Math.max.apply(null, kids.map((k) => k.offsetHeight));
+    return kids.some((k) => {
+      const r = k.getBoundingClientRect();
+      return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
+    });
+  };
+  function useBarFit(ref, key, max2, min2 = 0, rows = "[data-plx-bar-row]", hold = false) {
+    const [step, setStep] = React$1.useState(min2);
+    const [width, setWidth] = React$1.useState(0);
+    const measured2 = React$1.useRef(null);
+    React$1.useLayoutEffect(() => {
+      if (!hold) setStep(min2);
+    }, [width, key, min2, hold]);
+    React$1.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el || typeof ResizeObserver === "undefined") return void 0;
+      const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, [ref]);
+    React$1.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el || step >= max2 || hold) return;
+      const signature = [el, width, key, max2, min2, rows, step, el.textContent];
+      if (measured2.current && signature.every((value, i) => value === measured2.current[i])) return;
+      measured2.current = signature;
+      if (Array.prototype.some.call(rows === ":self" ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
+    });
+    return Math.max(min2, Math.min(step, max2));
+  }
+  function apply(items, current2) {
+    items.forEach((el) => {
+      const on = el === current2;
+      if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
+      el.setAttribute("data-plx-roving", on ? "current" : "");
+    });
+  }
+  function roveTo(ref, items, el) {
+    if (!ref.current || items.indexOf(el) < 0) return;
+    apply(items, el);
+  }
+  function useRovingFocus(ref, getItems) {
+    React$1.useEffect(() => {
+      if (!ref.current) return;
+      const items = getItems();
+      if (!items.length) return;
+      const current2 = items.filter((el) => el.getAttribute("data-plx-roving") === "current")[0] || items[0];
+      apply(items, current2);
+    });
+  }
+  const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
+  function isVisibleFocus(el) {
+    try {
+      return el.matches(":focus-visible");
+    } catch (e) {
+      return true;
+    }
+  }
+  function useFocusable(options = {}) {
+    const { tabStop = "tab", disabled = false, onFocusChange, handlers = {} } = options;
+    const [state, setState] = React$1.useState({ focused: false, visible: false });
+    const set2 = (focused, visible2) => {
+      setState((s) => s.focused === focused && s.visible === visible2 ? s : { focused, visible: visible2 });
+      if (onFocusChange) onFocusChange(focused, visible2);
+    };
+    const focusProps = {
+      onFocus: (e) => {
+        if (handlers.onFocus) handlers.onFocus(e);
+        if (e.target === e.currentTarget) set2(true, isVisibleFocus(e.currentTarget));
+      },
+      onBlur: (e) => {
+        if (handlers.onBlur) handlers.onBlur(e);
+        if (e.target === e.currentTarget) set2(false, false);
+      }
+    };
+    if (tabStop !== "none") focusProps.tabIndex = disabled ? void 0 : tabStop === "target" ? -1 : 0;
+    return { focused: state.focused, focusVisible: state.focused && state.visible, focusProps };
+  }
+  function useFocusGroup(ref, options = {}) {
+    const { orientation = "horizontal", loop = true, items: selector = ITEMS, onKeyDown: onKeyDown2, ignore, modifiers = false } = options;
+    const itemsOf2 = () => typeof selector === "function" ? selector() : ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el) => el.getClientRects().length > 0 && !el.closest("[hidden]")) : [];
+    useRovingFocus(ref, itemsOf2);
+    const KEYS2 = orientation === "vertical" ? ["ArrowUp", "ArrowDown"] : orientation === "both" ? ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] : ["ArrowLeft", "ArrowRight"];
+    const groupProps = {
+      onKeyDown: (e) => {
+        if (onKeyDown2) onKeyDown2(e);
+        if (e.defaultPrevented || !modifiers && (e.altKey || e.ctrlKey || e.metaKey)) return;
+        if (KEYS2.indexOf(e.key) < 0 && e.key !== "Home" && e.key !== "End") return;
+        const t = e.target;
+        if ((t.tagName === "INPUT" || t.tagName === "TEXTAREA") && (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Home" || e.key === "End")) return;
+        if (ignore && ignore(e)) return;
+        const list2 = itemsOf2();
+        const i = list2.indexOf(document.activeElement);
+        if (i < 0 || !list2.length) return;
+        let n;
+        if (e.key === "Home") n = 0;
+        else if (e.key === "End") n = list2.length - 1;
+        else {
+          const step = arrowStep(e, ref.current, { vertical: orientation !== "horizontal" });
+          if (!step) return;
+          n = i + step;
+          if (n < 0 || n >= list2.length) {
+            if (!loop) return;
+            n = (n + list2.length) % list2.length;
+          }
+        }
+        e.preventDefault();
+        list2[n].focus();
+      },
+      onFocus: (e) => {
+        roveTo(ref, itemsOf2(), e.target);
+      }
+    };
+    return { groupProps };
+  }
+  const RANKS = ["low", "normal", "high"];
+  const foldOrder = (actions) => {
+    const foldable = actions.filter((a) => !a.primary);
+    const out = [];
+    RANKS.forEach((p) => {
+      const group = foldable.filter((a) => (RANKS.indexOf(a.priority) >= 0 ? a.priority : "normal") === p);
+      out.push(...group.filter((a) => !a.danger).reverse(), ...group.filter((a) => a.danger).reverse());
+    });
+    return out;
+  };
+  const menuOrder = (actions) => actions.filter((a) => !a.danger).concat(actions.filter((a) => a.danger));
+  const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
+  const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
+  const nameOf$4 = (p) => typeof p.children === "string" ? p.children : p.iconOnly && typeof p.label === "string" ? p.label : null;
+  const isFoldable = (el) => React$1.isValidElement(el) && el.type === Button && nameOf$4(el.props) !== null && !el.props.href && !el.props.caret;
+  const isTrimmable = (el) => React$1.isValidElement(el) && el.type === Menu && React$1.isValidElement(el.props.trigger) && el.props.trigger.type === Button && typeof el.props.trigger.props.children === "string" && !!el.props.trigger.props.icon && !el.props.trigger.props.iconOnly;
+  const collect$1 = (nodes, out) => {
+    React$1.Children.forEach(nodes, (el) => {
+      if (!React$1.isValidElement(el)) return;
+      if (el.type === Toolbar.Group || el.type === React$1.Fragment) collect$1(el.props.children, out);
+      else if (isFoldable(el)) out.push({ id: out.length, label: nameOf$4(el.props), iconOnly: !!el.props.iconOnly, icon: el.props.icon, primary: el.props.variant === "primary", danger: /^danger/.test(el.props.variant || "") || !!el.props.danger, priority: el.props.priority, props: el.props });
+    });
+    return out;
+  };
+  function Toolbar({ label: label2, variant = "default", className, children, onKeyDown: onKeyDown2, onFocus, ...rest }) {
+    const ref = React$1.useRef(null);
+    const t = useStrings("commandBar");
+    const ladder = variant !== "bar";
+    const acts = ladder ? collect$1(children, []) : [];
+    const step = useBarFit(ref, acts.map((a) => a.label).join("|"), ladder && acts.length ? 1 + acts.length : 0, 0, ":self");
+    const iconOnly = ladder && step >= 1;
+    const folded = new Set(foldOrder(acts).slice(0, ladder ? Math.max(0, step - 1) : 0).map((a) => a.id));
+    let n = 0;
+    const walk = (nodes) => React$1.Children.map(nodes, (el) => {
+      if (!React$1.isValidElement(el)) return el;
+      if (el.type === Toolbar.Group) return React$1.cloneElement(el, void 0, walk(el.props.children));
+      if (el.type === React$1.Fragment) return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, walk(el.props.children));
+      if (ladder && isTrimmable(el)) return iconOnly ? React$1.cloneElement(el, { trigger: React$1.cloneElement(el.props.trigger, { children: void 0, "aria-label": el.props.trigger.props.children }) }) : el;
+      if (!ladder || !isFoldable(el)) return el;
+      const id = n++;
+      if (folded.has(id)) return null;
+      const a = acts[id];
+      if (!a.icon || a.primary || a.iconOnly) return el;
+      return /* @__PURE__ */ React$1.createElement(Tooltip, { content: a.label, disabled: !iconOnly }, iconOnly ? React$1.cloneElement(el, { iconOnly: true, label: a.label, priority: void 0 }) : React$1.cloneElement(el, { priority: void 0 }));
+    });
+    const away = menuOrder(acts.filter((a) => folded.has(a.id)));
+    const more = away.length ? /* @__PURE__ */ React$1.createElement(Menu, { label: t.moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: MoreIcon, variant: "ghost", iconOnly: true, label: t.moreLabel, size: acts[0] && acts[0].props.size }) }, away.map((a, i) => [
+      a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React$1.createElement(MenuDivider, { key: a.id + "d" }) : null,
+      /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id, icon: a.icon, danger: a.danger, disabled: a.props.disabled, onSelect: a.props.onClick }, a.label)
+    ])) : null;
+    const itemsOf2 = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === "visible" && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute("data-plx-roving"))) : [];
+    React$1.useEffect(() => {
+      const root = ref.current;
+      if (!root) return;
+      const refresh = () => {
+        root.querySelectorAll("[data-plx-toolbar-layout]").forEach((el) => {
+          if (el.closest('[role="toolbar"]') === root) el.removeAttribute("data-plx-toolbar-layout");
+        });
+        const visit = (parent) => Array.from(parent.children).forEach((el) => {
+          if (el.matches(".plx-stack,.plx-inline") && getComputedStyle(el).display !== "none") {
+            el.setAttribute("data-plx-toolbar-layout", "");
+            visit(el);
+          } else if (el.classList.contains("plx-toolbar__group")) visit(el);
+        });
+        visit(root);
+        const items = itemsOf2();
+        roveTo(ref, items, items.find((el) => el.getAttribute("data-plx-roving") === "current") || items[0]);
+      };
+      refresh();
+      const observer2 = new MutationObserver(refresh);
+      observer2.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "inert", "aria-hidden", "aria-disabled", "class"] });
+      const resize = typeof ResizeObserver === "function" ? new ResizeObserver(refresh) : null;
+      if (resize) resize.observe(root);
+      window.addEventListener("resize", refresh);
+      return () => {
+        observer2.disconnect();
+        if (resize) resize.disconnect();
+        window.removeEventListener("resize", refresh);
+      };
+    }, []);
+    const { groupProps } = useFocusGroup(ref, {
+      items: itemsOf2,
+      orientation: "horizontal",
+      loop: true,
+      modifiers: true,
+      onKeyDown: onKeyDown2,
+      ignore: (e) => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP)) || e.target.closest('[role="toolbar"]') !== ref.current
+    });
+    const onFocusIn = (e) => {
+      if (onFocus) onFocus(e);
+      groupProps.onFocus(e);
+    };
+    return /* @__PURE__ */ React$1.createElement("div", { ref, role: "toolbar", "aria-label": label2, className: cx("plx-toolbar", variant === "bar" && "plx-toolbar--bar", className), onKeyDown: groupProps.onKeyDown, onFocus: onFocusIn, "data-plx-fit-shrink": ladder ? (acts.length ? step >= 1 + acts.length : true) || void 0 : void 0, ...rest }, ladder ? walk(children) : children, more);
+  }
+  Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
+    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-toolbar__group", className), ...rest }, children);
+  };
+  Toolbar.Spacer = function ToolbarSpacer() {
+    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-toolbar__spacer", "aria-hidden": "true" });
+  };
+  function Divider$1({ orientation = "horizontal", className, ...rest }) {
+    return /* @__PURE__ */ React$1.createElement("div", { role: "separator", "aria-orientation": orientation, className: cx("plx-divider", "plx-divider--" + orientation, className), ...rest });
+  }
+  function HintTarget({ children, "aria-describedby": description }) {
+    const wrap = React$1.useRef(null);
+    React$1.useLayoutEffect(() => {
+      const button = wrap.current && wrap.current.querySelector("button,a[href]");
+      if (!button || !description) return void 0;
+      const before = button.getAttribute("aria-describedby");
+      const ids = [...new Set((before || "").split(" ").concat(description.split(" ")).filter(Boolean))];
+      button.setAttribute("aria-describedby", ids.join(" "));
+      return () => {
+        if (before) button.setAttribute("aria-describedby", before);
+        else button.removeAttribute("aria-describedby");
+      };
+    });
+    return /* @__PURE__ */ React$1.createElement("span", { ref: wrap, className: "plx-bar-actions__hint-target" }, children);
+  }
+  function ActionHint({ content, children, className }) {
+    return /* @__PURE__ */ React$1.createElement(Tooltip, { content, className }, /* @__PURE__ */ React$1.createElement(HintTarget, null, children));
+  }
+  const PanelMenuTrigger = React$1.forwardRef(function PanelMenuTrigger2(props, ref) {
+    const wrap = React$1.useRef(null);
+    React$1.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector("[data-plx-menu-item]"));
+    return /* @__PURE__ */ React$1.createElement("span", { ref: wrap, className: "plx-bar-actions__panel-item" }, /* @__PURE__ */ React$1.createElement(MenuItem, { ...props, keepOpen: true }));
+  });
+  function ActionPanel({ action, trigger }) {
+    const [open, setOpen] = React$1.useState(false);
+    const holder = React$1.useRef(null);
+    const unavailable = !!action.disabled || !!action.loading;
+    const show2 = open && !unavailable;
+    const close = () => setOpen(false);
+    React$1.useEffect(() => {
+      if (!show2) return void 0;
+      const menu = holder.current && holder.current.closest('[role="menu"]');
+      const more = menu && menu.parentElement.querySelector(":scope > button");
+      return () => {
+        requestAnimationFrame(() => {
+          if (more && more.isConnected && document.activeElement === document.body) more.focus({ preventScroll: true });
+        });
+      };
+    }, [show2]);
+    React$1.useEffect(() => {
+      if (unavailable) setOpen(false);
+    }, [unavailable]);
+    const contain = (e) => {
+      const dialog = e.target.closest('[role="dialog"]');
+      if (!dialog) return;
+      if (e.type === "keydown" && e.key === "Tab" && !e.shiftKey && dialog.getAttribute("aria-modal") !== "true") {
+        const controls = focusables(dialog).filter((el) => el.tabIndex >= 0);
+        const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
+        if (toolbar && e.target === controls[controls.length - 1]) {
+          const next = focusables(document.body).find((el) => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+          if (next) {
+            e.preventDefault();
+            next.focus();
+          }
+        }
+      }
+      e.stopPropagation();
+    };
+    const leave = (e) => {
+      const next = e.relatedTarget, menu = e.currentTarget.closest('[role="menu"]');
+      if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
+      const more = menu.parentElement.querySelector(":scope > button");
+      if (more) more.click();
+    };
+    return /* @__PURE__ */ React$1.createElement("span", { ref: holder, className: "plx-bar-actions__panel", onKeyDown: contain, onFocus: contain, onMouseDown: contain, onBlur: leave }, /* @__PURE__ */ React$1.createElement(
+      Popover,
+      {
+        trigger,
+        title: action.label,
+        closeButton: true,
+        open: show2,
+        onOpenChange: (next) => {
+          if (!next || !unavailable) setOpen(next);
+        }
+      },
+      show2 ? action.panel({ close }) : null
+    ));
+  }
+  const itemsOf = (a, off2) => {
+    const list2 = a.items;
+    if (!Array.isArray(list2) || !list2.length || React$1.isValidElement(list2[0])) return list2;
+    return list2.map((it) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: it.id || it.label, icon: it.icon, danger: it.danger, disabled: off2(it), onSelect: it.onSelect }, it.label));
+  };
+  function BarActions({
+    actions = [],
+    iconOnly = false,
+    fold: fold2 = 0,
+    off: off2 = (a) => !!a.disabled,
+    why = (a) => a.why,
+    moreLabel,
+    dangerClass,
+    size = "sm",
+    extra = []
+  }) {
+    const t = useStrings("commandBar");
+    moreLabel = moreLabel ?? t.moreLabel;
+    const folded = new Set(foldOrder(actions).slice(0, fold2).map((a) => a.id || a.label));
+    const kept = actions.filter((a) => !folded.has(a.id || a.label));
+    const away = menuOrder(actions.filter((a) => folded.has(a.id || a.label)));
+    const radios = (a) => /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: a.label, value: a.value, onChange: (v) => a.onChange && a.onChange(v) }, (a.choices || []).map((c) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: c.value, value: c.value, icon: c.icon }, c.label)));
+    const current2 = (a) => {
+      const c = (a.choices || []).find((x) => x.value === a.value);
+      return c ? c.label : "";
+    };
+    const one = (a) => {
+      const disabled = off2(a), loading = !!a.loading;
+      const filled = !!a.primary;
+      const only = iconOnly && !filled && !!a.icon;
+      const panel = typeof a.panel === "function";
+      const menu = !!a.items || !!a.choices;
+      const name = a.choices ? a.label + ": " + current2(a) : a.label;
+      const text2 = a.choices ? current2(a) || a.label : a.label;
+      const click = panel ? void 0 : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? void 0 : a.onSelect;
+      const button = /* @__PURE__ */ React$1.createElement(
+        Button,
+        {
+          size,
+          variant: filled ? "primary" : "ghost",
+          icon: a.icon,
+          iconOnly: only,
+          label: only || a.choices ? name : void 0,
+          caret: menu && !only,
+          "aria-haspopup": panel ? "dialog" : menu ? "menu" : void 0,
+          expanded: loading && (panel || menu) ? false : void 0,
+          pressed: a.toggle ? !!a.pressed : void 0,
+          disabled,
+          loading,
+          className: a.danger && !filled ? dangerClass : void 0,
+          onClick: click
+        },
+        text2
+      );
+      const el = loading ? button : panel ? /* @__PURE__ */ React$1.createElement(ActionPanel, { action: Object.assign({}, a, { disabled }), trigger: button }) : a.choices ? /* @__PURE__ */ React$1.createElement(Menu, { label: a.label, trigger: button }, radios(a)) : a.items ? /* @__PURE__ */ React$1.createElement(Menu, { label: a.label, trigger: button }, itemsOf(a, off2)) : button;
+      const tip = disabled && why(a) || a.tooltip || (only ? name : null);
+      return /* @__PURE__ */ React$1.createElement(React$1.Fragment, { key: a.id || a.label }, tip ? /* @__PURE__ */ React$1.createElement(ActionHint, { content: tip }, el) : el);
+    };
+    const plain = kept.filter((a) => !a.danger), danger = kept.filter((a) => a.danger);
+    const allOff = away.length > 0 && !extra.length && away.every((a) => off2(a));
+    const more = away.length || extra.length ? /* @__PURE__ */ React$1.createElement(Tooltip, { key: "plx-more", content: allOff ? why(away[0]) : moreLabel }, /* @__PURE__ */ React$1.createElement(Menu, { label: moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(Button, { size, variant: "ghost", icon: MoreIcon, iconOnly: true, label: moreLabel, disabled: allOff }) }, away.map((a, i) => {
+      const sep = a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React$1.createElement(MenuDivider, { key: (a.id || a.label) + "-sep" }) : null;
+      const busy = !!a.loading, disabled = off2(a) || busy;
+      const item = busy ? /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id || a.label, icon: /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: a.label }), danger: a.danger, checked: a.toggle ? !!a.pressed : void 0, "aria-label": a.choices ? a.label + ": " + current2(a) : a.label, "aria-busy": true, disabled: true }, a.choices ? a.label + ": " + current2(a) : a.label) : typeof a.panel === "function" ? /* @__PURE__ */ React$1.createElement(
+        ActionPanel,
+        {
+          key: a.id || a.label,
+          action: Object.assign({}, a, { disabled }),
+          trigger: /* @__PURE__ */ React$1.createElement(PanelMenuTrigger, { icon: a.icon, danger: a.danger, disabled }, a.label)
+        }
+      ) : a.choices ? /* @__PURE__ */ React$1.createElement(MenuSub, { key: a.id || a.label, label: a.label + ": " + current2(a), icon: a.icon, disabled: off2(a) }, radios(a)) : a.toggle ? /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, checked: !!a.pressed, disabled: off2(a), onSelect: () => a.onSelect && a.onSelect(!a.pressed) }, a.label) : a.items ? /* @__PURE__ */ React$1.createElement(MenuGroup, { key: a.id || a.label, label: a.label }, itemsOf(a, off2)) : /* @__PURE__ */ React$1.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, danger: a.danger, disabled: off2(a), onSelect: a.onSelect }, a.label);
+      const tip = off2(a) && why(a) || a.tooltip;
+      const described2 = tip ? /* @__PURE__ */ React$1.createElement(ActionHint, { key: a.id || a.label, content: tip, className: "plx-bar-actions__tooltip" }, item) : item;
+      return sep ? [sep, described2] : described2;
+    }), away.length && extra.length ? /* @__PURE__ */ React$1.createElement(MenuDivider, { key: "plx-extra-sep" }) : null, extra)) : null;
+    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /* @__PURE__ */ React$1.createElement("span", { key: "plx-danger-divider", className: cx("plx-bar-actions__divider"), "aria-hidden": "true" }) : null, danger.map(one));
+  }
+  function singleChoice(options, value, required) {
+    const values = (options || []).map((option) => typeof option === "string" ? option : option.value);
+    const selected = (Array.isArray(value) ? value : value === void 0 || value === null ? [] : [value]).find((item) => values.includes(item));
+    return selected !== void 0 ? [selected] : required && values.length ? [values[0]] : [];
+  }
+  const TagsIcon = { "name": "tags", "set": "plenix", "symbol": "sell", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08Zm0-73.92 283.31-283.31-346.46-345.31H168v283.31L514.46-163ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm217.69 167.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08Zm0-84.92 288.31-288.31-356.46-356.31H160v288.31L516.46-155ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm221.69 171.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } } } };
+  const KIND_ICONS = { text: EdTextIcon, select: FieldSelectIcon, multi: TagsIcon, number: FieldNumberIcon, date: CalendarIcon };
+  const DIRECTIONS = english.fields.directions;
+  const OP_ORDER = {
+    text: ["contains", "ncontains", "is", "isnot", "empty", "nempty"],
+    select: ["any", "none", "empty", "nempty"],
+    multi: ["any", "none", "empty", "nempty"],
+    number: ["eq", "ne", "lt", "gt", "empty", "nempty"],
+    date: ["is", "before", "after", "within", "empty", "nempty"]
+  };
+  const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops]) => [kind, ops.map((op) => [op, english.fields.operators[kind][op]])]));
+  const WITHIN = [{ value: "week", label: english.fields.within.week, days: 7 }, { value: "month", label: english.fields.within.month, days: 30 }, { value: "year", label: english.fields.within.year, days: 365 }];
+  const CATEGORY_ORDER = ["blue", "green", "purple", "orange", "teal", "magenta", "yellow", "navy", "red", "cyan", "lavender", "brown", "olive", "pink", "apricot", "mint", "maroon", "lime", "beige", "grey"];
+  const fieldOf = (fields, key) => fields.find((f) => f.value === key) || fields[0];
+  const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
+  const kindOf$1 = (f) => OPERATORS[f && f.kind] ? f.kind : "text";
+  const optionsOf = (f) => (f && f.options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
+  const blank$2 = (x) => x === null || x === void 0 || x === "" || Array.isArray(x) && !x.length;
+  const iso = isoDay;
+  const daysBefore = (n, today) => {
+    const d = new Date((parseDate(today) || /* @__PURE__ */ new Date()).getTime());
+    d.setDate(d.getDate() - n);
+    return iso(d);
+  };
+  function matchesCondition(c, row, fields, today) {
+    const f = fieldOf(fields, c.field), v = valueOf(f, row), val = c.value, k = kindOf$1(f);
+    if (c.op === "empty") return blank$2(v);
+    if (c.op === "nempty") return !blank$2(v);
+    if (blank$2(val)) return true;
+    if (k === "text") {
+      const s = String(v == null ? "" : v).toLowerCase(), q2 = String(val).toLowerCase();
+      return c.op === "contains" ? s.includes(q2) : c.op === "ncontains" ? !s.includes(q2) : c.op === "is" ? s === q2 : s !== q2;
+    }
+    if (k === "select") {
+      const list2 = [].concat(val);
+      return c.op === "any" ? list2.indexOf(v) >= 0 : list2.indexOf(v) < 0;
+    }
+    if (k === "multi") {
+      const list2 = [].concat(val), hit = [].concat(v || []).some((x) => list2.indexOf(x) >= 0);
+      return c.op === "any" ? hit : !hit;
+    }
+    if (k === "number") {
+      const n = Number(v), q2 = parseFloat(val);
+      if (isNaN(q2)) return true;
+      return c.op === "eq" ? n === q2 : c.op === "ne" ? n !== q2 : c.op === "lt" ? n < q2 : n > q2;
+    }
+    const d = blank$2(v) ? "" : String(v).slice(0, 10);
+    if (c.op === "within") {
+      const w = WITHIN.find((x) => x.value === val) || WITHIN[0];
+      return d >= daysBefore(w.days, today);
+    }
+    return c.op === "is" ? d === val : c.op === "before" ? d < val : d > val;
+  }
+  function matchesFilter(node, row, fields, today) {
+    if (!node || !node.items || !node.items.length) return true;
+    const t = (x) => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
+    return node.join === "or" ? node.items.some(t) : node.items.every(t);
+  }
+  const conditionsOf = (node) => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
+  let uid = 0;
+  const nextId$2 = () => "c" + ++uid;
+  const newCondition = (f) => ({ id: nextId$2(), field: f.value, op: OPERATORS[kindOf$1(f)][0][0], value: kindOf$1(f) === "select" || kindOf$1(f) === "multi" ? [] : "" });
+  function compareLevels(fields, levels) {
+    return (a, b) => {
+      for (const l of levels || []) {
+        const f = fields.find((x2) => x2.value === l.field);
+        if (!f) continue;
+        let x = valueOf(f, a), y = valueOf(f, b);
+        if (kindOf$1(f) === "select" && f.options) {
+          const o = optionsOf(f).map((p) => p.value);
+          x = o.indexOf(x);
+          y = o.indexOf(y);
+        }
+        if (Array.isArray(x)) x = x.join(", ");
+        if (Array.isArray(y)) y = y.join(", ");
+        const c = x < y ? -1 : x > y ? 1 : 0;
+        if (c) return l.dir === "desc" ? -c : c;
+      }
+      return 0;
+    };
+  }
+  const DATE_PRESETS = [{ value: "any", label: english.fields.presets.any }, { value: "7", label: english.fields.presets["7"] }, { value: "30", label: english.fields.presets["30"] }, { value: "year", label: english.fields.presets.year }];
+  function matchesDate(range, value, today) {
+    if (!range || range.preset === "any" || !range.preset) return true;
+    const d = blank$2(value) ? "" : String(value).slice(0, 10);
+    if (!d) return false;
+    const now = today || iso(/* @__PURE__ */ new Date());
+    if (range.preset === "7" || range.preset === "30") return d >= daysBefore(Number(range.preset), now) && d <= now;
+    if (range.preset === "year") return d.slice(0, 4) === now.slice(0, 4);
+    return (!range.from || d >= range.from) && (!range.to || d <= range.to);
+  }
+  const fieldWords = {
+    operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
+    within: (fw) => WITHIN.map((w) => Object.assign({}, w, { label: (fw.within || {})[w.value] || w.label })),
+    presets: (fw) => DATE_PRESETS.map((d) => Object.assign({}, d, { label: (fw.presets || {})[d.value] || d.label })),
+    directions: (fw, kind) => (fw.directions || {})[kind] || DIRECTIONS[kind]
+  };
+  const FilterOffIcon = { "name": "filter-off", "set": "plenix", "symbol": "filter_alt_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 518-544l125-152H366l-52-52h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15ZM518-544Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 314-748h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 535-538l143-182H353l-60-60h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15ZM535-538Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 293-780h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15Z" } } } };
+  const nameOf$3 = (list2, chosen) => {
+    if (!chosen || !chosen.length) return void 0;
+    const o = list2.find((x) => x.value === chosen[0]);
+    return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? " +" + (chosen.length - 1) : "");
+  };
+  const asOptions = (options) => (options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
+  function QuickFilter({ kind = "list", label: label2, icon, noun = "value", options, value, onChange, counts: counts2, required = false, inline = false, strings }) {
+    const fw = useStrings("fields");
+    const t = Object.assign({ presets: fieldWords.presets(fw) }, useStrings("quickFilter", strings));
+    const [q2, setQ] = React$1.useState("");
+    const first = (options || [])[0], firstValue = typeof first === "string" ? first : first && first.value;
+    React$1.useEffect(() => {
+      if (kind === "single" && required && (!value || !value.length) && firstValue !== void 0 && onChange) onChange([firstValue]);
+    }, [kind, required, value, firstValue, onChange]);
+    const countOf2 = (o) => o.count !== void 0 ? o.count : counts2 instanceof Map ? counts2.get(o.value) || 0 : counts2 ? Object.prototype.hasOwnProperty.call(counts2, o.value) ? counts2[o.value] : 0 : void 0;
+    const counted = (o, label22) => {
+      const n = countOf2(o);
+      return n === void 0 || n === null ? label22 : /* @__PURE__ */ React$1.createElement(Inline$1, { as: "span", gap: "xs" }, label22, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(n)));
+    };
+    if (kind === "date") {
+      const d = Object.assign({ preset: "any", from: "", to: "" }, value);
+      const range = (k, v) => onChange(Object.assign({}, d, { preset: "custom", [k]: v }));
+      const on = d.preset && d.preset !== "any";
+      const body2 = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--date" }, /* @__PURE__ */ React$1.createElement(
+        RadioGroup,
+        {
+          label: label2,
+          value: d.preset,
+          onChange: (v) => onChange(Object.assign({}, d, { preset: v })),
+          options: t.presets.map((x) => ({ value: x.value, label: counted(x, x.label) })).concat({ value: "custom", label: counted({ value: "custom" }, t.custom) })
+        }
+      ), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__range" }, /* @__PURE__ */ React$1.createElement(Field, { label: t.from }, /* @__PURE__ */ React$1.createElement(Input, { type: "date", data: true, value: d.from, onChange: (e) => range("from", e.target.value) })), /* @__PURE__ */ React$1.createElement(Field, { label: t.to }, /* @__PURE__ */ React$1.createElement(Input, { type: "date", data: true, value: d.to, onChange: (e) => range("to", e.target.value) }))));
+      const footer2 = /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !on, onClick: () => onChange({ preset: "any", from: "", to: "" }) }, t.clear);
+      const preset = t.presets.find((x) => x.value === d.preset);
+      const current2 = !on ? void 0 : d.preset === "custom" ? [d.from, d.to].filter(Boolean).join(" – ") || t.custom : preset ? preset.label : void 0;
+      return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon: icon || CalendarIcon, label: label2, current: current2, title: label2, count: on ? 1 : 0, caret: true, size: "sm", footer: footer2, inline }, body2);
+    }
+    const list2 = asOptions(options);
+    if (kind === "single") {
+      const chosen2 = singleChoice(list2, value, required);
+      const choices2 = list2.map((o) => ({ value: o.value, label: counted(o, /* @__PURE__ */ React$1.createElement(Pill, { color: o.color }, o.label)) }));
+      if (!required) choices2.unshift({ value: "", label: t.all });
+      const body2 = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel" }, /* @__PURE__ */ React$1.createElement(RadioGroup, { label: label2, value: chosen2.length ? chosen2[0] : "", options: choices2, onChange: (v) => onChange(v === "" ? [] : [v]) }));
+      const footer2 = required ? null : /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen2.length, onClick: () => onChange([]) }, t.clear);
+      return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon, label: label2, current: nameOf$3(list2, chosen2), title: label2, count: chosen2.length, caret: true, size: "sm", footer: footer2, inline }, body2);
+    }
+    const chosen = value || [];
+    const shown = list2.filter((o) => String(o.label).toLowerCase().indexOf(q2.trim().toLowerCase()) >= 0);
+    const body = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--checklist" }, /* @__PURE__ */ React$1.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: fill(t.find, { noun }), label: fill(t.find, { noun }) }), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__checklist" }, shown.length ? shown.map((o) => /* @__PURE__ */ React$1.createElement(Checkbox, { key: o.value, label: counted(o, /* @__PURE__ */ React$1.createElement(Pill, { color: o.color }, o.label)), checked: chosen.indexOf(o.value) >= 0, onChange: () => onChange(toggle(chosen, o.value)) })) : /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, fill(t.none, { noun }))));
+    const footer = /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen.length, onClick: () => onChange([]) }, t.clear);
+    return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon, label: label2, current: nameOf$3(list2, chosen), title: label2, count: chosen.length, caret: true, size: "sm", footer, inline }, body);
+  }
+  function SingleQuickFilterMenu({ label: label2, options = [], value, required, onChange, counts: counts2, strings }) {
+    const chosen = singleChoice(options, value, required);
+    const items = options.map((option) => typeof option === "string" ? { value: option, label: option } : option);
+    if (!required) items.unshift({ value: "", label: strings && strings.all || "All" });
+    return /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: label2, value: chosen.length ? chosen[0] : "", onChange: (v) => onChange && onChange(v === "" ? [] : [v]) }, items.map((option) => {
+      const count2 = option.count !== void 0 ? option.count : counts2 instanceof Map ? counts2.get(option.value) || 0 : counts2 ? counts2[option.value] || 0 : void 0;
+      return /* @__PURE__ */ React$1.createElement(MenuItem, { key: option.value, value: option.value }, count2 === void 0 ? option.label || option.value : /* @__PURE__ */ React$1.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(count2))));
+    }));
+  }
+  const ICONS$2 = 1, SEARCH = 2;
+  const BarContext$1 = React$1.createContext({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen: () => {
+  } });
+  const useCommandBar = () => React$1.useContext(BarContext$1);
+  const CommandBarButton = React$1.forwardRef(function CommandBarButton2({ icon, label: label2, count: count2 = 0, active = false, caret = false, iconOnly, className, children, ...rest }, ref) {
+    const ctx = useCommandBar();
+    const only = iconOnly === void 0 ? ctx.iconOnly : iconOnly;
+    const n = Number(count2) || 0;
+    const badge = n ? /* @__PURE__ */ React$1.createElement(Badge, { size: "sm", tone: "active" }, n) : null;
+    const name = n ? label2 + ", " + n : label2;
+    return /* @__PURE__ */ React$1.createElement(
+      Button,
+      {
+        ref,
+        size: "sm",
+        variant: "ghost",
+        icon,
+        caret: caret && !only,
+        selected: active || n > 0,
+        iconOnly: only && !n,
+        label: only ? name : void 0,
+        className: cx("plx-command-bar__button", className),
+        ...rest
+      },
+      only ? n ? badge : label2 : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, children || label2, badge ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, " ", badge) : null)
+    );
+  });
+  const CommandBarSearch = React$1.forwardRef(function CommandBarSearch2(props, ref) {
+    const { collapsed, searchOpen, setSearchOpen } = useCommandBar();
+    return /* @__PURE__ */ React$1.createElement(SearchField, { ref, width: "bar", collapsed, open: collapsed ? searchOpen : void 0, onOpenChange: collapsed ? setSearchOpen : void 0, ...props });
+  });
+  function CommandBar({ label: label2, actions = [], find, quickFilters = [], view, count: count2, status, end, selection, layout: layout2 = "auto", sticky = "auto", narrow = false, strings, className }) {
+    const t = useStrings("commandBar", strings);
+    const fw = useStrings("fields");
+    const root = React$1.useRef(null);
+    const sel = selection && !React$1.isValidElement(selection) && typeof selection === "object" ? selection : null;
+    const selCount = sel ? Number(sel.count) || 0 : 0;
+    const selecting = selCount > 0;
+    const selActs = selecting ? sel.actions || [] : [];
+    const shape = layout2 === "auto" || layout2 === "split" ? actions.length ? "one" : "view" : layout2;
+    const shown = selecting ? selActs : shape === "view" ? [] : actions;
+    const quick = quickFilters;
+    const ending = end && !React$1.isValidElement(end) && !Array.isArray(end) && typeof end === "object" && ("content" in end || "fold" in end) ? end : null;
+    const endContent = ending ? ending.content : end;
+    const endFold = !selecting && ending && ending.fold;
+    const finding = !!find || quick.length > 0;
+    const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
+    const [searchOpen, setSearchOpen] = React$1.useState(false);
+    const key = [shape, narrow, selecting ? "sel" : "rest", shown.map((a) => a.label + (a.disabled ? "0" : "") + (a.loading ? "busy" : "")).join("|"), quickFilters.map((q2) => q2.label + (q2.value && q2.value.length ? q2.value.length : "")).join("|"), endFold && endFold.label].join("§");
+    const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ":scope > .plx-command-bar__bar > [data-plx-bar-row]", searchOpen);
+    const ctx = React$1.useMemo(() => ({ iconOnly: step >= ICONS$2, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
+    const foldAll = Math.max(0, step - SEARCH);
+    const fold2 = Math.min(foldAll, foldOrder(shown).length);
+    const endAway = !!endFold && foldAll > fold2;
+    const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold2 - (endAway ? 1 : 0)));
+    const findAway = finding && foldAll > fold2 + (endAway ? 1 : 0) + quickAway;
+    const quickKept = quick.slice(0, quick.length - quickAway), quickFolded = quick.slice(quick.length - quickAway);
+    const quickMenu = quickFolded.map((q2) => {
+      const id = q2.id || q2.label;
+      const counted = (option) => {
+        const count22 = option.count !== void 0 ? option.count : q2.counts instanceof Map ? q2.counts.get(option.value) || 0 : q2.counts ? q2.counts[option.value] || 0 : void 0;
+        return count22 === void 0 ? option.label || option.value : /* @__PURE__ */ React$1.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(count22)));
+      };
+      if (q2.kind === "single") return /* @__PURE__ */ React$1.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React$1.createElement(SingleQuickFilterMenu, { ...q2 }));
+      if (q2.kind === "date") {
+        const d = Object.assign({ preset: "any", from: "", to: "" }, q2.value);
+        return /* @__PURE__ */ React$1.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: q2.label, value: d.preset, onChange: (v) => q2.onChange && q2.onChange(Object.assign({}, d, { preset: v })) }, fieldWords.presets(fw).map((p) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: p.value, value: p.value }, counted(p)))));
+      }
+      const chosen = q2.value || [];
+      return /* @__PURE__ */ React$1.createElement(MenuSub, { key: id, label: chosen.length ? q2.label + " (" + chosen.length + ")" : q2.label, icon: q2.icon }, (q2.options || []).map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => /* @__PURE__ */ React$1.createElement(
+        MenuItem,
+        {
+          key: o.value,
+          checked: chosen.indexOf(o.value) >= 0,
+          keepOpen: true,
+          onSelect: () => q2.onChange && q2.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter((x) => x !== o.value) : chosen.concat(o.value))
+        },
+        counted(o)
+      )));
+    });
+    const endMenu = endAway ? /* @__PURE__ */ React$1.createElement(MenuSub, { key: "plx-end", label: endFold.label, icon: endFold.icon }, Array.isArray(endFold.items) && endFold.items.length && !React$1.isValidElement(endFold.items[0]) ? endFold.items.map((item) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: item.id || item.label, icon: item.icon, checked: item.checked, disabled: item.disabled, danger: item.danger, onSelect: item.onSelect }, item.label)) : endFold.items) : null;
+    const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
+    const was = React$1.useRef(selecting);
+    React$1.useEffect(() => {
+      const el = root.current;
+      if (!el || typeof window === "undefined") return void 0;
+      const scrollerOf = (node) => {
+        for (let p = node.parentElement; p; p = p.parentElement) {
+          const o = getComputedStyle(p).overflowY;
+          if (o === "auto" || o === "scroll") return p;
+        }
+        return null;
+      };
+      const check = () => {
+        const scroller = scrollerOf(el);
+        const sticky2 = getComputedStyle(el).position === "sticky";
+        const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0, scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
+        const stuck = sticky2 && scrolled && el.getBoundingClientRect().top <= top + 1;
+        if (stuck) el.setAttribute("data-plx-stuck", "");
+        else el.removeAttribute("data-plx-stuck");
+      };
+      const schedule = check;
+      document.addEventListener("scroll", schedule, { capture: true, passive: true });
+      window.addEventListener("resize", schedule);
+      check();
+      return () => {
+        document.removeEventListener("scroll", schedule, { capture: true });
+        window.removeEventListener("resize", schedule);
+      };
+    }, [sticky]);
+    React$1.useEffect(() => {
+      if (was.current !== selecting) announce(selecting ? fill(t.swapped, { n: formatNumber(selCount) }) : t.cleared);
+      was.current = selecting;
+    }, [selecting]);
+    const words2 = { noun: sel && sel.noun || "item", plural: sel && sel.plural || (sel && sel.noun || "item") + "s" };
+    const off2 = (a) => !!a.disabled || !!(a.single && selCount > 1);
+    const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words2));
+    const acts = shown.length || extraMenu.length ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__actions" }, /* @__PURE__ */ React$1.createElement(
+      BarActions,
+      {
+        actions: shown,
+        iconOnly: ctx.iconOnly,
+        fold: fold2,
+        moreLabel: t.more,
+        dangerClass: "plx-command-bar__danger",
+        off: selecting ? off2 : void 0,
+        why: selecting ? why : void 0,
+        extra: extraMenu
+      }
+    )) : null;
+    const quickEls = quickKept.map((q2) => /* @__PURE__ */ React$1.createElement(QuickFilter, { key: q2.id || q2.label, ...q2 }));
+    const fullCtx = React$1.useMemo(() => ({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen }), []);
+    const findEl = !(find || quickEls.length) ? null : findAway ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, /* @__PURE__ */ React$1.createElement(Popover, { title: t.find, placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(CommandBarButton, { icon: SearchIcon, label: t.find, iconOnly: true }) }, /* @__PURE__ */ React$1.createElement(BarContext$1.Provider, { value: fullCtx }, /* @__PURE__ */ React$1.createElement(Stack, { gap: "sm", align: "start" }, find, quickEls)))) : /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, find, quickEls);
+    const viewEl = view ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__view" }, view) : null;
+    const countEl = selecting || count2 === void 0 || count2 === null || ctx.collapsed ? null : typeof count2 === "string" || typeof count2 === "number" ? /* @__PURE__ */ React$1.createElement(Text, { variant: "data", className: "plx-command-bar__count" }, count2) : count2;
+    const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, { n: formatNumber(sel.hidden) }) : "";
+    const [hiddenBefore, hiddenAfter] = String(t.hidden).split("{n}");
+    const [before, after] = String(t.selected).split("{n}");
+    const clearEl = selecting ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: t.clear }, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: CloseIcon, className: "plx-command-bar__clear", "aria-label": fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText, onClick: () => sel.onClear && sel.onClear() }, before, /* @__PURE__ */ React$1.createElement(Text, { variant: "data", className: "plx-command-bar__number" }, formatNumber(selCount)), after, hiddenText ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, hiddenBefore, /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, formatNumber(sel.hidden)), hiddenAfter) : null)) : null;
+    const statusEl = selecting || !status || ctx.collapsed ? null : /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary", className: "plx-command-bar__status" }, status);
+    const keptEnd = !selecting && !endAway ? endContent : null;
+    const tail = countEl || statusEl || keptEnd || clearEl ? /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-command-bar__end" }, selecting && viewEl ? /* @__PURE__ */ React$1.createElement(Divider$1, { orientation: "vertical" }) : null, countEl, statusEl, keptEnd, clearEl) : null;
+    const onKeyDown2 = selecting && sel.onClear ? (e) => {
+      if (e.key === "Escape" && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
+        e.preventDefault();
+        sel.onClear();
+      }
+    } : void 0;
+    const parts = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, acts, acts && findEl ? /* @__PURE__ */ React$1.createElement(Divider$1, { orientation: "vertical" }) : null, findEl, /* @__PURE__ */ React$1.createElement(Toolbar.Spacer, null), viewEl, tail);
+    const name = selecting ? sel.label || fill(t.actions, { label: label2 || "" }).trim() : label2;
+    return /* @__PURE__ */ React$1.createElement(BarContext$1.Provider, { value: ctx }, /* @__PURE__ */ React$1.createElement("div", { ref: root, className: cx("plx-command-bar", ctx.iconOnly && "plx-command-bar--icons", selecting && "plx-command-bar--selecting", className), "data-plx-layout": shape, "data-plx-position": sticky === true ? "sticky" : sticky === false ? "static" : "auto", onKeyDown: onKeyDown2 }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-command-bar__bar" }, /* @__PURE__ */ React$1.createElement(Toolbar, { label: name, variant: "bar", className: "plx-command-bar__row", "data-plx-bar-row": "", "data-plx-fit-shrink": step >= SEARCH + folds || void 0 }, parts)), React$1.isValidElement(selection) ? selection : null));
+  }
+  const toggle = (list2, v) => list2.indexOf(v) >= 0 ? list2.filter((x) => x !== v) : list2.concat(v);
+  function PanelTrigger({ icon, label: label2, current: current2, count: count2 = 0, active, caret = false, size = "auto", title, footer, inline = false, placement, className, open, onOpenChange, children }) {
+    const ctx = useCommandBar();
+    const box = React$1.useRef(null);
+    const first = { get current() {
+      const el = box.current;
+      return el ? el.querySelector("[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input") : null;
+    } };
+    const body = /* @__PURE__ */ React$1.createElement("div", { ref: box, className: cx("plx-find-panel-body", className) }, children);
+    if (inline) return /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel-frame" }, children);
+    const words2 = current2 ? label2 + ": " + current2 : label2;
+    const trigger = current2 && !ctx.iconOnly ? /* @__PURE__ */ React$1.createElement(CommandBarButton, { icon, label: label2, active: true, caret, "aria-label": words2 }, words2) : /* @__PURE__ */ React$1.createElement(CommandBarButton, { icon, label: label2, count: count2, active, caret });
+    const pop = /* @__PURE__ */ React$1.createElement(Popover, { label: title ? void 0 : label2, title, size, trigger, footer, placement, initialFocus: first, ...open === void 0 ? null : { open }, onOpenChange }, body);
+    return ctx.iconOnly ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: words2 }, pop) : pop;
+  }
+  function PanelHead({ title, info, infoLabel, sub, actions }) {
+    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__head" }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__title-row" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-panel__title" }, /* @__PURE__ */ React$1.createElement(Text, { variant: "heading", as: "span" }, title), info ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: info }, /* @__PURE__ */ React$1.createElement(Button, { size: "xs", variant: "ghost", icon: CircleInfoIcon, iconOnly: true, label: infoLabel || title })) : null), actions ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-panel__actions" }, actions) : null), sub ? /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, sub) : null);
+  }
+  function Pick({ label: label2, value, options, onChange, size = "field", disabled }) {
+    const cur = options.find((o) => o.value === value) || options[0] || { label: "" };
+    return /* @__PURE__ */ React$1.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: cur.icon, caret: true, truncate: true, disabled, className: cx("plx-find-pick", "plx-find-pick--" + size), title: cur.label, "aria-label": label2 + ": " + cur.label }, cur.label) }, /* @__PURE__ */ React$1.createElement(MenuRadioGroup, { label: label2, value, onChange }, options.map((o) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: o.value, value: o.value, icon: o.icon }, o.label))));
+  }
+  const Pill = ({ color, children }) => /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-pill", "data-plx-category": color || "grey" }, children);
+  function MultiPick({ label: label2, options, value, onChange, placeholder }) {
+    const chosen = value.map((v) => options.find((o) => o.value === v) || { value: v, label: v });
+    return /* @__PURE__ */ React$1.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React$1.createElement(Button, { caret: true, truncate: true, className: "plx-find-pick plx-find-pick--value", "aria-label": label2 + ": " + (chosen.length ? chosen.map((o) => o.label).join(", ") : placeholder) }, chosen.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-pick__pills" }, chosen.map((o) => /* @__PURE__ */ React$1.createElement(Pill, { key: o.value, color: o.color }, o.label))) : /* @__PURE__ */ React$1.createElement("span", { className: "plx-find-pick__placeholder" }, placeholder)) }, options.map((o) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: o.value, checked: value.indexOf(o.value) >= 0, keepOpen: true, onSelect: () => onChange(toggle(value, o.value)) }, /* @__PURE__ */ React$1.createElement(Pill, { color: o.color }, o.label))));
+  }
+  function useReorder(items, setItems, nameOf2, t) {
+    const [msg, setMsg] = React$1.useState("");
+    const drag = React$1.useRef(null);
+    const box = React$1.useRef(null);
+    const [dragging, setDragging] = React$1.useState(-1);
+    const move2 = (i, to, focus) => {
+      if (to < 0 || to >= items.length || to === i) return;
+      const next = items.slice();
+      const [x] = next.splice(i, 1);
+      next.splice(to, 0, x);
+      setItems(next);
+      setMsg(fill(t.moved, { name: nameOf2(x), position: to + 1, total: items.length }));
+      if (focus) setTimeout(() => {
+        const el = box.current && box.current.querySelectorAll(":scope > [data-plx-row]")[to];
+        if (el) el.focus();
+      }, 0);
+    };
+    const rowProps = (i, name) => ({
+      "data-plx-row": "",
+      tabIndex: 0,
+      draggable: true,
+      "aria-label": fill(t.row, { name, position: i + 1, total: items.length }),
+      "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
+      className: cx("plx-find-panel__row", dragging === i && "is-dragging"),
+      onKeyDown: (e) => {
+        if (e.target !== e.currentTarget || !e.altKey) return;
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          move2(i, i - 1, true);
+        }
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          move2(i, i + 1, true);
+        }
+      },
+      onDragStart: (e) => {
+        e.stopPropagation();
+        drag.current = i;
+        setDragging(i);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(i));
+      },
+      onDragEnd: () => {
+        drag.current = null;
+        setDragging(-1);
+      },
+      onDragOver: (e) => e.preventDefault(),
+      onDrop: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const from = drag.current;
+        drag.current = null;
+        setDragging(-1);
+        if (from !== null && from !== i) move2(from, i);
+      }
+    });
+    const handle = (i, name) => /* @__PURE__ */ React$1.createElement(Menu, { label: fill(t.reorder, { name }), placement: "bottom-end", trigger: /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.reorder, { name }), className: "plx-find-panel__handle" }) }, /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(i, i - 1, true) }, t.moveUp), /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === items.length - 1, onSelect: () => move2(i, i + 1, true) }, t.moveDown));
+    const status = /* @__PURE__ */ React$1.createElement(LiveRegion, { kind: "status" }, msg);
+    return { box, rowProps, handle, status };
+  }
+  const FieldsIcon = { "name": "fields", "set": "plenix", "symbol": "list_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Z" } } } };
+  const PinFilledIcon = { "name": "pin-filled", "set": "plenix", "symbol": "push_pin", "fillOutline": true, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 0 20 20", "d": "m12.875 10.021 1.5 1.521v1.333h-3.729v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.458V4.25h-.833Zm-5.396 1.521h5l-.937-.917V4.25H8.417v6.375Zm2.5 0Z" }, "fill": { "viewBox": "0 0 20 20", "d": "m12.896 10.021 1.5 1.521v1.333h-3.75v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.479V4.25h-.833Z" } }, "24": { "outline": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1ZM8.85 14h6.3L14 12.85V5h-4v7.85ZM12 14Z" }, "fill": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1Z" } } } };
+  const VisibilityIcon = { "name": "visibility", "set": "plenix", "symbol": "visibility", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212ZM480-480Zm0 216q112 0 207-58t146-158q-51-100-146-158t-207-58q-112 0-207 58T127-480q51 100 146 158t207 58Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220ZM480-500Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220Z" } } } };
+  const moveTo = (order, f, i) => {
+    const rest = order.filter((x) => x !== f);
+    rest.splice(i, 0, f);
+    return rest;
+  };
+  const nameIn = (fields) => (f) => {
+    const x = fields.find((y) => y.value === f);
+    return x ? x.label : f;
+  };
+  function ColumnsList({ fields, value, onChange, filter = "", t }) {
+    const [msg, setMsg] = React$1.useState("");
+    const [drag, setDrag] = React$1.useState(null);
+    const box = React$1.useRef(null);
+    const name = nameIn(fields);
+    const order = value.order, hidden = value.hidden || [];
+    const put = (o, h2, words2, focus) => {
+      onChange({ order: o, hidden: h2 });
+      setMsg(words2);
+      if (focus) setTimeout(() => {
+        const el = box.current && box.current.querySelector('[data-plx-field="' + focus + '"]');
+        if (el) el.focus();
+      }, 0);
+    };
+    const move2 = (f, to, focus) => {
+      if (to < 0 || to >= order.length) return;
+      put(
+        moveTo(order, f, to),
+        to === 0 ? hidden.filter((x) => x !== f) : hidden,
+        to === 0 ? fill(t.isFirst, { name: name(f) }) : fill(t.moved, { name: name(f), position: to + 1, total: order.length }),
+        focus ? f : null
+      );
+    };
+    const q2 = filter.trim().toLowerCase();
+    const shown = order.filter((f) => !q2 || name(f).toLowerCase().indexOf(q2) >= 0);
+    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-columns-list", ref: box }, shown.length ? null : /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, t.none), shown.map((f) => {
+      const i = order.indexOf(f);
+      return /* @__PURE__ */ React$1.createElement(
+        "div",
+        {
+          key: f,
+          "data-plx-field": f,
+          tabIndex: 0,
+          draggable: true,
+          "aria-label": fill(t.row, { name: name(f), first: i === 0 ? t.firstMark : "" }),
+          "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
+          className: cx("plx-columns-list__row", drag === f && "is-dragging"),
+          onKeyDown: (e) => {
+            if (e.target !== e.currentTarget || !e.altKey) return;
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              move2(f, i - 1, true);
+            }
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              move2(f, i + 1, true);
+            }
+          },
+          onDragStart: (e) => {
+            setDrag(f);
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", f);
+          },
+          onDragEnd: () => setDrag(null),
+          onDragOver: (e) => e.preventDefault(),
+          onDrop: (e) => {
+            e.preventDefault();
+            const from = e.dataTransfer.getData("text/plain") || drag;
+            setDrag(null);
+            if (from && from !== f) move2(from, i);
+          }
+        },
+        /* @__PURE__ */ React$1.createElement(Menu, { label: fill(t.moveMenu, { name: name(f) }), trigger: /* @__PURE__ */ React$1.createElement(Button, { size: "xs", variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.moveMenu, { name: name(f) }), className: "plx-columns-list__handle" }), placement: "bottom-start" }, /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(f, i - 1, true) }, t.up), /* @__PURE__ */ React$1.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === order.length - 1, onSelect: () => move2(f, i + 1, true) }, t.down)),
+        /* @__PURE__ */ React$1.createElement(
+          Checkbox,
+          {
+            label: name(f),
+            checked: hidden.indexOf(f) < 0,
+            disabled: i === 0,
+            onChange: () => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))
+          }
+        ),
+        i === 0 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-columns-list__first" }, /* @__PURE__ */ React$1.createElement(Icon, { name: PinFilledIcon }), /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, t.first)) : null
+      );
+    }), /* @__PURE__ */ React$1.createElement(LiveRegion, { kind: "status" }, msg));
+  }
+  function ColumnsMenu({ fields = [], value, onChange, inline = false, strings }) {
+    const t = useStrings("columnsMenu", strings);
+    const v = value || { order: fields.map((f) => f.value), hidden: [] };
+    const name = nameIn(fields);
+    const first = /* @__PURE__ */ React$1.createElement(Field, { label: t.first }, /* @__PURE__ */ React$1.createElement(
+      Select,
+      {
+        value: v.order[0],
+        options: v.order.map((f) => ({ value: f, label: name(f) })),
+        onChange: (e) => onChange({ order: moveTo(v.order, e.target.value, 0), hidden: (v.hidden || []).filter((x) => x !== e.target.value) })
+      }
+    ));
+    const list2 = /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--columns" }, first, /* @__PURE__ */ React$1.createElement(ColumnsList, { fields, value: v, onChange, t }));
+    return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon: FieldsIcon, label: t.label, title: t.label, count: (v.hidden || []).length, caret: true, size: "lg", inline }, list2);
+  }
+  function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
+    const t = useStrings("columnsMenu", strings);
+    const v = value || { order: fields.map((f) => f.value), hidden: [] };
+    const controlled = openProp !== void 0;
+    const [own2, setOwn] = React$1.useState(false), open = controlled ? !!openProp : own2;
+    const setOpen = (next) => {
+      if (!controlled) setOwn(next);
+      if (onOpenChange) onOpenChange(next);
+    };
+    const [draft, setDraft] = React$1.useState(v);
+    const [q2, setQ] = React$1.useState("");
+    const name = nameIn(fields);
+    React$1.useEffect(() => {
+      if (controlled && openProp) {
+        setDraft(v);
+        setQ("");
+      }
+    }, [controlled, openProp]);
+    const start2 = () => {
+      setDraft(v);
+      setQ("");
+      setOpen(true);
+    };
+    const button = trigger === null ? null : trigger ? React$1.cloneElement(trigger, { onClick: start2 }) : /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FieldsIcon, onClick: start2 }, t.manage);
+    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, button, /* @__PURE__ */ React$1.createElement(
+      Dialog,
+      {
+        open,
+        onClose: () => setOpen(false),
+        title: t.manage,
+        icon: FieldsIcon,
+        size: "md",
+        footer: /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(Button, { onClick: () => setOpen(false) }, t.cancel), /* @__PURE__ */ React$1.createElement(Button, { variant: "primary", onClick: () => {
+          onChange(draft);
+          setOpen(false);
+        } }, t.apply))
+      },
+      /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel plx-find-panel--dialog" }, /* @__PURE__ */ React$1.createElement(Field, { label: t.first }, /* @__PURE__ */ React$1.createElement(
+        Select,
+        {
+          value: draft.order[0],
+          options: draft.order.map((f) => ({ value: f, label: name(f) })),
+          onChange: (e) => setDraft({ order: moveTo(draft.order, e.target.value, 0), hidden: (draft.hidden || []).filter((x) => x !== e.target.value) })
+        }
+      )), /* @__PURE__ */ React$1.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: t.find, label: t.find }), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityIcon, onClick: () => setDraft({ order: draft.order, hidden: [] }) }, t.showAll), /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityOffIcon, onClick: () => setDraft({ order: draft.order, hidden: draft.order.slice(1) }) }, t.hideAll)), /* @__PURE__ */ React$1.createElement(ColumnsList, { fields, value: draft, onChange: setDraft, filter: q2, t }))
+    ));
+  }
+  const CloudOffIcon = { "name": "cloud-off", "set": "plenix", "symbol": "cloud_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-72.21 0-122.11-49.89Q68-311.79 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 2.18-14.24 7.82-31.66 5.65-17.41 14.11-30.88L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15ZM240-264h382.46L305.69-580.77q-7.46 15.69-13.07 35.35Q287-525.77 283-507l-51 4q-48 4-80 37.68T120-384q0 49.71 35.14 84.86Q190.29-264 240-264Zm223.69-158.77Zm362.46 186.92L787.77-274Q810-286.38 825-309.08q15-22.7 15-50.92 0-40.32-27.84-68.16Q784.32-456 744-456h-66l-6-65q-7-74-62-124.5T479.78-696q-24.47 0-47.12 6Q410-684 389-673l-37.38-37.77q32-18.46 62.64-27.84Q444.91-748 480-748q94.64 0 164.82 63.68Q715-620.64 724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77ZM588.38-474Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-71.92 0-121.96-50.04Q68-312.08 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 1.85-14.46 7.66-31.77 5.81-17.3 14.27-30.77L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15Zm45.07-131.23L351.62-710.77q32-18.46 62.5-27.84Q444.62-748 480-748q94.54 0 164.77 63.73T724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15ZM260-240h374.46L291.69-582.77q-5.46 13.69-8.57 29.85Q280-536.77 280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41Zm202.69-171.77Zm387.46 187.92L806.77-266q16.23-14.38 24.73-32.77Q840-317.15 840-340q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-27 0-52 6.5T380-693l-43.38-43.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.64 0 184.32 75.68Q740-628.64 740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27ZM593.38-479Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15Zm45.07-153.23L336.62-736.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.54 0 184.27 75.73T740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27Z" } } } };
+  const DocSearchIcon = { "name": "doc-search", "set": "plenix", "symbol": "find_in_page", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m605.85-168 52 52H212v-728h354.77L748-665.08v541.39h4.15L547.61-329q-15 10.38-32.29 14.69Q498.03-310 480-310q-51.75 0-87.87-36.13Q356-382.25 356-434q0-51.75 36.13-87.87Q428.25-558 480-558q51.75 0 87.87 36.13Q604-485.75 604-434q0 18.85-5 36.62-5 17.76-15 31.99l112 112.01V-642L546-792H264v624h341.85ZM480-362q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21Zm0-118Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M212-116v-728h354.77L748-665.08v462.93L584-365.39q10-14.23 15-31.99 5-17.77 5-36.62 0-51.75-36.13-87.87Q531.75-558 480-558q-51.75 0-87.87 36.13Q356-485.75 356-434q0 51.75 36.13 87.87Q428.25-310 480-310q18.03 0 35.32-4.31T547.61-329l204.54 204.92v8.08H212Zm267.79-246Q450-362 429-383.21t-21-51Q408-464 429.21-485t51-21Q510-506 531-484.79t21 51Q552-404 530.79-383t-51 21Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m603.85-160 60 60H180v-760h410.77L780-633.08v525.39h-9.85L554.61-322q-17 11.38-35.29 16.69Q501.03-300 480-300q-57.75 0-98.87-41.13Q340-382.25 340-440q0-57.75 41.13-98.87Q422.25-580 480-580q57.75 0 98.87 41.13Q620-497.75 620-440q0 21.85-5.5 40.12-5.5 18.26-16.5 34.49l122 124.01V-612L562-800H240v640h363.85ZM480-360q33 0 56.5-23.5T560-440q0-33-23.5-56.5T480-520q-33 0-56.5 23.5T400-440q0 33 23.5 56.5T480-360Zm0-120Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M180-100v-760h410.77L780-633.08v452.93L598-365.39q11-16.23 16.5-34.49Q620-418.15 620-440q0-57.75-41.13-98.87Q537.75-580 480-580q-57.75 0-98.87 41.13Q340-497.75 340-440q0 57.75 41.13 98.87Q422.25-300 480-300q21.03 0 39.32-5.31T554.61-322l215.54 213.92v8.08H180Zm300-260q-33 0-56.5-23.5T400-440q0-33 23.5-56.5T480-520q33 0 56.5 23.5T560-440q0 33-23.5 56.5T480-360Z" } } } };
+  const SettingsMaintenanceIcon = { "name": "settings-maintenance", "set": "plenix", "symbol": "build", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Zm0-73.53 44.61-43.62-225.38-223.39q18.84-24.77 24.84-53.27 6-28.5 6-44.88 0-73.54-56.54-129.77Q446.61-761 363.84-754l118 117-158.15 157.15-120-120q-8.85 89 47.77 144.93Q308.08-399 381.69-399q17.39 0 47.58-6.81 30.19-6.8 56.96-27.42l223.39 223.39ZM476-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Zm0-85.53 36.61-36.62-266.38-266.39q16.84-20.77 24.84-47.27 8-26.5 8-53.88 0-66.54-47.54-117.77Q432.61-769 359.84-768l112 112-170.15 170.15-112-112q.15 77 51.77 122.43Q293.08-430 357.69-430q26.39 0 52.58-7.81 26.19-7.8 47.96-24.42l266.39 266.39ZM472-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Z" } } } };
+  const d0$S = "M793.08-80.62 439.39-436.31q-53.93 6.77-101.93 29.92-48 23.16-83.46 60.39l-62.46-63.69q35.46-35.46 79.96-61.39Q316-497 365.7-510L247.23-628.46q-43.31 19.46-85.54 48.23Q119.46-551.46 84-516l-61.69-63.69q35.85-35.85 76.5-65 40.65-29.16 81.96-50.23l-87.84-87.85 42.15-42.15 702.15 702.15-44.15 42.15ZM716-358l-23.04-23.04-23.04-23.04-113.61-113.61q57.54 8 112.65 35.42 55.12 27.43 99.5 71.81L716-358Zm160-158q-77-77-178.5-120.5T480-680q-21 0-41.08 1.5Q418.85-677 400-674l-76.61-76.61q35.15-9.31 73.92-13.96 38.77-4.66 82.69-4.66 135.46 0 252.69 50.5 117.23 50.5 205.77 139.04L876-516ZM480-120 360.54-240.08q23.77-23.76 54.69-36.46 30.92-12.69 64.77-12.69 33.85 0 64.77 12.69 30.92 12.7 54.69 36.46L480-120Z";
+  const WifiOffIcon = { "name": "wifi-off", "set": "plenix", "symbol": "wifi_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-20.76 56.19-32.46 30.42-11.69 62.27-11.69 32.85 0 62.77 12.19 29.92 12.2 56.69 31.96L480-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-19.76 56.19-31.96 30.42-12.19 62.27-12.19 32.85 0 62.77 12.69 29.92 12.7 56.69 31.46L480-144Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } } } };
+  const KINDS = {
+    offline: { tone: "warning", icon: WifiOffIcon },
+    degraded: { tone: "warning", icon: CloudOffIcon },
+    "permission-denied": { tone: "neutral", icon: LockIcon },
+    "not-found": { tone: "neutral", icon: DocSearchIcon },
+    maintenance: { tone: "neutral", icon: SettingsMaintenanceIcon },
+    completion: { tone: "success", icon: CircleCheckIcon }
+  };
+  const TONE_ICONS = { error: WarningIcon, warning: WarningIcon, success: CircleCheckIcon };
+  const ROLES$1 = { error: "alert", warning: "status", success: "status" };
+  function EmptyState({ size = "inline", tone, kind, icon, title, action, strings, className, children, ...rest }) {
+    devWarn("EmptyState", { size, tone }, { size: ["inline", "page"], tone: ["neutral", "error", "warning", "success"] });
+    const preset = KINDS[kind];
+    const all = useStrings("emptyState", strings);
+    const words2 = preset ? all[kind] : null;
+    const t = tone || (preset ? preset.tone : "neutral");
+    const mark = icon !== void 0 ? icon : preset ? preset.icon : TONE_ICONS[t];
+    const head = title !== void 0 ? title : words2 ? words2.title : null;
+    const text2 = children !== void 0 && children !== null ? children : words2 ? words2.text : null;
+    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-empty-state", "plx-empty-state--" + size, t !== "neutral" && "plx-empty-state--" + t, className), role: ROLES$1[t], ...rest }, mark ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__icon", "aria-hidden": "true" }, asIcon(mark)) : null, head ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__title" }, head) : null, text2 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__text" }, text2) : null, action ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__action" }, action) : null);
+  }
+  const d0$R = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
+  const d1$R = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
+  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  function pagesToShow(page, count2) {
+    const set2 = new Set([1, count2, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count2));
+    const list2 = Array.from(set2).sort((a, b) => a - b), out = [];
+    list2.forEach((p, i) => {
+      if (i && p - list2[i - 1] > 1) out.push("gap-" + p);
+      out.push(p);
+    });
+    return out;
+  }
+  function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPage, perPageOptions, onPerPageChange, label: label2, strings, className, ...rest }) {
+    const t = useStrings("pagination", strings);
+    const go = (p) => {
+      if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
+    };
+    const first = total ? (page - 1) * (perPage || 0) + 1 : null;
+    const last = total ? Math.min(total, page * (perPage || total)) : null;
+    return /* @__PURE__ */ React$1.createElement("nav", { className: cx("plx-pagination", className), "aria-label": label2 || t.label, ...rest }, total ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__info" }, dataPhrase(t.range, { first, last, total })) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__pages" }, /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.previous, disabled: page <= 1, onClick: () => go(page - 1) }, "‹"), pagesToShow(page, pageCount).map((p) => typeof p === "string" ? /* @__PURE__ */ React$1.createElement("span", { key: p, className: "plx-pagination__gap", "aria-hidden": "true" }, "…") : /* @__PURE__ */ React$1.createElement("button", { type: "button", key: p, className: "plx-pagination__page", "aria-current": p === page ? "page" : void 0, "aria-label": fill(t.page, { n: p }), onClick: () => go(p) }, p)), /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.next, disabled: page >= pageCount, onClick: () => go(page + 1) }, "›")), perPageOptions && onPerPageChange ? /* @__PURE__ */ React$1.createElement("label", { className: "plx-pagination__per-page" }, /* @__PURE__ */ React$1.createElement("span", null, t.perPage), /* @__PURE__ */ React$1.createElement("select", { className: "plx-pagination__select", value: perPage, onChange: (e) => onPerPageChange(Number(e.target.value)) }, perPageOptions.map((n) => /* @__PURE__ */ React$1.createElement("option", { key: n, value: n }, n)))) : null);
+  }
+  function manageDialog({
+    headerMenu,
+    isStatic,
+    managing,
+    setManaging,
+    chooserColumns,
+    changeOrder,
+    changeVisibility
+  }) {
+    return headerMenu && !isStatic && managing ? /* @__PURE__ */ React.createElement(
+      ManageColumnsDialog,
+      {
+        trigger: null,
+        open: managing,
+        onOpenChange: setManaging,
+        fields: chooserColumns().map((col) => ({ value: col.id, label: col.columnDef.meta.title || col.id })),
+        value: {
+          order: chooserColumns().map((col) => col.id),
+          hidden: chooserColumns().filter((col) => !col.getIsVisible()).map((col) => col.id)
+        },
+        onChange: (next) => {
+          changeOrder(next.order);
+          changeVisibility(Object.fromEntries((next.hidden || []).map((field) => [field, false])));
+        }
+      }
+    ) : null;
+  }
+  function failureState({ failed, B, S: S2, onRetry, remoteError, setRetry }) {
+    return failed ? /* @__PURE__ */ React.createElement(
+      EmptyState,
+      {
+        className: B + "__error",
+        tone: "error",
+        title: S2.failed,
+        action: onRetry || remoteError ? /* @__PURE__ */ React.createElement(
+          Button,
+          {
+            size: "sm",
+            onClick: () => {
+              setRetry((n) => n + 1);
+              onRetry?.();
+            }
+          },
+          S2.retry
+        ) : null
+      },
+      String(failed === true ? "" : failed.message || failed)
+    ) : null;
+  }
+  function viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }) {
+    return props.viewMenu ? /* @__PURE__ */ React.createElement("div", { className: `${B}__grid-col ${B}__w-view`, role: "columnheader" }, /* @__PURE__ */ React.createElement(
+      Menu,
+      {
+        label: S2.view,
+        trigger: /* @__PURE__ */ React.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: SettingsCustomizeIcon, label: S2.view })
+      },
+      ["short", "medium", "tall", "extra-tall"].map((step) => /* @__PURE__ */ React.createElement(
+        MenuItem,
+        {
+          key: step,
+          checked: effectiveStep === step,
+          onSelect: () => {
+            setRowHeight(step);
+            props.onViewChange?.({ rowHeight: step });
+          }
+        },
+        S2[step]
+      )),
+      /* @__PURE__ */ React.createElement(MenuDivider, null),
+      /* @__PURE__ */ React.createElement(
+        MenuItem,
+        {
+          checked: effectiveWrap,
+          onSelect: () => {
+            setWrapHeaders(!effectiveWrap);
+            props.onViewChange?.({ wrapHeaders: !effectiveWrap });
+          }
+        },
+        S2.wrapHeaders
+      )
+    )) : null;
+  }
+  function emptyRow({ model, B, isStatic, ordered: ordered2, remoteMode, remoteBusy, S: S2, empty }) {
+    return !model.length ? /* @__PURE__ */ React.createElement("div", { className: cx(`${B}__grid-placeholder`, isStatic && B + "__grid-placeholder--static"), role: "row" }, /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: `${B}__grid-placeholder-contents`,
+        role: isStatic ? "cell" : "gridcell",
+        "aria-colspan": Math.max(1, ordered2.length)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: B + "__empty" }, remoteMode && remoteBusy ? S2.loading : empty || S2.empty)
+    )) : null;
+  }
+  function moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered: ordered2, S: S2, setRetry }) {
+    return scrollFill && model.length && (remoteBusy || moreFailed) ? /* @__PURE__ */ React.createElement("div", { className: `${B}__grid-placeholder`, role: "row", "aria-rowindex": semanticRows.length + 2 }, /* @__PURE__ */ React.createElement("div", { className: `${B}__grid-placeholder-contents`, role: "gridcell", "aria-colspan": Math.max(1, ordered2.length) }, moreFailed ? /* @__PURE__ */ React.createElement(Inline$1, { gap: "sm", align: "center" }, /* @__PURE__ */ React.createElement("span", { className: B + "__empty" }, S2.failed), /* @__PURE__ */ React.createElement(Button, { size: "sm", onClick: () => setRetry((n) => n + 1) }, S2.retry)) : /* @__PURE__ */ React.createElement("span", { className: B + "__empty", role: "status" }, S2.loading))) : null;
+  }
+  function pagesFooter({
+    mode,
+    failed,
+    B,
+    S: S2,
+    displayedTotal,
+    page,
+    pageSize,
+    props,
+    setPage,
+    setPageSize,
+    label: label2
+  }) {
+    return mode === "pages" && !failed ? /* @__PURE__ */ React.createElement("div", { className: B + "__footer" }, /* @__PURE__ */ React.createElement(Text, { variant: "data", className: B + "__range" }, words(S2.range, {
+      first: displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0,
+      last: Math.min((page + 1) * pageSize, displayedTotal),
+      total: displayedTotal
+    })), /* @__PURE__ */ React.createElement("label", { className: B + "__page-size" }, /* @__PURE__ */ React.createElement("span", null, S2.perPage), /* @__PURE__ */ React.createElement(
+      Select,
+      {
+        value: String(pageSize),
+        options: (props.pageSizes || [25, 50, 100]).map((n) => ({ value: String(n), label: String(n) })),
+        onChange: (e) => {
+          setPage(0);
+          setPageSize(+e.target.value);
+        }
+      }
+    )), /* @__PURE__ */ React.createElement(
+      Pagination,
+      {
+        className: B + "__pages",
+        label: words(S2.pages, { label: label2 }),
+        page: page + 1,
+        pageCount: Math.max(1, Math.ceil(displayedTotal / pageSize)),
+        onPageChange: (n) => setPage(n - 1)
+      }
+    )) : null;
+  }
+  function loadMoreFooter({
+    mode,
+    failed,
+    B,
+    S: S2,
+    loadedRows,
+    displayedTotal,
+    remoteMode,
+    remoteBusy,
+    fetching,
+    setPage,
+    setLoaded,
+    allRows,
+    pageSize
+  }) {
+    return mode === "load-more" && !failed ? /* @__PURE__ */ React.createElement("div", { className: B + "__footer" }, /* @__PURE__ */ React.createElement(Text, { variant: "data", className: B + "__range" }, words(S2.count, { shown: Math.min(loadedRows.length, displayedTotal), total: displayedTotal })), loadedRows.length < displayedTotal ? /* @__PURE__ */ React.createElement(
+      Button,
+      {
+        size: "sm",
+        loading: remoteMode && remoteBusy,
+        className: B + "__more",
+        onClick: () => {
+          if (remoteMode) {
+            if (!fetching.current) {
+              fetching.current = true;
+              setPage((n) => n + 1);
+            }
+          } else setLoaded((n) => Math.min(allRows.length, n + pageSize));
+        }
+      },
+      S2.loadMore
+    ) : null) : null;
   }
   function NextEngine(props) {
     const inPane = React$1.useContext(GridPane);
@@ -21119,23 +21286,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       (group, i) => group.path.every((part, depth2) => JSON.stringify(part) === JSON.stringify(currentGroup.path[depth2])) && !priorGroups.slice(i + 1).some((next) => next.depth === group.depth)
     ) : [];
     const moreFailed = scrollFill && remoteError && model.length > 0, failed = error || (moreFailed ? null : remoteError);
-    return /* @__PURE__ */ React$1.createElement(WidthPixels.Provider, { value: widthPixels }, headerMenu && !isStatic && managing ? /* @__PURE__ */ React$1.createElement(
-      ManageColumnsDialog,
-      {
-        trigger: null,
-        open: managing,
-        onOpenChange: setManaging,
-        fields: chooserColumns().map((col) => ({ value: col.id, label: col.columnDef.meta.title || col.id })),
-        value: {
-          order: chooserColumns().map((col) => col.id),
-          hidden: chooserColumns().filter((col) => !col.getIsVisible()).map((col) => col.id)
-        },
-        onChange: (next) => {
-          changeOrder(next.order);
-          changeVisibility(Object.fromEntries((next.hidden || []).map((field) => [field, false])));
-        }
-      }
-    ) : null, /* @__PURE__ */ React$1.createElement(
+    return /* @__PURE__ */ React$1.createElement(WidthPixels.Provider, { value: widthPixels }, manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }), /* @__PURE__ */ React$1.createElement(
       "div",
       {
         ref: frame,
@@ -21159,26 +21310,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "data-plx-height": lengthName(height),
         "data-plx-fit": !isStatic && !height && mode !== "pages" ? "" : void 0
       },
-      failed ? /* @__PURE__ */ React$1.createElement(
-        EmptyState,
-        {
-          className: B + "__error",
-          tone: "error",
-          title: S2.failed,
-          action: onRetry || remoteError ? /* @__PURE__ */ React$1.createElement(
-            Button,
-            {
-              size: "sm",
-              onClick: () => {
-                setRetry((n) => n + 1);
-                onRetry?.();
-              }
-            },
-            S2.retry
-          ) : null
-        },
-        String(failed === true ? "" : failed.message || failed)
-      ) : null,
+      failureState({ failed, B, S: S2, onRetry, remoteError, setRetry }),
       /* @__PURE__ */ React$1.createElement(
         "div",
         {
@@ -21230,37 +21362,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
               ))
             ) : null,
             ordered2.map(headerCell),
-            props.viewMenu ? /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-col ${B}__w-view`, role: "columnheader" }, /* @__PURE__ */ React$1.createElement(
-              Menu,
-              {
-                label: S2.view,
-                trigger: /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: SettingsCustomizeIcon, label: S2.view })
-              },
-              ["short", "medium", "tall", "extra-tall"].map((step) => /* @__PURE__ */ React$1.createElement(
-                MenuItem,
-                {
-                  key: step,
-                  checked: effectiveStep === step,
-                  onSelect: () => {
-                    setRowHeight(step);
-                    props.onViewChange?.({ rowHeight: step });
-                  }
-                },
-                S2[step]
-              )),
-              /* @__PURE__ */ React$1.createElement(MenuDivider, null),
-              /* @__PURE__ */ React$1.createElement(
-                MenuItem,
-                {
-                  checked: effectiveWrap,
-                  onSelect: () => {
-                    setWrapHeaders(!effectiveWrap);
-                    props.onViewChange?.({ wrapHeaders: !effectiveWrap });
-                  }
-                },
-                S2.wrapHeaders
-              )
-            )) : null,
+            viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }),
             rowMenu && rowMenuButton ? /* @__PURE__ */ React$1.createElement(
               Width,
               {
@@ -21325,68 +21427,27 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             shown.map(renderRow),
             /* @__PURE__ */ React$1.createElement(RowGap, { rows: model.slice(last) })
           ),
-          !model.length ? /* @__PURE__ */ React$1.createElement("div", { className: cx(`${B}__grid-placeholder`, isStatic && B + "__grid-placeholder--static"), role: "row" }, /* @__PURE__ */ React$1.createElement(
-            "div",
-            {
-              className: `${B}__grid-placeholder-contents`,
-              role: isStatic ? "cell" : "gridcell",
-              "aria-colspan": Math.max(1, ordered2.length)
-            },
-            /* @__PURE__ */ React$1.createElement("span", { className: B + "__empty" }, remoteMode && remoteBusy ? S2.loading : empty || S2.empty)
-          )) : null,
-          scrollFill && model.length && (remoteBusy || moreFailed) ? /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-placeholder`, role: "row", "aria-rowindex": semanticRows.length + 2 }, /* @__PURE__ */ React$1.createElement(
-            "div",
-            {
-              className: `${B}__grid-placeholder-contents`,
-              role: "gridcell",
-              "aria-colspan": Math.max(1, ordered2.length)
-            },
-            moreFailed ? /* @__PURE__ */ React$1.createElement(Inline$1, { gap: "sm", align: "center" }, /* @__PURE__ */ React$1.createElement("span", { className: B + "__empty" }, S2.failed), /* @__PURE__ */ React$1.createElement(Button, { size: "sm", onClick: () => setRetry((n) => n + 1) }, S2.retry)) : /* @__PURE__ */ React$1.createElement("span", { className: B + "__empty", role: "status" }, S2.loading)
-          )) : null
+          emptyRow({ model, B, isStatic, ordered: ordered2, remoteMode, remoteBusy, S: S2, empty }),
+          moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered: ordered2, S: S2, setRetry })
         )
       ),
       !isStatic ? /* @__PURE__ */ React$1.createElement(Scrollbars, { holder, viewportId }) : null,
-      mode === "pages" && !failed ? /* @__PURE__ */ React$1.createElement("div", { className: B + "__footer" }, /* @__PURE__ */ React$1.createElement(Text, { variant: "data", className: B + "__range" }, words(S2.range, {
-        first: displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0,
-        last: Math.min((page + 1) * pageSize, displayedTotal),
-        total: displayedTotal
-      })), /* @__PURE__ */ React$1.createElement("label", { className: B + "__page-size" }, /* @__PURE__ */ React$1.createElement("span", null, S2.perPage), /* @__PURE__ */ React$1.createElement(
-        Select,
-        {
-          value: String(pageSize),
-          options: (props.pageSizes || [25, 50, 100]).map((n) => ({ value: String(n), label: String(n) })),
-          onChange: (e) => {
-            setPage(0);
-            setPageSize(+e.target.value);
-          }
-        }
-      )), /* @__PURE__ */ React$1.createElement(
-        Pagination,
-        {
-          className: B + "__pages",
-          label: words(S2.pages, { label: label2 }),
-          page: page + 1,
-          pageCount: Math.max(1, Math.ceil(displayedTotal / pageSize)),
-          onPageChange: (n) => setPage(n - 1)
-        }
-      )) : null,
-      mode === "load-more" && !failed ? /* @__PURE__ */ React$1.createElement("div", { className: B + "__footer" }, /* @__PURE__ */ React$1.createElement(Text, { variant: "data", className: B + "__range" }, words(S2.count, { shown: Math.min(loadedRows.length, displayedTotal), total: displayedTotal })), loadedRows.length < displayedTotal ? /* @__PURE__ */ React$1.createElement(
-        Button,
-        {
-          size: "sm",
-          loading: remoteMode && remoteBusy,
-          className: B + "__more",
-          onClick: () => {
-            if (remoteMode) {
-              if (!fetching.current) {
-                fetching.current = true;
-                setPage((n) => n + 1);
-              }
-            } else setLoaded((n) => Math.min(allRows.length, n + pageSize));
-          }
-        },
-        S2.loadMore
-      ) : null) : null
+      pagesFooter({ mode, failed, B, S: S2, displayedTotal, page, pageSize, props, setPage, setPageSize, label: label2 }),
+      loadMoreFooter({
+        mode,
+        failed,
+        B,
+        S: S2,
+        loadedRows,
+        displayedTotal,
+        remoteMode,
+        remoteBusy,
+        fetching,
+        setPage,
+        setLoaded,
+        allRows,
+        pageSize
+      })
     ));
   }
   function DataGridEngine(props) {

@@ -36,7 +36,7 @@ The files Plenix publishes for developers (change notes, token list, component d
 - It is not in `npm test` or `npm run test:full`, because it needs the release build (`node build-packages.js`) first.
 - CI (`ci.yml`): the "Build and checks" job, in the step "Tests of the release build", after the release build, on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`full.yml`): the same step of its build job.
-- Without the design system (in CI, when the DS_TOKEN secret is not set) it prints `CDN_DEVX_SKIP no design system` and passes.
+- Without the design system (in CI, when the DS_TOKEN secret is not set) it checks nothing. It says so plainly: it prints `CDN_DEVX_SKIPPED skipped: design system not available …`, and on GitHub it adds a warning to the run's summary (issue #762).
 - By hand: `node tests/cdn-devx.test.js`, after building the packages (its header says "Build packages first").
 
 ## What it needs

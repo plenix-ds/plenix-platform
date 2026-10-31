@@ -1,7 +1,14 @@
 // W15C node regressions: actual generated packages, JSON-RPC/stdio, API fallbacks, budgets and date-only values.
 const fs = require('fs'), path = require('path'), assert = require('assert'), { execFileSync, spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
-if (!fs.existsSync(path.join(ROOT, 'platform/design-system/inventory.js'))) { console.log('W15C_PACKAGES_OK skipped: no design system'); process.exit(0); }
+// without the design system nothing here can be checked: a visible skip, never an OK (issue 762). On GitHub it is also a
+// warning on the run's summary, so a green run never hides an unchecked one
+if (!fs.existsSync(path.join(ROOT, 'platform/design-system/inventory.js'))) {
+  const why = 'skipped: design system not available (platform/design-system is not checked out); nothing was checked';
+  console.log('W15C_PACKAGES_SKIPPED ' + why);
+  if (process.env.GITHUB_ACTIONS) console.log('::warning title=w15c-packages skipped::' + why);
+  process.exit(0);
+}
 (async () => {
   let checks = 0; const check = (value, message) => { assert(value, message); checks++; };
   const { createServer, createDataSource, TOOLS, PROTOCOL } = require('../packages/mcp/server.cjs');

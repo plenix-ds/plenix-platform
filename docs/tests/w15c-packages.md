@@ -40,7 +40,7 @@ The Plenix add-on packages (the AI assistant connector, web components) work, st
 - It is not in `npm test` or `npm run test:full`, because it needs the release build (`node build-packages.js`) first.
 - CI (`ci.yml`): the "Build and checks" job, in the step "Tests of the release build", after the release build, on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`full.yml`): the same step of its build job.
-- Without the design system (in CI, when the DS_TOKEN secret is not set) it prints `W15C_PACKAGES_OK skipped: no design system` and passes.
+- Without the design system (in CI, when the DS_TOKEN secret is not set) it checks nothing. It says so plainly: it prints `W15C_PACKAGES_SKIPPED skipped: design system not available …` (never an OK line), and on GitHub it adds a warning to the run's summary (issue #762).
 - By hand: `node tests/w15c-packages.test.js`.
 
 ## What it needs
