@@ -18764,6 +18764,66 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }, [source]);
   }
+  function useSorting({ initial, props }) {
+    const [localSort, setSorting] = React2.useState(initial.sorting);
+    const sortSignal = JSON.stringify(props.sort);
+    const [sortOwner, setSortOwner] = React2.useState(null);
+    const controlledSort = React2.useMemo(() => normalizeSort(props.sort), [sortSignal]);
+    const initiallyControlledSort = React2.useRef(!!props.sort?.length), appliedSort = React2.useRef(false);
+    if (props.sort?.length && (initiallyControlledSort.current || JSON.stringify(controlledSort) !== JSON.stringify(initial.sorting)))
+      appliedSort.current = true;
+    React2.useEffect(() => {
+      if (props.sort?.length && sortOwner !== sortSignal) setSortOwner(null);
+    }, [sortSignal]);
+    const sorting = props.onViewChange ? controlledSort : sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? controlledSort : appliedSort.current ? EMPTY_ROWS : localSort;
+    const sortingRef = React2.useRef(sorting);
+    sortingRef.current = sorting;
+    return { setSorting, sortSignal, setSortOwner, sorting, sortingRef };
+  }
+  function sortActions({ sorting, setSortOwner, sortSignal, setSorting, setPage, props, emit }) {
+    const changeSort = (update) => {
+      const next = typeof update === "function" ? update(sorting) : update;
+      setSortOwner(sortSignal);
+      setSorting(next);
+      setPage(0);
+      props.onViewChange?.({ sort: sorted(next) });
+      emit(
+        "dataSorted",
+        next.map((s) => ({ field: s.id, dir: s.desc ? "desc" : "asc" }))
+      );
+    };
+    return { changeSort };
+  }
+  function useGrouping({ initial, props, options }) {
+    const [localGroups, setGroups] = React2.useState(() => initial.groupBy), [groupOwner, setGroupOwner] = React2.useState(null), [collapsed, setCollapsed] = React2.useState(() => new Set(initial.collapsed));
+    const collapsedSignal = JSON.stringify(props.collapsedGroups || []);
+    React2.useEffect(() => {
+      if (props.onViewChange)
+        setCollapsed(
+          (old) => JSON.stringify([...old]) === collapsedSignal ? old : new Set(props.collapsedGroups || [])
+        );
+    }, [collapsedSignal, !!props.onViewChange]);
+    const groupSignal = JSON.stringify(props.groupBy), groupBy2 = props.onViewChange ? props.groupBy ?? false : groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
+    return { setGroups, setGroupOwner, collapsed, setCollapsed, groupSignal, groupBy: groupBy2 };
+  }
+  function groupActions({ setGroupOwner, groupSignal, setGroups, setCollapsed, props, live, S: S2 }) {
+    const changeGroups = (value) => {
+      setGroupOwner(groupSignal);
+      setGroups(() => value);
+      setCollapsed(/* @__PURE__ */ new Set());
+      props.onViewChange?.({ groupBy: value, collapsed: [] });
+    };
+    const toggleGroup = (id, open) => {
+      const next = new Set(live.current.collapsed), expand = open ?? next.has(id), changed = expand === next.has(id);
+      if (expand) next.delete(id);
+      else next.add(id);
+      live.current.collapsed = next;
+      setCollapsed(next);
+      if (changed) announce(expand ? S2.expanded : S2.collapsed);
+      props.onViewChange?.({ collapsed: [...next] });
+    };
+    return { changeGroups, toggleGroup };
+  }
   const headerKeys = ({ column }) => (e) => {
     if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
       e.preventDefault();
@@ -19322,9 +19382,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const warnedActions = React2.useRef(/* @__PURE__ */ new Set()), viewportId = React2.useId(), displayElements = React2.useRef(/* @__PURE__ */ new Map()), parkedFocus = React2.useRef(null), printView = React2.useRef(null);
     const deliveredReady = React2.useRef(null);
     const listeners2 = React2.useRef(/* @__PURE__ */ new Map()), rowElements = React2.useRef(/* @__PURE__ */ new Map()), headerElements = React2.useRef(/* @__PURE__ */ new Map());
-    const [localSort, setSorting] = React2.useState(initial.sorting);
-    const sortSignal = JSON.stringify(props.sort);
-    const [sortOwner, setSortOwner] = React2.useState(null);
+    const { setSorting, sortSignal, setSortOwner, sorting, sortingRef } = useSorting({ initial, props });
     const [rowHeight, setRowHeight] = React2.useState(initial.rowHeight), [wrapHeaders, setWrapHeaders] = React2.useState(initial.wrapHeaders);
     const [cutAt, setCutAt] = React2.useState(null), cutOpen = React2.useRef(false);
     const [wrapColumns, setWrapColumns] = React2.useState(() => props.wrapColumns || initial.wrapColumns || {});
@@ -19344,16 +19402,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const [filterField, setFilterField] = React2.useState(null), [managing, setManaging] = React2.useState(false);
     const [expanded, setExpanded] = React2.useState(props.treeExpanded ?? false);
-    const [localGroups, setGroups] = React2.useState(() => initial.groupBy), [groupOwner, setGroupOwner] = React2.useState(null), [collapsed, setCollapsed] = React2.useState(() => new Set(initial.collapsed));
+    const { setGroups, setGroupOwner, collapsed, setCollapsed, groupSignal, groupBy: groupBy2 } = useGrouping({
+      initial,
+      props,
+      options
+    });
     const [loaded, setLoaded] = React2.useState(props.pageSize || 50), [printing, setPrinting] = React2.useState(false);
-    const collapsedSignal = JSON.stringify(props.collapsedGroups || []);
-    React2.useEffect(() => {
-      if (props.onViewChange)
-        setCollapsed(
-          (old) => JSON.stringify([...old]) === collapsedSignal ? old : new Set(props.collapsedGroups || [])
-        );
-    }, [collapsedSignal, !!props.onViewChange]);
-    const groupSignal = JSON.stringify(props.groupBy), groupBy2 = props.onViewChange ? props.groupBy ?? false : groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
     const childField = props.tree ? props.childrenField || "children" : null;
     const [filters, setFilters] = React2.useState([]), [page, setPage] = React2.useState(0), [pageSize, setPageSize] = React2.useState(props.pageSize || 50);
     const fetching = React2.useRef(false);
@@ -19373,17 +19427,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       };
     }, [metrics]);
     const effectiveStep = props.rowHeight || rowHeight, effectiveWrap = props.wrapHeaders ?? wrapHeaders;
-    const controlledSort = React2.useMemo(() => normalizeSort(props.sort), [sortSignal]);
     const deferredFilter = React2.useDeferredValue(props.filter);
-    const initiallyControlledSort = React2.useRef(!!props.sort?.length), appliedSort = React2.useRef(false);
-    if (props.sort?.length && (initiallyControlledSort.current || JSON.stringify(controlledSort) !== JSON.stringify(initial.sorting)))
-      appliedSort.current = true;
-    React2.useEffect(() => {
-      if (props.sort?.length && sortOwner !== sortSignal) setSortOwner(null);
-    }, [sortSignal]);
-    const sorting = props.onViewChange ? controlledSort : sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? controlledSort : appliedSort.current ? EMPTY_ROWS : localSort;
-    const sortingRef = React2.useRef(sorting);
-    sortingRef.current = sorting;
     const remoteMode = typeof props.fetchRows === "function" && (mode === "pages" || mode === "load-more" || mode === "fill"), scrollFill = remoteMode && mode === "fill", incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
     const { setEdited, editing, setEditing, mutations, pendingEdit, source } = useEditedRows(incoming);
     const canonical2 = React2.useMemo(() => recordsOf(source, index2, childField), [source, index2, childField]);
@@ -19429,21 +19473,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
       mutations,
       pendingEdit
     });
-    const changeGroups = (value) => {
-      setGroupOwner(groupSignal);
-      setGroups(() => value);
-      setCollapsed(/* @__PURE__ */ new Set());
-      props.onViewChange?.({ groupBy: value, collapsed: [] });
-    };
-    const toggleGroup = (id, open) => {
-      const next = new Set(live.current.collapsed), expand = open ?? next.has(id), changed = expand === next.has(id);
-      if (expand) next.delete(id);
-      else next.add(id);
-      live.current.collapsed = next;
-      setCollapsed(next);
-      if (changed) announce(expand ? S2.expanded : S2.collapsed);
-      props.onViewChange?.({ collapsed: [...next] });
-    };
+    const { changeGroups, toggleGroup } = groupActions({
+      setGroupOwner,
+      groupSignal,
+      setGroups,
+      setCollapsed,
+      props,
+      live,
+      S: S2
+    });
     const emit = (name, ...args) => {
       live.current.props.on?.[name]?.(...args);
       listeners2.current.get(name)?.forEach((fn) => fn(...args));
@@ -19484,17 +19522,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       emit,
       api
     });
-    const changeSort = (update) => {
-      const next = typeof update === "function" ? update(sorting) : update;
-      setSortOwner(sortSignal);
-      setSorting(next);
-      setPage(0);
-      props.onViewChange?.({ sort: sorted(next) });
-      emit(
-        "dataSorted",
-        next.map((s) => ({ field: s.id, dir: s.desc ? "desc" : "asc" }))
-      );
-    };
+    const { changeSort } = sortActions({ sorting, setSortOwner, sortSignal, setSorting, setPage, props, emit });
     const leafDefs = React2.useMemo(
       () => columns.map((c) => ({
         id: c.field,
