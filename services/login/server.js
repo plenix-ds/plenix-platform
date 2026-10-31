@@ -27,8 +27,10 @@ const SECRET_FILE = path.join(DATA, 'secret');
 const LOG = path.join(DATA, 'log.jsonl');
 // the Platform release the page loads (the apps' CDN path, deploy.sh): CDN=https://design-system.lighthouseway.org/cdn/<version>
 const CDN = (process.env.CDN || 'https://design-system.lighthouseway.org/cdn/' + localVersion()).replace(/\/+$/, '');
-// behind Nginx the visitor's address is X-Real-IP; without a proxy (TRUST_PROXY=0) the socket's
-const TRUST_PROXY = process.env.TRUST_PROXY !== '0';
+// the visitor's address is the socket's, unless the proxy is trusted: behind Nginx (TRUST_PROXY=1, set in the Dockerfile) it is the
+// X-Real-IP header the proxy sends. Opt-in (issue 695): reached without the proxy, a client could send its own header and start a fresh
+// sign-in budget with every request
+const TRUST_PROXY = process.env.TRUST_PROXY === '1';
 // one cookie per host (__Host-: Secure, Path=/, no Domain); COOKIE_DOMAIN shares one sign-in across the hosts instead
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '';
 const COOKIE = COOKIE_DOMAIN ? 'plenix_session' : '__Host-plenix_session';

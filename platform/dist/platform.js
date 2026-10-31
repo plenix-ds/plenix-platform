@@ -8805,7 +8805,7 @@ const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.crea
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PLACEMENTS = exports.FLOATING_ANCHOR = void 0;
+exports.TOP_LAYER = exports.PLACEMENTS = exports.FLOATING_ANCHOR = void 0;
 exports.useFloating = useFloating;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -8855,6 +8855,8 @@ const release = i => {
 // what the browser can do, checked once
 const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
 const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+// the top layer (the popover attribute) with CSS anchor positioning: where a floating part opens in the top layer and anchors to its trigger (Chrome 125, Firefox 147, Safari 26), checked once; one copy for every part (issue 693)
+const TOP_LAYER = exports.TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
 const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
 const OFFSETS = {
@@ -10406,7 +10408,26 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/remove":"platform/dist/icons/plenix/remove.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/fill.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fill = void 0;
+/* Plenix · fill (platform/utils/fill.js)
+   Summary: Fills the {name} placeholders of a catalog text (a component's strings, an announcement, an aria-label).
+   Usage: import { fill } from '../../utils/fill.js'; fill(t.page, { n: 3 })  // "Go to page {n}" -> "Go to page 3"
+   Props: fill(text, values): text is turned into a string; each {name} is replaced by values[name] (every occurrence); a
+     placeholder whose value is undefined or null stays as written, so a missing value shows as "{name}" and is easy to
+     spot, never as the words "undefined" or "null". A key the text does not name is ignored.
+   Notes: One helper for every component (issue 693: it was copied into 44 files in four versions). Returns a string; a
+     phrase with numbers in the data font is dataPhrase (utils/dataText.jsx), and one with nodes is fillNodes
+     (utils/fillNodes.jsx). check-system's shared-fill rule refuses a new local copy. */
+const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (match, key) => values[key] != null ? values[key] : match);
+exports.fill = fill;
+  } },
+  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/remove":"platform/dist/icons/plenix/remove.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10426,6 +10447,7 @@ var _lock = _interopRequireDefault(require("plenix-platform/icons/plenix/lock"))
 var _remove = _interopRequireDefault(require("plenix-platform/icons/plenix/remove"));
 var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
 var _visibilityOff = _interopRequireDefault(require("plenix-platform/icons/plenix/visibility-off"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · VoteTally
    Summary: A live vote: the members as a list, each with an avatar, the name and role, and three icon-only choices
@@ -10479,8 +10501,6 @@ const RESULT_TONE = {
   tied: 'waiting',
   'no-quorum': 'waiting'
 };
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] === undefined || v[k] === null ? m : v[k]);
-
 // the three counts when the app gives no outcome: only the members who are not turned off
 function countOf(members) {
   const c = {
@@ -10563,7 +10583,7 @@ function VoteTally({
   }, hiddenText) : /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-vote-tally__choices",
     role: "group",
-    "aria-label": fill(t.voteOf, {
+    "aria-label": (0, _fill.fill)(t.voteOf, {
       name: m.name
     })
   }, OPTIONS.map(([option, icon, tone]) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -10602,7 +10622,7 @@ function VoteTally({
   }, t.reconnecting) : null, o.quorum && o.quorum.needed ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "secondary",
     className: "plx-vote-tally__quorum"
-  }, fill(t.quorum, {
+  }, (0, _fill.fill)(t.quorum, {
     present: o.quorum.present,
     needed: o.quorum.needed,
     state: o.quorum.met ? t.met : t.notMet
@@ -11276,7 +11296,7 @@ function LiveRegion({
   }, rest), children);
 }
   } },
-  "platform/charts/interaction.js": { deps: {"react":null,"../utils/announce.jsx":"platform/utils/announce.jsx","../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/interaction.js": { deps: {"react":null,"../utils/announce.jsx":"platform/utils/announce.jsx","../utils/cx.js":"platform/utils/cx.js","../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11290,6 +11310,7 @@ exports.useChartInteraction = useChartInteraction;
 var _react = _interopRequireDefault(require("react"));
 var _announce = require("../utils/announce.jsx");
 var _cx = require("../utils/cx.js");
+var _fill = require("../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Chart interaction (platform/charts/interaction.js)
    Summary: How people explore a Plenix chart (07 Data Display › Charts › Chart interaction): one Tab stop per chart, the
@@ -11357,7 +11378,6 @@ const CHART_INTERACTION_STRINGS = exports.CHART_INTERACTION_STRINGS = Object.fre
   hidden: '{name} hidden',
   selected: 'Selected. {text}'
 });
-const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (m, k) => o[k] === undefined ? m : o[k]);
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 function chartAnnounce(text) {
   if (text) (0, _announce.announce)(text);
@@ -11406,7 +11426,7 @@ function useChartInteraction({
     if (!select || !cell) return;
     setSelected(cell);
     if (typeof onSelect === 'function') onSelect(cell);
-    if (typeof describe === 'function') chartAnnounce(fill(t.selected, {
+    if (typeof describe === 'function') chartAnnounce((0, _fill.fill)(t.selected, {
       text: describe(cell)
     }));
   };
@@ -11423,7 +11443,7 @@ function useChartInteraction({
       r: x.r,
       c: from
     } : x);
-    chartAnnounce(fill(t.zoomed, {
+    chartAnnounce((0, _fill.fill)(t.zoomed, {
       from: label(from),
       to: label(to)
     }));
@@ -11478,7 +11498,7 @@ function useChartInteraction({
         r: cur.r,
         c: end
       }, 'keyboard');
-      chartAnnounce(fill(t.range, {
+      chartAnnounce((0, _fill.fill)(t.range, {
         from: label(Math.min(anchor, end)),
         to: label(Math.max(anchor, end))
       }));
@@ -11561,7 +11581,7 @@ function useChartInteraction({
     if (hiddenProp === undefined) setOwnHidden(h => visible ? h.filter(x => x !== id) : h.concat([id]));
     if (typeof onToggle === 'function') onToggle(id, visible);
     const s = (series || []).find((x, i) => (x.id === undefined ? i : x.id) === id);
-    chartAnnounce(fill(visible ? t.shown : t.hidden, {
+    chartAnnounce((0, _fill.fill)(visible ? t.shown : t.hidden, {
       name: s ? s.label : id
     }));
     setActiveState(a => a && ids[a.r] === id && !visible ? null : a);
@@ -11635,7 +11655,7 @@ function ChartBrush({
   });
 }
   } },
-  "platform/charts/a11y.js": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/a11y.js": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./interaction.js":"platform/charts/interaction.js","../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11651,6 +11671,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../utils/cx.js");
 var _format = require("../utils/format.js");
 var _interaction = require("./interaction.js");
+var _fill = require("../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Chart accessibility (platform/charts/a11y.js)
    Summary: The helpers behind the chart accessibility rules (07 Data Display › Charts › Chart accessibility): a summary
@@ -11695,7 +11716,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        prefers-reduced-motion. */
 
 const h = _react.default.createElement;
-const fill = (s, o) => s.replace(/\{(\w+)\}/g, (m, k) => o[k] === undefined ? m : o[k]);
 const SUMMARY = {
   up: 'Up {change}',
   down: 'Down {change}',
@@ -11727,21 +11747,21 @@ function summarizeSeries(values, {
     if (p.v > hi.v) hi = p;
   });
   const change = first.v ? (last.v - first.v) / Math.abs(first.v) : 0;
-  const dir = Math.abs(change) < 0.005 && last.v === first.v ? t.flat : fill(change >= 0 ? t.up : t.down, {
+  const dir = Math.abs(change) < 0.005 && last.v === first.v ? t.flat : (0, _fill.fill)(change >= 0 ? t.up : t.down, {
     change: (0, _format.formatPercent)(Math.abs(change), {
       decimals: 0
     })
   });
-  const at = p => labels && labels[p.i] !== undefined ? fill(t.at, {
+  const at = p => labels && labels[p.i] !== undefined ? (0, _fill.fill)(t.at, {
     value: f(p.v),
     label: labels[p.i]
   }) : f(p.v);
-  return dir + ' ' + fill(t.range, {
+  return dir + ' ' + (0, _fill.fill)(t.range, {
     first: f(first.v),
     last: f(last.v)
-  }) + '; ' + fill(t.low, {
+  }) + '; ' + (0, _fill.fill)(t.low, {
     value: at(lo)
-  }) + ', ' + fill(t.high, {
+  }) + ', ' + (0, _fill.fill)(t.high, {
     value: at(hi)
   }) + '.';
 }
@@ -13822,9 +13842,6 @@ function moveIn(list, e) {
   if (items[next]) items[next].focus();
   return true;
 }
-
-// the top layer and CSS anchor positioning (Chrome 125, Firefox 147, Safari 26), checked once
-const TOP_LAYER = typeof window !== 'undefined' && typeof CSS !== 'undefined' && CSS.supports && CSS.supports('anchor-name', '--plx-a') && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 function Menu({
   trigger,
   label,
@@ -13847,13 +13864,13 @@ function Menu({
   });
   // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
   (0, _floating.useFloating)(wrap, list, {
-    open: open && TOP_LAYER,
+    open: open && _floating.TOP_LAYER,
     placement
   });
   // into the top layer as soon as it is in the page (before the first item takes focus)
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   _react.default.useEffect(() => {
     if (!open) return undefined;
@@ -13908,7 +13925,7 @@ function Menu({
     id: id,
     role: "menu",
     "aria-label": label,
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     className: (0, _cx.cx)('plx-menu', 'plx-menu--' + placement),
     onKeyDown: onKeyDown
   }, children)) : null);
@@ -14039,13 +14056,13 @@ function MenuSub({
   });
   // at the item's end edge, level with it (useFloating end-top; the gap is the menu's own, menu.css)
   (0, _floating.useFloating)(item, list, {
-    open: open && TOP_LAYER,
+    open: open && _floating.TOP_LAYER,
     placement: 'end-top',
     offset: 'none'
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   _react.default.useEffect(() => {
     if (!open || !focusFirst.current) return;
@@ -14119,7 +14136,7 @@ function MenuSub({
     id: id,
     role: "menu",
     "aria-label": typeof label === 'string' ? label : undefined,
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     className: "plx-menu plx-menu-sub__list",
     onKeyDown: onListKey
   }, children) : null);
@@ -14558,7 +14575,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
-const fill = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
+const countText = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
 function Field({
   label,
   hideLabel = false,
@@ -14606,7 +14623,7 @@ function Field({
     }
     if (said.current !== length) {
       said.current = length;
-      (0, _announce.announce)(over ? fill(t.over, length - max) : fill(t.left, max - length));
+      (0, _announce.announce)(over ? countText(t.over, length - max) : countText(t.left, max - length));
     }
   }, [length, max, near, over, t.over, t.left]);
   // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
@@ -14676,7 +14693,7 @@ function Field({
   }, (0, _format.formatNumber)(length) + '/' + (0, _format.formatNumber)(max)), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-visually-hidden",
     id: countId
-  }, over ? fill(t.over, length - max) : fill(t.left, max - length)))) : lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+  }, over ? countText(t.over, length - max) : countText(t.left, max - length)))) : lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: descId
   }, (0, _dataText.dataWhenText)(description)) : null, error ? /*#__PURE__*/_react.default.createElement("div", {
@@ -15331,9 +15348,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        useReadOnly).
      All three forward their ref to the native element.
 */
-// the top layer and CSS anchor positioning (as Menu and Popover), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {
   email: {
@@ -15553,7 +15567,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   const listId = auto + '-list',
     optId = i => auto + '-o' + i;
@@ -15759,7 +15773,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     ref: list,
     id: listId,
     role: "listbox",
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     "aria-label": ariaLabel,
     "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
     className: "plx-select__list",
@@ -16426,7 +16440,7 @@ function resizeScale(steps, min, max, keyboardSteps = []) {
   };
 }
   } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16444,6 +16458,7 @@ var _resizeScale = require("./resize-scale.js");
 var _floating = require("../../utils/floating.js");
 var _announce = require("../../utils/announce.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
    Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
@@ -16574,7 +16589,6 @@ function PanelSplitter({
 }
 
 /* ── Resizable: a box with its own resize edges ── */
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
 const limit = (v, name) => v != null ? v : tokenPx('--plx-comp-resizable-' + name);
@@ -16681,7 +16695,7 @@ function Resizable({
       if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
       const smallest = next[which] <= scale.lo,
         value = smallest ? scale.lo : scale.hi;
-      message = fill(t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')], {
+      message = (0, _fill.fill)(t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')], {
         label,
         value
       });
@@ -16795,7 +16809,7 @@ function Resizable({
       role: "separator",
       tabIndex: 0,
       "aria-orientation": which === 'width' ? 'vertical' : 'horizontal',
-      "aria-label": fill(t[which], {
+      "aria-label": (0, _fill.fill)(t[which], {
         label
       }),
       "aria-valuenow": size[which],
@@ -17644,9 +17658,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const SIZES = ['sm', 'md', 'lg', 'auto'];
 
-// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
 // a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
 const ms = (el, name) => {
   const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
@@ -17721,7 +17732,7 @@ function Popover({
   // into the top layer as soon as it is in the page, before focus moves in
   _react.default.useLayoutEffect(() => {
     const el = panel.current;
-    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (floating && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [floating]);
   // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
   const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
@@ -17823,7 +17834,7 @@ function Popover({
     "aria-labelledby": role && title ? titleId : undefined,
     "aria-label": role && !title ? label : undefined,
     tabIndex: -1,
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     "data-plx-popover-side": side,
     "data-plx-popover-align": align || 'center',
     className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
@@ -18414,7 +18425,7 @@ function Scrollbars({
   })));
 }
   } },
-  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../i18n/en.js":"platform/i18n/en.js","./fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18439,6 +18450,7 @@ var _tokenTime = require("./tokenTime.js");
 var _useGesture = require("../hooks/useGesture.js");
 var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 var _en = _interopRequireDefault(require("../i18n/en.js"));
+var _fill = require("./fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · dnd (platform/utils/dnd.js)
    Summary: The drag-and-drop engine (13 Interaction › Behavioral utilities › Drag-and-drop engine): pointer, pen and touch
@@ -18512,7 +18524,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 // the default (English) words, as before: the catalog's dnd section, so the words live in one place
 const DND_STRINGS = exports.DND_STRINGS = _en.default.dnd;
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ── list helpers ── */
@@ -18887,7 +18898,7 @@ function useSortable(options) {
       behavior: reduced() ? 'auto' : 'smooth'
     });
   }, [now, ids.join('\n')]);
-  const say = (s, vars) => (0, _announce.announce)(fill(s, vars));
+  const say = (s, vars) => (0, _announce.announce)((0, _fill.fill)(s, vars));
   const reorder = (from, to) => {
     const L = latest.current;
     if (to === from || to < 0 || to >= L.items.length || !L.onReorder) return false;
@@ -19180,12 +19191,12 @@ function useSortable(options) {
       'data-plx-drop': markFor(i)
     }, useHandle ? null : Object.assign(handlers(i), {
       tabIndex: o.disabled ? undefined : 0,
-      'aria-label': fill(t.handle, {
+      'aria-label': (0, _fill.fill)(t.handle, {
         name: getName(items[i])
       })
     })),
     handleProps: i => useHandle ? Object.assign(handlers(i), {
-      'aria-label': fill(t.handle, {
+      'aria-label': (0, _fill.fill)(t.handle, {
         name: getName(items[i])
       }),
       disabled: o.disabled || undefined
@@ -19276,7 +19287,7 @@ function useDraggable(options) {
   const takers = () => inPageOrder(Array.from(targets.values()).filter(x => x.el && (!x.o.accepts || x.o.accepts(o.data, o.type))));
   const drop = target => {
     if (target.o.onDrop) target.o.onDrop(o.data, o.type);
-    (0, _announce.announce)(fill(t.droppedOn, {
+    (0, _announce.announce)((0, _fill.fill)(t.droppedOn, {
       name: o.name,
       target: target.o.name
     }));
@@ -19288,7 +19299,7 @@ function useDraggable(options) {
       e.preventDefault();
       const list = takers();
       if (!list.length) {
-        (0, _announce.announce)(fill(t.noTargets, {
+        (0, _announce.announce)((0, _fill.fill)(t.noTargets, {
           name: o.name
         }));
         return;
@@ -19302,10 +19313,10 @@ function useDraggable(options) {
         name: o.name,
         over: list[0].id
       });
-      (0, _announce.announce)(fill(t.itemPickedUp, {
+      (0, _announce.announce)((0, _fill.fill)(t.itemPickedUp, {
         name: o.name,
         count: list.length
-      }) + ' ' + fill(t.over, {
+      }) + ' ' + (0, _fill.fill)(t.over, {
         target: list[0].o.name
       }));
       return;
@@ -19321,7 +19332,7 @@ function useDraggable(options) {
       e.preventDefault();
       e.stopPropagation();
       setSession(null);
-      (0, _announce.announce)(fill(t.itemCanceled, {
+      (0, _announce.announce)((0, _fill.fill)(t.itemCanceled, {
         name: o.name
       }));
       return;
@@ -19341,7 +19352,7 @@ function useDraggable(options) {
       inline: 'nearest',
       behavior: reduced() ? 'auto' : 'smooth'
     });
-    (0, _announce.announce)(fill(t.over, {
+    (0, _announce.announce)((0, _fill.fill)(t.over, {
       target: next.o.name
     }));
   };
@@ -19371,7 +19382,7 @@ function useDraggable(options) {
           patchSession({
             over
           });
-          if (hit) (0, _announce.announce)(fill(hit.o.accepts && !hit.o.accepts(o.data, o.type) ? t.overReject : t.over, {
+          if (hit) (0, _announce.announce)((0, _fill.fill)(hit.o.accepts && !hit.o.accepts(o.data, o.type) ? t.overReject : t.over, {
             target: hit.o.name,
             name: o.name
           }));
@@ -19385,7 +19396,7 @@ function useDraggable(options) {
           settle: !ok
         });
         setSession(null);
-        if (ok) drop(target);else (0, _announce.announce)(fill(t.itemCanceled, {
+        if (ok) drop(target);else (0, _announce.announce)((0, _fill.fill)(t.itemCanceled, {
           name: o.name
         }));
       }
@@ -19407,12 +19418,12 @@ function useDraggable(options) {
       'data-plx-dnd-state': st
     }, o.handle === false ? Object.assign({}, handlers, {
       tabIndex: 0,
-      'aria-label': fill(t.handle, {
+      'aria-label': (0, _fill.fill)(t.handle, {
         name: o.name
       })
     }) : null),
     handleProps: o.handle === false ? {} : Object.assign({}, handlers, {
-      'aria-label': fill(t.handle, {
+      'aria-label': (0, _fill.fill)(t.handle, {
         name: o.name
       }),
       disabled: o.disabled || undefined
@@ -19496,7 +19507,7 @@ function useReposition(options) {
   const moveBy = (dx, dy) => {
     const next = clamp(pos.x + dx, pos.y + dy);
     commit(next);
-    (0, _announce.announce)(fill(t.repositioned, {
+    (0, _announce.announce)((0, _fill.fill)(t.repositioned, {
       name: o.name
     }));
   };
@@ -19513,7 +19524,7 @@ function useReposition(options) {
           id,
           name: o.name
         });
-        (0, _announce.announce)(fill(t.repositionPicked, {
+        (0, _announce.announce)((0, _fill.fill)(t.repositionPicked, {
           name: o.name
         }));
       }
@@ -19524,7 +19535,7 @@ function useReposition(options) {
       commit(preview || pos);
       setPreview(null);
       setSession(null);
-      (0, _announce.announce)(fill(t.repositionDropped, {
+      (0, _announce.announce)((0, _fill.fill)(t.repositionDropped, {
         name: o.name
       }));
       return;
@@ -19534,7 +19545,7 @@ function useReposition(options) {
       e.stopPropagation();
       setPreview(null);
       setSession(null);
-      (0, _announce.announce)(fill(t.repositionCanceled, {
+      (0, _announce.announce)((0, _fill.fill)(t.repositionCanceled, {
         name: o.name
       }));
       return;
@@ -19548,7 +19559,7 @@ function useReposition(options) {
     const base = preview || pos;
     const next = clamp(base.x + sx * step, base.y + sy * step);
     setPreview(next);
-    (0, _announce.announce)(fill(t.repositioned, {
+    (0, _announce.announce)((0, _fill.fill)(t.repositioned, {
       name: o.name
     }));
   };
@@ -19571,7 +19582,7 @@ function useReposition(options) {
         setSession(null);
         if (next) {
           commit(next);
-          (0, _announce.announce)(fill(t.repositionDropped, {
+          (0, _announce.announce)((0, _fill.fill)(t.repositionDropped, {
             name: o.name
           }));
         }
@@ -23992,2610 +24003,6 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-function getMeasurementKey(item) {
-  return typeof item === "object" ? item.key : item;
-}
-function createLazyMeasurementsView(cache, flat) {
-  const count = cache.length;
-  return new Proxy(cache, {
-    get(target, prop, receiver) {
-      if (typeof prop === "string") {
-        const c = prop.charCodeAt(0);
-        if (c >= 48 && c <= 57) {
-          const i = +prop;
-          if (Number.isInteger(i) && i >= 0 && i < count) {
-            let v = target[i];
-            if (typeof v !== "object") {
-              const s = flat[i * 2];
-              v = target[i] = {
-                index: i,
-                key: v,
-                start: s,
-                size: flat[i * 2 + 1],
-                end: s + flat[i * 2 + 1],
-                lane: 0
-              };
-            }
-            return v;
-          }
-        }
-        if (prop === "length") return count;
-      }
-      return Reflect.get(target, prop, receiver);
-    }
-  });
-}
-exports.createLazyMeasurementsView = createLazyMeasurementsView;
-exports.getMeasurementKey = getMeasurementKey;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-function memo(getDeps, fn, opts) {
-  let deps = opts.initialDeps ?? [];
-  let result;
-  let isInitial = true;
-  function memoizedFunction() {
-    var _a;
-    const debugEnabled = 'production' !== "production" && !!opts.key && !!((_a = opts.debug) == null ? void 0 : _a.call(opts));
-    let depTime = 0;
-    if (debugEnabled) depTime = Date.now();
-    const newDeps = getDeps();
-    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
-    if (!depsChanged) {
-      return result;
-    }
-    deps = newDeps;
-    let resultTime = 0;
-    if (debugEnabled) resultTime = Date.now();
-    result = fn(...newDeps);
-    if (debugEnabled) {
-      const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
-      const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
-      const resultFpsPercentage = resultEndTime / 16;
-      const pad = (str, num) => {
-        str = String(str);
-        while (str.length < num) {
-          str = " " + str;
-        }
-        return str;
-      };
-      console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
-            font-size: .6rem;
-            font-weight: bold;
-            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
-    }
-    if ((opts == null ? void 0 : opts.onChange) && !(isInitial && opts.skipInitialOnChange)) {
-      opts.onChange(result);
-    }
-    isInitial = false;
-    return result;
-  }
-  memoizedFunction.updateDeps = newDeps => {
-    deps = newDeps;
-  };
-  return memoizedFunction;
-}
-function notUndefined(value, msg) {
-  if (value === void 0) {
-    throw new Error(`Unexpected undefined${msg ? `: ${msg}` : ""}`);
-  } else {
-    return value;
-  }
-}
-const approxEqual = (a, b) => Math.abs(a - b) < 1.01;
-const debounce = (targetWindow, fn, ms) => {
-  let timeoutId;
-  return Object.assign(function (...args) {
-    targetWindow.clearTimeout(timeoutId);
-    timeoutId = targetWindow.setTimeout(() => fn.apply(this, args), ms);
-  }, {
-    // The handle is closure-local, so a caller that has already
-    // unsubscribed has no way to stop a queued call. Teardown paths use
-    // this to drop the pending invocation instead of letting it land.
-    cancel: () => {
-      targetWindow.clearTimeout(timeoutId);
-    }
-  });
-};
-exports.approxEqual = approxEqual;
-exports.debounce = debounce;
-exports.memo = memo;
-exports.notUndefined = notUndefined;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-const utils = require("./utils.cjs");
-function classifyScrollEvent({
-  offset,
-  isScrolling,
-  elementMax,
-  holdOffset,
-  scrollOffset,
-  pendingWrite,
-  clampedMaxAtWrite
-}) {
-  var _a;
-  if (isScrolling && pendingWrite === null && offset === scrollOffset) {
-    return "spurious";
-  }
-  if (pendingWrite !== null && Math.abs(offset - pendingWrite.target) < 1.5) {
-    return "readBack";
-  }
-  if (pendingWrite !== null && !pendingWrite.smooth && elementMax !== null && pendingWrite.target > elementMax + holdOffset + 0.5 && Math.abs(offset - (elementMax + holdOffset)) < 1.5) {
-    return "clampedReadBack";
-  }
-  if (pendingWrite !== null && !pendingWrite.smooth && ((_a = pendingWrite.lowMaxes) == null ? void 0 : _a.some(max => Math.abs(offset - max) < 1.5))) {
-    return "clampedReadBack";
-  }
-  if (clampedMaxAtWrite !== null && Math.abs(offset - clampedMaxAtWrite) < 1.5) {
-    return "clampedEcho";
-  }
-  return "external";
-}
-const isAnimating = phase => phase === "smooth" || phase === "smoothFinishing";
-function externalRetiresCommand({
-  kind,
-  offset,
-  command,
-  target
-}) {
-  return kind !== "spurious" && kind !== "readBack" &&
-  // Our own write, clamped (`clampedReadBack`, #1310): the command is not
-  // retired by it, and reconcile retargets below the new max.
-  kind !== "clampedReadBack" && (command == null ? void 0 : command.index) != null &&
-  // Nothing has been written for a command waiting for the tail; these
-  // are the fling's events.
-  command.phase !== "queued" &&
-  // A non-smooth write lands at once, so any other scroll event is the
-  // user's, even before reconcile saw the target reached (the target may
-  // keep moving, or iOS ignored the write under a finger). A write the
-  // browser clamped because the sizer hasn't grown yet reads back at the
-  // max, which is also where the fresh target clamps, so the check below
-  // keeps it reconciling (#1294). While a smooth scroll's animation may
-  // still report, its events look like a user's, so it yields only once it
-  // has landed.
-  !isAnimating(command.phase) && !utils.approxEqual(offset, command.lastTargetOffset) && !utils.approxEqual(offset, target()) &&
-  // A compensation write's clamped echo (#1258) keeps the command. The
-  // order is deliberate, not tidiness: this clause stays after `target()`
-  // (and `clampedReadBack` before it) because `target()` can rebuild the
-  // measurements, so it must run for exactly the events it always did.
-  kind !== "clampedEcho";
-}
-const FLING_WINDOW_MS = 40;
-function flingSpedUp(samples) {
-  const last = samples[samples.length - 1];
-  if (last === void 0) return false;
-  let j = samples.length - 2;
-  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
-  if (j < 0) return false;
-  const mid = samples[j];
-  let k = j - 1;
-  while (k >= 0 && mid.t - samples[k].t < FLING_WINDOW_MS) k--;
-  if (k < 0) return false;
-  const first = samples[k];
-  const recent = (last.offset - mid.offset) / (last.t - mid.t);
-  const before = (mid.offset - first.offset) / (mid.t - first.t);
-  return recent * before >= 0 && Math.abs(recent) >= 2 * Math.abs(before) && Math.abs(recent) - Math.abs(before) >= 0.8;
-}
-function flingCaught(samples) {
-  const last = samples[samples.length - 1];
-  if (last === void 0) return false;
-  let j = samples.length - 2;
-  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
-  if (j < 0) return false;
-  const from = samples[j];
-  return Math.abs(last.offset - from.offset) / (last.t - from.t) >= 0.05;
-}
-exports.classifyScrollEvent = classifyScrollEvent;
-exports.externalRetiresCommand = externalRetiresCommand;
-exports.flingCaught = flingCaught;
-exports.flingSpedUp = flingSpedUp;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-let _isIOSResult;
-const isIOSWebKit = () => {
-  if (_isIOSResult !== void 0) return _isIOSResult;
-  if (typeof navigator === "undefined") return _isIOSResult = false;
-  if (/iP(hone|od|ad)/.test(navigator.userAgent)) return _isIOSResult = true;
-  const mtp = navigator.maxTouchPoints;
-  return _isIOSResult = navigator.platform === "MacIntel" && mtp !== void 0 && mtp > 0;
-};
-let _iosMomentumOverridesWritesResult;
-const iosMomentumOverridesWrites = () => {
-  if (_iosMomentumOverridesWritesResult !== void 0) {
-    return _iosMomentumOverridesWritesResult;
-  }
-  return _iosMomentumOverridesWritesResult = isIOSWebKit() && typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("overflow-anchor: auto");
-};
-const _resetIOSDetectionForTests = () => {
-  _isIOSResult = void 0;
-  _iosMomentumOverridesWritesResult = void 0;
-};
-const touchListenerOptions = {
-  capture: true,
-  passive: true
-};
-class IosGesture {
-  constructor(host) {
-    this.host = host;
-    this._touch = null;
-    this.inMotion = () => this._touch !== null && this._touch.phase !== "lateFling";
-    this.dragging = () => {
-      var _a;
-      return ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
-    };
-    this.tail = () => {
-      var _a;
-      return ((_a = this._touch) == null ? void 0 : _a.phase) === "tail" ? this._touch.moved ? "fling" : "tap" : null;
-    };
-    this.onScroll = ({
-      isScrolling,
-      ownReadBack,
-      moved,
-      external
-    }) => {
-      var _a, _b, _c;
-      if (isScrolling && ((_a = this._touch) == null ? void 0 : _a.phase) === "tail") {
-        this._openTail(this._touch.moved || !ownReadBack, false);
-      } else if (((_b = this._touch) == null ? void 0 : _b.phase) === "lateFling") {
-        if (this.host.now() > this._touch.until) {
-          this._touch = null;
-        } else if (external && isScrolling && moved) {
-          this._openTail(true, false);
-        }
-      }
-      if (!ownReadBack && isScrolling && moved && ((_c = this._touch) == null ? void 0 : _c.phase) === "down") {
-        this._touch.moved = true;
-        return true;
-      }
-      return false;
-    };
-    this.touchStart = () => {
-      this.end();
-      this._touch = {
-        phase: "down",
-        moved: false
-      };
-    };
-    this.touchEnd = () => {
-      var _a;
-      const moved = ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
-      this.end();
-      this._openTail(moved, moved);
-    };
-    this.end = () => {
-      var _a;
-      const win = this.host.getWindow();
-      if (((_a = this._touch) == null ? void 0 : _a.phase) === "tail" && win != null) {
-        win.clearTimeout(this._touch.timerId);
-      }
-      this._touch = null;
-    };
-    this.listen = target => {
-      const onTouchStart = () => this.touchStart();
-      const onTouchEnd = () => this.touchEnd();
-      target.addEventListener("touchstart", onTouchStart, touchListenerOptions);
-      target.addEventListener("touchend", onTouchEnd, touchListenerOptions);
-      target.addEventListener("touchcancel", onTouchEnd, touchListenerOptions);
-      return () => {
-        target.removeEventListener("touchstart", onTouchStart, touchListenerOptions);
-        target.removeEventListener("touchend", onTouchEnd, touchListenerOptions);
-        target.removeEventListener("touchcancel", onTouchEnd, touchListenerOptions);
-        this.end();
-      };
-    };
-    this._openTail = (moved, awaitingFling) => {
-      const win = this.host.getWindow();
-      if (!isIOSWebKit() || win == null) return;
-      this.end();
-      const tail = {
-        phase: "tail",
-        moved,
-        awaitingFling,
-        // Only fires while this tail is current: `end` clears it otherwise.
-        timerId: win.setTimeout(() => {
-          if (this.host.tailStillMoving()) {
-            this._openTail(tail.moved, tail.awaitingFling);
-            return;
-          }
-          this._touch = tail.awaitingFling ? {
-            phase: "lateFling",
-            until: this.host.now() + 1e3
-          } : null;
-          this.host.onTailClosed();
-        }, 150)
-      };
-      this._touch = tail;
-    };
-  }
-  get touch() {
-    return this._touch;
-  }
-}
-exports.IosGesture = IosGesture;
-exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
-exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
-exports.isIOSWebKit = isIOSWebKit;
-  } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-const lazyMeasurements = require("./lazy-measurements.cjs");
-const utils = require("./utils.cjs");
-const scrollClassifier = require("./scroll-classifier.cjs");
-const iosGesture = require("./ios-gesture.cjs");
-const getRect = element => {
-  const {
-    clientWidth,
-    clientHeight
-  } = element;
-  return {
-    width: clientWidth,
-    height: clientHeight
-  };
-};
-const createFrameQueue = targetWindow => {
-  const ids = /* @__PURE__ */new Set();
-  return {
-    schedule: fn => {
-      const id = targetWindow.requestAnimationFrame(() => {
-        ids.delete(id);
-        fn();
-      });
-      ids.add(id);
-    },
-    cancel: () => {
-      ids.forEach(id => targetWindow.cancelAnimationFrame(id));
-      ids.clear();
-    }
-  };
-};
-const defaultKeyExtractor = index => index;
-const defaultRangeExtractor = range => {
-  const overscan = range.overscan * Math.max(range.lanes ?? 1, 1);
-  const start = Math.max(range.startIndex - overscan, 0);
-  const end = Math.min(range.endIndex + overscan, range.count - 1);
-  const len = end - start + 1;
-  const arr = new Array(len);
-  for (let i = 0; i < len; i++) {
-    arr[i] = start + i;
-  }
-  return arr;
-};
-const observeElementRect = (instance, cb) => {
-  const element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  const targetWindow = instance.targetWindow;
-  if (!targetWindow) {
-    return;
-  }
-  const handler = rect => {
-    const {
-      width,
-      height
-    } = rect;
-    cb({
-      width: Math.round(width),
-      height: Math.round(height)
-    });
-  };
-  handler(getRect(element));
-  if (!targetWindow.ResizeObserver) {
-    return () => {};
-  }
-  const frames = createFrameQueue(targetWindow);
-  const observer = new targetWindow.ResizeObserver(() => {
-    const run = () => {
-      handler(getRect(element));
-    };
-    instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
-  });
-  observer.observe(element, {
-    box: "content-box"
-  });
-  return () => {
-    observer.unobserve(element);
-    frames.cancel();
-  };
-};
-const addEventListenerOptions = {
-  passive: true
-};
-const observeWindowRect = (instance, cb) => {
-  const element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  const handler = () => {
-    cb({
-      width: element.innerWidth,
-      height: element.innerHeight
-    });
-  };
-  handler();
-  element.addEventListener("resize", handler, addEventListenerOptions);
-  return () => {
-    element.removeEventListener("resize", handler);
-  };
-};
-const supportsScrollend = typeof window == "undefined" ? true : "onscrollend" in window;
-const observeOffset = (instance, cb, readOffset) => {
-  const element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  const targetWindow = instance.targetWindow;
-  if (!targetWindow) {
-    return;
-  }
-  const registerScrollendEvent = instance.options.useScrollendEvent && supportsScrollend;
-  let offset = 0;
-  const fallback = registerScrollendEvent ? null : utils.debounce(targetWindow, () => cb(readOffset(element), false), instance.options.isScrollingResetDelay);
-  const createHandler = isScrolling => () => {
-    offset = readOffset(element);
-    fallback == null ? void 0 : fallback();
-    cb(offset, isScrolling);
-  };
-  const handler = createHandler(true);
-  const endHandler = createHandler(false);
-  element.addEventListener("scroll", handler, addEventListenerOptions);
-  if (registerScrollendEvent) {
-    element.addEventListener("scrollend", endHandler, addEventListenerOptions);
-  }
-  return () => {
-    element.removeEventListener("scroll", handler);
-    if (registerScrollendEvent) {
-      element.removeEventListener("scrollend", endHandler);
-    }
-    fallback == null ? void 0 : fallback.cancel();
-  };
-};
-const observeElementOffset = (instance, cb) => observeOffset(instance, cb, el => {
-  const {
-    horizontal,
-    isRtl
-  } = instance.options;
-  return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
-});
-const observeWindowOffset = (instance, cb) => observeOffset(instance, cb, win => instance.options.horizontal ? win.scrollX : win.scrollY);
-const measureElement = (element, entry, instance) => {
-  if (instance.options.useCachedMeasurements) {
-    const index = instance.indexFromElement(element);
-    const key = instance.options.getItemKey(index);
-    return instance.itemSizeCache.get(key) ?? instance.options.estimateSize(index);
-  }
-  if (entry == null ? void 0 : entry.borderBoxSize) {
-    const box = entry.borderBoxSize[0];
-    if (box) {
-      const size = Math.round(box[instance.options.horizontal ? "inlineSize" : "blockSize"]);
-      return size;
-    }
-  }
-  if (!entry) {
-    const index = instance.indexFromElement(element);
-    const key = instance.options.getItemKey(index);
-    const cachedSize = instance.itemSizeCache.get(key);
-    if (cachedSize !== void 0) {
-      return cachedSize;
-    }
-  }
-  return element[instance.options.horizontal ? "offsetWidth" : "offsetHeight"];
-};
-const scrollWithAdjustments = (offset, {
-  adjustments = 0,
-  behavior
-}, instance) => {
-  var _a, _b;
-  (_b = (_a = instance.scrollElement) == null ? void 0 : _a.scrollTo) == null ? void 0 : _b.call(_a, {
-    [instance.options.horizontal ? "left" : "top"]: offset + adjustments,
-    behavior
-  });
-};
-const windowScroll = scrollWithAdjustments;
-const elementScroll = scrollWithAdjustments;
-const initialScrollPhase = (behavior, atTarget) => behavior === "smooth" ? atTarget ? "smoothLanded" : "smooth" : "instant";
-const isSmoothScroll = state => (state == null ? void 0 : state.phase) === "smooth" || (state == null ? void 0 : state.phase) === "smoothLanded";
-function isAppendWithTrim(prevCount, nextCount, getPreviousKey, getNextKey) {
-  if (nextCount === 0) return false;
-  const firstKey = getNextKey(0);
-  const removedKeys = /* @__PURE__ */new Set();
-  let removedCount = 0;
-  while (removedCount < prevCount) {
-    const key = getPreviousKey(removedCount);
-    if (key === firstKey) break;
-    removedKeys.add(key);
-    removedCount++;
-  }
-  const retainedCount = prevCount - removedCount;
-  if (retainedCount === 0 || retainedCount >= nextCount) return false;
-  for (let i = 0; i < retainedCount; i++) {
-    if (getNextKey(i) !== getPreviousKey(removedCount + i)) return false;
-  }
-  for (let i = retainedCount; i < nextCount; i++) {
-    if (removedKeys.has(getNextKey(i))) return false;
-  }
-  return true;
-}
-class Virtualizer {
-  constructor(opts) {
-    this.unsubs = [];
-    this.scrollElement = null;
-    this.targetWindow = null;
-    this.isScrolling = false;
-    this.scrollState = null;
-    this.measurementsCache = [];
-    this._singleLaneMeasurements = null;
-    this.itemSizeCache = /* @__PURE__ */new Map();
-    this.itemSizeCacheVersion = 0;
-    this.laneAssignments = /* @__PURE__ */new Map();
-    this.pendingMin = null;
-    this.prevLanes = void 0;
-    this.lanesChangedFlag = false;
-    this.lanesSettling = false;
-    this.pendingScrollAnchor = null;
-    this.scrollRect = null;
-    this.scrollOffset = null;
-    this.scrollDirection = null;
-    this._holdOffset = 0;
-    this._reportedOverscroll = false;
-    this._iosGesture = new iosGesture.IosGesture({
-      getWindow: () => this.targetWindow,
-      now: () => this.now(),
-      // The end of a fling can move less than a pixel per scroll event, so
-      // events can stop for 150ms while the fling is still running (seen on
-      // an iPhone, 27.0.1). A command waiting for it would then be written
-      // into the fling and overridden. The element having moved since the
-      // last event means it has not ended: wait again. Not while our own
-      // write has yet to report: that moved it.
-      tailStillMoving: () => {
-        const state = this.scrollState;
-        if ((state == null ? void 0 : state.phase) !== "queued" || this.pendingWrite !== null) {
-          return false;
-        }
-        const now = this._readElementOffset();
-        if (now === null || this._lastElementOffset === null || Math.abs(now - this._lastElementOffset) < 1) {
-          return false;
-        }
-        this._lastElementOffset = now;
-        state.samples = [...(state.samples ?? []), {
-          t: this.now(),
-          offset: now
-        }];
-        return true;
-      },
-      onTailClosed: () => {
-        const state = this.scrollState;
-        if ((state == null ? void 0 : state.phase) === "queued" && scrollClassifier.flingCaught(state.samples ?? [])) {
-          this.scrollState = null;
-        }
-        this._flushHoldIfReady(true);
-        this._writeAwaitingCommand();
-      }
-    });
-    this._lastElementOffset = null;
-    this.pendingWrite = null;
-    this._clampedAdjustment = null;
-    this.elementsCache = /* @__PURE__ */new Map();
-    this._resizeBatch = null;
-    this.now = () => {
-      var _a, _b, _c;
-      return ((_c = (_b = (_a = this.targetWindow) == null ? void 0 : _a.performance) == null ? void 0 : _b.now) == null ? void 0 : _c.call(_b)) ?? Date.now();
-    };
-    this.observer = /* @__PURE__ */(() => {
-      let _ro = null;
-      let _frames = null;
-      const get = () => {
-        if (_ro) {
-          return _ro;
-        }
-        const targetWindow = this.targetWindow;
-        if (!targetWindow || !targetWindow.ResizeObserver) {
-          return null;
-        }
-        const frames = _frames = createFrameQueue(targetWindow);
-        return _ro = new targetWindow.ResizeObserver(entries => {
-          const run = () => {
-            const batch = {
-              sync: false
-            };
-            this._resizeBatch = batch;
-            try {
-              entries.forEach(measureEntry);
-            } finally {
-              this._resizeBatch = null;
-              if (batch.notify) {
-                this.notify(batch.sync);
-                this._noteClampMax();
-                this._flushHoldIfReady(true);
-                this._retryClampedAdjustment();
-              }
-            }
-          };
-          this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
-        });
-      };
-      const measureEntry = entry => {
-        const node = entry.target;
-        const index = this.indexFromElement(node);
-        if (!node.isConnected) {
-          this.observer.unobserve(node);
-          for (const [cacheKey, cachedNode] of this.elementsCache) {
-            if (cachedNode === node) {
-              this.elementsCache.delete(cacheKey);
-              break;
-            }
-          }
-          return;
-        }
-        if (!this.isIndexInRange(index)) return;
-        if (this.shouldMeasureDuringScroll(index)) {
-          this.resizeItem(index, this.options.measureElement(node, entry, this));
-        }
-      };
-      return {
-        disconnect: () => {
-          var _a;
-          (_a = get()) == null ? void 0 : _a.disconnect();
-          _frames == null ? void 0 : _frames.cancel();
-          _ro = null;
-          _frames = null;
-        },
-        observe: target => {
-          var _a;
-          return (_a = get()) == null ? void 0 : _a.observe(target, {
-            box: "border-box"
-          });
-        },
-        unobserve: target => {
-          var _a;
-          return (_a = get()) == null ? void 0 : _a.unobserve(target);
-        }
-      };
-    })();
-    this.range = null;
-    this.setOptions = opts2 => {
-      var _a;
-      const merged = {
-        debug: false,
-        initialOffset: 0,
-        overscan: 1,
-        paddingStart: 0,
-        paddingEnd: 0,
-        scrollPaddingStart: 0,
-        scrollPaddingEnd: 0,
-        horizontal: false,
-        getItemKey: defaultKeyExtractor,
-        rangeExtractor: defaultRangeExtractor,
-        onChange: () => {},
-        measureElement,
-        initialRect: {
-          width: 0,
-          height: 0
-        },
-        scrollMargin: 0,
-        gap: 0,
-        indexAttribute: "data-index",
-        initialMeasurementsCache: [],
-        lanes: 1,
-        anchorTo: "start",
-        followOnAppend: false,
-        scrollEndThreshold: 1,
-        isScrollingResetDelay: 150,
-        enabled: true,
-        isRtl: false,
-        useScrollendEvent: false,
-        useAnimationFrameWithResizeObserver: false,
-        laneAssignmentMode: "estimate",
-        useCachedMeasurements: false
-      };
-      for (const key in opts2) {
-        const v = opts2[key];
-        if (v !== void 0) merged[key] = v;
-      }
-      const prevOptions = this.options;
-      let anchor = null;
-      let followOnAppend = null;
-      let edgeKeysChanged = false;
-      if (prevOptions !== void 0 && prevOptions.enabled && merged.enabled && merged.anchorTo === "end" && this.scrollElement !== null) {
-        const prevCount = prevOptions.count;
-        const nextCount = merged.count;
-        const measurements = this.getMeasurements();
-        const previousItems = ((_a = this._singleLaneMeasurements) == null ? void 0 : _a.items) ?? measurements;
-        const getPreviousKey = index => lazyMeasurements.getMeasurementKey(previousItems[index]);
-        const prevFirstKey = prevCount > 0 ? getPreviousKey(0) : null;
-        const prevLastKey = prevCount > 0 ? getPreviousKey(prevCount - 1) : null;
-        const didCountChange = nextCount !== prevCount;
-        const didEdgeKeysChange = didCountChange || prevCount > 0 && nextCount > 0 && (merged.getItemKey(0) !== prevFirstKey || merged.getItemKey(nextCount - 1) !== prevLastKey);
-        if (didEdgeKeysChange) {
-          edgeKeysChanged = true;
-          const item = prevCount > 0 ? this.getVirtualItemForOffset(this.getScrollOffset()) ?? measurements[0] : null;
-          if (item) {
-            anchor = [item.key, this.getScrollOffset() - item.start];
-          }
-          const behavior = merged.followOnAppend === true ? "auto" : merged.followOnAppend || null;
-          if (behavior && nextCount > 0 && this.isAtEnd(prevOptions.scrollEndThreshold) && (prevCount === 0 || merged.getItemKey(nextCount - 1) !== prevLastKey)) {
-            if (nextCount > prevCount || isAppendWithTrim(prevCount, nextCount, getPreviousKey, merged.getItemKey)) {
-              followOnAppend = behavior;
-            }
-          }
-        }
-      }
-      this.options = merged;
-      if (edgeKeysChanged) {
-        this.pendingMin = 0;
-        this.itemSizeCacheVersion++;
-      }
-      let anchorDelta = null;
-      if (anchor && this.scrollOffset !== null && !this._awaitingCommandReadBack()) {
-        const [anchorKey, anchorOffset] = anchor;
-        const newMeasurements = this.getMeasurements();
-        const {
-          count,
-          getItemKey
-        } = this.options;
-        let idx = 0;
-        while (idx < count && getItemKey(idx) !== anchorKey) {
-          idx++;
-        }
-        if (idx < count) {
-          const anchorItem = newMeasurements[idx];
-          if (anchorItem) {
-            const newOffset = Math.max(0, anchorItem.start + anchorOffset);
-            if (!followOnAppend && newOffset !== this.scrollOffset) {
-              anchorDelta = newOffset - this.scrollOffset;
-              this.scrollOffset = newOffset;
-            }
-          }
-        }
-      }
-      if (followOnAppend) {
-        this.pendingScrollAnchor = {
-          kind: "follow",
-          behavior: followOnAppend
-        };
-      } else if (anchorDelta !== null) {
-        if (this._canWriteScroll()) {
-          this.pendingScrollAnchor = {
-            kind: "anchor",
-            delta: anchorDelta
-          };
-        } else {
-          this._holdOffset += anchorDelta;
-          this._followOffsetTarget(anchorDelta);
-        }
-      }
-    };
-    this.notify = sync => {
-      var _a, _b;
-      (_b = (_a = this.options).onChange) == null ? void 0 : _b.call(_a, this, sync);
-    };
-    this.maybeNotify = utils.memo(() => {
-      this.calculateRange();
-      return [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null];
-    }, isScrolling => {
-      this.notify(isScrolling);
-    }, {
-      key: 'production' !== "production" && "maybeNotify",
-      debug: () => this.options.debug,
-      initialDeps: [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null]
-    });
-    this.cleanup = () => {
-      var _a;
-      this.unsubs.filter(Boolean).forEach(d => d());
-      this.unsubs = [];
-      this.observer.disconnect();
-      if (this.rafId != null && this.targetWindow) {
-        this.targetWindow.cancelAnimationFrame(this.rafId);
-        this.rafId = null;
-      }
-      this.scrollState = null;
-      (_a = this._momentumStop) == null ? void 0 : _a.restore();
-      this._momentumStop = null;
-      this.isScrolling = false;
-      this.scrollDirection = null;
-      this._holdOffset = 0;
-      this._reportedOverscroll = false;
-      this._clampedAdjustment = null;
-      this.pendingWrite = null;
-      this.scrollElement = null;
-      this.targetWindow = null;
-    };
-    this._didMount = () => {
-      return () => {
-        this.cleanup();
-      };
-    };
-    this._willUpdate = () => {
-      var _a;
-      const scrollElement = this.options.enabled ? this.options.getScrollElement() : null;
-      if (this.scrollElement !== scrollElement) {
-        this.cleanup();
-        if (!scrollElement) {
-          this.maybeNotify();
-          return;
-        }
-        this.scrollElement = scrollElement;
-        if (this.scrollElement && "ownerDocument" in this.scrollElement) {
-          this.targetWindow = this.scrollElement.ownerDocument.defaultView;
-        } else {
-          this.targetWindow = ((_a = this.scrollElement) == null ? void 0 : _a.window) ?? null;
-        }
-        this.elementsCache.forEach(cached => {
-          this.observer.observe(cached);
-        });
-        this.unsubs.push(this.options.observeElementRect(this, rect => {
-          this.scrollRect = rect;
-          this.maybeNotify();
-        }));
-        this.unsubs.push(this.options.observeElementOffset(this, (offset, isScrolling) => {
-          var _a2, _b, _c, _d;
-          const elementMax = isScrolling ? this._elementMaxScrollOffset() : null;
-          const wasOverscrolled = this._reportedOverscroll;
-          this._reportedOverscroll = offset < 0 || elementMax !== null && offset > elementMax + 1;
-          const elementOffset = offset;
-          this._lastElementOffset = elementOffset;
-          offset = this._toLayoutOffset(offset);
-          const kind = this._classifyScrollEvent(offset, isScrolling, elementMax);
-          if (kind === "spurious") return;
-          if (kind === "readBack") {
-            offset = this.pendingWrite.target;
-          } else if (kind === "clampedReadBack" && ((_a2 = this.scrollState) == null ? void 0 : _a2.index) != null &&
-          // Not `elementMax`: an adapter can report the read-back at rest.
-          offset < this.getMaxScrollOffset() - 1.5) {
-            this.scrollState.lastTargetOffset = offset;
-          } else if (scrollClassifier.externalRetiresCommand({
-            kind,
-            offset,
-            command: this.scrollState,
-            target: () => this.getScrollStateTarget(this.scrollState)
-          })) {
-            this.scrollState = null;
-          }
-          this.pendingWrite = null;
-          if (this._clampedAdjustment !== null && Math.abs(offset - this._clampedAdjustment.maxAtWrite) >= 1.5) {
-            this._clampedAdjustment = null;
-          }
-          const prevOffset = this.getScrollOffset();
-          const prevDirection = this.scrollDirection;
-          this.scrollDirection = isScrolling ? prevOffset === offset ? this.scrollDirection : prevOffset < offset ? "forward" : "backward" : null;
-          this.scrollOffset = offset;
-          this.isScrolling = isScrolling;
-          const queued = this.scrollState;
-          if ((queued == null ? void 0 : queued.phase) === "queued" && kind === "external" && isScrolling) {
-            if (wasOverscrolled || this._reportedOverscroll) {
-              queued.samples = [];
-            } else {
-              const t = this.now();
-              queued.samples = [...(queued.samples ?? []).filter(sample => t - sample.t <= 200), {
-                t,
-                offset: elementOffset
-              }];
-              if (prevDirection !== null && this.scrollDirection !== prevDirection || scrollClassifier.flingSpedUp(queued.samples)) {
-                this.scrollState = null;
-              }
-            }
-          }
-          if (this._iosGesture.onScroll({
-            isScrolling,
-            ownReadBack: kind === "readBack",
-            moved: offset !== prevOffset,
-            // Neither our write's read-back nor a frame of our smooth
-            // animation: the user or a fling moved it.
-            external: kind === "external" && ((_b = this.scrollState) == null ? void 0 : _b.phase) !== "smooth" && ((_c = this.scrollState) == null ? void 0 : _c.phase) !== "smoothFinishing"
-          }) &&
-          // The user scrolls: a command still waiting for the tail is
-          // theirs to override, like a written one would be.
-          ((_d = this.scrollState) == null ? void 0 : _d.phase) === "queued") {
-            this.scrollState = null;
-          }
-          this._flushHoldIfReady(true);
-          if (this.scrollState) {
-            this.scheduleScrollReconcile();
-          }
-          this.maybeNotify();
-        }));
-        if ("addEventListener" in this.scrollElement) {
-          this.unsubs.push(this._iosGesture.listen(this.scrollElement));
-        }
-        this._scrollToOffset(this.getScrollOffset());
-      }
-      this._noteClampMax();
-      const anchor = this.pendingScrollAnchor;
-      this.pendingScrollAnchor = null;
-      if (anchor && this.scrollElement && this.options.enabled) {
-        if (anchor.kind === "anchor") {
-          if (!this._canWriteScroll()) {
-            this._holdOffset += anchor.delta;
-            this._followOffsetTarget(anchor.delta);
-            this.notify(false);
-          } else if (isSmoothScroll(this.scrollState) && !utils.approxEqual(this.getScrollOffset() - anchor.delta, this.scrollState.lastTargetOffset)) ;else {
-            this._followOffsetTarget(anchor.delta);
-            this._scrollToOffset(this.getScrollOffset());
-          }
-        } else {
-          this.scrollToEnd({
-            behavior: anchor.behavior
-          });
-        }
-      }
-      this._flushHoldIfReady(false);
-      this._retryClampedAdjustment();
-    };
-    this._classifyScrollEvent = (offset, isScrolling, elementMax) => {
-      var _a;
-      return scrollClassifier.classifyScrollEvent({
-        offset,
-        isScrolling,
-        elementMax,
-        holdOffset: this._holdOffset,
-        scrollOffset: this.scrollOffset,
-        pendingWrite: this.pendingWrite,
-        clampedMaxAtWrite: ((_a = this._clampedAdjustment) == null ? void 0 : _a.maxAtWrite) ?? null
-      });
-    };
-    this._retryClampedAdjustment = () => {
-      if (this._clampedAdjustment === null || !this.scrollElement || !this.options.enabled) {
-        return;
-      }
-      const {
-        target,
-        maxAtWrite
-      } = this._clampedAdjustment;
-      const max = this.getMaxScrollOffset();
-      if (max > maxAtWrite + 0.5) {
-        this._clampedAdjustment = target > max + 0.5 ? {
-          target,
-          maxAtWrite: max
-        } : null;
-        this._scrollToOffset(target);
-      }
-    };
-    this._writeAwaitingCommand = () => {
-      const state = this.scrollState;
-      if (state === null || state.phase !== "queued") return;
-      const {
-        behavior
-      } = state;
-      this.getMeasurements();
-      const offset = this.getScrollStateTarget(state);
-      state.lastTargetOffset = offset;
-      this._clampedAdjustment = null;
-      state.phase = initialScrollPhase(behavior, state.index != null && utils.approxEqual(offset, this.getScrollOffset()));
-      this._scrollToOffset(offset, {
-        behavior
-      });
-      this.scheduleScrollReconcile();
-    };
-    this._readElementOffset = () => {
-      const el = this.scrollElement;
-      if (el == null) return null;
-      const {
-        horizontal,
-        isRtl
-      } = this.options;
-      if (typeof el.scrollTop === "number") {
-        return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
-      }
-      if (typeof el.scrollY === "number") {
-        return horizontal ? el.scrollX : el.scrollY;
-      }
-      return null;
-    };
-    this._canWriteScroll = () => !(iosGesture.isIOSWebKit() && this._iosGesture.inMotion()) && !this._reportedOverscroll;
-    this._flushHoldIfReady = sync => {
-      var _a;
-      if (this._holdOffset === 0) return;
-      if (!this.scrollElement || !this.options.enabled) return;
-      if (!this._canWriteScroll()) return;
-      if (((_a = this.scrollState) == null ? void 0 : _a.phase) === "smooth") return;
-      this._holdOffset = 0;
-      if (this.scrollOffset !== null && this.scrollOffset < 0) {
-        this.scrollOffset = 0;
-      }
-      this.notify(sync);
-      const target = this.getCommandWrittenOffset() ?? this.getScrollOffset();
-      this._clampedAdjustment = this._clampedBy(target);
-      this._scrollToOffset(target);
-    };
-    this.rafId = null;
-    this.getSize = () => {
-      if (!this.options.enabled) {
-        this.scrollRect = null;
-        return 0;
-      }
-      this.scrollRect = this.scrollRect ?? this.options.initialRect;
-      return this.scrollRect[this.options.horizontal ? "width" : "height"];
-    };
-    this.getScrollOffset = () => {
-      if (!this.options.enabled) {
-        this.scrollOffset = null;
-        return 0;
-      }
-      this.scrollOffset = this.scrollOffset ?? (typeof this.options.initialOffset === "function" ? this.options.initialOffset() : this.options.initialOffset);
-      return this.scrollOffset;
-    };
-    this.getMeasurementOptions = utils.memo(() => [this.options.count, this.options.paddingStart, this.options.scrollMargin, this.options.getItemKey, this.options.enabled, this.options.lanes, this.options.laneAssignmentMode, this.options.gap], (count, paddingStart, scrollMargin, getItemKey, enabled, lanes, laneAssignmentMode, gap) => {
-      const lanesChanged = this.prevLanes !== void 0 && this.prevLanes !== lanes;
-      if (lanesChanged) {
-        this.lanesChangedFlag = true;
-      }
-      this.prevLanes = lanes;
-      this.pendingMin = null;
-      return {
-        count,
-        paddingStart,
-        scrollMargin,
-        getItemKey,
-        enabled,
-        lanes,
-        laneAssignmentMode,
-        gap
-      };
-    }, {
-      key: false
-    });
-    this.isIndexInRange = index => index >= 0 && index < this.options.count;
-    this.getMeasurements = utils.memo(() => [this.getMeasurementOptions(), this.itemSizeCacheVersion], ({
-      count,
-      paddingStart,
-      scrollMargin,
-      getItemKey,
-      enabled,
-      lanes,
-      laneAssignmentMode,
-      gap
-    }, _itemSizeCacheVersion) => {
-      var _a;
-      const itemSizeCache = this.itemSizeCache;
-      if (!enabled) {
-        this.measurementsCache = [];
-        this._singleLaneMeasurements = null;
-        this.itemSizeCache.clear();
-        this.laneAssignments.clear();
-        return [];
-      }
-      if (this.laneAssignments.size > count) {
-        for (const index of this.laneAssignments.keys()) {
-          if (index >= count) {
-            this.laneAssignments.delete(index);
-          }
-        }
-      }
-      if (this.lanesChangedFlag) {
-        this.lanesChangedFlag = false;
-        this.lanesSettling = true;
-        this.measurementsCache = [];
-        this._singleLaneMeasurements = null;
-        this.itemSizeCache.clear();
-        this.laneAssignments.clear();
-        this.pendingMin = null;
-      }
-      if (this.measurementsCache.length === 0 && !this.lanesSettling) {
-        this.measurementsCache = this.options.initialMeasurementsCache;
-        this.measurementsCache.forEach(item => {
-          this.itemSizeCache.set(item.key, item.size);
-        });
-      }
-      const min = this.lanesSettling ? 0 : this.pendingMin ?? 0;
-      this.pendingMin = null;
-      if (this.lanesSettling && this.measurementsCache.length === count) {
-        this.lanesSettling = false;
-      }
-      if (lanes === 1) {
-        const need = count * 2;
-        let flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
-        if (!flat || flat.length < need) {
-          const next = new Float64Array(need);
-          if (flat && min > 0) next.set(flat.subarray(0, min * 2));
-          flat = next;
-        }
-        const items = min === 0 ? new Array(count) : this._singleLaneMeasurements.items.slice();
-        let runningStart;
-        if (min === 0) {
-          runningStart = paddingStart + scrollMargin;
-        } else {
-          const prevIdx = min - 1;
-          runningStart = flat[prevIdx * 2] + flat[prevIdx * 2 + 1] + gap;
-        }
-        for (let i = min; i < count; i++) {
-          const key = getItemKey(i);
-          items[i] = key;
-          const measuredSize = itemSizeCache.get(key);
-          const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
-          flat[i * 2] = runningStart;
-          flat[i * 2 + 1] = size;
-          runningStart += size + gap;
-        }
-        this._singleLaneMeasurements = {
-          flat,
-          items
-        };
-        const view = lazyMeasurements.createLazyMeasurementsView(items, flat);
-        this.measurementsCache = view;
-        return view;
-      }
-      const measurements = this.measurementsCache.slice(0, min);
-      const laneLastIndex = new Array(lanes).fill(void 0);
-      const laneEnds = new Float64Array(lanes);
-      let filledLanes = 0;
-      for (let m = 0; m < min; m++) {
-        const item = measurements[m];
-        if (item) {
-          if (laneLastIndex[item.lane] === void 0) filledLanes++;
-          laneLastIndex[item.lane] = m;
-          laneEnds[item.lane] = item.end;
-        }
-      }
-      for (let i = min; i < count; i++) {
-        const key = getItemKey(i);
-        const cachedLane = this.laneAssignments.get(i);
-        let lane;
-        let start;
-        const shouldCacheLane = laneAssignmentMode === "estimate" || itemSizeCache.has(key);
-        if (cachedLane !== void 0 && this.options.lanes > 1) {
-          lane = cachedLane;
-          const prevIndex = laneLastIndex[lane];
-          const prevInLane = prevIndex !== void 0 ? measurements[prevIndex] : void 0;
-          start = prevInLane ? prevInLane.end + gap : paddingStart + scrollMargin;
-        } else if (filledLanes === lanes) {
-          let bestLane = 0;
-          let bestEnd = laneEnds[0];
-          let bestIdx = laneLastIndex[0];
-          for (let l = 1; l < lanes; l++) {
-            const e = laneEnds[l];
-            if (e < bestEnd || e === bestEnd && laneLastIndex[l] < bestIdx) {
-              bestLane = l;
-              bestEnd = e;
-              bestIdx = laneLastIndex[l];
-            }
-          }
-          lane = bestLane;
-          start = bestEnd + gap;
-          if (shouldCacheLane) {
-            this.laneAssignments.set(i, lane);
-          }
-        } else {
-          lane = i % this.options.lanes;
-          start = paddingStart + scrollMargin;
-          if (shouldCacheLane) {
-            this.laneAssignments.set(i, lane);
-          }
-        }
-        const measuredSize = itemSizeCache.get(key);
-        const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
-        const end = start + size;
-        measurements[i] = {
-          index: i,
-          start,
-          size,
-          end,
-          key,
-          lane
-        };
-        if (laneLastIndex[lane] === void 0) filledLanes++;
-        laneLastIndex[lane] = i;
-        laneEnds[lane] = end;
-      }
-      this.measurementsCache = measurements;
-      return measurements;
-    }, {
-      key: 'production' !== "production" && "getMeasurements",
-      debug: () => this.options.debug
-    });
-    this.calculateRange = utils.memo(() => [this.getMeasurements(), this.getSize(), this.getScrollOffset(), this.options.lanes], (measurements, outerSize, scrollOffset, lanes) => {
-      if (measurements.length === 0 || outerSize === 0) {
-        this.range = null;
-        return null;
-      }
-      this.range = calculateRangeImpl(measurements, outerSize, scrollOffset, lanes,
-      // Pass the typed array so binary search + forward-walk can read
-      // start/end directly from Float64Array, skipping the Proxy traps.
-      lanes === 1 && this._singleLaneMeasurements !== null ? this._singleLaneMeasurements.flat : null);
-      return this.range;
-    }, {
-      key: 'production' !== "production" && "calculateRange",
-      debug: () => this.options.debug
-    });
-    this.getVirtualIndexes = utils.memo(() => {
-      let startIndex = null;
-      let endIndex = null;
-      const range = this.calculateRange();
-      if (range) {
-        startIndex = range.startIndex;
-        endIndex = range.endIndex;
-      }
-      this.maybeNotify.updateDeps([this.isScrolling, startIndex, endIndex]);
-      return [this.options.rangeExtractor, this.options.overscan, this.options.count, startIndex, endIndex, this.options.lanes];
-    }, (rangeExtractor, overscan, count, startIndex, endIndex, lanes) => {
-      return startIndex === null || endIndex === null ? [] : rangeExtractor({
-        startIndex,
-        endIndex,
-        overscan,
-        count,
-        lanes
-      });
-    }, {
-      key: 'production' !== "production" && "getVirtualIndexes",
-      debug: () => this.options.debug
-    });
-    this.indexFromElement = node => {
-      const attributeName = this.options.indexAttribute;
-      const indexStr = node.getAttribute(attributeName);
-      if (!indexStr) {
-        console.warn(`Missing attribute name '${attributeName}={index}' on measured element.`);
-        return -1;
-      }
-      return parseInt(indexStr, 10);
-    };
-    this.shouldMeasureDuringScroll = index => {
-      var _a;
-      if (!isSmoothScroll(this.scrollState)) {
-        return true;
-      }
-      const scrollIndex = this.scrollState.index ?? ((_a = this.getVirtualItemForOffset(this.scrollState.lastTargetOffset)) == null ? void 0 : _a.index);
-      if (scrollIndex !== void 0 && this.range) {
-        const bufferSize = Math.max(this.options.overscan, Math.ceil((this.range.endIndex - this.range.startIndex) / 2));
-        const minIndex = Math.max(0, scrollIndex - bufferSize);
-        const maxIndex = Math.min(this.options.count - 1, scrollIndex + bufferSize);
-        return index >= minIndex && index <= maxIndex;
-      }
-      return true;
-    };
-    this.measureElement = node => {
-      if (!node) {
-        this.elementsCache.forEach((cached, key2) => {
-          if (!cached.isConnected) {
-            this.observer.unobserve(cached);
-            this.elementsCache.delete(key2);
-          }
-        });
-        return;
-      }
-      const index = this.indexFromElement(node);
-      if (!this.isIndexInRange(index)) return;
-      const key = this.options.getItemKey(index);
-      const prevNode = this.elementsCache.get(key);
-      if (prevNode !== node) {
-        if (prevNode) {
-          this.observer.unobserve(prevNode);
-        }
-        this.observer.observe(node);
-        this.elementsCache.set(key, node);
-      }
-      if (node.isConnected && (!this.isScrolling || this.scrollState) && this.shouldMeasureDuringScroll(index)) {
-        this.resizeItem(index, this.options.measureElement(node, void 0, this));
-      }
-    };
-    this.resizeItem = (index, size) => {
-      var _a, _b, _c;
-      if (!this.isIndexInRange(index)) return;
-      if ((_a = this._resizeBatch) == null ? void 0 : _a.sync) this.getMeasurements();
-      let cachedSize;
-      let itemStart;
-      let key;
-      const flat = (_b = this._singleLaneMeasurements) == null ? void 0 : _b.flat;
-      if (this.options.lanes === 1 && flat != null) {
-        key = this.options.getItemKey(index);
-        itemStart = flat[index * 2];
-        cachedSize = flat[index * 2 + 1];
-      } else {
-        const item = this.measurementsCache[index];
-        if (!item) return;
-        key = item.key;
-        itemStart = item.start;
-        cachedSize = item.size;
-      }
-      const itemSize = this.itemSizeCache.get(key) ?? cachedSize;
-      const delta = size - itemSize;
-      if (delta !== 0) {
-        const wasAtEnd = this.options.anchorTo === "end" && !isSmoothScroll(this.scrollState) && this.getVirtualDistanceFromEnd() <= this.options.scrollEndThreshold;
-        const prevTotalSize = wasAtEnd ? this._getLayoutTotalSize() : 0;
-        const scrollOffset = this.getScrollOffset();
-        const isFirstMeasure = !this.itemSizeCache.has(key);
-        const defaultShouldAdjust = isFirstMeasure ?
-        // First measurement: compensate any item whose top sits above the
-        // fold — the estimate→actual delta must be corrected regardless of
-        // scroll direction, since the whole estimated block was above it.
-        itemStart < scrollOffset :
-        // Re-measurement: only compensate an item that is ENTIRELY above the
-        // fold. An item that merely *spans* the fold (top above, bottom
-        // below — e.g. a streaming chat message growing at its bottom)
-        // changes size *below* the anchor point, so shifting scrollTop by the
-        // delta would drag the viewport downward on every growth (#1218).
-        // Also skip during backward scroll to avoid the "items jump while
-        // scrolling up" cascade.
-        itemStart + itemSize <= scrollOffset && this.scrollDirection !== "backward";
-        const shouldAdjustScroll = !isSmoothScroll(this.scrollState) && (this.shouldAdjustScrollPositionOnItemSizeChange !== void 0 ? this.shouldAdjustScrollPositionOnItemSizeChange(
-        // The callback expects a VirtualItem; build one lazily only
-        // when the consumer actually supplied a custom predicate.
-        this.measurementsCache[index] ?? {
-          index,
-          key,
-          start: itemStart,
-          size: cachedSize,
-          end: itemStart + cachedSize,
-          lane: 0
-        }, delta, this) : defaultShouldAdjust);
-        if (this.pendingMin === null || index < this.pendingMin) {
-          this.pendingMin = index;
-        }
-        this.itemSizeCache.set(key, size);
-        this.itemSizeCacheVersion++;
-        let adjustedSync = false;
-        if (!this._awaitingCommandReadBack()) {
-          if (wasAtEnd) {
-            adjustedSync = this.applyScrollAdjustment(this._getLayoutTotalSize() - prevTotalSize);
-          } else if (shouldAdjustScroll) {
-            adjustedSync = this.applyScrollAdjustment(delta);
-          }
-        }
-        if (this._resizeBatch) {
-          this._resizeBatch.notify = true;
-          (_c = this._resizeBatch).sync || (_c.sync = adjustedSync);
-          return;
-        }
-        this.notify(adjustedSync);
-        this._noteClampMax();
-        this._flushHoldIfReady(true);
-        this._retryClampedAdjustment();
-      }
-    };
-    this.getVirtualItems = utils.memo(() => [this.getVirtualIndexes(), this.getMeasurements(), this._holdOffset], (indexes, measurements, hold) => {
-      const virtualItems = [];
-      for (let k = 0, len = indexes.length; k < len; k++) {
-        const i = indexes[k];
-        const measurement = measurements[i];
-        virtualItems.push(hold === 0 ? measurement : {
-          ...measurement,
-          start: measurement.start - hold,
-          end: measurement.end - hold
-        });
-      }
-      return virtualItems;
-    }, {
-      key: 'production' !== "production" && "getVirtualItems",
-      debug: () => this.options.debug
-    });
-    this.getVirtualItemForOffset = offset => {
-      var _a;
-      const measurements = this.getMeasurements();
-      if (measurements.length === 0) {
-        return void 0;
-      }
-      const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
-      const useFlat = this.options.lanes === 1 && flat != null;
-      const idx = findNearestBinarySearch(0, measurements.length - 1, useFlat ? i => flat[i * 2] : i => utils.notUndefined(measurements[i]).start, offset);
-      return utils.notUndefined(measurements[idx]);
-    };
-    this._noteClampMax = () => {
-      if (!this._awaitingCommandReadBack()) return;
-      const elementMax = this._elementMaxScrollOffset();
-      if (elementMax === null) return;
-      const write = this.pendingWrite;
-      const max = Math.max(elementMax, 0) + this._holdOffset;
-      if (max >= write.target) return;
-      const lowMaxes = write.lowMaxes ?? (write.lowMaxes = []);
-      if (lowMaxes[lowMaxes.length - 1] !== max) lowMaxes.push(max);
-    };
-    this.getMaxScrollOffset = () => (this._elementMaxScrollOffset() ?? 0) + this._holdOffset;
-    this._toLayoutOffset = elementOffset => {
-      var _a;
-      let offset = elementOffset + this._holdOffset;
-      if (((_a = this.pendingScrollAnchor) == null ? void 0 : _a.kind) === "anchor") {
-        offset += this.pendingScrollAnchor.delta;
-      }
-      return offset;
-    };
-    this._elementMaxScrollOffset = () => {
-      const el = this.scrollElement;
-      if (el === null) return null;
-      if ("scrollHeight" in el) {
-        return this.options.horizontal ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
-      }
-      if ("document" in el) {
-        const doc = el.document.documentElement;
-        return this.options.horizontal ? doc.scrollWidth - el.innerWidth : doc.scrollHeight - el.innerHeight;
-      }
-      return null;
-    };
-    this._momentumStop = null;
-    this._stopMomentum = done => {
-      const el = this.scrollElement;
-      const win = this.targetWindow;
-      if (el === null || win === null) return;
-      const scroller = "document" in el ? el.document.scrollingElement : el;
-      if (!(scroller == null ? void 0 : scroller.style)) return;
-      if (this._momentumStop) {
-        this._momentumStop.done = done;
-        return;
-      }
-      const {
-        style
-      } = scroller;
-      const property = this.options.horizontal ? "overflow-x" : "overflow-y";
-      const value = style.getPropertyValue(property);
-      const priority = style.getPropertyPriority(property);
-      style.setProperty(property, "hidden", "important");
-      const stop = {
-        // False when the app replaced the hidden value: the fling may not
-        // have stopped.
-        restore: () => {
-          if (style.getPropertyValue(property) !== "hidden" || style.getPropertyPriority(property) !== "important") {
-            return false;
-          }
-          style.setProperty(property, value, priority);
-          return true;
-        },
-        done
-      };
-      this._momentumStop = stop;
-      win.requestAnimationFrame(() => win.requestAnimationFrame(() => {
-        if (this._momentumStop !== stop) return;
-        this._momentumStop = null;
-        if (stop.restore()) stop.done();
-      }));
-    };
-    this._clampedBy = target => {
-      const elementMax = this._elementMaxScrollOffset();
-      if (elementMax === null) return null;
-      const maxAtWrite = elementMax + this._holdOffset;
-      return target > maxAtWrite + 0.5 ? {
-        target,
-        maxAtWrite
-      } : null;
-    };
-    this.getVirtualDistanceFromEnd = () => {
-      return Math.max(this._getLayoutTotalSize() - this.getSize() - this.getScrollOffset(), 0);
-    };
-    this.getDistanceFromEnd = () => {
-      return Math.max(this.getMaxScrollOffset() - this.getScrollOffset(), 0);
-    };
-    this.isAtEnd = (threshold = this.options.scrollEndThreshold) => {
-      return this.getDistanceFromEnd() <= threshold;
-    };
-    this.getOffsetForAlignment = (toOffset, align, itemSize = 0) => {
-      if (!this.scrollElement) return 0;
-      const size = this.getSize();
-      const scrollOffset = this.getScrollOffset();
-      if (align === "auto") {
-        align = toOffset >= scrollOffset + size ? "end" : "start";
-      }
-      if (align === "center") {
-        toOffset += (itemSize - size) / 2;
-      } else if (align === "end") {
-        toOffset -= size;
-      }
-      const maxOffset = this.getMaxScrollOffset();
-      return Math.max(Math.min(maxOffset, toOffset), 0);
-    };
-    this.getOffsetForIndex = (index, align = "auto") => {
-      index = Math.max(0, Math.min(index, this.options.count - 1));
-      const size = this.getSize();
-      const scrollOffset = this.getScrollOffset();
-      const item = this.measurementsCache[index];
-      if (!item) return;
-      if (align === "auto") {
-        if (item.end >= scrollOffset + size - this.options.scrollPaddingEnd) {
-          align = "end";
-        } else if (item.start <= scrollOffset + this.options.scrollPaddingStart) {
-          align = "start";
-        } else {
-          return [scrollOffset, align];
-        }
-      }
-      if (align === "end" && index === this.options.count - 1) {
-        const maxOffset = this.getMaxScrollOffset();
-        const toOffset2 = maxOffset - this.options.paddingEnd + this.options.scrollPaddingEnd;
-        return [Math.max(Math.min(toOffset2, maxOffset), 0), align];
-      }
-      const toOffset = align === "end" ? item.end + this.options.scrollPaddingEnd : item.start - this.options.scrollPaddingStart;
-      return [this.getOffsetForAlignment(toOffset, align, item.size), align];
-    };
-    this.scrollToOffset = (toOffset, {
-      align = "start",
-      behavior = "auto"
-    } = {}) => {
-      this._startScroll({
-        index: null,
-        align
-      }, this.getOffsetForAlignment(toOffset, align), behavior, "absolute");
-    };
-    this.scrollToIndex = (index, {
-      align: initialAlign = "auto",
-      behavior = "auto"
-    } = {}) => {
-      index = Math.max(0, Math.min(index, this.options.count - 1));
-      const offsetInfo = this.getOffsetForIndex(index, initialAlign);
-      if (!offsetInfo) return;
-      const [offset, align] = offsetInfo;
-      this._startScroll({
-        index,
-        align
-      }, offset, behavior, "absolute");
-    };
-    this.scrollBy = (delta, {
-      behavior = "auto"
-    } = {}) => {
-      const offset = this.getOffsetForAlignment((this.getCommandWrittenOffset() ?? this.getScrollOffset()) + delta, "start");
-      this._startScroll({
-        index: null,
-        align: "start"
-      }, offset, behavior, "relative");
-    };
-    this.scrollToEnd = ({
-      behavior = "auto"
-    } = {}) => {
-      if (this.options.count > 0) {
-        this._startScroll({
-          index: this.options.count - 1,
-          align: "end",
-          toEnd: true
-        }, Math.max(this.getMaxScrollOffset(), 0), behavior, "absolute");
-        return;
-      }
-      this.scrollToOffset(Math.max(this.getTotalSize() - this.getSize(), 0), {
-        behavior
-      });
-    };
-    this.cancelScroll = () => {
-      if (this.rafId != null && this.targetWindow) {
-        this.targetWindow.cancelAnimationFrame(this.rafId);
-        this.rafId = null;
-      }
-      this.scrollState = null;
-    };
-    this.getTotalSize = () => Math.max(this._getLayoutTotalSize() - this._holdOffset, 0);
-    this._getLayoutTotalSize = () => {
-      var _a, _b;
-      const measurements = this.getMeasurements();
-      let end;
-      if (measurements.length === 0) {
-        end = this.options.paddingStart;
-      } else if (this.options.lanes === 1) {
-        const lastIdx = measurements.length - 1;
-        const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
-        if (flat != null) {
-          end = flat[lastIdx * 2] + flat[lastIdx * 2 + 1];
-        } else {
-          end = ((_b = measurements[lastIdx]) == null ? void 0 : _b.end) ?? 0;
-        }
-      } else {
-        const endByLane = Array(this.options.lanes).fill(null);
-        let endIndex = measurements.length - 1;
-        while (endIndex >= 0 && endByLane.some(val => val === null)) {
-          const item = measurements[endIndex];
-          if (endByLane[item.lane] === null) {
-            endByLane[item.lane] = item.end;
-          }
-          endIndex--;
-        }
-        end = Math.max(...endByLane.filter(val => val !== null));
-      }
-      return Math.max(end - this.options.scrollMargin + this.options.paddingEnd, 0);
-    };
-    this.takeSnapshot = () => {
-      const snapshot = [];
-      if (this.itemSizeCache.size === 0) return snapshot;
-      const m = this.getMeasurements();
-      for (const item of m) {
-        if (item && this.itemSizeCache.has(item.key)) {
-          snapshot.push({
-            index: item.index,
-            key: item.key,
-            start: item.start,
-            size: item.size,
-            end: item.end,
-            lane: item.lane
-          });
-        }
-      }
-      return snapshot;
-    };
-    this._scrollToOffset = (offset, {
-      adjustments,
-      behavior
-    } = {}) => {
-      const write = {
-        target: offset + (adjustments ?? 0),
-        smooth: behavior === "smooth"
-      };
-      this.pendingWrite = write;
-      this.options.scrollToFn(offset - this._holdOffset, {
-        behavior,
-        adjustments
-      }, this);
-      return write;
-    };
-    this.getCommandWrittenOffset = () => this.scrollState !== null && this.pendingWrite !== null && !this.pendingWrite.smooth ? this.pendingWrite.target : null;
-    this._awaitingCommandReadBack = () => {
-      const writtenOffset = this.getCommandWrittenOffset();
-      return !(iosGesture.isIOSWebKit() && this._iosGesture.dragging()) && writtenOffset !== null && !utils.approxEqual(writtenOffset, this.getScrollOffset());
-    };
-    this._followOffsetTarget = delta => {
-      if (this.scrollState !== null && this.scrollState.index == null) {
-        this.scrollState.lastTargetOffset += delta;
-      }
-    };
-    this.measure = () => {
-      this.pendingMin = null;
-      this.itemSizeCache.clear();
-      this.laneAssignments.clear();
-      this.itemSizeCacheVersion++;
-      this.notify(false);
-    };
-    this.setOptions(opts);
-  }
-  /**
-   * @deprecated Always 0: a scroll correction is folded into `scrollOffset`
-   * at once, so there is never an outstanding adjustment to add to it. Read
-   * `scrollOffset` alone.
-   */
-  get scrollAdjustments() {
-    return 0;
-  }
-  // Returns `true` when it performed a synchronous `scrollTop` write this
-  // tick, `false` when the delta was zero or the write was deferred (iOS).
-  // `resizeItem` uses that to decide whether the follow-up `notify` must be
-  // synchronous so the grown transforms commit in the same paint (#1227).
-  applyScrollAdjustment(delta, behavior) {
-    if (delta === 0) return false;
-    if ('production' !== "production" && this.options.debug) {
-      console.info("correction", delta);
-    }
-    this._followOffsetTarget(delta);
-    if (!this._canWriteScroll()) {
-      this._holdOffset += delta;
-      if (this.scrollOffset !== null) this.scrollOffset += delta;
-      return true;
-    } else {
-      const offset = this.getScrollOffset();
-      this._clampedAdjustment = this._clampedBy(offset + delta);
-      const write = this._scrollToOffset(offset, {
-        adjustments: delta,
-        behavior
-      });
-      if (this.scrollOffset !== null) {
-        if (this.pendingWrite === write) this.scrollOffset += delta;
-        if (this.scrollOffset < 0) this.scrollOffset = 0;
-      }
-      return true;
-    }
-  }
-  scheduleScrollReconcile() {
-    if (!this.targetWindow) {
-      this.scrollState = null;
-      return;
-    }
-    if (this.rafId != null) return;
-    this.rafId = this.targetWindow.requestAnimationFrame(() => {
-      this.rafId = null;
-      this.reconcileScroll();
-    });
-  }
-  getScrollStateTarget(state) {
-    const offsetInfo = state.toEnd ? [Math.max(this.getMaxScrollOffset(), 0)] : state.index != null ? this.getOffsetForIndex(state.index, state.align) : void 0;
-    return offsetInfo ? offsetInfo[0] : state.lastTargetOffset;
-  }
-  reconcileScroll() {
-    if (!this.scrollState) return;
-    const el = this.scrollElement;
-    if (!el) return;
-    const MAX_RECONCILE_MS = 5e3;
-    if (this.now() - this.scrollState.startedAt > MAX_RECONCILE_MS) {
-      this.scrollState = null;
-      return;
-    }
-    if (this.scrollState.phase === "queued") {
-      this.scheduleScrollReconcile();
-      return;
-    }
-    this.getMeasurements();
-    const targetOffset = this.getScrollStateTarget(this.scrollState);
-    const STABLE_FRAMES = this.scrollState.index == null ? 1 : this.options.useAnimationFrameWithResizeObserver ? 3 : 2;
-    const targetChanged = targetOffset !== this.scrollState.lastTargetOffset;
-    if (!targetChanged && utils.approxEqual(targetOffset, this.getScrollOffset())) {
-      if (this.scrollState.phase === "smooth") {
-        this.scrollState.phase = "smoothLanded";
-      } else if (this.scrollState.phase === "smoothFinishing") {
-        this.scrollState.phase = "instant";
-      }
-      this.scrollState.stableFrames++;
-      if (this.scrollState.stableFrames >= STABLE_FRAMES) {
-        if (this.getScrollOffset() !== targetOffset) {
-          this._scrollToOffset(targetOffset, {
-            behavior: "auto"
-          });
-        }
-        this.scrollState = null;
-        return;
-      }
-    } else {
-      this.scrollState.stableFrames = 0;
-      if (targetChanged) {
-        const viewport = this.getSize() || 600;
-        const distance = Math.abs(targetOffset - this.getScrollOffset());
-        const keepSmooth = isSmoothScroll(this.scrollState) && distance > viewport;
-        this.scrollState.lastTargetOffset = targetOffset;
-        if (keepSmooth) {
-          this.scrollState.phase = "smooth";
-        } else if (this.scrollState.phase === "smooth") {
-          this.scrollState.phase = "smoothFinishing";
-        } else if (this.scrollState.phase === "smoothLanded") {
-          this.scrollState.phase = "instant";
-        }
-        this._scrollToOffset(targetOffset, {
-          behavior: keepSmooth ? "smooth" : "auto"
-        });
-      }
-    }
-    this.scheduleScrollReconcile();
-  }
-  // Every scroll command starts here: it becomes the in-flight command,
-  // writes its first target and leaves reconcile to retarget and retire it.
-  //
-  // Targets are layout offsets. A held correction is not dropped by a
-  // command: the write lands the element `_holdOffset` short of the target,
-  // under the rows exposed shifted by the same amount, and the flush moves
-  // both together once a write is possible.
-  //
-  // An index or end target that is already at its offset starts a smooth
-  // scroll as landed; an offset target never does, so its first scroll
-  // event is read as the user's (see the scroll handler in `_willUpdate`).
-  _startScroll(target, offset, behavior, kind) {
-    const tail = this._iosGesture.tail();
-    if (kind === "absolute" && tail !== null) {
-      if (tail === "fling" && iosGesture.iosMomentumOverridesWrites()) {
-        this._stopMomentum(() => {
-          const state = this.scrollState;
-          if ((state == null ? void 0 : state.phase) !== "queued" ||
-          // A finger came down: it owns the scroll until it lifts.
-          this._iosGesture.tail() !== "fling" ||
-          // In a bounce WebKit can drop the write (#1287): the tail
-          // decides, as without the stop. (Not `flingCaught`: our stop
-          // also ends the fling at speed, so a slow frame would read as
-          // a catch and the tail would drop the command.)
-          this._reportedOverscroll) {
-            return;
-          }
-          this._iosGesture.end();
-          this._flushHoldIfReady(true);
-          this._writeAwaitingCommand();
-        });
-        this.scrollState = {
-          ...target,
-          startedAt: this.now(),
-          lastTargetOffset: offset,
-          stableFrames: 0,
-          phase: "queued",
-          behavior,
-          samples: []
-        };
-        this.scheduleScrollReconcile();
-        return;
-      }
-      this._iosGesture.end();
-    }
-    this.scrollState = {
-      ...target,
-      startedAt: this.now(),
-      lastTargetOffset: offset,
-      stableFrames: 0,
-      behavior,
-      phase: initialScrollPhase(behavior, target.index != null && utils.approxEqual(offset, this.getScrollOffset()))
-    };
-    this._scrollToOffset(offset, {
-      behavior
-    });
-    this.scheduleScrollReconcile();
-  }
-}
-const findNearestBinarySearch = (low, high, getCurrentValue, value) => {
-  while (low <= high) {
-    const middle = (low + high) / 2 | 0;
-    const currentValue = getCurrentValue(middle);
-    if (currentValue < value) {
-      low = middle + 1;
-    } else if (currentValue > value) {
-      high = middle - 1;
-    } else {
-      return middle;
-    }
-  }
-  if (low > 0) {
-    return low - 1;
-  } else {
-    return 0;
-  }
-};
-function findNearestBinarySearchFlat(flat, high, value) {
-  let low = 0;
-  while (low <= high) {
-    const middle = (low + high) / 2 | 0;
-    const currentValue = flat[middle * 2];
-    if (currentValue < value) {
-      low = middle + 1;
-    } else if (currentValue > value) {
-      high = middle - 1;
-    } else {
-      return middle;
-    }
-  }
-  return low > 0 ? low - 1 : 0;
-}
-function calculateRangeImpl(measurements, outerSize, scrollOffset, lanes, flat) {
-  const lastIndex = measurements.length - 1;
-  if (measurements.length <= lanes) {
-    return {
-      startIndex: 0,
-      endIndex: lastIndex
-    };
-  }
-  if (lanes === 1 && flat !== null) {
-    const startIndex2 = findNearestBinarySearchFlat(flat, lastIndex, scrollOffset);
-    let endIndex2 = startIndex2;
-    const limit = scrollOffset + outerSize;
-    while (endIndex2 < lastIndex && flat[endIndex2 * 2] + flat[endIndex2 * 2 + 1] < limit) {
-      endIndex2++;
-    }
-    return {
-      startIndex: startIndex2,
-      endIndex: endIndex2
-    };
-  }
-  const getStart = index => measurements[index].start;
-  let startIndex = findNearestBinarySearch(0, lastIndex, getStart, scrollOffset);
-  let endIndex = startIndex;
-  if (lanes === 1) {
-    while (endIndex < lastIndex && measurements[endIndex].end < scrollOffset + outerSize) {
-      endIndex++;
-    }
-  } else if (lanes > 1) {
-    const endPerLane = Array(lanes).fill(0);
-    while (endIndex < lastIndex && endPerLane.some(pos => pos < scrollOffset + outerSize)) {
-      const item = measurements[endIndex];
-      endPerLane[item.lane] = item.end;
-      endIndex++;
-    }
-    const startPerLane = Array(lanes).fill(scrollOffset + outerSize);
-    while (startIndex >= 0 && startPerLane.some(pos => pos >= scrollOffset)) {
-      const item = measurements[startIndex];
-      startPerLane[item.lane] = item.start;
-      startIndex--;
-    }
-    startIndex = Math.max(0, startIndex - startIndex % lanes);
-    endIndex = Math.min(lastIndex, endIndex + (lanes - 1 - endIndex % lanes));
-  }
-  return {
-    startIndex,
-    endIndex
-  };
-}
-exports.approxEqual = utils.approxEqual;
-exports.debounce = utils.debounce;
-exports.memo = utils.memo;
-exports.notUndefined = utils.notUndefined;
-exports._resetIOSDetectionForTests = iosGesture._resetIOSDetectionForTests;
-exports.Virtualizer = Virtualizer;
-exports.defaultKeyExtractor = defaultKeyExtractor;
-exports.defaultRangeExtractor = defaultRangeExtractor;
-exports.elementScroll = elementScroll;
-exports.measureElement = measureElement;
-exports.observeElementOffset = observeElementOffset;
-exports.observeElementRect = observeElementRect;
-exports.observeWindowOffset = observeWindowOffset;
-exports.observeWindowRect = observeWindowRect;
-exports.windowScroll = windowScroll;
-  } },
-  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, Symbol.toStringTag, {
-  value: "Module"
-});
-const React = require("react");
-const reactDom = require("react-dom");
-const virtualCore = require("@tanstack/virtual-core");
-function _interopNamespaceDefault(e) {
-  const n = Object.create(null, {
-    [Symbol.toStringTag]: {
-      value: "Module"
-    }
-  });
-  if (e) {
-    for (const k in e) {
-      if (k !== "default") {
-        const d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: () => e[k]
-        });
-      }
-    }
-  }
-  n.default = e;
-  return Object.freeze(n);
-}
-const React__namespace = /* @__PURE__ */_interopNamespaceDefault(React);
-const useIsomorphicLayoutEffect = typeof document !== "undefined" ? React__namespace.useLayoutEffect : React__namespace.useEffect;
-function useVirtualizerBase({
-  useFlushSync = true,
-  directDomUpdates = false,
-  directDomUpdatesMode = "transform",
-  ...options
-}) {
-  const rerender = React__namespace.useReducer(x => x + 1, 0)[1];
-  const directRef = React__namespace.useRef({
-    enabled: directDomUpdates,
-    mode: directDomUpdatesMode,
-    container: null,
-    lastSize: null,
-    // Keyed by the element itself so a remounted node (same key, new DOM
-    // node — e.g. when `enabled` is toggled off then on) is treated as fresh
-    // and gets its style written.
-    lastPositions: /* @__PURE__ */new WeakMap(),
-    prevRange: null
-  });
-  directRef.current.enabled = directDomUpdates;
-  directRef.current.mode = directDomUpdatesMode;
-  const measuringFromRef = React__namespace.useRef(false);
-  const applyContainerSize = instance2 => {
-    const state = directRef.current;
-    if (!state.enabled || !state.container) return;
-    const totalSize = instance2.getTotalSize();
-    if (totalSize !== state.lastSize) {
-      state.lastSize = totalSize;
-      const sizeAxis = instance2.options.horizontal ? "width" : "height";
-      state.container.style[sizeAxis] = `${totalSize}px`;
-    }
-  };
-  const applyItemPosition = (instance2, item, el) => {
-    const state = directRef.current;
-    const horizontal = !!instance2.options.horizontal;
-    const next = item.start - instance2.options.scrollMargin;
-    if (state.lastPositions.get(el) === next) return;
-    state.lastPositions.set(el, next);
-    if (state.mode === "transform") {
-      el.style.transform = horizontal ? `translate3d(${next}px, 0, 0)` : `translate3d(0, ${next}px, 0)`;
-    } else {
-      el.style[horizontal ? "left" : "top"] = `${next}px`;
-    }
-  };
-  const applyDirectStyles = instance2 => {
-    const state = directRef.current;
-    if (!state.enabled || !state.container) return;
-    applyContainerSize(instance2);
-    for (const item of instance2.getVirtualItems()) {
-      const el = instance2.elementsCache.get(item.key);
-      if (el) applyItemPosition(instance2, item, el);
-    }
-  };
-  const resolvedOptions = {
-    ...options,
-    onChange: (instance2, sync) => {
-      var _a;
-      const state = directRef.current;
-      let shouldRerender = true;
-      if (state.enabled) {
-        applyDirectStyles(instance2);
-        const range = instance2.range;
-        const prev = state.prevRange;
-        shouldRerender = !prev || prev.isScrolling !== instance2.isScrolling || prev.startIndex !== (range == null ? void 0 : range.startIndex) || prev.endIndex !== (range == null ? void 0 : range.endIndex);
-        if (shouldRerender) {
-          state.prevRange = range ? {
-            startIndex: range.startIndex,
-            endIndex: range.endIndex,
-            isScrolling: instance2.isScrolling
-          } : null;
-        }
-      }
-      if (shouldRerender) {
-        if (useFlushSync && sync && !measuringFromRef.current) {
-          reactDom.flushSync(rerender);
-        } else {
-          rerender();
-        }
-      }
-      (_a = options.onChange) == null ? void 0 : _a.call(options, instance2, sync);
-    }
-  };
-  const [instance] = React__namespace.useState(() => {
-    const v = new virtualCore.Virtualizer(resolvedOptions);
-    const measureElement = v.measureElement;
-    v.measureElement = node => {
-      measuringFromRef.current = true;
-      try {
-        measureElement(node);
-      } finally {
-        measuringFromRef.current = false;
-      }
-      const state = directRef.current;
-      if (node !== null && state.enabled && state.container) {
-        const item = v.measurementsCache[v.indexFromElement(node)];
-        if (item) applyItemPosition(v, item, node);
-      }
-    };
-    return Object.assign(v, {
-      containerRef: node => {
-        const state = directRef.current;
-        state.container = node;
-        state.lastSize = null;
-        if (node !== null) {
-          applyDirectStyles(v);
-        }
-      }
-    });
-  });
-  instance.setOptions(resolvedOptions);
-  useIsomorphicLayoutEffect(() => {
-    return instance._didMount();
-  }, []);
-  useIsomorphicLayoutEffect(() => {
-    applyContainerSize(instance);
-    return instance._willUpdate();
-  });
-  useIsomorphicLayoutEffect(() => {
-    applyDirectStyles(instance);
-  });
-  return instance;
-}
-function useVirtualizer(options) {
-  return useVirtualizerBase({
-    observeElementRect: virtualCore.observeElementRect,
-    observeElementOffset: virtualCore.observeElementOffset,
-    scrollToFn: virtualCore.elementScroll,
-    ...options
-  });
-}
-function useWindowVirtualizer(options) {
-  return useVirtualizerBase({
-    getScrollElement: () => typeof document !== "undefined" ? window : null,
-    observeElementRect: virtualCore.observeWindowRect,
-    observeElementOffset: virtualCore.observeWindowOffset,
-    scrollToFn: virtualCore.windowScroll,
-    initialOffset: () => typeof document !== "undefined" ? window.scrollY : 0,
-    ...options
-  });
-}
-exports.useVirtualizer = useVirtualizer;
-exports.useWindowVirtualizer = useWindowVirtualizer;
-Object.keys(virtualCore).forEach(k => {
-  if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
-    enumerable: true,
-    get: () => virtualCore[k]
-  });
-});
-  } },
-  "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.usePressable = usePressable;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · usePressable
-   Summary: One press from every input: a mouse click, a tap, a pen, Enter or Space on the keyboard, and the click a
-     screen reader sends all call onPress once, with the kind of input that made it. While the press is held the element
-     is pressed, so it can show the pressed treatment (is-pressed, system/interaction.css).
-   Usage:
-     const { pressed, pressProps } = usePressable({ onPress: (e) => open(e.pointerType) });
-     <button type="button" className={cx('plx-state', pressed && 'is-pressed')} {...pressProps}>Open</button>
-     <div role="button" tabIndex={0} {...pressProps}>…</div>          // a custom surface: the role and the Tab stop are yours
-   Props:
-     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey, event }): the press, once; pointerType is
-       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click); event is the event that
-       made it (a click, or the key with the keyboard)
-     options.onPressStart({ pointerType }): the press begins (pointer down, or the key goes down)
-     options.onPressEnd({ pointerType }): the press ends, whether it was made or canceled
-     options.onPressChange(pressed): the pressed state changes
-     options.disabled (false): no press, no pressed state; the element keeps its focus behavior
-     options.handlers ({}): your own handlers of the same events (onClick, onKeyDown, …); they run first
-     options.native (false): on a native <button>, the browser's click stays the one press, for every input: onPress
-       runs from that click (event is the click itself), with pointerType from the pointer or key that made it; the keys
-       keep the browser's behavior (Enter repeats while held, as a native button does), and pressed stays false (the
-       button draws its own :active); pressProps are then onPointerDown, onPointerCancel, onKeyDown, onBlur and onClick. A
-       preventDefault in one of your handlers does not stop the press there: the browser decides the click
-     returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
-       onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
-   Behavior:
-     Pointer: the press is made on release over the element (the browser's click), so sliding off before release cancels
-       it (WCAG 2.2, 2.5.2 Pointer cancellation); sliding back on while held presses it again. Only the primary button presses.
-     Keyboard: Enter presses when it goes down (as a native button does) and does not repeat while held; Space presses
-       when it comes up, and Escape or moving focus away while it is held cancels it. A link (a[href]) keeps Enter for itself.
-     A click with no pointer and no key (a screen reader activating the element) presses with pointerType "virtual".
-     Your own handlers of the same events still run: pass them in options.handlers and they run first; preventDefault
-       in one stops the press.
-   Notes:
-     It gives behavior, not semantics: put it on a native button whenever you can. A custom surface needs role="button"
-       (or the role of its widget), tabIndex 0 and a name; the check-system rule semantic-html rejects a clickable div
-       without a role.
-     Hover is not a press: hover treatment comes from :hover, which touch screens do not keep after a tap.
-*/
-
-const PRIMARY = 0;
-function usePressable(options = {}) {
-  const {
-    onPress,
-    onPressStart,
-    onPressEnd,
-    onPressChange,
-    disabled = false,
-    handlers = {},
-    native = false
-  } = options;
-  const [pressed, setPressedState] = _react.default.useState(false);
-  // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
-  const hold = _react.default.useRef(null);
-  const key = _react.default.useRef(null);
-  const lastPointer = _react.default.useRef(null);
-  const latest = _react.default.useRef(options);
-  latest.current = options;
-  const setPressed = on => {
-    setPressedState(on);
-    if (latest.current.onPressChange) latest.current.onPressChange(on);
-  };
-  const start = pointerType => {
-    hold.current = {
-      pointerType
-    };
-    setPressed(true);
-    if (onPressStart) onPressStart({
-      pointerType
-    });
-  };
-  const end = () => {
-    const was = hold.current;
-    hold.current = null;
-    setPressed(false);
-    if (was && onPressEnd) onPressEnd({
-      pointerType: was.pointerType
-    });
-  };
-  const fire = (e, pointerType) => {
-    if (onPress) onPress({
-      pointerType,
-      target: e.currentTarget,
-      shiftKey: !!e.shiftKey,
-      ctrlKey: !!e.ctrlKey,
-      metaKey: !!e.metaKey,
-      altKey: !!e.altKey,
-      event: e
-    });
-  };
-  // the caller's own handler first; preventDefault in it stops the press
-  const chain = (name, own) => e => {
-    if (handlers[name]) handlers[name](e);
-    if (disabled || e.defaultPrevented) return;
-    own(e);
-  };
-  const isLink = el => el && el.tagName === 'A' && el.hasAttribute('href');
-  _react.default.useEffect(() => {
-    if (disabled && hold.current) end();
-  });
-  if (native) {
-    // the browser's click is the press: the pointer or key before it only names the kind of input
-    const own = name => e => {
-      if (handlers[name]) handlers[name](e);
-    };
-    const nativeProps = {
-      onPointerDown: e => {
-        own('onPointerDown')(e);
-        lastPointer.current = e.pointerType || 'mouse';
-      },
-      onPointerCancel: e => {
-        own('onPointerCancel')(e);
-        lastPointer.current = null;
-      },
-      onKeyDown: e => {
-        own('onKeyDown')(e);
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard';
-      },
-      onBlur: e => {
-        own('onBlur')(e);
-        lastPointer.current = null;
-      },
-      // a pointer or key that never clicked names no later click
-      onClick: e => {
-        own('onClick')(e);
-        const pointerType = lastPointer.current || (e.detail === 0 ? 'virtual' : 'mouse');
-        lastPointer.current = null;
-        if (!disabled) fire(e, pointerType);
-      }
-    };
-    Object.keys(handlers).forEach(name => {
-      if (!nativeProps[name]) nativeProps[name] = handlers[name];
-    });
-    return {
-      pressed: false,
-      pressProps: nativeProps
-    };
-  }
-  const pressProps = {
-    onPointerDown: chain('onPointerDown', e => {
-      if (e.button !== PRIMARY) return;
-      const el = e.currentTarget;
-      lastPointer.current = e.pointerType || 'mouse';
-      start(lastPointer.current);
-      // the release may happen anywhere: it ends the press; off the element it also cancels it (no click follows)
-      const up = u => {
-        window.removeEventListener('pointerup', up, true);
-        window.removeEventListener('pointercancel', up, true);
-        if (u.type === 'pointercancel' || !el.contains(u.target)) lastPointer.current = null;
-        if (hold.current && hold.current.pointerType !== 'keyboard') end();
-      };
-      window.addEventListener('pointerup', up, true);
-      window.addEventListener('pointercancel', up, true);
-    }),
-    onPointerUp: chain('onPointerUp', () => {
-      if (hold.current && hold.current.pointerType !== 'keyboard') end();
-    }),
-    onPointerCancel: chain('onPointerCancel', () => {
-      if (hold.current) end();
-      lastPointer.current = null;
-    }),
-    onPointerLeave: chain('onPointerLeave', () => {
-      if (hold.current && hold.current.pointerType !== 'keyboard') {
-        hold.current.left = true;
-        setPressed(false);
-      }
-    }),
-    onPointerEnter: chain('onPointerEnter', e => {
-      if (hold.current && hold.current.left && e.buttons & 1) {
-        hold.current.left = false;
-        setPressed(true);
-      }
-    }),
-    onKeyDown: chain('onKeyDown', e => {
-      lastPointer.current = null;
-      if (e.key === 'Escape' && key.current) {
-        key.current = null;
-        end();
-        return;
-      }
-      if (e.key === 'Enter' && !isLink(e.currentTarget)) {
-        e.preventDefault(); // the native button's own click would press twice
-        if (e.repeat) return;
-        start('keyboard');
-        fire(e, 'keyboard');
-        end();
-      } else if (e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault(); // no page scroll, no native click
-        if (e.repeat || key.current) return;
-        key.current = ' ';
-        start('keyboard');
-      }
-    }),
-    onKeyUp: chain('onKeyUp', e => {
-      if ((e.key === ' ' || e.key === 'Spacebar') && key.current) {
-        e.preventDefault();
-        key.current = null;
-        fire(e, 'keyboard');
-        end();
-      }
-    }),
-    onBlur: chain('onBlur', () => {
-      if (key.current) {
-        key.current = null;
-        end();
-      }
-    }),
-    onClick: chain('onClick', e => {
-      const pointerType = lastPointer.current;
-      lastPointer.current = null;
-      if (pointerType) {
-        if (hold.current) end();
-        fire(e, pointerType);
-        return;
-      }
-      if (e.detail === 0) fire(e, 'virtual'); // a click with no pointer and no key: assistive technology or a script
-    })
-  };
-  // the caller's other handlers pass through untouched
-  Object.keys(handlers).forEach(name => {
-    if (!pressProps[name]) pressProps[name] = handlers[name];
-  });
-  return {
-    pressed: !disabled && pressed,
-    pressProps
-  };
-}
-  } },
-  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VIRTUAL_STICKY_CLASS = void 0;
-exports.VirtualGap = VirtualGap;
-exports.VirtualProbe = VirtualProbe;
-exports.gapPieces = gapPieces;
-exports.useVirtualizer = useVirtualizer;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useVirtualizer
-   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
-     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
-     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
-   Usage:
-     const v = useVirtualizer({ count: files.length });
-     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
-       <VirtualProbe />
-       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
-         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
-     </div>
-     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-grid-row-height); overflow-y: auto; }
-   Props:
-     count: how many items there are
-     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
-       size; the token is the estimate for the items not rendered)
-     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
-     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
-     overscan: rows rendered beyond each edge of the view (default 4)
-     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
-     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
-     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
-       grid) not rendered
-     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
-     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
-       first in the viewport)
-   Behavior:
-     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
-     name it (aria-label) and give it its role (list, grid, listbox).
-     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
-     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
-     scroll anchoring keeps the content still while gaps replace items of another size.
-     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
-     "12 of 4,000" even though only a few are in the page.
-   Notes:
-     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
-     item matters, unless the page offers its own search. DataGrid keeps the table renderer's own rendering.
-     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
-     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
-*/
-
-const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
-
-// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
-function gapPieces(count) {
-  const out = [];
-  let n = Math.max(0, Math.floor(count));
-  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
-    out.push(p);
-    n -= p;
-  }
-  return out;
-}
-function VirtualGap({
-  count,
-  axis = 'y'
-}) {
-  if (!count) return null;
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-gap',
-    'data-plx-axis': axis,
-    'aria-hidden': 'true'
-  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
-    key: i,
-    className: 'plx-virtual-gap__piece',
-    'data-plx-axis': axis,
-    'data-plx-span': String(p)
-  })));
-}
-function VirtualProbe({
-  axis = 'y'
-}) {
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-probe',
-    'data-plx-axis': axis,
-    'data-plx-virtual-probe': '',
-    'aria-hidden': 'true'
-  });
-}
-function useVirtualizer({
-  count = 0,
-  mode = 'fixed',
-  axis = 'y',
-  grid = false,
-  overscan = 4,
-  sticky
-} = {}) {
-  const viewportRef = _react.default.useRef(null);
-  const [view, setView] = _react.default.useState({
-    offset: 0,
-    size: 0,
-    pitch: 0,
-    columns: 1
-  });
-  const [focused, setFocused] = _react.default.useState(-1);
-  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
-  const shown = _react.default.useRef({
-    start: 0,
-    end: 0
-  }); // the rows rendered last
-  const horizontal = axis === 'x';
-
-  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
-  const measure = _react.default.useCallback(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
-    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
-    let columns = 1;
-    if (grid) {
-      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
-      if (items.length) {
-        const top = items[0].offsetTop;
-        let n = 0;
-        while (n < items.length && items[n].offsetTop === top) n++;
-        // no wrap seen while more items exist: guess wider, render more and look again
-        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
-      }
-    }
-    if (mode === 'measured') {
-      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
-        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
-      });
-    }
-    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
-    const size = horizontal ? el.clientWidth : el.clientHeight;
-    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
-      offset,
-      size,
-      pitch,
-      columns
-    });
-  }, [horizontal, grid, mode, count, view.columns]);
-  _react.default.useLayoutEffect(() => {
-    measure();
-  });
-  _react.default.useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return undefined;
-    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
-    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
-    const onScroll = () => measure();
-    const onFocus = e => {
-      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
-      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
-    };
-    const onBlur = e => {
-      if (!el.contains(e.relatedTarget)) setFocused(-1);
-    };
-    el.addEventListener('scroll', onScroll, {
-      passive: true
-    });
-    el.addEventListener('focusin', onFocus);
-    el.addEventListener('focusout', onBlur);
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
-    if (ro) ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', onScroll);
-      el.removeEventListener('focusin', onFocus);
-      el.removeEventListener('focusout', onBlur);
-      if (ro) ro.disconnect();
-    };
-  }, [measure]);
-  const columns = grid ? Math.max(1, view.columns) : 1;
-  const rows = Math.ceil(count / columns);
-  const pitch = view.pitch || 1;
-  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
-  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
-  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
-  let first;
-  const last = shown.current;
-  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
-    let pos = last.start * pitch,
-      i = last.start;
-    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
-      pos += sizes.current.get(i) || pitch;
-      i++;
-    }
-    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
-    first = Math.min(rows, i);
-  } else first = Math.min(rows, Math.floor(view.offset / pitch));
-  let fill = 0,
-    covered = 0;
-  const target = view.size || pitch * 10;
-  while (first + fill < rows && covered < target) {
-    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
-    fill++;
-  }
-  const startRow = Math.max(0, first - overscan);
-  const endRow = Math.min(rows, first + fill + overscan); // exclusive
-  const start = startRow * columns,
-    end = Math.min(count, endRow * columns);
-  shown.current = {
-    start: startRow,
-    end: endRow
-  };
-
-  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
-  const pinned = [];
-  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
-  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
-  if (header !== undefined && !grid) pinned.push(header);
-  const segments = [];
-  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
-  let at = 0;
-  const pushRows = (from, to) => {
-    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
-      key: 'i' + i,
-      index: i
-    });
-  };
-  const pushGap = (from, to) => {
-    if (to > from) segments.push({
-      key: 'g' + from,
-      gap: true,
-      count: to - from
-    });
-  };
-  rowsOut.filter(r => r < startRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, startRow);
-  pushRows(startRow, endRow);
-  at = endRow;
-  rowsOut.filter(r => r >= endRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, rows);
-  const itemProps = _react.default.useCallback(index => ({
-    'data-plx-virtual-index': index,
-    'aria-posinset': index + 1,
-    'aria-setsize': count
-  }), [count]);
-  const scrollToIndex = _react.default.useCallback(index => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const offset = Math.floor(index / columns) * pitch;
-    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
-    measure();
-  }, [columns, pitch, horizontal, measure]);
-  return {
-    viewportRef,
-    segments,
-    itemProps,
-    scrollToIndex,
-    range: {
-      start,
-      end
-    },
-    columns
-  };
-}
-  } },
   "platform/components/DataGrid/environment.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -28768,7 +26175,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/filter-off":"platform/dist/icons/plenix/filter-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fill.js":"platform/utils/fill.js","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/filter-off":"platform/dist/icons/plenix/filter-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28786,6 +26193,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _format = require("../../utils/format.js");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fill = require("../../utils/fill.js");
 var _fields = require("../../utils/fields.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _calendar = _interopRequireDefault(require("plenix-platform/icons/plenix/calendar"));
@@ -28989,10 +26397,10 @@ function QuickFilter({
     value: q,
     onChange: e => setQ(e.target.value),
     onClear: () => setQ(''),
-    placeholder: (0, _panelParts.fill)(t.find, {
+    placeholder: (0, _fill.fill)(t.find, {
       noun
     }),
-    label: (0, _panelParts.fill)(t.find, {
+    label: (0, _fill.fill)(t.find, {
       noun
     })
   }), /*#__PURE__*/_react.default.createElement("div", {
@@ -29006,7 +26414,7 @@ function QuickFilter({
     onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
   })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "secondary"
-  }, (0, _panelParts.fill)(t.none, {
+  }, (0, _fill.fill)(t.none, {
     noun
   }))));
   const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -29086,7 +26494,7 @@ function SingleQuickFilterMenu({
   }));
 }
   } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29116,6 +26524,7 @@ var _fields = require("../../utils/fields.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
 var _search = _interopRequireDefault(require("plenix-platform/icons/plenix/search"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
@@ -29201,7 +26610,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
      bar: the plain table. */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 // the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
 // into More
 const ICONS = 1,
@@ -29419,7 +26827,7 @@ function CommandBar({
     };
   }, [sticky]);
   _react.default.useEffect(() => {
-    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
+    if (was.current !== selecting) (0, _announce.announce)(selecting ? (0, _fill.fill)(t.swapped, {
       n: (0, _format.formatNumber)(selCount)
     }) : t.cleared);
     was.current = selecting;
@@ -29429,7 +26837,7 @@ function CommandBar({
     plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
   };
   const off = a => !!a.disabled || !!(a.single && selCount > 1);
-  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
+  const why = a => a.why || (0, _fill.fill)(a.single && selCount > 1 ? t.single : t.why, Object.assign({
     action: String(a.label).toLowerCase()
   }, words));
   const acts = shown.length || extraMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
@@ -29481,7 +26889,7 @@ function CommandBar({
     className: "plx-command-bar__count"
   }, count) : count;
   // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
-  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, {
+  const hiddenText = sel && sel.hidden > 0 ? (0, _fill.fill)(t.hidden, {
     n: (0, _format.formatNumber)(sel.hidden)
   }) : '';
   const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
@@ -29493,7 +26901,7 @@ function CommandBar({
     variant: "ghost",
     icon: _close.default,
     className: "plx-command-bar__clear",
-    "aria-label": fill(t.clearName, {
+    "aria-label": (0, _fill.fill)(t.clearName, {
       n: (0, _format.formatNumber)(selCount)
     }) + hiddenText,
     onClick: () => sel.onClear && sel.onClear()
@@ -29523,7 +26931,7 @@ function CommandBar({
   const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
     orientation: "vertical"
   }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
-  const name = selecting ? sel.label || fill(t.actions, {
+  const name = selecting ? sel.label || (0, _fill.fill)(t.actions, {
     label: label || ''
   }).trim() : label;
   return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
@@ -29545,7 +26953,7 @@ function CommandBar({
   }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
 }
   } },
-  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29555,7 +26963,7 @@ exports.MultiPick = MultiPick;
 exports.PanelHead = PanelHead;
 exports.PanelTrigger = PanelTrigger;
 exports.Pick = Pick;
-exports.toggle = exports.fill = exports.Pill = void 0;
+exports.toggle = exports.Pill = void 0;
 exports.useReorder = useReorder;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
@@ -29570,6 +26978,7 @@ var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/
 var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-up"));
 var _circleInfo = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-info"));
 var _drag = _interopRequireDefault(require("plenix-platform/icons/plenix/drag"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
    (platform/patterns/CommandBar; internal, not part of the public API)
@@ -29588,13 +26997,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
        row; each move is announced (WCAG 2.5.7: a way without dragging) */
 const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
-exports.toggle = toggle;
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-
 // the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in
 // force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge; open and
 // onOpenChange control the panel from outside
-exports.fill = fill;
+exports.toggle = toggle;
 function PanelTrigger({
   icon,
   label,
@@ -29782,7 +27188,7 @@ function useReorder(items, setItems, nameOf, t) {
     const [x] = next.splice(i, 1);
     next.splice(to, 0, x);
     setItems(next);
-    setMsg(fill(t.moved, {
+    setMsg((0, _fill.fill)(t.moved, {
       name: nameOf(x),
       position: to + 1,
       total: items.length
@@ -29796,7 +27202,7 @@ function useReorder(items, setItems, nameOf, t) {
     'data-plx-row': '',
     tabIndex: 0,
     draggable: true,
-    'aria-label': fill(t.row, {
+    'aria-label': (0, _fill.fill)(t.row, {
       name,
       position: i + 1,
       total: items.length
@@ -29836,7 +27242,7 @@ function useReorder(items, setItems, nameOf, t) {
     }
   });
   const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: fill(t.reorder, {
+    label: (0, _fill.fill)(t.reorder, {
       name
     }),
     placement: "bottom-end",
@@ -29844,7 +27250,7 @@ function useReorder(items, setItems, nameOf, t) {
       variant: "ghost",
       icon: _drag.default,
       iconOnly: true,
-      label: fill(t.reorder, {
+      label: (0, _fill.fill)(t.reorder, {
         name
       }),
       className: "plx-find-panel__handle"
@@ -29984,7 +27390,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js","plenix-platform/icons/plenix/fields":"platform/dist/icons/plenix/fields.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fill.js":"platform/utils/fill.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js","plenix-platform/icons/plenix/fields":"platform/dist/icons/plenix/fields.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30005,6 +27411,7 @@ var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fill = require("../../utils/fill.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-up"));
@@ -30083,9 +27490,9 @@ function ColumnsList({
   };
   const move = (f, to, focus) => {
     if (to < 0 || to >= order.length) return;
-    put(moveTo(order, f, to), to === 0 ? hidden.filter(x => x !== f) : hidden, to === 0 ? (0, _panelParts.fill)(t.isFirst, {
+    put(moveTo(order, f, to), to === 0 ? hidden.filter(x => x !== f) : hidden, to === 0 ? (0, _fill.fill)(t.isFirst, {
       name: name(f)
-    }) : (0, _panelParts.fill)(t.moved, {
+    }) : (0, _fill.fill)(t.moved, {
       name: name(f),
       position: to + 1,
       total: order.length
@@ -30105,7 +27512,7 @@ function ColumnsList({
       "data-plx-field": f,
       tabIndex: 0,
       draggable: true,
-      "aria-label": (0, _panelParts.fill)(t.row, {
+      "aria-label": (0, _fill.fill)(t.row, {
         name: name(f),
         first: i === 0 ? t.firstMark : ''
       }),
@@ -30136,7 +27543,7 @@ function ColumnsList({
         if (from && from !== f) move(from, i);
       }
     }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: (0, _panelParts.fill)(t.moveMenu, {
+      label: (0, _fill.fill)(t.moveMenu, {
         name: name(f)
       }),
       trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -30144,7 +27551,7 @@ function ColumnsList({
         variant: "ghost",
         icon: _drag.default,
         iconOnly: true,
-        label: (0, _panelParts.fill)(t.moveMenu, {
+        label: (0, _fill.fill)(t.moveMenu, {
           name: name(f)
         }),
         className: "plx-columns-list__handle"
@@ -30162,7 +27569,7 @@ function ColumnsList({
       label: name(f),
       checked: hidden.indexOf(f) < 0,
       disabled: i === 0,
-      onChange: () => put(order, (0, _panelParts.toggle)(hidden, f), (0, _panelParts.fill)(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, {
+      onChange: () => put(order, (0, _panelParts.toggle)(hidden, f), (0, _fill.fill)(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, {
         name: name(f)
       }))
     }), i === 0 ? /*#__PURE__*/_react.default.createElement("span", {
@@ -30327,7 +27734,7 @@ function ManageColumnsDialog({
   }))));
 }
   } },
-  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30338,6 +27745,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
    Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
@@ -30363,7 +27771,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Previous is disabled on the first page; Next on the last.
      The current page carries aria-current="page".
 */
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
   const list = Array.from(set).sort((a, b) => a - b),
@@ -30421,7 +27828,7 @@ function Pagination({
     key: p,
     className: "plx-pagination__page",
     "aria-current": p === page ? 'page' : undefined,
-    "aria-label": fill(t.page, {
+    "aria-label": (0, _fill.fill)(t.page, {
       n: p
     }),
     onClick: () => go(p)
@@ -31768,46 +29175,6 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/dist/icons/plenix/attachment.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "attachment" of the plenix set (symbol attach_file).
-const d0 = "M682.92-316.23q0 83.29-57.88 141.76-57.88 58.47-141 58.47-84.27 0-141.77-60.9-57.5-60.89-57.5-146.33v-378.62q0-59.23 41.08-100.69Q366.92-844 426.15-844q60.23 0 100.81 43.96 40.58 43.96 40.58 105.19v355.39q0 34.76-24.22 59.42-24.22 24.65-59.03 24.65-35.67 0-59.9-25.62-24.23-25.62-24.23-62.45v-361.15h51.99v365.15q0 13.48 9.11 22.78t22.59 9.3q13.47 0 22.58-9.3 9.11-9.3 9.11-22.78v-362.77q.38-37.31-25.78-63.54Q463.6-792 425.96-792q-37.46 0-63.33 27.42-25.86 27.43-25.86 64.73v383.62q.38 61.54 43.15 104.38Q422.69-169 484.18-168q61.46 1 104.49-44.35 43.02-45.34 42.25-108.88v-383.38h52v388.38Z";
-const d1 = "M706.92-334.23q0 97.44-67.81 165.83-67.8 68.4-165.07 68.4t-165.27-68.4q-68-68.39-68-165.83v-359.62q0-69.23 48.08-117.69Q336.92-860 406.15-860q69.23 0 117.31 48.46t48.08 117.69v340.39q0 40.61-28.29 69.34-28.3 28.73-68.96 28.73-40.67 0-69.4-28.53-28.73-28.53-28.73-69.54v-351.15h59.99v351.15q0 16.08 10.81 27.08t26.89 11q16.07 0 26.88-11 10.81-11 10.81-27.08v-340.77q-.62-44.31-30.78-75.04Q450.6-800 406.15-800q-44.26 0-74.82 30.92-30.56 30.93-30.56 75.23v359.62q-.62 72.54 50.15 123.38Q401.69-160 474.18-160q71.46 0 121.49-50.85 50.02-50.84 51.25-123.38v-370.38h60v370.38Z";
-var _default = exports.default = {
-  "name": "attachment",
-  "set": "plenix",
-  "symbol": "attach_file",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      }
-    }
-  }
-};
-  } },
   "platform/dist/icons/plenix/expand.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -31822,86 +29189,6 @@ var _default = exports.default = {
   "name": "expand",
   "set": "plenix",
   "symbol": "open_in_full",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/field-currency.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "field-currency" of the plenix set (symbol attach_money).
-const d0 = "M453.23-154v-77.69Q403-240 367.27-272.5t-50.73-79.11l55.54-23.08q9.15 34.46 42.03 62.58Q447-284 483.92-284q41.31 0 70.93-22.11 29.61-22.12 29.61-59.89 0-33.85-25.38-56.54-25.39-22.69-80.46-41.92-73.77-26.85-109.58-57.46-35.81-30.62-35.81-82.08 0-45.38 32.89-80.04 32.88-34.65 87.11-44.5V-806h52v77.46q67.77 10.08 90.92 48.27 23.16 38.19 26.46 37.12l-50.76 22.07Q562.69-644 537.15-661q-25.53-17-54.92-17-36.15 0-63.58 20.5-27.42 20.5-27.42 51.5 0 27.92 23.08 48.35 23.07 20.42 93.38 45.34 71.92 24.54 103.35 57.89 31.42 33.34 31.42 89.19 0 51.61-37.19 89.84-37.19 38.24-100.04 45.93V-154h-52Z";
-const d1 = "M450.23-130v-83.69Q398-223 360.27-254.5t-55.73-88.11l55.54-23.08q16.15 46.46 46.03 71.08Q436-270 485.92-270q43.31 0 76.43-20.61 33.11-20.62 33.11-65.39 0-38.85-24.88-62.04-24.89-23.19-102.96-48.42-81.77-25.85-113.58-60.46-31.81-34.62-31.81-87.08 0-60.38 42.39-95.04 42.38-34.65 85.61-38.5V-830h60v82.46q45.77 6.08 76.92 29.77 31.16 23.69 48.46 61.62l-54.76 25.07Q567.69-660 544.15-676q-23.53-16-61.92-16-45.15 0-72.58 22-27.42 22-27.42 56 0 34.92 28.08 55.85 28.07 20.92 104.38 43.84 70.92 21.54 105.85 61.39 34.92 39.84 34.92 95.69 0 65.61-42.19 101.84-42.19 36.24-103.04 42.93V-130h-60Z";
-var _default = exports.default = {
-  "name": "field-currency",
-  "set": "plenix",
-  "symbol": "attach_money",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/field-long-text.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "field-long-text" of the plenix set (symbol notes).
-const d0 = "M164-278.62v-51.99h392v51.99H164ZM164-454v-52h632v52H164Zm0-175.39v-51.99h632v51.99H164Z";
-const d1 = "M140-254.62v-59.99h440v59.99H140ZM140-450v-60h680v60H140Zm0-195.39v-59.99h680v59.99H140Z";
-var _default = exports.default = {
-  "name": "field-long-text",
-  "set": "plenix",
-  "symbol": "notes",
   "fillOutline": false,
   "mirrored": false,
   "drawings": {
@@ -31999,122 +29286,6 @@ var _default = exports.default = {
       "fill": {
         "viewBox": "0 -960 960 960",
         "d": "M140-152.31v-280h680v280H140Zm0-375.38v-280h680v280H140Z"
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/image-a-2.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "image-a-2" of the plenix set (symbol image).
-var _default = exports.default = {
-  "name": "image-a-2",
-  "set": "plenix",
-  "symbol": "image",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Z"
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Z"
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/link.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "link" of the plenix set (symbol link).
-const d0 = "M424.31-306.46H289.54q-72.02 0-122.78-50.82Q116-408.1 116-480.2q0-72.11 50.76-122.72 50.76-50.62 122.78-50.62h134.77v52H289.54q-50.39 0-85.96 35.58Q168-530.38 168-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h134.77v52ZM346-454v-52h268v52H346Zm189.69 147.54v-52h134.77q50.39 0 85.96-35.58Q792-429.62 792-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H535.69v-52h134.77q72.02 0 122.78 50.82Q844-551.9 844-479.8q0 72.11-50.76 122.72-50.76 50.62-122.78 50.62H535.69Z";
-const d1 = "M432.31-298.46H281.54q-75.34 0-128.44-53.1Q100-404.65 100-479.98q0-75.33 53.1-128.44 53.1-53.12 128.44-53.12h150.77v60H281.54q-50.39 0-85.96 35.58Q160-530.38 160-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h150.77v60ZM330-450v-60h300v60H330Zm197.69 151.54v-60h150.77q50.39 0 85.96-35.58Q800-429.62 800-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H527.69v-60h150.77q75.34 0 128.44 53.1Q860-555.35 860-480.02q0 75.33-53.1 128.44-53.1 53.12-128.44 53.12H527.69Z";
-var _default = exports.default = {
-  "name": "link",
-  "set": "plenix",
-  "symbol": "link",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/select.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "select" of the plenix set (symbol check_box).
-var _default = exports.default = {
-  "name": "select",
-  "set": "plenix",
-  "symbol": "check_box",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Z"
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Z"
       }
     }
   }
@@ -32240,92 +29411,349 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../hooks/usePressable.js":"platform/hooks/usePressable.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/field-currency":"platform/dist/icons/plenix/field-currency.js","plenix-platform/icons/plenix/field-long-text":"platform/dist/icons/plenix/field-long-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/select":"platform/dist/icons/plenix/select.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/dist/icons/plenix/attachment.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DataGridEngine = DataGridEngine;
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "attachment" of the plenix set (symbol attach_file).
+const d0 = "M682.92-316.23q0 83.29-57.88 141.76-57.88 58.47-141 58.47-84.27 0-141.77-60.9-57.5-60.89-57.5-146.33v-378.62q0-59.23 41.08-100.69Q366.92-844 426.15-844q60.23 0 100.81 43.96 40.58 43.96 40.58 105.19v355.39q0 34.76-24.22 59.42-24.22 24.65-59.03 24.65-35.67 0-59.9-25.62-24.23-25.62-24.23-62.45v-361.15h51.99v365.15q0 13.48 9.11 22.78t22.59 9.3q13.47 0 22.58-9.3 9.11-9.3 9.11-22.78v-362.77q.38-37.31-25.78-63.54Q463.6-792 425.96-792q-37.46 0-63.33 27.42-25.86 27.43-25.86 64.73v383.62q.38 61.54 43.15 104.38Q422.69-169 484.18-168q61.46 1 104.49-44.35 43.02-45.34 42.25-108.88v-383.38h52v388.38Z";
+const d1 = "M706.92-334.23q0 97.44-67.81 165.83-67.8 68.4-165.07 68.4t-165.27-68.4q-68-68.39-68-165.83v-359.62q0-69.23 48.08-117.69Q336.92-860 406.15-860q69.23 0 117.31 48.46t48.08 117.69v340.39q0 40.61-28.29 69.34-28.3 28.73-68.96 28.73-40.67 0-69.4-28.53-28.73-28.53-28.73-69.54v-351.15h59.99v351.15q0 16.08 10.81 27.08t26.89 11q16.07 0 26.88-11 10.81-11 10.81-27.08v-340.77q-.62-44.31-30.78-75.04Q450.6-800 406.15-800q-44.26 0-74.82 30.92-30.56 30.93-30.56 75.23v359.62q-.62 72.54 50.15 123.38Q401.69-160 474.18-160q71.46 0 121.49-50.85 50.02-50.84 51.25-123.38v-370.38h60v370.38Z";
+var _default = exports.default = {
+  "name": "attachment",
+  "set": "plenix",
+  "symbol": "attach_file",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/field-currency.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "field-currency" of the plenix set (symbol attach_money).
+const d0 = "M453.23-154v-77.69Q403-240 367.27-272.5t-50.73-79.11l55.54-23.08q9.15 34.46 42.03 62.58Q447-284 483.92-284q41.31 0 70.93-22.11 29.61-22.12 29.61-59.89 0-33.85-25.38-56.54-25.39-22.69-80.46-41.92-73.77-26.85-109.58-57.46-35.81-30.62-35.81-82.08 0-45.38 32.89-80.04 32.88-34.65 87.11-44.5V-806h52v77.46q67.77 10.08 90.92 48.27 23.16 38.19 26.46 37.12l-50.76 22.07Q562.69-644 537.15-661q-25.53-17-54.92-17-36.15 0-63.58 20.5-27.42 20.5-27.42 51.5 0 27.92 23.08 48.35 23.07 20.42 93.38 45.34 71.92 24.54 103.35 57.89 31.42 33.34 31.42 89.19 0 51.61-37.19 89.84-37.19 38.24-100.04 45.93V-154h-52Z";
+const d1 = "M450.23-130v-83.69Q398-223 360.27-254.5t-55.73-88.11l55.54-23.08q16.15 46.46 46.03 71.08Q436-270 485.92-270q43.31 0 76.43-20.61 33.11-20.62 33.11-65.39 0-38.85-24.88-62.04-24.89-23.19-102.96-48.42-81.77-25.85-113.58-60.46-31.81-34.62-31.81-87.08 0-60.38 42.39-95.04 42.38-34.65 85.61-38.5V-830h60v82.46q45.77 6.08 76.92 29.77 31.16 23.69 48.46 61.62l-54.76 25.07Q567.69-660 544.15-676q-23.53-16-61.92-16-45.15 0-72.58 22-27.42 22-27.42 56 0 34.92 28.08 55.85 28.07 20.92 104.38 43.84 70.92 21.54 105.85 61.39 34.92 39.84 34.92 95.69 0 65.61-42.19 101.84-42.19 36.24-103.04 42.93V-130h-60Z";
+var _default = exports.default = {
+  "name": "field-currency",
+  "set": "plenix",
+  "symbol": "attach_money",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/field-long-text.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "field-long-text" of the plenix set (symbol notes).
+const d0 = "M164-278.62v-51.99h392v51.99H164ZM164-454v-52h632v52H164Zm0-175.39v-51.99h632v51.99H164Z";
+const d1 = "M140-254.62v-59.99h440v59.99H140ZM140-450v-60h680v60H140Zm0-195.39v-59.99h680v59.99H140Z";
+var _default = exports.default = {
+  "name": "field-long-text",
+  "set": "plenix",
+  "symbol": "notes",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/image-a-2.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "image-a-2" of the plenix set (symbol image).
+var _default = exports.default = {
+  "name": "image-a-2",
+  "set": "plenix",
+  "symbol": "image",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/link.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "link" of the plenix set (symbol link).
+const d0 = "M424.31-306.46H289.54q-72.02 0-122.78-50.82Q116-408.1 116-480.2q0-72.11 50.76-122.72 50.76-50.62 122.78-50.62h134.77v52H289.54q-50.39 0-85.96 35.58Q168-530.38 168-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h134.77v52ZM346-454v-52h268v52H346Zm189.69 147.54v-52h134.77q50.39 0 85.96-35.58Q792-429.62 792-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H535.69v-52h134.77q72.02 0 122.78 50.82Q844-551.9 844-479.8q0 72.11-50.76 122.72-50.76 50.62-122.78 50.62H535.69Z";
+const d1 = "M432.31-298.46H281.54q-75.34 0-128.44-53.1Q100-404.65 100-479.98q0-75.33 53.1-128.44 53.1-53.12 128.44-53.12h150.77v60H281.54q-50.39 0-85.96 35.58Q160-530.38 160-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h150.77v60ZM330-450v-60h300v60H330Zm197.69 151.54v-60h150.77q50.39 0 85.96-35.58Q800-429.62 800-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H527.69v-60h150.77q75.34 0 128.44 53.1Q860-555.35 860-480.02q0 75.33-53.1 128.44-53.1 53.12-128.44 53.12H527.69Z";
+var _default = exports.default = {
+  "name": "link",
+  "set": "plenix",
+  "symbol": "link",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/select.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "select" of the plenix set (symbol check_box).
+var _default = exports.default = {
+  "name": "select",
+  "set": "plenix",
+  "symbol": "check_box",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/components/DataGrid/engine/helpers.jsx": { deps: {"react":null,"../cells.jsx":"platform/components/DataGrid/cells.jsx","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/field-currency":"platform/dist/icons/plenix/field-currency.js","plenix-platform/icons/plenix/field-long-text":"platform/dist/icons/plenix/field-long-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/select":"platform/dist/icons/plenix/select.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.words = exports.typeOf = exports.typeIcons = exports.sorted = exports.lengthName = exports.kinds = exports.interactive = exports.compare = exports.cellDirection = exports.GRID = exports.EMPTY_ROWS = void 0;
 var _react = _interopRequireDefault(require("react"));
-var _unread = require("./unread.js");
-var _dataText = require("../../utils/dataText.jsx");
-var _room = require("./room.js");
-var _reactDom = require("react-dom");
-var _scrollbars = require("./scrollbars.jsx");
-var _dnd = require("../../utils/dnd.js");
-var _DragHandle = require("../DragHandle/DragHandle.jsx");
-var _reactTable = require("@tanstack/react-table");
-var _reactVirtual = require("@tanstack/react-virtual");
-var _direction = require("../../utils/direction.js");
-var _format = require("../../utils/format.js");
-var _cx = require("../../utils/cx.js");
-var _usePressable = require("../../hooks/usePressable.js");
-var _announce = require("../../utils/announce.jsx");
-var _grid = require("../../utils/grid.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
-var _paneLimit = require("../../utils/paneLimit.js");
-var _useVirtualizer = require("../../hooks/useVirtualizer.js");
-var _environment = require("./environment.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Button = require("../Button/Button.jsx");
-var _Stack = require("../Stack/Stack.jsx");
-var _Menu = require("../Menu/Menu.jsx");
-var _ColumnsMenu = require("../../patterns/ColumnsMenu/ColumnsMenu.jsx");
-var _Text = require("../Text/Text.jsx");
-var _Input = require("../Input/Input.jsx");
-var _Popover = require("../Popover/Popover.jsx");
-var _Pagination = require("../Pagination/Pagination.jsx");
-var _EmptyState = require("../EmptyState/EmptyState.jsx");
-var _state = require("./state.js");
-var _adapter = require("./adapter.js");
-var _cells = require("./cells.jsx");
-var _records = require("./records.js");
-var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
-var _add = _interopRequireDefault(require("plenix-platform/icons/plenix/add"));
+var _cells = require("../cells.jsx");
 var _attachment = _interopRequireDefault(require("plenix-platform/icons/plenix/attachment"));
 var _calendar = _interopRequireDefault(require("plenix-platform/icons/plenix/calendar"));
-var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
-var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
-var _circleInfo = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-info"));
 var _edText = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-text"));
-var _expand = _interopRequireDefault(require("plenix-platform/icons/plenix/expand"));
 var _fieldCurrency = _interopRequireDefault(require("plenix-platform/icons/plenix/field-currency"));
 var _fieldLongText = _interopRequireDefault(require("plenix-platform/icons/plenix/field-long-text"));
 var _fieldNumber = _interopRequireDefault(require("plenix-platform/icons/plenix/field-number"));
 var _fieldSelect = _interopRequireDefault(require("plenix-platform/icons/plenix/field-select"));
-var _filter = _interopRequireDefault(require("plenix-platform/icons/plenix/filter"));
-var _groupBy = _interopRequireDefault(require("plenix-platform/icons/plenix/group-by"));
 var _imageA = _interopRequireDefault(require("plenix-platform/icons/plenix/image-a-2"));
 var _link = _interopRequireDefault(require("plenix-platform/icons/plenix/link"));
-var _more = _interopRequireDefault(require("plenix-platform/icons/plenix/more"));
 var _person = _interopRequireDefault(require("plenix-platform/icons/plenix/person"));
 var _select = _interopRequireDefault(require("plenix-platform/icons/plenix/select"));
-var _settingsCustomize = _interopRequireDefault(require("plenix-platform/icons/plenix/settings-customize"));
-var _sortAscending = _interopRequireDefault(require("plenix-platform/icons/plenix/sort-ascending"));
-var _sortDescending = _interopRequireDefault(require("plenix-platform/icons/plenix/sort-descending"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGridEngine (TanStack)
-   Summary: The React-owned renderer behind the public DataGrid and static Table.
-   Usage: <DataGridEngine label="People" data={people} columns={columns} selectable />
-   Props: label/data/columns/index, selection and view state, rowHeight/wrapHeaders, narrow layout, fill/pages/load-more,
-     groupBy, tree/childrenField/treeColumn, editable columns, row menus, storageKey, fetchRows and loading/error state.
-     onRowClick(record,event), onRowDoubleClick(record,event), onCellEdit(record,change) receive application records.
-   Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
-     token-sized CSS gaps represent missing rows. An automatic viewport is bounded by its allocated pane as well as the browser. Opening saved state is supplied on the very first render. Search filtering is deferred so typing stays responsive;
-     controlled sort state and the numeric text collator are reused across search updates.
-   Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point.
-     A part takes the grid's modes and its row's state as its own classes (zero overlap, data-grid.css): a record row
-     __grid-row--narrow (the list) and --virtual (the drawn window); every cell of it __grid-cell--narrow, --sized (a row
-     height step) and --lines (a step taller than short), the first after the checkbox --after-lead, a plain value
-     directly inside --bare, a nested row's tree cell __tree-cell--level-N; a value __value--wrap, --sized and --lines;
-     row actions sit in __portal--actions; the checkbox input is __check-input. The grid, the scroll body and the table
-     take the fill and the drawn window as __grid--fill, __grid-tableholder--fill, __grid-table--virtual and --narrow.
-     A group's head is __group-head--gap after a band (not in its sticky copy), its label __group-label--level-N, its
-     cells --narrow in the list, the add row's cell __group-cell--add; the eyebrow is the grid's own span. A custom cell's
-     own element takes __cell-content (a link alone in a cell fills it); a data cell (kind data, type bytes) is
-     __grid-cell--data, the data role in Mono. Table (isStatic) marks its parts --static: the root, grid, header, headers, columns, their
-     contents and titles, the body, the table, rows, cells, values and the placeholder. */
+/* Plenix · DataGrid engine · the engine's small shared values and functions
+   Summary: The engine's small shared values and functions: the grid's class name (GRID), what counts as interactive
+     inside a row, the icon for each column type (typeIcons), how a column's type is found (typeOf), the sort helpers
+     (sorted, compare), words (fills a template) and cellDirection (marks a cell's text direction).
+   Usage:
+     import { GRID, typeIcons, typeOf, sorted, compare, words, cellDirection } from './engine/helpers.jsx';
+   Props:
+     none: a module of constants and plain functions, used only by the DataGrid engine (not a public export)
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
+
+// Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
+const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
+  className: GRID + '__cell-direction',
+  dir: "auto"
+}, content) : content;
+exports.cellDirection = cellDirection;
+const EMPTY_ROWS = exports.EMPTY_ROWS = [];
+const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
+exports.words = words;
+const GRID = exports.GRID = 'plx-data-grid',
+  interactive = exports.interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"],[data-plx-no-row-click]';
+const typeIcons = exports.typeIcons = {
+  multi: _fieldSelect.default,
+  text: _edText.default,
+  number: _fieldNumber.default,
+  bytes: _attachment.default,
+  currency: _fieldCurrency.default,
+  date: _calendar.default,
+  select: _fieldSelect.default,
+  checkbox: _select.default,
+  file: _attachment.default,
+  image: _imageA.default,
+  link: _link.default,
+  person: _person.default,
+  'long-text': _fieldLongText.default
+};
+const kinds = c => [].concat(c.kind || []);
+exports.kinds = kinds;
+const typeOf = c => c.type || (kinds(c).includes('wrap') ? 'long-text' : c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
+exports.typeOf = typeOf;
+const sorted = s => s.map(x => ({
+  field: x.id,
+  dir: x.desc ? 'desc' : 'asc'
+}));
+exports.sorted = sorted;
+const lengthName = v => {
+  const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || ''));
+  return match?.[1];
+};
+exports.lengthName = lengthName;
+const sortCollator = new Intl.Collator(undefined, {
+  numeric: true
+});
+const compare = (a, b, id) => {
+  const x = a.getValue(id),
+    y = b.getValue(id);
+  if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
+  return sortCollator.compare((0, _cells.valueText)(x), (0, _cells.valueText)(y));
+};
+exports.compare = compare;
+  } },
+  "platform/components/DataGrid/engine/pill.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.pillFont = pillFont;
+exports.pillSheet = pillSheet;
+/* Plenix · DataGrid engine · a pill's text measured as the page draws it
+   Summary: Measures a pill's text the way the page draws it, with a hidden probe pill, so the grid can size a column's
+     pills.
+   Usage:
+     import { pillFont, pillSheet } from './engine/pill.js';
+     const { scale, font, wordSpacing } = pillFont(gridElement, ctx, data);
+     const { rules, flush } = pillSheet(document);
+   Props:
+     pillFont(at, ctx, data): at, an element inside the grid; ctx, a canvas 2D context (left set to the pill's font);
+       data, true for a data pill; returns { scale, font, wordSpacing }, scale being the page's width over the canvas's
+     pillSheet(doc): the one constructed sheet per document that holds the uniform pill widths; returns { rules, flush }
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
+
 // a pill's text measured as the page draws it: a hidden probe pill (md, data or not) inside the grid gives its font, size,
 // weight and word spacing, and the ratio between the page's width of a sample and the canvas's (the mono font's
 // size-adjust and fitted spaces are not the canvas's); the canvas is left set to that font
@@ -32354,6 +29782,7 @@ function pillFont(at, ctx, data) {
     wordSpacing: ctx.wordSpacing
   };
 }
+
 // uniform pill widths: the widths live in one constructed sheet per document, one entry per grid
 function pillSheet(doc) {
   if (doc.__plxPillWidths) return doc.__plxPillWidths;
@@ -32365,49 +29794,2127 @@ function pillSheet(doc) {
     flush: () => sheet.replaceSync([...rules.values()].join('\n'))
   };
 }
-// Frozen cells inherit the grid direction for logical sticky placement; their values retain automatic bidi.
-const cellDirection = (enabled, content) => enabled ? /*#__PURE__*/_react.default.createElement("span", {
-  className: GRID + '__cell-direction',
-  dir: "auto"
-}, content) : content;
-const EMPTY_ROWS = [];
-const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
-const GRID = 'plx-data-grid',
-  interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"],[data-plx-no-row-click]';
-const typeIcons = {
-  multi: _fieldSelect.default,
-  text: _edText.default,
-  number: _fieldNumber.default,
-  bytes: _attachment.default,
-  currency: _fieldCurrency.default,
-  date: _calendar.default,
-  select: _fieldSelect.default,
-  checkbox: _select.default,
-  file: _attachment.default,
-  image: _imageA.default,
-  link: _link.default,
-  person: _person.default,
-  'long-text': _fieldLongText.default
-};
-const kinds = c => [].concat(c.kind || []);
-const typeOf = c => c.type || (kinds(c).includes('wrap') ? 'long-text' : c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
-const sorted = s => s.map(x => ({
-  field: x.id,
-  dir: x.desc ? 'desc' : 'asc'
-}));
-const lengthName = v => {
-  const match = /(?:--plx-ref-size-)?(\d+px)/.exec(String(v || ''));
-  return match?.[1];
-};
-const sortCollator = new Intl.Collator(undefined, {
-  numeric: true
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
 });
-const compare = (a, b, id) => {
-  const x = a.getValue(id),
-    y = b.getValue(id);
-  if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
-  return sortCollator.compare((0, _cells.valueText)(x), (0, _cells.valueText)(y));
+function getMeasurementKey(item) {
+  return typeof item === "object" ? item.key : item;
+}
+function createLazyMeasurementsView(cache, flat) {
+  const count = cache.length;
+  return new Proxy(cache, {
+    get(target, prop, receiver) {
+      if (typeof prop === "string") {
+        const c = prop.charCodeAt(0);
+        if (c >= 48 && c <= 57) {
+          const i = +prop;
+          if (Number.isInteger(i) && i >= 0 && i < count) {
+            let v = target[i];
+            if (typeof v !== "object") {
+              const s = flat[i * 2];
+              v = target[i] = {
+                index: i,
+                key: v,
+                start: s,
+                size: flat[i * 2 + 1],
+                end: s + flat[i * 2 + 1],
+                lane: 0
+              };
+            }
+            return v;
+          }
+        }
+        if (prop === "length") return count;
+      }
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+}
+exports.createLazyMeasurementsView = createLazyMeasurementsView;
+exports.getMeasurementKey = getMeasurementKey;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+function memo(getDeps, fn, opts) {
+  let deps = opts.initialDeps ?? [];
+  let result;
+  let isInitial = true;
+  function memoizedFunction() {
+    var _a;
+    const debugEnabled = 'production' !== "production" && !!opts.key && !!((_a = opts.debug) == null ? void 0 : _a.call(opts));
+    let depTime = 0;
+    if (debugEnabled) depTime = Date.now();
+    const newDeps = getDeps();
+    const depsChanged = newDeps.length !== deps.length || newDeps.some((dep, index) => deps[index] !== dep);
+    if (!depsChanged) {
+      return result;
+    }
+    deps = newDeps;
+    let resultTime = 0;
+    if (debugEnabled) resultTime = Date.now();
+    result = fn(...newDeps);
+    if (debugEnabled) {
+      const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
+      const resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
+      const resultFpsPercentage = resultEndTime / 16;
+      const pad = (str, num) => {
+        str = String(str);
+        while (str.length < num) {
+          str = " " + str;
+        }
+        return str;
+      };
+      console.info(`%c⏱ ${pad(resultEndTime, 5)} /${pad(depEndTime, 5)} ms`, `
+            font-size: .6rem;
+            font-weight: bold;
+            color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
+    }
+    if ((opts == null ? void 0 : opts.onChange) && !(isInitial && opts.skipInitialOnChange)) {
+      opts.onChange(result);
+    }
+    isInitial = false;
+    return result;
+  }
+  memoizedFunction.updateDeps = newDeps => {
+    deps = newDeps;
+  };
+  return memoizedFunction;
+}
+function notUndefined(value, msg) {
+  if (value === void 0) {
+    throw new Error(`Unexpected undefined${msg ? `: ${msg}` : ""}`);
+  } else {
+    return value;
+  }
+}
+const approxEqual = (a, b) => Math.abs(a - b) < 1.01;
+const debounce = (targetWindow, fn, ms) => {
+  let timeoutId;
+  return Object.assign(function (...args) {
+    targetWindow.clearTimeout(timeoutId);
+    timeoutId = targetWindow.setTimeout(() => fn.apply(this, args), ms);
+  }, {
+    // The handle is closure-local, so a caller that has already
+    // unsubscribed has no way to stop a queued call. Teardown paths use
+    // this to drop the pending invocation instead of letting it land.
+    cancel: () => {
+      targetWindow.clearTimeout(timeoutId);
+    }
+  });
 };
+exports.approxEqual = approxEqual;
+exports.debounce = debounce;
+exports.memo = memo;
+exports.notUndefined = notUndefined;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const utils = require("./utils.cjs");
+function classifyScrollEvent({
+  offset,
+  isScrolling,
+  elementMax,
+  holdOffset,
+  scrollOffset,
+  pendingWrite,
+  clampedMaxAtWrite
+}) {
+  var _a;
+  if (isScrolling && pendingWrite === null && offset === scrollOffset) {
+    return "spurious";
+  }
+  if (pendingWrite !== null && Math.abs(offset - pendingWrite.target) < 1.5) {
+    return "readBack";
+  }
+  if (pendingWrite !== null && !pendingWrite.smooth && elementMax !== null && pendingWrite.target > elementMax + holdOffset + 0.5 && Math.abs(offset - (elementMax + holdOffset)) < 1.5) {
+    return "clampedReadBack";
+  }
+  if (pendingWrite !== null && !pendingWrite.smooth && ((_a = pendingWrite.lowMaxes) == null ? void 0 : _a.some(max => Math.abs(offset - max) < 1.5))) {
+    return "clampedReadBack";
+  }
+  if (clampedMaxAtWrite !== null && Math.abs(offset - clampedMaxAtWrite) < 1.5) {
+    return "clampedEcho";
+  }
+  return "external";
+}
+const isAnimating = phase => phase === "smooth" || phase === "smoothFinishing";
+function externalRetiresCommand({
+  kind,
+  offset,
+  command,
+  target
+}) {
+  return kind !== "spurious" && kind !== "readBack" &&
+  // Our own write, clamped (`clampedReadBack`, #1310): the command is not
+  // retired by it, and reconcile retargets below the new max.
+  kind !== "clampedReadBack" && (command == null ? void 0 : command.index) != null &&
+  // Nothing has been written for a command waiting for the tail; these
+  // are the fling's events.
+  command.phase !== "queued" &&
+  // A non-smooth write lands at once, so any other scroll event is the
+  // user's, even before reconcile saw the target reached (the target may
+  // keep moving, or iOS ignored the write under a finger). A write the
+  // browser clamped because the sizer hasn't grown yet reads back at the
+  // max, which is also where the fresh target clamps, so the check below
+  // keeps it reconciling (#1294). While a smooth scroll's animation may
+  // still report, its events look like a user's, so it yields only once it
+  // has landed.
+  !isAnimating(command.phase) && !utils.approxEqual(offset, command.lastTargetOffset) && !utils.approxEqual(offset, target()) &&
+  // A compensation write's clamped echo (#1258) keeps the command. The
+  // order is deliberate, not tidiness: this clause stays after `target()`
+  // (and `clampedReadBack` before it) because `target()` can rebuild the
+  // measurements, so it must run for exactly the events it always did.
+  kind !== "clampedEcho";
+}
+const FLING_WINDOW_MS = 40;
+function flingSpedUp(samples) {
+  const last = samples[samples.length - 1];
+  if (last === void 0) return false;
+  let j = samples.length - 2;
+  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
+  if (j < 0) return false;
+  const mid = samples[j];
+  let k = j - 1;
+  while (k >= 0 && mid.t - samples[k].t < FLING_WINDOW_MS) k--;
+  if (k < 0) return false;
+  const first = samples[k];
+  const recent = (last.offset - mid.offset) / (last.t - mid.t);
+  const before = (mid.offset - first.offset) / (mid.t - first.t);
+  return recent * before >= 0 && Math.abs(recent) >= 2 * Math.abs(before) && Math.abs(recent) - Math.abs(before) >= 0.8;
+}
+function flingCaught(samples) {
+  const last = samples[samples.length - 1];
+  if (last === void 0) return false;
+  let j = samples.length - 2;
+  while (j >= 0 && last.t - samples[j].t < FLING_WINDOW_MS) j--;
+  if (j < 0) return false;
+  const from = samples[j];
+  return Math.abs(last.offset - from.offset) / (last.t - from.t) >= 0.05;
+}
+exports.classifyScrollEvent = classifyScrollEvent;
+exports.externalRetiresCommand = externalRetiresCommand;
+exports.flingCaught = flingCaught;
+exports.flingSpedUp = flingSpedUp;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+let _isIOSResult;
+const isIOSWebKit = () => {
+  if (_isIOSResult !== void 0) return _isIOSResult;
+  if (typeof navigator === "undefined") return _isIOSResult = false;
+  if (/iP(hone|od|ad)/.test(navigator.userAgent)) return _isIOSResult = true;
+  const mtp = navigator.maxTouchPoints;
+  return _isIOSResult = navigator.platform === "MacIntel" && mtp !== void 0 && mtp > 0;
+};
+let _iosMomentumOverridesWritesResult;
+const iosMomentumOverridesWrites = () => {
+  if (_iosMomentumOverridesWritesResult !== void 0) {
+    return _iosMomentumOverridesWritesResult;
+  }
+  return _iosMomentumOverridesWritesResult = isIOSWebKit() && typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("overflow-anchor: auto");
+};
+const _resetIOSDetectionForTests = () => {
+  _isIOSResult = void 0;
+  _iosMomentumOverridesWritesResult = void 0;
+};
+const touchListenerOptions = {
+  capture: true,
+  passive: true
+};
+class IosGesture {
+  constructor(host) {
+    this.host = host;
+    this._touch = null;
+    this.inMotion = () => this._touch !== null && this._touch.phase !== "lateFling";
+    this.dragging = () => {
+      var _a;
+      return ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
+    };
+    this.tail = () => {
+      var _a;
+      return ((_a = this._touch) == null ? void 0 : _a.phase) === "tail" ? this._touch.moved ? "fling" : "tap" : null;
+    };
+    this.onScroll = ({
+      isScrolling,
+      ownReadBack,
+      moved,
+      external
+    }) => {
+      var _a, _b, _c;
+      if (isScrolling && ((_a = this._touch) == null ? void 0 : _a.phase) === "tail") {
+        this._openTail(this._touch.moved || !ownReadBack, false);
+      } else if (((_b = this._touch) == null ? void 0 : _b.phase) === "lateFling") {
+        if (this.host.now() > this._touch.until) {
+          this._touch = null;
+        } else if (external && isScrolling && moved) {
+          this._openTail(true, false);
+        }
+      }
+      if (!ownReadBack && isScrolling && moved && ((_c = this._touch) == null ? void 0 : _c.phase) === "down") {
+        this._touch.moved = true;
+        return true;
+      }
+      return false;
+    };
+    this.touchStart = () => {
+      this.end();
+      this._touch = {
+        phase: "down",
+        moved: false
+      };
+    };
+    this.touchEnd = () => {
+      var _a;
+      const moved = ((_a = this._touch) == null ? void 0 : _a.phase) === "down" && this._touch.moved;
+      this.end();
+      this._openTail(moved, moved);
+    };
+    this.end = () => {
+      var _a;
+      const win = this.host.getWindow();
+      if (((_a = this._touch) == null ? void 0 : _a.phase) === "tail" && win != null) {
+        win.clearTimeout(this._touch.timerId);
+      }
+      this._touch = null;
+    };
+    this.listen = target => {
+      const onTouchStart = () => this.touchStart();
+      const onTouchEnd = () => this.touchEnd();
+      target.addEventListener("touchstart", onTouchStart, touchListenerOptions);
+      target.addEventListener("touchend", onTouchEnd, touchListenerOptions);
+      target.addEventListener("touchcancel", onTouchEnd, touchListenerOptions);
+      return () => {
+        target.removeEventListener("touchstart", onTouchStart, touchListenerOptions);
+        target.removeEventListener("touchend", onTouchEnd, touchListenerOptions);
+        target.removeEventListener("touchcancel", onTouchEnd, touchListenerOptions);
+        this.end();
+      };
+    };
+    this._openTail = (moved, awaitingFling) => {
+      const win = this.host.getWindow();
+      if (!isIOSWebKit() || win == null) return;
+      this.end();
+      const tail = {
+        phase: "tail",
+        moved,
+        awaitingFling,
+        // Only fires while this tail is current: `end` clears it otherwise.
+        timerId: win.setTimeout(() => {
+          if (this.host.tailStillMoving()) {
+            this._openTail(tail.moved, tail.awaitingFling);
+            return;
+          }
+          this._touch = tail.awaitingFling ? {
+            phase: "lateFling",
+            until: this.host.now() + 1e3
+          } : null;
+          this.host.onTailClosed();
+        }, 150)
+      };
+      this._touch = tail;
+    };
+  }
+  get touch() {
+    return this._touch;
+  }
+}
+exports.IosGesture = IosGesture;
+exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
+exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
+exports.isIOSWebKit = isIOSWebKit;
+  } },
+  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const lazyMeasurements = require("./lazy-measurements.cjs");
+const utils = require("./utils.cjs");
+const scrollClassifier = require("./scroll-classifier.cjs");
+const iosGesture = require("./ios-gesture.cjs");
+const getRect = element => {
+  const {
+    clientWidth,
+    clientHeight
+  } = element;
+  return {
+    width: clientWidth,
+    height: clientHeight
+  };
+};
+const createFrameQueue = targetWindow => {
+  const ids = /* @__PURE__ */new Set();
+  return {
+    schedule: fn => {
+      const id = targetWindow.requestAnimationFrame(() => {
+        ids.delete(id);
+        fn();
+      });
+      ids.add(id);
+    },
+    cancel: () => {
+      ids.forEach(id => targetWindow.cancelAnimationFrame(id));
+      ids.clear();
+    }
+  };
+};
+const defaultKeyExtractor = index => index;
+const defaultRangeExtractor = range => {
+  const overscan = range.overscan * Math.max(range.lanes ?? 1, 1);
+  const start = Math.max(range.startIndex - overscan, 0);
+  const end = Math.min(range.endIndex + overscan, range.count - 1);
+  const len = end - start + 1;
+  const arr = new Array(len);
+  for (let i = 0; i < len; i++) {
+    arr[i] = start + i;
+  }
+  return arr;
+};
+const observeElementRect = (instance, cb) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const targetWindow = instance.targetWindow;
+  if (!targetWindow) {
+    return;
+  }
+  const handler = rect => {
+    const {
+      width,
+      height
+    } = rect;
+    cb({
+      width: Math.round(width),
+      height: Math.round(height)
+    });
+  };
+  handler(getRect(element));
+  if (!targetWindow.ResizeObserver) {
+    return () => {};
+  }
+  const frames = createFrameQueue(targetWindow);
+  const observer = new targetWindow.ResizeObserver(() => {
+    const run = () => {
+      handler(getRect(element));
+    };
+    instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+  });
+  observer.observe(element, {
+    box: "content-box"
+  });
+  return () => {
+    observer.unobserve(element);
+    frames.cancel();
+  };
+};
+const addEventListenerOptions = {
+  passive: true
+};
+const observeWindowRect = (instance, cb) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const handler = () => {
+    cb({
+      width: element.innerWidth,
+      height: element.innerHeight
+    });
+  };
+  handler();
+  element.addEventListener("resize", handler, addEventListenerOptions);
+  return () => {
+    element.removeEventListener("resize", handler);
+  };
+};
+const supportsScrollend = typeof window == "undefined" ? true : "onscrollend" in window;
+const observeOffset = (instance, cb, readOffset) => {
+  const element = instance.scrollElement;
+  if (!element) {
+    return;
+  }
+  const targetWindow = instance.targetWindow;
+  if (!targetWindow) {
+    return;
+  }
+  const registerScrollendEvent = instance.options.useScrollendEvent && supportsScrollend;
+  let offset = 0;
+  const fallback = registerScrollendEvent ? null : utils.debounce(targetWindow, () => cb(readOffset(element), false), instance.options.isScrollingResetDelay);
+  const createHandler = isScrolling => () => {
+    offset = readOffset(element);
+    fallback == null ? void 0 : fallback();
+    cb(offset, isScrolling);
+  };
+  const handler = createHandler(true);
+  const endHandler = createHandler(false);
+  element.addEventListener("scroll", handler, addEventListenerOptions);
+  if (registerScrollendEvent) {
+    element.addEventListener("scrollend", endHandler, addEventListenerOptions);
+  }
+  return () => {
+    element.removeEventListener("scroll", handler);
+    if (registerScrollendEvent) {
+      element.removeEventListener("scrollend", endHandler);
+    }
+    fallback == null ? void 0 : fallback.cancel();
+  };
+};
+const observeElementOffset = (instance, cb) => observeOffset(instance, cb, el => {
+  const {
+    horizontal,
+    isRtl
+  } = instance.options;
+  return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
+});
+const observeWindowOffset = (instance, cb) => observeOffset(instance, cb, win => instance.options.horizontal ? win.scrollX : win.scrollY);
+const measureElement = (element, entry, instance) => {
+  if (instance.options.useCachedMeasurements) {
+    const index = instance.indexFromElement(element);
+    const key = instance.options.getItemKey(index);
+    return instance.itemSizeCache.get(key) ?? instance.options.estimateSize(index);
+  }
+  if (entry == null ? void 0 : entry.borderBoxSize) {
+    const box = entry.borderBoxSize[0];
+    if (box) {
+      const size = Math.round(box[instance.options.horizontal ? "inlineSize" : "blockSize"]);
+      return size;
+    }
+  }
+  if (!entry) {
+    const index = instance.indexFromElement(element);
+    const key = instance.options.getItemKey(index);
+    const cachedSize = instance.itemSizeCache.get(key);
+    if (cachedSize !== void 0) {
+      return cachedSize;
+    }
+  }
+  return element[instance.options.horizontal ? "offsetWidth" : "offsetHeight"];
+};
+const scrollWithAdjustments = (offset, {
+  adjustments = 0,
+  behavior
+}, instance) => {
+  var _a, _b;
+  (_b = (_a = instance.scrollElement) == null ? void 0 : _a.scrollTo) == null ? void 0 : _b.call(_a, {
+    [instance.options.horizontal ? "left" : "top"]: offset + adjustments,
+    behavior
+  });
+};
+const windowScroll = scrollWithAdjustments;
+const elementScroll = scrollWithAdjustments;
+const initialScrollPhase = (behavior, atTarget) => behavior === "smooth" ? atTarget ? "smoothLanded" : "smooth" : "instant";
+const isSmoothScroll = state => (state == null ? void 0 : state.phase) === "smooth" || (state == null ? void 0 : state.phase) === "smoothLanded";
+function isAppendWithTrim(prevCount, nextCount, getPreviousKey, getNextKey) {
+  if (nextCount === 0) return false;
+  const firstKey = getNextKey(0);
+  const removedKeys = /* @__PURE__ */new Set();
+  let removedCount = 0;
+  while (removedCount < prevCount) {
+    const key = getPreviousKey(removedCount);
+    if (key === firstKey) break;
+    removedKeys.add(key);
+    removedCount++;
+  }
+  const retainedCount = prevCount - removedCount;
+  if (retainedCount === 0 || retainedCount >= nextCount) return false;
+  for (let i = 0; i < retainedCount; i++) {
+    if (getNextKey(i) !== getPreviousKey(removedCount + i)) return false;
+  }
+  for (let i = retainedCount; i < nextCount; i++) {
+    if (removedKeys.has(getNextKey(i))) return false;
+  }
+  return true;
+}
+class Virtualizer {
+  constructor(opts) {
+    this.unsubs = [];
+    this.scrollElement = null;
+    this.targetWindow = null;
+    this.isScrolling = false;
+    this.scrollState = null;
+    this.measurementsCache = [];
+    this._singleLaneMeasurements = null;
+    this.itemSizeCache = /* @__PURE__ */new Map();
+    this.itemSizeCacheVersion = 0;
+    this.laneAssignments = /* @__PURE__ */new Map();
+    this.pendingMin = null;
+    this.prevLanes = void 0;
+    this.lanesChangedFlag = false;
+    this.lanesSettling = false;
+    this.pendingScrollAnchor = null;
+    this.scrollRect = null;
+    this.scrollOffset = null;
+    this.scrollDirection = null;
+    this._holdOffset = 0;
+    this._reportedOverscroll = false;
+    this._iosGesture = new iosGesture.IosGesture({
+      getWindow: () => this.targetWindow,
+      now: () => this.now(),
+      // The end of a fling can move less than a pixel per scroll event, so
+      // events can stop for 150ms while the fling is still running (seen on
+      // an iPhone, 27.0.1). A command waiting for it would then be written
+      // into the fling and overridden. The element having moved since the
+      // last event means it has not ended: wait again. Not while our own
+      // write has yet to report: that moved it.
+      tailStillMoving: () => {
+        const state = this.scrollState;
+        if ((state == null ? void 0 : state.phase) !== "queued" || this.pendingWrite !== null) {
+          return false;
+        }
+        const now = this._readElementOffset();
+        if (now === null || this._lastElementOffset === null || Math.abs(now - this._lastElementOffset) < 1) {
+          return false;
+        }
+        this._lastElementOffset = now;
+        state.samples = [...(state.samples ?? []), {
+          t: this.now(),
+          offset: now
+        }];
+        return true;
+      },
+      onTailClosed: () => {
+        const state = this.scrollState;
+        if ((state == null ? void 0 : state.phase) === "queued" && scrollClassifier.flingCaught(state.samples ?? [])) {
+          this.scrollState = null;
+        }
+        this._flushHoldIfReady(true);
+        this._writeAwaitingCommand();
+      }
+    });
+    this._lastElementOffset = null;
+    this.pendingWrite = null;
+    this._clampedAdjustment = null;
+    this.elementsCache = /* @__PURE__ */new Map();
+    this._resizeBatch = null;
+    this.now = () => {
+      var _a, _b, _c;
+      return ((_c = (_b = (_a = this.targetWindow) == null ? void 0 : _a.performance) == null ? void 0 : _b.now) == null ? void 0 : _c.call(_b)) ?? Date.now();
+    };
+    this.observer = /* @__PURE__ */(() => {
+      let _ro = null;
+      let _frames = null;
+      const get = () => {
+        if (_ro) {
+          return _ro;
+        }
+        const targetWindow = this.targetWindow;
+        if (!targetWindow || !targetWindow.ResizeObserver) {
+          return null;
+        }
+        const frames = _frames = createFrameQueue(targetWindow);
+        return _ro = new targetWindow.ResizeObserver(entries => {
+          const run = () => {
+            const batch = {
+              sync: false
+            };
+            this._resizeBatch = batch;
+            try {
+              entries.forEach(measureEntry);
+            } finally {
+              this._resizeBatch = null;
+              if (batch.notify) {
+                this.notify(batch.sync);
+                this._noteClampMax();
+                this._flushHoldIfReady(true);
+                this._retryClampedAdjustment();
+              }
+            }
+          };
+          this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+        });
+      };
+      const measureEntry = entry => {
+        const node = entry.target;
+        const index = this.indexFromElement(node);
+        if (!node.isConnected) {
+          this.observer.unobserve(node);
+          for (const [cacheKey, cachedNode] of this.elementsCache) {
+            if (cachedNode === node) {
+              this.elementsCache.delete(cacheKey);
+              break;
+            }
+          }
+          return;
+        }
+        if (!this.isIndexInRange(index)) return;
+        if (this.shouldMeasureDuringScroll(index)) {
+          this.resizeItem(index, this.options.measureElement(node, entry, this));
+        }
+      };
+      return {
+        disconnect: () => {
+          var _a;
+          (_a = get()) == null ? void 0 : _a.disconnect();
+          _frames == null ? void 0 : _frames.cancel();
+          _ro = null;
+          _frames = null;
+        },
+        observe: target => {
+          var _a;
+          return (_a = get()) == null ? void 0 : _a.observe(target, {
+            box: "border-box"
+          });
+        },
+        unobserve: target => {
+          var _a;
+          return (_a = get()) == null ? void 0 : _a.unobserve(target);
+        }
+      };
+    })();
+    this.range = null;
+    this.setOptions = opts2 => {
+      var _a;
+      const merged = {
+        debug: false,
+        initialOffset: 0,
+        overscan: 1,
+        paddingStart: 0,
+        paddingEnd: 0,
+        scrollPaddingStart: 0,
+        scrollPaddingEnd: 0,
+        horizontal: false,
+        getItemKey: defaultKeyExtractor,
+        rangeExtractor: defaultRangeExtractor,
+        onChange: () => {},
+        measureElement,
+        initialRect: {
+          width: 0,
+          height: 0
+        },
+        scrollMargin: 0,
+        gap: 0,
+        indexAttribute: "data-index",
+        initialMeasurementsCache: [],
+        lanes: 1,
+        anchorTo: "start",
+        followOnAppend: false,
+        scrollEndThreshold: 1,
+        isScrollingResetDelay: 150,
+        enabled: true,
+        isRtl: false,
+        useScrollendEvent: false,
+        useAnimationFrameWithResizeObserver: false,
+        laneAssignmentMode: "estimate",
+        useCachedMeasurements: false
+      };
+      for (const key in opts2) {
+        const v = opts2[key];
+        if (v !== void 0) merged[key] = v;
+      }
+      const prevOptions = this.options;
+      let anchor = null;
+      let followOnAppend = null;
+      let edgeKeysChanged = false;
+      if (prevOptions !== void 0 && prevOptions.enabled && merged.enabled && merged.anchorTo === "end" && this.scrollElement !== null) {
+        const prevCount = prevOptions.count;
+        const nextCount = merged.count;
+        const measurements = this.getMeasurements();
+        const previousItems = ((_a = this._singleLaneMeasurements) == null ? void 0 : _a.items) ?? measurements;
+        const getPreviousKey = index => lazyMeasurements.getMeasurementKey(previousItems[index]);
+        const prevFirstKey = prevCount > 0 ? getPreviousKey(0) : null;
+        const prevLastKey = prevCount > 0 ? getPreviousKey(prevCount - 1) : null;
+        const didCountChange = nextCount !== prevCount;
+        const didEdgeKeysChange = didCountChange || prevCount > 0 && nextCount > 0 && (merged.getItemKey(0) !== prevFirstKey || merged.getItemKey(nextCount - 1) !== prevLastKey);
+        if (didEdgeKeysChange) {
+          edgeKeysChanged = true;
+          const item = prevCount > 0 ? this.getVirtualItemForOffset(this.getScrollOffset()) ?? measurements[0] : null;
+          if (item) {
+            anchor = [item.key, this.getScrollOffset() - item.start];
+          }
+          const behavior = merged.followOnAppend === true ? "auto" : merged.followOnAppend || null;
+          if (behavior && nextCount > 0 && this.isAtEnd(prevOptions.scrollEndThreshold) && (prevCount === 0 || merged.getItemKey(nextCount - 1) !== prevLastKey)) {
+            if (nextCount > prevCount || isAppendWithTrim(prevCount, nextCount, getPreviousKey, merged.getItemKey)) {
+              followOnAppend = behavior;
+            }
+          }
+        }
+      }
+      this.options = merged;
+      if (edgeKeysChanged) {
+        this.pendingMin = 0;
+        this.itemSizeCacheVersion++;
+      }
+      let anchorDelta = null;
+      if (anchor && this.scrollOffset !== null && !this._awaitingCommandReadBack()) {
+        const [anchorKey, anchorOffset] = anchor;
+        const newMeasurements = this.getMeasurements();
+        const {
+          count,
+          getItemKey
+        } = this.options;
+        let idx = 0;
+        while (idx < count && getItemKey(idx) !== anchorKey) {
+          idx++;
+        }
+        if (idx < count) {
+          const anchorItem = newMeasurements[idx];
+          if (anchorItem) {
+            const newOffset = Math.max(0, anchorItem.start + anchorOffset);
+            if (!followOnAppend && newOffset !== this.scrollOffset) {
+              anchorDelta = newOffset - this.scrollOffset;
+              this.scrollOffset = newOffset;
+            }
+          }
+        }
+      }
+      if (followOnAppend) {
+        this.pendingScrollAnchor = {
+          kind: "follow",
+          behavior: followOnAppend
+        };
+      } else if (anchorDelta !== null) {
+        if (this._canWriteScroll()) {
+          this.pendingScrollAnchor = {
+            kind: "anchor",
+            delta: anchorDelta
+          };
+        } else {
+          this._holdOffset += anchorDelta;
+          this._followOffsetTarget(anchorDelta);
+        }
+      }
+    };
+    this.notify = sync => {
+      var _a, _b;
+      (_b = (_a = this.options).onChange) == null ? void 0 : _b.call(_a, this, sync);
+    };
+    this.maybeNotify = utils.memo(() => {
+      this.calculateRange();
+      return [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null];
+    }, isScrolling => {
+      this.notify(isScrolling);
+    }, {
+      key: 'production' !== "production" && "maybeNotify",
+      debug: () => this.options.debug,
+      initialDeps: [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null]
+    });
+    this.cleanup = () => {
+      var _a;
+      this.unsubs.filter(Boolean).forEach(d => d());
+      this.unsubs = [];
+      this.observer.disconnect();
+      if (this.rafId != null && this.targetWindow) {
+        this.targetWindow.cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      this.scrollState = null;
+      (_a = this._momentumStop) == null ? void 0 : _a.restore();
+      this._momentumStop = null;
+      this.isScrolling = false;
+      this.scrollDirection = null;
+      this._holdOffset = 0;
+      this._reportedOverscroll = false;
+      this._clampedAdjustment = null;
+      this.pendingWrite = null;
+      this.scrollElement = null;
+      this.targetWindow = null;
+    };
+    this._didMount = () => {
+      return () => {
+        this.cleanup();
+      };
+    };
+    this._willUpdate = () => {
+      var _a;
+      const scrollElement = this.options.enabled ? this.options.getScrollElement() : null;
+      if (this.scrollElement !== scrollElement) {
+        this.cleanup();
+        if (!scrollElement) {
+          this.maybeNotify();
+          return;
+        }
+        this.scrollElement = scrollElement;
+        if (this.scrollElement && "ownerDocument" in this.scrollElement) {
+          this.targetWindow = this.scrollElement.ownerDocument.defaultView;
+        } else {
+          this.targetWindow = ((_a = this.scrollElement) == null ? void 0 : _a.window) ?? null;
+        }
+        this.elementsCache.forEach(cached => {
+          this.observer.observe(cached);
+        });
+        this.unsubs.push(this.options.observeElementRect(this, rect => {
+          this.scrollRect = rect;
+          this.maybeNotify();
+        }));
+        this.unsubs.push(this.options.observeElementOffset(this, (offset, isScrolling) => {
+          var _a2, _b, _c, _d;
+          const elementMax = isScrolling ? this._elementMaxScrollOffset() : null;
+          const wasOverscrolled = this._reportedOverscroll;
+          this._reportedOverscroll = offset < 0 || elementMax !== null && offset > elementMax + 1;
+          const elementOffset = offset;
+          this._lastElementOffset = elementOffset;
+          offset = this._toLayoutOffset(offset);
+          const kind = this._classifyScrollEvent(offset, isScrolling, elementMax);
+          if (kind === "spurious") return;
+          if (kind === "readBack") {
+            offset = this.pendingWrite.target;
+          } else if (kind === "clampedReadBack" && ((_a2 = this.scrollState) == null ? void 0 : _a2.index) != null &&
+          // Not `elementMax`: an adapter can report the read-back at rest.
+          offset < this.getMaxScrollOffset() - 1.5) {
+            this.scrollState.lastTargetOffset = offset;
+          } else if (scrollClassifier.externalRetiresCommand({
+            kind,
+            offset,
+            command: this.scrollState,
+            target: () => this.getScrollStateTarget(this.scrollState)
+          })) {
+            this.scrollState = null;
+          }
+          this.pendingWrite = null;
+          if (this._clampedAdjustment !== null && Math.abs(offset - this._clampedAdjustment.maxAtWrite) >= 1.5) {
+            this._clampedAdjustment = null;
+          }
+          const prevOffset = this.getScrollOffset();
+          const prevDirection = this.scrollDirection;
+          this.scrollDirection = isScrolling ? prevOffset === offset ? this.scrollDirection : prevOffset < offset ? "forward" : "backward" : null;
+          this.scrollOffset = offset;
+          this.isScrolling = isScrolling;
+          const queued = this.scrollState;
+          if ((queued == null ? void 0 : queued.phase) === "queued" && kind === "external" && isScrolling) {
+            if (wasOverscrolled || this._reportedOverscroll) {
+              queued.samples = [];
+            } else {
+              const t = this.now();
+              queued.samples = [...(queued.samples ?? []).filter(sample => t - sample.t <= 200), {
+                t,
+                offset: elementOffset
+              }];
+              if (prevDirection !== null && this.scrollDirection !== prevDirection || scrollClassifier.flingSpedUp(queued.samples)) {
+                this.scrollState = null;
+              }
+            }
+          }
+          if (this._iosGesture.onScroll({
+            isScrolling,
+            ownReadBack: kind === "readBack",
+            moved: offset !== prevOffset,
+            // Neither our write's read-back nor a frame of our smooth
+            // animation: the user or a fling moved it.
+            external: kind === "external" && ((_b = this.scrollState) == null ? void 0 : _b.phase) !== "smooth" && ((_c = this.scrollState) == null ? void 0 : _c.phase) !== "smoothFinishing"
+          }) &&
+          // The user scrolls: a command still waiting for the tail is
+          // theirs to override, like a written one would be.
+          ((_d = this.scrollState) == null ? void 0 : _d.phase) === "queued") {
+            this.scrollState = null;
+          }
+          this._flushHoldIfReady(true);
+          if (this.scrollState) {
+            this.scheduleScrollReconcile();
+          }
+          this.maybeNotify();
+        }));
+        if ("addEventListener" in this.scrollElement) {
+          this.unsubs.push(this._iosGesture.listen(this.scrollElement));
+        }
+        this._scrollToOffset(this.getScrollOffset());
+      }
+      this._noteClampMax();
+      const anchor = this.pendingScrollAnchor;
+      this.pendingScrollAnchor = null;
+      if (anchor && this.scrollElement && this.options.enabled) {
+        if (anchor.kind === "anchor") {
+          if (!this._canWriteScroll()) {
+            this._holdOffset += anchor.delta;
+            this._followOffsetTarget(anchor.delta);
+            this.notify(false);
+          } else if (isSmoothScroll(this.scrollState) && !utils.approxEqual(this.getScrollOffset() - anchor.delta, this.scrollState.lastTargetOffset)) ;else {
+            this._followOffsetTarget(anchor.delta);
+            this._scrollToOffset(this.getScrollOffset());
+          }
+        } else {
+          this.scrollToEnd({
+            behavior: anchor.behavior
+          });
+        }
+      }
+      this._flushHoldIfReady(false);
+      this._retryClampedAdjustment();
+    };
+    this._classifyScrollEvent = (offset, isScrolling, elementMax) => {
+      var _a;
+      return scrollClassifier.classifyScrollEvent({
+        offset,
+        isScrolling,
+        elementMax,
+        holdOffset: this._holdOffset,
+        scrollOffset: this.scrollOffset,
+        pendingWrite: this.pendingWrite,
+        clampedMaxAtWrite: ((_a = this._clampedAdjustment) == null ? void 0 : _a.maxAtWrite) ?? null
+      });
+    };
+    this._retryClampedAdjustment = () => {
+      if (this._clampedAdjustment === null || !this.scrollElement || !this.options.enabled) {
+        return;
+      }
+      const {
+        target,
+        maxAtWrite
+      } = this._clampedAdjustment;
+      const max = this.getMaxScrollOffset();
+      if (max > maxAtWrite + 0.5) {
+        this._clampedAdjustment = target > max + 0.5 ? {
+          target,
+          maxAtWrite: max
+        } : null;
+        this._scrollToOffset(target);
+      }
+    };
+    this._writeAwaitingCommand = () => {
+      const state = this.scrollState;
+      if (state === null || state.phase !== "queued") return;
+      const {
+        behavior
+      } = state;
+      this.getMeasurements();
+      const offset = this.getScrollStateTarget(state);
+      state.lastTargetOffset = offset;
+      this._clampedAdjustment = null;
+      state.phase = initialScrollPhase(behavior, state.index != null && utils.approxEqual(offset, this.getScrollOffset()));
+      this._scrollToOffset(offset, {
+        behavior
+      });
+      this.scheduleScrollReconcile();
+    };
+    this._readElementOffset = () => {
+      const el = this.scrollElement;
+      if (el == null) return null;
+      const {
+        horizontal,
+        isRtl
+      } = this.options;
+      if (typeof el.scrollTop === "number") {
+        return horizontal ? el.scrollLeft * (isRtl && -1 || 1) : el.scrollTop;
+      }
+      if (typeof el.scrollY === "number") {
+        return horizontal ? el.scrollX : el.scrollY;
+      }
+      return null;
+    };
+    this._canWriteScroll = () => !(iosGesture.isIOSWebKit() && this._iosGesture.inMotion()) && !this._reportedOverscroll;
+    this._flushHoldIfReady = sync => {
+      var _a;
+      if (this._holdOffset === 0) return;
+      if (!this.scrollElement || !this.options.enabled) return;
+      if (!this._canWriteScroll()) return;
+      if (((_a = this.scrollState) == null ? void 0 : _a.phase) === "smooth") return;
+      this._holdOffset = 0;
+      if (this.scrollOffset !== null && this.scrollOffset < 0) {
+        this.scrollOffset = 0;
+      }
+      this.notify(sync);
+      const target = this.getCommandWrittenOffset() ?? this.getScrollOffset();
+      this._clampedAdjustment = this._clampedBy(target);
+      this._scrollToOffset(target);
+    };
+    this.rafId = null;
+    this.getSize = () => {
+      if (!this.options.enabled) {
+        this.scrollRect = null;
+        return 0;
+      }
+      this.scrollRect = this.scrollRect ?? this.options.initialRect;
+      return this.scrollRect[this.options.horizontal ? "width" : "height"];
+    };
+    this.getScrollOffset = () => {
+      if (!this.options.enabled) {
+        this.scrollOffset = null;
+        return 0;
+      }
+      this.scrollOffset = this.scrollOffset ?? (typeof this.options.initialOffset === "function" ? this.options.initialOffset() : this.options.initialOffset);
+      return this.scrollOffset;
+    };
+    this.getMeasurementOptions = utils.memo(() => [this.options.count, this.options.paddingStart, this.options.scrollMargin, this.options.getItemKey, this.options.enabled, this.options.lanes, this.options.laneAssignmentMode, this.options.gap], (count, paddingStart, scrollMargin, getItemKey, enabled, lanes, laneAssignmentMode, gap) => {
+      const lanesChanged = this.prevLanes !== void 0 && this.prevLanes !== lanes;
+      if (lanesChanged) {
+        this.lanesChangedFlag = true;
+      }
+      this.prevLanes = lanes;
+      this.pendingMin = null;
+      return {
+        count,
+        paddingStart,
+        scrollMargin,
+        getItemKey,
+        enabled,
+        lanes,
+        laneAssignmentMode,
+        gap
+      };
+    }, {
+      key: false
+    });
+    this.isIndexInRange = index => index >= 0 && index < this.options.count;
+    this.getMeasurements = utils.memo(() => [this.getMeasurementOptions(), this.itemSizeCacheVersion], ({
+      count,
+      paddingStart,
+      scrollMargin,
+      getItemKey,
+      enabled,
+      lanes,
+      laneAssignmentMode,
+      gap
+    }, _itemSizeCacheVersion) => {
+      var _a;
+      const itemSizeCache = this.itemSizeCache;
+      if (!enabled) {
+        this.measurementsCache = [];
+        this._singleLaneMeasurements = null;
+        this.itemSizeCache.clear();
+        this.laneAssignments.clear();
+        return [];
+      }
+      if (this.laneAssignments.size > count) {
+        for (const index of this.laneAssignments.keys()) {
+          if (index >= count) {
+            this.laneAssignments.delete(index);
+          }
+        }
+      }
+      if (this.lanesChangedFlag) {
+        this.lanesChangedFlag = false;
+        this.lanesSettling = true;
+        this.measurementsCache = [];
+        this._singleLaneMeasurements = null;
+        this.itemSizeCache.clear();
+        this.laneAssignments.clear();
+        this.pendingMin = null;
+      }
+      if (this.measurementsCache.length === 0 && !this.lanesSettling) {
+        this.measurementsCache = this.options.initialMeasurementsCache;
+        this.measurementsCache.forEach(item => {
+          this.itemSizeCache.set(item.key, item.size);
+        });
+      }
+      const min = this.lanesSettling ? 0 : this.pendingMin ?? 0;
+      this.pendingMin = null;
+      if (this.lanesSettling && this.measurementsCache.length === count) {
+        this.lanesSettling = false;
+      }
+      if (lanes === 1) {
+        const need = count * 2;
+        let flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+        if (!flat || flat.length < need) {
+          const next = new Float64Array(need);
+          if (flat && min > 0) next.set(flat.subarray(0, min * 2));
+          flat = next;
+        }
+        const items = min === 0 ? new Array(count) : this._singleLaneMeasurements.items.slice();
+        let runningStart;
+        if (min === 0) {
+          runningStart = paddingStart + scrollMargin;
+        } else {
+          const prevIdx = min - 1;
+          runningStart = flat[prevIdx * 2] + flat[prevIdx * 2 + 1] + gap;
+        }
+        for (let i = min; i < count; i++) {
+          const key = getItemKey(i);
+          items[i] = key;
+          const measuredSize = itemSizeCache.get(key);
+          const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
+          flat[i * 2] = runningStart;
+          flat[i * 2 + 1] = size;
+          runningStart += size + gap;
+        }
+        this._singleLaneMeasurements = {
+          flat,
+          items
+        };
+        const view = lazyMeasurements.createLazyMeasurementsView(items, flat);
+        this.measurementsCache = view;
+        return view;
+      }
+      const measurements = this.measurementsCache.slice(0, min);
+      const laneLastIndex = new Array(lanes).fill(void 0);
+      const laneEnds = new Float64Array(lanes);
+      let filledLanes = 0;
+      for (let m = 0; m < min; m++) {
+        const item = measurements[m];
+        if (item) {
+          if (laneLastIndex[item.lane] === void 0) filledLanes++;
+          laneLastIndex[item.lane] = m;
+          laneEnds[item.lane] = item.end;
+        }
+      }
+      for (let i = min; i < count; i++) {
+        const key = getItemKey(i);
+        const cachedLane = this.laneAssignments.get(i);
+        let lane;
+        let start;
+        const shouldCacheLane = laneAssignmentMode === "estimate" || itemSizeCache.has(key);
+        if (cachedLane !== void 0 && this.options.lanes > 1) {
+          lane = cachedLane;
+          const prevIndex = laneLastIndex[lane];
+          const prevInLane = prevIndex !== void 0 ? measurements[prevIndex] : void 0;
+          start = prevInLane ? prevInLane.end + gap : paddingStart + scrollMargin;
+        } else if (filledLanes === lanes) {
+          let bestLane = 0;
+          let bestEnd = laneEnds[0];
+          let bestIdx = laneLastIndex[0];
+          for (let l = 1; l < lanes; l++) {
+            const e = laneEnds[l];
+            if (e < bestEnd || e === bestEnd && laneLastIndex[l] < bestIdx) {
+              bestLane = l;
+              bestEnd = e;
+              bestIdx = laneLastIndex[l];
+            }
+          }
+          lane = bestLane;
+          start = bestEnd + gap;
+          if (shouldCacheLane) {
+            this.laneAssignments.set(i, lane);
+          }
+        } else {
+          lane = i % this.options.lanes;
+          start = paddingStart + scrollMargin;
+          if (shouldCacheLane) {
+            this.laneAssignments.set(i, lane);
+          }
+        }
+        const measuredSize = itemSizeCache.get(key);
+        const size = typeof measuredSize === "number" ? measuredSize : this.options.estimateSize(i);
+        const end = start + size;
+        measurements[i] = {
+          index: i,
+          start,
+          size,
+          end,
+          key,
+          lane
+        };
+        if (laneLastIndex[lane] === void 0) filledLanes++;
+        laneLastIndex[lane] = i;
+        laneEnds[lane] = end;
+      }
+      this.measurementsCache = measurements;
+      return measurements;
+    }, {
+      key: 'production' !== "production" && "getMeasurements",
+      debug: () => this.options.debug
+    });
+    this.calculateRange = utils.memo(() => [this.getMeasurements(), this.getSize(), this.getScrollOffset(), this.options.lanes], (measurements, outerSize, scrollOffset, lanes) => {
+      if (measurements.length === 0 || outerSize === 0) {
+        this.range = null;
+        return null;
+      }
+      this.range = calculateRangeImpl(measurements, outerSize, scrollOffset, lanes,
+      // Pass the typed array so binary search + forward-walk can read
+      // start/end directly from Float64Array, skipping the Proxy traps.
+      lanes === 1 && this._singleLaneMeasurements !== null ? this._singleLaneMeasurements.flat : null);
+      return this.range;
+    }, {
+      key: 'production' !== "production" && "calculateRange",
+      debug: () => this.options.debug
+    });
+    this.getVirtualIndexes = utils.memo(() => {
+      let startIndex = null;
+      let endIndex = null;
+      const range = this.calculateRange();
+      if (range) {
+        startIndex = range.startIndex;
+        endIndex = range.endIndex;
+      }
+      this.maybeNotify.updateDeps([this.isScrolling, startIndex, endIndex]);
+      return [this.options.rangeExtractor, this.options.overscan, this.options.count, startIndex, endIndex, this.options.lanes];
+    }, (rangeExtractor, overscan, count, startIndex, endIndex, lanes) => {
+      return startIndex === null || endIndex === null ? [] : rangeExtractor({
+        startIndex,
+        endIndex,
+        overscan,
+        count,
+        lanes
+      });
+    }, {
+      key: 'production' !== "production" && "getVirtualIndexes",
+      debug: () => this.options.debug
+    });
+    this.indexFromElement = node => {
+      const attributeName = this.options.indexAttribute;
+      const indexStr = node.getAttribute(attributeName);
+      if (!indexStr) {
+        console.warn(`Missing attribute name '${attributeName}={index}' on measured element.`);
+        return -1;
+      }
+      return parseInt(indexStr, 10);
+    };
+    this.shouldMeasureDuringScroll = index => {
+      var _a;
+      if (!isSmoothScroll(this.scrollState)) {
+        return true;
+      }
+      const scrollIndex = this.scrollState.index ?? ((_a = this.getVirtualItemForOffset(this.scrollState.lastTargetOffset)) == null ? void 0 : _a.index);
+      if (scrollIndex !== void 0 && this.range) {
+        const bufferSize = Math.max(this.options.overscan, Math.ceil((this.range.endIndex - this.range.startIndex) / 2));
+        const minIndex = Math.max(0, scrollIndex - bufferSize);
+        const maxIndex = Math.min(this.options.count - 1, scrollIndex + bufferSize);
+        return index >= minIndex && index <= maxIndex;
+      }
+      return true;
+    };
+    this.measureElement = node => {
+      if (!node) {
+        this.elementsCache.forEach((cached, key2) => {
+          if (!cached.isConnected) {
+            this.observer.unobserve(cached);
+            this.elementsCache.delete(key2);
+          }
+        });
+        return;
+      }
+      const index = this.indexFromElement(node);
+      if (!this.isIndexInRange(index)) return;
+      const key = this.options.getItemKey(index);
+      const prevNode = this.elementsCache.get(key);
+      if (prevNode !== node) {
+        if (prevNode) {
+          this.observer.unobserve(prevNode);
+        }
+        this.observer.observe(node);
+        this.elementsCache.set(key, node);
+      }
+      if (node.isConnected && (!this.isScrolling || this.scrollState) && this.shouldMeasureDuringScroll(index)) {
+        this.resizeItem(index, this.options.measureElement(node, void 0, this));
+      }
+    };
+    this.resizeItem = (index, size) => {
+      var _a, _b, _c;
+      if (!this.isIndexInRange(index)) return;
+      if ((_a = this._resizeBatch) == null ? void 0 : _a.sync) this.getMeasurements();
+      let cachedSize;
+      let itemStart;
+      let key;
+      const flat = (_b = this._singleLaneMeasurements) == null ? void 0 : _b.flat;
+      if (this.options.lanes === 1 && flat != null) {
+        key = this.options.getItemKey(index);
+        itemStart = flat[index * 2];
+        cachedSize = flat[index * 2 + 1];
+      } else {
+        const item = this.measurementsCache[index];
+        if (!item) return;
+        key = item.key;
+        itemStart = item.start;
+        cachedSize = item.size;
+      }
+      const itemSize = this.itemSizeCache.get(key) ?? cachedSize;
+      const delta = size - itemSize;
+      if (delta !== 0) {
+        const wasAtEnd = this.options.anchorTo === "end" && !isSmoothScroll(this.scrollState) && this.getVirtualDistanceFromEnd() <= this.options.scrollEndThreshold;
+        const prevTotalSize = wasAtEnd ? this._getLayoutTotalSize() : 0;
+        const scrollOffset = this.getScrollOffset();
+        const isFirstMeasure = !this.itemSizeCache.has(key);
+        const defaultShouldAdjust = isFirstMeasure ?
+        // First measurement: compensate any item whose top sits above the
+        // fold — the estimate→actual delta must be corrected regardless of
+        // scroll direction, since the whole estimated block was above it.
+        itemStart < scrollOffset :
+        // Re-measurement: only compensate an item that is ENTIRELY above the
+        // fold. An item that merely *spans* the fold (top above, bottom
+        // below — e.g. a streaming chat message growing at its bottom)
+        // changes size *below* the anchor point, so shifting scrollTop by the
+        // delta would drag the viewport downward on every growth (#1218).
+        // Also skip during backward scroll to avoid the "items jump while
+        // scrolling up" cascade.
+        itemStart + itemSize <= scrollOffset && this.scrollDirection !== "backward";
+        const shouldAdjustScroll = !isSmoothScroll(this.scrollState) && (this.shouldAdjustScrollPositionOnItemSizeChange !== void 0 ? this.shouldAdjustScrollPositionOnItemSizeChange(
+        // The callback expects a VirtualItem; build one lazily only
+        // when the consumer actually supplied a custom predicate.
+        this.measurementsCache[index] ?? {
+          index,
+          key,
+          start: itemStart,
+          size: cachedSize,
+          end: itemStart + cachedSize,
+          lane: 0
+        }, delta, this) : defaultShouldAdjust);
+        if (this.pendingMin === null || index < this.pendingMin) {
+          this.pendingMin = index;
+        }
+        this.itemSizeCache.set(key, size);
+        this.itemSizeCacheVersion++;
+        let adjustedSync = false;
+        if (!this._awaitingCommandReadBack()) {
+          if (wasAtEnd) {
+            adjustedSync = this.applyScrollAdjustment(this._getLayoutTotalSize() - prevTotalSize);
+          } else if (shouldAdjustScroll) {
+            adjustedSync = this.applyScrollAdjustment(delta);
+          }
+        }
+        if (this._resizeBatch) {
+          this._resizeBatch.notify = true;
+          (_c = this._resizeBatch).sync || (_c.sync = adjustedSync);
+          return;
+        }
+        this.notify(adjustedSync);
+        this._noteClampMax();
+        this._flushHoldIfReady(true);
+        this._retryClampedAdjustment();
+      }
+    };
+    this.getVirtualItems = utils.memo(() => [this.getVirtualIndexes(), this.getMeasurements(), this._holdOffset], (indexes, measurements, hold) => {
+      const virtualItems = [];
+      for (let k = 0, len = indexes.length; k < len; k++) {
+        const i = indexes[k];
+        const measurement = measurements[i];
+        virtualItems.push(hold === 0 ? measurement : {
+          ...measurement,
+          start: measurement.start - hold,
+          end: measurement.end - hold
+        });
+      }
+      return virtualItems;
+    }, {
+      key: 'production' !== "production" && "getVirtualItems",
+      debug: () => this.options.debug
+    });
+    this.getVirtualItemForOffset = offset => {
+      var _a;
+      const measurements = this.getMeasurements();
+      if (measurements.length === 0) {
+        return void 0;
+      }
+      const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+      const useFlat = this.options.lanes === 1 && flat != null;
+      const idx = findNearestBinarySearch(0, measurements.length - 1, useFlat ? i => flat[i * 2] : i => utils.notUndefined(measurements[i]).start, offset);
+      return utils.notUndefined(measurements[idx]);
+    };
+    this._noteClampMax = () => {
+      if (!this._awaitingCommandReadBack()) return;
+      const elementMax = this._elementMaxScrollOffset();
+      if (elementMax === null) return;
+      const write = this.pendingWrite;
+      const max = Math.max(elementMax, 0) + this._holdOffset;
+      if (max >= write.target) return;
+      const lowMaxes = write.lowMaxes ?? (write.lowMaxes = []);
+      if (lowMaxes[lowMaxes.length - 1] !== max) lowMaxes.push(max);
+    };
+    this.getMaxScrollOffset = () => (this._elementMaxScrollOffset() ?? 0) + this._holdOffset;
+    this._toLayoutOffset = elementOffset => {
+      var _a;
+      let offset = elementOffset + this._holdOffset;
+      if (((_a = this.pendingScrollAnchor) == null ? void 0 : _a.kind) === "anchor") {
+        offset += this.pendingScrollAnchor.delta;
+      }
+      return offset;
+    };
+    this._elementMaxScrollOffset = () => {
+      const el = this.scrollElement;
+      if (el === null) return null;
+      if ("scrollHeight" in el) {
+        return this.options.horizontal ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
+      }
+      if ("document" in el) {
+        const doc = el.document.documentElement;
+        return this.options.horizontal ? doc.scrollWidth - el.innerWidth : doc.scrollHeight - el.innerHeight;
+      }
+      return null;
+    };
+    this._momentumStop = null;
+    this._stopMomentum = done => {
+      const el = this.scrollElement;
+      const win = this.targetWindow;
+      if (el === null || win === null) return;
+      const scroller = "document" in el ? el.document.scrollingElement : el;
+      if (!(scroller == null ? void 0 : scroller.style)) return;
+      if (this._momentumStop) {
+        this._momentumStop.done = done;
+        return;
+      }
+      const {
+        style
+      } = scroller;
+      const property = this.options.horizontal ? "overflow-x" : "overflow-y";
+      const value = style.getPropertyValue(property);
+      const priority = style.getPropertyPriority(property);
+      style.setProperty(property, "hidden", "important");
+      const stop = {
+        // False when the app replaced the hidden value: the fling may not
+        // have stopped.
+        restore: () => {
+          if (style.getPropertyValue(property) !== "hidden" || style.getPropertyPriority(property) !== "important") {
+            return false;
+          }
+          style.setProperty(property, value, priority);
+          return true;
+        },
+        done
+      };
+      this._momentumStop = stop;
+      win.requestAnimationFrame(() => win.requestAnimationFrame(() => {
+        if (this._momentumStop !== stop) return;
+        this._momentumStop = null;
+        if (stop.restore()) stop.done();
+      }));
+    };
+    this._clampedBy = target => {
+      const elementMax = this._elementMaxScrollOffset();
+      if (elementMax === null) return null;
+      const maxAtWrite = elementMax + this._holdOffset;
+      return target > maxAtWrite + 0.5 ? {
+        target,
+        maxAtWrite
+      } : null;
+    };
+    this.getVirtualDistanceFromEnd = () => {
+      return Math.max(this._getLayoutTotalSize() - this.getSize() - this.getScrollOffset(), 0);
+    };
+    this.getDistanceFromEnd = () => {
+      return Math.max(this.getMaxScrollOffset() - this.getScrollOffset(), 0);
+    };
+    this.isAtEnd = (threshold = this.options.scrollEndThreshold) => {
+      return this.getDistanceFromEnd() <= threshold;
+    };
+    this.getOffsetForAlignment = (toOffset, align, itemSize = 0) => {
+      if (!this.scrollElement) return 0;
+      const size = this.getSize();
+      const scrollOffset = this.getScrollOffset();
+      if (align === "auto") {
+        align = toOffset >= scrollOffset + size ? "end" : "start";
+      }
+      if (align === "center") {
+        toOffset += (itemSize - size) / 2;
+      } else if (align === "end") {
+        toOffset -= size;
+      }
+      const maxOffset = this.getMaxScrollOffset();
+      return Math.max(Math.min(maxOffset, toOffset), 0);
+    };
+    this.getOffsetForIndex = (index, align = "auto") => {
+      index = Math.max(0, Math.min(index, this.options.count - 1));
+      const size = this.getSize();
+      const scrollOffset = this.getScrollOffset();
+      const item = this.measurementsCache[index];
+      if (!item) return;
+      if (align === "auto") {
+        if (item.end >= scrollOffset + size - this.options.scrollPaddingEnd) {
+          align = "end";
+        } else if (item.start <= scrollOffset + this.options.scrollPaddingStart) {
+          align = "start";
+        } else {
+          return [scrollOffset, align];
+        }
+      }
+      if (align === "end" && index === this.options.count - 1) {
+        const maxOffset = this.getMaxScrollOffset();
+        const toOffset2 = maxOffset - this.options.paddingEnd + this.options.scrollPaddingEnd;
+        return [Math.max(Math.min(toOffset2, maxOffset), 0), align];
+      }
+      const toOffset = align === "end" ? item.end + this.options.scrollPaddingEnd : item.start - this.options.scrollPaddingStart;
+      return [this.getOffsetForAlignment(toOffset, align, item.size), align];
+    };
+    this.scrollToOffset = (toOffset, {
+      align = "start",
+      behavior = "auto"
+    } = {}) => {
+      this._startScroll({
+        index: null,
+        align
+      }, this.getOffsetForAlignment(toOffset, align), behavior, "absolute");
+    };
+    this.scrollToIndex = (index, {
+      align: initialAlign = "auto",
+      behavior = "auto"
+    } = {}) => {
+      index = Math.max(0, Math.min(index, this.options.count - 1));
+      const offsetInfo = this.getOffsetForIndex(index, initialAlign);
+      if (!offsetInfo) return;
+      const [offset, align] = offsetInfo;
+      this._startScroll({
+        index,
+        align
+      }, offset, behavior, "absolute");
+    };
+    this.scrollBy = (delta, {
+      behavior = "auto"
+    } = {}) => {
+      const offset = this.getOffsetForAlignment((this.getCommandWrittenOffset() ?? this.getScrollOffset()) + delta, "start");
+      this._startScroll({
+        index: null,
+        align: "start"
+      }, offset, behavior, "relative");
+    };
+    this.scrollToEnd = ({
+      behavior = "auto"
+    } = {}) => {
+      if (this.options.count > 0) {
+        this._startScroll({
+          index: this.options.count - 1,
+          align: "end",
+          toEnd: true
+        }, Math.max(this.getMaxScrollOffset(), 0), behavior, "absolute");
+        return;
+      }
+      this.scrollToOffset(Math.max(this.getTotalSize() - this.getSize(), 0), {
+        behavior
+      });
+    };
+    this.cancelScroll = () => {
+      if (this.rafId != null && this.targetWindow) {
+        this.targetWindow.cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      this.scrollState = null;
+    };
+    this.getTotalSize = () => Math.max(this._getLayoutTotalSize() - this._holdOffset, 0);
+    this._getLayoutTotalSize = () => {
+      var _a, _b;
+      const measurements = this.getMeasurements();
+      let end;
+      if (measurements.length === 0) {
+        end = this.options.paddingStart;
+      } else if (this.options.lanes === 1) {
+        const lastIdx = measurements.length - 1;
+        const flat = (_a = this._singleLaneMeasurements) == null ? void 0 : _a.flat;
+        if (flat != null) {
+          end = flat[lastIdx * 2] + flat[lastIdx * 2 + 1];
+        } else {
+          end = ((_b = measurements[lastIdx]) == null ? void 0 : _b.end) ?? 0;
+        }
+      } else {
+        const endByLane = Array(this.options.lanes).fill(null);
+        let endIndex = measurements.length - 1;
+        while (endIndex >= 0 && endByLane.some(val => val === null)) {
+          const item = measurements[endIndex];
+          if (endByLane[item.lane] === null) {
+            endByLane[item.lane] = item.end;
+          }
+          endIndex--;
+        }
+        end = Math.max(...endByLane.filter(val => val !== null));
+      }
+      return Math.max(end - this.options.scrollMargin + this.options.paddingEnd, 0);
+    };
+    this.takeSnapshot = () => {
+      const snapshot = [];
+      if (this.itemSizeCache.size === 0) return snapshot;
+      const m = this.getMeasurements();
+      for (const item of m) {
+        if (item && this.itemSizeCache.has(item.key)) {
+          snapshot.push({
+            index: item.index,
+            key: item.key,
+            start: item.start,
+            size: item.size,
+            end: item.end,
+            lane: item.lane
+          });
+        }
+      }
+      return snapshot;
+    };
+    this._scrollToOffset = (offset, {
+      adjustments,
+      behavior
+    } = {}) => {
+      const write = {
+        target: offset + (adjustments ?? 0),
+        smooth: behavior === "smooth"
+      };
+      this.pendingWrite = write;
+      this.options.scrollToFn(offset - this._holdOffset, {
+        behavior,
+        adjustments
+      }, this);
+      return write;
+    };
+    this.getCommandWrittenOffset = () => this.scrollState !== null && this.pendingWrite !== null && !this.pendingWrite.smooth ? this.pendingWrite.target : null;
+    this._awaitingCommandReadBack = () => {
+      const writtenOffset = this.getCommandWrittenOffset();
+      return !(iosGesture.isIOSWebKit() && this._iosGesture.dragging()) && writtenOffset !== null && !utils.approxEqual(writtenOffset, this.getScrollOffset());
+    };
+    this._followOffsetTarget = delta => {
+      if (this.scrollState !== null && this.scrollState.index == null) {
+        this.scrollState.lastTargetOffset += delta;
+      }
+    };
+    this.measure = () => {
+      this.pendingMin = null;
+      this.itemSizeCache.clear();
+      this.laneAssignments.clear();
+      this.itemSizeCacheVersion++;
+      this.notify(false);
+    };
+    this.setOptions(opts);
+  }
+  /**
+   * @deprecated Always 0: a scroll correction is folded into `scrollOffset`
+   * at once, so there is never an outstanding adjustment to add to it. Read
+   * `scrollOffset` alone.
+   */
+  get scrollAdjustments() {
+    return 0;
+  }
+  // Returns `true` when it performed a synchronous `scrollTop` write this
+  // tick, `false` when the delta was zero or the write was deferred (iOS).
+  // `resizeItem` uses that to decide whether the follow-up `notify` must be
+  // synchronous so the grown transforms commit in the same paint (#1227).
+  applyScrollAdjustment(delta, behavior) {
+    if (delta === 0) return false;
+    if ('production' !== "production" && this.options.debug) {
+      console.info("correction", delta);
+    }
+    this._followOffsetTarget(delta);
+    if (!this._canWriteScroll()) {
+      this._holdOffset += delta;
+      if (this.scrollOffset !== null) this.scrollOffset += delta;
+      return true;
+    } else {
+      const offset = this.getScrollOffset();
+      this._clampedAdjustment = this._clampedBy(offset + delta);
+      const write = this._scrollToOffset(offset, {
+        adjustments: delta,
+        behavior
+      });
+      if (this.scrollOffset !== null) {
+        if (this.pendingWrite === write) this.scrollOffset += delta;
+        if (this.scrollOffset < 0) this.scrollOffset = 0;
+      }
+      return true;
+    }
+  }
+  scheduleScrollReconcile() {
+    if (!this.targetWindow) {
+      this.scrollState = null;
+      return;
+    }
+    if (this.rafId != null) return;
+    this.rafId = this.targetWindow.requestAnimationFrame(() => {
+      this.rafId = null;
+      this.reconcileScroll();
+    });
+  }
+  getScrollStateTarget(state) {
+    const offsetInfo = state.toEnd ? [Math.max(this.getMaxScrollOffset(), 0)] : state.index != null ? this.getOffsetForIndex(state.index, state.align) : void 0;
+    return offsetInfo ? offsetInfo[0] : state.lastTargetOffset;
+  }
+  reconcileScroll() {
+    if (!this.scrollState) return;
+    const el = this.scrollElement;
+    if (!el) return;
+    const MAX_RECONCILE_MS = 5e3;
+    if (this.now() - this.scrollState.startedAt > MAX_RECONCILE_MS) {
+      this.scrollState = null;
+      return;
+    }
+    if (this.scrollState.phase === "queued") {
+      this.scheduleScrollReconcile();
+      return;
+    }
+    this.getMeasurements();
+    const targetOffset = this.getScrollStateTarget(this.scrollState);
+    const STABLE_FRAMES = this.scrollState.index == null ? 1 : this.options.useAnimationFrameWithResizeObserver ? 3 : 2;
+    const targetChanged = targetOffset !== this.scrollState.lastTargetOffset;
+    if (!targetChanged && utils.approxEqual(targetOffset, this.getScrollOffset())) {
+      if (this.scrollState.phase === "smooth") {
+        this.scrollState.phase = "smoothLanded";
+      } else if (this.scrollState.phase === "smoothFinishing") {
+        this.scrollState.phase = "instant";
+      }
+      this.scrollState.stableFrames++;
+      if (this.scrollState.stableFrames >= STABLE_FRAMES) {
+        if (this.getScrollOffset() !== targetOffset) {
+          this._scrollToOffset(targetOffset, {
+            behavior: "auto"
+          });
+        }
+        this.scrollState = null;
+        return;
+      }
+    } else {
+      this.scrollState.stableFrames = 0;
+      if (targetChanged) {
+        const viewport = this.getSize() || 600;
+        const distance = Math.abs(targetOffset - this.getScrollOffset());
+        const keepSmooth = isSmoothScroll(this.scrollState) && distance > viewport;
+        this.scrollState.lastTargetOffset = targetOffset;
+        if (keepSmooth) {
+          this.scrollState.phase = "smooth";
+        } else if (this.scrollState.phase === "smooth") {
+          this.scrollState.phase = "smoothFinishing";
+        } else if (this.scrollState.phase === "smoothLanded") {
+          this.scrollState.phase = "instant";
+        }
+        this._scrollToOffset(targetOffset, {
+          behavior: keepSmooth ? "smooth" : "auto"
+        });
+      }
+    }
+    this.scheduleScrollReconcile();
+  }
+  // Every scroll command starts here: it becomes the in-flight command,
+  // writes its first target and leaves reconcile to retarget and retire it.
+  //
+  // Targets are layout offsets. A held correction is not dropped by a
+  // command: the write lands the element `_holdOffset` short of the target,
+  // under the rows exposed shifted by the same amount, and the flush moves
+  // both together once a write is possible.
+  //
+  // An index or end target that is already at its offset starts a smooth
+  // scroll as landed; an offset target never does, so its first scroll
+  // event is read as the user's (see the scroll handler in `_willUpdate`).
+  _startScroll(target, offset, behavior, kind) {
+    const tail = this._iosGesture.tail();
+    if (kind === "absolute" && tail !== null) {
+      if (tail === "fling" && iosGesture.iosMomentumOverridesWrites()) {
+        this._stopMomentum(() => {
+          const state = this.scrollState;
+          if ((state == null ? void 0 : state.phase) !== "queued" ||
+          // A finger came down: it owns the scroll until it lifts.
+          this._iosGesture.tail() !== "fling" ||
+          // In a bounce WebKit can drop the write (#1287): the tail
+          // decides, as without the stop. (Not `flingCaught`: our stop
+          // also ends the fling at speed, so a slow frame would read as
+          // a catch and the tail would drop the command.)
+          this._reportedOverscroll) {
+            return;
+          }
+          this._iosGesture.end();
+          this._flushHoldIfReady(true);
+          this._writeAwaitingCommand();
+        });
+        this.scrollState = {
+          ...target,
+          startedAt: this.now(),
+          lastTargetOffset: offset,
+          stableFrames: 0,
+          phase: "queued",
+          behavior,
+          samples: []
+        };
+        this.scheduleScrollReconcile();
+        return;
+      }
+      this._iosGesture.end();
+    }
+    this.scrollState = {
+      ...target,
+      startedAt: this.now(),
+      lastTargetOffset: offset,
+      stableFrames: 0,
+      behavior,
+      phase: initialScrollPhase(behavior, target.index != null && utils.approxEqual(offset, this.getScrollOffset()))
+    };
+    this._scrollToOffset(offset, {
+      behavior
+    });
+    this.scheduleScrollReconcile();
+  }
+}
+const findNearestBinarySearch = (low, high, getCurrentValue, value) => {
+  while (low <= high) {
+    const middle = (low + high) / 2 | 0;
+    const currentValue = getCurrentValue(middle);
+    if (currentValue < value) {
+      low = middle + 1;
+    } else if (currentValue > value) {
+      high = middle - 1;
+    } else {
+      return middle;
+    }
+  }
+  if (low > 0) {
+    return low - 1;
+  } else {
+    return 0;
+  }
+};
+function findNearestBinarySearchFlat(flat, high, value) {
+  let low = 0;
+  while (low <= high) {
+    const middle = (low + high) / 2 | 0;
+    const currentValue = flat[middle * 2];
+    if (currentValue < value) {
+      low = middle + 1;
+    } else if (currentValue > value) {
+      high = middle - 1;
+    } else {
+      return middle;
+    }
+  }
+  return low > 0 ? low - 1 : 0;
+}
+function calculateRangeImpl(measurements, outerSize, scrollOffset, lanes, flat) {
+  const lastIndex = measurements.length - 1;
+  if (measurements.length <= lanes) {
+    return {
+      startIndex: 0,
+      endIndex: lastIndex
+    };
+  }
+  if (lanes === 1 && flat !== null) {
+    const startIndex2 = findNearestBinarySearchFlat(flat, lastIndex, scrollOffset);
+    let endIndex2 = startIndex2;
+    const limit = scrollOffset + outerSize;
+    while (endIndex2 < lastIndex && flat[endIndex2 * 2] + flat[endIndex2 * 2 + 1] < limit) {
+      endIndex2++;
+    }
+    return {
+      startIndex: startIndex2,
+      endIndex: endIndex2
+    };
+  }
+  const getStart = index => measurements[index].start;
+  let startIndex = findNearestBinarySearch(0, lastIndex, getStart, scrollOffset);
+  let endIndex = startIndex;
+  if (lanes === 1) {
+    while (endIndex < lastIndex && measurements[endIndex].end < scrollOffset + outerSize) {
+      endIndex++;
+    }
+  } else if (lanes > 1) {
+    const endPerLane = Array(lanes).fill(0);
+    while (endIndex < lastIndex && endPerLane.some(pos => pos < scrollOffset + outerSize)) {
+      const item = measurements[endIndex];
+      endPerLane[item.lane] = item.end;
+      endIndex++;
+    }
+    const startPerLane = Array(lanes).fill(scrollOffset + outerSize);
+    while (startIndex >= 0 && startPerLane.some(pos => pos >= scrollOffset)) {
+      const item = measurements[startIndex];
+      startPerLane[item.lane] = item.start;
+      startIndex--;
+    }
+    startIndex = Math.max(0, startIndex - startIndex % lanes);
+    endIndex = Math.min(lastIndex, endIndex + (lanes - 1 - endIndex % lanes));
+  }
+  return {
+    startIndex,
+    endIndex
+  };
+}
+exports.approxEqual = utils.approxEqual;
+exports.debounce = utils.debounce;
+exports.memo = utils.memo;
+exports.notUndefined = utils.notUndefined;
+exports._resetIOSDetectionForTests = iosGesture._resetIOSDetectionForTests;
+exports.Virtualizer = Virtualizer;
+exports.defaultKeyExtractor = defaultKeyExtractor;
+exports.defaultRangeExtractor = defaultRangeExtractor;
+exports.elementScroll = elementScroll;
+exports.measureElement = measureElement;
+exports.observeElementOffset = observeElementOffset;
+exports.observeElementRect = observeElementRect;
+exports.observeWindowOffset = observeWindowOffset;
+exports.observeWindowRect = observeWindowRect;
+exports.windowScroll = windowScroll;
+  } },
+  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, Symbol.toStringTag, {
+  value: "Module"
+});
+const React = require("react");
+const reactDom = require("react-dom");
+const virtualCore = require("@tanstack/virtual-core");
+function _interopNamespaceDefault(e) {
+  const n = Object.create(null, {
+    [Symbol.toStringTag]: {
+      value: "Module"
+    }
+  });
+  if (e) {
+    for (const k in e) {
+      if (k !== "default") {
+        const d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: () => e[k]
+        });
+      }
+    }
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+const React__namespace = /* @__PURE__ */_interopNamespaceDefault(React);
+const useIsomorphicLayoutEffect = typeof document !== "undefined" ? React__namespace.useLayoutEffect : React__namespace.useEffect;
+function useVirtualizerBase({
+  useFlushSync = true,
+  directDomUpdates = false,
+  directDomUpdatesMode = "transform",
+  ...options
+}) {
+  const rerender = React__namespace.useReducer(x => x + 1, 0)[1];
+  const directRef = React__namespace.useRef({
+    enabled: directDomUpdates,
+    mode: directDomUpdatesMode,
+    container: null,
+    lastSize: null,
+    // Keyed by the element itself so a remounted node (same key, new DOM
+    // node — e.g. when `enabled` is toggled off then on) is treated as fresh
+    // and gets its style written.
+    lastPositions: /* @__PURE__ */new WeakMap(),
+    prevRange: null
+  });
+  directRef.current.enabled = directDomUpdates;
+  directRef.current.mode = directDomUpdatesMode;
+  const measuringFromRef = React__namespace.useRef(false);
+  const applyContainerSize = instance2 => {
+    const state = directRef.current;
+    if (!state.enabled || !state.container) return;
+    const totalSize = instance2.getTotalSize();
+    if (totalSize !== state.lastSize) {
+      state.lastSize = totalSize;
+      const sizeAxis = instance2.options.horizontal ? "width" : "height";
+      state.container.style[sizeAxis] = `${totalSize}px`;
+    }
+  };
+  const applyItemPosition = (instance2, item, el) => {
+    const state = directRef.current;
+    const horizontal = !!instance2.options.horizontal;
+    const next = item.start - instance2.options.scrollMargin;
+    if (state.lastPositions.get(el) === next) return;
+    state.lastPositions.set(el, next);
+    if (state.mode === "transform") {
+      el.style.transform = horizontal ? `translate3d(${next}px, 0, 0)` : `translate3d(0, ${next}px, 0)`;
+    } else {
+      el.style[horizontal ? "left" : "top"] = `${next}px`;
+    }
+  };
+  const applyDirectStyles = instance2 => {
+    const state = directRef.current;
+    if (!state.enabled || !state.container) return;
+    applyContainerSize(instance2);
+    for (const item of instance2.getVirtualItems()) {
+      const el = instance2.elementsCache.get(item.key);
+      if (el) applyItemPosition(instance2, item, el);
+    }
+  };
+  const resolvedOptions = {
+    ...options,
+    onChange: (instance2, sync) => {
+      var _a;
+      const state = directRef.current;
+      let shouldRerender = true;
+      if (state.enabled) {
+        applyDirectStyles(instance2);
+        const range = instance2.range;
+        const prev = state.prevRange;
+        shouldRerender = !prev || prev.isScrolling !== instance2.isScrolling || prev.startIndex !== (range == null ? void 0 : range.startIndex) || prev.endIndex !== (range == null ? void 0 : range.endIndex);
+        if (shouldRerender) {
+          state.prevRange = range ? {
+            startIndex: range.startIndex,
+            endIndex: range.endIndex,
+            isScrolling: instance2.isScrolling
+          } : null;
+        }
+      }
+      if (shouldRerender) {
+        if (useFlushSync && sync && !measuringFromRef.current) {
+          reactDom.flushSync(rerender);
+        } else {
+          rerender();
+        }
+      }
+      (_a = options.onChange) == null ? void 0 : _a.call(options, instance2, sync);
+    }
+  };
+  const [instance] = React__namespace.useState(() => {
+    const v = new virtualCore.Virtualizer(resolvedOptions);
+    const measureElement = v.measureElement;
+    v.measureElement = node => {
+      measuringFromRef.current = true;
+      try {
+        measureElement(node);
+      } finally {
+        measuringFromRef.current = false;
+      }
+      const state = directRef.current;
+      if (node !== null && state.enabled && state.container) {
+        const item = v.measurementsCache[v.indexFromElement(node)];
+        if (item) applyItemPosition(v, item, node);
+      }
+    };
+    return Object.assign(v, {
+      containerRef: node => {
+        const state = directRef.current;
+        state.container = node;
+        state.lastSize = null;
+        if (node !== null) {
+          applyDirectStyles(v);
+        }
+      }
+    });
+  });
+  instance.setOptions(resolvedOptions);
+  useIsomorphicLayoutEffect(() => {
+    return instance._didMount();
+  }, []);
+  useIsomorphicLayoutEffect(() => {
+    applyContainerSize(instance);
+    return instance._willUpdate();
+  });
+  useIsomorphicLayoutEffect(() => {
+    applyDirectStyles(instance);
+  });
+  return instance;
+}
+function useVirtualizer(options) {
+  return useVirtualizerBase({
+    observeElementRect: virtualCore.observeElementRect,
+    observeElementOffset: virtualCore.observeElementOffset,
+    scrollToFn: virtualCore.elementScroll,
+    ...options
+  });
+}
+function useWindowVirtualizer(options) {
+  return useVirtualizerBase({
+    getScrollElement: () => typeof document !== "undefined" ? window : null,
+    observeElementRect: virtualCore.observeWindowRect,
+    observeElementOffset: virtualCore.observeWindowOffset,
+    scrollToFn: virtualCore.windowScroll,
+    initialOffset: () => typeof document !== "undefined" ? window.scrollY : 0,
+    ...options
+  });
+}
+exports.useVirtualizer = useVirtualizer;
+exports.useWindowVirtualizer = useWindowVirtualizer;
+Object.keys(virtualCore).forEach(k => {
+  if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: () => virtualCore[k]
+  });
+});
+  } },
+  "platform/components/DataGrid/engine/useVirtualizer.js": { deps: {"react":null,"react-dom":null,"@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useVirtualizer = useVirtualizer;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _reactVirtual = require("@tanstack/react-virtual");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataGrid engine · the virtual window of rows
+   Summary: The grid's virtual window: TanStack Virtual, unmodified, redrawing only when the window of rows changes, so a
+     scroll inside the same window needs no render.
+   Usage:
+     import { useVirtualizer } from './engine/useVirtualizer.js';
+     const virtualizer = useVirtualizer({ count, getScrollElement, estimateSize, overscan });
+   Props:
+     options: TanStack Virtual's Virtualizer options; returns the Virtualizer
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
+
 // TanStack Virtual, unmodified, driven like its React adapter but redrawing only when the window of rows changes: the
 // rows sit between gaps (no position per row), so a scroll inside the same window needs no render at all
 function useVirtualizer(options) {
@@ -32432,6 +31939,548 @@ function useVirtualizer(options) {
   _react.default.useLayoutEffect(() => instance._willUpdate());
   return instance;
 }
+  } },
+  "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.usePressable = usePressable;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · usePressable
+   Summary: One press from every input: a mouse click, a tap, a pen, Enter or Space on the keyboard, and the click a
+     screen reader sends all call onPress once, with the kind of input that made it. While the press is held the element
+     is pressed, so it can show the pressed treatment (is-pressed, system/interaction.css).
+   Usage:
+     const { pressed, pressProps } = usePressable({ onPress: (e) => open(e.pointerType) });
+     <button type="button" className={cx('plx-state', pressed && 'is-pressed')} {...pressProps}>Open</button>
+     <div role="button" tabIndex={0} {...pressProps}>…</div>          // a custom surface: the role and the Tab stop are yours
+   Props:
+     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey, event }): the press, once; pointerType is
+       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click); event is the event that
+       made it (a click, or the key with the keyboard)
+     options.onPressStart({ pointerType }): the press begins (pointer down, or the key goes down)
+     options.onPressEnd({ pointerType }): the press ends, whether it was made or canceled
+     options.onPressChange(pressed): the pressed state changes
+     options.disabled (false): no press, no pressed state; the element keeps its focus behavior
+     options.handlers ({}): your own handlers of the same events (onClick, onKeyDown, …); they run first
+     options.native (false): on a native <button>, the browser's click stays the one press, for every input: onPress
+       runs from that click (event is the click itself), with pointerType from the pointer or key that made it; the keys
+       keep the browser's behavior (Enter repeats while held, as a native button does), and pressed stays false (the
+       button draws its own :active); pressProps are then onPointerDown, onPointerCancel, onKeyDown, onBlur and onClick. A
+       preventDefault in one of your handlers does not stop the press there: the browser decides the click
+     returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
+       onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
+   Behavior:
+     Pointer: the press is made on release over the element (the browser's click), so sliding off before release cancels
+       it (WCAG 2.2, 2.5.2 Pointer cancellation); sliding back on while held presses it again. Only the primary button presses.
+     Keyboard: Enter presses when it goes down (as a native button does) and does not repeat while held; Space presses
+       when it comes up, and Escape or moving focus away while it is held cancels it. A link (a[href]) keeps Enter for itself.
+     A click with no pointer and no key (a screen reader activating the element) presses with pointerType "virtual".
+     Your own handlers of the same events still run: pass them in options.handlers and they run first; preventDefault
+       in one stops the press.
+   Notes:
+     It gives behavior, not semantics: put it on a native button whenever you can. A custom surface needs role="button"
+       (or the role of its widget), tabIndex 0 and a name; the check-system rule semantic-html rejects a clickable div
+       without a role.
+     Hover is not a press: hover treatment comes from :hover, which touch screens do not keep after a tap.
+*/
+
+const PRIMARY = 0;
+function usePressable(options = {}) {
+  const {
+    onPress,
+    onPressStart,
+    onPressEnd,
+    onPressChange,
+    disabled = false,
+    handlers = {},
+    native = false
+  } = options;
+  const [pressed, setPressedState] = _react.default.useState(false);
+  // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
+  const hold = _react.default.useRef(null);
+  const key = _react.default.useRef(null);
+  const lastPointer = _react.default.useRef(null);
+  const latest = _react.default.useRef(options);
+  latest.current = options;
+  const setPressed = on => {
+    setPressedState(on);
+    if (latest.current.onPressChange) latest.current.onPressChange(on);
+  };
+  const start = pointerType => {
+    hold.current = {
+      pointerType
+    };
+    setPressed(true);
+    if (onPressStart) onPressStart({
+      pointerType
+    });
+  };
+  const end = () => {
+    const was = hold.current;
+    hold.current = null;
+    setPressed(false);
+    if (was && onPressEnd) onPressEnd({
+      pointerType: was.pointerType
+    });
+  };
+  const fire = (e, pointerType) => {
+    if (onPress) onPress({
+      pointerType,
+      target: e.currentTarget,
+      shiftKey: !!e.shiftKey,
+      ctrlKey: !!e.ctrlKey,
+      metaKey: !!e.metaKey,
+      altKey: !!e.altKey,
+      event: e
+    });
+  };
+  // the caller's own handler first; preventDefault in it stops the press
+  const chain = (name, own) => e => {
+    if (handlers[name]) handlers[name](e);
+    if (disabled || e.defaultPrevented) return;
+    own(e);
+  };
+  const isLink = el => el && el.tagName === 'A' && el.hasAttribute('href');
+  _react.default.useEffect(() => {
+    if (disabled && hold.current) end();
+  });
+  if (native) {
+    // the browser's click is the press: the pointer or key before it only names the kind of input
+    const own = name => e => {
+      if (handlers[name]) handlers[name](e);
+    };
+    const nativeProps = {
+      onPointerDown: e => {
+        own('onPointerDown')(e);
+        lastPointer.current = e.pointerType || 'mouse';
+      },
+      onPointerCancel: e => {
+        own('onPointerCancel')(e);
+        lastPointer.current = null;
+      },
+      onKeyDown: e => {
+        own('onKeyDown')(e);
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard';
+      },
+      onBlur: e => {
+        own('onBlur')(e);
+        lastPointer.current = null;
+      },
+      // a pointer or key that never clicked names no later click
+      onClick: e => {
+        own('onClick')(e);
+        const pointerType = lastPointer.current || (e.detail === 0 ? 'virtual' : 'mouse');
+        lastPointer.current = null;
+        if (!disabled) fire(e, pointerType);
+      }
+    };
+    Object.keys(handlers).forEach(name => {
+      if (!nativeProps[name]) nativeProps[name] = handlers[name];
+    });
+    return {
+      pressed: false,
+      pressProps: nativeProps
+    };
+  }
+  const pressProps = {
+    onPointerDown: chain('onPointerDown', e => {
+      if (e.button !== PRIMARY) return;
+      const el = e.currentTarget;
+      lastPointer.current = e.pointerType || 'mouse';
+      start(lastPointer.current);
+      // the release may happen anywhere: it ends the press; off the element it also cancels it (no click follows)
+      const up = u => {
+        window.removeEventListener('pointerup', up, true);
+        window.removeEventListener('pointercancel', up, true);
+        if (u.type === 'pointercancel' || !el.contains(u.target)) lastPointer.current = null;
+        if (hold.current && hold.current.pointerType !== 'keyboard') end();
+      };
+      window.addEventListener('pointerup', up, true);
+      window.addEventListener('pointercancel', up, true);
+    }),
+    onPointerUp: chain('onPointerUp', () => {
+      if (hold.current && hold.current.pointerType !== 'keyboard') end();
+    }),
+    onPointerCancel: chain('onPointerCancel', () => {
+      if (hold.current) end();
+      lastPointer.current = null;
+    }),
+    onPointerLeave: chain('onPointerLeave', () => {
+      if (hold.current && hold.current.pointerType !== 'keyboard') {
+        hold.current.left = true;
+        setPressed(false);
+      }
+    }),
+    onPointerEnter: chain('onPointerEnter', e => {
+      if (hold.current && hold.current.left && e.buttons & 1) {
+        hold.current.left = false;
+        setPressed(true);
+      }
+    }),
+    onKeyDown: chain('onKeyDown', e => {
+      lastPointer.current = null;
+      if (e.key === 'Escape' && key.current) {
+        key.current = null;
+        end();
+        return;
+      }
+      if (e.key === 'Enter' && !isLink(e.currentTarget)) {
+        e.preventDefault(); // the native button's own click would press twice
+        if (e.repeat) return;
+        start('keyboard');
+        fire(e, 'keyboard');
+        end();
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault(); // no page scroll, no native click
+        if (e.repeat || key.current) return;
+        key.current = ' ';
+        start('keyboard');
+      }
+    }),
+    onKeyUp: chain('onKeyUp', e => {
+      if ((e.key === ' ' || e.key === 'Spacebar') && key.current) {
+        e.preventDefault();
+        key.current = null;
+        fire(e, 'keyboard');
+        end();
+      }
+    }),
+    onBlur: chain('onBlur', () => {
+      if (key.current) {
+        key.current = null;
+        end();
+      }
+    }),
+    onClick: chain('onClick', e => {
+      const pointerType = lastPointer.current;
+      lastPointer.current = null;
+      if (pointerType) {
+        if (hold.current) end();
+        fire(e, pointerType);
+        return;
+      }
+      if (e.detail === 0) fire(e, 'virtual'); // a click with no pointer and no key: assistive technology or a script
+    })
+  };
+  // the caller's other handlers pass through untouched
+  Object.keys(handlers).forEach(name => {
+    if (!pressProps[name]) pressProps[name] = handlers[name];
+  });
+  return {
+    pressed: !disabled && pressed,
+    pressProps
+  };
+}
+  } },
+  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VIRTUAL_STICKY_CLASS = void 0;
+exports.VirtualGap = VirtualGap;
+exports.VirtualProbe = VirtualProbe;
+exports.gapPieces = gapPieces;
+exports.useVirtualizer = useVirtualizer;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useVirtualizer
+   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
+     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
+     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
+   Usage:
+     const v = useVirtualizer({ count: files.length });
+     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
+       <VirtualProbe />
+       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
+         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
+     </div>
+     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-grid-row-height); overflow-y: auto; }
+   Props:
+     count: how many items there are
+     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
+       size; the token is the estimate for the items not rendered)
+     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
+     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
+     overscan: rows rendered beyond each edge of the view (default 4)
+     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
+     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
+     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
+       grid) not rendered
+     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
+     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
+       first in the viewport)
+   Behavior:
+     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
+     name it (aria-label) and give it its role (list, grid, listbox).
+     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
+     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
+     scroll anchoring keeps the content still while gaps replace items of another size.
+     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
+     "12 of 4,000" even though only a few are in the page.
+   Notes:
+     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
+     item matters, unless the page offers its own search. DataGrid keeps the table renderer's own rendering.
+     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
+     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
+*/
+
+const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
+
+// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
+function gapPieces(count) {
+  const out = [];
+  let n = Math.max(0, Math.floor(count));
+  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
+    out.push(p);
+    n -= p;
+  }
+  return out;
+}
+function VirtualGap({
+  count,
+  axis = 'y'
+}) {
+  if (!count) return null;
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-gap',
+    'data-plx-axis': axis,
+    'aria-hidden': 'true'
+  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
+    key: i,
+    className: 'plx-virtual-gap__piece',
+    'data-plx-axis': axis,
+    'data-plx-span': String(p)
+  })));
+}
+function VirtualProbe({
+  axis = 'y'
+}) {
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-probe',
+    'data-plx-axis': axis,
+    'data-plx-virtual-probe': '',
+    'aria-hidden': 'true'
+  });
+}
+function useVirtualizer({
+  count = 0,
+  mode = 'fixed',
+  axis = 'y',
+  grid = false,
+  overscan = 4,
+  sticky
+} = {}) {
+  const viewportRef = _react.default.useRef(null);
+  const [view, setView] = _react.default.useState({
+    offset: 0,
+    size: 0,
+    pitch: 0,
+    columns: 1
+  });
+  const [focused, setFocused] = _react.default.useState(-1);
+  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
+  const shown = _react.default.useRef({
+    start: 0,
+    end: 0
+  }); // the rows rendered last
+  const horizontal = axis === 'x';
+
+  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
+  const measure = _react.default.useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
+    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
+    let columns = 1;
+    if (grid) {
+      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
+      if (items.length) {
+        const top = items[0].offsetTop;
+        let n = 0;
+        while (n < items.length && items[n].offsetTop === top) n++;
+        // no wrap seen while more items exist: guess wider, render more and look again
+        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
+      }
+    }
+    if (mode === 'measured') {
+      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
+        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
+      });
+    }
+    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
+    const size = horizontal ? el.clientWidth : el.clientHeight;
+    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
+      offset,
+      size,
+      pitch,
+      columns
+    });
+  }, [horizontal, grid, mode, count, view.columns]);
+  _react.default.useLayoutEffect(() => {
+    measure();
+  });
+  _react.default.useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return undefined;
+    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
+    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+    const onScroll = () => measure();
+    const onFocus = e => {
+      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
+      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
+    };
+    const onBlur = e => {
+      if (!el.contains(e.relatedTarget)) setFocused(-1);
+    };
+    el.addEventListener('scroll', onScroll, {
+      passive: true
+    });
+    el.addEventListener('focusin', onFocus);
+    el.addEventListener('focusout', onBlur);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('focusin', onFocus);
+      el.removeEventListener('focusout', onBlur);
+      if (ro) ro.disconnect();
+    };
+  }, [measure]);
+  const columns = grid ? Math.max(1, view.columns) : 1;
+  const rows = Math.ceil(count / columns);
+  const pitch = view.pitch || 1;
+  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
+  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
+  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
+  let first;
+  const last = shown.current;
+  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
+    let pos = last.start * pitch,
+      i = last.start;
+    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
+      pos += sizes.current.get(i) || pitch;
+      i++;
+    }
+    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
+    first = Math.min(rows, i);
+  } else first = Math.min(rows, Math.floor(view.offset / pitch));
+  let fill = 0,
+    covered = 0;
+  const target = view.size || pitch * 10;
+  while (first + fill < rows && covered < target) {
+    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
+    fill++;
+  }
+  const startRow = Math.max(0, first - overscan);
+  const endRow = Math.min(rows, first + fill + overscan); // exclusive
+  const start = startRow * columns,
+    end = Math.min(count, endRow * columns);
+  shown.current = {
+    start: startRow,
+    end: endRow
+  };
+
+  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
+  const pinned = [];
+  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
+  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
+  if (header !== undefined && !grid) pinned.push(header);
+  const segments = [];
+  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
+  let at = 0;
+  const pushRows = (from, to) => {
+    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
+      key: 'i' + i,
+      index: i
+    });
+  };
+  const pushGap = (from, to) => {
+    if (to > from) segments.push({
+      key: 'g' + from,
+      gap: true,
+      count: to - from
+    });
+  };
+  rowsOut.filter(r => r < startRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, startRow);
+  pushRows(startRow, endRow);
+  at = endRow;
+  rowsOut.filter(r => r >= endRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, rows);
+  const itemProps = _react.default.useCallback(index => ({
+    'data-plx-virtual-index': index,
+    'aria-posinset': index + 1,
+    'aria-setsize': count
+  }), [count]);
+  const scrollToIndex = _react.default.useCallback(index => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const offset = Math.floor(index / columns) * pitch;
+    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
+    measure();
+  }, [columns, pitch, horizontal, measure]);
+  return {
+    viewportRef,
+    segments,
+    itemProps,
+    scrollToIndex,
+    range: {
+      start,
+      end
+    },
+    columns
+  };
+}
+  } },
+  "platform/components/DataGrid/engine/parts.jsx": { deps: {"react":null,"../../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../../utils/cx.js":"platform/utils/cx.js","../../../hooks/usePressable.js":"platform/hooks/usePressable.js","../../../utils/grid.js":"platform/utils/grid.js","../../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./helpers.jsx":"platform/components/DataGrid/engine/helpers.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CellEditor = CellEditor;
+exports.Check = Check;
+exports.PressTrigger = exports.MemoGridRow = exports.CustomCell = void 0;
+exports.RowGap = RowGap;
+exports.RowMenuContent = RowMenuContent;
+exports.WidthPixels = exports.Width = exports.RowTarget = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _dataText = require("../../../utils/dataText.jsx");
+var _cx = require("../../../utils/cx.js");
+var _usePressable = require("../../../hooks/usePressable.js");
+var _grid = require("../../../utils/grid.js");
+var _useVirtualizer = require("../../../hooks/useVirtualizer.js");
+var _LocaleProvider = require("../../../providers/LocaleProvider.jsx");
+var _helpers = require("./helpers.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGrid engine · the engine's own small parts (gaps, the cell editor, the checkbox, the width wrapper, the row targets)
+   Summary: The engine's own small parts: the gaps that stand for rows not drawn (Gap, RowGap), the cell editor
+     (CellEditor), the checkbox (Check), a header's small trigger (PressTrigger, built on usePressable), the width wrapper
+     for a column's cells (Width, WidthPixels), a row's menu (RowMenuContent), the custom cell with the data-font helper
+     (CustomCell), the memoized row (MemoGridRow) and the row target (RowTarget).
+   Usage:
+     import { RowGap, CellEditor, Check, PressTrigger, Width, RowMenuContent, CustomCell, MemoGridRow, RowTarget } from './engine/parts.jsx';
+   Props:
+     each part takes the props the engine passes it (for example CellEditor: column, value, onCommit, onCancel; Check:
+     checked, mixed, label, onChange); used only by the DataGrid engine (not public exports)
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
 function Gap({
   count,
   kind = 'record'
@@ -32511,11 +32560,11 @@ function Check({
     if (ref.current) ref.current.indeterminate = !!mixed;
   }, [mixed]);
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: GRID + '__check',
+    className: _helpers.GRID + '__check',
     onClick: e => e.stopPropagation()
   }, /*#__PURE__*/_react.default.createElement("input", {
     ref: ref,
-    className: GRID + '__check-input',
+    className: _helpers.GRID + '__check-input',
     type: "checkbox",
     checked: !!checked,
     "aria-label": label,
@@ -32523,8 +32572,9 @@ function Check({
     onClick: e => e.stopPropagation()
   }));
 }
+
 // a header's small trigger (the filter, the column menu): a span, so it takes one press from every input through usePressable (Enter and Space press it, as a button); Popover and Menu hand it onClick and onKeyDown
-const PressTrigger = /*#__PURE__*/_react.default.forwardRef(function PressTrigger({
+const PressTrigger = exports.PressTrigger = /*#__PURE__*/_react.default.forwardRef(function PressTrigger({
   onClick,
   onKeyDown,
   children,
@@ -32546,10 +32596,11 @@ const PressTrigger = /*#__PURE__*/_react.default.forwardRef(function PressTrigge
     tabIndex: 0
   }, rest, pressProps), children);
 });
-const WidthPixels = /*#__PURE__*/_react.default.createContext(null);
+const WidthPixels = exports.WidthPixels = /*#__PURE__*/_react.default.createContext(null);
+
 // Calculate token widths during React's read-only render, then let React batch all style writes at commit.
 // Reading the grid in a separate layout effect for every new cell alternates reads and writes and forces layout.
-const Width = /*#__PURE__*/_react.default.forwardRef(function Width({
+const Width = exports.Width = /*#__PURE__*/_react.default.forwardRef(function Width({
   as: Element = 'div',
   width,
   frozenOffset,
@@ -32587,11 +32638,12 @@ function RowMenuContent({
 }) {
   return build(typeof items === 'function' ? items(record) : items || [], record, rowApi);
 }
+
 // a custom cell's own elements (each element of a fragment too) take __cell-content: the grid's class on what it places in the cell
 const ownContent = (node, block) => ! /*#__PURE__*/_react.default.isValidElement(node) ? node : node.type === _react.default.Fragment ? /*#__PURE__*/_react.default.cloneElement(node, {}, _react.default.Children.map(node.props.children, child => ownContent(child, block))) : /*#__PURE__*/_react.default.cloneElement(node, {
   className: (0, _cx.cx)(node.props.className, block + '__cell-content')
 });
-const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
+const CustomCell = exports.CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
   column,
   record,
   cell,
@@ -32603,14 +32655,15 @@ const CustomCell = /*#__PURE__*/_react.default.memo(function CustomCell({
     className: (0, _cx.cx)(block + '__value', mods)
   }, (0, _dataText.dataWhenText)(content));
 }, (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block && a.mods === b.mods);
+
 // Window-only updates reuse complete record rows; view, selection and edit changes invalidate their closures.
-const MemoGridRow = /*#__PURE__*/_react.default.memo(function MemoGridRow({
+const MemoGridRow = exports.MemoGridRow = /*#__PURE__*/_react.default.memo(function MemoGridRow({
   row,
   render
 }) {
   return render(row);
 }, (a, b) => a.row === b.row && a.version === b.version && a.selected === b.selected);
-const RowTarget = /*#__PURE__*/_react.default.forwardRef(function RowTarget({
+const RowTarget = exports.RowTarget = /*#__PURE__*/_react.default.forwardRef(function RowTarget({
   onAttach,
   ...props
 }, forwarded) {
@@ -32621,11 +32674,88 @@ const RowTarget = /*#__PURE__*/_react.default.forwardRef(function RowTarget({
     }
   }));
 });
+  } },
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","./engine/helpers.jsx":"platform/components/DataGrid/engine/helpers.jsx","./engine/pill.js":"platform/components/DataGrid/engine/pill.js","./engine/useVirtualizer.js":"platform/components/DataGrid/engine/useVirtualizer.js","./engine/parts.jsx":"platform/components/DataGrid/engine/parts.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataGridEngine = DataGridEngine;
+var _react = _interopRequireDefault(require("react"));
+var _unread = require("./unread.js");
+var _room = require("./room.js");
+var _reactDom = require("react-dom");
+var _scrollbars = require("./scrollbars.jsx");
+var _dnd = require("../../utils/dnd.js");
+var _DragHandle = require("../DragHandle/DragHandle.jsx");
+var _reactTable = require("@tanstack/react-table");
+var _direction = require("../../utils/direction.js");
+var _format = require("../../utils/format.js");
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _grid = require("../../utils/grid.js");
+var _sizeSteps = require("../../utils/sizeSteps.js");
+var _paneLimit = require("../../utils/paneLimit.js");
+var _environment = require("./environment.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Stack = require("../Stack/Stack.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _ColumnsMenu = require("../../patterns/ColumnsMenu/ColumnsMenu.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _Pagination = require("../Pagination/Pagination.jsx");
+var _EmptyState = require("../EmptyState/EmptyState.jsx");
+var _state = require("./state.js");
+var _adapter = require("./adapter.js");
+var _cells = require("./cells.jsx");
+var _records = require("./records.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _add = _interopRequireDefault(require("plenix-platform/icons/plenix/add"));
+var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
+var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
+var _circleInfo = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-info"));
+var _edText = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-text"));
+var _expand = _interopRequireDefault(require("plenix-platform/icons/plenix/expand"));
+var _filter = _interopRequireDefault(require("plenix-platform/icons/plenix/filter"));
+var _groupBy = _interopRequireDefault(require("plenix-platform/icons/plenix/group-by"));
+var _more = _interopRequireDefault(require("plenix-platform/icons/plenix/more"));
+var _settingsCustomize = _interopRequireDefault(require("plenix-platform/icons/plenix/settings-customize"));
+var _sortAscending = _interopRequireDefault(require("plenix-platform/icons/plenix/sort-ascending"));
+var _sortDescending = _interopRequireDefault(require("plenix-platform/icons/plenix/sort-descending"));
+var _helpers = require("./engine/helpers.jsx");
+var _pill = require("./engine/pill.js");
+var _useVirtualizer = require("./engine/useVirtualizer.js");
+var _parts = require("./engine/parts.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGridEngine (TanStack)
+   Summary: The React-owned renderer behind the public DataGrid and static Table.
+   Usage: <DataGridEngine label="People" data={people} columns={columns} selectable />
+   Props: label/data/columns/index, selection and view state, rowHeight/wrapHeaders, narrow layout, fill/pages/load-more,
+     groupBy, tree/childrenField/treeColumn, editable columns, row menus, storageKey, fetchRows and loading/error state.
+     onRowClick(record,event), onRowDoubleClick(record,event), onCellEdit(record,change) receive application records.
+   Behavior: TanStack owns row models and column state; TanStack Virtual chooses the rendered window. Existing
+     token-sized CSS gaps represent missing rows. An automatic viewport is bounded by its allocated pane as well as the browser. Opening saved state is supplied on the very first render. Search filtering is deferred so typing stays responsive;
+     controlled sort state and the numeric text collator are reused across search updates.
+   Notes: Own Plenix markup and stylesheet use the existing table tokens. Applications use the public DataGrid entry point.
+     A part takes the grid's modes and its row's state as its own classes (zero overlap, data-grid.css): a record row
+     __grid-row--narrow (the list) and --virtual (the drawn window); every cell of it __grid-cell--narrow, --sized (a row
+     height step) and --lines (a step taller than short), the first after the checkbox --after-lead, a plain value
+     directly inside --bare, a nested row's tree cell __tree-cell--level-N; a value __value--wrap, --sized and --lines;
+     row actions sit in __portal--actions; the checkbox input is __check-input. The grid, the scroll body and the table
+     take the fill and the drawn window as __grid--fill, __grid-tableholder--fill, __grid-table--virtual and --narrow.
+     A group's head is __group-head--gap after a band (not in its sticky copy), its label __group-label--level-N, its
+     cells --narrow in the list, the add row's cell __group-cell--add; the eyebrow is the grid's own span. A custom cell's
+     own element takes __cell-content (a link alone in a cell fills it); a data cell (kind data, type bytes) is
+     __grid-cell--data, the data role in Mono. Table (isStatic) marks its parts --static: the root, grid, header, headers, columns, their
+     contents and titles, the body, the table, rows, cells, values and the placeholder. */
 function NextEngine(props) {
   const inPane = _react.default.useContext(_room.GridPane);
   const {
     label,
-    data = EMPTY_ROWS,
+    data = _helpers.EMPTY_ROWS,
     columns,
     index = 'id',
     selectable = false,
@@ -32657,7 +32787,7 @@ function NextEngine(props) {
   } = props;
   const showTypes = typeIconsProp ?? !isStatic; // the column type icons: a DataGrid's sort and filter cue, not a static Table's
   const narrow = requestedNarrow === undefined ? inPane && !isStatic ? 'table' : 'list' : requestedNarrow;
-  const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
+  const B = isStatic ? 'plx-table' : _helpers.GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
   const S = (0, _LocaleProvider.useStrings)('dataGrid', props.strings),
     initial = _react.default.useMemo(() => (0, _state.opening)(props), [storageKey]);
   const frame = _react.default.useRef(null),
@@ -32706,9 +32836,9 @@ function NextEngine(props) {
   const [cutAt, setCutAt] = _react.default.useState(null),
     cutOpen = _react.default.useRef(false);
   const [wrapColumns, setWrapColumns] = _react.default.useState(() => props.wrapColumns || initial.wrapColumns || {});
-  const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || kinds(c).includes('wrap'));
+  const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || (0, _helpers.kinds)(c).includes('wrap'));
   const kindsOf = c => {
-    const k = kinds(c).filter(x => x !== 'wrap');
+    const k = (0, _helpers.kinds)(c).filter(x => x !== 'wrap');
     return wrapOf(c) ? k.concat('wrap') : k;
   };
   const changeWrap = next => {
@@ -32790,7 +32920,7 @@ function NextEngine(props) {
   _react.default.useEffect(() => {
     if (props.sort?.length && sortOwner !== sortSignal) setSortOwner(null);
   }, [sortSignal]);
-  const sorting = props.onViewChange ? controlledSort : sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? controlledSort : appliedSort.current ? EMPTY_ROWS : localSort;
+  const sorting = props.onViewChange ? controlledSort : sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? controlledSort : appliedSort.current ? _helpers.EMPTY_ROWS : localSort;
   const controlledVisibility = _react.default.useMemo(() => (0, _state.visibilityOf)(props.hiddenColumns), [hiddenSignal]);
   const columnOrder = props.onViewChange ? props.columnOrder || order : orderOwner === orderSignal ? order : props.columnOrder || order,
     columnVisibility = props.onViewChange ? controlledVisibility : hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? controlledVisibility : visibility;
@@ -32800,7 +32930,7 @@ function NextEngine(props) {
   // near the end ("fill", issue 522: one list, no page controls)
   const remoteMode = typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more' || mode === 'fill'),
     scrollFill = remoteMode && mode === 'fill',
-    incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
+    incoming = remoteMode ? remote?.rows || _helpers.EMPTY_ROWS : data;
   const source = edited?.input === incoming ? edited.rows : incoming,
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
@@ -32972,7 +33102,7 @@ function NextEngine(props) {
     setSorting(next);
     setPage(0);
     props.onViewChange?.({
-      sort: sorted(next)
+      sort: (0, _helpers.sorted)(next)
     });
     emit('dataSorted', next.map(s => ({
       field: s.id,
@@ -32985,10 +33115,10 @@ function NextEngine(props) {
     header: c.title || c.field,
     enableSorting: c.sortable !== false,
     filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
-    sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
-    size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, floors[c.field] || 0, autoSizing[c.field] || (0, _environment.tokenPixels)(c.width, frame.current) || metrics.min),
-    minSize: kinds(c).includes('icon') ? metrics.lead : Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min),
-    maxSize: kinds(c).includes('icon') ? metrics.lead : Math.min(c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1], Math.max(Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min), (0, _paneLimit.shareOf)(metrics.room, frame.current))),
+    sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : _helpers.compare,
+    size: (0, _helpers.kinds)(c).includes('icon') ? metrics.lead : Math.max(metrics.min, floors[c.field] || 0, autoSizing[c.field] || (0, _environment.tokenPixels)(c.width, frame.current) || metrics.min),
+    minSize: (0, _helpers.kinds)(c).includes('icon') ? metrics.lead : Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min),
+    maxSize: (0, _helpers.kinds)(c).includes('icon') ? metrics.lead : Math.min(c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1], Math.max(Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min), (0, _paneLimit.shareOf)(metrics.room, frame.current))),
     meta: c
   })), [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]);
   // pinned (frozen) columns are TanStack's left pinning, listed in the columns' current order (columnOrder first, then
@@ -33085,15 +33215,15 @@ function NextEngine(props) {
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at || typeof CSSStyleSheet === 'undefined' || !at.ownerDocument.defaultView) return undefined; // a closed document (its frame removed): nothing to measure
-    const store = pillSheet(at.ownerDocument);
+    const store = (0, _pill.pillSheet)(at.ownerDocument);
     if (cells !== 'pill' || !metrics.row) {
       if (store.rules.delete(gridKey)) store.flush();
       return undefined;
     }
     const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
       faces = {
-        data: pillFont(at, ctx, true),
-        text: pillFont(at, ctx, false)
+        data: (0, _pill.pillFont)(at, ctx, true),
+        text: (0, _pill.pillFont)(at, ctx, false)
       },
       px = name => (0, _environment.tokenPixels)(name, at),
       step = (0, _grid.gridStep)(at);
@@ -33102,7 +33232,7 @@ function NextEngine(props) {
     const key = CSS.escape(gridKey),
       rules = [];
     columns.forEach(c => {
-      const k = kinds(c);
+      const k = (0, _helpers.kinds)(c);
       if (c.render || c.pill === false || k.includes('tags') || k.includes('badge') || k.includes('deleted') || k.includes('icon')) return;
       const data = k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type);
       const face = faces[data ? 'data' : 'text'],
@@ -33117,7 +33247,7 @@ function NextEngine(props) {
         widest = Math.max(widest, ctx.measureText((0, _cells.valueText)(v)).width * scale);
       });
       if (!widest) return;
-      const icon = c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text';
+      const icon = c.type === 'person' || k.includes('avatar-name') || showTypes && (0, _helpers.typeOf)(c) !== 'text';
       rules.push('[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + (0, _grid.snapToGrid)(widest + sides + (icon ? glyph : 0), {
         round: 'up',
         step
@@ -33139,7 +33269,7 @@ function NextEngine(props) {
   const levels = _react.default.useMemo(() => typeof groupBy === 'string' || typeof groupBy === 'function' ? [groupBy] : Array.isArray(groupBy) ? groupBy.filter(Boolean) : [], [typeof groupBy === 'function' ? groupBy : JSON.stringify(groupBy)]); // the same levels keep one array (an app may pass a new one on every render)
   const levelField = level => typeof level === 'object' ? level.field : level;
   const groupInput = _react.default.useMemo(() => {
-    if (!levels.length) return EMPTY_ROWS;
+    if (!levels.length) return _helpers.EMPTY_ROWS;
     const out = [];
     for (const row of loadedRows) {
       if (!row.original) continue;
@@ -33228,7 +33358,7 @@ function NextEngine(props) {
   const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
     virtualized = !isStatic && mode !== 'pages' && !isNarrow && !printing;
   const estimate = row => row?.__group ? metrics.group + metrics.line * (row.__group.separated ? 2 : 1) : row?.__gap ? metrics.groupGap : row?.__add ? metrics.add + metrics.line : metrics.row + metrics.line;
-  const virtual = useVirtualizer({
+  const virtual = (0, _useVirtualizer.useVirtualizer)({
     count: model.length,
     getScrollElement: () => holder.current,
     estimateSize: i => estimate(model[i]),
@@ -33251,8 +33381,8 @@ function NextEngine(props) {
     ordered = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
   const pinStart = column => (selectable ? metrics.lead : 0) + column.getStart('left');
   const widths = Object.fromEntries(ordered.map(column => [column.id, column.getSize()]));
-  const listable = column => !column.rowHandle && !kinds(column).some(kind => ['icon', 'actions'].includes(kind));
-  const keys = keyColumns?.length ? keyColumns : columns.filter(c => !kinds(c).some(k => ['icon', 'actions'].includes(k)) && !c.rowHandle).slice(0, 3).map(c => c.field);
+  const listable = column => !column.rowHandle && !(0, _helpers.kinds)(column).some(kind => ['icon', 'actions'].includes(kind));
+  const keys = keyColumns?.length ? keyColumns : columns.filter(c => !(0, _helpers.kinds)(c).some(k => ['icon', 'actions'].includes(k)) && !c.rowHandle).slice(0, 3).map(c => c.field);
   const listed = narrow === 'auto' ? columns.some(listable) : narrow === 'list' && columns.some(column => listable(column) && !keys.includes(column.field));
   const columnDnd = (0, _dnd.useSortable)({
     items: ordered,
@@ -33332,8 +33462,8 @@ function NextEngine(props) {
       floor = {};
     // the probe pills are the only writes: measured first, so the reads below find the styles already computed
     const scales = cells === 'pill' ? {
-        data: pillFont(at, ctx, true),
-        text: pillFont(at, ctx, false)
+        data: (0, _pill.pillFont)(at, ctx, true),
+        text: (0, _pill.pillFont)(at, ctx, false)
       } : null,
       cs = getComputedStyle(at),
       step = (0, _grid.gridStep)(at);
@@ -33347,7 +33477,7 @@ function NextEngine(props) {
         step
       });
     columns.forEach(c => {
-      if (kinds(c).includes('icon')) {
+      if ((0, _helpers.kinds)(c).includes('icon')) {
         widths[c.field] = metrics.lead;
         return;
       }
@@ -33372,12 +33502,12 @@ function NextEngine(props) {
         widths[c.field] = Math.max(explicit, floor[c.field]);
         return;
       }
-      const family = cs.getPropertyValue(kinds(c).includes('data') ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family').trim() || cs.fontFamily;
+      const family = cs.getPropertyValue((0, _helpers.kinds)(c).includes('data') ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family').trim() || cs.fontFamily;
       ctx.font = cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() + ' ' + family;
       // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
-      ctx.wordSpacing = kinds(c).includes('data') ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
+      ctx.wordSpacing = (0, _helpers.kinds)(c).includes('data') ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
       let width = head;
-      const k = kinds(c),
+      const k = (0, _helpers.kinds)(c),
         pill = cells === 'pill' && c.pill !== false && !k.includes('tags') && !k.includes('badge') && !k.includes('deleted');
       const face = pill ? scales[k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type) ? 'data' : 'text'] : null,
         scale = face ? face.scale : 1; // a pill: its own font, as drawn
@@ -33385,7 +33515,7 @@ function NextEngine(props) {
         ctx.font = face.font;
         ctx.wordSpacing = face.wordSpacing;
       }
-      const chrome = pill ? tokenPx('--plx-comp-data-pill-md-padding-inline-start') + tokenPx('--plx-comp-data-pill-md-padding-inline-end') + 2 * tokenPx('--plx-comp-data-pill-border-width') + (c.type === 'person' || k.includes('avatar-name') || showTypes && typeOf(c) !== 'text' ? tokenPx('--plx-comp-data-pill-icon-size') + tokenPx('--plx-comp-data-pill-gap') : 0) : 0; // the icon only where the pill has one
+      const chrome = pill ? tokenPx('--plx-comp-data-pill-md-padding-inline-start') + tokenPx('--plx-comp-data-pill-md-padding-inline-end') + 2 * tokenPx('--plx-comp-data-pill-border-width') + (c.type === 'person' || k.includes('avatar-name') || showTypes && (0, _helpers.typeOf)(c) !== 'text' ? tokenPx('--plx-comp-data-pill-icon-size') + tokenPx('--plx-comp-data-pill-gap') : 0) : 0; // the icon only where the pill has one
       source.forEach(record => {
         const value = (0, _state.valueAt)(record, c.field);
         width = Math.max(width, ctx.measureText((0, _cells.valueText)(value)).width * scale + chrome);
@@ -33585,7 +33715,7 @@ function NextEngine(props) {
     Promise.resolve().then(() => props.fetchRows({
       page: page + 1,
       size: pageSize,
-      sort: sorted(sorting),
+      sort: (0, _helpers.sorted)(sorting),
       filters: filters.map(f => ({
         field: f.id,
         type: 'like',
@@ -33719,7 +33849,7 @@ function NextEngine(props) {
     const c = columns.find(c => c.field === field),
       ctx = document.createElement('canvas').getContext('2d'),
       cs = getComputedStyle(frame.current);
-    const data = kinds(c).includes('data');
+    const data = (0, _helpers.kinds)(c).includes('data');
     ctx.font = cs.getPropertyValue('--plx-comp-data-grid-font-size') + ' ' + cs.getPropertyValue(data ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family');
     ctx.wordSpacing = data ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
     const values = [c.title || field, ...source.map(r => (0, _cells.valueText)((0, _state.valueAt)(r, field)))];
@@ -33749,7 +33879,7 @@ function NextEngine(props) {
   const headerItems = column => {
     const c = column.columnDef.meta,
       custom = typeof columnMenu === 'function' ? columnMenu(c) : columnMenu || [];
-    const direction = typeOf(c) === 'number' || typeOf(c) === 'currency' || typeOf(c) === 'bytes' ? S.sortNumber : typeOf(c) === 'date' ? S.sortDate : typeOf(c) === 'checkbox' ? S.sortCheck : S.sortText;
+    const direction = (0, _helpers.typeOf)(c) === 'number' || (0, _helpers.typeOf)(c) === 'currency' || (0, _helpers.typeOf)(c) === 'bytes' ? S.sortNumber : (0, _helpers.typeOf)(c) === 'date' ? S.sortDate : (0, _helpers.typeOf)(c) === 'checkbox' ? S.sortCheck : S.sortText;
     const grouped = groupedBy(c.field),
       others = [].concat(groupBy || []).filter(level => (typeof level === 'object' ? level.field : level) !== c.field);
     return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
@@ -33783,7 +33913,7 @@ function NextEngine(props) {
   }, S.sizeToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     onSelect: () => table.getVisibleLeafColumns().forEach(col => fit(col.id))
   }, S.sizeAllToFit), (() => {
-    const cols = table.getVisibleLeafColumns().map(col => col.columnDef.meta).filter(m => m && m.field && !kinds(m).includes('icon')),
+    const cols = table.getVisibleLeafColumns().map(col => col.columnDef.meta).filter(m => m && m.field && !(0, _helpers.kinds)(m).includes('icon')),
       all = cols.length > 0 && cols.every(wrapOf);
     return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
       checked: all,
@@ -33798,7 +33928,7 @@ function NextEngine(props) {
     onSelect: () => setManaging(true)
   }, S.moreColumns));
   const chooserColumns = () => {
-    const all = table.getAllLeafColumns().filter(col => !kinds(col.columnDef.meta).some(k => ['icon', 'actions'].includes(k)));
+    const all = table.getAllLeafColumns().filter(col => !(0, _helpers.kinds)(col.columnDef.meta).some(k => ['icon', 'actions'].includes(k)));
     return all.slice().sort((x, y) => orderAt(x.id) - orderAt(y.id));
   };
   const startResize = (event, column) => {
@@ -33826,11 +33956,11 @@ function NextEngine(props) {
       pinned = column.getIsPinned() === 'left',
       sorted = column.getIsSorted(),
       filtered = column.getIsFiltered(),
-      icon = kinds(c).includes('icon'),
+      icon = (0, _helpers.kinds)(c).includes('icon'),
       hasFilter = !!(c.filter || filterField === c.field || filtered),
       titleFixed = icon ? 'flush' : null,
       offset = pinned ? pinStart(column) : 0;
-    const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
+    const node = /*#__PURE__*/_react.default.createElement(_parts.Width, _extends({
       key: c.field
     }, columnDnd.itemProps(ordered.indexOf(column)), {
       onAttach: node => {
@@ -33842,10 +33972,10 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped'),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', (0, _helpers.kinds)(c).includes('icon') && B + '__cell--icon', (0, _helpers.kinds)(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped'),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
-        if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
+        if (!e.target.closest(_helpers.interactive) && column.getCanSort()) column.toggleSorting();
       },
       onKeyDown: e => {
         if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
@@ -33860,7 +33990,7 @@ function NextEngine(props) {
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-col-title', isStatic && B + '__grid-col-title--static', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon'),
       title: c.title
-    }, kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+    }, (0, _helpers.kinds)(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: B + '__header-icon'
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: c.icon || _circleInfo.default,
@@ -33873,7 +34003,7 @@ function NextEngine(props) {
     }) : null, showTypes ? /*#__PURE__*/_react.default.createElement("span", {
       className: B + '__type-icon'
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: typeIcons[typeOf(c)] || _edText.default
+      name: _helpers.typeIcons[(0, _helpers.typeOf)(c)] || _edText.default
     })) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__title-text', effectiveWrap && B + '__title-text--wrap')
     }, c.title || c.field))), filtered || filterField === c.field ? /*#__PURE__*/_react.default.createElement("span", {
@@ -33883,7 +34013,7 @@ function NextEngine(props) {
       onOpenChange: open => setFilterField(open ? c.field : null),
       title: S.filter + ' ' + c.title,
       size: "sm",
-      trigger: /*#__PURE__*/_react.default.createElement(PressTrigger, {
+      trigger: /*#__PURE__*/_react.default.createElement(_parts.PressTrigger, {
         className: B + '__title-filter-button',
         "aria-label": S.filter + ' ' + c.title
       }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -33914,13 +34044,13 @@ function NextEngine(props) {
       className: (0, _cx.cx)(B + '__grid-header-popup-button', B + '__grid-header-popup-button--menu')
     }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
       label: S.columnActions.replace('{title}', c.title),
-      trigger: /*#__PURE__*/_react.default.createElement(PressTrigger, {
+      trigger: /*#__PURE__*/_react.default.createElement(_parts.PressTrigger, {
         className: B + '__menu-chevron',
         "aria-label": S.columnActions.replace('{title}', c.title)
       }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
         name: _chevronDown.default
       }))
-    }, headerItems(column))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+    }, headerItems(column))) : null), c.resizable !== false && !pinned && !(0, _helpers.kinds)(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: `${B}__grid-col-resize-handle`,
       "data-plx-target-equivalent": "",
       role: "separator",
@@ -33968,7 +34098,7 @@ function NextEngine(props) {
     role: "row",
     tabIndex: 0,
     "aria-rowindex": semanticIndex.get(group.id),
-    "aria-label": words(S.groupRow, {
+    "aria-label": (0, _helpers.words)(S.groupRow, {
       value: (0, _cells.valueText)(group.value) || S.noValue,
       count: group.rows.length,
       records: group.rows.length === 1 ? S.record : S.records
@@ -33997,7 +34127,7 @@ function NextEngine(props) {
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)(B + '__group-head', group.separated && !sticky && B + '__group-head--gap'),
     role: "presentation"
-  }, ordered.map((column, i) => /*#__PURE__*/_react.default.createElement(Width, {
+  }, ordered.map((column, i) => /*#__PURE__*/_react.default.createElement(_parts.Width, {
     key: column.id,
     width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
     className: (0, _cx.cx)(B + '__group-cell', i === 0 && B + '__group-cell--first', column.columnDef.meta.summary && B + '__group-cell--summary', isNarrow && B + '__group-cell--narrow'),
@@ -34017,9 +34147,9 @@ function NextEngine(props) {
     dir: "auto",
     className: B + '__group-eyebrow'
   }, columns.find(c => c.field === group.field)?.title || group.field), /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)(B + '__group-value', kinds(columns.find(c => c.field === group.field) || {}).includes('data') && B + '__group-value--data'),
+    className: (0, _cx.cx)(B + '__group-value', (0, _helpers.kinds)(columns.find(c => c.field === group.field) || {}).includes('data') && B + '__group-value--data'),
     "data-plx-text-follow": "size",
-    "data-plx-kind": kinds(columns.find(c => c.field === group.field) || {}).includes('data') ? 'data' : undefined
+    "data-plx-kind": (0, _helpers.kinds)(columns.find(c => c.field === group.field) || {}).includes('data') ? 'data' : undefined
   }, (0, _cells.valueText)(group.value) || S.noValue)), /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__group-count'
   }, (0, _format.formatNumber)(group.rows.length))) : column.columnDef.meta.summary ? /*#__PURE__*/_react.default.createElement("span", {
@@ -34112,7 +34242,7 @@ function NextEngine(props) {
       size: "xs",
       iconOnly: true,
       icon: _add.default,
-      label: words(S.addTo, {
+      label: (0, _helpers.words)(S.addTo, {
         value: (0, _cells.valueText)(row.__add.value) || S.noValue
       }),
       onClick: () => props.onAddToGroup(row.__add.value, row.__add.path)
@@ -34129,7 +34259,7 @@ function NextEngine(props) {
       sized = step != null,
       lines = sized && step !== 'short',
       modes = (0, _cx.cx)(isStatic && B + '__grid-cell--static', isNarrow && B + '__grid-cell--narrow', sized && B + '__grid-cell--sized', lines && B + '__grid-cell--lines');
-    const node = /*#__PURE__*/_react.default.createElement(RowTarget, _extends({
+    const node = /*#__PURE__*/_react.default.createElement(_parts.RowTarget, _extends({
       key: row.displayKey || row.id
     }, !(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)), {
       "data-plx-unread": unread.has(record) || undefined,
@@ -34145,7 +34275,7 @@ function NextEngine(props) {
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
       className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), marked(row.id) && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual', row === model[0] && B + '__grid-row--first'),
       onClick: e => {
-        if (e.target.closest(interactive)) return;
+        if (e.target.closest(_helpers.interactive)) return;
         chooseRow(row, e);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
@@ -34155,7 +34285,7 @@ function NextEngine(props) {
         }
       },
       onDoubleClick: e => {
-        if (!e.target.closest(interactive)) {
+        if (!e.target.closest(_helpers.interactive)) {
           props.onRowDoubleClick?.(record, e);
           emit('rowDblClick', e, rowApi);
         }
@@ -34180,7 +34310,7 @@ function NextEngine(props) {
     }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`, modes, selection[row.id] && B + '__grid-cell--selected-start'),
       role: "gridcell"
-    }, /*#__PURE__*/_react.default.createElement(Check, {
+    }, /*#__PURE__*/_react.default.createElement(_parts.Check, {
       label: S.selectRow + ' ' + record[index],
       checked: selection[row.id],
       onChange: e => pickCheckbox(row, e)
@@ -34205,11 +34335,11 @@ function NextEngine(props) {
           record,
           pill: cells === 'pill',
           pillField: c.field,
-          icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
+          icon: showTypes && (0, _helpers.typeOf)(c) !== 'text' ? _helpers.typeIcons[(0, _helpers.typeOf)(c)] : undefined,
           mods
         }); // a pill carries a type icon only when it says something (a date, a number)
       const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && /*#__PURE__*/_react.default.isValidElement(shown) && shown.type === 'span' && String(shown.props.className).split(' ').includes(B + '__value');
-      return /*#__PURE__*/_react.default.createElement(Width, _extends({
+      return /*#__PURE__*/_react.default.createElement(_parts.Width, _extends({
         key: c.field,
         width: isNarrow ? null : widths[c.field],
         frozenOffset: pinned && !isNarrow ? sticky : undefined,
@@ -34222,7 +34352,7 @@ function NextEngine(props) {
         onFocus: e => enterCut(e, row.id + '|' + c.field),
         onPointerLeave: () => leaveCut(row.id + '|' + c.field)
       } : null, {
-        dir: pinned && !isStatic || kinds(c).includes('id') ? undefined : 'auto',
+        dir: pinned && !isStatic || (0, _helpers.kinds)(c).includes('id') ? undefined : 'auto',
         onDoubleClick: () => {
           if (canEdit) setEditing({
             key: row.id,
@@ -34274,7 +34404,7 @@ function NextEngine(props) {
         onClick: () => row.toggleExpanded()
       }, /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__grid-data-tree-control-' + (row.getIsExpanded() ? 'collapse' : 'expand')
-      })) : null) : null, editing?.key === row.id && editing.field === c.field ? cellDirection(pinned && !isStatic, /*#__PURE__*/_react.default.createElement(CellEditor, {
+      })) : null) : null, editing?.key === row.id && editing.field === c.field ? (0, _helpers.cellDirection)(pinned && !isStatic, /*#__PURE__*/_react.default.createElement(_parts.CellEditor, {
         column: c,
         value: value,
         onCommit: next => commitEdit(row.id, c.field, next),
@@ -34296,9 +34426,9 @@ function NextEngine(props) {
         onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical.length - 1)
       }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
         className: (0, _cx.cx)(B + '__portal', actions && B + '__portal--actions'),
-        dir: pinned && !isStatic && !kinds(c).includes('id') ? 'auto' : undefined,
+        dir: pinned && !isStatic && !(0, _helpers.kinds)(c).includes('id') ? 'auto' : undefined,
         "data-plx-link-target": "cell"
-      }, /*#__PURE__*/_react.default.createElement(CustomCell, {
+      }, /*#__PURE__*/_react.default.createElement(_parts.CustomCell, {
         column: c,
         record: record,
         cell: cell,
@@ -34308,8 +34438,8 @@ function NextEngine(props) {
         mods: mods
       })) : actions ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__portal ' + B + '__portal--actions',
-        dir: pinned && !isStatic && !kinds(c).includes('id') ? 'auto' : undefined
-      }, shown) : cutAt === row.id + '|' + c.field ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, cellDirection(pinned && !isStatic && !kinds(c).includes('id'), shown), /*#__PURE__*/_react.default.createElement("span", {
+        dir: pinned && !isStatic && !(0, _helpers.kinds)(c).includes('id') ? 'auto' : undefined
+      }, shown) : cutAt === row.id + '|' + c.field ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, (0, _helpers.cellDirection)(pinned && !isStatic && !(0, _helpers.kinds)(c).includes('id'), shown), /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__cut'
       }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
         label: c.title,
@@ -34329,11 +34459,11 @@ function NextEngine(props) {
         })
       }, /*#__PURE__*/_react.default.createElement("div", {
         className: B + '__full-text'
-      }, (0, _cells.valueText)(value))))) : cellDirection(pinned && !isStatic && !kinds(c).includes('id'), shown));
+      }, (0, _cells.valueText)(value))))) : (0, _helpers.cellDirection)(pinned && !isStatic && !(0, _helpers.kinds)(c).includes('id'), shown));
     }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__w-view`, modes),
       role: "gridcell"
-    }) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
+    }) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(_parts.Width, {
       width: metrics.menu,
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__cell--row-menu`, modes),
       role: "gridcell"
@@ -34347,7 +34477,7 @@ function NextEngine(props) {
         icon: _more.default,
         label: S.rowActions
       })
-    }, /*#__PURE__*/_react.default.createElement(RowMenuContent, {
+    }, /*#__PURE__*/_react.default.createElement(_parts.RowMenuContent, {
       build: menuItems,
       items: rowMenu,
       record: record,
@@ -34357,7 +34487,7 @@ function NextEngine(props) {
       key: row.displayKey || row.id,
       target: node,
       label: S.rowActions
-    }, /*#__PURE__*/_react.default.createElement(RowMenuContent, {
+    }, /*#__PURE__*/_react.default.createElement(_parts.RowMenuContent, {
       build: menuItems,
       items: rowMenu,
       record: record,
@@ -34365,7 +34495,7 @@ function NextEngine(props) {
     })) : node;
   };
   const rowVersion = _react.default.useMemo(() => ({}), [cutAt, wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
-  const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
+  const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(_parts.MemoGridRow, {
     key: row.displayKey || row.id,
     row: row,
     render: rowNode,
@@ -34378,7 +34508,7 @@ function NextEngine(props) {
   // a fill grid that already shows rows says a failed next page in its last row (with Retry), not over the table
   const moreFailed = scrollFill && remoteError && model.length > 0,
     failed = error || (moreFailed ? null : remoteError);
-  return /*#__PURE__*/_react.default.createElement(WidthPixels.Provider, {
+  return /*#__PURE__*/_react.default.createElement(_parts.WidthPixels.Provider, {
     value: widthPixels
   }, headerMenu && !isStatic && managing ? /*#__PURE__*/_react.default.createElement(_ColumnsMenu.ManageColumnsDialog, {
     trigger: null,
@@ -34405,7 +34535,7 @@ function NextEngine(props) {
     "data-plx-render": virtualized ? 'virtual' : undefined,
     "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
     "data-plx-wrap-headers": effectiveWrap ? '' : undefined,
-    "data-plx-height": lengthName(height),
+    "data-plx-height": (0, _helpers.lengthName)(height),
     "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined
   }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     className: B + '__error',
@@ -34440,7 +34570,7 @@ function NextEngine(props) {
     role: "columnheader"
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: `${B}__grid-col-content ${B}__grid-col-content--row-header`
-  }, /*#__PURE__*/_react.default.createElement(Check, {
+  }, /*#__PURE__*/_react.default.createElement(_parts.Check, {
     label: S.selectAll,
     checked: allVisible,
     mixed: selectedVisible.length > 0 && !allVisible,
@@ -34474,7 +34604,7 @@ function NextEngine(props) {
         wrapHeaders: !effectiveWrap
       });
     }
-  }, S.wrapHeaders))) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(Width, {
+  }, S.wrapHeaders))) : null, rowMenu && rowMenuButton ? /*#__PURE__*/_react.default.createElement(_parts.Width, {
     width: metrics.menu,
     className: `${B}__grid-col`,
     role: "columnheader",
@@ -34483,7 +34613,7 @@ function NextEngine(props) {
     id: viewportId,
     ref: holder,
     className: (0, _cx.cx)(`${B}__grid-tableholder`, height === '100%' && B + '__grid-tableholder--fill', isStatic && B + '__grid-tableholder--static'),
-    "data-plx-height": lengthName(height),
+    "data-plx-height": (0, _helpers.lengthName)(height),
     "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined,
     role: "rowgroup",
     tabIndex: isStatic ? undefined : 0,
@@ -34518,9 +34648,9 @@ function NextEngine(props) {
     'aria-rowindex': undefined,
     'aria-level': undefined,
     onKeyDown: undefined
-  }))) : null, /*#__PURE__*/_react.default.createElement(RowGap, {
+  }))) : null, /*#__PURE__*/_react.default.createElement(_parts.RowGap, {
     rows: model.slice(0, first)
-  }), shown.map(renderRow), /*#__PURE__*/_react.default.createElement(RowGap, {
+  }), shown.map(renderRow), /*#__PURE__*/_react.default.createElement(_parts.RowGap, {
     rows: model.slice(last)
   })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)(`${B}__grid-placeholder`, isStatic && B + '__grid-placeholder--static'),
@@ -34558,7 +34688,7 @@ function NextEngine(props) {
   }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data",
     className: B + '__range'
-  }, words(S.range, {
+  }, (0, _helpers.words)(S.range, {
     first: displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0,
     last: Math.min((page + 1) * pageSize, displayedTotal),
     total: displayedTotal
@@ -34576,7 +34706,7 @@ function NextEngine(props) {
     }
   })), /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
     className: B + '__pages',
-    label: words(S.pages, {
+    label: (0, _helpers.words)(S.pages, {
       label
     }),
     page: page + 1,
@@ -34587,7 +34717,7 @@ function NextEngine(props) {
   }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data",
     className: B + '__range'
-  }, words(S.count, {
+  }, (0, _helpers.words)(S.count, {
     shown: Math.min(loadedRows.length, displayedTotal),
     total: displayedTotal
   })), loadedRows.length < displayedTotal ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -36041,7 +36171,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/MetricCard/MetricCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Table/Table.jsx":"platform/components/Table/Table.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","../../charts/Gauge.jsx":"platform/charts/Gauge.jsx","../../charts/PieChart.jsx":"platform/charts/PieChart.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/arrow-up":"platform/dist/icons/plenix/arrow-up.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MetricCard/MetricCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Table/Table.jsx":"platform/components/Table/Table.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","../../charts/Gauge.jsx":"platform/charts/Gauge.jsx","../../charts/PieChart.jsx":"platform/charts/PieChart.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/arrow-up":"platform/dist/icons/plenix/arrow-up.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36077,6 +36207,7 @@ var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"
 var _more = _interopRequireDefault(require("plenix-platform/icons/plenix/more"));
 var _refresh = _interopRequireDefault(require("plenix-platform/icons/plenix/refresh"));
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · MetricCard
    Summary: One key figure in a card, with one anatomy for every kind of data (07 › Cards and objects › Metric card;
@@ -36161,7 +36292,6 @@ const APPEARANCES = ['plain', 'edge', 'soft', 'filled', 'gradient'];
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
 const ORDER = ['blue', 'purple', 'brown', 'green', 'red', 'gray']; // breakdown parts without a color, by their order
 
-const fill = (s, o) => Object.keys(o).reduce((t, k) => t.split('{' + k + '}').join(o[k]), s);
 function toneOf(change, goodWhen) {
   if (!change || goodWhen === 'none' || !goodWhen) return 'neutral';
   return change.direction === goodWhen ? 'good' : 'bad';
@@ -36456,7 +36586,7 @@ function Month({
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-metric-card__month",
     role: "img",
-    "aria-label": fill(t.month, {
+    "aria-label": (0, _fill.fill)(t.month, {
       done,
       days: work
     })
@@ -36559,7 +36689,7 @@ function MetricCard({
     className: "plx-metric-card__icon",
     "aria-hidden": "true"
   }, (0, _Icon.asIcon)(icon)) : null;
-  const moreLabel = fill(t.more, {
+  const moreLabel = (0, _fill.fill)(t.more, {
     title: typeof name === 'string' ? name : ''
   });
   const actions = info || filter || menu ? /*#__PURE__*/_react.default.createElement("div", {
@@ -36654,7 +36784,7 @@ function MetricCard({
         }))
       });else visual = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(SplitBar, {
         parts: coloured,
-        label: coloured.map(p => fill(t.parts, {
+        label: coloured.map(p => (0, _fill.fill)(t.parts, {
           label: p.label,
           share: (0, _format.formatPercent)(total ? p.value / total : 0)
         })).join(', ')
@@ -36692,7 +36822,7 @@ function MetricCard({
           value: b.amount !== undefined ? b.amount : Number(b.value) || 0,
           color: b.color || 'gray'
         }],
-        label: fill(t.compare, {
+        label: (0, _fill.fill)(t.compare, {
           a: a.label,
           av: a.value,
           b: b.label,
@@ -38616,7 +38746,7 @@ function ShowMore({
   }) : t.more);
 }
   } },
-  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38631,6 +38761,7 @@ var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _alert = _interopRequireDefault(require("plenix-platform/icons/plenix/alert"));
 var _check = _interopRequireDefault(require("plenix-platform/icons/plenix/check"));
+var _dataText = require("../../utils/dataText.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
    Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
@@ -38673,7 +38804,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Statuses of records are a Badge; these markers belong to the steps only.
      Other props pass through to the outer element.
 */
-const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
 function ProgressSteps({
   steps = [],
   current = 0,
@@ -38701,7 +38831,10 @@ function ProgressSteps({
       className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--compact', className)
     }, rest), /*#__PURE__*/_react.default.createElement("p", {
       className: "plx-progress-steps__count"
-    }, fill(t.step, at + 1, steps.length), step.label ? /*#__PURE__*/_react.default.createElement("span", {
+    }, (0, _dataText.dataPhrase)(t.step, {
+      n: at + 1,
+      total: steps.length
+    }), step.label ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-progress-steps__count-label"
     }, ': ' + step.label) : null), /*#__PURE__*/_react.default.createElement("div", {
       className: "plx-progress-steps__segments",
@@ -39879,7 +40012,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Chat/ChatMedia.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/file-pdf":"platform/dist/icons/plenix/file-pdf.js","plenix-platform/icons/plenix/file-jpg":"platform/dist/icons/plenix/file-jpg.js","plenix-platform/icons/plenix/file-png":"platform/dist/icons/plenix/file-png.js","plenix-platform/icons/plenix/file-svg":"platform/dist/icons/plenix/file-svg.js","plenix-platform/icons/plenix/file-psd":"platform/dist/icons/plenix/file-psd.js","plenix-platform/icons/plenix/file-ai":"platform/dist/icons/plenix/file-ai.js","plenix-platform/icons/material/play-arrow":"platform/dist/icons/material/play-arrow.js","plenix-platform/icons/material/pause":"platform/dist/icons/material/pause.js","plenix-platform/icons/material/download":"platform/dist/icons/material/download.js","plenix-platform/icons/material/broken-image":"platform/dist/icons/material/broken-image.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/ChatMedia.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/file-pdf":"platform/dist/icons/plenix/file-pdf.js","plenix-platform/icons/plenix/file-jpg":"platform/dist/icons/plenix/file-jpg.js","plenix-platform/icons/plenix/file-png":"platform/dist/icons/plenix/file-png.js","plenix-platform/icons/plenix/file-svg":"platform/dist/icons/plenix/file-svg.js","plenix-platform/icons/plenix/file-psd":"platform/dist/icons/plenix/file-psd.js","plenix-platform/icons/plenix/file-ai":"platform/dist/icons/plenix/file-ai.js","plenix-platform/icons/material/play-arrow":"platform/dist/icons/material/play-arrow.js","plenix-platform/icons/material/pause":"platform/dist/icons/material/pause.js","plenix-platform/icons/material/download":"platform/dist/icons/material/download.js","plenix-platform/icons/material/broken-image":"platform/dist/icons/material/broken-image.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39889,7 +40022,6 @@ exports.Attachment = Attachment;
 exports.Attachments = Attachments;
 exports.FileIcon = void 0;
 exports.Voice = Voice;
-exports.fill = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
@@ -39911,6 +40043,7 @@ var _playArrow = _interopRequireDefault(require("plenix-platform/icons/material/
 var _pause = _interopRequireDefault(require("plenix-platform/icons/material/pause"));
 var _download = _interopRequireDefault(require("plenix-platform/icons/material/download"));
 var _brokenImage = _interopRequireDefault(require("plenix-platform/icons/material/broken-image"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Chat media (the parts of Chat.jsx that show files and voice inside a message; documented in Chat.jsx)
    Summary: Chat.Attachment (a picture or a file in a bubble), Chat.Attachments (the row or column of them, one viewer for the pictures)
@@ -39938,8 +40071,6 @@ const FileIcon = ({
   size: "lg"
 });
 exports.FileIcon = FileIcon;
-const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => values[k] === undefined ? m : values[k]);
-exports.fill = fill;
 const clock = seconds => {
   const n = Math.max(0, Math.floor(Number(seconds) || 0));
   return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
@@ -40208,7 +40339,7 @@ function Voice({
     value: Math.min(Math.floor(time), Math.floor(total || 0)),
     disabled: !total,
     "aria-label": t.voiceSeek,
-    "aria-valuetext": fill(t.voicePosition, {
+    "aria-valuetext": (0, _fill.fill)(t.voicePosition, {
       time: spoken(time),
       total: spoken(total)
     }),
@@ -40221,7 +40352,7 @@ function Voice({
   }, on || time ? shown(time) + ' / ' + shown(total) : shown(total)), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "secondary",
     size: "sm",
-    "aria-label": fill(t.voiceSpeed, {
+    "aria-label": (0, _fill.fill)(t.voiceSpeed, {
       rate: speed
     }),
     onClick: cycle
@@ -40644,7 +40775,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Chat/ChatActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","./ChatMedia.jsx":"platform/components/Chat/ChatMedia.jsx","plenix-platform/icons/plenix/reply":"platform/dist/icons/plenix/reply.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/format-quote":"platform/dist/icons/plenix/format-quote.js","plenix-platform/icons/plenix/ed-copy":"platform/dist/icons/plenix/ed-copy.js","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/material/add-reaction":"platform/dist/icons/material/add-reaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/ChatActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/fill.js":"platform/utils/fill.js","plenix-platform/icons/plenix/reply":"platform/dist/icons/plenix/reply.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/format-quote":"platform/dist/icons/plenix/format-quote.js","plenix-platform/icons/plenix/ed-copy":"platform/dist/icons/plenix/ed-copy.js","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/material/add-reaction":"platform/dist/icons/material/add-reaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40663,7 +40794,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Menu = require("../Menu/Menu.jsx");
 var _Popover = require("../Popover/Popover.jsx");
 var _Text = require("../Text/Text.jsx");
-var _ChatMedia = require("./ChatMedia.jsx");
+var _fill = require("../../utils/fill.js");
 var _reply = _interopRequireDefault(require("plenix-platform/icons/plenix/reply"));
 var _more = _interopRequireDefault(require("plenix-platform/icons/plenix/more"));
 var _formatQuote = _interopRequireDefault(require("plenix-platform/icons/plenix/format-quote"));
@@ -40817,7 +40948,7 @@ function Reactions({
     type: "button",
     className: (0, _cx.cx)('plx-chat__reaction', r.mine && 'plx-chat__reaction--mine'),
     "aria-pressed": !!r.mine,
-    "aria-label": (0, _ChatMedia.fill)(t.reactionCount, {
+    "aria-label": (0, _fill.fill)(t.reactionCount, {
       name: r.label || nameOf(r.emoji, t),
       count: r.count
     }),
@@ -40873,7 +41004,7 @@ function ReplyPreview({
     className: "plx-chat__quote plx-chat__quote--replying"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__quote-author"
-  }, (0, _ChatMedia.fill)(t.replyingTo, {
+  }, (0, _fill.fill)(t.replyingTo, {
     name: author
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__quote-text"
@@ -41235,7 +41366,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./ChatMedia.jsx":"platform/components/Chat/ChatMedia.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/clipboard.js":"platform/utils/clipboard.js","./ChatActions.jsx":"platform/components/Chat/ChatActions.jsx","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/material/done":"platform/dist/icons/material/done.js","plenix-platform/icons/material/done-all":"platform/dist/icons/material/done-all.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/ed-image":"platform/dist/icons/plenix/ed-image.js","plenix-platform/icons/plenix/mic":"platform/dist/icons/plenix/mic.js","plenix-platform/icons/plenix/stop":"platform/dist/icons/plenix/stop.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/warning":"platform/dist/icons/plenix/warning.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/material/mood":"platform/dist/icons/material/mood.js","plenix-platform/icons/material/send":"platform/dist/icons/material/send.js","plenix-platform/icons/material/graphic-eq":"platform/dist/icons/material/graphic-eq.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./ChatMedia.jsx":"platform/components/Chat/ChatMedia.jsx","../../utils/fill.js":"platform/utils/fill.js","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/clipboard.js":"platform/utils/clipboard.js","./ChatActions.jsx":"platform/components/Chat/ChatActions.jsx","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/material/done":"platform/dist/icons/material/done.js","plenix-platform/icons/material/done-all":"platform/dist/icons/material/done-all.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/ed-image":"platform/dist/icons/plenix/ed-image.js","plenix-platform/icons/plenix/mic":"platform/dist/icons/plenix/mic.js","plenix-platform/icons/plenix/stop":"platform/dist/icons/plenix/stop.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/warning":"platform/dist/icons/plenix/warning.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/material/mood":"platform/dist/icons/material/mood.js","plenix-platform/icons/material/send":"platform/dist/icons/material/send.js","plenix-platform/icons/material/graphic-eq":"platform/dist/icons/material/graphic-eq.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41257,6 +41388,7 @@ var _Badge = require("../Badge/Badge.jsx");
 var _Popover = require("../Popover/Popover.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _ChatMedia = require("./ChatMedia.jsx");
+var _fill = require("../../utils/fill.js");
 var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
@@ -41755,11 +41887,11 @@ function ComposerFile({
   }, /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
     value: file.progress || 0,
     size: "sm",
-    label: file.progress === undefined ? t.uploadingPlain : (0, _ChatMedia.fill)(t.uploading, {
+    label: file.progress === undefined ? t.uploadingPlain : (0, _fill.fill)(t.uploading, {
       percent: file.progress
     }),
     labelHidden: true
-  })), /*#__PURE__*/_react.default.createElement("span", null, file.progress === undefined ? t.uploadingPlain : (0, _ChatMedia.fill)(t.uploading, {
+  })), /*#__PURE__*/_react.default.createElement("span", null, file.progress === undefined ? t.uploadingPlain : (0, _fill.fill)(t.uploading, {
     percent: file.progress
   }))) : null, status === 'ready' ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     tone: "success",
@@ -42522,8 +42654,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The list is a menu surface: border only, no shadow (D9).
      Other props pass through to the <input>.
 */
-// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(function Combobox({
   options = [],
   value,
@@ -42572,7 +42702,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
@@ -42768,7 +42898,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-combobox__list",
     id: listId,
     role: "listbox",
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     onMouseDown: e => e.preventDefault(),
     "aria-multiselectable": multiple || undefined,
     "aria-busy": isLoading || undefined
@@ -43758,7 +43888,7 @@ ActivityList.Item = function ActivityListItem({
   }, actions) : null);
 };
   } },
-  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../i18n/en.js":"platform/i18n/en.js","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/doc-search":"platform/dist/icons/plenix/doc-search.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../i18n/en.js":"platform/i18n/en.js","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/doc-search":"platform/dist/icons/plenix/doc-search.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43797,6 +43927,7 @@ var _pencil = _interopRequireDefault(require("plenix-platform/icons/plenix/penci
 var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
 var _sparkle = _interopRequireDefault(require("plenix-platform/icons/plenix/sparkle"));
 var _visibility = _interopRequireDefault(require("plenix-platform/icons/plenix/visibility"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
    Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
@@ -43923,7 +44054,6 @@ function useOptionalToast() {
     return null;
   }
 }
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const VERB = {
   approved: 'approve',
   'changes-requested': 'changes',
@@ -43966,7 +44096,7 @@ function ReviewFlow({
     setError('');
     onDecision(d, comment.trim());
     setComment('');
-    const said = fill(t.done, {
+    const said = (0, _fill.fill)(t.done, {
       decision: word(d),
       title: title || ''
     });
@@ -44095,7 +44225,7 @@ function ReviewQueue({
     const said = whole ? loc.t('reviewFlow.queue.doneItems.' + decision, {
       count: ids.length,
       n: (0, _format.formatNumber)(ids.length)
-    }) : fill(t.done, {
+    }) : (0, _fill.fill)(t.done, {
       what: what(ids.length),
       decision: names[decision].toLowerCase()
     });
@@ -44135,7 +44265,7 @@ function ReviewQueue({
     className: (0, _cx.cx)('plx-review-queue', className)
   }, rest), /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
     label: label,
-    count: counted(items.length) ?? fill(t.count, {
+    count: counted(items.length) ?? (0, _fill.fill)(t.count, {
       n: (0, _format.formatNumber)(items.length),
       plural: items.length === 1 ? noun : many
     }),
@@ -44172,7 +44302,7 @@ function ReviewQueue({
     columns: columns
   }), /*#__PURE__*/_react.default.createElement(_Dialog.PromptDialog, {
     open: !!ask,
-    title: fill(ask === 'rejected' ? t.rejectTitle : t.changesTitle, {
+    title: (0, _fill.fill)(ask === 'rejected' ? t.rejectTitle : t.changesTitle, {
       what: what(sel.length)
     }),
     label: ask === 'rejected' ? t.reason : t.changesLabel,
@@ -45895,7 +46025,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/AppHeader/AppHeader.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../../providers/apps.js":"platform/providers/apps.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useDensity.js":"platform/hooks/useDensity.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/app-switcher":"platform/dist/icons/plenix/app-switcher.js","plenix-platform/icons/plenix/arrow-left":"platform/dist/icons/plenix/arrow-left.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/gear":"platform/dist/icons/plenix/gear.js","plenix-platform/icons/plenix/hdr-search":"platform/dist/icons/plenix/hdr-search.js","plenix-platform/icons/plenix/pin":"platform/dist/icons/plenix/pin.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/settings-profile":"platform/dist/icons/plenix/settings-profile.js","plenix-platform/icons/plenix/sign-out":"platform/dist/icons/plenix/sign-out.js","plenix-platform/icons/plenix/density-compact":"platform/dist/icons/plenix/density-compact.js","plenix-platform/icons/plenix/density-standard":"platform/dist/icons/plenix/density-standard.js","plenix-platform/icons/plenix/density-comfortable":"platform/dist/icons/plenix/density-comfortable.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/AppHeader/AppHeader.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../../providers/apps.js":"platform/providers/apps.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useDensity.js":"platform/hooks/useDensity.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/app-switcher":"platform/dist/icons/plenix/app-switcher.js","plenix-platform/icons/plenix/arrow-left":"platform/dist/icons/plenix/arrow-left.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/gear":"platform/dist/icons/plenix/gear.js","plenix-platform/icons/plenix/hdr-search":"platform/dist/icons/plenix/hdr-search.js","plenix-platform/icons/plenix/pin":"platform/dist/icons/plenix/pin.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/settings-profile":"platform/dist/icons/plenix/settings-profile.js","plenix-platform/icons/plenix/sign-out":"platform/dist/icons/plenix/sign-out.js","plenix-platform/icons/plenix/density-compact":"platform/dist/icons/plenix/density-compact.js","plenix-platform/icons/plenix/density-standard":"platform/dist/icons/plenix/density-standard.js","plenix-platform/icons/plenix/density-comfortable":"platform/dist/icons/plenix/density-comfortable.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45934,6 +46064,7 @@ var _signOut = _interopRequireDefault(require("plenix-platform/icons/plenix/sign
 var _densityCompact = _interopRequireDefault(require("plenix-platform/icons/plenix/density-compact"));
 var _densityStandard = _interopRequireDefault(require("plenix-platform/icons/plenix/density-standard"));
 var _densityComfortable = _interopRequireDefault(require("plenix-platform/icons/plenix/density-comfortable"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppHeader
    Summary: The header across the top of every Plenix application (a banner landmark), after the Carbon UI shell header.
@@ -46335,7 +46466,6 @@ AppHeader.Account = function AppHeaderAccount({
   strings
 }) {
   const t = Object.assign({}, ACCOUNT_STRINGS, strings);
-  const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => values[k] != null ? values[k] : m);
   const {
     account
   } = (0, _SessionProvider.useSession)(); // who is signed in: the session, unless the application names someone
@@ -46344,7 +46474,7 @@ AppHeader.Account = function AppHeaderAccount({
     src = srcProp || account.src;
   const [dens, setDens] = (0, _useDensity.useDensity)();
   const inPane = placement === 'pane';
-  const label = fill(t.trigger, {
+  const label = (0, _fill.fill)(t.trigger, {
     name
   });
   // no tooltip: it would cover the open menu, which names itself
@@ -46393,7 +46523,7 @@ AppHeader.Account = function AppHeaderAccount({
     href: appSettings.href,
     onSelect: appSettings.onSelect,
     "aria-current": current === 'app-settings' ? 'page' : undefined
-  }, fill(t.appSettings, {
+  }, (0, _fill.fill)(t.appSettings, {
     app: appSettings.app || t.app
   })) : null), density ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
     label: t.density
@@ -46576,7 +46706,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, apps.filter(a => pinnedApps.indexOf(a.id) < 0).map(tile))) : null) : null);
 };
   } },
-  "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46589,6 +46719,7 @@ var _overflow = require("../../utils/overflow.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · FilterBar
    Summary: A row of filters above a list or grid; each filter opens a menu of choices.
@@ -46613,23 +46744,22 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const isSet = f => f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '';
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const summary = (f, t) => {
   if (!isSet(f)) return f.label;
   if (f.multiple) {
     const v = f.value;
-    if (v.length > 1) return fill(t.several, {
+    if (v.length > 1) return (0, _fill.fill)(t.several, {
       label: f.label,
       count: v.length
     });
     const o = f.options.find(x => x.value === v[0]);
-    return fill(t.one, {
+    return (0, _fill.fill)(t.one, {
       label: f.label,
       value: o ? o.label : v[0]
     });
   }
   const o = f.options.find(x => x.value === f.value);
-  return fill(t.one, {
+  return (0, _fill.fill)(t.one, {
     label: f.label,
     value: o ? o.label : f.value
   });
@@ -46867,7 +46997,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/checklist":"platform/dist/icons/plenix/checklist.js","plenix-platform/icons/plenix/save":"platform/dist/icons/plenix/save.js","plenix-platform/icons/plenix/sort":"platform/dist/icons/plenix/sort.js","plenix-platform/icons/plenix/view-table":"platform/dist/icons/plenix/view-table.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/checklist":"platform/dist/icons/plenix/checklist.js","plenix-platform/icons/plenix/save":"platform/dist/icons/plenix/save.js","plenix-platform/icons/plenix/sort":"platform/dist/icons/plenix/sort.js","plenix-platform/icons/plenix/view-table":"platform/dist/icons/plenix/view-table.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46890,6 +47020,7 @@ var _checklist = _interopRequireDefault(require("plenix-platform/icons/plenix/ch
 var _save = _interopRequireDefault(require("plenix-platform/icons/plenix/save"));
 var _sort = _interopRequireDefault(require("plenix-platform/icons/plenix/sort"));
 var _viewTable = _interopRequireDefault(require("plenix-platform/icons/plenix/view-table"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SearchWorkspace
    Summary: The Advanced Search workspace (level 3 of Plenix search), a view of the main work area like Categories or Files.
@@ -46936,7 +47067,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Pressing Enter in the header search opens it with the query kept.
 */
 
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const label = (f, v) => {
   const o = (f.options || []).find(x => x.value === v);
   return o ? o.label : String(v);
@@ -46974,7 +47104,7 @@ function SearchWorkspace({
     if (f.multiple) (f.value || []).forEach(v => chips.push({
       f,
       v,
-      text: fill(t.chip, {
+      text: (0, _fill.fill)(t.chip, {
         label: f.label,
         value: label(f, v)
       }),
@@ -46982,7 +47112,7 @@ function SearchWorkspace({
     }));else if (f.value !== null && f.value !== undefined && f.value !== '') chips.push({
       f,
       v: f.value,
-      text: fill(t.chip, {
+      text: (0, _fill.fill)(t.chip, {
         label: f.label,
         value: label(f, f.value)
       }),
@@ -46998,7 +47128,7 @@ function SearchWorkspace({
     label: t.selectAll,
     icon: _checklist.default,
     disabled: selected.total !== undefined && selected.count >= selected.total,
-    why: fill(t.allSelected, {
+    why: (0, _fill.fill)(t.allSelected, {
       noun: selected.noun || noun || t.result
     }),
     onSelect: selected.onSelectAll
@@ -47036,7 +47166,7 @@ function SearchWorkspace({
     className: "plx-search-ws__query"
   }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
     ref: field,
-    label: fill(t.searchField, {
+    label: (0, _fill.fill)(t.searchField, {
       nouns
     }),
     placeholder: placeholder === undefined ? t.placeholder : placeholder,
@@ -47055,7 +47185,7 @@ function SearchWorkspace({
     key: c.f.id + ':' + c.v,
     selected: true,
     onRemove: c.remove,
-    removeLabel: fill(t.remove, {
+    removeLabel: (0, _fill.fill)(t.remove, {
       text: c.text
     })
   }, c.text)), onClearAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -47086,10 +47216,10 @@ function SearchWorkspace({
       placement: "bottom-end",
       trigger: /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
         icon: _sort.default,
-        "aria-label": fill(t.sortValue, {
+        "aria-label": (0, _fill.fill)(t.sortValue, {
           value: sort.value
         }),
-        label: fill(t.sortValue, {
+        label: (0, _fill.fill)(t.sortValue, {
           value: sort.value
         }),
         caret: true
@@ -47103,7 +47233,7 @@ function SearchWorkspace({
     className: "plx-search-ws__body"
   }, count ? children : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     size: "inline"
-  }, query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, {
+  }, query ? (0, _fill.fill)(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, {
     query
   }) : t.noMatchFilters)));
 }
@@ -47151,7 +47281,7 @@ function DataToolbar({
   }, end) : null);
 }
   } },
-  "platform/patterns/BulkActions/BulkActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/BulkActions/BulkActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47169,6 +47299,7 @@ var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _BarActions = require("../CommandBar/BarActions.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SelectionSummary, BulkActions
    Summary: What is selected, and what can be done with it. BulkActions is a selection bar for a page WITHOUT a command
@@ -47218,7 +47349,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      and "Clear" keep their places and are disabled, never hidden; the look is the command bar's (white, framed, ghost
      buttons), never tinted by a selection. */
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);
 
 // "N selected": the number in the data font
@@ -47253,12 +47383,12 @@ function SelectButtons({
     variant: "ghost",
     disabled: all,
     onClick: onSelectAll
-  }, t.selectAll), all ? fill(t.allSelected, words) : null) : null, onClear ? tip(/*#__PURE__*/_react.default.createElement(_Button.Button, {
+  }, t.selectAll), all ? (0, _fill.fill)(t.allSelected, words) : null) : null, onClear ? tip(/*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     variant: "ghost",
     disabled: !count,
     onClick: onClear
-  }, t.clear), count ? null : fill(t.nothingToClear, words)) : null);
+  }, t.clear), count ? null : (0, _fill.fill)(t.nothingToClear, words)) : null);
 }
 function SelectionSummary({
   count,
@@ -47309,7 +47439,7 @@ function BulkActions({
   const root = _react.default.useRef(null);
   const folds = (0, _BarActions.foldOrder)(actions).length;
   const step = (0, _barFit.useBarFit)(root, actions.map(a => a.label).join('|') + '§' + count, 1 + folds, 0, ':scope > [data-plx-bar-row]');
-  const why = a => a.why || fill(count && a.single && count > 1 ? t.single : t.why, Object.assign({
+  const why = a => a.why || (0, _fill.fill)(count && a.single && count > 1 ? t.single : t.why, Object.assign({
     action: String(a.label).toLowerCase()
   }, words));
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -47592,7 +47722,7 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
-  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47604,6 +47734,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Avatar = require("../Avatar/Avatar.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AvatarGroup
    Summary: The people of one item (owners, collaborators, assignees) as a row of avatars: overlapped in a stack or spaced
@@ -47654,11 +47785,13 @@ function AvatarGroup({
   const limit = Math.max(1, max | 0);
   const shown = people.length > limit ? people.slice(0, limit) : people;
   const rest_ = people.length - shown.length;
-  const fill = t => t.replace('{n}', String(rest_));
+  const restText = t => (0, _fill.fill)(t, {
+    n: rest_
+  });
   const more = rest_ > 0 ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
-    initials: fill(words.more),
+    initials: restText(words.more),
     size: s,
-    label: onMore ? undefined : fill(words.moreLabel),
+    label: onMore ? undefined : restText(words.moreLabel),
     className: "plx-avatar-group__more"
   }) : null;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -47678,7 +47811,7 @@ function AvatarGroup({
   })), more && onMore ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-avatar-group__more-button",
-    "aria-label": fill(words.moreLabel),
+    "aria-label": restText(words.moreLabel),
     onClick: onMore
   }, more) : more);
 }
@@ -50318,7 +50451,7 @@ function TimeGrid({
   }))))));
 }
   } },
-  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50333,6 +50466,7 @@ var _direction = require("../../utils/direction.js");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _drag = _interopRequireDefault(require("plenix-platform/icons/plenix/drag"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WidgetGrid
    Summary: A dashboard's widgets in a grid that people reorder by dragging a widget's handle, or with the arrow keys on it
@@ -50364,7 +50498,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The grid never changes the order by itself: onReorder hands the new order to the page, which keeps it.
 */
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const move = (ids, from, to) => {
   const next = ids.slice();
   const [x] = next.splice(from, 1);
@@ -50414,7 +50547,7 @@ function WidgetGrid({
     if (!onReorder || to < 0 || to >= ids.length || from === to) return;
     onReorder(move(ids, from, to));
     const it = items[from];
-    setSaid(fill(t.position, {
+    setSaid((0, _fill.fill)(t.position, {
       title: it.title || t.widget,
       index: to + 1,
       total: ids.length
@@ -50442,7 +50575,7 @@ function WidgetGrid({
     } : undefined
   }, (() => {
     const handle = onReorder ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: fill(t.move, {
+      label: (0, _fill.fill)(t.move, {
         title: it.title || t.widgetLower
       }),
       placement: "bottom-end",
@@ -50450,7 +50583,7 @@ function WidgetGrid({
       trigger: /*#__PURE__*/_react.default.createElement(Handle, {
         className: (0, _cx.cx)('plx-widget-grid__handle', renderItem && renderItem.length > 1 && 'plx-widget-grid__handle--inline'),
         draggable: true,
-        "aria-label": fill(t.move, {
+        "aria-label": (0, _fill.fill)(t.move, {
           title: it.title || t.widgetLower
         }),
         onDragStart: e => {
@@ -52402,7 +52535,7 @@ function encodeBarcode(value, format = 'code128') {
   return code128(value);
 }
   } },
-  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52414,6 +52547,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _barcode = require("../../utils/barcode.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Barcode
    Summary: A one-dimensional barcode drawn as SVG from a value (Code 128, EAN-13 or UPC-A), with the value printed under
@@ -52445,7 +52579,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox
 const HEIGHT_MODULES = 32;
-const fill = (s, v) => s.replace(/\{(\w+)\}/g, (all, k) => v[k] !== undefined ? v[k] : all);
 function Barcode({
   value,
   format = 'code128',
@@ -52469,7 +52602,7 @@ function Barcode({
       className: (0, _cx.cx)('plx-barcode', 'plx-barcode--' + size, className)
     }, rest), /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-barcode__error"
-    }, fill(t.invalid, {
+    }, (0, _fill.fill)(t.invalid, {
       format: name
     })));
   }
@@ -52478,7 +52611,7 @@ function Barcode({
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-barcode', 'plx-barcode--' + size, className),
     role: "img",
-    "aria-label": label || fill(t.label, {
+    "aria-label": label || (0, _fill.fill)(t.label, {
       format: name,
       value: code.value
     })
@@ -52504,7 +52637,33 @@ function Barcode({
   }, code.text) : null);
 }
   } },
-  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/fillNodes.jsx": { deps: {"react":null,"../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fillNodes = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Text = require("../components/Text/Text.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · fillNodes (platform/utils/fillNodes.jsx)
+   Summary: Fills the {name} placeholders of a catalog text with the data font: each value that is given is drawn as a data
+     Text, the words around it stay as they are (the text comes back as a list of strings and elements).
+   Usage: import { fillNodes } from '../../utils/fillNodes.jsx'; <p>{fillNodes(t.step, { n: 2, total: 5 })}</p>
+   Props: fillNodes(template, values): a placeholder whose value is undefined stays as written.
+   Notes: Shared by TeachingBubble and RetryNotice (issue 693: one copy of the same function in each). */
+
+const fillNodes = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
+  const m = /^\{(\w+)\}$/.exec(part);
+  return m && values[m[1]] !== undefined ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    key: i,
+    variant: "data"
+  }, values[m[1]]) : part;
+});
+exports.fillNodes = fillNodes;
+  } },
+  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","../../utils/fill.js":"platform/utils/fill.js","../../utils/fillNodes.jsx":"platform/utils/fillNodes.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52520,9 +52679,10 @@ var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _Button = require("../../components/Button/Button.jsx");
-var _Text = require("../../components/Text/Text.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _refresh = _interopRequireDefault(require("plenix-platform/icons/plenix/refresh"));
+var _fill = require("../../utils/fill.js");
+var _fillNodes = require("../../utils/fillNodes.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Retry (useRetry, RetryNotice)
    Summary: Recovering from a failed load or save: useRetry runs a task, counts its attempts and, when asked, tries again by
@@ -52679,14 +52839,7 @@ function useRetry(task, {
 }
 
 // a string with {name} places filled by values in the data font (numbers and durations are technical values)
-const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
-  const m = /^\{(\w+)\}$/.exec(part);
-  return m && values[m[1]] !== undefined ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    key: i,
-    variant: "data"
-  }, values[m[1]]) : part;
-});
-const plain = (template, values) => template.replace(/\{(\w+)\}/g, (all, k) => values[k] !== undefined ? String(values[k]) : all);
+
 function RetryNotice({
   retry,
   title,
@@ -52721,12 +52874,12 @@ function RetryNotice({
       shown.current = true;
       return;
     } // the notice's own alert says the first failure
-    if (r.status === 'waiting') (0, _announce.announce)(plain(t.waiting, values));else if (r.status === 'failed') (0, _announce.announce)((title || t.title) + '. ' + plain(r.attempt >= r.attempts ? t.stopped : t.attempt, values));
+    if (r.status === 'waiting') (0, _announce.announce)((0, _fill.fill)(t.waiting, values));else if (r.status === 'failed') (0, _announce.announce)((title || t.title) + '. ' + (0, _fill.fill)(r.attempt >= r.attempts ? t.stopped : t.attempt, values));
   }, [r.status, r.attempt]);
   if (!failing) return null;
   const stopped = r.status === 'failed' && r.attempt >= r.attempts;
-  const status = r.status === 'waiting' ? fill(t.waiting, values) : r.status === 'running' ? t.retrying : stopped && showCount ? fill(t.stopped, values) : null;
-  const count = showCount && !stopped ? fill(t.attempt, values) : null;
+  const status = r.status === 'waiting' ? (0, _fillNodes.fillNodes)(t.waiting, values) : r.status === 'running' ? t.retrying : stopped && showCount ? (0, _fillNodes.fillNodes)(t.stopped, values) : null;
+  const count = showCount && !stopped ? (0, _fillNodes.fillNodes)(t.attempt, values) : null;
   return /*#__PURE__*/_react.default.createElement(_Notice.Notice, _extends({
     className: (0, _cx.cx)('plx-retry', className),
     tone: tone,
@@ -53969,7 +54122,7 @@ function Spotlight({
   return contained ? layer : /*#__PURE__*/_react.default.createElement(_portal.Portal, null, layer);
 }
   } },
-  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","../../utils/fillNodes.jsx":"platform/utils/fillNodes.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53980,12 +54133,12 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../Button/Button.jsx");
-var _Text = require("../Text/Text.jsx");
 var _Popover = require("../Popover/Popover.jsx");
 var _Spotlight = require("../Spotlight/Spotlight.jsx");
 var _Surface = require("../../providers/Surface.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
+var _fillNodes = require("../../utils/fillNodes.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · TeachingBubble
    Summary: A callout that points at a feature to introduce it once, or leads a short tour step by step: a title, one or
@@ -54032,13 +54185,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 // a string with {name} places filled by numbers in the data font (counts are technical values)
-const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
-  const m = /^\{(\w+)\}$/.exec(part);
-  return m && values[m[1]] !== undefined ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    key: i,
-    variant: "data"
-  }, values[m[1]]) : part;
-});
+
 function TeachingBubble({
   target,
   open = false,
@@ -54102,7 +54249,7 @@ function TeachingBubble({
     className: "plx-teaching-bubble__footer"
   }, step ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-teaching-bubble__step"
-  }, fill(t.step, step)) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _fillNodes.fillNodes)(t.step, step)) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-teaching-bubble__actions"
   }, secondaryAction ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     onClick: secondaryAction.onClick
@@ -58233,8 +58380,6 @@ const RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '
 const RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
 
 // the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
-// anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const MENTION_CLASS = 'plx-rich-text-editor__mention';
 const CHECK_CLASS = 'plx-check__input';
 const USER_CONTENT = 'plx-user-content';
@@ -58929,7 +59074,7 @@ function RichTextEditor({
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (mentionOpen && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (mentionOpen && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [mentionOpen]);
   const usable = editable && ready;
   const PLAIN = ['undo', 'redo', 'clear', 'rule', 'image', 'color'];
@@ -59262,7 +59407,7 @@ function RichTextEditor({
     id: auto + '-mentions',
     role: "listbox",
     "aria-label": t.mentions,
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     className: "plx-rich-text-editor__mentions"
   }, mention.items.map((o, i) => /*#__PURE__*/_react.default.createElement("li", {
     key: o.value,
@@ -60295,7 +60440,7 @@ const CountrySelect = exports.CountrySelect = /*#__PURE__*/_react.default.forwar
   }, rest));
 });
   } },
-  "platform/components/MillerColumns/MillerColumns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MillerColumns/MillerColumns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60308,6 +60453,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · MillerColumns
    Summary: A hierarchy browsed in side-by-side columns: choosing an item in one column lists its children in the next, so
@@ -60353,7 +60499,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const MIN_STEP = 1,
   MAX_STEP = 6,
   DEFAULT_STEP = 3;
-const fill = (s, label) => s.replace('{label}', label);
 const hasKids = it => !!(it && Array.isArray(it.children));
 const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwardRef(function MillerColumns({
   items = [],
@@ -60618,7 +60763,9 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
       role: "separator",
       "aria-orientation": "vertical",
       tabIndex: 0,
-      "aria-label": fill(t.resize, name),
+      "aria-label": (0, _fill.fill)(t.resize, {
+        label: name
+      }),
       "aria-valuemin": MIN_STEP,
       "aria-valuemax": MAX_STEP,
       "aria-valuenow": widthOf(level),
@@ -60632,7 +60779,9 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
     className: "plx-miller-columns__preview",
     role: "region",
     tabIndex: 0,
-    "aria-label": fill(t.preview, preview.label)
+    "aria-label": (0, _fill.fill)(t.preview, {
+      label: preview.label
+    })
   }, renderPreview(preview)) : null);
 });
   } },
@@ -60698,8 +60847,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
      The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
 */
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 // every leaf of the hierarchy with its path of items
 // the columns of the list take the narrowest width step (160px), so three levels fit under a form field
 const NARROW = [1, 1, 1, 1, 1, 1];
@@ -60750,7 +60897,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   });
   _react.default.useLayoutEffect(() => {
     const el = popup.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   _react.default.useImperativeHandle(ref, () => button.current);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
@@ -60876,7 +61023,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-cascader__popup",
     id: auto + '-pop',
     role: "dialog",
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     "aria-label": label || t.columns
   }, searchable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-cascader__search"
@@ -60936,7 +61083,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   }))) : null);
 });
   } },
-  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js","plenix-platform/icons/plenix/settings-users":"platform/dist/icons/plenix/settings-users.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js","plenix-platform/icons/plenix/settings-users":"platform/dist/icons/plenix/settings-users.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60959,6 +61106,7 @@ var _document = _interopRequireDefault(require("plenix-platform/icons/plenix/doc
 var _open = _interopRequireDefault(require("plenix-platform/icons/plenix/open"));
 var _search = _interopRequireDefault(require("plenix-platform/icons/plenix/search"));
 var _settingsUsers = _interopRequireDefault(require("plenix-platform/icons/plenix/settings-users"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
    Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
@@ -61006,14 +61154,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The picture in each suggestion is decorative: the name and the detail are the option's text.
      For a few known choices use Select; for anything that is not a record, Combobox.
 */
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const NAMES = {
   people: 'people',
   teams: 'teams',
   records: 'records'
 };
-const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => map[k] !== undefined ? map[k] : m);
 const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardRef(function EntityPicker({
   kind = 'records',
   options = [],
@@ -61176,7 +61321,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     });
   };
   const optId = i => auto + '-o' + i;
-  const hint = placeholder || (kind === 'people' && !entityName ? t.placeholderPeople : fill(t.placeholder, {
+  const hint = placeholder || (kind === 'people' && !entityName ? t.placeholderPeople : (0, _fill.fill)(t.placeholder, {
     entityName: noun
   }));
   const showList = open && (items.length || busy || failed || q);
@@ -61188,7 +61333,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (showList && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [showList]);
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
@@ -61202,7 +61347,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
       key: v,
       onRemove: disabled ? undefined : () => onChange(chosen.filter(x => x !== v)),
-      removeLabel: fill(t.remove, {
+      removeLabel: (0, _fill.fill)(t.remove, {
         label: name
       })
     }, name);
@@ -61241,7 +61386,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     className: "plx-entity-picker__list",
     id: listId,
     role: "listbox",
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     onMouseDown: e => e.preventDefault(),
     "aria-label": label || noun,
     "aria-multiselectable": multiple || undefined,
@@ -61260,7 +61405,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   }, t.error) : null, !busy && !failed && !results.length ? /*#__PURE__*/_react.default.createElement("li", {
     className: "plx-entity-picker__status",
     role: "presentation"
-  }, fill(t.empty, {
+  }, (0, _fill.fill)(t.empty, {
     entityName: noun
   })) : null, items.map((it, i) => it.kind === 'browse' ? /*#__PURE__*/_react.default.createElement("li", {
     key: "browse",
@@ -61276,7 +61421,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: _open.default
-  })), fill(t.browse, {
+  })), (0, _fill.fill)(t.browse, {
     entityName: noun
   })) : /*#__PURE__*/_react.default.createElement("li", {
     key: it.o.value,
@@ -61374,8 +61519,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
 */
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const pad = n => String(n).padStart(2, '0');
 const toMin = v => {
   const m = /^(\d{1,2}):(\d{2})$/.exec(v || '');
@@ -61533,7 +61676,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const times = [];
@@ -61664,7 +61807,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     className: "plx-time-picker__list",
     id: auto + '-list',
     role: "listbox",
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     onMouseDown: e => e.preventDefault(),
     "aria-label": label ? label + ', ' + t.times : t.times
   }, times.map((n, i) => /*#__PURE__*/_react.default.createElement("li", {
@@ -62295,7 +62438,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/ImageUpload/ImageUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/ed-crop":"platform/dist/icons/plenix/ed-crop.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/upload":"platform/dist/icons/plenix/upload.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ImageUpload/ImageUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/ed-crop":"platform/dist/icons/plenix/ed-crop.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/upload":"platform/dist/icons/plenix/upload.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -62320,6 +62463,7 @@ var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _edCrop = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-crop"));
 var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
 var _upload = _interopRequireDefault(require("plenix-platform/icons/plenix/upload"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ImageUpload, ImageCrop
    Summary: Adds images with a preview of each before they are saved: a drop zone with a Choose button, the chosen images as
@@ -62377,7 +62521,6 @@ const RATIOS = {
   '3-4': 3 / 4,
   '9-16': 9 / 16
 };
-const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => map[k] !== undefined ? map[k] : m);
 let seq = 0;
 
 /* ImageCrop: the picture drawn in the frame's ratio on a canvas off the page; the frame shows the result as an Image */
@@ -62578,9 +62721,9 @@ function ImageUpload({
     const bad = [],
       ok = [];
     files.forEach(f => {
-      if (!/^image\//.test(f.type)) bad.push(fill(t.notImage, {
+      if (!/^image\//.test(f.type)) bad.push((0, _fill.fill)(t.notImage, {
         name: f.name
-      }));else if (maxSize && f.size > maxSize) bad.push(fill(t.tooLarge, {
+      }));else if (maxSize && f.size > maxSize) bad.push((0, _fill.fill)(t.tooLarge, {
         name: f.name,
         max: (0, _format.formatBytes)(maxSize)
       }));else ok.push(f);
@@ -62642,7 +62785,7 @@ function ImageUpload({
     const gone = images[i];
     const next = images.filter((_, j) => j !== i);
     onChange(next);
-    (0, _announce.announce)(fill(t.removed, {
+    (0, _announce.announce)((0, _fill.fill)(t.removed, {
       name: gone.name
     }));
     // focus: the next preview's Remove, or the Choose button
@@ -62726,12 +62869,12 @@ function ImageUpload({
     size: "xs",
     icon: _trash.default,
     disabled: disabled,
-    label: fill(t.remove, {
+    label: (0, _fill.fill)(t.remove, {
       name: im.name
     }),
     iconOnly: multiple,
     onClick: () => remove(i)
-  }, multiple ? undefined : fill(t.remove, {
+  }, multiple ? undefined : (0, _fill.fill)(t.remove, {
     name: ''
   }).trim())), altText ? /*#__PURE__*/_react.default.createElement(_Field.Field, {
     className: "plx-image-upload__alt",
@@ -62996,8 +63139,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 // a few zones for browsers without Intl.supportedValuesOf
 const FALLBACK = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Africa/Cairo', 'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland'];
 const MINUS = '−';
@@ -63115,7 +63256,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+    if (open && _floating.TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const day = date ? new Date(date).toDateString() : new Date().toDateString();
@@ -63273,7 +63414,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     id: listId,
     role: "listbox",
     "aria-label": label,
-    popover: TOP_LAYER ? 'manual' : undefined,
+    popover: _floating.TOP_LAYER ? 'manual' : undefined,
     onMouseDown: e => e.preventDefault()
   }, shown.length ? shown.map((o, i) => [grouped && (i === 0 || shown[i - 1].region !== o.region) ? /*#__PURE__*/_react.default.createElement("li", {
     key: 'g-' + o.region,
@@ -63661,7 +63802,7 @@ function TreeSelect({
   }, t.empty)))));
 }
   } },
-  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-left":"platform/dist/icons/plenix/chevron-left.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-left":"platform/dist/icons/plenix/chevron-left.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63681,6 +63822,7 @@ var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/
 var _chevronLeft = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-left"));
 var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
 var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-up"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TransferList
    Summary: Two lists side by side for choosing a subset of many items (10 Patterns › Selection and organization ›
@@ -63727,7 +63869,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The checkboxes are the Checkbox control drawn in the row, not focusable and hidden from assistive technology: each
        option's aria-selected says it is checked.
 */
-const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (all, k) => o[k] !== undefined ? o[k] : all);
 const AUTO_VIRTUAL = 500;
 
 // one list: header (check all, title, count, the order buttons), search field, the listbox
@@ -63838,7 +63979,7 @@ function Side({
       if (el) el.indeterminate = some;
     },
     onChange: toggleAll,
-    "aria-label": fill(t.selectAll, {
+    "aria-label": (0, _fill.fill)(t.selectAll, {
       title
     })
   }), /*#__PURE__*/_react.default.createElement("span", {
@@ -63846,7 +63987,7 @@ function Side({
     className: "plx-transfer-list__title"
   }, title), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-transfer-list__count",
-    "aria-label": fill(t.count, {
+    "aria-label": (0, _fill.fill)(t.count, {
       checked: nChecked,
       total: shown.length
     })
@@ -63856,10 +63997,10 @@ function Side({
     className: "plx-transfer-list__search"
   }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
     value: text,
-    label: fill(t.search, {
+    label: (0, _fill.fill)(t.search, {
       title
     }),
-    placeholder: fill(t.search, {
+    placeholder: (0, _fill.fill)(t.search, {
       title
     }),
     width: "fill",
@@ -63933,7 +64074,7 @@ function TransferList({
       return n;
     });
     setRight(s => new Set(Array.from(s).concat(moving)));
-    (0, _announce.announce)(fill(t.moved, {
+    (0, _announce.announce)((0, _fill.fill)(t.moved, {
       n: moving.length,
       title: title2
     }));
@@ -63948,7 +64089,7 @@ function TransferList({
       return n;
     });
     setLeft(s => new Set(Array.from(s).concat(moving)));
-    (0, _announce.announce)(fill(t.moved, {
+    (0, _announce.announce)((0, _fill.fill)(t.moved, {
       n: moving.length,
       title: title2
     }));
@@ -64152,7 +64293,7 @@ function BottomSheetNav({
   }, body);
 }
   } },
-  "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fill.js":"platform/utils/fill.js","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64166,6 +64307,7 @@ var _Input = require("../../components/Input/Input.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fill = require("../../utils/fill.js");
 var _fields = require("../../utils/fields.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _filter = _interopRequireDefault(require("plenix-platform/icons/plenix/filter"));
@@ -64309,14 +64451,14 @@ function ConditionRows({
     className: "plx-find-panel__join"
   }, node.join === 'or' ? t.or : t.and);
   const remove = (i, what) => /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: (0, _panelParts.fill)(t.remove, {
+    content: (0, _fill.fill)(t.remove, {
       what
     })
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "ghost",
     icon: _trash.default,
     iconOnly: true,
-    label: (0, _panelParts.fill)(t.remove, {
+    label: (0, _fill.fill)(t.remove, {
       what
     }),
     onClick: () => setItems(items.filter((_, j) => j !== i))
@@ -64444,7 +64586,7 @@ function FilterPanel({
   }, body);
 }
   } },
-  "platform/patterns/SortPanel/SortPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/sort":"platform/dist/icons/plenix/sort.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SortPanel/SortPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fill.js":"platform/utils/fill.js","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/sort":"platform/dist/icons/plenix/sort.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64456,6 +64598,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fill = require("../../utils/fill.js");
 var _fields = require("../../utils/fields.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
@@ -64548,7 +64691,7 @@ function SortPanel({
       variant: "ghost",
       icon: _close.default,
       iconOnly: true,
-      label: (0, _panelParts.fill)(t.remove, {
+      label: (0, _fill.fill)(t.remove, {
         name: f.label
       }),
       onClick: () => onChange(levels.filter((_, j) => j !== i))
@@ -64575,7 +64718,7 @@ function SortPanel({
   }, body);
 }
   } },
-  "platform/patterns/GroupPanel/GroupPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/GroupPanel/GroupPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fill.js":"platform/utils/fill.js","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64588,6 +64731,7 @@ var _Menu = require("../../components/Menu/Menu.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fill = require("../../utils/fill.js");
 var _fields = require("../../utils/fields.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _groupBy = _interopRequireDefault(require("plenix-platform/icons/plenix/group-by"));
@@ -64702,7 +64846,7 @@ function GroupPanel({
         dir: v
       })
     }), /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: (0, _panelParts.fill)(t.more, {
+      label: (0, _fill.fill)(t.more, {
         name: f.label
       }),
       placement: "bottom-end",
@@ -64710,7 +64854,7 @@ function GroupPanel({
         variant: "ghost",
         icon: _more.default,
         iconOnly: true,
-        label: (0, _panelParts.fill)(t.more, {
+        label: (0, _fill.fill)(t.more, {
           name: f.label
         })
       })
@@ -64733,7 +64877,7 @@ function GroupPanel({
       variant: "ghost",
       icon: _trash.default,
       iconOnly: true,
-      label: (0, _panelParts.fill)(t.remove, {
+      label: (0, _fill.fill)(t.remove, {
         name: f.label
       }),
       onClick: () => onChange(levels.filter((_, j) => j !== i))
@@ -66173,7 +66317,7 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
   }, t.empty) : null));
 });
   } },
-  "platform/components/Carousel/Carousel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-left":"platform/dist/icons/plenix/chevron-left.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Carousel/Carousel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-left":"platform/dist/icons/plenix/chevron-left.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66189,6 +66333,7 @@ var _Button = require("../Button/Button.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronLeft = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-left"));
 var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Carousel
    Summary: A set of equal items shown one (or a few) at a time in a strip people move through: Previous and Next
@@ -66223,7 +66368,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Do not hide what people need in later slides: put it on the page. For a long set use a grid or a list. On iOS this
        is a paged scroll view with the system page control; on Android, Material's carousel.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 function Carousel({
@@ -66352,7 +66496,7 @@ function Carousel({
     key: s.key || i,
     role: "group",
     "aria-roledescription": "slide",
-    "aria-label": fill(t.slide, {
+    "aria-label": (0, _fill.fill)(t.slide, {
       n: i + 1,
       total: n
     }),
@@ -66384,7 +66528,7 @@ function Carousel({
     type: "button",
     className: (0, _cx.cx)('plx-carousel__dot', i === page && 'is-current'),
     "aria-current": i === page ? 'true' : undefined,
-    "aria-label": fill(per > 1 ? t.goToPage : t.goTo, {
+    "aria-label": (0, _fill.fill)(per > 1 ? t.goToPage : t.goTo, {
       n: i + 1
     }),
     onClick: () => go(i)
@@ -66399,7 +66543,7 @@ function Carousel({
   }) : null) : null);
 }
   } },
-  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/settings-users":"platform/dist/icons/plenix/settings-users.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/settings-users":"platform/dist/icons/plenix/settings-users.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66417,6 +66561,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _settingsUsers = _interopRequireDefault(require("plenix-platform/icons/plenix/settings-users"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PeopleGroup
    Summary: A set of people shown as one identity in a single row: a team (its own picture or initials, its name, what it
@@ -66449,8 +66594,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A list of people with no shared identity is an AvatarGroup. A single person is a Persona. Granting a team or a group
        access shows it with a role (PermissionSummary for what that role allows).
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-
 // "8 members" with the number in the data font
 function Members({
   n,
@@ -66524,7 +66667,7 @@ function PeopleGroup({
     title: description
   }, description) : null), showAvatars ? /*#__PURE__*/_react.default.createElement(_AvatarGroup.AvatarGroup, {
     className: "plx-people-group__members",
-    label: fill(t.membersOf, {
+    label: (0, _fill.fill)(t.membersOf, {
       name
     }),
     people: members,
@@ -66538,7 +66681,7 @@ function PeopleGroup({
   }, t.showMembers) : null);
 }
   } },
-  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66557,6 +66700,7 @@ var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _check = _interopRequireDefault(require("plenix-platform/icons/plenix/check"));
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
 var _lock = _interopRequireDefault(require("plenix-platform/icons/plenix/lock"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PermissionSummary
    Summary: Who can reach an item and what they may do with it, in a few lines: the access in words with its icon ("Your
@@ -66591,7 +66735,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Lead with the audience, then the right. List the rights people ask about (share, delete, download), not every
        permission: Manage access shows the rest. A role's full grid of rights is the permissions editor's.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const lower = x => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 function PermissionSummary({
   access,
@@ -66653,9 +66796,9 @@ function PermissionSummary({
     className: "plx-permission-summary__detail"
   }, detail) : null), manage), compact ? can.length || cannot.length ? /*#__PURE__*/_react.default.createElement(_List.List, {
     className: "plx-permission-summary__list",
-    items: [].concat(can.length ? [yes(fill(t.canSentence, {
+    items: [].concat(can.length ? [yes((0, _fill.fill)(t.canSentence, {
       list: (0, _format.formatList)(can.map(lower))
-    }))] : [], cannot.length ? [no(fill(t.cannotSentence, {
+    }))] : [], cannot.length ? [no((0, _fill.fill)(t.cannotSentence, {
       list: (0, _format.formatList)(cannot.map(lower), {
         type: 'disjunction'
       })
@@ -66679,7 +66822,7 @@ function PermissionSummary({
   })) : null) : null);
 }
   } },
-  "platform/patterns/QueryBuilder/QueryBuilder.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/QueryBuilder/QueryBuilder.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66703,6 +66846,7 @@ var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.js
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _plus = _interopRequireDefault(require("plenix-platform/icons/plenix/plus"));
 var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · QueryBuilder, formatQuery
    Summary: Builds a query from rules and groups of rules, for advanced search, saved views, automations and audience
@@ -66745,7 +66889,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      hard to read; keep maxDepth at 3 or less.
 */
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
 const NO_VALUE = {
   empty: true,
@@ -66890,7 +67033,7 @@ function Rule({
   const fw = (0, _LocaleProvider.useStrings)('fields');
   const f = (0, _fields.fieldOf)(fields, c.field);
   const base = uid + '-' + c.id;
-  const name = fill(t.rule, {
+  const name = (0, _fill.fill)(t.rule, {
     n: index + 1
   });
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -66991,7 +67134,7 @@ function Group({
     (0, _announce.announce)(g ? t.groupRemoved : t.removed);
   };
   const joinWord = node.join === 'or' ? t.orWord : t.andWord;
-  const name = depth ? fill(t.group, {
+  const name = depth ? (0, _fill.fill)(t.group, {
     n: index + 1
   }) : null;
   let groups = 0;
@@ -67567,7 +67710,7 @@ function Timeline({
   }, it.content) : null))));
 }
   } },
-  "platform/patterns/ResourceList/ResourceList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ResourceList/ResourceList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67585,6 +67728,7 @@ var _SectionHeading = require("../../components/SectionHeading/SectionHeading.js
 var _Count = require("../../components/Count/Count.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ResourceList
    Summary: A list of the records of one kind (07 Data Display › Lists and collections › Resource list, and its duplicate
@@ -67641,12 +67785,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      A pattern of the Polaris resource list. Use the DataGrid when people compare records by column or sort by a column.
 */
 
-const fill = (s, map) => Object.keys(map).reduce((out, k) => out.split('{' + k + '}').join(map[k]), s);
 // a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]
 const phrase = (s, map) => s.split(/(\{n\}|\{total\})/).map((p, i) => p === '{n}' || p === '{total}' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
   key: i,
   variant: "data"
-}, map[p.slice(1, -1)]) : fill(p, map));
+}, map[p.slice(1, -1)]) : (0, _fill.fill)(p, map));
 function Row({
   item,
   selectable,
@@ -67683,7 +67826,7 @@ function Row({
     checked: checked,
     disabled: item.disabled,
     onChange: onCheck,
-    "aria-label": fill(t.select, {
+    "aria-label": (0, _fill.fill)(t.select, {
       name: typeof name === 'string' ? name : t.item
     })
   })) : null, media ? /*#__PURE__*/_react.default.createElement("span", {
@@ -67765,7 +67908,7 @@ function ResourceList({
     indeterminate: sel.someSelected,
     disabled: !total,
     onChange: () => sel.toggleAll(),
-    "aria-label": fill(t.selectAll, {
+    "aria-label": (0, _fill.fill)(t.selectAll, {
       n: String(total),
       nouns: total === 1 ? one : nouns
     })
@@ -74850,7 +74993,7 @@ function GeoMap({
   }));
 }
   } },
-  "platform/patterns/SortableList/SortableList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../../components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SortableList/SortableList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../../components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74866,6 +75009,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-up"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SortableList
    Summary: A list people put in their own order (10 Patterns › Selection and organization › Sortable list; also
@@ -74912,7 +75056,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A list of fields in a find panel reorders with the panels' own rows (Reordering, the columns list); a dashboard's
        widgets with WidgetGrid. Other props pass through to the <ul>.
 */
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 // after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
 const keep = dir => itemEl => {
   const own = itemEl.querySelector('[data-plx-move="' + dir + '"]'),
@@ -74963,7 +75106,7 @@ function SortableList({
     const name = nameOf(item),
       ip = s.itemProps(i);
     const handle = handles ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: fill(t.moveMenu, {
+      label: (0, _fill.fill)(t.moveMenu, {
         name
       }),
       placement: "bottom-start",
@@ -75001,7 +75144,7 @@ function SortableList({
       variant: "ghost",
       iconOnly: true,
       icon: _chevronUp.default,
-      label: fill(t.moveUpNamed, {
+      label: (0, _fill.fill)(t.moveUpNamed, {
         name
       }),
       disabled: off || !s.canMove(i, -1),
@@ -75014,7 +75157,7 @@ function SortableList({
       variant: "ghost",
       iconOnly: true,
       icon: _chevronDown.default,
-      label: fill(t.moveDownNamed, {
+      label: (0, _fill.fill)(t.moveDownNamed, {
         name
       }),
       disabled: off || !s.canMove(i, 1),
@@ -75064,7 +75207,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/rename":"platform/dist/icons/plenix/rename.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/rename":"platform/dist/icons/plenix/rename.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75084,6 +75227,7 @@ var _Input = require("../../components/Input/Input.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _rename = _interopRequireDefault(require("plenix-platform/icons/plenix/rename"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RenameAction
    Summary: Giving something a new name (04 Actions › Common actions › Rename): in place, where the name is shown
@@ -75130,8 +75274,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The dialog's button reads "Rename…" (an ellipsis: it asks for more before acting); as an item in an actions menu use
        the menu item with open and onClose. Leading and trailing spaces are taken off before the rules run.
 */
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
-
 // the name before a file's extension (the whole name when it has none, or starts with its only dot)
 function baseNameEnd(name) {
   const i = String(name).lastIndexOf('.');
@@ -75176,11 +75318,11 @@ function RenameAction({
     const next = String(raw).trim();
     if (!next) return t.empty;
     if (/[\/\\]/.test(next)) return t.slash;
-    if (next.length > maxLength) return fill(t.tooLong, {
+    if (next.length > maxLength) return (0, _fill.fill)(t.tooLong, {
       max: maxLength
     });
     const lower = next.toLowerCase();
-    if (next !== value && names.some(n => n !== value && String(n).toLowerCase() === lower)) return fill(t.taken, {
+    if (next !== value && names.some(n => n !== value && String(n).toLowerCase() === lower)) return (0, _fill.fill)(t.taken, {
       name: next
     });
     return validate ? validate(next) || '' : '';
@@ -75206,7 +75348,7 @@ function RenameAction({
   };
   const done = next => {
     close();
-    (0, _announce.announce)(fill(t.renamed, {
+    (0, _announce.announce)((0, _fill.fill)(t.renamed, {
       name: next
     }));
   };
@@ -75260,7 +75402,7 @@ function RenameAction({
       onConfirm: next => {
         const v = String(next).trim();
         const r = onRename ? onRename(v) : null;
-        const say = () => setTimeout(() => (0, _announce.announce)(fill(t.renamed, {
+        const say = () => setTimeout(() => (0, _announce.announce)((0, _fill.fill)(t.renamed, {
           name: v
         })), 0);
         if (r && typeof r.then === 'function') return r.then(say);
@@ -75282,7 +75424,7 @@ function RenameAction({
   }), t.open), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
     open: open,
     onClose: close,
-    title: fill(t.title, {
+    title: (0, _fill.fill)(t.title, {
       name: value
     }),
     size: "sm",
@@ -75317,7 +75459,7 @@ function RenameAction({
   })))));
 }
   } },
-  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75338,6 +75480,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DeleteFlow
    Summary: Deleting one or several items the Plenix way, in one of four forms. Confirm asks first, with the count in the
@@ -75388,7 +75531,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The count is the number of items, in the question and in the button's toast, never "these items".
 */
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const SHOWN = 5;
 function DeleteFlow({
   items = [],
@@ -75432,7 +75574,7 @@ function DeleteFlow({
   const phrase = confirmPhrase || (n === 1 ? items[0].label : builtIn ? loc.t('deleteFlow.phraseItems', {
     count: n,
     n: (0, _format.formatNumber)(n)
-  }) : fill(t.phraseMany, {
+  }) : (0, _fill.fill)(t.phraseMany, {
     count: (0, _format.formatNumber)(n),
     plural: many
   }));
@@ -75451,10 +75593,10 @@ function DeleteFlow({
   const runNow = () => {
     const list = items.slice();
     if (onDelete) onDelete(list);
-    let text = fill(variant === 'trash' ? t.trashed : t.deleted, {
+    let text = (0, _fill.fill)(variant === 'trash' ? t.trashed : t.deleted, {
       what: n === 1 ? name : what
     });
-    if (variant === 'trash' && retention) text += ' ' + fill(t.retention, {
+    if (variant === 'trash' && retention) text += ' ' + (0, _fill.fill)(t.retention, {
       them: n === 1 ? t.it : t.them,
       days: (0, _format.formatNumber)(retention)
     });
@@ -75494,7 +75636,7 @@ function DeleteFlow({
   const confirm = e => {
     if (e) e.preventDefault();
     if (variant === 'type' && typed.trim() !== phrase) {
-      setError(fill(t.typeError, {
+      setError((0, _fill.fill)(t.typeError, {
         phrase
       }));
       if (field.current) field.current.focus();
@@ -75502,7 +75644,7 @@ function DeleteFlow({
     }
     const list = items.slice();
     if (onDelete) onDelete(list);
-    say(fill(t.deleted, {
+    say((0, _fill.fill)(t.deleted, {
       what: n === 1 ? name : what
     }), {
       tone: 'success'
@@ -75512,12 +75654,12 @@ function DeleteFlow({
   const cancelRef = _react.default.useRef(null);
   const formId = (0, _layer.useUid)('plx-delete-flow');
   const label = String(t.typeLabel).split('{phrase}');
-  const title = n === 1 ? fill(t.title, {
+  const title = n === 1 ? (0, _fill.fill)(t.title, {
     name
   }) : builtIn ? loc.t('deleteFlow.titleItems', {
     count: n,
     n: (0, _format.formatNumber)(n)
-  }) : fill(t.titleMany, {
+  }) : (0, _fill.fill)(t.titleMany, {
     count: (0, _format.formatNumber)(n),
     plural: many
   });
@@ -75579,7 +75721,7 @@ function DeleteFlow({
   })) : null)) : null);
 }
   } },
-  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/ed-copy":"platform/dist/icons/plenix/ed-copy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/ed-copy":"platform/dist/icons/plenix/ed-copy.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75603,6 +75745,7 @@ var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _format = require("../../utils/format.js");
 var _edCopy = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-copy"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DuplicateAction, copyName
    Summary: Make a copy of one item. Copy of the name duplicates at once: the copy is named "Copy of Easter banner" (then
@@ -75644,17 +75787,16 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Duplicate never copies people's comments or members unless they choose it: those belong to the original's history.
 */
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const q = x => '“' + x + '”';
 function copyName(name, taken = [], strings) {
   const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('duplicateAction'), strings); // a plain function: no hook
   const used = new Set((taken || []).map(x => String(x).trim().toLowerCase()));
-  const base = fill(t.copyOf, {
+  const base = (0, _fill.fill)(t.copyOf, {
     name
   });
   if (!used.has(base.toLowerCase())) return base;
   for (let n = 2;; n++) {
-    const next = fill(t.numbered, {
+    const next = (0, _fill.fill)(t.numbered, {
       name: base,
       n
     });
@@ -75693,7 +75835,7 @@ function DuplicateAction({
   const input = _react.default.useRef(null);
   const formId = (0, _layer.useUid)('plx-duplicate');
   const fresh = () => copyName(name, taken, strings);
-  const said = newName => fill(t.done, {
+  const said = newName => (0, _fill.fill)(t.done, {
     name: q(newName)
   });
   const begin = () => {
@@ -75733,7 +75875,7 @@ function DuplicateAction({
     e.preventDefault();
     const v = value.trim();
     const used = new Set((taken || []).map(x => String(x).trim().toLowerCase()));
-    const problem = !v ? t.empty : used.has(v.toLowerCase()) ? fill(t.taken, {
+    const problem = !v ? t.empty : used.has(v.toLowerCase()) ? (0, _fill.fill)(t.taken, {
       noun,
       name: q(v)
     }) : '';
@@ -75761,7 +75903,7 @@ function DuplicateAction({
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, start, variant === 'rename' ? /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
     open: shown,
     onClose: close,
-    title: fill(t.title, {
+    title: (0, _fill.fill)(t.title, {
       noun
     }),
     size: "sm",
@@ -75797,7 +75939,7 @@ function DuplicateAction({
     name: _edCopy.default
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-duplicate-action__from"
-  }, fill(t.from, {
+  }, (0, _fill.fill)(t.from, {
     name: q(name)
   }) + (source ? ' · ' + source : ''))), options.length ? /*#__PURE__*/_react.default.createElement(_Fieldset.Fieldset, {
     legend: t.also
@@ -75809,7 +75951,7 @@ function DuplicateAction({
   }))) : null)) : null);
 }
   } },
-  "platform/patterns/Publish/Publish.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Publish/Publish.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75829,6 +75971,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Publish
    Summary: An item's publishing state and the actions that change it, in one row: the status badge with its icon (Draft,
@@ -75872,7 +76015,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The status is the item's own; whether it may be published (an approval) is ReviewFlow's.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const q = x => '“' + x + '”';
 
 // a status line with its date in the data font: the words around {at} stay in the UI font
@@ -75918,7 +76060,7 @@ function Publish({
   const doPublish = () => {
     setAsk(null);
     if (onPublish) onPublish();
-    say(fill(t.published, {
+    say((0, _fill.fill)(t.published, {
       name: nameQ
     }), {
       tone: 'success'
@@ -75927,7 +76069,7 @@ function Publish({
   const doUnpublish = () => {
     setAsk(null);
     if (onUnpublish) onUnpublish();
-    say(fill(t.unpublished, {
+    say((0, _fill.fill)(t.unpublished, {
       name: nameQ
     }), onPublish ? {
       action: {
@@ -75943,7 +76085,7 @@ function Publish({
     if (problem) return;
     setAsk(null);
     onSchedule(when);
-    say(fill(t.scheduled, {
+    say((0, _fill.fill)(t.scheduled, {
       name: nameQ,
       at: (0, _format.formatDateTime)(when)
     }), {
@@ -75958,12 +76100,12 @@ function Publish({
     setAsk('schedule');
   };
   const line = status === 'published' ? /*#__PURE__*/_react.default.createElement(Line, {
-    text: by ? fill(t.publishedBy, {
+    text: by ? (0, _fill.fill)(t.publishedBy, {
       by
     }) : t.publishedLine,
     at: publishedAt ? (0, _format.formatDateTime)(publishedAt) : ''
   }) : status === 'scheduled' ? /*#__PURE__*/_react.default.createElement(Line, {
-    text: by ? fill(t.scheduledBy, {
+    text: by ? (0, _fill.fill)(t.scheduledBy, {
       by
     }) : t.scheduledLine,
     at: scheduledFor ? (0, _format.formatDateTime)(scheduledFor) : ''
@@ -76000,10 +76142,10 @@ function Publish({
     "aria-label": t.actions
   }, actions) : null, /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: ask === 'publish',
-    title: fill(t.publishTitle, {
+    title: (0, _fill.fill)(t.publishTitle, {
       name: nameQ
     }),
-    message: fill(t.publishMessage, {
+    message: (0, _fill.fill)(t.publishMessage, {
       audience: who
     }),
     confirmLabel: status === 'scheduled' ? t.publishNow : t.publish,
@@ -76012,10 +76154,10 @@ function Publish({
     onCancel: () => setAsk(null)
   }), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: ask === 'unpublish',
-    title: fill(t.unpublishTitle, {
+    title: (0, _fill.fill)(t.unpublishTitle, {
       name: nameQ
     }),
-    message: fill(t.unpublishMessage, {
+    message: (0, _fill.fill)(t.unpublishMessage, {
       audience: who
     }),
     confirmLabel: t.unpublish,
@@ -76025,7 +76167,7 @@ function Publish({
   }), onSchedule ? /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
     open: ask === 'schedule',
     onClose: () => setAsk(null),
-    title: fill(t.scheduleTitle, {
+    title: (0, _fill.fill)(t.scheduleTitle, {
       name: nameQ
     }),
     size: "sm",
@@ -76054,7 +76196,7 @@ function Publish({
   })))) : null);
 }
   } },
-  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76080,6 +76222,7 @@ var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _forward = _interopRequireDefault(require("plenix-platform/icons/plenix/forward"));
 var _pencil = _interopRequireDefault(require("plenix-platform/icons/plenix/pencil"));
 var _person = _interopRequireDefault(require("plenix-platform/icons/plenix/person"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AssignControl
    Summary: Who is responsible for an item, and how to change it, in one row. Assign: nobody yet, so the people picker
@@ -76120,7 +76263,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      One assignee per item; several people sharing a task are reviewers or members, not assignees.
      A delegation ends by itself after its last day; End delegation ends it sooner.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function AssignControl({
   label,
   people = [],
@@ -76201,7 +76343,7 @@ function AssignControl({
         end: draft.range.end,
         note: draft.note.trim()
       });
-      say(fill(t.delegatedTo, {
+      say((0, _fill.fill)(t.delegatedTo, {
         name: (find(draft.to) || {}).label || ''
       }));
     };
@@ -76240,7 +76382,7 @@ function AssignControl({
     }, t.end) : null), /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
       open: open,
       onClose: () => setOpen(false),
-      title: fill(t.delegateTitle, {
+      title: (0, _fill.fill)(t.delegateTitle, {
         label: label.toLowerCase()
       }),
       size: "sm",
@@ -76306,9 +76448,9 @@ function AssignControl({
     if (v === value) return;
     if (onChange) onChange(v, find(v));
     const p = find(v);
-    say(p ? fill(t.assigned, {
+    say(p ? (0, _fill.fill)(t.assigned, {
       name: p.label
-    }) : fill(t.cleared, {
+    }) : (0, _fill.fill)(t.cleared, {
       label
     }));
   };
@@ -77358,7 +77500,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/File/File.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/devWarn.js":"platform/utils/devWarn.js","plenix-platform/icons/plenix/code":"platform/dist/icons/plenix/code.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/file-ai":"platform/dist/icons/plenix/file-ai.js","plenix-platform/icons/plenix/file-jpg":"platform/dist/icons/plenix/file-jpg.js","plenix-platform/icons/plenix/file-pdf":"platform/dist/icons/plenix/file-pdf.js","plenix-platform/icons/plenix/file-png":"platform/dist/icons/plenix/file-png.js","plenix-platform/icons/plenix/file-psd":"platform/dist/icons/plenix/file-psd.js","plenix-platform/icons/plenix/file-svg":"platform/dist/icons/plenix/file-svg.js","plenix-platform/icons/plenix/file-zip":"platform/dist/icons/plenix/file-zip.js","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/table":"platform/dist/icons/plenix/table.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/File/File.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/devWarn.js":"platform/utils/devWarn.js","plenix-platform/icons/plenix/code":"platform/dist/icons/plenix/code.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js","plenix-platform/icons/plenix/document":"platform/dist/icons/plenix/document.js","plenix-platform/icons/plenix/file-ai":"platform/dist/icons/plenix/file-ai.js","plenix-platform/icons/plenix/file-jpg":"platform/dist/icons/plenix/file-jpg.js","plenix-platform/icons/plenix/file-pdf":"platform/dist/icons/plenix/file-pdf.js","plenix-platform/icons/plenix/file-png":"platform/dist/icons/plenix/file-png.js","plenix-platform/icons/plenix/file-psd":"platform/dist/icons/plenix/file-psd.js","plenix-platform/icons/plenix/file-svg":"platform/dist/icons/plenix/file-svg.js","plenix-platform/icons/plenix/file-zip":"platform/dist/icons/plenix/file-zip.js","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/table":"platform/dist/icons/plenix/table.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -77388,6 +77530,7 @@ var _folder = _interopRequireDefault(require("plenix-platform/icons/plenix/folde
 var _folderOpen = _interopRequireDefault(require("plenix-platform/icons/plenix/folder-open"));
 var _imageA = _interopRequireDefault(require("plenix-platform/icons/plenix/image-a-2"));
 var _table = _interopRequireDefault(require("plenix-platform/icons/plenix/table"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · File
    Summary: A file or a folder as one object, the same everywhere it appears (12 Specialized › Files, assets, and DAM ›
@@ -77501,7 +77644,6 @@ function fileIconModule(name, type) {
   }
   return _document.default;
 }
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function Picture({
   src,
   icon
@@ -77550,7 +77692,7 @@ function File({
   const glyph = icon || (folder ? open ? _folderOpen.default : _folder.default : fileIconModule(name, type));
   const facts = [];
   if (!folder && size !== undefined && size !== null && size !== '') facts.push(typeof size === 'number' ? (0, _format.formatBytes)(size) : String(size));
-  if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, {
+  if (folder && typeof count === 'number') facts.push((0, _fill.fill)(count === 1 ? t.item : t.items, {
     n: (0, _format.formatNumber)(count)
   }));
   if (modified) facts.push((0, _format.formatDate)(modified, {
@@ -77631,7 +77773,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/FileRow/FileRow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../File/File.jsx":"platform/components/File/File.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/download-tray":"platform/dist/icons/plenix/download-tray.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/rename":"platform/dist/icons/plenix/rename.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/FileRow/FileRow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../File/File.jsx":"platform/components/File/File.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/download-tray":"platform/dist/icons/plenix/download-tray.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/rename":"platform/dist/icons/plenix/rename.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -77657,6 +77799,7 @@ var _more = _interopRequireDefault(require("plenix-platform/icons/plenix/more"))
 var _refresh = _interopRequireDefault(require("plenix-platform/icons/plenix/refresh"));
 var _rename = _interopRequireDefault(require("plenix-platform/icons/plenix/rename"));
 var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileRow, FileRowList
    Summary: One file or folder as a line in a list (12 Specialized › Files, assets, and DAM › File row): a checkbox to
@@ -77712,7 +77855,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        and pickers. Files people compare by column (size, date, owner, sorted and filtered) belong in the DataGrid.
      Other props pass through to the row element.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function FileRow({
   file,
   as = 'div',
@@ -77762,7 +77904,7 @@ function FileRow({
   }, rest), selectable ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-file-row__select"
   }, /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
-    "aria-label": fill(t.select, {
+    "aria-label": (0, _fill.fill)(t.select, {
       name
     }),
     checked: !!selected,
@@ -77787,7 +77929,7 @@ function FileRow({
     className: "plx-file-row__bar",
     size: "sm",
     value: Math.max(0, Math.min(100, progress)),
-    label: fill(t.transfer, {
+    label: (0, _fill.fill)(t.transfer, {
       label: progressLabel || t.uploading,
       name
     }),
@@ -77817,12 +77959,12 @@ function FileRow({
     variant: "ghost",
     iconOnly: true,
     icon: _downloadTray.default,
-    label: fill(t.download, {
+    label: (0, _fill.fill)(t.download, {
       name
     }),
     onClick: onDownload
   }) : null, menu ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: fill(t.more, {
+    label: (0, _fill.fill)(t.more, {
       name
     }),
     placement: "bottom-end",
@@ -77831,7 +77973,7 @@ function FileRow({
       variant: "ghost",
       iconOnly: true,
       icon: _more.default,
-      label: fill(t.more, {
+      label: (0, _fill.fill)(t.more, {
         name
       })
     })
@@ -77871,7 +78013,7 @@ function FileFacts({
   t
 }) {
   const folder = file.kind === 'folder';
-  const size = folder ? typeof file.count === 'number' ? fill(file.count === 1 ? t.item : t.items, {
+  const size = folder ? typeof file.count === 'number' ? (0, _fill.fill)(file.count === 1 ? t.item : t.items, {
     n: (0, _format.formatNumber)(file.count)
   }) : '' : typeof file.size === 'number' ? (0, _format.formatBytes)(file.size) : file.size || '';
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
@@ -77895,7 +78037,7 @@ function FileRowList({
   }, rest), children);
 }
   } },
-  "platform/patterns/Auth/Auth.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Form/Form.jsx":"platform/patterns/Form/Form.jsx","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Auth/Auth.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Form/Form.jsx":"platform/patterns/Form/Form.jsx","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -77926,6 +78068,7 @@ var _lock = _interopRequireDefault(require("plenix-platform/icons/plenix/lock"))
 var _visibility = _interopRequireDefault(require("plenix-platform/icons/plenix/visibility"));
 var _visibilityOff = _interopRequireDefault(require("plenix-platform/icons/plenix/visibility-off"));
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Auth, SignInForm, SignUpForm, PasswordResetForm, MfaChallenge, SsoButtons, AccountRecovery
    Summary: Getting people into their account and back in when something is lost (10 Patterns › Authentication and
@@ -77997,7 +78140,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        first where the organization uses it. Security questions are never a recovery method.
      services/login is the Plenix sign-in service; it draws this layout with the release's classes (no stylesheet of its own).
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const around = (s, key, node) => {
   const p = String(s).split('{' + key + '}');
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, p[0], p.length > 1 ? node : null, p.slice(1).join(''));
@@ -78298,7 +78440,7 @@ function SignUpForm({
     const found = {
       name: v.name.trim() ? '' : t.needName,
       email: EMAIL.test(v.email.trim()) ? '' : t.needEmail,
-      password: v.password.length >= minLength ? '' : fill(t.needPassword, {
+      password: v.password.length >= minLength ? '' : (0, _fill.fill)(t.needPassword, {
         n: minLength
       }),
       terms: !terms || v.terms ? '' : t.needTerms
@@ -78419,7 +78561,7 @@ function PasswordResetForm({
   };
   const [errors, check, clear] = useCheck(refs);
   _react.default.useEffect(() => {
-    if (now === 'sent' || now === 'done') (0, _announce.announce)(now === 'sent' ? fill(t.sent, {
+    if (now === 'sent' || now === 'done') (0, _announce.announce)(now === 'sent' ? (0, _fill.fill)(t.sent, {
       email: email || '…',
       expires: expires || t.expires
     }) : t.done);
@@ -78435,7 +78577,7 @@ function PasswordResetForm({
   const reset = e => {
     e.preventDefault();
     if (!check({
-      password: password.length >= minLength ? '' : fill(t.needPassword, {
+      password: password.length >= minLength ? '' : (0, _fill.fill)(t.needPassword, {
         n: minLength
       })
     })) return;
@@ -78448,7 +78590,7 @@ function PasswordResetForm({
       className: "plx-auth__form"
     }, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
       tone: "info"
-    }, around(fill(t.sent, {
+    }, around((0, _fill.fill)(t.sent, {
       expires: expires || t.expires
     }), 'email', /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-auth__data"
@@ -78604,7 +78746,7 @@ function MfaChallenge({
   }, [wait, sends]);
   const verify = c => {
     if (method.kind !== 'key' && String(c || '').length < length) {
-      setOwn(fill(t.needCode, {
+      setOwn((0, _fill.fill)(t.needCode, {
         n: length
       }));
       return;
@@ -78642,7 +78784,7 @@ function MfaChallenge({
       }))
     }), /*#__PURE__*/_react.default.createElement(Submit, null, t.choose)));
   }
-  const hint = method.kind === 'key' ? t.key : fill(t[method.kind] || t.app, {
+  const hint = method.kind === 'key' ? t.key : (0, _fill.fill)(t[method.kind] || t.app, {
     n: length,
     detail: method.detail || ''
   });
@@ -78733,7 +78875,7 @@ function SsoButtons({
   };
   const [errors, check, clear] = useCheck(refs);
   _react.default.useEffect(() => {
-    if (redirecting) (0, _announce.announce)(fill(t.redirecting, {
+    if (redirecting) (0, _announce.announce)((0, _fill.fill)(t.redirecting, {
       name: redirecting
     }));
   }, [redirecting]);
@@ -78744,12 +78886,12 @@ function SsoButtons({
       className: "plx-auth__status"
     }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
       size: "sm",
-      label: fill(t.redirecting, {
+      label: (0, _fill.fill)(t.redirecting, {
         name: redirecting
       })
     }), /*#__PURE__*/_react.default.createElement("span", {
       "aria-hidden": "true"
-    }, fill(t.redirecting, {
+    }, (0, _fill.fill)(t.redirecting, {
       name: redirecting
     }))));
   }
@@ -78799,7 +78941,7 @@ function SsoButtons({
     icon: p.icon,
     className: "plx-auth__submit",
     onClick: () => onProvider && onProvider(p)
-  }, fill(t.provider, {
+  }, (0, _fill.fill)(t.provider, {
     name: p.label
   }))), organization ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     icon: _lock.default,
@@ -78955,7 +79097,7 @@ function AccountRecovery({
   }, t.back) : null));
 }
   } },
-  "platform/patterns/SessionTimeout/SessionTimeout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SessionTimeout/SessionTimeout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -78970,6 +79112,7 @@ var _announce = require("../../utils/announce.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SessionTimeout, useSessionTimeout
    Summary: Ending a session that nobody is using without losing anyone's work (10 Patterns › Authentication and
@@ -79017,7 +79160,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        server's answer).
 */
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const clock = sec => {
   const s = Math.max(0, Math.ceil(sec));
   return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
@@ -79072,7 +79214,7 @@ function SessionTimeout({
     MILESTONES.forEach(m => {
       if (left <= m && left > m - 5 && !said.current[m]) {
         said.current[m] = true;
-        (0, _announce.announce)(fill(t.left, {
+        (0, _announce.announce)((0, _fill.fill)(t.left, {
           time: clock(left)
         }));
       }
@@ -79203,7 +79345,7 @@ function useSessionTimeout({
   };
 }
   } },
-  "platform/patterns/RoleManager/RoleManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","../DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/arrow-left":"platform/dist/icons/plenix/arrow-left.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/settings-permissions":"platform/dist/icons/plenix/settings-permissions.js","plenix-platform/icons/plenix/settings-users":"platform/dist/icons/plenix/settings-users.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RoleManager/RoleManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","../DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/arrow-left":"platform/dist/icons/plenix/arrow-left.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/settings-permissions":"platform/dist/icons/plenix/settings-permissions.js","plenix-platform/icons/plenix/settings-users":"platform/dist/icons/plenix/settings-users.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79240,6 +79382,7 @@ var _settingsPermissions = _interopRequireDefault(require("plenix-platform/icons
 var _settingsUsers = _interopRequireDefault(require("plenix-platform/icons/plenix/settings-users"));
 var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
 var _visibility = _interopRequireDefault(require("plenix-platform/icons/plenix/visibility"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RoleManager
    Summary: The roles of a workspace and what each allows, in two views (10 Patterns › Authentication and permissions ›
@@ -79296,7 +79439,6 @@ const ROLE_ICONS = {
   editor: _pencil.default,
   viewer: _visibility.default
 };
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const around = (s, key, node) => {
   const p = String(s).split('{' + key + '}');
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, p[0], p.length > 1 ? node : null, p.slice(1).join(''));
@@ -79442,7 +79584,7 @@ function RoleList({
         type: 'create',
         role: r
       });
-      (0, _announce.announce)(fill(t.created, {
+      (0, _announce.announce)((0, _fill.fill)(t.created, {
         name: r.name
       }));
       onOpen(r.id);
@@ -79475,7 +79617,7 @@ function CreateRole({
   const submit = e => {
     e.preventDefault();
     const n = name.trim();
-    const problem = !n ? t.empty : roles.some(r => r.name.toLowerCase() === n.toLowerCase()) ? fill(t.taken, {
+    const problem = !n ? t.empty : roles.some(r => r.name.toLowerCase() === n.toLowerCase()) ? (0, _fill.fill)(t.taken, {
       name: '“' + n + '”'
     }) : '';
     setError(problem);
@@ -79575,7 +79717,7 @@ function RoleDetail({
       permission: p.id,
       allowed: on
     });
-    (0, _announce.announce)(fill(on ? t.allowed : t.denied, {
+    (0, _announce.announce)((0, _fill.fill)(on ? t.allowed : t.denied, {
       permission: p.label,
       role: role.name
     }));
@@ -79592,7 +79734,7 @@ function RoleDetail({
   };
   const remove = v => {
     if (role.required && members.length <= 1) {
-      setWarning(fill(t.lastMember, {
+      setWarning((0, _fill.fill)(t.lastMember, {
         role: role.name
       }));
       return;
@@ -79603,7 +79745,7 @@ function RoleDetail({
       type: 'remove-member',
       person: v
     });
-    (0, _announce.announce)(fill(t.removed, {
+    (0, _announce.announce)((0, _fill.fill)(t.removed, {
       name: person(v).label,
       role: role.name
     }));
@@ -79701,10 +79843,10 @@ function RoleDetail({
     onChange: e => toggle(p, e.target.checked)
   }))))) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_PermissionSummary.PermissionSummary, {
     icon: _settingsUsers.default,
-    access: fill(t.access, {
+    access: (0, _fill.fill)(t.access, {
       role: role.name
     }),
-    detail: fill(members.length === 1 ? t.peopleOne : t.people, {
+    detail: (0, _fill.fill)(members.length === 1 ? t.peopleOne : t.people, {
       n: (0, _format.formatNumber)(members.length)
     }),
     can: permissions.filter(p => allowed.has(p.id)).map(p => p.label),
@@ -79748,7 +79890,7 @@ function RoleDetail({
           variant: "ghost",
           iconOnly: true,
           icon: _close.default,
-          label: fill(t.remove, {
+          label: (0, _fill.fill)(t.remove, {
             name: p.label
           }),
           onClick: () => remove(v)
@@ -79766,7 +79908,7 @@ function RoleDetail({
     clearable: false,
     onChange: v => add(v),
     strings: {
-      assigned: fill(t.added, {
+      assigned: (0, _fill.fill)(t.added, {
         name: '{name}',
         role: role.name
       })
@@ -79774,7 +79916,7 @@ function RoleDetail({
   })) : null));
 }
   } },
-  "platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79793,6 +79935,7 @@ var _IconTile = require("../../components/IconTile/IconTile.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _link = _interopRequireDefault(require("plenix-platform/icons/plenix/link"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ConnectedAccounts, ConnectedAccount
    Summary: The accounts on other services that Plenix is linked to, and the way to link or unlink each (10 Patterns ›
@@ -79846,7 +79989,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The status is the Badge's word and icon; the connected account and date are technical values (the data font).
      One row per service; for many accounts on one service, a row per account with the account in the title.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const STATUS = {
   connected: ['success', 'check'],
   disconnected: ['neutral', 'link'],
@@ -79880,9 +80022,9 @@ function ConnectedAccount({
   const seen = _react.default.useRef(status);
   _react.default.useEffect(() => {
     if (seen.current !== status) {
-      if (status === 'connected') (0, _announce.announce)(fill(t.done, {
+      if (status === 'connected') (0, _announce.announce)((0, _fill.fill)(t.done, {
         service: a.service
-      }));else if (status === 'disconnected' && seen.current === 'connected') (0, _announce.announce)(fill(t.undone, {
+      }));else if (status === 'disconnected' && seen.current === 'connected') (0, _announce.announce)((0, _fill.fill)(t.undone, {
         service: a.service
       }));
       seen.current = status;
@@ -79942,13 +80084,13 @@ function ConnectedAccount({
     onClick: () => confirm ? setAsk('disconnect') : disconnect()
   }, t.disconnect) : null), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: ask === 'connect',
-    title: fill(t.connectTitle, {
+    title: (0, _fill.fill)(t.connectTitle, {
       service: a.service
     }),
-    message: fill(t.connectMessage, {
+    message: (0, _fill.fill)(t.connectMessage, {
       service: a.service
     }),
-    confirmLabel: fill(t.continue, {
+    confirmLabel: (0, _fill.fill)(t.continue, {
       service: a.service
     }),
     cancelLabel: t.cancel,
@@ -79961,7 +80103,7 @@ function ConnectedAccount({
   }, s))) : null), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: ask === 'disconnect',
     destructive: true,
-    title: fill(t.disconnectTitle, {
+    title: (0, _fill.fill)(t.disconnectTitle, {
       service: a.service
     }),
     message: [a.loses, t.disconnectMessage].filter(Boolean).join(' '),
@@ -81771,7 +81913,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/download-tray":"platform/dist/icons/plenix/download-tray.js","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/move":"platform/dist/icons/plenix/move.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/rename":"platform/dist/icons/plenix/rename.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/download-tray":"platform/dist/icons/plenix/download-tray.js","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/move":"platform/dist/icons/plenix/move.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/rename":"platform/dist/icons/plenix/rename.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81803,6 +81945,7 @@ var _rename = _interopRequireDefault(require("plenix-platform/icons/plenix/renam
 var _sortAscending = _interopRequireDefault(require("plenix-platform/icons/plenix/sort-ascending"));
 var _sortDescending = _interopRequireDefault(require("plenix-platform/icons/plenix/sort-descending"));
 var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileList
    Summary: Many files and folders at once (12 Specialized › Files, assets, and DAM › File list): a list of FileRows (list),
@@ -81871,7 +82014,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      owner). Pictures people recognize by sight belong in a grid of MediaCards (FileBrowser's grid).
 */
 const FIELDS = ['name', 'size', 'modified', 'owner'];
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const idOf = f => f.id === undefined ? f.name : f.id;
 const stamp = v => v instanceof Date ? v.toISOString() : String(v || '');
 
@@ -81979,7 +82121,7 @@ function FileList({
   const others = f => files.filter(x => idOf(x) !== idOf(f)).map(x => x.name);
   // the folders a file can move to: not itself, not where it is now (a file without a parent is at the root, id null)
   const targetsFor = f => (moveTargets || []).filter(x => idOf(x) !== idOf(f) && idOf(x) !== (f.parent === undefined ? null : f.parent));
-  const countText = files.length === 1 ? t.one : fill(t.count, {
+  const countText = files.length === 1 ? t.one : (0, _fill.fill)(t.count, {
     n: (0, _format.formatNumber)(files.length)
   });
 
@@ -81993,7 +82135,7 @@ function FileList({
       variant: "ghost",
       icon: order.dir === 'desc' ? _sortDescending.default : _sortAscending.default,
       caret: true
-    }, fill(t.sortBy, {
+    }, (0, _fill.fill)(t.sortBy, {
       field: fieldLabel.toLowerCase()
     }))
   }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
@@ -82049,7 +82191,7 @@ function FileList({
   }
   let body;
   if (table) {
-    const sizeText = f => f.kind === 'folder' ? typeof f.count === 'number' ? fill(f.count === 1 ? t.item : t.items, {
+    const sizeText = f => f.kind === 'folder' ? typeof f.count === 'number' ? (0, _fill.fill)(f.count === 1 ? t.item : t.items, {
       n: (0, _format.formatNumber)(f.count)
     }) : '' : typeof f.size === 'number' ? (0, _format.formatBytes)(f.size) : f.size || '';
     // folders stay first whichever way the name sorts (the comparator compensates for descending order)
@@ -82246,7 +82388,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/download-tray":"platform/dist/icons/plenix/download-tray.js","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js","plenix-platform/icons/plenix/folder-add":"platform/dist/icons/plenix/folder-add.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/move":"platform/dist/icons/plenix/move.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/upload":"platform/dist/icons/plenix/upload.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/download-tray":"platform/dist/icons/plenix/download-tray.js","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js","plenix-platform/icons/plenix/folder-add":"platform/dist/icons/plenix/folder-add.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/move":"platform/dist/icons/plenix/move.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/upload":"platform/dist/icons/plenix/upload.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -82281,6 +82423,7 @@ var _folderOpen = _interopRequireDefault(require("plenix-platform/icons/plenix/f
 var _move = _interopRequireDefault(require("plenix-platform/icons/plenix/move"));
 var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
 var _upload = _interopRequireDefault(require("plenix-platform/icons/plenix/upload"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileBrowser
    Summary: Finding, organizing and acting on files by place (12 Specialized › Files, assets, and DAM › File browser): the
@@ -82346,7 +82489,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const ROOT = '__plx-root';
 const DRAG = 'plx-file';
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const keyOf = id => id === null || id === undefined ? ROOT : id;
 // the fields Sort offers (utils/fields.js)
 const SORT_FIELDS = [{
@@ -82542,7 +82684,7 @@ function FileBrowser({
     id: ROOT,
     name: top.name
   }].concat(folders).filter(f => !blocked[f.id] && keyOf(f.id) !== current);
-  const countText = shown.length === 1 ? t.one : fill(t.count, {
+  const countText = shown.length === 1 ? t.one : (0, _fill.fill)(t.count, {
     n: (0, _format.formatNumber)(shown.length)
   });
   const bar = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
@@ -82608,7 +82750,7 @@ function FileBrowser({
   });
   const empty = /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     icon: _folderOpen.default,
-    title: query ? fill(t.noMatch, {
+    title: query ? (0, _fill.fill)(t.noMatch, {
       q: q.trim()
     }) : t.empty,
     action: !query && onUpload ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -82626,7 +82768,7 @@ function FileBrowser({
     }, cards.map(x => {
       const isFolder = x.kind === 'folder';
       const ext = (0, _File.fileExtension)(x.name);
-      const facts = isFolder ? fill(x.count === 1 ? t.item : t.items, {
+      const facts = isFolder ? (0, _fill.fill)(x.count === 1 ? t.item : t.items, {
         n: (0, _format.formatNumber)(x.count || 0)
       }) : [ext ? ext.toUpperCase() : null, typeof x.size === 'number' ? (0, _format.formatBytes)(x.size) : null].filter(Boolean).join(' · ');
       return /*#__PURE__*/_react.default.createElement(GridItem, {
@@ -82769,7 +82911,7 @@ function FileBrowser({
     overlay: true,
     active: true,
     className: "plx-file-browser__drop"
-  }, fill(t.drop, {
+  }, (0, _fill.fill)(t.drop, {
     folder: nameOf(current)
   })) : null)), onUpload ? /*#__PURE__*/_react.default.createElement("input", {
     ref: picker,
@@ -82787,7 +82929,7 @@ function FileBrowser({
     title: t.newFolder,
     label: t.folderName,
     confirmLabel: t.create,
-    validate: v => !v.trim() ? t.nameEmpty : names.indexOf(v.trim().toLowerCase()) >= 0 ? fill(t.nameTaken, {
+    validate: v => !v.trim() ? t.nameEmpty : names.indexOf(v.trim().toLowerCase()) >= 0 ? (0, _fill.fill)(t.nameTaken, {
       name: v.trim()
     }) : '',
     onSubmit: v => {
@@ -82889,7 +83031,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/text-card":"platform/dist/icons/plenix/text-card.js","plenix-platform/icons/plenix/upload":"platform/dist/icons/plenix/upload.js","plenix-platform/icons/plenix/upload-2":"platform/dist/icons/plenix/upload-2.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/text-card":"platform/dist/icons/plenix/text-card.js","plenix-platform/icons/plenix/upload":"platform/dist/icons/plenix/upload.js","plenix-platform/icons/plenix/upload-2":"platform/dist/icons/plenix/upload-2.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -82923,6 +83065,7 @@ var _textCard = _interopRequireDefault(require("plenix-platform/icons/plenix/tex
 var _upload = _interopRequireDefault(require("plenix-platform/icons/plenix/upload"));
 var _upload2 = _interopRequireDefault(require("plenix-platform/icons/plenix/upload-2"));
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · UploadManager, useUploadQueue
    Summary: Files on their way up (12 Specialized › Files, assets, and DAM › Upload manager): a drop zone that also opens
@@ -82992,7 +83135,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      for uploads that outlast the moment. Say the limits before people choose.
 */
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const clamp = n => Math.max(0, Math.min(100, Number(n) || 0));
 const MOVING = {
   queued: true,
@@ -83120,7 +83262,7 @@ function useUploadQueue(options) {
         });
         if (max && file.size > max) return Object.assign(row, {
           status: 'error',
-          error: fill(t.tooLarge, {
+          error: (0, _fill.fill)(t.tooLarge, {
             max: (0, _format.formatBytes)(max)
           }),
           retry: false
@@ -83225,11 +83367,11 @@ function UploadManager({
   const live = rows.filter(x => x.status !== 'canceled' && !(x.status === 'error' && x.retry === false));
   const sum = live.reduce((a, x) => a + weight(x), 0);
   const overall = sum ? live.reduce((a, x) => a + weight(x) * (x.status === 'done' ? 100 : x.status === 'error' ? 0 : clamp(x.progress)), 0) / sum : 0;
-  const headline = moving ? moving === 1 ? t.uploadingOne : fill(t.uploading, {
+  const headline = moving ? moving === 1 ? t.uploadingOne : (0, _fill.fill)(t.uploading, {
     n: (0, _format.formatNumber)(moving)
-  }) : failed ? failed === 1 ? t.failedOne : fill(t.failed, {
+  }) : failed ? failed === 1 ? t.failedOne : (0, _fill.fill)(t.failed, {
     n: (0, _format.formatNumber)(failed)
-  }) : done ? done === 1 ? t.doneOne : fill(t.done, {
+  }) : done ? done === 1 ? t.doneOne : (0, _fill.fill)(t.done, {
     n: (0, _format.formatNumber)(done)
   }) : t.none;
 
@@ -83240,7 +83382,7 @@ function UploadManager({
       now = {};
     rows.forEach(x => {
       now[x.id] = x.status;
-      if (x.status === 'error' && before[x.id] !== 'error') (0, _announce.announce)(fill(t.failedNamed, {
+      if (x.status === 'error' && before[x.id] !== 'error') (0, _announce.announce)((0, _fill.fill)(t.failedNamed, {
         name: x.name,
         reason: x.error || t.error
       }));
@@ -83451,7 +83593,7 @@ function UploadManager({
   }, zone, list));
 }
   } },
-  "platform/patterns/VersionCompare/VersionCompare.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/doc-search":"platform/dist/icons/plenix/doc-search.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/VersionCompare/VersionCompare.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/doc-search":"platform/dist/icons/plenix/doc-search.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -83477,6 +83619,7 @@ var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/ch
 var _circleCheck = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-check"));
 var _docSearch = _interopRequireDefault(require("plenix-platform/icons/plenix/doc-search"));
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · VersionCompare, diffLines
    Summary: What changed between two versions of one item (12 Specialized › Files, assets, and DAM › Version comparison):
@@ -83530,8 +83673,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Label each side by its version and date, always. A list of changed fields alone (only metadata changed) is the
      side-by-side view with Show only differences on; versions of different items are not compared here.
 */
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 function diffLines(before, after) {
@@ -83622,7 +83763,7 @@ function TextDiff({
   }, [base.id, target.id]);
   const added = lines.filter(x => x.kind === 'add').length,
     removed = lines.filter(x => x.kind === 'del').length;
-  const count = k => k === 1 ? t.line : fill(t.lines, {
+  const count = k => k === 1 ? t.line : (0, _fill.fill)(t.lines, {
     n: (0, _format.formatNumber)(k)
   });
   // where each change starts (a run of added and removed lines)
@@ -83675,7 +83816,7 @@ function TextDiff({
         block: 'nearest'
       });
     }
-    (0, _announce.announce)(fill(t.at, {
+    (0, _announce.announce)((0, _fill.fill)(t.at, {
       n: (0, _format.formatNumber)(next + 1),
       total: (0, _format.formatNumber)(starts.length)
     }));
@@ -83690,7 +83831,7 @@ function TextDiff({
     className: "plx-version-compare__diff-bar"
   }, /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-version-compare__summary"
-  }, fill(t.summary, {
+  }, (0, _fill.fill)(t.summary, {
     added: count(added),
     removed: count(removed)
   })), /*#__PURE__*/_react.default.createElement("span", {
@@ -83709,7 +83850,7 @@ function TextDiff({
     className: "plx-version-compare__lines",
     tabIndex: 0,
     role: "region",
-    "aria-label": fill(t.diff, {
+    "aria-label": (0, _fill.fill)(t.diff, {
       base: base.label,
       target: target.label
     })
@@ -83802,7 +83943,7 @@ function VersionCompare({
   };
   const metaOf = v => [v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
-  }) : null, v.author ? fill(t.by, {
+  }) : null, v.author ? (0, _fill.fill)(t.by, {
     author: v.author
   }) : null].filter(Boolean).join(' · ');
   const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(v.date, {
@@ -85118,7 +85259,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/image-b":"platform/dist/icons/plenix/image-b.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/tags":"platform/dist/icons/plenix/tags.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/image-b":"platform/dist/icons/plenix/image-b.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/tags":"platform/dist/icons/plenix/tags.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -85143,6 +85284,7 @@ var _imageB = _interopRequireDefault(require("plenix-platform/icons/plenix/image
 var _plus = _interopRequireDefault(require("plenix-platform/icons/plenix/plus"));
 var _tags = _interopRequireDefault(require("plenix-platform/icons/plenix/tags"));
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProductCard
    Summary: One product in a catalog (07 Data display › Cards and objects › Product card): its picture at a fixed ratio,
@@ -85201,7 +85343,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: Reddit Mono.
      Other props go on the <article>.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const RATIOS = ['1-1', '4-3', '3-4'];
 
 // the price line: the price now in the data font, and on sale the old price struck through after it ("Now …, was …" to
@@ -85282,9 +85423,9 @@ function ProductCard({
     icon: _plus.default,
     disabled: outOfStock,
     onClick: onAddToCart,
-    label: outOfStock ? fill(t.soldOut, {
+    label: outOfStock ? (0, _fill.fill)(t.soldOut, {
       title: name
-    }) : name ? fill(t.addToCartFor, {
+    }) : name ? (0, _fill.fill)(t.addToCartFor, {
       title: name
     }) : undefined
   }, t.addToCart) : null);
@@ -85334,7 +85475,7 @@ function ProductCard({
   }, act) : null));
 }
   } },
-  "platform/components/ProductOptions/ProductOptions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProductOptions/ProductOptions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -85351,6 +85492,7 @@ var _Field = require("../Field/Field.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _alert = _interopRequireDefault(require("plenix-platform/icons/plenix/alert"));
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProductOptions
    Summary: The controls that choose one variant of a product (12 Specialized › Commerce › Product options): sizes as a row
@@ -85406,7 +85548,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Fewer than about six choices: buttons or swatches, never a select. Put the quantity last, beside Add to cart.
      Other props go on the group.
 */
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const labelOf = v => v.label !== undefined ? v.label : String(v.value);
 
 // the option's name and its chosen value ("Size: M")
@@ -85420,7 +85561,7 @@ function Legend({
     className: "plx-product-options__legend-text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-product-options__label"
-  }, fill(t.chosen, {
+  }, (0, _fill.fill)(t.chosen, {
     label: option.label
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-product-options__chosen"
@@ -85487,7 +85628,7 @@ function ProductOptions({
         className: "plx-product-options__swatches"
       }, (o.values || []).map(v => {
         const off = v.available === false;
-        const name = off ? fill(t.unavailableName, {
+        const name = off ? (0, _fill.fill)(t.unavailableName, {
           label: labelOf(v)
         }) : labelOf(v);
         return /*#__PURE__*/_react.default.createElement("span", {
@@ -85550,13 +85691,13 @@ function ProductOptions({
     min: min,
     max: max,
     disabled: disabled,
-    "aria-label": product ? fill(t.quantityOf, {
+    "aria-label": product ? (0, _fill.fill)(t.quantityOf, {
       product
     }) : undefined
   }))) : null);
 }
   } },
-  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/image-b":"platform/dist/icons/plenix/image-b.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/image-b":"platform/dist/icons/plenix/image-b.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/fill.js":"platform/utils/fill.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -85565,7 +85706,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.COMMERCE_PAGES = void 0;
 exports.CommerceLine = CommerceLine;
 exports.OrderSummary = OrderSummary;
-exports.money = exports.fill = void 0;
+exports.money = void 0;
 exports.orderTotals = orderTotals;
 exports.useCommercePage = useCommercePage;
 var _react = _interopRequireDefault(require("react"));
@@ -85583,6 +85724,7 @@ var _ProductCard = require("../../patterns/ProductCard/ProductCard.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _imageB = _interopRequireDefault(require("plenix-platform/icons/plenix/image-b"));
 var _dataText = require("../../utils/dataText.jsx");
+var _fill = require("../../utils/fill.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: shared parts
    Summary: What the Commerce templates share (platform/templates/Commerce): the kind of page each template is
@@ -85642,8 +85784,6 @@ function useCommercePage(template) {
   const kind = COMMERCE_PAGES[template];
   _react.default.useEffect(() => claim && kind ? claim(kind) : undefined, [claim, kind]);
 }
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-exports.fill = fill;
 const money = (n, currency) => (0, _format.formatCurrency)(n, currency || 'USD');
 exports.money = money;
 const round = n => Math.round(n * 100) / 100;
@@ -85710,7 +85850,7 @@ function CommerceLine({
     onChange: n => {
       if (n) onQuantityChange(n);
     },
-    "aria-label": fill(t.quantity, {
+    "aria-label": (0, _fill.fill)(t.quantity, {
       title: name
     })
   }) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
@@ -85755,7 +85895,7 @@ function OrderSummary({
     className: (0, _cx.cx)('plx-commerce-summary', className)
   }, showItems && items.length ? /*#__PURE__*/_react.default.createElement("ul", {
     className: "plx-commerce-summary__items",
-    "aria-label": s.count === 1 ? t.item : fill(t.items, {
+    "aria-label": s.count === 1 ? t.item : (0, _fill.fill)(t.items, {
       n: (0, _format.formatNumber)(s.count)
     })
   }, items.map(x => /*#__PURE__*/_react.default.createElement("li", {
@@ -85812,7 +85952,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/filter-off":"platform/dist/icons/plenix/filter-off.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js","plenix-platform/icons/plenix/settings-categories":"platform/dist/icons/plenix/settings-categories.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../utils/fill.js":"platform/utils/fill.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/filter-off":"platform/dist/icons/plenix/filter-off.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js","plenix-platform/icons/plenix/settings-categories":"platform/dist/icons/plenix/settings-categories.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -85852,6 +85992,7 @@ var _Tabs = require("../../components/Tabs/Tabs.jsx");
 var _Table = require("../../components/Table/Table.jsx");
 var _layer = require("../../utils/layer.js");
 var _shared = require("./shared.jsx");
+var _fill = require("../../utils/fill.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _circleCheck = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-check"));
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
@@ -85991,7 +86132,7 @@ function ProductListing({
       first.current = false;
       return;
     }
-    (0, _announce.announce)(shown.length === 0 ? t.none : shown.length === 1 ? t.resultsOne : (0, _shared.fill)(t.results, {
+    (0, _announce.announce)(shown.length === 0 ? t.none : shown.length === 1 ? t.resultsOne : (0, _fill.fill)(t.results, {
       n: (0, _format.formatNumber)(shown.length)
     }));
   }, [shown.length]);
@@ -86034,7 +86175,7 @@ function ProductListing({
     variant: "secondary"
   }, description) : null) : null, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
     label: typeof title === 'string' ? title : t.label,
-    count: shown.length === 1 ? t.one : (0, _shared.fill)(t.count, {
+    count: shown.length === 1 ? t.one : (0, _fill.fill)(t.count, {
       n: (0, _format.formatNumber)(shown.length)
     }),
     find: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, search ? /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarSearch, {
@@ -86180,7 +86321,7 @@ function ProductDiscovery({
   }, query && !hits.length ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     size: "page",
     icon: _search.default,
-    title: (0, _shared.fill)(t.resultsFor, {
+    title: (0, _fill.fill)(t.resultsFor, {
       q: query
     }),
     action: /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -86198,7 +86339,7 @@ function ProductDiscovery({
   }, s)))) : /*#__PURE__*/_react.default.createElement(ProductListing, {
     products: hits,
     categories: categories,
-    title: query ? (0, _shared.fill)(t.resultsFor, {
+    title: query ? (0, _fill.fill)(t.resultsFor, {
       q: query
     }) : chosen ? chosen.label : t.results,
     headingLevel: headingLevel + 1,
@@ -86261,7 +86402,7 @@ function ProductDetail({
   const add = () => {
     const missing = {};
     options.forEach(o => {
-      if (o.required !== false && choice[o.name] === undefined) missing[o.name] = (0, _shared.fill)(t.choose, {
+      if (o.required !== false && choice[o.name] === undefined) missing[o.name] = (0, _fill.fill)(t.choose, {
         option: String(o.label).toLowerCase()
       });
     });
@@ -86274,7 +86415,7 @@ function ProductDetail({
     }
     if (onAddToCart) onAddToCart(p, choice, qty);
     setAdded(true);
-    (0, _announce.announce)((0, _shared.fill)(t.added, {
+    (0, _announce.announce)((0, _fill.fill)(t.added, {
       title: p.title
     }));
   };
@@ -86337,7 +86478,7 @@ function ProductDetail({
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-commerce__gallery"
   }, images.length > 1 ? /*#__PURE__*/_react.default.createElement(_Carousel.Carousel, {
-    label: (0, _shared.fill)(t.gallery, {
+    label: (0, _fill.fill)(t.gallery, {
       title: p.title
     })
   }, images.map((im, i) => /*#__PURE__*/_react.default.createElement(_Image.Image, {
@@ -86399,7 +86540,7 @@ function ProductDetail({
   }, t.addToCart)), added ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
     tone: "success",
     onDismiss: () => setAdded(false)
-  }, (0, _shared.fill)(t.added, {
+  }, (0, _fill.fill)(t.added, {
     title: p.title
   }), cartHref ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', /*#__PURE__*/_react.default.createElement(_Link.Link, {
     href: cartHref
@@ -86431,7 +86572,7 @@ function ProductDetail({
   })))) : null);
 }
   } },
-  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/briefcase":"platform/dist/icons/plenix/briefcase.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../utils/fill.js":"platform/utils/fill.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/briefcase":"platform/dist/icons/plenix/briefcase.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -86467,6 +86608,7 @@ var _CopyButton = require("../../components/CopyButton/CopyButton.jsx");
 var _Timeline = require("../../components/Timeline/Timeline.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _shared = require("./shared.jsx");
+var _fill = require("../../utils/fill.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _briefcase = _interopRequireDefault(require("plenix-platform/icons/plenix/briefcase"));
 var _edUndo = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-undo"));
@@ -86534,7 +86676,7 @@ function Cart({
       first.current = false;
       return;
     }
-    (0, _announce.announce)((0, _shared.fill)(t.total, {
+    (0, _announce.announce)((0, _fill.fill)(t.total, {
       total: (0, _shared.money)(totals.total, currency)
     }));
   }, [totals.total]);
@@ -86553,7 +86695,7 @@ function Cart({
         error: '',
         busy: false
       });
-      (0, _announce.announce)((0, _shared.fill)(t.applied, {
+      (0, _announce.announce)((0, _fill.fill)(t.applied, {
         code: code.trim()
       }));
     } catch (err) {
@@ -86565,7 +86707,7 @@ function Cart({
       });
     }
   };
-  const count = totals.count === 1 ? t.item : (0, _shared.fill)(t.items, {
+  const count = totals.count === 1 ? t.item : (0, _fill.fill)(t.items, {
     n: (0, _format.formatNumber)(totals.count)
   });
   if (!items.length && !removed) {
@@ -86606,7 +86748,7 @@ function Cart({
       }
     }, t.undo) : undefined,
     onDismiss: () => setRemoved(null)
-  }, (0, _shared.fill)(t.removed, {
+  }, (0, _fill.fill)(t.removed, {
     title: removed.title
   })) : null, /*#__PURE__*/_react.default.createElement("ul", {
     className: "plx-commerce-lines",
@@ -86633,7 +86775,7 @@ function Cart({
         size: "xs",
         iconOnly: true,
         icon: _trash.default,
-        label: (0, _shared.fill)(t.remove, {
+        label: (0, _fill.fill)(t.remove, {
           title: x.title
         })
       })
@@ -86652,7 +86794,7 @@ function Cart({
   }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
     label: t.promo,
     error: promo.error,
-    description: promo.label ? (0, _shared.fill)(t.applied, {
+    description: promo.label ? (0, _fill.fill)(t.applied, {
       code: promo.label
     }) : undefined
   }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
@@ -86895,7 +87037,7 @@ function Payment({
     variant: "primary",
     loading: busy,
     disabled: busy
-  }, (0, _shared.fill)(t.pay, {
+  }, (0, _fill.fill)(t.pay, {
     amount: (0, _shared.money)(amount, currency)
   }))));
 }
@@ -86943,7 +87085,7 @@ function Checkout({
     discount
   });
   const saved = (savedMethods || []).find(m => m.id === (d.payment.method || (savedMethods && savedMethods.length ? savedMethods[0].id : 'card')));
-  const paidWith = saved ? saved.label : d.payment.number ? (0, _shared.fill)(t.card, {
+  const paidWith = saved ? saved.label : d.payment.number ? (0, _fill.fill)(t.card, {
     last4: String(d.payment.number).slice(-4)
   }) : '';
   const steps = [{
@@ -87152,7 +87294,7 @@ function OrderConfirmation({
     size: "xs"
   })), email ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     as: "p"
-  }, (0, _shared.fill)(t.sent, {
+  }, (0, _fill.fill)(t.sent, {
     email
   })) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-commerce__columns"
@@ -87237,7 +87379,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/progress":"platform/dist/icons/plenix/progress.js","plenix-platform/icons/plenix/reply":"platform/dist/icons/plenix/reply.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../utils/fill.js":"platform/utils/fill.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/progress":"platform/dist/icons/plenix/progress.js","plenix-platform/icons/plenix/reply":"platform/dist/icons/plenix/reply.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -87277,6 +87419,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _shared = require("./shared.jsx");
+var _fill = require("../../utils/fill.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _alert = _interopRequireDefault(require("plenix-platform/icons/plenix/alert"));
 var _circleCheck = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-check"));
@@ -87413,7 +87556,7 @@ function OrderManagement({
   const what = list => list.length === 1 ? list[0].number : (0, _format.formatNumber)(list.length) + ' ' + t.plural;
   const fulfill = list => {
     if (onFulfill) onFulfill(list);
-    (0, _announce.announce)((0, _shared.fill)(t.fulfilled, {
+    (0, _announce.announce)((0, _fill.fill)(t.fulfilled, {
       what: what(list)
     }));
   };
@@ -87466,7 +87609,7 @@ function OrderManagement({
     "aria-label": t.label
   }, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
     label: t.label,
-    count: shown === 1 ? t.one : (0, _shared.fill)(t.count, {
+    count: shown === 1 ? t.one : (0, _fill.fill)(t.count, {
       n: (0, _format.formatNumber)(shown)
     }),
     find: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarSearch, {
@@ -87541,7 +87684,7 @@ function OrderManagement({
   }), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: !!asking,
     destructive: true,
-    title: asking ? (0, _shared.fill)(t.cancelTitle, {
+    title: asking ? (0, _fill.fill)(t.cancelTitle, {
       what: what(asking)
     }) : '',
     message: t.cancelText,
@@ -87549,7 +87692,7 @@ function OrderManagement({
     cancelLabel: t.keep,
     onConfirm: () => {
       if (onCancel) onCancel(asking);
-      (0, _announce.announce)((0, _shared.fill)(t.canceled, {
+      (0, _announce.announce)((0, _fill.fill)(t.canceled, {
         what: what(asking)
       }));
       setSelected([]);
@@ -87679,7 +87822,7 @@ function OrderDetail({
   }, o.payment)) : null))), /*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
     open: asking,
     destructive: true,
-    title: (0, _shared.fill)(t.cancelTitle, {
+    title: (0, _fill.fill)(t.cancelTitle, {
       number: o.number
     }),
     message: t.cancelText,
@@ -87724,7 +87867,7 @@ function SubscriptionManagement({
   const [asking, setAsking] = _react.default.useState(null);
   const [busy, setBusy] = _react.default.useState(false);
   const target = plans.find(p => p.id === pick);
-  const per = p => (0, _shared.fill)(t.perPeriod, {
+  const per = p => (0, _fill.fill)(t.perPeriod, {
     price: (0, _shared.money)(p.price, p.currency || currency),
     period: p.period
   });
@@ -87735,7 +87878,7 @@ function SubscriptionManagement({
   const diff = p => {
     if (!current.price || p.id === current.id || p.period !== current.period) return '';
     const d = p.price - current.price;
-    return d ? ' · ' + (0, _shared.fill)(d > 0 ? t.more : t.less, {
+    return d ? ' · ' + (0, _fill.fill)(d > 0 ? t.more : t.less, {
       amount: (0, _shared.money)(Math.abs(d), currency)
     }) : '';
   };
@@ -87745,7 +87888,7 @@ function SubscriptionManagement({
     try {
       if (kind === 'change' && onChangePlan) {
         await onChangePlan(target);
-        (0, _announce.announce)((0, _shared.fill)(t.changed, {
+        (0, _announce.announce)((0, _fill.fill)(t.changed, {
           plan: target.name,
           date: day(s.nextBilling)
         }));
@@ -87765,10 +87908,10 @@ function SubscriptionManagement({
   };
   const dialog = {
     change: target ? {
-      title: (0, _shared.fill)(t.changeTitle, {
+      title: (0, _fill.fill)(t.changeTitle, {
         plan: target.name
       }),
-      message: (0, _shared.fill)(t.changeText, {
+      message: (0, _fill.fill)(t.changeText, {
         price: per(target),
         date: day(s.nextBilling)
       }),
@@ -87781,7 +87924,7 @@ function SubscriptionManagement({
     },
     cancel: {
       title: t.cancelTitle,
-      message: (0, _shared.fill)(t.cancelText, {
+      message: (0, _fill.fill)(t.cancelText, {
         date: day(s.nextBilling)
       }),
       confirm: t.cancel,
@@ -87819,7 +87962,7 @@ function SubscriptionManagement({
     render: r => r.invoice ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
       href: r.invoice,
       variant: "subtle"
-    }, (0, _shared.fill)(t.invoiceFor, {
+    }, (0, _fill.fill)(t.invoiceFor, {
       date: day(r.date)
     })) : null
   }];
@@ -87876,7 +88019,7 @@ function SubscriptionManagement({
   }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
     as: "p",
     variant: "secondary"
-  }, (0, _shared.fill)(t.manageText, {
+  }, (0, _fill.fill)(t.manageText, {
     date: day(s.nextBilling)
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-commerce__row-actions"
@@ -87966,7 +88109,7 @@ function Returns({
         value: chosen[x.id],
         min: 1,
         max: x.quantity,
-        "aria-label": (0, _shared.fill)(t.quantity, {
+        "aria-label": (0, _fill.fill)(t.quantity, {
           title: x.title
         }),
         onChange: n => {
