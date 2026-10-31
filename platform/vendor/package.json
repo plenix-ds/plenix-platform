@@ -1,0 +1,13 @@
+{
+  "name": "plenix-vendored-libraries",
+  "private": true,
+  "description": "A record of the libraries copied into platform/vendor/ (see README.md), at the versions copied. Never installed: CI runs `npm outdated` here as information only (issue 724). Updating one means following its README, then changing its version here.",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "echarts": "6.1.0",
+    "pdfjs-dist": "4.10.38",
+    "@tiptap/core": "3.31.3",
+    "@tiptap/starter-kit": "3.31.3"
+  }
+}
