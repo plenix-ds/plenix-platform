@@ -168,3 +168,61 @@ jobs:
 
       - name: Tests (${{ matrix.tests }}), changed mode
         run: node tests/run.js ${{ matrix.tests }}
+
+  # The red-main report (issue 690): a push to styling/phase-2 that ends red opens, or updates, ONE issue labeled red-main that
+  # names the failing jobs and the commit; the next green push comments and closes it. A cancelled run (a newer push took its place:
+  # the concurrency group above) changes nothing. It uses only the token GitHub gives this run (GITHUB_TOKEN, with issues: write
+  # and actions: read for this job alone); no stored key. It runs in this workflow so it works from the branch itself (a workflow_run
+  # workflow would run only from the default branch's copy).
+  red-main:
+    name: Report red or green on styling/phase-2
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/styling/phase-2'
+    needs: [build, browser]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      SHA: ${{ github.sha }}
+      RUN_ID: ${{ github.run_id }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      BUILD_RESULT: ${{ needs.build.result }}
+      BROWSER_RESULT: ${{ needs.browser.result }}
+    steps:
+      - name: Open, update or close the red-main issue
+        run: |
+          set -eu
+          short="${SHA:0:8}"
+          if [ "$BUILD_RESULT" = cancelled ] || [ "$BROWSER_RESULT" = cancelled ]; then echo "cancelled: a newer run took over, nothing to report"; exit 0; fi
+          gh label create red-main --color B60205 --description "styling/phase-2 is red: CI failed on the shared branch (issue 690)" 2>/dev/null || true
+          open=$(gh issue list --repo "$REPO" --label red-main --state open --json number --jq '.[0].number // empty')
+          if [ "$BUILD_RESULT" = success ] && { [ "$BROWSER_RESULT" = success ] || [ "$BROWSER_RESULT" = skipped ]; }; then
+            if [ -n "$open" ]; then
+              gh issue comment "$open" --repo "$REPO" --body "Green again at \`$short\` ($RUN_URL). Closing."
+              gh issue close "$open" --repo "$REPO" --reason completed
+            fi
+            exit 0
+          fi
+          failing=$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" --paginate --jq '.jobs[] | select(.conclusion == "failure" or .conclusion == "timed_out") | "- " + .name' | sort -u)
+          [ -n "$failing" ] || failing="- (no failing job was named: see the run)"
+          subject=$(gh api "repos/$REPO/commits/$SHA" --jq '.commit.message | split("\n")[0]')
+          body="styling/phase-2 is red at \`$short\`: $subject
+
+          Failing jobs:
+          $failing
+
+          Run: $RUN_URL
+          Commit: https://github.com/$REPO/commit/$SHA
+
+          This issue is opened and updated by CI (the red-main job in ci.yml) and closes itself when a push to styling/phase-2 is green again. Fix the failing checks first: a merge waits for a green branch (HANDOFF.md, \"Green before a merge\")."
+          if [ -n "$open" ]; then
+            gh issue edit "$open" --repo "$REPO" --title "styling/phase-2 is red: $short" --body "$body"
+            gh issue comment "$open" --repo "$REPO" --body "Still red at \`$short\` ($RUN_URL):
+          $failing" 
+          else
+            gh issue create --repo "$REPO" --label red-main --title "styling/phase-2 is red: $short" --body "$body"
+          fi
