@@ -99,6 +99,18 @@ One design system and the suite of applications built on it, owned by one person
 - Local server for the spec and apps: `http://localhost:8767/Plenix/…` (the `plenix-static` preview), or `tests/lib.js` `serve()` in scripts.
 - Shell quoting: `node -e` and heredocs eat backslashes and quotes; write scripts to files (the Write tool) and run them.
 
+## Green before a merge (issue 690)
+
+- A pull request merges into `styling/phase-2` only when its head commit is green on every check CI runs (`.github/workflows/ci.yml`):
+  - `Build and checks`: the generated-files check, build, system check, Stylelint, the Plenix style check, the spec check, the release build, the bundle rules and the tests without a browser.
+  - The six browser jobs: `Browser tests (pages)`, `(typography)`, `(reflow)`, `(component tokens)`, `(fixtures)` and `(behavior)`. They run in changed mode, so a job that finds nothing to run is green.
+  - The `qa-passed` label on the pull request (the phase guard), recorded by the QA Engineer on that exact commit.
+- A check that is red on the pull request is fixed in that pull request. It is never merged around, and never left for the next one.
+- A red `styling/phase-2` is reported by CI itself: a push that ends red opens, or updates, one issue labeled `red-main` that names the failing jobs and the commit, and the next green push closes it. It is the `red-main` job at the end of `ci.yml`; it uses only the run's own token.
+  - While a `red-main` issue is open, a pull request merges only if it fixes that failure, until the branch is green again.
+  - The Tech Lead assigns the fix as the next task. A failure that comes from a recorded baseline (visual, component tokens, typography) is fixed by the owner-approved baseline update or by the fix, never by weakening the check.
+- Who may change what protects the branch: required status checks and branch protection are repository settings, owned by the owner. They are not changed from a pull request.
+
 ## Releasing (after QA passes; paused while the publishing hold stands)
 
 1. Move the "Unreleased" entries of `CHANGELOG.md` into a file (the release script inserts that file as the new
