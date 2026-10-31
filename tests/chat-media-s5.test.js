@@ -44,17 +44,20 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     const file = await page.evaluate(() => { const a = document.querySelector('.plx-chat__file a'); return { thumb: getComputedStyle(document.querySelector('.plx-chat__file .plx-chat__attachment-thumb')).borderTopWidth, border: getComputedStyle(a).borderTopWidth, href: a.getAttribute('href'), label: a.getAttribute('aria-label') }; });
     assert.equal(file.thumb, '1px', 'the file icon has a 1px border'); assert.equal(file.border, '1px', 'Download has a 1px border'); assert.equal(file.href, '#quotes'); assert.match(file.label, /Download: cabinet-quotes\.pdf/);
     // the voice player: Play becomes Pause; one plays at a time; the seek slider takes the keys
-    const label = (id) => page.evaluate((id) => document.querySelector(id + ' > button').getAttribute('aria-label'), id);
-    assert.equal(await label('#v1'), 'Play voice message'); await page.click('#v1 > button'); await sleep(900);
+    // the play button by its name ("… voice message"): an icon-only Button sits inside its Tooltip, so "#v1 > button" is the
+    // speed button, the player's only direct button (issue 777)
+    const play = (id) => id + ' button[aria-label$="voice message"]';
+    const label = (id) => page.evaluate((sel) => document.querySelector(sel).getAttribute('aria-label'), play(id));
+    assert.equal(await label('#v1'), 'Play voice message'); await page.click(play('#v1')); await sleep(900);
     assert.equal(await label('#v1'), 'Pause voice message', 'Play turns into Pause');
-    await page.click('#v2 > button'); await sleep(500);
+    await page.click(play('#v2')); await sleep(500);
     assert.equal(await label('#v1'), 'Play voice message', 'starting the second pauses the first'); assert.equal(await label('#v2'), 'Pause voice message');
     await page.focus('#v1 .plx-chat__voice-seek'); await page.keyboard.press('End'); await sleep(300);
     assert.equal(await page.evaluate(() => document.querySelector('#v1 .plx-chat__voice-seek').getAttribute('aria-valuetext')), '23 seconds of 23 seconds', 'End seeks to the end; the slider reads the time as words');
     assert.equal(await page.evaluate(() => document.querySelectorAll('#v1 .plx-chat__bar--played').length), 24, 'every bar is played at the end');
     await page.click('#v1 > button:last-of-type');
     assert.equal(await page.evaluate(() => document.querySelector('#v1 audio').playbackRate), 1.5, 'the speed button goes to 1.5×');
-    assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('#v1 > button')).borderTopWidth), '1px', 'Play has a 1px border');
+    assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('#v1 button[aria-label$="voice message"]')).borderTopWidth), '1px', 'Play has a 1px border');
     // the composer: the record control is a disabled placeholder with the tooltip; its icon buttons have a border
     const rec = await page.evaluate(() => { const s = document.querySelector('.plx-chat__record'); return { disabled: s.querySelector('button').disabled, aria: s.getAttribute('aria-disabled'), attach: getComputedStyle(document.querySelector('[aria-label="Attach a file"]')).borderTopWidth }; });
     assert.equal(rec.disabled, true, 'the record control is disabled'); assert.equal(rec.aria, 'true'); assert.equal(rec.attach, '1px', 'Attach has a 1px border (the old build: 0px)');
