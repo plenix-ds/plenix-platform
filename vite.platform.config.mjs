@@ -34,8 +34,9 @@ const GUARD = Object.entries({ 'react': 'React', 'react-dom': 'ReactDOM' })
 const FOOTER = 'window.Plenix = Object.freeze(Object.assign({}, Plenix));\n';
 const ICON = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+|[a-z0-9]+(?:_[a-z0-9]+)+)$/;
 
-// plenix-platform/icons/<set>/<name>: the asset layout's icon modules, bundled like a source file (#282)
-const plenixIcons = {
+// plenix-platform/icons/<set>/<name>: the asset layout's icon modules, bundled like a source file (#282); the applications'
+// config (vite.apps.config.mjs) uses the same plugin
+export const plenixIcons = {
   name: 'plenix-icons',
   enforce: 'pre',
   resolveId(spec, importer) {

@@ -10,19 +10,19 @@
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/
 //   Asset Manager  dam/app/assets.jsx              → dam/app/assets.js
+//                    (Vite, vite.apps.config.mjs: one iife per application, run once per target)
 //   Library parts  platform/exports/*, design-system/parts/* → index.js / platform.css blocks, spec-parts.js (build-exports.js, build-spec-parts.js)
 //
 // Order: the pre-steps below (library block, tokens, icons, brand, standards, steps, ...), then Vite for the Platform
-// (#709, step 2), then this file's own bundler for the applications and the Asset Manager (they move to Vite in steps 3 and 4).
-// Source files use import/export. Each bundle is one plain script (the applications' with a small module table), so pages
-// need no in-browser compiler and the dashboard still opens straight from disk (file://); browser-native modules would not.
+// (#709, step 2), then Vite for the applications and the Asset Manager (steps 3 and 4).
+// Source files use import/export. Each bundle is one plain script (an iife), so pages need no in-browser compiler and
+// the dashboard still opens straight from disk (file://); browser-native modules would not.
 // Imports resolve to: relative files (.js, .jsx), "react" and "react-dom"/"react-dom/client" (the React already
 // loaded from platform/vendor/), and "plenix-platform" (window.Plenix, for the applications only).
 // Nothing needs the network. The build fails, and writes nothing, if a file does not compile, an import does not
 // resolve, a public export is missing or undefined, or an output would land outside the list below.
 const fs = require('fs');
 const path = require('path');
-const Babel = require('@babel/standalone');
 const buildIcons = require('./build-icons.js');
 const buildTokens = require('./build-tokens.js');
 
@@ -77,90 +77,9 @@ const ALLOWED_OUTPUTS = [
   PLATFORM_MAP,
   path.join(DAM, 'app', 'assets.js'),
 ].concat(SUITE.map((f) => path.join(ROOT, f, 'app.js')));
-const TARGETS = [
-  { name: 'Asset Manager', entry: path.join(DAM, 'app', 'assets.jsx'), out: ALLOWED_OUTPUTS[2], strict: true },
-].concat(SUITE.map((f, i) => ({ name: f, entry: path.join(ROOT, f, 'main.jsx'), out: ALLOWED_OUTPUTS[3 + i], strict: false })));
-const EXTERNALS = {
-  'react': 'window.React',
-  'react-dom': 'window.ReactDOM',
-  'react-dom/client': 'window.ReactDOM',
-  'plenix-platform': 'window.Plenix',
-};
 
 class BuildError extends Error {}
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join('/');
-
-function resolveFile(from, spec) {
-  const base = path.resolve(path.dirname(from), spec);
-  for (const c of [base, base + '.js', base + '.jsx', path.join(base, 'index.js')]) {
-    if (fs.existsSync(c) && fs.statSync(c).isFile()) return c;
-  }
-  throw new BuildError(`Cannot resolve "${spec}" from ${rel(from)}`);
-}
-
-function bundle(target) {
-  if (!fs.existsSync(target.entry)) throw new BuildError(`${target.name}: entry ${rel(target.entry)} does not exist`);
-  const modules = new Map();   // absolute path → { id, code }
-  const order = [];
-  const visit = (file) => {
-    if (modules.has(file)) return;
-    const source = fs.readFileSync(file, 'utf8');
-    let code;
-    try {
-      code = Babel.transform(file.includes(path.sep + 'node_modules' + path.sep) ? source.replace(/\bprocess\.env\.NODE_ENV\b/g, "'production'") : source, {
-        filename: file, sourceType: 'module', comments: true,
-        presets: [['react', { runtime: 'classic' }]],
-        plugins: [['transform-modules-commonjs', { strictMode: target.strict }]],
-      }).code;
-    } catch (e) {
-      throw new BuildError(`${target.name}: ${rel(file)} does not compile: ${e.message}`);
-    }
-    const entry = { id: rel(file), code, deps: {} };
-    modules.set(file, entry);
-    const requireRe = /\brequire\((["'])([^"']+)\1\)/g;
-    let m;
-    while ((m = requireRe.exec(code))) {
-      const spec = m[2];
-      if (EXTERNALS[spec]) {
-        entry.deps[spec] = { external: EXTERNALS[spec] };
-        continue;
-      }
-      // an icon module (#282): plenix-platform/icons/<set>/<name>, the asset layout's module (platform/icons/layout.js),
-      // bundled into the application like a source file; a Material one is written on demand, only the names imported
-      const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+|[a-z0-9]+(?:_[a-z0-9]+)+)$/.exec(spec);   // a name, or a Plenix alias (more_horiz)
-      if (icon) {
-        // the underscore spelling is a Plenix alias (chevron_right); a Material module is imported by its dashed name only
-        if (icon[1] === 'material' && icon[2].includes('_')) throw new BuildError('Material icons are imported by their dashed name: plenix-platform/icons/material/' + icon[2].replace(/_/g, '-') + ', not ' + icon[2] + ' (' + rel(file) + ')');
-        const dir = path.join(ROOT, 'platform', 'dist', 'icons', icon[1]);
-        let dep;
-        try { dep = icon[1] === 'material' ? require('./platform/icons/layout.js').writeMaterialModule(ROOT, icon[2], dir) : path.join(dir, icon[2] + '.js'); }
-        catch (e) { throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + '): ' + e.message); }
-        if (!fs.existsSync(dep)) throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + ')');
-        entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;
-      }
-      if (!spec.startsWith('.')) {
-        if (!/^@tanstack\/(react-table|table-core|react-virtual|virtual-core)$/.test(spec)) throw new BuildError('Unapproved browser package ' + spec + ' in ' + rel(file));
-        const dep = require.resolve(spec, { paths: [path.dirname(file)] });
-        entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;
-      }
-      const dep = resolveFile(file, spec);
-      entry.deps[spec] = { id: rel(dep) };
-      visit(dep);
-    }
-    order.push(entry);
-  };
-  visit(target.entry);
-
-  const header = '/*\n * GENERATED FILE — DO NOT EDIT\n * Source: ' + rel(target.entry) + ' and the modules it imports\n * Build: node build-app.js\n */\n';
-  const defs = order.map((m) => {
-    const table = JSON.stringify(Object.fromEntries(Object.entries(m.deps).map(([k, v]) => [k, v.id || null])));
-    const ext = Object.entries(m.deps).filter(([, v]) => v.external).map(([k, v]) => `${JSON.stringify(k)}: function () { return ${v.external}; }`).join(', ');
-    return `  ${JSON.stringify(m.id)}: { deps: ${table}, externals: { ${ext} }, run: function (module, exports, require) {\n${m.code}\n  } }`;
-  }).join(',\n');
-  const entryId = JSON.stringify(rel(target.entry));
-  const tail = `  load(${entryId});\n`;
-  return { header, text: `${header}(function () {\n  var defs = {\n${defs}\n  };\n  var cache = {};\n  function load(id) {\n    if (cache[id]) return cache[id].exports;\n    var def = defs[id], module = { exports: {} };\n    cache[id] = module;\n    def.run(module, module.exports, function (spec) {\n      if (def.externals[spec]) { var g = def.externals[spec](); if (!g) throw new Error('Plenix: "' + spec + '" is not loaded before this script'); return g; }\n      return load(def.deps[spec]);\n    });\n    return module.exports;\n  }\n${tail}})();\n`, count: order.length };
-}
 
 // the Platform (#709, step 2): Vite with vite.platform.config.mjs, in memory (write: false). The config adds the banner and
 // the frozen window.Plenix and checks the public API (a missing, duplicate or extra name fails the build).
@@ -179,12 +98,28 @@ async function buildPlatform() {
   ];
 }
 
-(async () => {
-  const results = await buildPlatform();
+// the applications and the Asset Manager (#709, steps 3 and 4): Vite with vite.apps.config.mjs, one iife per run, in memory
+async function buildApps() {
+  const { build } = await import('vite');
+  const { TARGETS, SUITE: APPS, appConfig } = await import('./vite.apps.config.mjs');
+  if (APPS.join() !== SUITE.join()) throw new BuildError('vite.apps.config.mjs and build-app.js list different applications');
+  const results = [];
   for (const t of TARGETS) {
-    if (ALLOWED_OUTPUTS.indexOf(t.out) < 0) throw new BuildError(`${t.name}: output ${t.out} is not an allowed build output`);
-    results.push({ t, b: bundle(t) });
+    const outFile = path.join(ROOT, t.out);
+    if (ALLOWED_OUTPUTS.indexOf(outFile) < 0) throw new BuildError(`${t.name}: output ${t.out} is not an allowed build output`);
+    let out;
+    try { out = await build({ configFile: false, ...appConfig(t.id, { write: false }) }); }
+    catch (e) { throw new BuildError(t.name + ' (Vite): ' + e.message); }
+    const output = (Array.isArray(out) ? out[0] : out).output;
+    const chunks = output.filter((o) => o.type === 'chunk');
+    if (chunks.length !== 1 || output.length !== 1) throw new BuildError(t.name + ' (Vite): expected one script, got ' + output.map((o) => o.fileName).join(', '));
+    results.push({ t: { out: outFile }, b: { text: chunks[0].code, count: chunks[0].moduleIds.length } });
   }
+  return results;
+}
+
+(async () => {
+  const results = (await buildPlatform()).concat(await buildApps());
   // everything compiled and checked: only now write, each through a temporary file
   for (const { t, b } of results) {
     fs.mkdirSync(path.dirname(t.out), { recursive: true });
