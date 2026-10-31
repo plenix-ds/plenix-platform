@@ -38,7 +38,7 @@
        whole path is read as the field’s description.
    Notes:
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
-     The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
+     The list is a menu surface (the menu's corner, --plx-comp-cascader-popup-radius, and the menu elevation); its columns take the narrowest width step (160px).
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
