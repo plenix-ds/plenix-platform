@@ -1,21 +1,23 @@
 // ONE-TIME SCRIPT (#709, Vite step 1): delete it in Vite step 6, when the old bundler is retired.
-// Compares the Platform bundle from build-app.js (platform/dist/platform.js) with the one from Vite
-// (build/vite/platform.js, npm run build:vite-platform). It runs each in its own Node vm with the vendored React and
-// ReactDOM (platform/vendor/, as build-app.js checks the public API), then prints a table: the window.Plenix names
-// (they must be identical), the kind of each value, whether the global is frozen, and the byte sizes.
-//   node build-app.js && npm run build:vite-platform && node tools/agent/compare-vite-platform.js
-// Exits 1 when the names or kinds differ.
+// Compares two Platform bundles: the old bundler's and Vite's. It runs each in its own Node vm with the vendored React
+// and ReactDOM (platform/vendor/, as the public-API check does), then prints a table: the window.Plenix names (they must
+// be identical), the kind of each value, whether the global is frozen, and the byte sizes.
+//   node tools/agent/compare-vite-platform.js <old platform.js> [<Vite platform.js>]
+// Step 2: the old file is platform/dist/platform.js built from the base branch in a scratch copy; the Vite file defaults
+// to this checkout's platform/dist/platform.js (node build-app.js). Exits 1 when the names, the kinds or the frozen state differ.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const zlib = require('zlib');
 
 const ROOT = path.join(__dirname, '..', '..');
-const FILES = { 'build-app.js': 'platform/dist/platform.js', 'Vite': 'build/vite/platform.js' };
+if (!process.argv[2]) { console.error('usage: node tools/agent/compare-vite-platform.js <old platform.js> [<Vite platform.js>]'); process.exit(2); }
+const FILES = { 'old bundler': path.resolve(process.argv[2]), 'Vite': path.resolve(process.argv[3] || path.join(ROOT, 'platform/dist/platform.js')) };
 
 function load(rel) {
-  const file = path.join(ROOT, rel);
-  if (!fs.existsSync(file)) { console.error('Missing ' + rel + ': build it first'); process.exit(1); }
+  const file = rel;
+  rel = file.startsWith(ROOT + path.sep) ? path.relative(ROOT, file) : 'outside this checkout: …/' + file.split(path.sep).slice(-3).join('/');
+  if (!fs.existsSync(file)) { console.error('Missing ' + file + ': build it first'); process.exit(1); }
   const text = fs.readFileSync(file, 'utf8');
   const sandbox = { console, document: { documentElement: { getAttribute: () => null } } };
   sandbox.window = sandbox; sandbox.self = sandbox; sandbox.globalThis = sandbox;
@@ -54,4 +56,4 @@ rows.slice(1).forEach((r) => console.log(line(r)));
 if (onlyA.length) console.log('\nOnly in ' + a.label + ': ' + onlyA.join(', '));
 if (onlyB.length) console.log('\nOnly in ' + b.label + ': ' + onlyB.join(', '));
 if (kindDiff.length) console.log('\nKinds that differ (' + a.label + ' / ' + b.label + '): ' + kindDiff.join(', '));
-process.exit(onlyA.length || onlyB.length || kindDiff.length ? 1 : 0);
+process.exit(onlyA.length || onlyB.length || kindDiff.length || a.frozen !== b.frozen ? 1 : 0);

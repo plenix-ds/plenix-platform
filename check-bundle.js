@@ -2,7 +2,7 @@
 //   node check-bundle.js              reads release/cdn/<version>/ (node build-packages.js writes it) and compares it with
 //                                     check-bundle.baseline.json
 //   node check-bundle.js --update     writes today's counts into check-bundle.baseline.json (a deliberate step)
-//   node check-bundle.js --list       also prints where every finding is (the source module of plenix.js, or the CSS rule)
+//   node check-bundle.js --list       also prints where every finding is (the source file of plenix.js, or the CSS rule)
 // It counts, per rule, what the bundle still does and fails (BUNDLE_FAIL, exit 1) when any count goes up from the baseline. A count that goes down prints "lower the baseline" (run --update in the same pull request).
 //
 //   P-38  runtime addresses (456)    plenix.js: string values with an absolute address (http:, https:, //host) or a /cdn/ or
@@ -21,7 +21,8 @@
 // One import from the npm package is (#685): { Button }, { Badge }, { DataGrid } and * as P, bundled against
 // packages/react/dist/index.js the way the audit measured (tools/agent/one-part-sizes.js); one above its limit fails.
 // The scan reads the code, not the comments: plenix.js is parsed (@babel/standalone) and each finding is traced to the
-// source module it came from; plenix.css is parsed with PostCSS. plenix.esm.js holds the same modules and is not counted twice.
+// source file it came from through the Platform bundle's hidden source map (build/vite/platform.js.map, written by
+// node build-app.js into an ignored folder; plenix.js is a copy of platform/dist/platform.js, #709); plenix.css is parsed with PostCSS. plenix.esm.js holds the same modules and is not counted twice.
 const fs = require('fs');
 const path = require('path');
 
@@ -59,13 +60,29 @@ function need(file) {
   return f;
 }
 
-// ---- plenix.js: one walk over the parsed bundle, with the module each node sits in
+// ---- plenix.js: the source file of a position, through the source map of the same build
+function sourceMapOf(file) {
+  const built = path.join(ROOT, 'platform', 'dist', 'platform.js'), mapFile = path.join(ROOT, 'build', 'vite', 'platform.js.map');
+  if (!fs.existsSync(mapFile) || !fs.existsSync(built) || !fs.readFileSync(file).equals(fs.readFileSync(built))) {
+    console.log('BUNDLE_FAIL: ' + path.relative(ROOT, file) + ' has no source map of its own build (build/vite/platform.js.map, for the same platform/dist/platform.js): run node build-app.js, then node build-packages.js'); process.exit(1);
+  }
+  const map = new (require('module').SourceMap)(JSON.parse(fs.readFileSync(mapFile, 'utf8')));
+  const dir = path.dirname(mapFile);
+  // loc: Babel's (line from 1, column from 0); a position with no mapping on its own line is the bundle's own code
+  return (loc) => {
+    const e = map.findEntry(loc.line - 1, loc.column);
+    return e && e.originalSource && e.generatedLine === loc.line - 1 ? path.relative(ROOT, path.resolve(dir, e.originalSource)).split(path.sep).join('/') : undefined;
+  };
+}
+
+// ---- plenix.js: one walk over the parsed bundle, with the source file each finding comes from
 const NOT_ADDRESS = /^https?:\/\/(www\.w3\.org\/|[\w.-]*\b(example\.(com|org|net)|invalid|test|localhost)\b)/i;
 const PREFETCH = new Set(['prefetch', 'prerender', 'preload', 'modulepreload', 'speculationrules']);
 function scanScript(file) {
   const Babel = require('@babel/standalone');
   const code = fs.readFileSync(file, 'utf8');
   const ast = Babel.transform(code, { ast: true, code: false, sourceType: 'script', configFile: false, babelrc: false }).ast;
+  const sourceOf = sourceMapOf(file);
   const found = { 'P-38': [], 'P-45': [], 'P-46': [], 'P-47': [] };
   const at = (node, module, what) => ({ where: (module || '(bundle)') + ' (plenix.js:' + node.loc.start.line + ')', what, module });
   const name = (n) => n && (n.type === 'Identifier' ? n.name : n.type === 'StringLiteral' ? n.value : null);
@@ -77,10 +94,9 @@ function scanScript(file) {
     if (/<script[\s>]/i.test(v)) found['P-45'].push(at(node, module, 'a <script> tag in a string'));
     if (PREFETCH.has(v.trim().toLowerCase())) found['P-46'].push(at(node, module, JSON.stringify(v)));
   }
-  function walk(node, module) {
+  function walk(node) {
     if (!node || typeof node.type !== 'string') return;
-    // a module of the registry: "platform/…": { deps, run: function … }
-    if ((node.type === 'ObjectProperty') && node.key.type === 'StringLiteral' && /^platform\/.+\.(jsx?|mjs)$/.test(node.key.value)) module = node.key.value;
+    const module = node.loc ? sourceOf(node.loc.start) : undefined;
     switch (node.type) {
       case 'StringLiteral': strings(node, module, node.value); break;
       case 'TemplateLiteral': strings(node, module, node.quasis.map((q) => q.value.cooked).join('${}')); break;
@@ -106,10 +122,10 @@ function scanScript(file) {
     for (const key of Object.keys(node)) {
       if (key === 'loc' || key === 'start' || key === 'end' || key === 'leadingComments' || key === 'trailingComments' || key === 'innerComments' || key === 'extra') continue;
       const v = node[key];
-      if (Array.isArray(v)) v.forEach((c) => walk(c, module)); else if (v && typeof v.type === 'string') walk(v, module);
+      if (Array.isArray(v)) v.forEach((c) => walk(c)); else if (v && typeof v.type === 'string') walk(v);
     }
   }
-  walk(ast.program, undefined);
+  walk(ast.program);
   return found;
 }
 
