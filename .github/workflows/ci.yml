@@ -58,6 +58,12 @@ jobs:
 
       - run: npm ci
 
+      # known advisories of the production dependencies (issue 696): it informs and never blocks (the run stays green, the log and the
+      # job summary show what it found); the dev dependencies and the vendored libraries are not read
+      - name: Dependency advisories (npm audit, production dependencies, informs only)
+        continue-on-error: true
+        run: npm audit --omit=dev
+
       - name: Generated files (a task branch never commits them; AGENTS.md)
         if: github.event_name == 'pull_request'
         # the PR's own commits: from where its head left the base branch (as it is now) to its head. Not base.sha to the

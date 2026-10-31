@@ -191,6 +191,35 @@ async function main() {
     const ar = await fetch('http://127.0.0.1:' + SAVE_PORT + '/api/session', { headers: { 'X-authentik-username': 'owner', 'X-authentik-groups': 'Users' } });
     const aj = await ar.json();
     check('Save: X-authentik-* headers still work', ar.status === 200 && aj.user === 'owner' && aj.canSave === false);
+    // the visitor's address (issue 695): the proxy's X-Real-IP is trusted only with TRUST_PROXY=1. The probe is proved able to see the old
+    // failure first: the old default trusted the header, so a client that sent a new X-Real-IP with each request was never counted twice
+    // and was never refused (a fresh budget of IP_MAX failures every time).
+    const trustFor = async (trust, port) => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'plenix-login-ip-'));
+      const e = Object.assign({}, process.env, { DATA: dir, PORT: String(port), CDN: 'https://cdn.example.test/cdn/0.0.0', IP_MAX: '3', IP_WINDOW_MS: '600000', LOCK_AFTER: '50' });
+      delete e.TRUST_PROXY; if (trust !== undefined) e.TRUST_PROXY = trust;
+      const child = spawn(process.execPath, [path.join(LOGIN, 'server.js')], { env: e, stdio: ['ignore', 'pipe', 'inherit'] });
+      try {
+        await waitFor(port);
+        const codes = [];
+        for (let i = 0; i < 6; i++) {
+          const r = await fetch('http://127.0.0.1:' + port + '/auth/sign-in', { method: 'POST', redirect: 'manual',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', Origin: 'http://127.0.0.1:' + port, 'X-Real-IP': '203.0.113.' + (10 + i) },
+            body: form({ user: 'nobody-' + i, password: 'not-the-password' }) });
+          codes.push(r.status);
+        }
+        return codes;
+      } finally { child.kill(); try { fs.rmSync(dir, { recursive: true, force: true }); } catch (x) { /* temp */ } }
+    };
+    const unset = await trustFor(undefined, PORT + 2);
+    check('Sign-in: without TRUST_PROXY the address is the socket\'s, so a new X-Real-IP does not start a new budget (the 4th failure from one socket is refused)', unset.slice(3).every((c) => c === 429) && unset.slice(0, 3).every((c) => c !== 429), unset.join(','));
+    const zero = await trustFor('0', PORT + 3);
+    check('Sign-in: TRUST_PROXY=0 behaves the same', zero.slice(3).every((c) => c === 429), zero.join(','));
+    const trusted = await trustFor('1', PORT + 4);
+    check('Sign-in: with TRUST_PROXY=1 each address in X-Real-IP has its own budget (behind the proxy)', trusted.every((c) => c !== 429), trusted.join(','));
+    // the save service reads a token by own property (issue 695): the source, since the service needs a repository and a token to run
+    const saveSource = fs.readFileSync(path.join(ROOT, 'services', 'save', 'server.js'), 'utf8');
+    check('Save: a token is looked up by own property (a token named constructor is not the Object function)', /hasOwnProperty\.call\(o, k\)/.test(saveSource) && !/group = json\[m\[1\]\], entry = group && group\[m\[2\]\]/.test(saveSource));
   } finally {
     server.kill(); save.kill();
     try { fs.rmSync(DATA, { recursive: true, force: true }); fs.rmSync(SAVE_DATA, { recursive: true, force: true }); } catch (e) { /* temp */ }
