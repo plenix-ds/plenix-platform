@@ -5,7 +5,7 @@ This test makes sure the last group of Plenix controls that had no keyboard chec
 - File: `tests/keyboard-706.test.js`
 
 ## What it checks
-- Each part in a left-to-right page and, where arrows flip, a right-to-left (RTL, for Arabic) page.
+- Each part in a left-to-right page and, where arrows flip, a right-to-left (RTL, for Arabic) page. The right-to-left page sets only the direction and keeps English words (issue #784): this test checks direction, and the Arabic words are checked elsewhere (arabic-catalog-427 and others).
 - CommandMenu: arrows wrap, Enter runs a command, a disabled command does not run, a sub page opens and Backspace or Escape goes back, Escape clears typed text first.
 - EntityPicker: opens on focus, typing filters, arrows move, Enter chooses, Escape closes, Backspace removes the last tag.
 - MillerColumns (side-by-side column browser): one Tab stop per column, Up and Down choose, Home and End, the arrow toward the reading end opens the children and the other goes back, type-ahead, Enter opens a leaf.
