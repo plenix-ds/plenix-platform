@@ -13528,33 +13528,30 @@ var Plenix = (function(exports, React2, reactDom, client) {
     siblings(groups);
     return display2;
   }
-  const d0$Y = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
-  const d1$Y = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
-  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Y } } } };
   const FilterIcon = { "name": "filter", "set": "plenix", "symbol": "filter_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Zm28-286 162-198H317l163 198Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Zm60-288 198-252H282l198 252Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Z" } } } };
   const GroupByIcon = { "name": "group-by", "set": "plenix", "symbol": "view_agenda", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm52-52h528v-144H216v144Zm-52-307.38v-248h632v248H164Zm52-52h528v-144H216v144Zm0 215.38v144-144Zm0-359.38v144-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm0-359.38v-248h632v248H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm60-60h560v-160H200v160Zm-60-315.38v-280h680v280H140Zm60-60h560v-160H200v160Zm0 215.38v160-160Zm0-375.38v160-160Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm0-375.38v-280h680v280H140Z" } } } };
-  const d0$X = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
-  const d1$X = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
-  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
-  const d0$W = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
-  const d1$W = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
-  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
-  const d0$V = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
-  const d1$V = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
-  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
-  const d0$U = "M682.92-316.23q0 83.29-57.88 141.76-57.88 58.47-141 58.47-84.27 0-141.77-60.9-57.5-60.89-57.5-146.33v-378.62q0-59.23 41.08-100.69Q366.92-844 426.15-844q60.23 0 100.81 43.96 40.58 43.96 40.58 105.19v355.39q0 34.76-24.22 59.42-24.22 24.65-59.03 24.65-35.67 0-59.9-25.62-24.23-25.62-24.23-62.45v-361.15h51.99v365.15q0 13.48 9.11 22.78t22.59 9.3q13.47 0 22.58-9.3 9.11-9.3 9.11-22.78v-362.77q.38-37.31-25.78-63.54Q463.6-792 425.96-792q-37.46 0-63.33 27.42-25.86 27.43-25.86 64.73v383.62q.38 61.54 43.15 104.38Q422.69-169 484.18-168q61.46 1 104.49-44.35 43.02-45.34 42.25-108.88v-383.38h52v388.38Z";
-  const d1$U = "M706.92-334.23q0 97.44-67.81 165.83-67.8 68.4-165.07 68.4t-165.27-68.4q-68-68.39-68-165.83v-359.62q0-69.23 48.08-117.69Q336.92-860 406.15-860q69.23 0 117.31 48.46t48.08 117.69v340.39q0 40.61-28.29 69.34-28.3 28.73-68.96 28.73-40.67 0-69.4-28.53-28.73-28.53-28.73-69.54v-351.15h59.99v351.15q0 16.08 10.81 27.08t26.89 11q16.07 0 26.88-11 10.81-11 10.81-27.08v-340.77q-.62-44.31-30.78-75.04Q450.6-800 406.15-800q-44.26 0-74.82 30.92-30.56 30.93-30.56 75.23v359.62q-.62 72.54 50.15 123.38Q401.69-160 474.18-160q71.46 0 121.49-50.85 50.02-50.84 51.25-123.38v-370.38h60v370.38Z";
-  const AttachmentIcon = { "name": "attachment", "set": "plenix", "symbol": "attach_file", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
-  const d0$T = "M453.23-154v-77.69Q403-240 367.27-272.5t-50.73-79.11l55.54-23.08q9.15 34.46 42.03 62.58Q447-284 483.92-284q41.31 0 70.93-22.11 29.61-22.12 29.61-59.89 0-33.85-25.38-56.54-25.39-22.69-80.46-41.92-73.77-26.85-109.58-57.46-35.81-30.62-35.81-82.08 0-45.38 32.89-80.04 32.88-34.65 87.11-44.5V-806h52v77.46q67.77 10.08 90.92 48.27 23.16 38.19 26.46 37.12l-50.76 22.07Q562.69-644 537.15-661q-25.53-17-54.92-17-36.15 0-63.58 20.5-27.42 20.5-27.42 51.5 0 27.92 23.08 48.35 23.07 20.42 93.38 45.34 71.92 24.54 103.35 57.89 31.42 33.34 31.42 89.19 0 51.61-37.19 89.84-37.19 38.24-100.04 45.93V-154h-52Z";
-  const d1$T = "M450.23-130v-83.69Q398-223 360.27-254.5t-55.73-88.11l55.54-23.08q16.15 46.46 46.03 71.08Q436-270 485.92-270q43.31 0 76.43-20.61 33.11-20.62 33.11-65.39 0-38.85-24.88-62.04-24.89-23.19-102.96-48.42-81.77-25.85-113.58-60.46-31.81-34.62-31.81-87.08 0-60.38 42.39-95.04 42.38-34.65 85.61-38.5V-830h60v82.46q45.77 6.08 76.92 29.77 31.16 23.69 48.46 61.62l-54.76 25.07Q567.69-660 544.15-676q-23.53-16-61.92-16-45.15 0-72.58 22-27.42 22-27.42 56 0 34.92 28.08 55.85 28.07 20.92 104.38 43.84 70.92 21.54 105.85 61.39 34.92 39.84 34.92 95.69 0 65.61-42.19 101.84-42.19 36.24-103.04 42.93V-130h-60Z";
-  const FieldCurrencyIcon = { "name": "field-currency", "set": "plenix", "symbol": "attach_money", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
-  const d0$S = "M164-278.62v-51.99h392v51.99H164ZM164-454v-52h632v52H164Zm0-175.39v-51.99h632v51.99H164Z";
-  const d1$S = "M140-254.62v-59.99h440v59.99H140ZM140-450v-60h680v60H140Zm0-195.39v-59.99h680v59.99H140Z";
-  const FieldLongTextIcon = { "name": "field-long-text", "set": "plenix", "symbol": "notes", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
+  const d0$Y = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
+  const d1$Y = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
+  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Y } } } };
+  const d0$X = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
+  const d1$X = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
+  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
+  const d0$W = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
+  const d1$W = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
+  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
+  const d0$V = "M682.92-316.23q0 83.29-57.88 141.76-57.88 58.47-141 58.47-84.27 0-141.77-60.9-57.5-60.89-57.5-146.33v-378.62q0-59.23 41.08-100.69Q366.92-844 426.15-844q60.23 0 100.81 43.96 40.58 43.96 40.58 105.19v355.39q0 34.76-24.22 59.42-24.22 24.65-59.03 24.65-35.67 0-59.9-25.62-24.23-25.62-24.23-62.45v-361.15h51.99v365.15q0 13.48 9.11 22.78t22.59 9.3q13.47 0 22.58-9.3 9.11-9.3 9.11-22.78v-362.77q.38-37.31-25.78-63.54Q463.6-792 425.96-792q-37.46 0-63.33 27.42-25.86 27.43-25.86 64.73v383.62q.38 61.54 43.15 104.38Q422.69-169 484.18-168q61.46 1 104.49-44.35 43.02-45.34 42.25-108.88v-383.38h52v388.38Z";
+  const d1$V = "M706.92-334.23q0 97.44-67.81 165.83-67.8 68.4-165.07 68.4t-165.27-68.4q-68-68.39-68-165.83v-359.62q0-69.23 48.08-117.69Q336.92-860 406.15-860q69.23 0 117.31 48.46t48.08 117.69v340.39q0 40.61-28.29 69.34-28.3 28.73-68.96 28.73-40.67 0-69.4-28.53-28.73-28.53-28.73-69.54v-351.15h59.99v351.15q0 16.08 10.81 27.08t26.89 11q16.07 0 26.88-11 10.81-11 10.81-27.08v-340.77q-.62-44.31-30.78-75.04Q450.6-800 406.15-800q-44.26 0-74.82 30.92-30.56 30.93-30.56 75.23v359.62q-.62 72.54 50.15 123.38Q401.69-160 474.18-160q71.46 0 121.49-50.85 50.02-50.84 51.25-123.38v-370.38h60v370.38Z";
+  const AttachmentIcon = { "name": "attachment", "set": "plenix", "symbol": "attach_file", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
+  const d0$U = "M453.23-154v-77.69Q403-240 367.27-272.5t-50.73-79.11l55.54-23.08q9.15 34.46 42.03 62.58Q447-284 483.92-284q41.31 0 70.93-22.11 29.61-22.12 29.61-59.89 0-33.85-25.38-56.54-25.39-22.69-80.46-41.92-73.77-26.85-109.58-57.46-35.81-30.62-35.81-82.08 0-45.38 32.89-80.04 32.88-34.65 87.11-44.5V-806h52v77.46q67.77 10.08 90.92 48.27 23.16 38.19 26.46 37.12l-50.76 22.07Q562.69-644 537.15-661q-25.53-17-54.92-17-36.15 0-63.58 20.5-27.42 20.5-27.42 51.5 0 27.92 23.08 48.35 23.07 20.42 93.38 45.34 71.92 24.54 103.35 57.89 31.42 33.34 31.42 89.19 0 51.61-37.19 89.84-37.19 38.24-100.04 45.93V-154h-52Z";
+  const d1$U = "M450.23-130v-83.69Q398-223 360.27-254.5t-55.73-88.11l55.54-23.08q16.15 46.46 46.03 71.08Q436-270 485.92-270q43.31 0 76.43-20.61 33.11-20.62 33.11-65.39 0-38.85-24.88-62.04-24.89-23.19-102.96-48.42-81.77-25.85-113.58-60.46-31.81-34.62-31.81-87.08 0-60.38 42.39-95.04 42.38-34.65 85.61-38.5V-830h60v82.46q45.77 6.08 76.92 29.77 31.16 23.69 48.46 61.62l-54.76 25.07Q567.69-660 544.15-676q-23.53-16-61.92-16-45.15 0-72.58 22-27.42 22-27.42 56 0 34.92 28.08 55.85 28.07 20.92 104.38 43.84 70.92 21.54 105.85 61.39 34.92 39.84 34.92 95.69 0 65.61-42.19 101.84-42.19 36.24-103.04 42.93V-130h-60Z";
+  const FieldCurrencyIcon = { "name": "field-currency", "set": "plenix", "symbol": "attach_money", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
+  const d0$T = "M164-278.62v-51.99h392v51.99H164ZM164-454v-52h632v52H164Zm0-175.39v-51.99h632v51.99H164Z";
+  const d1$T = "M140-254.62v-59.99h440v59.99H140ZM140-450v-60h680v60H140Zm0-195.39v-59.99h680v59.99H140Z";
+  const FieldLongTextIcon = { "name": "field-long-text", "set": "plenix", "symbol": "notes", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
   const ImageA2Icon = { "name": "image-a-2", "set": "plenix", "symbol": "image", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Z" } } } };
-  const d0$R = "M424.31-306.46H289.54q-72.02 0-122.78-50.82Q116-408.1 116-480.2q0-72.11 50.76-122.72 50.76-50.62 122.78-50.62h134.77v52H289.54q-50.39 0-85.96 35.58Q168-530.38 168-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h134.77v52ZM346-454v-52h268v52H346Zm189.69 147.54v-52h134.77q50.39 0 85.96-35.58Q792-429.62 792-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H535.69v-52h134.77q72.02 0 122.78 50.82Q844-551.9 844-479.8q0 72.11-50.76 122.72-50.76 50.62-122.78 50.62H535.69Z";
-  const d1$R = "M432.31-298.46H281.54q-75.34 0-128.44-53.1Q100-404.65 100-479.98q0-75.33 53.1-128.44 53.1-53.12 128.44-53.12h150.77v60H281.54q-50.39 0-85.96 35.58Q160-530.38 160-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h150.77v60ZM330-450v-60h300v60H330Zm197.69 151.54v-60h150.77q50.39 0 85.96-35.58Q800-429.62 800-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H527.69v-60h150.77q75.34 0 128.44 53.1Q860-555.35 860-480.02q0 75.33-53.1 128.44-53.1 53.12-128.44 53.12H527.69Z";
-  const LinkIcon = { "name": "link", "set": "plenix", "symbol": "link", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  const d0$S = "M424.31-306.46H289.54q-72.02 0-122.78-50.82Q116-408.1 116-480.2q0-72.11 50.76-122.72 50.76-50.62 122.78-50.62h134.77v52H289.54q-50.39 0-85.96 35.58Q168-530.38 168-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h134.77v52ZM346-454v-52h268v52H346Zm189.69 147.54v-52h134.77q50.39 0 85.96-35.58Q792-429.62 792-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H535.69v-52h134.77q72.02 0 122.78 50.82Q844-551.9 844-479.8q0 72.11-50.76 122.72-50.76 50.62-122.78 50.62H535.69Z";
+  const d1$S = "M432.31-298.46H281.54q-75.34 0-128.44-53.1Q100-404.65 100-479.98q0-75.33 53.1-128.44 53.1-53.12 128.44-53.12h150.77v60H281.54q-50.39 0-85.96 35.58Q160-530.38 160-480q0 50.38 35.58 85.96 35.57 35.58 85.96 35.58h150.77v60ZM330-450v-60h300v60H330Zm197.69 151.54v-60h150.77q50.39 0 85.96-35.58Q800-429.62 800-480q0-50.38-35.58-85.96-35.57-35.58-85.96-35.58H527.69v-60h150.77q75.34 0 128.44 53.1Q860-555.35 860-480.02q0 75.33-53.1 128.44-53.1 53.12-128.44 53.12H527.69Z";
+  const LinkIcon = { "name": "link", "set": "plenix", "symbol": "link", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
   const SelectIcon = { "name": "select", "set": "plenix", "symbol": "check_box", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m429-349.85 224.92-223.92-37.15-37.15L429-424.15l-85-84L306.85-471 429-349.85ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m424-325.85 268.92-268.92-42.15-42.15L424-410.15l-114-114L267.85-482 424-325.85ZM140-140v-680h680v680H140Z" } } } };
   const cellDirection = (enabled, content) => enabled ? /* @__PURE__ */ React2.createElement("span", { className: GRID + "__cell-direction", dir: "auto" }, content) : content;
   const EMPTY_ROWS = [];
@@ -19607,6 +19604,443 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     );
   });
+  const d0$R = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
+  const d1$R = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
+  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  function bodyRows({
+    B,
+    semanticIndex,
+    S: S2,
+    collapsed,
+    toggleGroup,
+    model,
+    virtual,
+    holder,
+    ordered: ordered2,
+    widths,
+    selectable,
+    metrics,
+    isNarrow,
+    columns,
+    cutOpen,
+    setCutAt,
+    table,
+    wrapOf,
+    props,
+    api,
+    isStatic,
+    effectiveStep,
+    options,
+    recordPositions,
+    rowDnd,
+    unread,
+    index: index2,
+    rememberRow,
+    mode,
+    page,
+    pageSize,
+    selection,
+    isOpen,
+    on,
+    childField,
+    marked: marked2,
+    virtualized,
+    chooseRow,
+    emit,
+    setOwnOpen,
+    focusCell,
+    pickCheckbox,
+    kindsOf,
+    pinStart,
+    editing,
+    cells,
+    showTypes,
+    setEditing,
+    frame,
+    pinnedAt,
+    groupBy: groupBy2,
+    keys,
+    commitEdit,
+    canonical: canonical2,
+    cutAt,
+    rowMenu,
+    rowMenuButton,
+    menuItems
+  }) {
+    const groupNode = (group, sticky = false) => /* @__PURE__ */ React2.createElement(
+      "div",
+      {
+        key: group.id,
+        "data-plx-group": group.id,
+        className: cx(
+          "" + B + "__grid-row " + B + "__grid-group",
+          "" + B + "__grid-group-level-" + group.depth,
+          group.separated && B + "__group--gap"
+        ),
+        role: "row",
+        tabIndex: 0,
+        "aria-rowindex": semanticIndex.get(group.id),
+        "aria-label": words(S2.groupRow, {
+          value: valueText(group.value) || S2.noValue,
+          count: group.rows.length,
+          records: group.rows.length === 1 ? S2.record : S2.records
+        }),
+        "aria-level": group.depth + 1,
+        "aria-expanded": !collapsed.has(group.id),
+        onKeyDown: groupKeys({ toggleGroup, group, model, virtual, holder, B })
+      },
+      /* @__PURE__ */ React2.createElement(
+        "div",
+        {
+          className: cx(B + "__group-head", group.separated && !sticky && B + "__group-head--gap"),
+          role: "presentation"
+        },
+        ordered2.map((column, i) => /* @__PURE__ */ React2.createElement(
+          Width,
+          {
+            key: column.id,
+            width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
+            className: cx(
+              B + "__group-cell",
+              i === 0 && B + "__group-cell--first",
+              column.columnDef.meta.summary && B + "__group-cell--summary",
+              isNarrow && B + "__group-cell--narrow"
+            ),
+            role: "gridcell",
+            "aria-colspan": i === 0 && selectable ? 2 : void 0
+          },
+          i === 0 ? /* @__PURE__ */ React2.createElement(
+            "div",
+            {
+              className: cx(
+                B + "__group-label",
+                group.depth >= 1 && group.depth <= 3 && B + "__group-label--level-" + group.depth
+              )
+            },
+            /* @__PURE__ */ React2.createElement("span", { className: B + "__group-chevron", "aria-hidden": "true", onClick: () => toggleGroup(group.id) }, /* @__PURE__ */ React2.createElement(Icon, { name: collapsed.has(group.id) ? ChevronRightIcon : ChevronDownIcon })),
+            /* @__PURE__ */ React2.createElement("div", { className: B + "__group-text" }, /* @__PURE__ */ React2.createElement("span", { dir: "auto", className: B + "__group-eyebrow" }, columns.find((c) => c.field === group.field)?.title || group.field), /* @__PURE__ */ React2.createElement(
+              "span",
+              {
+                className: cx(
+                  B + "__group-value",
+                  kinds(columns.find((c) => c.field === group.field) || {}).includes("data") && B + "__group-value--data"
+                ),
+                "data-plx-text-follow": "size",
+                "data-plx-kind": kinds(columns.find((c) => c.field === group.field) || {}).includes("data") ? "data" : void 0
+              },
+              valueText(group.value) || S2.noValue
+            )),
+            /* @__PURE__ */ React2.createElement("span", { className: B + "__group-count" }, formatNumber(group.rows.length))
+          ) : column.columnDef.meta.summary ? /* @__PURE__ */ React2.createElement("span", { className: B + "__group-summary" }, /* @__PURE__ */ React2.createElement("span", { className: B + "__group-summary-name" }, { sum: S2.sum, count: S2.countOf, average: S2.average, min: S2.min, max: S2.max }[column.columnDef.meta.summary]), /* @__PURE__ */ React2.createElement("span", { className: B + "__group-summary-value" }, group.summary?.[column.columnDef.meta.field] == null ? null : formatNumber(group.summary[column.columnDef.meta.field]))) : null
+        ))
+      )
+    );
+    const enterCut = (event, id) => {
+      if (cutOpen.current) return;
+      const v = event.currentTarget.querySelector("." + B + "__value");
+      const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
+      setCutAt(cut ? id : null);
+    };
+    const leaveCut = (id) => {
+      if (!cutOpen.current) setCutAt((at2) => at2 === id ? null : at2);
+    };
+    const anyWrap = table.getVisibleLeafColumns().some((col) => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
+    const rowNode = (row) => {
+      if (row.__group) return groupNode(row.__group);
+      if (row.__add)
+        return /* @__PURE__ */ React2.createElement("div", { key: row.id, className: B + "__add-row", role: "row", "aria-rowindex": semanticIndex.get(row.id) }, /* @__PURE__ */ React2.createElement(
+          "div",
+          {
+            role: "gridcell",
+            "aria-colspan": ordered2.length + (selectable ? 1 : 0),
+            className: cx(
+              B + "__group-cell",
+              B + "__group-cell--first",
+              B + "__group-cell--add",
+              isNarrow && B + "__group-cell--narrow"
+            )
+          },
+          /* @__PURE__ */ React2.createElement(
+            Button,
+            {
+              variant: "ghost",
+              size: "xs",
+              iconOnly: true,
+              icon: AddIcon,
+              label: words(S2.addTo, { value: valueText(row.__add.value) || S2.noValue }),
+              onClick: () => props.onAddToGroup(row.__add.value, row.__add.path)
+            }
+          )
+        ));
+      if (row.__gap)
+        return /* @__PURE__ */ React2.createElement("div", { key: row.id, className: B + "__group--gap" }, /* @__PURE__ */ React2.createElement("div", { className: B + "__group-band" }));
+      const rowApi = api.row(row.id), record = row.original;
+      const step = !isStatic && !isNarrow ? effectiveStep : void 0, sized = step != null, lines = sized && step !== "short", modes = cx(
+        isStatic && B + "__grid-cell--static",
+        isNarrow && B + "__grid-cell--narrow",
+        sized && B + "__grid-cell--sized",
+        lines && B + "__grid-cell--lines"
+      );
+      const node = /* @__PURE__ */ React2.createElement(
+        RowTarget,
+        {
+          key: row.displayKey || row.id,
+          ...!(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)),
+          "data-plx-unread": unread.has(record) || void 0,
+          "aria-label": unread.has(record) ? S2.unreadRow.replace("{label}", String(valueAt(record, columns[0]?.field) ?? record[index2])) : void 0,
+          "data-plx-record": row.id,
+          onAttach: (node2) => rememberRow(row, node2),
+          role: "row",
+          "aria-rowindex": (mode === "pages" ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
+          "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : void 0,
+          "aria-current": isOpen(row.id) ? "true" : void 0,
+          tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : void 0,
+          "aria-level": childField ? row.depth + 1 : void 0,
+          "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : void 0,
+          className: cx(
+            "" + B + "__grid-row",
+            (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + "__grid-selectable",
+            childField && "" + B + "__grid-tree-level-" + Math.min(12, row.depth),
+            marked2(row.id) && "" + B + "__grid-selected",
+            isStatic && B + "__grid-row--static",
+            anyWrap && !isNarrow && (isStatic || (effectiveStep || "short") !== "short") && B + "__grid-row--wrap",
+            isNarrow && B + "__grid-row--narrow",
+            virtualized && B + "__grid-row--virtual",
+            row === model[0] && B + "__grid-row--first"
+          ),
+          onClick: (e) => {
+            if (e.target.closest(interactive)) return;
+            chooseRow(row, e);
+            emit("rowClick", e, rowApi);
+            props.onRowClick?.(record, e);
+            if (props.onRowClick || on.rowClick) {
+              unread.open(record);
+              setOwnOpen(row.id);
+            }
+          },
+          onDoubleClick: (e) => {
+            if (!e.target.closest(interactive)) {
+              props.onRowDoubleClick?.(record, e);
+              emit("rowDblClick", e, rowApi);
+            }
+          },
+          onKeyDown: rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })
+        },
+        selectable ? /* @__PURE__ */ React2.createElement(
+          "div",
+          {
+            className: cx(
+              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
+              modes,
+              selection[row.id] && B + "__grid-cell--selected-start"
+            ),
+            role: "gridcell"
+          },
+          /* @__PURE__ */ React2.createElement(
+            Check,
+            {
+              label: S2.selectRow + " " + record[index2],
+              checked: selection[row.id],
+              onChange: (e) => pickCheckbox(row, e)
+            }
+          )
+        ) : null,
+        ordered2.map((column) => {
+          const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
+          const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
+          const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
+          const mods = cx(
+            isStatic && B + "__value--static",
+            k.includes("wrap") && B + "__value--wrap",
+            sized && B + "__value--sized",
+            lines && k.includes("wrap") && B + "__value--lines"
+          ) || void 0, shown = CellValue({
+            block: B,
+            column: c,
+            value,
+            strings: S2,
+            record,
+            pill: cells === "pill",
+            pillField: c.field,
+            icon: showTypes && typeOf$1(c) !== "text" ? typeIcons[typeOf$1(c)] : void 0,
+            mods
+          });
+          const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && React2.isValidElement(shown) && shown.type === "span" && String(shown.props.className).split(" ").includes(B + "__value");
+          return /* @__PURE__ */ React2.createElement(
+            Width,
+            {
+              key: c.field,
+              width: isNarrow ? null : widths[c.field],
+              frozenOffset: pinned && !isNarrow ? sticky : void 0,
+              role: isStatic ? c.rowLabel ? "rowheader" : "cell" : "gridcell",
+              tabIndex: isStatic ? void 0 : -1,
+              "data-plx-field": c.field,
+              "data-plx-unread": unread.has(record) || void 0,
+              ...!isStatic && !c.render && !actions && !isEditing ? {
+                onPointerEnter: (e) => enterCut(e, row.id + "|" + c.field),
+                onFocus: (e) => enterCut(e, row.id + "|" + c.field),
+                onPointerLeave: () => leaveCut(row.id + "|" + c.field)
+              } : null,
+              dir: pinned && !isStatic || kinds(c).includes("id") ? void 0 : "auto",
+              onDoubleClick: () => {
+                if (canEdit) setEditing({ key: row.id, field: c.field, value });
+              },
+              onKeyDown: cellKeys({
+                isStatic,
+                value,
+                canEdit,
+                setEditing,
+                row,
+                c,
+                model,
+                ordered: ordered2,
+                column,
+                frame,
+                focusCell
+              }),
+              "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
+              "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? "size family weight" : "size family",
+              className: cx(
+                "" + B + "__grid-cell",
+                modes,
+                !selectable && marked2(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
+                bare && B + "__grid-cell--bare",
+                selectable && ordered2.indexOf(column) === 0 && B + "__grid-cell--after-lead",
+                ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
+                isTree && row.depth > 0 && B + "__tree-cell--level-" + Math.min(12, row.depth),
+                editing?.key === row.id && editing.field === c.field && "" + B + "__grid-editing",
+                k.map((kind) => B + "__cell--" + kind).join(" "),
+                (k.includes("data") || c.type === "bytes") && B + "__grid-cell--data",
+                [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped",
+                c.type === "bytes" && B + "__cell--data",
+                c.rowHandle && B + "__cell--handle",
+                childField && c.field === (props.treeColumn || columns[0]?.field) && B + "__tree-cell",
+                pinned && "" + B + "__grid-frozen",
+                (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + "__cell--row-label",
+                k.includes("icon") && B + "__w-lead",
+                keys.includes(c.field) && B + "__cell--key",
+                keys[0] === c.field && B + "__cell--key-first",
+                (c.align || c.type === "bytes") && B + "__cell--align-" + (c.align || "right")
+              )
+            },
+            childField && c.field === (props.treeColumn || columns[0]?.field) ? /* @__PURE__ */ React2.createElement("span", { className: B + "__tree-level", "data-plx-depth": 0 }, row.getCanExpand() ? /* @__PURE__ */ React2.createElement(
+              "button",
+              {
+                type: "button",
+                className: B + "__grid-data-tree-control",
+                "aria-expanded": row.getIsExpanded(),
+                "aria-label": row.getIsExpanded() ? "Collapse row" : "Expand row",
+                onClick: () => row.toggleExpanded()
+              },
+              /* @__PURE__ */ React2.createElement(
+                "span",
+                {
+                  className: B + "__grid-data-tree-control-" + (row.getIsExpanded() ? "collapse" : "expand")
+                }
+              )
+            ) : null) : null,
+            editing?.key === row.id && editing.field === c.field ? cellDirection(
+              pinned && !isStatic,
+              /* @__PURE__ */ React2.createElement(
+                CellEditor,
+                {
+                  column: c,
+                  value,
+                  onCommit: (next) => commitEdit(row.id, c.field, next),
+                  onCancel: () => setEditing(null)
+                }
+              )
+            ) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /* @__PURE__ */ React2.createElement(
+              Menu,
+              {
+                label: S2.moveRow,
+                trigger: /* @__PURE__ */ React2.createElement(DragHandle, { dnd: rowDnd.handleProps(recordPositions.get(record) ?? -1) })
+              },
+              /* @__PURE__ */ React2.createElement(
+                MenuItem,
+                {
+                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, -1),
+                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) - 1)
+                },
+                S2.moveUp
+              ),
+              /* @__PURE__ */ React2.createElement(
+                MenuItem,
+                {
+                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, 1),
+                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) + 1)
+                },
+                S2.moveDown
+              ),
+              /* @__PURE__ */ React2.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, 0) }, S2.moveTop),
+              /* @__PURE__ */ React2.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical2.length - 1) }, S2.moveBottom)
+            ) : c.render ? /* @__PURE__ */ React2.createElement(
+              "span",
+              {
+                className: cx(B + "__portal", actions && B + "__portal--actions"),
+                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0,
+                "data-plx-link-target": "cell"
+              },
+              /* @__PURE__ */ React2.createElement(
+                CustomCell,
+                {
+                  column: c,
+                  record,
+                  cell,
+                  rowId: row.id,
+                  selected: !!selection[row.id],
+                  block: B,
+                  mods
+                }
+              )
+            ) : actions ? /* @__PURE__ */ React2.createElement(
+              "span",
+              {
+                className: B + "__portal " + B + "__portal--actions",
+                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0
+              },
+              shown
+            ) : cutAt === row.id + "|" + c.field ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown), /* @__PURE__ */ React2.createElement("span", { className: B + "__cut" }, /* @__PURE__ */ React2.createElement(
+              Popover,
+              {
+                label: c.title,
+                title: c.title,
+                size: "sm",
+                placement: "bottom-end",
+                onOpenChange: (open) => {
+                  cutOpen.current = open;
+                  if (!open) setCutAt(null);
+                },
+                trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: ExpandIcon, label: S2.fullText })
+              },
+              /* @__PURE__ */ React2.createElement("div", { className: B + "__full-text" }, valueText(value))
+            ))) : cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown)
+          );
+        }),
+        props.viewMenu ? /* @__PURE__ */ React2.createElement("div", { className: cx(`${B}__grid-cell ${B}__w-view`, modes), role: "gridcell" }) : null,
+        rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, modes), role: "gridcell" }, /* @__PURE__ */ React2.createElement(
+          Menu,
+          {
+            label: S2.rowActions,
+            trigger: /* @__PURE__ */ React2.createElement(
+              Button,
+              {
+                className: B + "__row-menu",
+                variant: "ghost",
+                size: "xs",
+                iconOnly: true,
+                icon: MoreIcon,
+                label: S2.rowActions
+              }
+            )
+          },
+          /* @__PURE__ */ React2.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })
+        )) : null
+      );
+      return rowMenu ? /* @__PURE__ */ React2.createElement(ContextMenu, { key: row.displayKey || row.id, target: node, label: S2.rowActions }, /* @__PURE__ */ React2.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })) : node;
+    };
+    return { groupNode, rowNode };
+  }
   function NextEngine(props) {
     const inPane = React2.useContext(GridPane);
     const {
@@ -20479,74 +20913,6 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return headerMenu ? /* @__PURE__ */ React2.createElement(ContextMenu, { key: c.field, target: node, label: S2.columns }, columnChooser(column)) : node;
     };
     const focusCell = makeFocusCell({ model, ordered: ordered2, virtualized, virtual, displayElements });
-    const groupNode = (group, sticky = false) => /* @__PURE__ */ React2.createElement(
-      "div",
-      {
-        key: group.id,
-        "data-plx-group": group.id,
-        className: cx(
-          "" + B + "__grid-row " + B + "__grid-group",
-          "" + B + "__grid-group-level-" + group.depth,
-          group.separated && B + "__group--gap"
-        ),
-        role: "row",
-        tabIndex: 0,
-        "aria-rowindex": semanticIndex.get(group.id),
-        "aria-label": words(S2.groupRow, {
-          value: valueText(group.value) || S2.noValue,
-          count: group.rows.length,
-          records: group.rows.length === 1 ? S2.record : S2.records
-        }),
-        "aria-level": group.depth + 1,
-        "aria-expanded": !collapsed.has(group.id),
-        onKeyDown: groupKeys({ toggleGroup, group, model, virtual, holder, B })
-      },
-      /* @__PURE__ */ React2.createElement(
-        "div",
-        {
-          className: cx(B + "__group-head", group.separated && !sticky && B + "__group-head--gap"),
-          role: "presentation"
-        },
-        ordered2.map((column, i) => /* @__PURE__ */ React2.createElement(
-          Width,
-          {
-            key: column.id,
-            width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
-            className: cx(
-              B + "__group-cell",
-              i === 0 && B + "__group-cell--first",
-              column.columnDef.meta.summary && B + "__group-cell--summary",
-              isNarrow && B + "__group-cell--narrow"
-            ),
-            role: "gridcell",
-            "aria-colspan": i === 0 && selectable ? 2 : void 0
-          },
-          i === 0 ? /* @__PURE__ */ React2.createElement(
-            "div",
-            {
-              className: cx(
-                B + "__group-label",
-                group.depth >= 1 && group.depth <= 3 && B + "__group-label--level-" + group.depth
-              )
-            },
-            /* @__PURE__ */ React2.createElement("span", { className: B + "__group-chevron", "aria-hidden": "true", onClick: () => toggleGroup(group.id) }, /* @__PURE__ */ React2.createElement(Icon, { name: collapsed.has(group.id) ? ChevronRightIcon : ChevronDownIcon })),
-            /* @__PURE__ */ React2.createElement("div", { className: B + "__group-text" }, /* @__PURE__ */ React2.createElement("span", { dir: "auto", className: B + "__group-eyebrow" }, columns.find((c) => c.field === group.field)?.title || group.field), /* @__PURE__ */ React2.createElement(
-              "span",
-              {
-                className: cx(
-                  B + "__group-value",
-                  kinds(columns.find((c) => c.field === group.field) || {}).includes("data") && B + "__group-value--data"
-                ),
-                "data-plx-text-follow": "size",
-                "data-plx-kind": kinds(columns.find((c) => c.field === group.field) || {}).includes("data") ? "data" : void 0
-              },
-              valueText(group.value) || S2.noValue
-            )),
-            /* @__PURE__ */ React2.createElement("span", { className: B + "__group-count" }, formatNumber(group.rows.length))
-          ) : column.columnDef.meta.summary ? /* @__PURE__ */ React2.createElement("span", { className: B + "__group-summary" }, /* @__PURE__ */ React2.createElement("span", { className: B + "__group-summary-name" }, { sum: S2.sum, count: S2.countOf, average: S2.average, min: S2.min, max: S2.max }[column.columnDef.meta.summary]), /* @__PURE__ */ React2.createElement("span", { className: B + "__group-summary-value" }, group.summary?.[column.columnDef.meta.field] == null ? null : formatNumber(group.summary[column.columnDef.meta.field]))) : null
-        ))
-      )
-    );
     const rememberRow = (row, node) => {
       const displayKey = row.displayKey || row.id, previous = displayElements.current.get(displayKey), active = document.activeElement;
       if (node) {
@@ -20582,310 +20948,66 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     };
     useEditEffect({ source, mutations, pendingEdit, emit, api });
-    const enterCut = (event, id) => {
-      if (cutOpen.current) return;
-      const v = event.currentTarget.querySelector("." + B + "__value");
-      const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
-      setCutAt(cut ? id : null);
-    };
-    const leaveCut = (id) => {
-      if (!cutOpen.current) setCutAt((at2) => at2 === id ? null : at2);
-    };
-    const anyWrap = table.getVisibleLeafColumns().some((col) => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
-    const rowNode = (row) => {
-      if (row.__group) return groupNode(row.__group);
-      if (row.__add)
-        return /* @__PURE__ */ React2.createElement("div", { key: row.id, className: B + "__add-row", role: "row", "aria-rowindex": semanticIndex.get(row.id) }, /* @__PURE__ */ React2.createElement(
-          "div",
-          {
-            role: "gridcell",
-            "aria-colspan": ordered2.length + (selectable ? 1 : 0),
-            className: cx(
-              B + "__group-cell",
-              B + "__group-cell--first",
-              B + "__group-cell--add",
-              isNarrow && B + "__group-cell--narrow"
-            )
-          },
-          /* @__PURE__ */ React2.createElement(
-            Button,
-            {
-              variant: "ghost",
-              size: "xs",
-              iconOnly: true,
-              icon: AddIcon,
-              label: words(S2.addTo, { value: valueText(row.__add.value) || S2.noValue }),
-              onClick: () => props.onAddToGroup(row.__add.value, row.__add.path)
-            }
-          )
-        ));
-      if (row.__gap)
-        return /* @__PURE__ */ React2.createElement("div", { key: row.id, className: B + "__group--gap" }, /* @__PURE__ */ React2.createElement("div", { className: B + "__group-band" }));
-      const rowApi = api.row(row.id), record = row.original;
-      const step = !isStatic && !isNarrow ? effectiveStep : void 0, sized = step != null, lines = sized && step !== "short", modes = cx(
-        isStatic && B + "__grid-cell--static",
-        isNarrow && B + "__grid-cell--narrow",
-        sized && B + "__grid-cell--sized",
-        lines && B + "__grid-cell--lines"
-      );
-      const node = /* @__PURE__ */ React2.createElement(
-        RowTarget,
-        {
-          key: row.displayKey || row.id,
-          ...!(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)),
-          "data-plx-unread": unread.has(record) || void 0,
-          "aria-label": unread.has(record) ? S2.unreadRow.replace("{label}", String(valueAt(record, columns[0]?.field) ?? record[index2])) : void 0,
-          "data-plx-record": row.id,
-          onAttach: (node2) => rememberRow(row, node2),
-          role: "row",
-          "aria-rowindex": (mode === "pages" ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
-          "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : void 0,
-          "aria-current": isOpen(row.id) ? "true" : void 0,
-          tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : void 0,
-          "aria-level": childField ? row.depth + 1 : void 0,
-          "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : void 0,
-          className: cx(
-            "" + B + "__grid-row",
-            (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + "__grid-selectable",
-            childField && "" + B + "__grid-tree-level-" + Math.min(12, row.depth),
-            marked2(row.id) && "" + B + "__grid-selected",
-            isStatic && B + "__grid-row--static",
-            anyWrap && !isNarrow && (isStatic || (effectiveStep || "short") !== "short") && B + "__grid-row--wrap",
-            isNarrow && B + "__grid-row--narrow",
-            virtualized && B + "__grid-row--virtual",
-            row === model[0] && B + "__grid-row--first"
-          ),
-          onClick: (e) => {
-            if (e.target.closest(interactive)) return;
-            chooseRow(row, e);
-            emit("rowClick", e, rowApi);
-            props.onRowClick?.(record, e);
-            if (props.onRowClick || on.rowClick) {
-              unread.open(record);
-              setOwnOpen(row.id);
-            }
-          },
-          onDoubleClick: (e) => {
-            if (!e.target.closest(interactive)) {
-              props.onRowDoubleClick?.(record, e);
-              emit("rowDblClick", e, rowApi);
-            }
-          },
-          onKeyDown: rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })
-        },
-        selectable ? /* @__PURE__ */ React2.createElement(
-          "div",
-          {
-            className: cx(
-              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
-              modes,
-              selection[row.id] && B + "__grid-cell--selected-start"
-            ),
-            role: "gridcell"
-          },
-          /* @__PURE__ */ React2.createElement(
-            Check,
-            {
-              label: S2.selectRow + " " + record[index2],
-              checked: selection[row.id],
-              onChange: (e) => pickCheckbox(row, e)
-            }
-          )
-        ) : null,
-        ordered2.map((column) => {
-          const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
-          const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
-          const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
-          const mods = cx(
-            isStatic && B + "__value--static",
-            k.includes("wrap") && B + "__value--wrap",
-            sized && B + "__value--sized",
-            lines && k.includes("wrap") && B + "__value--lines"
-          ) || void 0, shown2 = CellValue({
-            block: B,
-            column: c,
-            value,
-            strings: S2,
-            record,
-            pill: cells === "pill",
-            pillField: c.field,
-            icon: showTypes && typeOf$1(c) !== "text" ? typeIcons[typeOf$1(c)] : void 0,
-            mods
-          });
-          const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && React2.isValidElement(shown2) && shown2.type === "span" && String(shown2.props.className).split(" ").includes(B + "__value");
-          return /* @__PURE__ */ React2.createElement(
-            Width,
-            {
-              key: c.field,
-              width: isNarrow ? null : widths[c.field],
-              frozenOffset: pinned && !isNarrow ? sticky : void 0,
-              role: isStatic ? c.rowLabel ? "rowheader" : "cell" : "gridcell",
-              tabIndex: isStatic ? void 0 : -1,
-              "data-plx-field": c.field,
-              "data-plx-unread": unread.has(record) || void 0,
-              ...!isStatic && !c.render && !actions && !isEditing ? {
-                onPointerEnter: (e) => enterCut(e, row.id + "|" + c.field),
-                onFocus: (e) => enterCut(e, row.id + "|" + c.field),
-                onPointerLeave: () => leaveCut(row.id + "|" + c.field)
-              } : null,
-              dir: pinned && !isStatic || kinds(c).includes("id") ? void 0 : "auto",
-              onDoubleClick: () => {
-                if (canEdit) setEditing({ key: row.id, field: c.field, value });
-              },
-              onKeyDown: cellKeys({
-                isStatic,
-                value,
-                canEdit,
-                setEditing,
-                row,
-                c,
-                model,
-                ordered: ordered2,
-                column,
-                frame,
-                focusCell
-              }),
-              "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
-              "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? "size family weight" : "size family",
-              className: cx(
-                "" + B + "__grid-cell",
-                modes,
-                !selectable && marked2(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
-                bare && B + "__grid-cell--bare",
-                selectable && ordered2.indexOf(column) === 0 && B + "__grid-cell--after-lead",
-                ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
-                isTree && row.depth > 0 && B + "__tree-cell--level-" + Math.min(12, row.depth),
-                editing?.key === row.id && editing.field === c.field && "" + B + "__grid-editing",
-                k.map((kind) => B + "__cell--" + kind).join(" "),
-                (k.includes("data") || c.type === "bytes") && B + "__grid-cell--data",
-                [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped",
-                c.type === "bytes" && B + "__cell--data",
-                c.rowHandle && B + "__cell--handle",
-                childField && c.field === (props.treeColumn || columns[0]?.field) && B + "__tree-cell",
-                pinned && "" + B + "__grid-frozen",
-                (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + "__cell--row-label",
-                k.includes("icon") && B + "__w-lead",
-                keys.includes(c.field) && B + "__cell--key",
-                keys[0] === c.field && B + "__cell--key-first",
-                (c.align || c.type === "bytes") && B + "__cell--align-" + (c.align || "right")
-              )
-            },
-            childField && c.field === (props.treeColumn || columns[0]?.field) ? /* @__PURE__ */ React2.createElement("span", { className: B + "__tree-level", "data-plx-depth": 0 }, row.getCanExpand() ? /* @__PURE__ */ React2.createElement(
-              "button",
-              {
-                type: "button",
-                className: B + "__grid-data-tree-control",
-                "aria-expanded": row.getIsExpanded(),
-                "aria-label": row.getIsExpanded() ? "Collapse row" : "Expand row",
-                onClick: () => row.toggleExpanded()
-              },
-              /* @__PURE__ */ React2.createElement(
-                "span",
-                {
-                  className: B + "__grid-data-tree-control-" + (row.getIsExpanded() ? "collapse" : "expand")
-                }
-              )
-            ) : null) : null,
-            editing?.key === row.id && editing.field === c.field ? cellDirection(
-              pinned && !isStatic,
-              /* @__PURE__ */ React2.createElement(
-                CellEditor,
-                {
-                  column: c,
-                  value,
-                  onCommit: (next) => commitEdit(row.id, c.field, next),
-                  onCancel: () => setEditing(null)
-                }
-              )
-            ) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /* @__PURE__ */ React2.createElement(
-              Menu,
-              {
-                label: S2.moveRow,
-                trigger: /* @__PURE__ */ React2.createElement(DragHandle, { dnd: rowDnd.handleProps(recordPositions.get(record) ?? -1) })
-              },
-              /* @__PURE__ */ React2.createElement(
-                MenuItem,
-                {
-                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, -1),
-                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) - 1)
-                },
-                S2.moveUp
-              ),
-              /* @__PURE__ */ React2.createElement(
-                MenuItem,
-                {
-                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, 1),
-                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) + 1)
-                },
-                S2.moveDown
-              ),
-              /* @__PURE__ */ React2.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, 0) }, S2.moveTop),
-              /* @__PURE__ */ React2.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical2.length - 1) }, S2.moveBottom)
-            ) : c.render ? /* @__PURE__ */ React2.createElement(
-              "span",
-              {
-                className: cx(B + "__portal", actions && B + "__portal--actions"),
-                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0,
-                "data-plx-link-target": "cell"
-              },
-              /* @__PURE__ */ React2.createElement(
-                CustomCell,
-                {
-                  column: c,
-                  record,
-                  cell,
-                  rowId: row.id,
-                  selected: !!selection[row.id],
-                  block: B,
-                  mods
-                }
-              )
-            ) : actions ? /* @__PURE__ */ React2.createElement(
-              "span",
-              {
-                className: B + "__portal " + B + "__portal--actions",
-                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0
-              },
-              shown2
-            ) : cutAt === row.id + "|" + c.field ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown2), /* @__PURE__ */ React2.createElement("span", { className: B + "__cut" }, /* @__PURE__ */ React2.createElement(
-              Popover,
-              {
-                label: c.title,
-                title: c.title,
-                size: "sm",
-                placement: "bottom-end",
-                onOpenChange: (open) => {
-                  cutOpen.current = open;
-                  if (!open) setCutAt(null);
-                },
-                trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: ExpandIcon, label: S2.fullText })
-              },
-              /* @__PURE__ */ React2.createElement("div", { className: B + "__full-text" }, valueText(value))
-            ))) : cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown2)
-          );
-        }),
-        props.viewMenu ? /* @__PURE__ */ React2.createElement("div", { className: cx(`${B}__grid-cell ${B}__w-view`, modes), role: "gridcell" }) : null,
-        rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, modes), role: "gridcell" }, /* @__PURE__ */ React2.createElement(
-          Menu,
-          {
-            label: S2.rowActions,
-            trigger: /* @__PURE__ */ React2.createElement(
-              Button,
-              {
-                className: B + "__row-menu",
-                variant: "ghost",
-                size: "xs",
-                iconOnly: true,
-                icon: MoreIcon,
-                label: S2.rowActions
-              }
-            )
-          },
-          /* @__PURE__ */ React2.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })
-        )) : null
-      );
-      return rowMenu ? /* @__PURE__ */ React2.createElement(ContextMenu, { key: row.displayKey || row.id, target: node, label: S2.rowActions }, /* @__PURE__ */ React2.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })) : node;
-    };
+    const { groupNode, rowNode } = bodyRows({
+      B,
+      semanticIndex,
+      S: S2,
+      collapsed,
+      toggleGroup,
+      model,
+      virtual,
+      holder,
+      ordered: ordered2,
+      widths,
+      selectable,
+      metrics,
+      isNarrow,
+      columns,
+      cutOpen,
+      setCutAt,
+      table,
+      wrapOf,
+      props,
+      api,
+      isStatic,
+      effectiveStep,
+      options,
+      recordPositions,
+      rowDnd,
+      unread,
+      index: index2,
+      rememberRow,
+      mode,
+      page,
+      pageSize,
+      selection,
+      isOpen,
+      on,
+      childField,
+      marked: marked2,
+      virtualized,
+      chooseRow,
+      emit,
+      setOwnOpen,
+      focusCell,
+      pickCheckbox,
+      kindsOf,
+      pinStart,
+      editing,
+      cells,
+      showTypes,
+      setEditing,
+      frame,
+      pinnedAt,
+      groupBy: groupBy2,
+      keys,
+      commitEdit,
+      canonical: canonical2,
+      cutAt,
+      rowMenu,
+      rowMenuButton,
+      menuItems
+    });
     const rowVersion = React2.useMemo(
       () => ({}),
       [
