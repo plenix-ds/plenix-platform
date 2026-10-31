@@ -51,8 +51,11 @@ jobs:
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; fi
           node build-packages.js
 
-      - name: "Tests without a browser (formats, brand rules, login, types)"
-        run: node tests/run.js formats brand-rules login types
+      - name: "Tests without a browser (formats, brand rules, login, types, fill, icon safety, selector kinds, Arabic catalog, baseline scan, site icons)"
+        run: node tests/run.js formats brand-rules login types fill-693 icon-safety selector-kinds arabic-catalog-427 baseline-scan-273 site-icons
+
+      - name: "Tests of the release build (package sizes, add-on packages, icons package, CDN files; issue 756)"
+        run: node tests/run.js --release
 
   browser:
     name: Full ${{ matrix.name }}
@@ -67,7 +70,7 @@ jobs:
           - { name: 'component tokens', tests: component-tokens, shard: '' }
           - { name: typography, tests: typography, shard: '' }
           - { name: reflow, tests: reflow, shard: '' }
-          - { name: fixtures, tests: site-coverage visual layout utilities keyboard charts-echarts-353 sparkline-echarts-353 treechart-echarts, shard: '' }
+          - { name: fixtures, tests: site-coverage visual layout zero-overlap utilities keyboard charts-echarts-353 sparkline-echarts-353 treechart-echarts, shard: '' }
           - { name: behavior, tests: data-grid focus-order semantic-html navigation one-primary, shard: '' }
     services:
       postgres:

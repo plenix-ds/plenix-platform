@@ -35,7 +35,7 @@ This test makes sure menus, pickers, dialogs, sliders, calendars and other commo
 
 ## When it runs
 - A child test, started by `tests/layout.test.js` (AUTOMATIC in `tests/run.js`).
-- In changed mode, layout starts it only when Menu, SplitButton, Combobox, Dialog, Sheet, Popover, Popconfirm, Slider, Checkbox, SplitView, Resizable, Calendar or OtpInput changes, when a global file changes, or when `layout.test.js` itself changes. Layout does not check this test's own file, so a change to this file alone does not start it in changed mode.
+- In changed mode, layout starts it when Menu, SplitButton, Combobox, Dialog, Sheet, Popover, Popconfirm, Slider, Checkbox, SplitView, Resizable, Calendar or OtpInput changes, when a global file changes, or when `layout.test.js` itself changes. It also starts it when this test's own file, or a fixture it loads, changes (issue #756).
 - In a full run it always runs.
 - CI: with layout in the "fixtures" browser job (every pull request, and pushes to styling/phase-2 and main). The full suite: its "fixtures" job.
 

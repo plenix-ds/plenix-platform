@@ -29,7 +29,8 @@ Each part of the Plenix interface gets each style from exactly one rule, so chan
 
 ## When it runs
 - AUTOMATIC group in `tests/run.js`, so `npm test` and `npm run test:full` run it. It has no changed-mode filter: it always runs its checks when started.
-- It is NOT in the `ci.yml` browser matrix and NOT in `full.yml`, so CI never runs it.
+- CI (`ci.yml`): the "fixtures" browser job (since issue #756), on every pull request and on pushes to styling/phase-2 and main.
+- Full suite (`full.yml`): the "fixtures" browser job.
 - By hand: `node tests/zero-overlap.test.js`.
 
 ## What it needs

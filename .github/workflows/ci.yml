@@ -107,8 +107,11 @@ jobs:
       - name: What changed (the scope of the browser tests)
         run: node tests/changed.js
 
-      - name: "Tests without a browser (formats, brand rules, login, types, fill)"
-        run: node tests/run.js formats brand-rules login types fill-693
+      - name: "Tests without a browser (formats, brand rules, login, types, fill, icon safety, selector kinds, Arabic catalog, baseline scan, site icons)"
+        run: node tests/run.js formats brand-rules login types fill-693 icon-safety selector-kinds arabic-catalog-427 baseline-scan-273 site-icons
+
+      - name: "Tests of the release build (package sizes, add-on packages, icons package, CDN files; issue 756)"
+        run: node tests/run.js --release
 
   browser:
     name: Browser tests (${{ matrix.name }})
@@ -128,7 +131,7 @@ jobs:
           - name: component tokens
             tests: component-tokens
           - name: fixtures
-            tests: site-coverage visual layout charts-echarts-353 sparkline-echarts-353 treechart-echarts
+            tests: site-coverage visual layout zero-overlap charts-echarts-353 sparkline-echarts-353 treechart-echarts
           - name: behavior
             tests: data-grid keyboard focus-order semantic-html utilities navigation one-primary
     services:

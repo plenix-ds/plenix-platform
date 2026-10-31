@@ -12,7 +12,7 @@ The shared toolbox every browser test loads.
 
 ## run.js
 The test runner: it starts the tests one after another and times each.
-- What it is for: it holds the three lists. AUTOMATIC tests run by default; ON_DEMAND tests (a11y, high-contrast, contrast, theme, density) run only when named or with `--on-demand`; SPEC_ONLY (labs) runs only by name. Every test runs even after one fails.
+- What it is for: it holds the four lists. AUTOMATIC tests run by default; ON_DEMAND tests (a11y, high-contrast, contrast, theme, density) run only when named or with `--on-demand`; RELEASE tests (perf, w15c-packages, icons-package-282, cdn-devx) need the release build (`node build-packages.js`) and run only when named or with `--release` (issue #756); SPEC_ONLY (labs) runs only by name. Every test runs even after one fails.
 - Who uses it: the `npm test`, `npm run test:full` and `npm run test:on-demand` scripts in `package.json`, and the workflows `ci.yml`, `full.yml` and `on-demand.yml`.
 - Commands:
   - `node tests/run.js`: every automatic test, changed mode.
@@ -20,6 +20,7 @@ The test runner: it starts the tests one after another and times each.
   - `node tests/run.js pages typography`: only these tests.
   - `node tests/run.js keyboard:Toolbar,Tabs`: only some parts of a test (see `parts.json`).
   - `node tests/run.js --on-demand`: the on-demand tests.
+  - `node tests/run.js --release`: the tests of the release build, after `node build-packages.js`. The CI build job runs it after its release build (`ci.yml` and `full.yml`).
 
 ## changed.js
 Works out what changed since the last commit, so each test checks only what the change can affect.

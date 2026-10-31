@@ -27,8 +27,12 @@ This test makes sure an Arabic question block inside an English page (and an Eng
 - In CTM, an Arabic question could show with its checkboxes on the wrong side or its text starting at the wrong edge, and a screen reader could read it in the wrong language.
 
 ## When it runs
-- Started by hand only: `node tests/rtl-ctm-question.test.js`.
-- It is not in any group of `tests/run.js`, no other test starts it, and no `package.json` script or workflow names it. It does not run in CI or the full suite.
+- A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
+- In changed mode (`npm test` and CI), Layout starts it when NavList, Fieldset, Checkbox or the DirectionProvider changes, or a part built on one of them changes.
+- Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches that slice too.
+- Layout also starts it when this test's own file, or its fixture `tests/fixtures/rtl-ctm-question.html`, changes. By hand: `node tests/rtl-ctm-question.test.js`.
+- A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
+- CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 
 ## What it needs
 - Headless Chrome (CHROME_PATH) and the local test server (`tests/lib.js`).

@@ -32,9 +32,9 @@ People can react to, reply to, quote, copy, forward, edit and delete chat messag
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. (Its header's Usage line names no runner; the wiring is in `tests/layout.test.js`.)
-- In changed mode (`npm test` and CI), Layout starts it only when Chat changes, or a part Chat is built on changes.
+- In changed mode (`npm test` and CI), Layout starts it when Chat changes, or a part Chat is built on changes.
 - Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes.
-- A change to this test's own file alone does not start it through Layout: Layout checks only Chat. Run it by hand: `node tests/chat-s4-637.test.js`.
+- Layout also starts it when this test's own file, or a fixture it loads, changes (issue #756). By hand: `node tests/chat-s4-637.test.js`.
 - A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.
 - CI job: the "fixtures" browser job (Layout's job), on every pull request and on pushes to styling/phase-2 and main.
 
