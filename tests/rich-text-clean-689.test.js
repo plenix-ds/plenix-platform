@@ -48,6 +48,9 @@ const HOSTILE = [
   ['attribute name tricks', '<p o\nnclick="window.__pwn++">x</p>'],
   // javascript:, data:, vbscript: in href
   ['javascript href', '<a href="javascript:window.__pwn++">x</a>'],
+  // an empty href (issue 783): it must not come back on a second pass, as the dropped javascript: hrefs did (href="")
+  ['empty href', '<a href="">x</a>'],
+  ['link without an href', '<a>x</a>'],
   ['javascript href upper case', '<a href="JAVASCRIPT:window.__pwn++">x</a>'],
   ['javascript href mixed case', '<a href="JaVaScRiPt:window.__pwn++">x</a>'],
   ['javascript href decimal entity', '<a href="&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;window.__pwn++">x</a>'],
