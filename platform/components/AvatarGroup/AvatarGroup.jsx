@@ -29,6 +29,7 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { fill } from '../../utils/fill.js';
 
 const SIZES = ['xs', 'sm', 'md', 'lg'];
 
@@ -40,14 +41,14 @@ export function AvatarGroup({ people = [], label, max = 4, size = 'sm', layout =
   const limit = Math.max(1, max | 0);
   const shown = people.length > limit ? people.slice(0, limit) : people;
   const rest_ = people.length - shown.length;
-  const fill = (t) => t.replace('{n}', String(rest_));
-  const more = rest_ > 0 ? <Avatar initials={fill(words.more)} size={s} label={onMore ? undefined : fill(words.moreLabel)} className="plx-avatar-group__more" /> : null;
+  const restText = (t) => fill(t, { n: rest_ });
+  const more = rest_ > 0 ? <Avatar initials={restText(words.more)} size={s} label={onMore ? undefined : restText(words.moreLabel)} className="plx-avatar-group__more" /> : null;
   return (
     <div className={cx('plx-avatar-group', 'plx-avatar-group--' + l, 'plx-avatar-group--' + s, className)} role="group" aria-label={label} {...rest}>
       {shown.map((p, i) => (
         <Avatar key={p.id != null ? p.id : i} name={p.name} src={p.src} color={p.color} presence={p.presence} size={s} label={p.name} strings={strings} className="plx-avatar-group__avatar" />
       ))}
-      {more && onMore ? <button type="button" className="plx-avatar-group__more-button" aria-label={fill(words.moreLabel)} onClick={onMore}>{more}</button> : more}
+      {more && onMore ? <button type="button" className="plx-avatar-group__more-button" aria-label={restText(words.moreLabel)} onClick={onMore}>{more}</button> : more}
     </div>
   );
 }

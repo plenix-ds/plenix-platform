@@ -91,8 +91,8 @@ import TextCardIcon from 'plenix-platform/icons/plenix/text-card';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
 import UploadN2Icon from 'plenix-platform/icons/plenix/upload-2';
 import { dataPhrase, dataNumber } from '../../utils/dataText.jsx';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const clamp = (n) => Math.max(0, Math.min(100, Number(n) || 0));
 const MOVING = { queued: true, uploading: true };
 

@@ -6,13 +6,13 @@
      <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
      <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
-     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
+     Input.size: "sm" | "md" (default) | a number: "sm" uses the existing toolbar control height; "md" keeps today’s standard height; a number keeps the native size attribute.
      Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
        leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
-     Select.width: the same values
+     Select.width: as Input.width
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
@@ -75,15 +75,13 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { gridPx } from '../../utils/grid.js';
 import { isDataValue } from '../../utils/dataValue.js';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated, useInBar } from '../../utils/overflow.js';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
-// the top layer and CSS anchor positioning (as Menu and Popover), checked once
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {

@@ -43,8 +43,8 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const lower = (x) => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 
 export function PermissionSummary({ access, icon = 'lock', detail, can = [], cannot = [], variant = 'list', onManage, manageHref, live = false, strings, className, ...rest }) {

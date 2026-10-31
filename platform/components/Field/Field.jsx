@@ -11,15 +11,15 @@
      description: help text under the control (under the label with "row")
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
-     info: content for a small (i) button next to the label
+     info: an element: content for a small (i) button next to the label
      infoLabel: the accessible name of the (i) button (default the catalog's field.about, "About {label}")
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end); without it, the layout of the Form around the
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
-     counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
+     counter: true or a number: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
        as a number; default none
      strings: the counter's words for screen readers: { left: '{n} characters left', over: '{n} characters too many' }
-     labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
+     labelWidth: a string: the width of the label column, as a size name (adds plx-field--label-<value>)
      type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
        unless it sets its own
      children: exactly one control
@@ -51,7 +51,7 @@ import { dataWhenText } from '../../utils/dataText.jsx';
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
 
-const fill = (t, n) => String(t).replace('{n}', formatNumber(n));
+const countText = (t, n) => String(t).replace('{n}', formatNumber(n));
 
 export function Field({ label, hideLabel = false, description, error, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
   const id = React.useId();
@@ -75,7 +75,7 @@ export function Field({ label, hideLabel = false, description, error, required =
   const said = React.useRef(null);
   React.useEffect(() => {
     if (!max || !near || said.current === null) { said.current = length; return; }
-    if (said.current !== length) { said.current = length; announce(over ? fill(t.over, length - max) : fill(t.left, max - length)); }
+    if (said.current !== length) { said.current = length; announce(over ? countText(t.over, length - max) : countText(t.left, max - length)); }
   }, [length, max, near, over, t.over, t.left]);
   // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
   const describedBy = useDescribedBy(child.props['aria-describedby'], descId, countId, errId);
@@ -110,7 +110,7 @@ export function Field({ label, hideLabel = false, description, error, required =
             {lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}
             <div className={cx('plx-field__counter', over && 'is-over')}>
               <span className="plx-field__count" aria-hidden="true">{formatNumber(length) + '/' + formatNumber(max)}</span>
-              <span className="plx-visually-hidden" id={countId}>{over ? fill(t.over, length - max) : fill(t.left, max - length)}</span>
+              <span className="plx-visually-hidden" id={countId}>{over ? countText(t.over, length - max) : countText(t.left, max - length)}</span>
             </div>
           </div>
         ) : lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}

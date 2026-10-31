@@ -18,6 +18,8 @@
 //                                    (UNSUPPORTED below). Guarded rules have a fallback and are printed for information only
 // The size of plenix.css is not a rule (owner, #460): it is printed as a plain number, in KB (1024 bytes, rounded up), with
 // plenix.min.css, and the check never fails on it.
+// One import from the npm package is (#685): { Button }, { Badge }, { DataGrid } and * as P, bundled against
+// packages/react/dist/index.js the way the audit measured (tools/agent/one-part-sizes.js); one above its limit fails.
 // The scan reads the code, not the comments: plenix.js is parsed (@babel/standalone) and each finding is traced to the
 // source module it came from; plenix.css is parsed with PostCSS. plenix.esm.js holds the same modules and is not counted twice.
 const fs = require('fs');
@@ -151,5 +153,14 @@ for (const k of Object.keys(RULES)) {
   if (LIST || n > b) (where[k] || []).forEach((f) => console.log('        ' + f.where + '  ' + f.what));
 }
 console.log('  (information, never a failure) plenix.css: ' + kb(need('plenix.css')) + ' KB; plenix.min.css: ' + kb(need('plenix.min.css')) + ' KB; unsupported CSS inside @supports (has a fallback): ' + css.guarded + ' rules');
-if (up) { console.log('BUNDLE_FAIL (' + up + ' rule' + (up > 1 ? 's' : '') + ' went up)'); process.exit(1); }
+// one import from the npm package (#685): what an app that imports one part bundles (tools/agent/one-part-sizes.js: the
+// repository's esbuild, minified, React external, against packages/react); a size above its limit fails, so tree-shaking
+// cannot break again unseen
+const parts = require('./tools/agent/one-part-sizes.js');
+let over = 0;
+if (fs.existsSync(parts.entryOf())) {
+  console.log('  one import from @plenix-ds/react (minified, React external):');
+  for (const r of parts.measure()) { if (r.over) over++; console.log('        ' + parts.line(r)); }
+} else { console.log('BUNDLE_FAIL: packages/react is missing: run node build-packages.js'); process.exit(1); }
+if (up || over) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
 console.log(down ? 'BUNDLE_OK (' + down + ' went down: lower the baseline)' : 'BUNDLE_OK');

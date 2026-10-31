@@ -48,9 +48,10 @@ import { announce } from '../../utils/announce.jsx';
 import { formatDuration } from '../../utils/format.js';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
+import { fill } from '../../utils/fill.js';
+import { fillNodes } from '../../utils/fillNodes.jsx';
 
 export function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, immediate = true } = {}) {
   const [state, setState] = React.useState({ status: immediate ? 'running' : 'idle', attempt: immediate ? 1 : 0, seconds: 0, error: null, result: undefined });
@@ -109,11 +110,6 @@ export function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, im
 
 
 // a string with {name} places filled by values in the data font (numbers and durations are technical values)
-const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
-  const m = /^\{(\w+)\}$/.exec(part);
-  return m && values[m[1]] !== undefined ? <Text key={i} variant="data">{values[m[1]]}</Text> : part;
-});
-const plain = (template, values) => template.replace(/\{(\w+)\}/g, (all, k) => (values[k] !== undefined ? String(values[k]) : all));
 
 export function RetryNotice({ retry, title, tone = 'danger', showCount = false, onDismiss, strings, className, children, ...rest }) {
   devWarn('RetryNotice', { tone }, { tone: ['danger','warning'] });
@@ -125,13 +121,13 @@ export function RetryNotice({ retry, title, tone = 'danger', showCount = false, 
   React.useEffect(() => {
     if (!failing) { shown.current = false; return; }
     if (!shown.current) { shown.current = true; return; }   // the notice's own alert says the first failure
-    if (r.status === 'waiting') announce(plain(t.waiting, values));
-    else if (r.status === 'failed') announce((title || t.title) + '. ' + plain(r.attempt >= r.attempts ? t.stopped : t.attempt, values));
+    if (r.status === 'waiting') announce(fill(t.waiting, values));
+    else if (r.status === 'failed') announce((title || t.title) + '. ' + fill(r.attempt >= r.attempts ? t.stopped : t.attempt, values));
   }, [r.status, r.attempt]);
   if (!failing) return null;
   const stopped = r.status === 'failed' && r.attempt >= r.attempts;
-  const status = r.status === 'waiting' ? fill(t.waiting, values) : r.status === 'running' ? t.retrying : stopped && showCount ? fill(t.stopped, values) : null;
-  const count = showCount && !stopped ? fill(t.attempt, values) : null;
+  const status = r.status === 'waiting' ? fillNodes(t.waiting, values) : r.status === 'running' ? t.retrying : stopped && showCount ? fillNodes(t.stopped, values) : null;
+  const count = showCount && !stopped ? fillNodes(t.attempt, values) : null;
   return (
     <Notice className={cx('plx-retry', className)} tone={tone} title={title || t.title} onDismiss={onDismiss} strings={{ dismiss: t.dismiss }}
       actions={<Button size="xs" icon={RefreshIcon} loading={r.status === 'running'} onClick={r.retry}>{r.status === 'waiting' ? t.retryNow : t.retry}</Button>} {...rest}>

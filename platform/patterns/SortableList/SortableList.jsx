@@ -52,8 +52,8 @@ import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 // after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
 const keep = (dir) => (itemEl) => {
   const own = itemEl.querySelector('[data-plx-move="' + dir + '"]'), other = itemEl.querySelector('[data-plx-move="' + (dir === 'up' ? 'down' : 'up') + '"]');

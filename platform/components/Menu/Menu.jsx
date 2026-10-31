@@ -26,9 +26,9 @@
      MenuItem.danger: shows the item in the danger color (a destructive action); default false
      MenuItem.disabled: skips the item; it cannot be chosen; default false
      MenuItem.checked: makes it a checkbox item, checked or not; leave it out for a plain item
-     MenuItem.type: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
+     MenuItem.type: a string: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
        MenuRadioGroup a MenuItem with a value is a radio item without it)
-     MenuItem.value: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
+     MenuItem.value: a string: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
      MenuItem.keepOpen: leaves the menu open after choosing (for choosing several); default false
      MenuItem.href: renders the item as a link
      MenuItem.onSelect(event): runs when the item is chosen
@@ -80,7 +80,7 @@ import { cx } from '../../utils/cx.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Portal } from '../../utils/portal.jsx';
-import { useFloating } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 import { useGesture } from '../../hooks/useGesture.js';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
@@ -106,9 +106,6 @@ function moveIn(list, e) {
   return true;
 }
 
-// the top layer and CSS anchor positioning (Chrome 125, Firefox 147, Safari 26), checked once
-const TOP_LAYER = typeof window !== 'undefined' && typeof CSS !== 'undefined' && CSS.supports && CSS.supports('anchor-name', '--plx-a')
-  && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 export function Menu({ trigger, label, placement = 'bottom-start', className, children }) {
   const id = useUid('plx-menu');
   const [open, setOpen] = React.useState(false);

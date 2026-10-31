@@ -23,6 +23,8 @@ first time a PDF opens. Its checksums and serving requirements (MIME type, CSP, 
 
 Copied on 2026-10-05. The license header is kept at the top of each file.
 
+**The React version (#686).** These UMD files are React 18.2.0, and they stay on it: React 19 publishes no UMD script, so the script-tag way of using Plenix (the pages here, the CDN's `plenix.js`, the offline archive, an extension that loads `plenix.js`) runs on React 18. The npm package `@plenix-ds/react` supports React 18 and 19 (peer range `>=18.2.0 <20`); its source was checked for what React 19 removes. A React 19 script-tag build would need a Plenix-owned global build that bundles React, which is the owner's decision.
+
 Pages load React through `react-loader.js` (batch 144): the production build by default; the development build (its warnings about props, keys and effects) with `?react=dev` in the address, or `localStorage.setItem('plenix.react', 'dev')` (remove it to go back). The production files were added on 2026-10-05.
 
 ## Updating

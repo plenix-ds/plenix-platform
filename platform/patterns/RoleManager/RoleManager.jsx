@@ -78,9 +78,9 @@ import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permi
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
+import { fill } from '../../utils/fill.js';
 
 const ROLE_ICONS = { owner: SettingsPermissionsIcon, editor: PencilIcon, viewer: VisibilityIcon };
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const H = React.forwardRef(function H({ level, ...props }, ref) { return React.createElement('h' + Math.min(6, Math.max(2, level)), Object.assign({ ref }, props)); });
 

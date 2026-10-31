@@ -10,8 +10,8 @@
      <Show print><Text>Printed 12 October 2026</Text></Show>          <Hide print><ActionBar…/></Hide>
    Props:
      header: the header across the top (AppHeader)
-     sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
-     panel: the inspector panel on the right (SidePanel)
+     sideNav: an element: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
+     panel: an element: the inspector panel on the right (SidePanel)
      footer: the footer across the bottom (StatusBar)
      page: what kind of page this is (default "workspace"): "workspace" | "dashboard" | "settings" | "form" | "detail" |
        "master-detail" | "editor". The design system's layout standard (providers/pageLayouts.js) decides its layout mode:

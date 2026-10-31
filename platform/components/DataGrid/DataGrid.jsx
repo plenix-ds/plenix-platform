@@ -15,7 +15,7 @@
        onRowClick={(asset) => open(asset)} />
    Props:
      label: names the grid for screen readers (required)
-     data: the rows, plain objects; index: the field that identifies a row (default "id")
+     data: an array: the rows, plain objects; index: the field that identifies a row (default "id")
      columns: [{ title, field, … }]:
        kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, Reddit Mono, on the row's
          baseline) | "icon" (a mark column as wide as the checkbox column; its header shows icon) | "center" (centered in
@@ -49,7 +49,7 @@
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
-     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+     openKey: a string or a number: the key of the record whose details show (the open row); default the row last opened by a click or Enter
        (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
        selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
@@ -93,7 +93,7 @@
        more asking at total. In "fill" and "load-more" an empty or short page (fewer rows than size) ends the list, even
        when total says more (issue 614). A sort, filter or search change starts again from page 1, in the same render
        as the change. size is pageSize (default 50)
-     storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
+     storageKey: a string: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      onFilterField(field): the header menu's "Filter by this field" calls it instead of opening the header filter box; useCollectionView

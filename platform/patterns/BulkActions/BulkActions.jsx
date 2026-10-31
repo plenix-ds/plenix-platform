@@ -55,8 +55,8 @@ import { Toolbar } from '../../components/Toolbar/Toolbar.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { BarActions, foldOrder } from '../CommandBar/BarActions.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);
 
 // "N selected": the number in the data font
