@@ -40,7 +40,10 @@
    Behavior:
      The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
        (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
-     ↓ / ↑ move, Enter chooses, Escape closes.
+     ↓ / ↑ move, Enter chooses, Escape closes. On a closed list ↓ and Alt+↓ open it on the first option, ↑ on the last;
+       Alt+↓ on an open list moves nothing. Escape on a closed list leaves the value as it is (issue 706: the WAI-ARIA
+       pattern makes clearing optional, and a chosen value is never lost to one key; clear it with the text or a tag's
+       remove button).
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
      Tags (multiple without marks): the list offers only the values not chosen yet, so Enter or a click always adds; a
@@ -139,7 +142,8 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
     document.addEventListener('mousedown', off);
     return () => document.removeEventListener('mousedown', off);
   }, [open]);
-  React.useEffect(() => { setActive(0); }, [q, open]);
+  const startAtLast = React.useRef(false);   // Arrow Up opened the list: its last option is the active one (issue 706)
+  React.useEffect(() => { setActive(startAtLast.current ? Math.max(0, items.length - 1) : 0); startAtLast.current = false; }, [q, open]);
   const choose = (item) => {
     if (!item || locked) return;
     if (item.kind === 'create') { if (onCreate) onCreate(text.trim()); setText(''); return; }
@@ -150,8 +154,9 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   };
   const onKey = (e) => {
     if (locked) { if (!/^(Tab|Escape|Shift|Control|Alt|Meta)$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault(); return; }   // read-only: no key opens, chooses, creates or removes
-    if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); else setActive((a) => Math.min(items.length - 1, a + 1)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
+    // closed: Arrow Down (and Alt+Arrow Down) open on the first option, Arrow Up on the last; open: Alt+Arrow Down moves nothing
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); else if (!e.altKey) setActive((a) => Math.min(items.length - 1, a + 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (!open) { startAtLast.current = true; setOpen(true); } else setActive((a) => Math.max(0, a - 1)); }
     else if (e.key === 'Enter') { if (open && items[active]) { e.preventDefault(); choose(items[active]); } }
     else if (e.key === 'Escape') { if (open) { e.preventDefault(); setOpen(false); } }
     else if (e.key === 'Backspace' && multiple && !text && chosen.length) { onChange(chosen.slice(0, -1)); }
