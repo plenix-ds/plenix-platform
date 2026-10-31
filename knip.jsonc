@@ -25,15 +25,19 @@
     // loaded by script tags in the pages: each app's icon file, the engines and the icon uses
     "*/plenix-icons-*.js",
     "platform/engines/plenix-engines.js",
-    "platform/icons/uses.js"
+    "platform/icons/uses.js",
+    // run by node build-packages.js through the Vite command line (#709 step 5); the Arabic opt-in is one of its entries
+    "vite.packages.config.mjs",
+    "platform/i18n/ar.optin.js"
   ],
   "project": ["**/*.{js,jsx,mjs,cjs}"],
   // the build resolves this name to the script already on the page
   // paper and paperjs-offset are installed for the icon tools only: npm install --prefix tools/icons (tools/icons/package.json)
   // @plenix-ds/lint is loaded by tools/baseline/scan.js only when it is installed beside the app or here; the scan has its own copy of the rules otherwise
   "ignoreDependencies": ["plenix-platform", "paper", "paperjs-offset", "@plenix-ds/lint"],
-  // written by build-packages.js into the package it builds
-  "ignoreUnresolved": ["./check-copy.js", "./index.cjs"],
+  // written by build-packages.js into the package it builds; ./icon-names.js is the npm package's lazy icon-name chunk, which
+  // vite.packages.config.mjs (plenix-icon-names) writes for tools/npm-esm/library.js
+  "ignoreUnresolved": ["./check-copy.js", "./index.cjs", "./icon-names.js"],
   // exports used in ways Knip cannot see (a namespace, a dynamic import in a test, text read by a build or a check)
   "ignoreIssues": {
     // used as layout.<name> by build-icons.js, build-packages.js, build-app.js, tests and tools/icons

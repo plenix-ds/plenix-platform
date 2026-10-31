@@ -247,35 +247,22 @@ import '${SCOPE}/styles/parts/badge.css';
 
 // ---------- react ----------
 const R = path.join(PKG, 'react');
-const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform',
-  loader: { '.js': 'jsx', '.jsx': 'jsx' }, external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
-  // an icon module the Platform imports (#280, stage 5a): plenix-platform/icons/plenix/<name> is the asset layout's module
-  // (platform/dist/icons/plenix/<name>.js), as build-app.js resolves it, so the bundle carries only the icons its components
-  // import and a site's bundler drops those of the components it does not use (Platform source never imports plenix-platform
-  // itself: build-app.js refuses it)
-  alias: { 'plenix-platform': path.join(P, 'dist') },
-  banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' } };
-// the bundle holds no engine address and injects no script (#456, #457): the engines (rich text, charts, PDF) load through the
-// page's plenix-engines.js, shipped beside plenix.js and in the npm package's dist/ (its vendor/ folder is beside it)
-// the ES module as one file is the CDN's plenix.esm.js (unchanged): it knows its own address (#284), so Icon finds the icon
-// files beside it, whatever the file is called
-esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(CDN, 'plenix.esm.js'), banner: { js: jsOpts.banner.js + '\nconst __plenixModuleUrl = import.meta.url;' } }));
-// the npm package's ES modules, one per part (#685, the audit #684): an entry for each module platform/index.js exports from,
-// built with splitting, so the code two parts share sits once in dist/chunks/ and an application that imports one part
-// bundles that part and what it uses (the barrel, dist/index.js, re-exports them all). Before, the package was one flat
-// file, and a bundler kept the whole library for any one import (911 KB minified for { Button }). No address banner: the
-// npm package carries no icon folder (an app registers or imports its icons), as before.
-const partEntries = { index: path.join(P, 'index.js') };
-for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/from '\.\/([^']+)'/g)) partEntries[m[1].replace(/\.jsx?$/, '')] = path.join(P, m[1]);
-// What loads only when asked, in these ES modules only (#702): the browser global, plenix.esm.js and the CommonJS build keep
-// both built in. Arabic: LocaleProvider's import of i18n/ar.js becomes an empty catalog (i18n/optional.js) that
-// dist/i18n/ar.js fills: an app turns Arabic on with import '@plenix-ds/react/i18n/ar'. The icon names: Icon's library.js
-// becomes an empty list with a loader, and the 54 KB list is a chunk of its own, loaded the first time a name needs it.
-// The swap is an esbuild plugin, which needs esbuild's asynchronous API: tools/npm-esm.js runs this one build.
-partEntries['i18n/ar'] = path.join(P, 'i18n', 'ar.optin.js');
-require('child_process').execFileSync(process.execPath, [path.join(ROOT, 'tools', 'npm-esm.js')], { stdio: ['pipe', 'inherit', 'inherit'],
-  input: JSON.stringify(Object.assign({}, jsOpts, { entryPoints: partEntries, format: 'esm', splitting: true, outdir: path.join(R, 'dist'), chunkNames: 'chunks/[name]-[hash]' })) });
-esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
+// @plenix-ds/react's JavaScript, built by Vite in library mode (#709, step 5; vite.packages.config.mjs), one run per build:
+//   cdn  release/cdn/<v>/plenix.esm.js: the ES module as one file (unchanged): it knows its own address (#284), so Icon finds
+//        the icon files beside it, whatever the file is called
+//   esm  the npm package's ES modules, one per part (#685, the audit #684): an entry for each module platform/index.js
+//        exports from, at its own path, and the barrel dist/index.js; the code two parts share sits once in dist/chunks/, so
+//        an application that imports one part bundles that part and what it uses. What loads only when asked (#702) is in
+//        these ES modules only: Arabic (import '@plenix-ds/react/i18n/ar', dist/i18n/ar.js) and the icon names (a chunk of
+//        their own). No address banner: the npm package carries no icon folder (an app registers or imports its icons)
+//   cjs  dist/index.cjs, the CommonJS build, one file
+// The bundles hold no engine address and inject no script (#456, #457): the engines (rich text, charts, PDF) load through the
+// page's plenix-engines.js, shipped beside plenix.js and in the npm package's dist/ (its vendor/ folder is beside it).
+const VITE = path.join(ROOT, 'node_modules', 'vite', 'bin', 'vite.js');
+for (const build of ['cdn', 'esm', 'cjs']) {
+  require('child_process').execFileSync(process.execPath, [VITE, 'build', '--config', path.join(ROOT, 'vite.packages.config.mjs')],
+    { cwd: ROOT, stdio: 'inherit', env: Object.assign({}, process.env, { PLENIX_PACKAGE: build }) });
+}
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));
 copy(path.join(P, 'engines', 'plenix-engines.js'), path.join(R, 'dist', 'plenix-engines.js'));
 // the TypeScript definitions, from the components' header comments (build-types.js)
