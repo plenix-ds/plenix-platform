@@ -63,8 +63,8 @@ import { SectionHeading } from '../../components/SectionHeading/SectionHeading.j
 import { Count } from '../../components/Count/Count.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, map) => Object.keys(map).reduce((out, k) => out.split('{' + k + '}').join(map[k]), s);
 // a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]
 const phrase = (s, map) => s.split(/(\{n\}|\{total\})/).map((p, i) => (p === '{n}' || p === '{total}' ? <Text key={i} variant="data">{map[p.slice(1, -1)]}</Text> : fill(p, map)));
 

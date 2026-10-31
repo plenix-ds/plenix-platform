@@ -77,7 +77,8 @@ async function save(body, person) {
   if (!fs.existsSync(file)) return [400, { error: 'bad-file', message: body.file + ' is not in the repository.' }];
   const json = JSON.parse(fs.readFileSync(file, 'utf8'));
   for (const c of changes) {
-    const m = TOKEN_RE.exec(c.token), group = json[m[1]], entry = group && group[m[2]];
+    const own = (o, k) => !!o && Object.prototype.hasOwnProperty.call(o, k);   // own properties only: a token named constructor is not the Object function (issue 695)
+    const m = TOKEN_RE.exec(c.token), group = own(json, m[1]) ? json[m[1]] : null, entry = own(group, m[2]) ? group[m[2]] : null;
     if (!entry) return [400, { error: 'unknown-token', message: c.token + ' is not in ' + body.file + '.' }];
     if (c.from !== undefined && String(entry.$value) !== String(c.from)) return [409, { error: 'conflict', message: c.token + ' changed since the dialog opened (now ' + entry.$value + '). Reload and edit again.' }];
     entry.$value = c.to;

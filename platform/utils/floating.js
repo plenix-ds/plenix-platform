@@ -37,6 +37,8 @@ const release = (i) => { if (i) taken[i] = false; };
 // what the browser can do, checked once
 const supports = (decl) => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
 export const FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+// the top layer (the popover attribute) with CSS anchor positioning: where a floating part opens in the top layer and anchors to its trigger (Chrome 125, Firefox 147, Safari 26), checked once; one copy for every part (issue 693)
+export const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
 
 export const PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];

@@ -18,7 +18,96 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
-const version=e=>JSON.stringify([e.id,e.before,e.after]);
-export function SuggestedEdit({edits=[],variant='diff',onDecision,disabled=false,strings,className}){
-  devWarn('SuggestedEdit', { variant }, { variant: ['diff','accept','reject','all'] });
-  const t=useStrings('suggestedEdit', strings),[done,setDone]=React.useState({}),[busy,setBusy]=React.useState(false),[error,setError]=React.useState('');const lock=React.useRef(false),alive=React.useRef(true);React.useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);const state=e=>e.status&&e.status!=='pending'?e.status:done[version(e)],pending=edits.filter(e=>!state(e));async function decide(list,decision){if(disabled||lock.current||!onDecision||!list.length)return;const keys=list.map(version);lock.current=true;setBusy(true);setError('');try{await onDecision({ids:list.map(e=>e.id),decision});if(alive.current)setDone(p=>{const next={...p};keys.forEach(k=>{next[k]=decision;});return next;});}catch(e){if(alive.current)setError(t.failed);}finally{lock.current=false;if(alive.current)setBusy(false);}}return <Stack className={cx('plx-suggested-edit',className)} role="group" aria-label={t.label} aria-busy={busy||undefined}><Badge icon={SparkleIcon}>{t.label}</Badge>{!edits.length?<Text>{t.empty}</Text>:null}{edits.map(e=>{const s=state(e);return <Stack key={e.id} className="plx-suggested-edit__item"><Text as="p"><VisuallyHidden>{t.before+': '}</VisuallyHidden><del className="plx-suggested-edit__before">{e.before}</del>{" "}<VisuallyHidden>{t.after+': '}</VisuallyHidden><ins className="plx-suggested-edit__after">{e.after}</ins></Text>{s?<Badge icon={s==='accepted'?CheckIcon:CloseIcon} role="status">{s==='accepted'?t.accepted:t.rejected}</Badge>:<Inline wrap>{variant!=='reject'?<Button disabled={disabled||busy||!onDecision} onClick={()=>decide([e],'accepted')}>{t.accept}</Button>:null}{variant!=='accept'?<Button variant="secondary" disabled={disabled||busy||!onDecision} onClick={()=>decide([e],'rejected')}>{t.reject}</Button>:null}</Inline>}</Stack>;})}{variant==='all'&&pending.length?<Button disabled={disabled||busy||!onDecision} onClick={()=>decide(pending,'accepted')}>{t.acceptAll}</Button>:null}{error?<Notice tone="danger">{error}</Notice>:null}</Stack>;}
+const version = (e) => JSON.stringify([e.id, e.before, e.after]);
+export function SuggestedEdit({ edits = [], variant = 'diff', onDecision, disabled = false, strings, className }) {
+  devWarn('SuggestedEdit', { variant }, { variant: ['diff', 'accept', 'reject', 'all'] });
+  const t = useStrings('suggestedEdit', strings),
+    [done, setDone] = React.useState({}),
+    [busy, setBusy] = React.useState(false),
+    [error, setError] = React.useState('');
+  const lock = React.useRef(false),
+    alive = React.useRef(true);
+  React.useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+  const state = (e) => (e.status && e.status !== 'pending' ? e.status : done[version(e)]),
+    pending = edits.filter((e) => !state(e));
+  async function decide(list, decision) {
+    if (disabled || lock.current || !onDecision || !list.length) return;
+    const keys = list.map(version);
+    lock.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      await onDecision({ ids: list.map((e) => e.id), decision });
+      if (alive.current)
+        setDone((p) => {
+          const next = { ...p };
+          keys.forEach((k) => {
+            next[k] = decision;
+          });
+          return next;
+        });
+    } catch (e) {
+      if (alive.current) setError(t.failed);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
+  }
+  return (
+    <Stack
+      className={cx('plx-suggested-edit', className)}
+      role="group"
+      aria-label={t.label}
+      aria-busy={busy || undefined}
+    >
+      <Badge icon={SparkleIcon}>{t.label}</Badge>
+      {!edits.length ? <Text>{t.empty}</Text> : null}
+      {edits.map((e) => {
+        const s = state(e);
+        return (
+          <Stack key={e.id} className="plx-suggested-edit__item">
+            <Text as="p">
+              <VisuallyHidden>{t.before + ': '}</VisuallyHidden>
+              <del className="plx-suggested-edit__before">{e.before}</del>{' '}
+              <VisuallyHidden>{t.after + ': '}</VisuallyHidden>
+              <ins className="plx-suggested-edit__after">{e.after}</ins>
+            </Text>
+            {s ? (
+              <Badge icon={s === 'accepted' ? CheckIcon : CloseIcon} role="status">
+                {s === 'accepted' ? t.accepted : t.rejected}
+              </Badge>
+            ) : (
+              <Inline wrap>
+                {variant !== 'reject' ? (
+                  <Button disabled={disabled || busy || !onDecision} onClick={() => decide([e], 'accepted')}>
+                    {t.accept}
+                  </Button>
+                ) : null}
+                {variant !== 'accept' ? (
+                  <Button
+                    variant="secondary"
+                    disabled={disabled || busy || !onDecision}
+                    onClick={() => decide([e], 'rejected')}
+                  >
+                    {t.reject}
+                  </Button>
+                ) : null}
+              </Inline>
+            )}
+          </Stack>
+        );
+      })}
+      {variant === 'all' && pending.length ? (
+        <Button disabled={disabled || busy || !onDecision} onClick={() => decide(pending, 'accepted')}>
+          {t.acceptAll}
+        </Button>
+      ) : null}
+      {error ? <Notice tone="danger">{error}</Notice> : null}
+    </Stack>
+  );
+}

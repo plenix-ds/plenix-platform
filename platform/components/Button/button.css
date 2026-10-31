@@ -21,137 +21,734 @@
 /* 4px grid: the icon is the size role's grid icon (--plx-sys-control-icon-<role>), and the inline padding subtracts the 1px
    border, so the icon starts on the grid inside the button (see the spec: Layout › Spatial › Placement on the grid). */
 /* the state variables: the value this button's variant and state chose; never inherited (Styling Standard 4.1) */
-@property --plx-state-button-background{syntax:"*";inherits:false;}
-@property --plx-state-button-border{syntax:"*";inherits:false;}
-@property --plx-state-button-text{syntax:"*";inherits:false;}
-@property --plx-state-button-shadow{syntax:"*";inherits:false;}
-@property --plx-state-button-cursor{syntax:"*";inherits:false;}
-@property --plx-state-button-focus-color{syntax:"*";inherits:false;}
-@property --plx-state-button-inline-size{syntax:"*";inherits:false;}
-@property --plx-state-button-padding-inline{syntax:"*";inherits:false;}
-@property --plx-state-button-radius-start{syntax:"*";inherits:false;}
-@property --plx-state-button-radius-end{syntax:"*";inherits:false;}
-@property --plx-state-button-border-start-width{syntax:"*";inherits:false;}
-@property --plx-state-button-border-end-width{syntax:"*";inherits:false;}
-@property --plx-state-button-rest-background{syntax:"*";inherits:false;}
-@property --plx-state-button-rest-border{syntax:"*";inherits:false;}
-@property --plx-state-button-rest-text{syntax:"*";inherits:false;}
-@property --plx-state-button-hover-background{syntax:"*";inherits:false;}
-@property --plx-state-button-hover-border{syntax:"*";inherits:false;}
-@property --plx-state-button-hover-text{syntax:"*";inherits:false;}
-@property --plx-state-button-hover-icon{syntax:"*";inherits:false;}
-@property --plx-state-button-pressed-background{syntax:"*";inherits:false;}
-@property --plx-state-button-pressed-border{syntax:"*";inherits:false;}
-@property --plx-state-button-pressed-text{syntax:"*";inherits:false;}
-@property --plx-state-button-selected-background{syntax:"*";inherits:false;}
-@property --plx-state-button-selected-border{syntax:"*";inherits:false;}
-@property --plx-state-button-selected-text{syntax:"*";inherits:false;}
-@property --plx-state-button-disabled-background{syntax:"*";inherits:false;}
-@property --plx-state-button-disabled-border{syntax:"*";inherits:false;}
+@property --plx-state-button-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-border {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-text {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-shadow {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-cursor {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-focus-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-inline-size {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-padding-inline {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-radius-start {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-radius-end {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-border-start-width {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-border-end-width {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-rest-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-rest-border {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-rest-text {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-hover-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-hover-border {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-hover-text {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-hover-icon {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-pressed-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-pressed-border {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-pressed-text {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-selected-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-selected-border {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-selected-text {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-disabled-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-disabled-border {
+  syntax: "*";
+  inherits: false;
+}
 /* a button with words may shrink where its container lets it (issue 677): the context hooks --plx-comp-button-context-flex-shrink and
    --plx-comp-button-context-min-inline-size, set by a pane's header row, let its label end in an ellipsis instead of running past the
    pane; an icon-only button never shrinks */
-@property --plx-state-button-flex-shrink{syntax:"*";inherits:false;}
-@property --plx-state-button-min-inline-size{syntax:"*";inherits:false;}
-.plx-button:where(:not(.plx-button--icon-only)){--plx-state-button-flex-shrink:var(--plx-comp-button-context-flex-shrink,0);--plx-state-button-min-inline-size:var(--plx-comp-button-context-min-inline-size,auto);}
+@property --plx-state-button-flex-shrink {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-min-inline-size {
+  syntax: "*";
+  inherits: false;
+}
+.plx-button:where(:not(.plx-button--icon-only)) {
+  --plx-state-button-flex-shrink: var(--plx-comp-button-context-flex-shrink, 0);
+  --plx-state-button-min-inline-size: var(--plx-comp-button-context-min-inline-size, auto);
+}
 /* the raised look (the owner's pick G-R4-H, #610): the glow (a background image), the bottom edge and the shadow of each
    state; unset (ghost, bars, selected, pressed, disabled) they fall back to flat */
-@property --plx-state-button-image{syntax:"*";inherits:false;}
-@property --plx-state-button-border-end{syntax:"*";inherits:false;}
-@property --plx-state-button-elevation{syntax:"*";inherits:false;}
-@property --plx-state-button-rest-image{syntax:"*";inherits:false;}
-@property --plx-state-button-rest-border-end{syntax:"*";inherits:false;}
-@property --plx-state-button-rest-elevation{syntax:"*";inherits:false;}
-@property --plx-state-button-hover-image{syntax:"*";inherits:false;}
-@property --plx-state-button-hover-elevation{syntax:"*";inherits:false;}
-.plx-button{align-items:center;appearance:none;background-color:var(--plx-state-button-background);background-image:var(--plx-state-button-image,none);border-block-end-color:var(--plx-state-button-border-end,var(--plx-state-button-border));border-block-end-style:solid;border-block-end-width:var(--plx-comp-button-border-width);border-block-start-color:var(--plx-state-button-border);border-block-start-style:solid;border-block-start-width:var(--plx-comp-button-border-width);border-end-end-radius:var(--plx-state-button-radius-end,var(--plx-comp-button-radius));border-end-start-radius:var(--plx-state-button-radius-start,var(--plx-comp-button-radius));border-inline-end-color:var(--plx-state-button-border);border-inline-end-style:solid;border-inline-end-width:var(--plx-state-button-border-end-width,var(--plx-comp-button-border-width));border-inline-start-color:var(--plx-state-button-border);border-inline-start-style:solid;border-inline-start-width:var(--plx-state-button-border-start-width,var(--plx-comp-button-border-width));border-start-end-radius:var(--plx-state-button-radius-end,var(--plx-comp-button-radius));border-start-start-radius:var(--plx-state-button-radius-start,var(--plx-comp-button-radius));box-shadow:var(--plx-state-button-elevation,var(--plx-state-button-shadow,none));color:var(--plx-state-button-text);column-gap:var(--plx-comp-button-gap);cursor:var(--plx-state-button-cursor,pointer);display:inline-flex;flex-shrink:var(--plx-state-button-flex-shrink,0);font-family:var(--plx-comp-button-font-family);font-size:var(--plx-comp-button-font-size);font-weight:var(--plx-comp-button-font-weight);inline-size:var(--plx-state-button-inline-size,var(--plx-comp-button-context-width,auto));justify-content:var(--plx-comp-button-context-justify,center);letter-spacing:var(--plx-sys-text-body-letter-spacing);line-height:var(--plx-comp-button-line-height);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-button-context-min-height,var(--plx-comp-button-height));min-inline-size:var(--plx-state-button-min-inline-size,auto);overflow-x:var(--plx-comp-button-context-overflow,visible);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-state-button-padding-inline,calc(var(--plx-comp-button-padding) - var(--plx-comp-button-border-width)));padding-inline-start:var(--plx-state-button-padding-inline,calc(var(--plx-comp-button-padding) - var(--plx-comp-button-border-width)));text-decoration:none;transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);user-select:none;vertical-align:middle;white-space:nowrap;word-spacing:normal;}
+@property --plx-state-button-image {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-border-end {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-elevation {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-rest-image {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-rest-border-end {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-rest-elevation {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-hover-image {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-button-hover-elevation {
+  syntax: "*";
+  inherits: false;
+}
+.plx-button {
+  align-items: center;
+  appearance: none;
+  background-color: var(--plx-state-button-background);
+  background-image: var(--plx-state-button-image, none);
+  border-block-end-color: var(--plx-state-button-border-end, var(--plx-state-button-border));
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-button-border-width);
+  border-block-start-color: var(--plx-state-button-border);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-button-border-width);
+  border-end-end-radius: var(--plx-state-button-radius-end, var(--plx-comp-button-radius));
+  border-end-start-radius: var(--plx-state-button-radius-start, var(--plx-comp-button-radius));
+  border-inline-end-color: var(--plx-state-button-border);
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-state-button-border-end-width, var(--plx-comp-button-border-width));
+  border-inline-start-color: var(--plx-state-button-border);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-state-button-border-start-width, var(--plx-comp-button-border-width));
+  border-start-end-radius: var(--plx-state-button-radius-end, var(--plx-comp-button-radius));
+  border-start-start-radius: var(--plx-state-button-radius-start, var(--plx-comp-button-radius));
+  box-shadow: var(--plx-state-button-elevation, var(--plx-state-button-shadow, none));
+  color: var(--plx-state-button-text);
+  column-gap: var(--plx-comp-button-gap);
+  cursor: var(--plx-state-button-cursor, pointer);
+  display: inline-flex;
+  flex-shrink: var(--plx-state-button-flex-shrink, 0);
+  font-family: var(--plx-comp-button-font-family);
+  font-size: var(--plx-comp-button-font-size);
+  font-weight: var(--plx-comp-button-font-weight);
+  inline-size: var(--plx-state-button-inline-size, var(--plx-comp-button-context-width, auto));
+  justify-content: var(--plx-comp-button-context-justify, center);
+  letter-spacing: var(--plx-sys-text-body-letter-spacing);
+  line-height: var(--plx-comp-button-line-height);
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  min-block-size: var(--plx-comp-button-context-min-height, var(--plx-comp-button-height));
+  min-inline-size: var(--plx-state-button-min-inline-size, auto);
+  overflow-x: var(--plx-comp-button-context-overflow, visible);
+  padding-block-end: 0;
+  padding-block-start: 0;
+  padding-inline-end: var(
+    --plx-state-button-padding-inline,
+    calc(var(--plx-comp-button-padding) - var(--plx-comp-button-border-width))
+  );
+  padding-inline-start: var(
+    --plx-state-button-padding-inline,
+    calc(var(--plx-comp-button-padding) - var(--plx-comp-button-border-width))
+  );
+  text-decoration: none;
+  transition-duration: var(--plx-sys-motion-duration-instant);
+  transition-property: background-color, border-color, box-shadow, color, transform;
+  transition-timing-function: var(--plx-sys-motion-ease-standard);
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-spacing: normal;
+}
 /* the hit area: on a touch screen it reaches the target size (44px) around a button that looks smaller (a 28px toolbar
    button, a container that fixes the height), as Apple and Material ask; elsewhere it is the button. Positioned at no
    specificity, so a class that places a button (absolute, sticky) still wins. */
-:where(.plx-button){position:relative;}
-.plx-button::before{content:"";inset-block-end:var(--plx-comp-button-target-inset-block);inset-block-start:var(--plx-comp-button-target-inset-block);inset-inline-end:var(--plx-comp-button-target-inset-inline);inset-inline-start:var(--plx-comp-button-target-inset-inline);position:absolute;}
+:where(.plx-button) {
+  position: relative;
+}
+.plx-button::before {
+  content: "";
+  inset-block-end: var(--plx-comp-button-target-inset-block);
+  inset-block-start: var(--plx-comp-button-target-inset-block);
+  inset-inline-end: var(--plx-comp-button-target-inset-inline);
+  inset-inline-start: var(--plx-comp-button-target-inset-inline);
+  position: absolute;
+}
 /* sizes: md unless a size class says otherwise */
-.plx-button:where(:not(.plx-button--size-sm, .plx-button--size-xs, .plx-button--size-2xs, .plx-button--size-lg)){--plx-comp-button-font-size:var(--plx-comp-button-size-md-font-size);--plx-comp-button-font-weight:var(--plx-comp-button-size-md-font-weight);--plx-comp-button-gap:var(--plx-comp-button-size-md-gap);--plx-comp-button-height:var(--plx-comp-button-context-height,var(--plx-comp-button-size-md-height));--plx-comp-button-hover-background:var(--plx-comp-button-size-md-hover-background);--plx-comp-button-hover-border:var(--plx-comp-button-size-md-hover-border);--plx-comp-button-pressed-background:var(--plx-comp-button-size-md-pressed-background);--plx-comp-button-icon:var(--plx-comp-button-context-icon,var(--plx-comp-button-size-md-icon-size));--plx-comp-button-padding:var(--plx-comp-button-size-md-padding-inline);--plx-comp-button-primary-ring:var(--plx-comp-button-size-md-primary-ring);--plx-comp-button-selected-border:var(--plx-comp-button-size-md-selected-border);--plx-comp-button-selected-text:var(--plx-comp-button-size-md-selected-text);--plx-comp-button-text:var(--plx-comp-button-size-md-text);}
-.plx-button--size-sm{--plx-comp-button-font-size:var(--plx-comp-button-size-sm-font-size);--plx-comp-button-font-weight:var(--plx-comp-button-size-sm-font-weight);--plx-comp-button-gap:var(--plx-comp-button-size-sm-gap);--plx-comp-button-height:var(--plx-comp-button-context-height,var(--plx-comp-button-size-sm-height));--plx-comp-button-hover-background:var(--plx-comp-button-size-sm-hover-background);--plx-comp-button-hover-border:var(--plx-comp-button-size-sm-hover-border);--plx-comp-button-pressed-background:var(--plx-comp-button-size-sm-pressed-background);--plx-comp-button-icon:var(--plx-comp-button-context-icon,var(--plx-comp-button-size-sm-icon-size));--plx-comp-button-padding:var(--plx-comp-button-size-sm-padding-inline);--plx-comp-button-primary-ring:var(--plx-comp-button-size-sm-primary-ring);--plx-comp-button-selected-border:var(--plx-comp-button-size-sm-selected-border);--plx-comp-button-selected-text:var(--plx-comp-button-size-sm-selected-text);--plx-comp-button-text:var(--plx-comp-button-size-sm-text);}
-.plx-button--size-xs{--plx-comp-button-font-size:var(--plx-comp-button-size-xs-font-size);--plx-comp-button-font-weight:var(--plx-comp-button-size-xs-font-weight);--plx-comp-button-gap:var(--plx-comp-button-size-xs-gap);--plx-comp-button-height:var(--plx-comp-button-context-height,var(--plx-comp-button-size-xs-height));--plx-comp-button-hover-background:var(--plx-comp-button-size-xs-hover-background);--plx-comp-button-hover-border:var(--plx-comp-button-size-xs-hover-border);--plx-comp-button-pressed-background:var(--plx-comp-button-size-xs-pressed-background);--plx-comp-button-icon:var(--plx-comp-button-context-icon,var(--plx-comp-button-size-xs-icon-size));--plx-comp-button-padding:var(--plx-comp-button-size-xs-padding-inline);--plx-comp-button-primary-ring:var(--plx-comp-button-size-xs-primary-ring);--plx-comp-button-selected-border:var(--plx-comp-button-size-xs-selected-border);--plx-comp-button-selected-text:var(--plx-comp-button-size-xs-selected-text);--plx-comp-button-text:var(--plx-comp-button-size-xs-text);}
+.plx-button:where(:not(.plx-button--size-sm, .plx-button--size-xs, .plx-button--size-2xs, .plx-button--size-lg)) {
+  --plx-comp-button-font-size: var(--plx-comp-button-size-md-font-size);
+  --plx-comp-button-font-weight: var(--plx-comp-button-size-md-font-weight);
+  --plx-comp-button-gap: var(--plx-comp-button-size-md-gap);
+  --plx-comp-button-height: var(--plx-comp-button-context-height, var(--plx-comp-button-size-md-height));
+  --plx-comp-button-hover-background: var(--plx-comp-button-size-md-hover-background);
+  --plx-comp-button-hover-border: var(--plx-comp-button-size-md-hover-border);
+  --plx-comp-button-pressed-background: var(--plx-comp-button-size-md-pressed-background);
+  --plx-comp-button-icon: var(--plx-comp-button-context-icon, var(--plx-comp-button-size-md-icon-size));
+  --plx-comp-button-padding: var(--plx-comp-button-size-md-padding-inline);
+  --plx-comp-button-primary-ring: var(--plx-comp-button-size-md-primary-ring);
+  --plx-comp-button-selected-border: var(--plx-comp-button-size-md-selected-border);
+  --plx-comp-button-selected-text: var(--plx-comp-button-size-md-selected-text);
+  --plx-comp-button-text: var(--plx-comp-button-size-md-text);
+}
+.plx-button--size-sm {
+  --plx-comp-button-font-size: var(--plx-comp-button-size-sm-font-size);
+  --plx-comp-button-font-weight: var(--plx-comp-button-size-sm-font-weight);
+  --plx-comp-button-gap: var(--plx-comp-button-size-sm-gap);
+  --plx-comp-button-height: var(--plx-comp-button-context-height, var(--plx-comp-button-size-sm-height));
+  --plx-comp-button-hover-background: var(--plx-comp-button-size-sm-hover-background);
+  --plx-comp-button-hover-border: var(--plx-comp-button-size-sm-hover-border);
+  --plx-comp-button-pressed-background: var(--plx-comp-button-size-sm-pressed-background);
+  --plx-comp-button-icon: var(--plx-comp-button-context-icon, var(--plx-comp-button-size-sm-icon-size));
+  --plx-comp-button-padding: var(--plx-comp-button-size-sm-padding-inline);
+  --plx-comp-button-primary-ring: var(--plx-comp-button-size-sm-primary-ring);
+  --plx-comp-button-selected-border: var(--plx-comp-button-size-sm-selected-border);
+  --plx-comp-button-selected-text: var(--plx-comp-button-size-sm-selected-text);
+  --plx-comp-button-text: var(--plx-comp-button-size-sm-text);
+}
+.plx-button--size-xs {
+  --plx-comp-button-font-size: var(--plx-comp-button-size-xs-font-size);
+  --plx-comp-button-font-weight: var(--plx-comp-button-size-xs-font-weight);
+  --plx-comp-button-gap: var(--plx-comp-button-size-xs-gap);
+  --plx-comp-button-height: var(--plx-comp-button-context-height, var(--plx-comp-button-size-xs-height));
+  --plx-comp-button-hover-background: var(--plx-comp-button-size-xs-hover-background);
+  --plx-comp-button-hover-border: var(--plx-comp-button-size-xs-hover-border);
+  --plx-comp-button-pressed-background: var(--plx-comp-button-size-xs-pressed-background);
+  --plx-comp-button-icon: var(--plx-comp-button-context-icon, var(--plx-comp-button-size-xs-icon-size));
+  --plx-comp-button-padding: var(--plx-comp-button-size-xs-padding-inline);
+  --plx-comp-button-primary-ring: var(--plx-comp-button-size-xs-primary-ring);
+  --plx-comp-button-selected-border: var(--plx-comp-button-size-xs-selected-border);
+  --plx-comp-button-selected-text: var(--plx-comp-button-size-xs-selected-text);
+  --plx-comp-button-text: var(--plx-comp-button-size-xs-text);
+}
 /* 2xs: the smallest button (the legacy "Show more"): inline height, 11px text, a blue tint on hover */
-.plx-button--size-2xs{--plx-comp-button-font-size:var(--plx-comp-button-size-2xs-font-size);--plx-comp-button-font-weight:var(--plx-comp-button-size-2xs-font-weight);--plx-comp-button-gap:var(--plx-comp-button-size-2xs-gap);--plx-comp-button-height:var(--plx-comp-button-context-height,var(--plx-comp-button-size-2xs-height));--plx-comp-button-hover-background:var(--plx-comp-button-size-2xs-hover-background);--plx-comp-button-hover-border:var(--plx-comp-button-size-2xs-hover-border);--plx-comp-button-pressed-background:var(--plx-comp-button-size-2xs-pressed-background);--plx-comp-button-icon:var(--plx-comp-button-context-icon,var(--plx-comp-button-size-2xs-icon-size));--plx-comp-button-padding:var(--plx-comp-button-size-2xs-padding-inline);--plx-comp-button-primary-ring:var(--plx-comp-button-size-2xs-primary-ring);--plx-comp-button-selected-border:var(--plx-comp-button-size-2xs-selected-border);--plx-comp-button-selected-text:var(--plx-comp-button-size-2xs-selected-text);--plx-comp-button-text:var(--plx-comp-button-size-2xs-text);}
-.plx-button--size-lg{--plx-comp-button-font-size:var(--plx-comp-button-size-lg-font-size);--plx-comp-button-font-weight:var(--plx-comp-button-size-lg-font-weight);--plx-comp-button-gap:var(--plx-comp-button-size-lg-gap);--plx-comp-button-height:var(--plx-comp-button-context-height,var(--plx-comp-button-size-lg-height));--plx-comp-button-hover-background:var(--plx-comp-button-size-lg-hover-background);--plx-comp-button-hover-border:var(--plx-comp-button-size-lg-hover-border);--plx-comp-button-pressed-background:var(--plx-comp-button-size-lg-pressed-background);--plx-comp-button-icon:var(--plx-comp-button-context-icon,var(--plx-comp-button-size-lg-icon-size));--plx-comp-button-padding:var(--plx-comp-button-size-lg-padding-inline);--plx-comp-button-primary-ring:var(--plx-comp-button-size-lg-primary-ring);--plx-comp-button-selected-border:var(--plx-comp-button-size-lg-selected-border);--plx-comp-button-selected-text:var(--plx-comp-button-size-lg-selected-text);--plx-comp-button-text:var(--plx-comp-button-size-lg-text);}
-.plx-button__icon{--plx-comp-icon-size:var(--plx-comp-button-icon);align-items:center;color:var(--plx-comp-button-context-icon-color,var(--plx-comp-button-icon-color,inherit));block-size:var(--plx-comp-button-icon);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-button-icon);justify-content:center;}
+.plx-button--size-2xs {
+  --plx-comp-button-font-size: var(--plx-comp-button-size-2xs-font-size);
+  --plx-comp-button-font-weight: var(--plx-comp-button-size-2xs-font-weight);
+  --plx-comp-button-gap: var(--plx-comp-button-size-2xs-gap);
+  --plx-comp-button-height: var(--plx-comp-button-context-height, var(--plx-comp-button-size-2xs-height));
+  --plx-comp-button-hover-background: var(--plx-comp-button-size-2xs-hover-background);
+  --plx-comp-button-hover-border: var(--plx-comp-button-size-2xs-hover-border);
+  --plx-comp-button-pressed-background: var(--plx-comp-button-size-2xs-pressed-background);
+  --plx-comp-button-icon: var(--plx-comp-button-context-icon, var(--plx-comp-button-size-2xs-icon-size));
+  --plx-comp-button-padding: var(--plx-comp-button-size-2xs-padding-inline);
+  --plx-comp-button-primary-ring: var(--plx-comp-button-size-2xs-primary-ring);
+  --plx-comp-button-selected-border: var(--plx-comp-button-size-2xs-selected-border);
+  --plx-comp-button-selected-text: var(--plx-comp-button-size-2xs-selected-text);
+  --plx-comp-button-text: var(--plx-comp-button-size-2xs-text);
+}
+.plx-button--size-lg {
+  --plx-comp-button-font-size: var(--plx-comp-button-size-lg-font-size);
+  --plx-comp-button-font-weight: var(--plx-comp-button-size-lg-font-weight);
+  --plx-comp-button-gap: var(--plx-comp-button-size-lg-gap);
+  --plx-comp-button-height: var(--plx-comp-button-context-height, var(--plx-comp-button-size-lg-height));
+  --plx-comp-button-hover-background: var(--plx-comp-button-size-lg-hover-background);
+  --plx-comp-button-hover-border: var(--plx-comp-button-size-lg-hover-border);
+  --plx-comp-button-pressed-background: var(--plx-comp-button-size-lg-pressed-background);
+  --plx-comp-button-icon: var(--plx-comp-button-context-icon, var(--plx-comp-button-size-lg-icon-size));
+  --plx-comp-button-padding: var(--plx-comp-button-size-lg-padding-inline);
+  --plx-comp-button-primary-ring: var(--plx-comp-button-size-lg-primary-ring);
+  --plx-comp-button-selected-border: var(--plx-comp-button-size-lg-selected-border);
+  --plx-comp-button-selected-text: var(--plx-comp-button-size-lg-selected-text);
+  --plx-comp-button-text: var(--plx-comp-button-size-lg-text);
+}
+.plx-button__icon {
+  --plx-comp-icon-size: var(--plx-comp-button-icon);
+  align-items: center;
+  color: var(--plx-comp-button-context-icon-color, var(--plx-comp-button-icon-color, inherit));
+  block-size: var(--plx-comp-button-icon);
+  display: inline-flex;
+  flex-shrink: 0;
+  inline-size: var(--plx-comp-button-icon);
+  justify-content: center;
+}
 /* loading with no icon: the spinner sits over the label, which stays (unseen) to keep the width and the name */
-.plx-button__stack{display:inline-grid;min-inline-size:0;}
-.plx-button__label--waiting{grid-area:1 / 1;opacity:0;}
-.plx-button__icon--over{align-self:center;grid-area:1 / 1;justify-self:center;}
-.plx-button__label{min-inline-size:0;overflow-clip-margin:var(--plx-comp-button-label-clip-margin);overflow-x:clip;overflow-y:clip;text-overflow:ellipsis;}
+.plx-button__stack {
+  display: inline-grid;
+  min-inline-size: 0;
+}
+.plx-button__label--waiting {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+.plx-button__icon--over {
+  align-self: center;
+  grid-area: 1 / 1;
+  justify-self: center;
+}
+.plx-button__label {
+  min-inline-size: 0;
+  overflow-clip-margin: var(--plx-comp-button-label-clip-margin);
+  overflow-x: clip;
+  overflow-y: clip;
+  text-overflow: ellipsis;
+}
 /* the label centered by its capitals (#610 round 2, built in #630): a browser without text-box trimming keeps the line box,
    as before (bundle rule P-48, #459: unsupported CSS only inside @supports) */
-@supports (text-box: trim-both cap alphabetic){.plx-button__label{text-box:trim-both cap alphabetic;}}
+@supports (text-box: trim-both cap alphabetic) {
+  .plx-button__label {
+    text-box: trim-both cap alphabetic;
+  }
+}
 /* truncate: the label fills the button, starts at its start edge and ends in an ellipsis (a long choice in a list) */
-.plx-button__label--truncate{flex-grow:1;text-align:start;white-space:nowrap;}
+.plx-button__label--truncate {
+  flex-grow: 1;
+  text-align: start;
+  white-space: nowrap;
+}
 /* stacked label: the label's lines stack, start-aligned and wrapping (a card-like suggestion); the gap is a context hook */
-.plx-button__label--stacked{align-items:flex-start;display:flex;flex-direction:column;row-gap:var(--plx-comp-button-context-label-gap,0);white-space:normal;}
+.plx-button__label--stacked {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--plx-comp-button-context-label-gap, 0);
+  white-space: normal;
+}
 /* label row: the label lays out a row of its own (an avatar and a name); the gap is a context hook */
-.plx-button__label--row{align-items:center;column-gap:var(--plx-comp-button-context-label-row-gap,var(--plx-comp-button-gap));display:inline-flex;}
+.plx-button__label--row {
+  align-items: center;
+  column-gap: var(--plx-comp-button-context-label-row-gap, var(--plx-comp-button-gap));
+  display: inline-flex;
+}
 /* the states: exactly one applies to a button, and it picks the colors its variant assigned. Hovered, the icon takes the
    variant's hover icon color (subtle: the action blue, as Fluent) through --plx-comp-button-icon-color, the part's input;
    a container's --plx-comp-button-context-icon-color still wins */
-.plx-button:where(:not(.is-selected, :hover, .is-hover, :active, .is-pointer-down, :disabled, [aria-disabled="true"])){--plx-state-button-background:var(--plx-state-button-rest-background);--plx-state-button-border:var(--plx-state-button-rest-border);--plx-state-button-border-end:var(--plx-state-button-rest-border-end);--plx-state-button-elevation:var(--plx-state-button-rest-elevation);--plx-state-button-image:var(--plx-state-button-rest-image);--plx-state-button-text:var(--plx-state-button-rest-text);}
-.plx-button.is-selected:where(:not(:hover, .is-hover, :active, .is-pointer-down, :disabled, [aria-disabled="true"])){--plx-state-button-background:var(--plx-state-button-selected-background,var(--plx-comp-button-selected-background));--plx-state-button-border:var(--plx-state-button-selected-border,var(--plx-comp-button-selected-border));--plx-state-button-text:var(--plx-state-button-selected-text,var(--plx-comp-button-selected-text));}
-.plx-button:is(:hover, .is-hover):where(:not(:active, .is-pointer-down, :disabled, [aria-disabled="true"])){--plx-comp-button-icon-color:var(--plx-state-button-hover-icon,currentcolor);--plx-state-button-background:var(--plx-state-button-hover-background);--plx-state-button-border:var(--plx-state-button-hover-border);--plx-state-button-elevation:var(--plx-state-button-hover-elevation);--plx-state-button-image:var(--plx-state-button-hover-image);--plx-state-button-text:var(--plx-state-button-hover-text);}
+.plx-button:where(:not(.is-selected, :hover, .is-hover, :active, .is-pointer-down, :disabled, [aria-disabled="true"])) {
+  --plx-state-button-background: var(--plx-state-button-rest-background);
+  --plx-state-button-border: var(--plx-state-button-rest-border);
+  --plx-state-button-border-end: var(--plx-state-button-rest-border-end);
+  --plx-state-button-elevation: var(--plx-state-button-rest-elevation);
+  --plx-state-button-image: var(--plx-state-button-rest-image);
+  --plx-state-button-text: var(--plx-state-button-rest-text);
+}
+.plx-button.is-selected:where(:not(:hover, .is-hover, :active, .is-pointer-down, :disabled, [aria-disabled="true"])) {
+  --plx-state-button-background: var(
+    --plx-state-button-selected-background,
+    var(--plx-comp-button-selected-background)
+  );
+  --plx-state-button-border: var(--plx-state-button-selected-border, var(--plx-comp-button-selected-border));
+  --plx-state-button-text: var(--plx-state-button-selected-text, var(--plx-comp-button-selected-text));
+}
+.plx-button:is(:hover, .is-hover):where(:not(:active, .is-pointer-down, :disabled, [aria-disabled="true"])) {
+  --plx-comp-button-icon-color: var(--plx-state-button-hover-icon, currentcolor);
+  --plx-state-button-background: var(--plx-state-button-hover-background);
+  --plx-state-button-border: var(--plx-state-button-hover-border);
+  --plx-state-button-elevation: var(--plx-state-button-hover-elevation);
+  --plx-state-button-image: var(--plx-state-button-hover-image);
+  --plx-state-button-text: var(--plx-state-button-hover-text);
+}
 /* pressed (batch 238): while held, a step darker than hover; .is-pointer-down draws it in the design system */
-.plx-button:is(:active, .is-pointer-down):where(:not(:disabled, [aria-disabled="true"])){--plx-state-button-background:var(--plx-state-button-pressed-background);--plx-state-button-border:var(--plx-state-button-pressed-border);--plx-state-button-text:var(--plx-state-button-pressed-text);}
-.plx-button:is(:disabled, [aria-disabled="true"]){--plx-state-button-background:var(--plx-state-button-disabled-background,var(--plx-comp-button-disabled-background));--plx-state-button-border:var(--plx-state-button-disabled-border,var(--plx-comp-button-disabled-border));--plx-state-button-text:var(--plx-comp-button-disabled-text);}
-.plx-button:is(:disabled, [aria-disabled="true"]):where(:not(.is-loading)){--plx-state-button-cursor:not-allowed;}
-.plx-button.is-loading{--plx-state-button-cursor:progress;}
-.plx-button:is(:focus-visible, .is-focus-visible){outline-color:var(--plx-state-button-focus-color,var(--plx-comp-button-focus-ring-color));outline-offset:var(--plx-comp-button-focus-ring-offset);outline-style:solid;outline-width:var(--plx-comp-button-focus-ring-width);}
+.plx-button:is(:active, .is-pointer-down):where(:not(:disabled, [aria-disabled="true"])) {
+  --plx-state-button-background: var(--plx-state-button-pressed-background);
+  --plx-state-button-border: var(--plx-state-button-pressed-border);
+  --plx-state-button-text: var(--plx-state-button-pressed-text);
+}
+.plx-button:is(:disabled, [aria-disabled="true"]) {
+  --plx-state-button-background: var(
+    --plx-state-button-disabled-background,
+    var(--plx-comp-button-disabled-background)
+  );
+  --plx-state-button-border: var(--plx-state-button-disabled-border, var(--plx-comp-button-disabled-border));
+  --plx-state-button-text: var(--plx-comp-button-disabled-text);
+}
+.plx-button:is(:disabled, [aria-disabled="true"]):where(:not(.is-loading)) {
+  --plx-state-button-cursor: not-allowed;
+}
+.plx-button.is-loading {
+  --plx-state-button-cursor: progress;
+}
+.plx-button:is(:focus-visible, .is-focus-visible) {
+  outline-color: var(--plx-state-button-focus-color, var(--plx-comp-button-focus-ring-color));
+  outline-offset: var(--plx-comp-button-focus-ring-offset);
+  outline-style: solid;
+  outline-width: var(--plx-comp-button-focus-ring-width);
+}
 /* the press: buttons shrink a touch while held (motion, batch 236) */
-.plx-button:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
+.plx-button:active:where(:not(:disabled, [aria-disabled="true"])) {
+  transform: scale(var(--plx-sys-motion-press-scale));
+}
 /* the variants: each assigns the colors of its states; secondary is every button without another variant */
-.plx-button:where(:not(.plx-button--ghost, .plx-button--primary, .plx-button--danger, .plx-button--tertiary, .plx-button--danger-secondary, .plx-button--on-inverse, .plx-button--on-accent)){--plx-state-button-rest-background:var(--plx-comp-button-secondary-background);--plx-state-button-rest-border:var(--plx-comp-button-secondary-border);--plx-state-button-rest-text:var(--plx-comp-button-text);--plx-state-button-hover-background:var(--plx-comp-button-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-hover-border);--plx-state-button-hover-text:var(--plx-comp-button-secondary-hover-text);--plx-state-button-pressed-background:var(--plx-comp-button-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-hover-border);--plx-state-button-pressed-text:var(--plx-comp-button-secondary-hover-text);}
-.plx-button--ghost:where(:not(.plx-button--on-inverse)){--plx-state-button-rest-background:var(--plx-comp-button-ghost-background);--plx-state-button-rest-border:var(--plx-comp-button-ghost-border);--plx-state-button-rest-text:var(--plx-comp-button-ghost-text);--plx-state-button-hover-background:var(--plx-comp-button-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-ghost-hover-border);--plx-state-button-hover-icon:var(--plx-comp-button-ghost-hover-icon);--plx-state-button-hover-text:var(--plx-comp-button-ghost-hover-text);--plx-state-button-pressed-background:var(--plx-comp-button-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-ghost-hover-border);--plx-state-button-pressed-text:var(--plx-comp-button-ghost-hover-text);--plx-state-button-disabled-background:var(--plx-comp-button-disabled-quiet-background);--plx-state-button-disabled-border:var(--plx-comp-button-disabled-quiet-border);}
-.plx-button--primary:where(:not(.plx-button--on-inverse)){--plx-state-button-rest-background:var(--plx-comp-button-primary-background);--plx-state-button-rest-border:var(--plx-comp-button-primary-border);--plx-state-button-rest-text:var(--plx-comp-button-primary-text);--plx-state-button-hover-background:var(--plx-comp-button-primary-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-primary-hover-border);--plx-state-button-hover-text:var(--plx-comp-button-primary-hover-text);--plx-state-button-pressed-background:var(--plx-comp-button-primary-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-primary-pressed-border);--plx-state-button-pressed-text:var(--plx-comp-button-primary-hover-text);}
+.plx-button:where(
+    :not(
+        .plx-button--ghost,
+        .plx-button--primary,
+        .plx-button--danger,
+        .plx-button--tertiary,
+        .plx-button--danger-secondary,
+        .plx-button--on-inverse,
+        .plx-button--on-accent
+      )
+  ) {
+  --plx-state-button-rest-background: var(--plx-comp-button-secondary-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-secondary-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-hover-border);
+  --plx-state-button-hover-text: var(--plx-comp-button-secondary-hover-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-hover-border);
+  --plx-state-button-pressed-text: var(--plx-comp-button-secondary-hover-text);
+}
+.plx-button--ghost:where(:not(.plx-button--on-inverse)) {
+  --plx-state-button-rest-background: var(--plx-comp-button-ghost-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-ghost-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-ghost-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-ghost-hover-border);
+  --plx-state-button-hover-icon: var(--plx-comp-button-ghost-hover-icon);
+  --plx-state-button-hover-text: var(--plx-comp-button-ghost-hover-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-ghost-hover-border);
+  --plx-state-button-pressed-text: var(--plx-comp-button-ghost-hover-text);
+  --plx-state-button-disabled-background: var(--plx-comp-button-disabled-quiet-background);
+  --plx-state-button-disabled-border: var(--plx-comp-button-disabled-quiet-border);
+}
+.plx-button--primary:where(:not(.plx-button--on-inverse)) {
+  --plx-state-button-rest-background: var(--plx-comp-button-primary-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-primary-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-primary-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-primary-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-primary-hover-border);
+  --plx-state-button-hover-text: var(--plx-comp-button-primary-hover-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-primary-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-primary-pressed-border);
+  --plx-state-button-pressed-text: var(--plx-comp-button-primary-hover-text);
+}
 /* the primary ring, wherever the button can act */
-.plx-button--primary:where(:not(:disabled, [aria-disabled="true"], .plx-button--on-inverse)){--plx-state-button-shadow:var(--plx-comp-button-primary-ring);}
-.plx-button--danger{--plx-state-button-rest-background:var(--plx-comp-button-danger-background);--plx-state-button-rest-border:var(--plx-comp-button-danger-border);--plx-state-button-rest-text:var(--plx-comp-button-danger-text);--plx-state-button-hover-background:var(--plx-comp-button-danger-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-danger-hover-border);--plx-state-button-hover-text:var(--plx-comp-button-danger-hover-text);--plx-state-button-pressed-background:var(--plx-comp-button-danger-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-danger-pressed-border);--plx-state-button-pressed-text:var(--plx-comp-button-danger-hover-text);}
+.plx-button--primary:where(:not(:disabled, [aria-disabled="true"], .plx-button--on-inverse)) {
+  --plx-state-button-shadow: var(--plx-comp-button-primary-ring);
+}
+.plx-button--danger {
+  --plx-state-button-rest-background: var(--plx-comp-button-danger-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-danger-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-danger-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-danger-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-danger-hover-border);
+  --plx-state-button-hover-text: var(--plx-comp-button-danger-hover-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-danger-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-danger-pressed-border);
+  --plx-state-button-pressed-text: var(--plx-comp-button-danger-hover-text);
+}
 /* tertiary: outlined in the action color, no fill (the design systems’ tertiary); hover fills it like primary */
-.plx-button--tertiary{--plx-state-button-rest-background:var(--plx-comp-button-tertiary-background);--plx-state-button-rest-border:var(--plx-comp-button-tertiary-border);--plx-state-button-rest-text:var(--plx-comp-button-tertiary-text);--plx-state-button-hover-background:var(--plx-comp-button-tertiary-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-tertiary-hover-border);--plx-state-button-hover-text:var(--plx-comp-button-tertiary-hover-text);--plx-state-button-pressed-background:var(--plx-comp-button-tertiary-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-tertiary-pressed-border);--plx-state-button-pressed-text:var(--plx-comp-button-tertiary-hover-text);}
+.plx-button--tertiary {
+  --plx-state-button-rest-background: var(--plx-comp-button-tertiary-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-tertiary-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-tertiary-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-tertiary-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-tertiary-hover-border);
+  --plx-state-button-hover-text: var(--plx-comp-button-tertiary-hover-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-tertiary-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-tertiary-pressed-border);
+  --plx-state-button-pressed-text: var(--plx-comp-button-tertiary-hover-text);
+}
 /* raised action buttons (the owner's pick G-R4-H, #610): secondary, tertiary, primary and danger take the Card builder's
    Glow (the fill to 55%, fading to its rim) with the Halo shadow at rest, the Glow on the hover fill with Lifted on hover,
    and are flat when pressed or disabled. Primary and danger: the border is the glow's rim and the bottom edge one shade
    deeper, so the outermost line is the darkest. Ghost stays flat, and so does the 2xs size (its tinted hover). A bar
    sets the context hooks --plx-comp-button-context-glow and --plx-comp-button-context-elevation (none) on its own
    element, so its buttons stay flat (Toolbar, FilterBar, AppHeader). */
-.plx-button:where(:not(.plx-button--ghost, .plx-button--primary, .plx-button--danger, .plx-button--tertiary, .plx-button--danger-secondary, .plx-button--on-inverse, .plx-button--on-accent, .plx-button--size-2xs)){--plx-state-button-hover-background:var(--plx-comp-button-secondary-raised-hover-background);--plx-state-button-hover-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-hover-shadow));--plx-state-button-hover-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-secondary-hover-glow-image));--plx-state-button-pressed-background:var(--plx-comp-button-secondary-raised-pressed-background);--plx-state-button-rest-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-rest-shadow));--plx-state-button-rest-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-secondary-glow-image));}
-.plx-button--tertiary:where(:not(.plx-button--size-2xs)){--plx-state-button-hover-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-hover-shadow));--plx-state-button-hover-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-secondary-hover-glow-image));--plx-state-button-rest-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-rest-shadow));--plx-state-button-rest-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-secondary-glow-image));}
-.plx-button--primary:where(:not(.plx-button--on-inverse, .plx-button--size-2xs)){--plx-state-button-hover-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-hover-shadow));--plx-state-button-hover-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-primary-hover-glow-image));--plx-state-button-rest-border-end:var(--plx-comp-button-primary-border-end);--plx-state-button-rest-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-rest-shadow));--plx-state-button-rest-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-primary-glow-image));}
-.plx-button--danger:where(:not(.plx-button--size-2xs)){--plx-state-button-hover-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-hover-shadow));--plx-state-button-hover-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-danger-hover-glow-image));--plx-state-button-rest-border-end:var(--plx-comp-button-danger-border-end);--plx-state-button-rest-elevation:var(--plx-comp-button-context-elevation,var(--plx-comp-button-raised-rest-shadow));--plx-state-button-rest-image:var(--plx-comp-button-context-glow,var(--plx-comp-button-danger-glow-image));}
+.plx-button:where(
+    :not(
+        .plx-button--ghost,
+        .plx-button--primary,
+        .plx-button--danger,
+        .plx-button--tertiary,
+        .plx-button--danger-secondary,
+        .plx-button--on-inverse,
+        .plx-button--on-accent,
+        .plx-button--size-2xs
+      )
+  ) {
+  --plx-state-button-hover-background: var(--plx-comp-button-secondary-raised-hover-background);
+  --plx-state-button-hover-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-hover-shadow)
+  );
+  --plx-state-button-hover-image: var(
+    --plx-comp-button-context-glow,
+    var(--plx-comp-button-secondary-hover-glow-image)
+  );
+  --plx-state-button-pressed-background: var(--plx-comp-button-secondary-raised-pressed-background);
+  --plx-state-button-rest-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-rest-shadow)
+  );
+  --plx-state-button-rest-image: var(--plx-comp-button-context-glow, var(--plx-comp-button-secondary-glow-image));
+}
+.plx-button--tertiary:where(:not(.plx-button--size-2xs)) {
+  --plx-state-button-hover-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-hover-shadow)
+  );
+  --plx-state-button-hover-image: var(
+    --plx-comp-button-context-glow,
+    var(--plx-comp-button-secondary-hover-glow-image)
+  );
+  --plx-state-button-rest-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-rest-shadow)
+  );
+  --plx-state-button-rest-image: var(--plx-comp-button-context-glow, var(--plx-comp-button-secondary-glow-image));
+}
+.plx-button--primary:where(:not(.plx-button--on-inverse, .plx-button--size-2xs)) {
+  --plx-state-button-hover-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-hover-shadow)
+  );
+  --plx-state-button-hover-image: var(--plx-comp-button-context-glow, var(--plx-comp-button-primary-hover-glow-image));
+  --plx-state-button-rest-border-end: var(--plx-comp-button-primary-border-end);
+  --plx-state-button-rest-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-rest-shadow)
+  );
+  --plx-state-button-rest-image: var(--plx-comp-button-context-glow, var(--plx-comp-button-primary-glow-image));
+}
+.plx-button--danger:where(:not(.plx-button--size-2xs)) {
+  --plx-state-button-hover-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-hover-shadow)
+  );
+  --plx-state-button-hover-image: var(--plx-comp-button-context-glow, var(--plx-comp-button-danger-hover-glow-image));
+  --plx-state-button-rest-border-end: var(--plx-comp-button-danger-border-end);
+  --plx-state-button-rest-elevation: var(
+    --plx-comp-button-context-elevation,
+    var(--plx-comp-button-raised-rest-shadow)
+  );
+  --plx-state-button-rest-image: var(--plx-comp-button-context-glow, var(--plx-comp-button-danger-glow-image));
+}
 /* danger-secondary: a red outline; selected looks as hovered */
-.plx-button--danger-secondary{--plx-state-button-rest-background:var(--plx-comp-button-secondary-background);--plx-state-button-rest-border:var(--plx-comp-button-danger-secondary-border);--plx-state-button-rest-text:var(--plx-comp-button-danger-secondary-text);--plx-state-button-hover-background:var(--plx-comp-button-danger-secondary-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-danger-secondary-hover-border);--plx-state-button-hover-text:var(--plx-comp-button-danger-secondary-hover-text);--plx-state-button-pressed-background:var(--plx-comp-button-danger-secondary-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-danger-secondary-pressed-border);--plx-state-button-pressed-text:var(--plx-comp-button-danger-secondary-hover-text);--plx-state-button-selected-background:var(--plx-comp-button-danger-secondary-hover-background);--plx-state-button-selected-border:var(--plx-comp-button-danger-secondary-hover-border);--plx-state-button-selected-text:var(--plx-comp-button-danger-secondary-hover-text);}
+.plx-button--danger-secondary {
+  --plx-state-button-rest-background: var(--plx-comp-button-secondary-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-danger-secondary-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-danger-secondary-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-danger-secondary-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-danger-secondary-hover-border);
+  --plx-state-button-hover-text: var(--plx-comp-button-danger-secondary-hover-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-danger-secondary-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-danger-secondary-pressed-border);
+  --plx-state-button-pressed-text: var(--plx-comp-button-danger-secondary-hover-text);
+  --plx-state-button-selected-background: var(--plx-comp-button-danger-secondary-hover-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-danger-secondary-hover-border);
+  --plx-state-button-selected-text: var(--plx-comp-button-danger-secondary-hover-text);
+}
 /* on a colored surface (SurfaceContext): the inverse TeachingBubble and the accent AppHeader. Pressed is the hovered
    look on inverse, and a step past hover on accent (batch 238). */
-.plx-button--on-inverse.plx-button--primary{--plx-state-button-rest-background:var(--plx-comp-button-on-inverse-action-fill);--plx-state-button-rest-border:var(--plx-comp-button-on-inverse-action-fill);--plx-state-button-rest-text:var(--plx-comp-button-on-inverse-action-text);--plx-state-button-hover-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-hover-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-hover-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-pressed-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-pressed-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-pressed-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-selected-background:var(--plx-comp-button-on-inverse-action-fill);--plx-state-button-selected-border:var(--plx-comp-button-on-inverse-action-fill);--plx-state-button-selected-text:var(--plx-comp-button-on-inverse-action-text);}
-.plx-button--on-inverse:where(:not(.plx-button--ghost, .plx-button--primary, .plx-button--danger, .plx-button--tertiary, .plx-button--danger-secondary)){--plx-state-button-rest-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-rest-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-rest-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-hover-background:var(--plx-comp-button-on-inverse-action-fill);--plx-state-button-hover-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-hover-text:var(--plx-comp-button-on-inverse-action-text);--plx-state-button-pressed-background:var(--plx-comp-button-on-inverse-action-fill);--plx-state-button-pressed-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-pressed-text:var(--plx-comp-button-on-inverse-action-text);--plx-state-button-selected-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-selected-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-selected-text:var(--plx-comp-button-on-inverse-text);}
-.plx-button--on-inverse.plx-button--ghost{--plx-state-button-rest-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-rest-border:var(--plx-comp-button-ghost-border);--plx-state-button-rest-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-hover-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-hover-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-hover-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-pressed-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-pressed-border:var(--plx-comp-button-on-inverse-action-outline);--plx-state-button-pressed-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-selected-background:var(--plx-comp-button-on-inverse-action-quiet-background);--plx-state-button-selected-border:var(--plx-comp-button-ghost-border);--plx-state-button-selected-text:var(--plx-comp-button-on-inverse-text);--plx-state-button-disabled-background:var(--plx-comp-button-disabled-quiet-background);--plx-state-button-disabled-border:var(--plx-comp-button-disabled-quiet-border);}
-.plx-button--on-inverse{--plx-state-button-focus-color:var(--plx-comp-button-on-inverse-focus-color);}
-.plx-button--on-accent:where(:not(.plx-button--ghost, .plx-button--primary, .plx-button--danger, .plx-button--tertiary, .plx-button--danger-secondary)){--plx-state-button-rest-background:var(--plx-comp-button-on-accent-secondary-background);--plx-state-button-rest-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-rest-text:var(--plx-comp-button-on-accent-secondary-text);--plx-state-button-hover-background:var(--plx-comp-button-on-accent-secondary-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-hover-text:var(--plx-comp-button-on-accent-secondary-text);--plx-state-button-pressed-background:var(--plx-comp-button-on-accent-secondary-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-pressed-text:var(--plx-comp-button-on-accent-secondary-text);--plx-state-button-selected-background:var(--plx-comp-button-on-accent-secondary-background);--plx-state-button-selected-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-selected-text:var(--plx-comp-button-on-accent-secondary-text);}
-.plx-button--icon-only{--plx-state-button-inline-size:var(--plx-comp-button-context-width,var(--plx-comp-button-height));--plx-state-button-padding-inline:0;min-inline-size:var(--plx-comp-button-height);}
+.plx-button--on-inverse.plx-button--primary {
+  --plx-state-button-rest-background: var(--plx-comp-button-on-inverse-action-fill);
+  --plx-state-button-rest-border: var(--plx-comp-button-on-inverse-action-fill);
+  --plx-state-button-rest-text: var(--plx-comp-button-on-inverse-action-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-hover-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-pressed-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-selected-background: var(--plx-comp-button-on-inverse-action-fill);
+  --plx-state-button-selected-border: var(--plx-comp-button-on-inverse-action-fill);
+  --plx-state-button-selected-text: var(--plx-comp-button-on-inverse-action-text);
+}
+.plx-button--on-inverse:where(
+    :not(
+        .plx-button--ghost,
+        .plx-button--primary,
+        .plx-button--danger,
+        .plx-button--tertiary,
+        .plx-button--danger-secondary
+      )
+  ) {
+  --plx-state-button-rest-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-rest-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-on-inverse-action-fill);
+  --plx-state-button-hover-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-hover-text: var(--plx-comp-button-on-inverse-action-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-on-inverse-action-fill);
+  --plx-state-button-pressed-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-pressed-text: var(--plx-comp-button-on-inverse-action-text);
+  --plx-state-button-selected-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-selected-text: var(--plx-comp-button-on-inverse-text);
+}
+.plx-button--on-inverse.plx-button--ghost {
+  --plx-state-button-rest-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-ghost-border);
+  --plx-state-button-rest-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-hover-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-on-inverse-action-outline);
+  --plx-state-button-pressed-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-selected-background: var(--plx-comp-button-on-inverse-action-quiet-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-ghost-border);
+  --plx-state-button-selected-text: var(--plx-comp-button-on-inverse-text);
+  --plx-state-button-disabled-background: var(--plx-comp-button-disabled-quiet-background);
+  --plx-state-button-disabled-border: var(--plx-comp-button-disabled-quiet-border);
+}
+.plx-button--on-inverse {
+  --plx-state-button-focus-color: var(--plx-comp-button-on-inverse-focus-color);
+}
+.plx-button--on-accent:where(
+    :not(
+        .plx-button--ghost,
+        .plx-button--primary,
+        .plx-button--danger,
+        .plx-button--tertiary,
+        .plx-button--danger-secondary
+      )
+  ) {
+  --plx-state-button-rest-background: var(--plx-comp-button-on-accent-secondary-background);
+  --plx-state-button-rest-border: var(--plx-comp-button-on-accent-secondary-border-color);
+  --plx-state-button-rest-text: var(--plx-comp-button-on-accent-secondary-text);
+  --plx-state-button-hover-background: var(--plx-comp-button-on-accent-secondary-hover-background);
+  --plx-state-button-hover-border: var(--plx-comp-button-on-accent-secondary-border-color);
+  --plx-state-button-hover-text: var(--plx-comp-button-on-accent-secondary-text);
+  --plx-state-button-pressed-background: var(--plx-comp-button-on-accent-secondary-pressed-background);
+  --plx-state-button-pressed-border: var(--plx-comp-button-on-accent-secondary-border-color);
+  --plx-state-button-pressed-text: var(--plx-comp-button-on-accent-secondary-text);
+  --plx-state-button-selected-background: var(--plx-comp-button-on-accent-secondary-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-on-accent-secondary-border-color);
+  --plx-state-button-selected-text: var(--plx-comp-button-on-accent-secondary-text);
+}
+.plx-button--icon-only {
+  --plx-state-button-inline-size: var(--plx-comp-button-context-width, var(--plx-comp-button-height));
+  --plx-state-button-padding-inline: 0;
+  min-inline-size: var(--plx-comp-button-height);
+}
 /* the caret: the thin outline chevron (an Icon child, chevron-down, at optical size 20), muted on the unfilled buttons; on a
    filled button (primary, danger) and on a disabled one it keeps the label's color (owner, 2026-10-14); Button.jsx gives
    it plx-button__caret--current then */
-.plx-button__caret{--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;--plx-comp-icon-size:var(--plx-comp-button-icon);block-size:var(--plx-comp-button-icon);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-button-icon);transition-duration:var(--plx-comp-button-caret-duration);transition-property:transform;}
-.plx-button__caret:where(:not(.plx-button__caret--current)){color:var(--plx-comp-button-caret-color);}
-.plx-button__caret--open{transform:rotate(180deg);}
-.plx-button-group{display:inline-flex;}
+.plx-button__caret {
+  --plx-comp-icon-context-show-20: block;
+  --plx-comp-icon-context-show-24: none;
+  --plx-comp-icon-size: var(--plx-comp-button-icon);
+  block-size: var(--plx-comp-button-icon);
+  display: inline-flex;
+  flex-shrink: 0;
+  inline-size: var(--plx-comp-button-icon);
+  transition-duration: var(--plx-comp-button-caret-duration);
+  transition-property: transform;
+}
+.plx-button__caret:where(:not(.plx-button__caret--current)) {
+  color: var(--plx-comp-button-caret-color);
+}
+.plx-button__caret--open {
+  transform: rotate(180deg);
+}
+.plx-button-group {
+  display: inline-flex;
+}
 /* joined (a ButtonGroup, an InputGroup, a CopyButton field): square corners where it meets a neighbor; a seam also drops
    that side's border (the neighbor's edge is shared); raised while focused so the focus ring shows whole. The joins are
    on the inline sides (logical, so a right-to-left group joins on the mirrored side; batch 213). */
-.plx-button--joined-start-square,.plx-button--joined-start-seam{--plx-state-button-radius-start:var(--plx-comp-button-joined-radius);}
-.plx-button--joined-end-square,.plx-button--joined-end-seam{--plx-state-button-radius-end:var(--plx-comp-button-joined-radius);}
-.plx-button--joined-start-seam{--plx-state-button-border-start-width:0;}
-.plx-button--joined-end-seam{--plx-state-button-border-end-width:0;}
-.plx-button--joined:is(:focus-visible, .is-focus-visible, :focus-within){z-index:var(--plx-comp-button-joined-focus-layer);}
+.plx-button--joined-start-square,
+.plx-button--joined-start-seam {
+  --plx-state-button-radius-start: var(--plx-comp-button-joined-radius);
+}
+.plx-button--joined-end-square,
+.plx-button--joined-end-seam {
+  --plx-state-button-radius-end: var(--plx-comp-button-joined-radius);
+}
+.plx-button--joined-start-seam {
+  --plx-state-button-border-start-width: 0;
+}
+.plx-button--joined-end-seam {
+  --plx-state-button-border-end-width: 0;
+}
+.plx-button--joined:is(:focus-visible, .is-focus-visible, :focus-within) {
+  z-index: var(--plx-comp-button-joined-focus-layer);
+}
 /* tone (owner, vote-screen-37): a toggle's chosen state (pressed or selected) fills in a feedback color; the rest state stays
    the variant's, so a choice not taken is the plain gray button. Only the selected hooks change: after the variants, so it wins */
-.plx-button--tone-success{--plx-state-button-selected-background:var(--plx-comp-button-tone-success-selected-background);--plx-state-button-selected-border:var(--plx-comp-button-tone-success-selected-border);--plx-state-button-selected-text:var(--plx-comp-button-tone-success-selected-text);}
-.plx-button--tone-danger{--plx-state-button-selected-background:var(--plx-comp-button-tone-danger-selected-background);--plx-state-button-selected-border:var(--plx-comp-button-tone-danger-selected-border);--plx-state-button-selected-text:var(--plx-comp-button-tone-danger-selected-text);}
-.plx-button--tone-neutral{--plx-state-button-selected-background:var(--plx-comp-button-tone-neutral-selected-background);--plx-state-button-selected-border:var(--plx-comp-button-tone-neutral-selected-border);--plx-state-button-selected-text:var(--plx-comp-button-tone-neutral-selected-text);}
+.plx-button--tone-success {
+  --plx-state-button-selected-background: var(--plx-comp-button-tone-success-selected-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-tone-success-selected-border);
+  --plx-state-button-selected-text: var(--plx-comp-button-tone-success-selected-text);
+}
+.plx-button--tone-danger {
+  --plx-state-button-selected-background: var(--plx-comp-button-tone-danger-selected-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-tone-danger-selected-border);
+  --plx-state-button-selected-text: var(--plx-comp-button-tone-danger-selected-text);
+}
+.plx-button--tone-neutral {
+  --plx-state-button-selected-background: var(--plx-comp-button-tone-neutral-selected-background);
+  --plx-state-button-selected-border: var(--plx-comp-button-tone-neutral-selected-border);
+  --plx-state-button-selected-text: var(--plx-comp-button-tone-neutral-selected-text);
+}

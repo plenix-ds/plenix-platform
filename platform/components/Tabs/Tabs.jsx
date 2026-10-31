@@ -12,11 +12,11 @@
      items[].count: a count after the label
      items[].content: the tab's panel; without content Tabs draws only the tab list
      items[].disabled: the tab cannot be chosen and keys skip it
-     value: the selected tab's value (controlled)
-     defaultValue: the first selected tab when uncontrolled; default the first item
+     value: a string: the selected tab's value (controlled)
+     defaultValue: a string: the first selected tab when uncontrolled; default the first item
      onChange(value): runs when another tab is selected
      label: the accessible name of the tab list
-     idBase: the base of the tab and panel ids, for a panel the application renders
+     idBase: a string: the base of the tab and panel ids, for a panel the application renders
      className: more classes on the tabs
      panelClassName: more classes on each panel
      strings: the words it shows, for other languages: { more: "More", moreLabel: "More tabs" }

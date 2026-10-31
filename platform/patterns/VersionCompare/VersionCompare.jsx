@@ -68,8 +68,7 @@ import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
 import { dataPhrase } from '../../utils/dataText.jsx';
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
+import { fill } from '../../utils/fill.js';
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 export function diffLines(before, after) {

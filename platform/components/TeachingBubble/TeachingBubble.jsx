@@ -45,19 +45,15 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Spotlight } from '../Spotlight/Spotlight.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
+import { fillNodes } from '../../utils/fillNodes.jsx';
 
 
 // a string with {name} places filled by numbers in the data font (counts are technical values)
-const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
-  const m = /^\{(\w+)\}$/.exec(part);
-  return m && values[m[1]] !== undefined ? <Text key={i} variant="data">{values[m[1]]}</Text> : part;
-});
 
 export function TeachingBubble({ target, open = false, onDismiss, title, children, media, step, primaryAction, secondaryAction, placement = 'bottom',
   wide = false, spotlight = true, focusOnOpen = false, strings, className }) {
@@ -81,7 +77,7 @@ export function TeachingBubble({ target, open = false, onDismiss, title, childre
       <p className="plx-teaching-bubble__text">{children}</p>
       {step || actions ? (
         <div className="plx-teaching-bubble__footer">
-          {step ? <span className="plx-teaching-bubble__step">{fill(t.step, step)}</span> : null}
+          {step ? <span className="plx-teaching-bubble__step">{fillNodes(t.step, step)}</span> : null}
           {actions ? (
             <span className="plx-teaching-bubble__actions">
               {secondaryAction ? <Button onClick={secondaryAction.onClick}>{secondaryAction.label}</Button> : null}

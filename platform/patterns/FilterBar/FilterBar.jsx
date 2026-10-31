@@ -25,10 +25,9 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { fill } from '../../utils/fill.js';
 
 const isSet = (f) => (f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '');
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
-
 const summary = (f, t) => {
   if (!isSet(f)) return f.label;
   if (f.multiple) {

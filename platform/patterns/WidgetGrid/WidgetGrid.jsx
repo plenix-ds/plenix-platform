@@ -36,8 +36,7 @@ import { arrowStep } from '../../utils/direction.js';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import DragIcon from 'plenix-platform/icons/plenix/drag';
-
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+import { fill } from '../../utils/fill.js';
 
 const move = (ids, from, to) => { const next = ids.slice(); const [x] = next.splice(from, 1); next.splice(to, 0, x); return next; };
 

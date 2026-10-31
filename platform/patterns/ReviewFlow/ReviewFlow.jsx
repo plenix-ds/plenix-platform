@@ -79,6 +79,7 @@ import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
+import { fill } from '../../utils/fill.js';
 
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
 // the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it
@@ -105,8 +106,6 @@ export function WorkflowStatus({ status = 'draft', label, size, strings, classNa
 export function useOptionalToast() {
   try { return useToast(); } catch (e) { return null; }
 }
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 const VERB = { approved: 'approve', 'changes-requested': 'changes', rejected: 'reject' };
 const LOOK = { approved: 'primary', 'changes-requested': 'secondary', rejected: 'danger-secondary' };

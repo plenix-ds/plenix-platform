@@ -9,7 +9,7 @@
      content: the tooltip text (in a rich tooltip, its body: one to three sentences)
      placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
      title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+     action: an element: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
        it opens on click (Enter or Space on the trigger) instead of on hover and focus
      rich: the rich look without a title or an action (default false; true when title or action is given)
      describe: false keeps the tooltip from describing the trigger (no aria-describedby) and hides the bubble from assistive technology (aria-hidden; sighted users still see it) when the trigger's own name already says the same text, as a cut heading's or label's

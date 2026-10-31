@@ -24,15 +24,16 @@
        to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
      Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
-     Chat.Group.author / avatar / mine: one sender's run of messages: the photo and the name go on the first message only,
-       and the messages sit closer together; mine applies to every message of the run; only Chat.Message children take
-       these (a Chat.Divider inside the run stays as given)
+     Chat.Group.author: one sender's run of messages, by this sender: the photo and the name go on the first message only,
+       and the messages sit closer together; only Chat.Message children take them (a Chat.Divider inside the run stays as given)
+     Chat.Group.avatar: the sender's Avatar, on the run's first message
+     Chat.Group.mine: true: the run is the person's own; it applies to every message of the run
      Chat.Divider.children: a line across the thread with a date ("Today"); unread: the "New messages" line (its default
        text), above the first unread message
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
-     Chat.Message.time: when it was sent, as shown, in the footer line at the bottom of the bubble ("Sent <time>");
+     Chat.Message.time: a string: when it was sent, as shown, in the footer line at the bottom of the bubble ("Sent <time>");
        dateTime: the same as a machine-readable date
-     Chat.Message.status: sending | sent | delivered | read (your messages): a clock, one gray check, two gray checks, two
+     Chat.Message.status: "sending" | "sent" | "delivered" | "read" (your messages): a clock, one gray check, two gray checks, two
        green checks, after the times; readTime / readDateTime: when it was read, shown as "| Read <time>" once read
      Chat.Message.avatar: the sender's Avatar (size "sm"), on the bubble's top edge, 8px in from the start edge for theirs and
        from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
@@ -44,7 +45,7 @@
      Chat.Message.reactions: [{ emoji, count, mine, label }]: pills under the text (the emoji and its count; yours outlined in the action color, aria-pressed),
        then an Add reaction button; a pill toggles through onReact(emoji). label names an emoji outside the six quick ones
      Chat.Message.quote: { author, text }: a quoted or replied-to message inside the bubble (a bar, the author, one line)
-     Chat.Message.edited: "· Edited" in the footer; deleted: "This message was deleted", muted, with no actions, reactions or quote
+     Chat.Message.edited: true: "· Edited" in the footer; deleted: "This message was deleted", muted, with no actions, reactions or quote
      Chat.Message.strings: the words, for other languages
      Chat.Attachments: the pictures and files of one message, in a row (two or more pictures) or a column; its pictures open together in one MediaViewer
      Chat.Attachment.type: "image" (default) | "file"; src: the picture's URL (a file's download URL); name: its file name; alt: the picture's description (default the name);
@@ -72,7 +73,7 @@
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
      Chat.Composer.sendLabel: default "Send"; disabled: the composer is inert
      Chat.Typing.label: the text announced to assistive technology (default "Typing")
-     Chat.Typing.variant: typing (default) | thinking | steps; steps: [{label,status}], current: active step index
+     Chat.Typing.variant: "typing" (default) | "thinking" | "steps"; steps: [{label,status}], current: active step index
      Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
      className on every part: more classes
    Behavior:
@@ -119,7 +120,8 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { Attachment, Attachments, Voice, FileIcon, fill } from './ChatMedia.jsx';
+import { Attachment, Attachments, Voice, FileIcon } from './ChatMedia.jsx';
+import { fill } from '../../utils/fill.js';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatBytes } from '../../utils/format.js';

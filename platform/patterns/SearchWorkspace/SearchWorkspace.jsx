@@ -58,8 +58,7 @@ import ChecklistIcon from 'plenix-platform/icons/plenix/checklist';
 import SaveIcon from 'plenix-platform/icons/plenix/save';
 import SortIcon from 'plenix-platform/icons/plenix/sort';
 import ViewTableIcon from 'plenix-platform/icons/plenix/view-table';
-
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+import { fill } from '../../utils/fill.js';
 
 const label = (f, v) => { const o = (f.options || []).find((x) => x.value === v); return o ? o.label : String(v); };
 

@@ -47,8 +47,8 @@ import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
-const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
 
 export function ProgressSteps({ steps = [], current = 0, orientation = 'horizontal', variant = 'default', onStepClick, label, strings, className, ...rest }) {
   devWarn('ProgressSteps', { variant }, { variant: ['default','compact'] });
@@ -59,7 +59,7 @@ export function ProgressSteps({ steps = [], current = 0, orientation = 'horizont
     const step = steps[at] || {};
     return (
       <div role="group" aria-label={label} className={cx('plx-progress-steps', 'plx-progress-steps--compact', className)} {...rest}>
-        <p className="plx-progress-steps__count">{fill(t.step, at + 1, steps.length)}{step.label ? <span className="plx-progress-steps__count-label">{': ' + step.label}</span> : null}</p>
+        <p className="plx-progress-steps__count">{dataPhrase(t.step, { n: at + 1, total: steps.length })}{step.label ? <span className="plx-progress-steps__count-label">{': ' + step.label}</span> : null}</p>
         <div className="plx-progress-steps__segments" aria-hidden="true">
           {steps.map((s, i) => <span key={i} className={cx('plx-progress-steps__segment', 'is-' + statusOf(s, i))} />)}
         </div>

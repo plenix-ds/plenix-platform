@@ -43,9 +43,9 @@ import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
 import { useChartInteraction } from './interaction.js';
+import { fill } from '../utils/fill.js';
 
 const h = React.createElement;
-const fill = (s, o) => s.replace(/\{(\w+)\}/g, (m, k) => (o[k] === undefined ? m : o[k]));
 const SUMMARY = { up: 'Up {change}', down: 'Down {change}', flat: 'Flat', range: 'from {first} to {last}', low: 'lowest {value}', high: 'highest {value}', at: '{value} ({label})', empty: 'No data' };
 
 export function summarizeSeries(values, { labels, format, strings } = {}) {

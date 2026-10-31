@@ -88,10 +88,10 @@ import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import MoveIcon from 'plenix-platform/icons/plenix/move';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
+import { fill } from '../../utils/fill.js';
 
 const ROOT = '__plx-root';
 const DRAG = 'plx-file';
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const keyOf = (id) => (id === null || id === undefined ? ROOT : id);
 // the fields Sort offers (utils/fields.js)
 const SORT_FIELDS = [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'size', label: 'Size', kind: 'number' }, { value: 'modified', label: 'Modified', kind: 'date' }];

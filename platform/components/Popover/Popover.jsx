@@ -62,7 +62,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { focusables, useLayer, useUid } from '../../utils/layer.js';
-import { useFloating, FLOATING_ANCHOR, PLACEMENTS } from '../../utils/floating.js';
+import { useFloating, PLACEMENTS, TOP_LAYER } from '../../utils/floating.js';
 import { Button } from '../Button/Button.jsx';
 import { Sheet } from '../Sheet/Sheet.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
@@ -71,8 +71,6 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const SIZES = ['sm', 'md', 'lg', 'auto'];
 
-// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 // a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
 const ms = (el, name) => {
