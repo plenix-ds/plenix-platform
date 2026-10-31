@@ -16,7 +16,7 @@ const path = require('path');
 const NAME = 'shared-fill';
 const ROOT = path.join(__dirname, '..');
 const SCOPE = /[\\/](platform|suite|dashboard|projects|messages|contacts|calendar|tasks|notes|bookmarks|files|settings|dam[\\/]app)[\\/]/;
-const SKIP_FILE = /[\\/](dist|vendor|node_modules|design-system|mobile|icons|release)[\\/]|(^|[\\/])(app|assets|plenix-icons-[a-z0-9-]+)\.js$|[\\/]utils[\\/](fill\.js|floating\.js)$/;
+const SKIP_FILE = /[\\/](dist|vendor|node_modules|design-system|mobile|icons|release)[\\/]|(^|[\\/])(app|assets|plenix-icons-[a-z0-9-]+)\.js$|[\\/]utils[\\/](fill|floating)\.[jt]s$/;
 // a definition named fill whose next lines replace or split on a {placeholder}
 const FILL_DEF = /(?:\b(?:const|let|var)\s+fill\s*=|\bfunction\s+fill\s*\()/g;
 const PLACEHOLDER = /\{\(?\\w|\\\{|'\{|\{\w+\}/;
@@ -31,7 +31,7 @@ function check({ files, add }) {
   const seen = new Set();
   for (const file of list) {
     const abs = path.isAbsolute(file) ? file : path.join(ROOT, file);
-    if (seen.has(abs) || !/\.(jsx?|mjs|cjs)$/.test(abs) || !SCOPE.test(abs) || SKIP_FILE.test(abs) || !fs.existsSync(abs)) continue;
+    if (seen.has(abs) || !/\.([jt]sx?|mjs|cjs)$/.test(abs) || /\.d\.ts$/.test(abs) || !SCOPE.test(abs) || SKIP_FILE.test(abs) || !fs.existsSync(abs)) continue;
     seen.add(abs);
     const text = fs.readFileSync(abs, 'utf8');
     if (!/\bfill\b|TOP_LAYER|asIcon/.test(text)) continue;
@@ -41,7 +41,7 @@ function check({ files, add }) {
       const near = text.slice(m.index, m.index + 360);
       if (/\.(replace|split)\(/.test(near) && PLACEHOLDER.test(near)) add(NAME, abs, lineOf(text, m.index), 'a local fill(): import { fill } from utils/fill.ts (one filler for every text; fillNodes for nodes in the data font)');
     }
-    if (!/[\\/]components[\\/]Icon[\\/]Icon\.jsx$/.test(abs)) { const a = ASICON_DEF.exec(text); if (a) add(NAME, abs, lineOf(text, a.index), 'a local asIcon: import { asIcon } from components/Icon/Icon.jsx (a state icon: stateIcon)'); }
+    if (!/[\\/]components[\\/]Icon[\\/]Icon\.[jt]sx$/.test(abs)) { const a = ASICON_DEF.exec(text); if (a) add(NAME, abs, lineOf(text, a.index), 'a local asIcon: import { asIcon } from components/Icon/Icon.jsx (a state icon: stateIcon)'); }
     const t = TOP_LAYER_DEF.exec(text);
     if (t) add(NAME, abs, lineOf(text, t.index), 'a local TOP_LAYER: import { TOP_LAYER } from utils/floating.ts');
   }
