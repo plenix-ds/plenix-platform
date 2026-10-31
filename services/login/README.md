@@ -45,7 +45,7 @@ Settings come from environment variables:
 | `PORT` | `8782` | The port the service listens on |
 | `DATA` | `/data` | The data folder |
 | `CDN` | The release in `package.json` | Where the page loads the Platform from |
-| `TRUST_PROXY` | `1` in the container | Use `X-Real-IP` as the visitor's address |
+| `TRUST_PROXY` | Not set (the socket's address); `1` in the container (the Dockerfile) | Use `X-Real-IP` as the visitor's address: set it to `1` only when the service is reached through the proxy |
 | `COOKIE_DOMAIN` | Not set | Share one sign-in across both hosts (see "Owner decisions") |
 | `LOCK_AFTER`, `LOCK_BASE_MS`, `LOCK_MAX_MS`, `IP_MAX`, `IP_WINDOW_MS` | 5, 1 min, 15 min, 20, 15 min | The rate limits |
 
