@@ -252,7 +252,9 @@ for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/expo
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
   main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
   exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './plenix-engines.js': './dist/plenix-engines.js', './package.json': './package.json' },
-  peerDependencies: { react: '>=18.2.0 <19', 'react-dom': '>=18.2.0 <19' },
+  // React 18 and 19 (#686, the audit #684): the source was checked for what React 19 removes (defaultProps on function parts,
+  // propTypes, string refs, findDOMNode, legacy context, ReactDOM.render, element.ref); the script-tag build keeps React 18
+  peerDependencies: { react: '>=18.2.0 <20', 'react-dom': '>=18.2.0 <20' },
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
 }));
 readme('react', `
@@ -265,7 +267,7 @@ import { AppShell, Button, DataGrid } from '${SCOPE}/react';
 
 Pages without a build tool load \`dist/plenix.global.js\` after React 18 and use \`window.Plenix\`.
 A page that shows a rich-text editor, a chart or a PDF also loads \`dist/plenix-engines.js\` (its \`vendor/\` folder sits beside it); without it those parts say the engines script is missing. A page that loads it as a module, injects it or bundles it (\`document.currentScript\` is null then) must set \`window.PlenixVendorBase\` to the vendor folder first.
-React 18 is a peer dependency. Rules: compose from these components and the tokens only; no inline styles or hard-coded values.`);
+React 18 or 19 is a peer dependency (\`>=18.2.0 <20\`) for the ES module and CommonJS builds. \`dist/plenix.global.js\` (the CDN's \`plenix.js\`) needs React 18 on the page: React 19 publishes no UMD script, so the script-tag way stays on React 18.2.0. Rules: compose from these components and the tokens only; no inline styles or hard-coded values.`);
 
 // ---------- CDN: the same files at a fixed address per version ----------
 copy(path.join(S, 'plenix.css'), path.join(CDN, 'plenix.css'));
