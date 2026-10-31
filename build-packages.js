@@ -237,8 +237,17 @@ const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel
   banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' } };
 // the bundle holds no engine address and injects no script (#456, #457): the engines (rich text, charts, PDF) load through the
 // page's plenix-engines.js, shipped beside plenix.js and in the npm package's dist/ (its vendor/ folder is beside it)
-// the ES module build knows its own address (#284): Icon finds the icon files beside it, whatever the file is called
-esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(R, 'dist', 'index.js'), banner: { js: jsOpts.banner.js + '\nconst __plenixModuleUrl = import.meta.url;' } }));
+// the ES module as one file is the CDN's plenix.esm.js (unchanged): it knows its own address (#284), so Icon finds the icon
+// files beside it, whatever the file is called
+esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(CDN, 'plenix.esm.js'), banner: { js: jsOpts.banner.js + '\nconst __plenixModuleUrl = import.meta.url;' } }));
+// the npm package's ES modules, one per part (#685, the audit #684): an entry for each module platform/index.js exports from,
+// built with splitting, so the code two parts share sits once in dist/chunks/ and an application that imports one part
+// bundles that part and what it uses (the barrel, dist/index.js, re-exports them all). Before, the package was one flat
+// file, and a bundler kept the whole library for any one import (911 KB minified for { Button }). No address banner: the
+// npm package carries no icon folder (an app registers or imports its icons), as before.
+const partEntries = { index: path.join(P, 'index.js') };
+for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/from '\.\/([^']+)'/g)) partEntries[m[1].replace(/\.jsx?$/, '')] = path.join(P, m[1]);
+esbuild.buildSync(Object.assign({}, jsOpts, { entryPoints: partEntries, format: 'esm', splitting: true, outdir: path.join(R, 'dist'), chunkNames: 'chunks/[name]-[hash]' }));
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));
 copy(path.join(P, 'engines', 'plenix-engines.js'), path.join(R, 'dist', 'plenix-engines.js'));
@@ -251,6 +260,9 @@ for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/expo
 }
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
   main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
+  // only the CSS and the two scripts that act when loaded (the browser global sets window.Plenix; the engines script loads
+  // the engines) have side effects: every ES module part is pure, so a bundler drops the parts an app does not import (#685)
+  sideEffects: ['*.css', './dist/plenix.global.js', './dist/plenix-engines.js'],
   exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './plenix-engines.js': './dist/plenix-engines.js', './package.json': './package.json' },
   peerDependencies: { react: '>=18.2.0 <19', 'react-dom': '>=18.2.0 <19' },
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
@@ -275,7 +287,6 @@ copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefac
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
 copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'plenix-engines.js'), path.join(CDN, 'plenix-engines.js'));
-copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 // the compatibility icon file (#553): every Plenix icon registered with registerIcons, loaded after plenix.js by a site
 // without its own icon file (tools/icons/site-icons.js writes a site's own); brought up to date first, then copied
 require('./tools/icons/site-icons.js').buildCompat(ROOT);
