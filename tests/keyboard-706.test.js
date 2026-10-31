@@ -248,7 +248,9 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const QUERY = (h, P, R) => { const App = () => { const v = R.useState({ join: 'and', items: [] }); return h(P.QueryBuilder, { label: 'Audience', fields: [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'size', label: 'Size', kind: 'number' }], value: v[0], onChange: (x) => { window.__log.push(x.items.length); v[1](x); } }); }; return h(App); };
     await render(QUERY);
     await focus('[data-plx-add="root"] button'); await press('Enter');
-    assert.equal((await at()).tag, 'select', 'query builder: Add rule moves focus to the new rule\'s field');
+    // the field is a Select, drawn by Plenix since f7017fea (dropdown-look-36): its native <select> is hidden and hands focus
+    // to the drawn field, a role="combobox" element (issue 789: the check expected the native select's tag)
+    assert.equal((await at()).role, 'combobox', 'query builder: Add rule moves focus to the new rule\'s field');
     assert.ok(await inside('[data-plx-rule]'), 'query builder: the field is the new rule\'s');
     await focusNamed('button', 'Rule 1: Remove rule'); await press('Enter');
     assert.equal(await count('[data-plx-rule]'), 0, 'query builder: Remove rule removes it');
