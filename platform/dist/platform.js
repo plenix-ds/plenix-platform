@@ -13866,7 +13866,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      ContextMenu.children: the items, as Menu's
    Behavior:
      Enter, Space or Arrow Down on the trigger opens the menu on the first item; Arrow Up opens it on the last.
-     Arrow keys, Home and End move between items.
+     Arrow keys, Home and End move between items. Typing a letter moves to the next item whose label starts with it (type-ahead).
      Escape closes the menu and returns focus to the trigger.
      Tab closes the menu and moves on.
      A click outside closes the menu.
@@ -13899,7 +13899,16 @@ function moveIn(list, e) {
   const items = itemsIn(list);
   const at = items.indexOf(document.activeElement);
   let next = null;
-  if (e.key === 'ArrowDown') next = (at + 1) % items.length;else if (e.key === 'ArrowUp') next = (at - 1 + items.length) % items.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = items.length - 1;else return false;
+  if (e.key === 'ArrowDown') next = (at + 1) % items.length;else if (e.key === 'ArrowUp') next = (at - 1 + items.length) % items.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = items.length - 1;else if (e.key.length === 1 && /\S/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    // type-ahead (issue 706): a letter moves to the next item whose label starts with it, wrapping; nothing matches, nothing moves.
+    // Only when focus is on one of this list's own items: a letter from a sub menu or a text field inside the menu is not this list's to take
+    if (at < 0) return false;
+    const k = e.key.toLocaleLowerCase();
+    const label = el => ((el.querySelector('.plx-menu__label') || el).textContent || '').trim().toLocaleLowerCase();
+    const hit = items.slice(at + 1).concat(items.slice(0, at + 1)).find(el => label(el).startsWith(k));
+    if (!hit) return false;
+    next = items.indexOf(hit);
+  } else return false;
   e.preventDefault();
   if (items[next]) items[next].focus();
   return true;
@@ -32178,6 +32187,191 @@ function selectionActions({
   };
 }
   } },
+  "platform/components/DataGrid/engine/keys.js": { deps: {"../../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../cells.jsx":"platform/components/DataGrid/cells.jsx","../../../utils/direction.js":"platform/utils/direction.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tableKeys = exports.rowKeys = exports.resizeKeys = exports.makeFocusCell = exports.headerKeys = exports.groupKeys = exports.cellKeys = void 0;
+var _sizeSteps = require("../../../utils/sizeSteps.js");
+var _cells = require("../cells.jsx");
+var _direction = require("../../../utils/direction.js");
+/* Plenix · DataGrid engine · keyboard and focus
+   Summary: The grid's keyboard paths and the cell focus they use: sorting a column with Enter or Space, resizing a column
+     with the arrow keys, Home and End, a group row (Enter, Space, the arrows), a record row (Enter chooses and opens it,
+     Arrow Down and Up move to the next row), a cell (Ctrl or Command with C copies; Enter edits; the arrows move across
+     cells, mirrored in right to left), and the table body (Arrow Down enters the first cell).
+   Usage:
+     import { rowKeys, cellKeys, makeFocusCell } from './engine/keys.js';
+     const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
+     <div role="row" onKeyDown={rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })} />
+   Props:
+     Each export takes one object of what the handler reads from the engine and returns the handler (or, for makeFocusCell,
+     the function focusCell(rowIndex, columnIndex, step) that scrolls a cell into view and focuses it):
+     headerKeys({ column }); resizeKeys({ resize, c, column }); groupKeys({ toggleGroup, group, model, virtual, holder, B });
+     rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model });
+     cellKeys({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell });
+     tableKeys({ focusCell, first }).
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the handlers' code (issue 714, the keyboard concern): each handler
+     was an inline function of the engine's markup; it is the same function text, built from the same names, at the same place.
+     The engine is documented in DataGridEngine.jsx.
+*/
+
+const headerKeys = ({
+  column
+}) => e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
+    e.preventDefault();
+    column.toggleSorting();
+  }
+};
+exports.headerKeys = headerKeys;
+const resizeKeys = ({
+  resize,
+  c,
+  column
+}) => e => {
+  if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+    e.preventDefault();
+    resize(c.field, e.key === 'Home' ? column.columnDef.minSize : e.key === 'End' ? column.columnDef.maxSize : (0, _sizeSteps.stepSize)(column.getSize(), e.key === 'ArrowRight' ? 1 : -1, column.columnDef.minSize, column.columnDef.maxSize));
+  }
+};
+exports.resizeKeys = resizeKeys;
+const makeFocusCell = ({
+  model,
+  ordered,
+  virtualized,
+  virtual,
+  displayElements
+}) => (rowIndex, columnIndex, step = 1) => {
+  while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
+  const record = model[rowIndex],
+    column = ordered[columnIndex];
+  if (!record || columnIndex !== null && !column) return;
+  if (virtualized) virtual.scrollToIndex(rowIndex, {
+    align: 'auto'
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const node = displayElements.current.get(record.displayKey || record.id);
+    (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
+      preventScroll: true
+    });
+  }));
+};
+exports.makeFocusCell = makeFocusCell;
+const groupKeys = ({
+  toggleGroup,
+  group,
+  model,
+  virtual,
+  holder,
+  B
+}) => event => {
+  if (event.target !== event.currentTarget) return;
+  if (['Enter', ' ', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
+    event.preventDefault();
+    toggleGroup(group.id, event.key === 'ArrowRight' ? true : event.key === 'ArrowLeft' ? false : undefined);
+  } else if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
+    event.preventDefault();
+    const headers = model.filter(row => row.__group),
+      next = headers[headers.findIndex(row => row.id === group.id) + (event.key === 'ArrowDown' ? 1 : -1)];
+    if (next) {
+      virtual.scrollToIndex(model.indexOf(next), {
+        align: 'center'
+      });
+      requestAnimationFrame(() => requestAnimationFrame(() => holder.current?.querySelector('.' + B + '__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')?.focus({
+        preventScroll: true
+      })));
+    }
+  }
+};
+exports.groupKeys = groupKeys;
+const rowKeys = ({
+  chooseRow,
+  row,
+  emit,
+  rowApi,
+  props,
+  record,
+  on,
+  unread,
+  setOwnOpen,
+  focusCell,
+  model
+}) => e => {
+  if (e.key === 'Enter' && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')) {
+    e.preventDefault();
+    chooseRow(row, e);
+    emit('rowClick', e, rowApi);
+    props.onRowClick?.(record, e);
+    if (props.onRowClick || on.rowClick) {
+      unread.open(record);
+      setOwnOpen(row.id);
+    }
+  }
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
+    e.preventDefault();
+    const step = e.key === 'ArrowDown' ? 1 : -1;
+    focusCell(model.indexOf(row) + step, null, step);
+  }
+};
+exports.rowKeys = rowKeys;
+const cellKeys = ({
+  isStatic,
+  value,
+  canEdit,
+  setEditing,
+  row,
+  c,
+  model,
+  ordered,
+  column,
+  frame,
+  focusCell
+}) => event => {
+  if (isStatic || event.target !== event.currentTarget) return;
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
+    if (document.getSelection()?.toString()) return;
+    event.preventDefault();
+    navigator.clipboard.writeText((0, _cells.valueText)(value));
+    return;
+  }
+  if (event.key === 'Enter' && canEdit) {
+    event.preventDefault();
+    setEditing({
+      key: row.id,
+      field: c.field,
+      value
+    });
+    return;
+  }
+  const index = model.indexOf(row),
+    at = ordered.indexOf(column),
+    keys = {
+      ArrowDown: [index + 1, at],
+      ArrowUp: [index - 1, at],
+      ArrowLeft: [index, at + ((0, _direction.isRtl)(frame.current) ? 1 : -1)],
+      ArrowRight: [index, at + ((0, _direction.isRtl)(frame.current) ? -1 : 1)]
+    };
+  if (keys[event.key]) {
+    event.preventDefault();
+    focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
+  }
+};
+exports.cellKeys = cellKeys;
+const tableKeys = ({
+  focusCell,
+  first
+}) => event => {
+  if (event.target === event.currentTarget && event.key === 'ArrowDown') {
+    event.preventDefault();
+    focusCell(first, 0);
+  }
+};
+exports.tableKeys = tableKeys;
+  } },
   "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -32913,7 +33107,7 @@ const RowTarget = exports.RowTarget = /*#__PURE__*/_react.default.forwardRef(fun
   }));
 });
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","./engine/helpers.jsx":"platform/components/DataGrid/engine/helpers.jsx","./engine/pill.js":"platform/components/DataGrid/engine/pill.js","./engine/useVirtualizer.js":"platform/components/DataGrid/engine/useVirtualizer.js","./engine/useSelection.js":"platform/components/DataGrid/engine/useSelection.js","./engine/parts.jsx":"platform/components/DataGrid/engine/parts.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","./engine/helpers.jsx":"platform/components/DataGrid/engine/helpers.jsx","./engine/pill.js":"platform/components/DataGrid/engine/pill.js","./engine/useVirtualizer.js":"platform/components/DataGrid/engine/useVirtualizer.js","./engine/useSelection.js":"platform/components/DataGrid/engine/useSelection.js","./engine/keys.js":"platform/components/DataGrid/engine/keys.js","./engine/parts.jsx":"platform/components/DataGrid/engine/parts.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32967,6 +33161,7 @@ var _helpers = require("./engine/helpers.jsx");
 var _pill = require("./engine/pill.js");
 var _useVirtualizer = require("./engine/useVirtualizer.js");
 var _useSelection = require("./engine/useSelection.js");
+var _keys = require("./engine/keys.js");
 var _parts = require("./engine/parts.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGridEngine (TanStack)
@@ -34139,12 +34334,9 @@ function NextEngine(props) {
       onClick: e => {
         if (!e.target.closest(_helpers.interactive) && column.getCanSort()) column.toggleSorting();
       },
-      onKeyDown: e => {
-        if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
-          e.preventDefault();
-          column.toggleSorting();
-        }
-      }
+      onKeyDown: (0, _keys.headerKeys)({
+        column
+      })
     }), /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-col-content', isStatic && B + '__grid-col-content--static', icon && B + '__grid-col-content--icon', effectiveWrap && B + '__grid-col-content--wrap')
     }, /*#__PURE__*/_react.default.createElement("div", {
@@ -34225,12 +34417,11 @@ function NextEngine(props) {
       onMouseDown: e => startResize(e, column),
       onTouchStart: e => startResize(e, column),
       onDoubleClick: () => fit(c.field),
-      onKeyDown: e => {
-        if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-          e.preventDefault();
-          resize(c.field, e.key === 'Home' ? column.columnDef.minSize : e.key === 'End' ? column.columnDef.maxSize : (0, _sizeSteps.stepSize)(column.getSize(), e.key === 'ArrowRight' ? 1 : -1, column.columnDef.minSize, column.columnDef.maxSize));
-        }
-      }
+      onKeyDown: (0, _keys.resizeKeys)({
+        resize,
+        c,
+        column
+      })
     }) : null);
     return headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
       key: c.field,
@@ -34238,21 +34429,13 @@ function NextEngine(props) {
       label: S.columns
     }, columnChooser(column)) : node;
   };
-  const focusCell = (rowIndex, columnIndex, step = 1) => {
-    while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
-    const record = model[rowIndex],
-      column = ordered[columnIndex];
-    if (!record || columnIndex !== null && !column) return;
-    if (virtualized) virtual.scrollToIndex(rowIndex, {
-      align: 'auto'
-    });
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      const node = displayElements.current.get(record.displayKey || record.id);
-      (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
-        preventScroll: true
-      });
-    }));
-  };
+  const focusCell = (0, _keys.makeFocusCell)({
+    model,
+    ordered,
+    virtualized,
+    virtual,
+    displayElements
+  });
   const groupNode = (group, sticky = false) => /*#__PURE__*/_react.default.createElement("div", {
     key: group.id,
     "data-plx-group": group.id,
@@ -34267,25 +34450,14 @@ function NextEngine(props) {
     }),
     "aria-level": group.depth + 1,
     "aria-expanded": !collapsed.has(group.id),
-    onKeyDown: event => {
-      if (event.target !== event.currentTarget) return;
-      if (['Enter', ' ', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
-        event.preventDefault();
-        toggleGroup(group.id, event.key === 'ArrowRight' ? true : event.key === 'ArrowLeft' ? false : undefined);
-      } else if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
-        event.preventDefault();
-        const headers = model.filter(row => row.__group),
-          next = headers[headers.findIndex(row => row.id === group.id) + (event.key === 'ArrowDown' ? 1 : -1)];
-        if (next) {
-          virtual.scrollToIndex(model.indexOf(next), {
-            align: 'center'
-          });
-          requestAnimationFrame(() => requestAnimationFrame(() => holder.current?.querySelector('.' + B + '__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')?.focus({
-            preventScroll: true
-          })));
-        }
-      }
-    }
+    onKeyDown: (0, _keys.groupKeys)({
+      toggleGroup,
+      group,
+      model,
+      virtual,
+      holder,
+      B
+    })
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)(B + '__group-head', group.separated && !sticky && B + '__group-head--gap'),
     role: "presentation"
@@ -34452,23 +34624,19 @@ function NextEngine(props) {
           emit('rowDblClick', e, rowApi);
         }
       },
-      onKeyDown: e => {
-        if (e.key === 'Enter' && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')) {
-          e.preventDefault();
-          chooseRow(row, e);
-          emit('rowClick', e, rowApi);
-          props.onRowClick?.(record, e);
-          if (props.onRowClick || on.rowClick) {
-            unread.open(record);
-            setOwnOpen(row.id);
-          }
-        }
-        if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
-          e.preventDefault();
-          const step = e.key === 'ArrowDown' ? 1 : -1;
-          focusCell(model.indexOf(row) + step, null, step);
-        }
-      }
+      onKeyDown: (0, _keys.rowKeys)({
+        chooseRow,
+        row,
+        emit,
+        rowApi,
+        props,
+        record,
+        on,
+        unread,
+        setOwnOpen,
+        focusCell,
+        model
+      })
     }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`, modes, selection[row.id] && B + '__grid-cell--selected-start'),
       role: "gridcell"
@@ -34522,36 +34690,19 @@ function NextEngine(props) {
             value
           });
         },
-        onKeyDown: event => {
-          if (isStatic || event.target !== event.currentTarget) return;
-          if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
-            if (document.getSelection()?.toString()) return;
-            event.preventDefault();
-            navigator.clipboard.writeText((0, _cells.valueText)(value));
-            return;
-          }
-          if (event.key === 'Enter' && canEdit) {
-            event.preventDefault();
-            setEditing({
-              key: row.id,
-              field: c.field,
-              value
-            });
-            return;
-          }
-          const index = model.indexOf(row),
-            at = ordered.indexOf(column),
-            keys = {
-              ArrowDown: [index + 1, at],
-              ArrowUp: [index - 1, at],
-              ArrowLeft: [index, at + ((0, _direction.isRtl)(frame.current) ? 1 : -1)],
-              ArrowRight: [index, at + ((0, _direction.isRtl)(frame.current) ? -1 : 1)]
-            };
-          if (keys[event.key]) {
-            event.preventDefault();
-            focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
-          }
-        },
+        onKeyDown: (0, _keys.cellKeys)({
+          isStatic,
+          value,
+          canEdit,
+          setEditing,
+          row,
+          c,
+          model,
+          ordered,
+          column,
+          frame,
+          focusCell
+        }),
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
         className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
@@ -34779,12 +34930,10 @@ function NextEngine(props) {
     "data-plx-fit": !isStatic && !height && mode !== 'pages' ? '' : undefined,
     role: "rowgroup",
     tabIndex: isStatic ? undefined : 0,
-    onKeyDown: event => {
-      if (event.target === event.currentTarget && event.key === 'ArrowDown') {
-        event.preventDefault();
-        focusCell(first, 0);
-      }
-    },
+    onKeyDown: (0, _keys.tableKeys)({
+      focusCell,
+      first
+    }),
     onScroll: e => {
       if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
       if (mode === 'load-more' && e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight < (0, _environment.tokenPixels)('--plx-ref-size-200px', frame.current)) {
@@ -42795,7 +42944,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
        (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
-     ↓ / ↑ move, Enter chooses, Escape closes.
+     ↓ / ↑ move, Enter chooses, Escape closes. On a closed list ↓ and Alt+↓ open it on the first option, ↑ on the last;
+       Alt+↓ on an open list moves nothing. Escape on a closed list leaves the value as it is (issue 706: the WAI-ARIA
+       pattern makes clearing optional, and a chosen value is never lost to one key; clear it with the text or a tag's
+       remove button).
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
      Tags (multiple without marks): the list offers only the values not chosen yet, so Enter or a click always adds; a
@@ -42941,8 +43093,10 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     document.addEventListener('mousedown', off);
     return () => document.removeEventListener('mousedown', off);
   }, [open]);
+  const startAtLast = _react.default.useRef(false); // Arrow Up opened the list: its last option is the active one (issue 706)
   _react.default.useEffect(() => {
-    setActive(0);
+    setActive(startAtLast.current ? Math.max(0, items.length - 1) : 0);
+    startAtLast.current = false;
   }, [q, open]);
   const choose = item => {
     if (!item || locked) return;
@@ -42969,12 +43123,16 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
       if (!/^(Tab|Escape|Shift|Control|Alt|Meta)$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault();
       return;
     } // read-only: no key opens, chooses, creates or removes
+    // closed: Arrow Down (and Alt+Arrow Down) open on the first option, Arrow Up on the last; open: Alt+Arrow Down moves nothing
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (!open) setOpen(true);else setActive(a => Math.min(items.length - 1, a + 1));
+      if (!open) setOpen(true);else if (!e.altKey) setActive(a => Math.min(items.length - 1, a + 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActive(a => Math.max(0, a - 1));
+      if (!open) {
+        startAtLast.current = true;
+        setOpen(true);
+      } else setActive(a => Math.max(0, a - 1));
     } else if (e.key === 'Enter') {
       if (open && items[active]) {
         e.preventDefault();
