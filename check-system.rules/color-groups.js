@@ -14,6 +14,7 @@
 // Alone: node check-system.rules/color-groups.js     -> COLOR_GROUPS_OK, or the findings and exit 1
 const fs = require('fs');
 const path = require('path');
+const { CONDITION_FILE } = require('./token-sets.js');
 
 const NAME = 'color-groups';
 const GROUPS = ['brand', 'accent', 'semantic', 'surface', 'text', 'border', 'interactive', 'status', 'neutral', 'dataviz', 'component'];
@@ -27,9 +28,10 @@ function sets(root) {
   let themes = {};
   try { themes = JSON.parse(fs.readFileSync(path.join(root, 'platform', 'standards', 'themes.json'), 'utf8')).themes || {}; } catch (e) { themes = {}; }
   for (const t of Object.values(themes)) for (const mode of ['light', 'dark']) if (t[mode]) out.push({ file: path.join(tok, t[mode]), theme: t[mode].replace(/\.(light|dark)\.tokens\.json$/, ''), mode });
-  for (const f of fs.readdirSync(tok).filter((x) => /^semantic.*\.tokens\.json$/.test(x)).sort()) out.push({ file: path.join(tok, f) });
+  // a condition set (#372 step 4: semantic.forced-colors.tokens.json…) holds values only: its tokens' groups are in the base set
+  for (const f of fs.readdirSync(tok).filter((x) => /^semantic.*\.tokens\.json$/.test(x) && !CONDITION_FILE.test(x)).sort()) out.push({ file: path.join(tok, f) });
   const sem = path.join(tok, 'semantic');
-  if (fs.existsSync(sem)) for (const f of fs.readdirSync(sem).filter((x) => x.endsWith('.tokens.json')).sort()) out.push({ file: path.join(sem, f) });
+  if (fs.existsSync(sem)) for (const f of fs.readdirSync(sem).filter((x) => x.endsWith('.tokens.json') && !CONDITION_FILE.test(x)).sort()) out.push({ file: path.join(sem, f) });
   return out.filter((s) => fs.existsSync(s.file));
 }
 

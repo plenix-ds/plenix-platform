@@ -1,0 +1,17 @@
+{
+  "$description": "components/transfer-list.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/transfer-list.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "transfer-list-option-selected-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "transfer-list-option-selected-active-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "transfer-list-option-disabled-text": {
+      "$value": "GrayText",
+      "$type": "color"
+    }
+  }
+}

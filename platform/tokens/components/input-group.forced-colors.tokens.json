@@ -1,0 +1,9 @@
+{
+  "$description": "components/input-group.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/input-group.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "input-group-disabled-text": {
+      "$value": "GrayText",
+      "$type": "color"
+    }
+  }
+}

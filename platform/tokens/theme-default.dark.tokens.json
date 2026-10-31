@@ -125,9 +125,6 @@
         "plenix": {
           "group": "interactive",
           "purpose": "A selected item: rows, list items, tabs."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -138,9 +135,6 @@
         "plenix": {
           "group": "interactive",
           "purpose": "A selected item being pressed."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -161,41 +155,68 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The edge of a selected item."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
     "message-incoming-background": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "surface", "purpose": "The fill of a message from someone else (Chat; #637): existing gray, the owner's dark option (a)." } }
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The fill of a message from someone else (Chat; #637): existing gray, the owner's dark option (a)."
+        }
+      }
     },
     "message-incoming-border": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "border", "purpose": "The 1px edge of a message from someone else, and of its sender's photo (Chat; #637)." }, "com.plenix": { "forcedColors": "CanvasText" } }
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "The 1px edge of a message from someone else, and of its sender's photo (Chat; #637)."
+        }
+      }
     },
     "message-outgoing-background": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "surface", "purpose": "The fill of the person's own message (Chat; #637): a lighter gray than theirs, no blue (the owner's slice 2 go)." } }
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The fill of the person's own message (Chat; #637): a lighter gray than theirs, no blue (the owner's slice 2 go)."
+        }
+      }
     },
     "message-outgoing-border": {
       "$value": "{plx-ref.color-gray-500}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "border", "purpose": "The 1px edge of the person's own message, and of their photo (Chat; #637): gray, no blue." }, "com.plenix": { "forcedColors": "CanvasText" } }
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "The 1px edge of the person's own message, and of their photo (Chat; #637): gray, no blue."
+        }
+      }
     },
     "message-text": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "text", "purpose": "The text of a message (Chat; #637): 10:1 on theirs (gray-900), 5.9:1 on yours (gray-700)." } }
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "The text of a message (Chat; #637): 10:1 on theirs (gray-900), 5.9:1 on yours (gray-700)."
+        }
+      }
     },
     "message-read": {
       "$value": "{plx-ref.color-green-200}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "status", "purpose": "The two green checks of a read message (Chat; the owner, #637): 4.1:1 on your dark message; the success roles are too pale (green-100) or too dark (green-300, 2.6:1) there." } }
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "The two green checks of a read message (Chat; the owner, #637): 4.1:1 on your dark message; the success roles are too pale (green-100) or too dark (green-300, 2.6:1) there."
+        }
+      }
     },
     "content-default": {
       "$value": "{plx-ref.color-gray-200}",
@@ -214,9 +235,6 @@
         "plenix": {
           "group": "text",
           "purpose": "Secondary text: metadata, descriptions."
-        },
-        "com.plenix": {
-          "contrastMore": "{plx-sys.content-default}"
         }
       }
     },
@@ -227,9 +245,6 @@
         "plenix": {
           "group": "text",
           "purpose": "Tertiary text: hints, counts."
-        },
-        "com.plenix": {
-          "contrastMore": "{plx-sys.content-default}"
         }
       }
     },
@@ -240,9 +255,6 @@
         "plenix": {
           "group": "text",
           "purpose": "Text and icons of a disabled control."
-        },
-        "com.plenix": {
-          "forcedColors": "GrayText"
         }
       }
     },
@@ -284,9 +296,6 @@
         "plenix": {
           "group": "border",
           "purpose": "The default edge of cards, panels and fields."
-        },
-        "com.plenix": {
-          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -308,9 +317,6 @@
         "plenix": {
           "group": "border",
           "purpose": "Light separators inside a surface."
-        },
-        "com.plenix": {
-          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -402,9 +408,6 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The focus indicator (a focused field’s border, the focus outline)."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -1150,13 +1153,21 @@
       "$value": "{plx-ref.color-gray-800}",
       "$type": "color",
       "$description": "The rim of a raised control's glow on hover (Button, #610): one step off its dark hover fill (gray-700).",
-      "$extensions": { "plenix": { "group": "surface" } }
+      "$extensions": {
+        "plenix": {
+          "group": "surface"
+        }
+      }
     },
     "control-raised-pressed": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$description": "A raised control while pressed (Button, #610): flat, gray-900 in dark (the owner's pick as drawn).",
-      "$extensions": { "plenix": { "group": "surface" } }
+      "$extensions": {
+        "plenix": {
+          "group": "surface"
+        }
+      }
     },
     "shadow-modal": {
       "$value": "0 0 40px {plx-ref.color-gray-800}, 0 0 0 1px {plx-ref.color-gray-800}",
@@ -1254,9 +1265,6 @@
         "plenix": {
           "group": "border",
           "purpose": "Dividers between the items of a list."
-        },
-        "com.plenix": {
-          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -1300,9 +1308,6 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The edge of a field or control (3:1)."
-        },
-        "com.plenix": {
-          "contrastMore": "{plx-sys.border-strong}"
         }
       }
     },
@@ -1450,9 +1455,6 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The edge of a selected card or tile."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -1463,9 +1465,6 @@
         "plenix": {
           "group": "interactive",
           "purpose": "Text of a selected row or item."
-        },
-        "com.plenix": {
-          "forcedColors": "HighlightText"
         }
       }
     },
@@ -1838,9 +1837,6 @@
         "plenix": {
           "group": "accent",
           "purpose": "A selected item on the frost surface."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -2076,9 +2072,6 @@
         "plenix": {
           "group": "component",
           "purpose": "DataGrid: a selected row."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -2089,9 +2082,6 @@
         "plenix": {
           "group": "component",
           "purpose": "DataGrid: a selected row under the pointer."
-        },
-        "com.plenix": {
-          "forcedColors": "Highlight"
         }
       }
     },
@@ -2102,9 +2092,6 @@
         "plenix": {
           "group": "component",
           "purpose": "DataGrid: text of a selected row."
-        },
-        "com.plenix": {
-          "forcedColors": "HighlightText"
         }
       }
     },

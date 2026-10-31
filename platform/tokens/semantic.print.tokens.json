@@ -1,0 +1,32 @@
+{
+  "$description": "semantic.tokens.json: the values on paper (@media print). A condition set: each token is defined in semantic.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-sys": {
+    "print-hidden": {
+      "$value": "none"
+    },
+    "print-block-size": {
+      "$value": "auto"
+    },
+    "print-max-block-size": {
+      "$value": "none"
+    },
+    "print-overflow": {
+      "$value": "visible"
+    },
+    "print-position": {
+      "$value": "static"
+    },
+    "print-shown": {
+      "$value": "contents"
+    },
+    "print-keep": {
+      "$value": "avoid"
+    },
+    "print-url-before": {
+      "$value": "\" (\""
+    },
+    "print-url-after": {
+      "$value": "\")\""
+    }
+  }
+}

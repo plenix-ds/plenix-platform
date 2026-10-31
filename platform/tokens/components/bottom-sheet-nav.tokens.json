@@ -49,12 +49,7 @@
     "bottom-sheet-nav-tile-current-icon-color": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "BottomSheetNav: the current place's icon (filled), as in the bottom navigation bar.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "BottomSheetNav: the current place's icon (filled), as in the bottom navigation bar."
     },
     "bottom-sheet-nav-tile-label-text": {
       "$value": "{plx-sys.content-default}",

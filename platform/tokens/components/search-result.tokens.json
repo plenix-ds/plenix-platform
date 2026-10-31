@@ -59,12 +59,7 @@
     "search-result-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "SearchResult: the fill of the result whose preview is shown.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "SearchResult: the fill of the result whose preview is shown."
     },
     "search-result-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",

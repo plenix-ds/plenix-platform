@@ -1,0 +1,9 @@
+{
+  "$description": "components/carousel.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/carousel.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "carousel-dot-current-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    }
+  }
+}

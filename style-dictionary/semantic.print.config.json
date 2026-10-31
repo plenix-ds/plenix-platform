@@ -1,0 +1,26 @@
+{
+  "source": [
+    "platform/tokens/semantic.print.tokens.json"
+  ],
+  "platforms": {
+    "css": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/",
+      "files": [
+        {
+          "destination": "semantic.print.css",
+          "format": "css/variables",
+          "options": {
+            "selector": [
+              "@media print",
+              ":root"
+            ],
+            "outputReferences": true
+          }
+        }
+      ]
+    }
+  }
+}

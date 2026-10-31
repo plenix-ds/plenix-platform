@@ -1,0 +1,19 @@
+{
+  "$description": "semantic.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in semantic.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-sys": {
+    "boundary-outline-width": {
+      "$value": "var(--plx-sys-border-width-thin)",
+      "$type": "dimension"
+    },
+    "boundary-outline-color": {
+      "$value": "CanvasText",
+      "$type": "color"
+    },
+    "forced-indicator": {
+      "$value": "Highlight"
+    },
+    "forced-gap": {
+      "$value": "Canvas"
+    }
+  }
+}

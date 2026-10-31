@@ -114,12 +114,7 @@
     "command-menu-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "CommandMenu: a disabled command.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "CommandMenu: a disabled command."
     },
     "command-menu-icon-color": {
       "$value": "{plx-sys.content-muted}",

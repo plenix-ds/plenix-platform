@@ -89,12 +89,7 @@
     "resource-list-item-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "ResourceList: a selected row (its checkbox is checked too: never color alone).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "ResourceList: a selected row (its checkbox is checked too: never color alone)."
     },
     "resource-list-item-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",

@@ -30,6 +30,9 @@
 //   token-sets  (check-system.rules/token-sets.js) the checks the token build made (#372 step 2): themes write no color literal
 //               and define the same roles and foundations, a token is defined in one file only, glob sets and their file
 //               names, print values without contrast values, no typography composite
+//   style-dictionary (#372 step 4) plain Style Dictionary writes the same token values as build-tokens.js, the conditional
+//               ones included (forced colors, more contrast, print, reduced motion): npm run tokens:sd:check builds it into
+//               the ignored build/sd/ and compares (tools/agent/sd-reference-compare.js; both go when step 10 retires build-tokens.js)
 //   site-styles (check-system.rules/site-styles.js) sites have no stylesheet, style block or style attribute of their own (#381): a tracked
 //               .css file outside the exempt list fails, and so does a <style> block or style attribute in services/ or the St. John site
 //   and the other modules of check-system.rules/ that are not style rules (check-common.js, STYLE_MODULES): composition,
@@ -95,6 +98,16 @@ for (const f of require('./build-standards.js')(ROOT, { check: true }).stale) ad
 let tokenBuild = { stale: [] };
 try { tokenBuild = require('./build-tokens.js')(ROOT, { check: true }); } catch (e) { add('generated', path.join(ROOT, 'build-tokens.js'), 0, 'the token build stopped (see the rule token-sets): ' + String(e.message).split('\n')[0]); }
 for (const f of tokenBuild.stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/tokens: edit the .tokens.json, then build');
+// style-dictionary: plain Style Dictionary writes the same token values as build-tokens.js, the conditional ones included
+{
+  const sd = require('child_process').spawnSync('npm', ['run', '--silent', 'tokens:sd:check'], { cwd: ROOT, encoding: 'utf8', shell: process.platform === 'win32' });
+  const where = path.join(ROOT, 'tools', 'agent', 'sd-reference-compare.js');
+  if (sd.error || sd.status !== 0) {
+    const found = String(sd.stdout || '').split('\n').filter((l) => /^ {4}\S/.test(l)).map((l) => l.trim());
+    if (found.length) found.forEach((l) => add('style-dictionary', where, 0, 'Style Dictionary and build-tokens.js differ: ' + l));
+    else add('style-dictionary', where, 0, 'npm run tokens:sd:check failed: ' + String((sd.error && sd.error.message) || sd.stderr || sd.stdout || '').trim().split('\n').slice(-3).join(' '));
+  }
+}
 // generated: the compatibility icon file (every Plenix icon, #553) matches the icon set (platform/icons/map.json)
 for (const f of require('./tools/icons/site-icons.js').buildCompat(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/icons: run node build-app.js, never edit the generated file');
 // generated: each page's icon file (#557) holds exactly the icons its source names

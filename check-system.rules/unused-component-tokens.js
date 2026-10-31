@@ -13,6 +13,7 @@
 // Alone: node check-system.rules/unused-component-tokens.js   -> UNUSED_COMPONENT_TOKENS_OK, or the tokens and exit 1
 const fs = require('fs');
 const path = require('path');
+const { CONDITION_FILE } = require('./token-sets.js');
 
 const NAME = 'unused-component-tokens';
 const ROOT = path.join(__dirname, '..');
@@ -37,7 +38,8 @@ const walk = (d, out) => { if (!fs.existsSync(d)) return out; for (const e of fs
 function defined() {
   const out = {};
   for (const f of walk(TOKENS, [])) {
-    if (!/\.tokens\.json$/.test(f) || /platform-(ios|android)\.tokens\.json$/.test(f)) continue;
+    // a condition set (#372 step 4) defines no token: its tokens are defined in the base set beside it
+    if (!/\.tokens\.json$/.test(f) || /platform-(ios|android)\.tokens\.json$/.test(f) || CONDITION_FILE.test(f)) continue;
     let j; try { j = JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { continue; }
     const g = j['plx-comp']; if (!g) continue;
     for (const k of Object.keys(g)) {

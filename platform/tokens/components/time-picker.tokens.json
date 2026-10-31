@@ -59,12 +59,7 @@
     "time-picker-disabled-field-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "TimePicker disabled field: text color (content-disabled).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "TimePicker disabled field: text color (content-disabled)."
     },
     "time-picker-list-background": {
       "$value": "{plx-sys.surface-overlay}",
@@ -154,12 +149,7 @@
     "time-picker-option-selected-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "TimePicker option selected: text color (selected-content).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "TimePicker option selected: text color (selected-content)."
     },
     "time-picker-option-selected-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",

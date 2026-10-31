@@ -54,12 +54,7 @@
     "drag-handle-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "DragHandle disabled: the disabled content color.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "DragHandle disabled: the disabled content color."
     },
     "drag-handle-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
