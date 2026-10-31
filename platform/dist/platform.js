@@ -18716,6 +18716,54 @@ var Plenix = (function(exports, React2, reactDom, client) {
       columnPinning
     };
   }
+  function useEditedRows(incoming) {
+    const pendingEdit = React2.useRef(null), mutations = React2.useRef([]);
+    const [edited, setEdited] = React2.useState(null), [editing, setEditing] = React2.useState(null);
+    const source = edited?.input === incoming ? edited.rows : incoming;
+    return { setEdited, editing, setEditing, mutations, pendingEdit, source };
+  }
+  function editActions({
+    incoming,
+    source,
+    canonical: canonical2,
+    index: index2,
+    childField,
+    props,
+    setEdited,
+    setEditing,
+    mutations,
+    pendingEdit
+  }) {
+    const replaceData = (rows) => new Promise((resolve) => {
+      mutations.current.push(resolve);
+      setEdited({ input: incoming, rows: rows.slice() });
+    });
+    const updateRecord = (key, change) => new Promise((resolve) => {
+      mutations.current.push(resolve);
+      setEdited((old) => ({
+        input: incoming,
+        rows: changeRecord(old?.input === incoming ? old.rows : source, key, change, index2, childField)
+      }));
+    });
+    const commitEdit = (key, field, value) => {
+      const old = canonical2.find((record) => recordKey(record[index2]) === key), previous = valueAt(old, field);
+      updateRecord(key, (record) => setField(record, field, value));
+      setEditing(null);
+      pendingEdit.current = { key, field };
+      props.onCellEdit?.(setField(old, field, value), { field, value, previous, row: old });
+    };
+    return { replaceData, updateRecord, commitEdit };
+  }
+  function useEditEffect({ source, mutations, pendingEdit, emit, api }) {
+    React2.useLayoutEffect(() => {
+      mutations.current.splice(0).forEach((resolve) => resolve());
+      if (pendingEdit.current) {
+        const { key, field } = pendingEdit.current;
+        pendingEdit.current = null;
+        emit("cellEdit", api.cell(key, field));
+      }
+    }, [source]);
+  }
   const headerKeys = ({ column }) => (e) => {
     if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
       e.preventDefault();
@@ -19271,7 +19319,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const B = isStatic ? "plx-table" : GRID;
     const S2 = useStrings("dataGrid", props.strings), initial = React2.useMemo(() => opening(props), [storageKey]);
     const frame = React2.useRef(null), holder = React2.useRef(null), header = React2.useRef(null), live = React2.useRef({}), ready = React2.useRef(false);
-    const warnedActions = React2.useRef(/* @__PURE__ */ new Set()), viewportId = React2.useId(), displayElements = React2.useRef(/* @__PURE__ */ new Map()), parkedFocus = React2.useRef(null), pendingEdit = React2.useRef(null), mutations = React2.useRef([]), printView = React2.useRef(null);
+    const warnedActions = React2.useRef(/* @__PURE__ */ new Set()), viewportId = React2.useId(), displayElements = React2.useRef(/* @__PURE__ */ new Map()), parkedFocus = React2.useRef(null), printView = React2.useRef(null);
     const deliveredReady = React2.useRef(null);
     const listeners2 = React2.useRef(/* @__PURE__ */ new Map()), rowElements = React2.useRef(/* @__PURE__ */ new Map()), headerElements = React2.useRef(/* @__PURE__ */ new Map());
     const [localSort, setSorting] = React2.useState(initial.sorting);
@@ -19295,7 +19343,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     };
     const [filterField, setFilterField] = React2.useState(null), [managing, setManaging] = React2.useState(false);
-    const [edited, setEdited] = React2.useState(null), [editing, setEditing] = React2.useState(null), [expanded, setExpanded] = React2.useState(props.treeExpanded ?? false);
+    const [expanded, setExpanded] = React2.useState(props.treeExpanded ?? false);
     const [localGroups, setGroups] = React2.useState(() => initial.groupBy), [groupOwner, setGroupOwner] = React2.useState(null), [collapsed, setCollapsed] = React2.useState(() => new Set(initial.collapsed));
     const [loaded, setLoaded] = React2.useState(props.pageSize || 50), [printing, setPrinting] = React2.useState(false);
     const collapsedSignal = JSON.stringify(props.collapsedGroups || []);
@@ -19337,7 +19385,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const sortingRef = React2.useRef(sorting);
     sortingRef.current = sorting;
     const remoteMode = typeof props.fetchRows === "function" && (mode === "pages" || mode === "load-more" || mode === "fill"), scrollFill = remoteMode && mode === "fill", incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
-    const source = edited?.input === incoming ? edited.rows : incoming, canonical2 = React2.useMemo(() => recordsOf(source, index2, childField), [source, index2, childField]);
+    const { setEdited, editing, setEditing, mutations, pendingEdit, source } = useEditedRows(incoming);
+    const canonical2 = React2.useMemo(() => recordsOf(source, index2, childField), [source, index2, childField]);
     const unreadKey = React2.useCallback((record) => record[index2], [index2]);
     const [ownOpen, setOwnOpen] = React2.useState(null);
     const unread = useUnread(canonical2, unreadKey, props), [localUnreadOnly, setUnreadOnly] = React2.useState(false);
@@ -19368,9 +19417,17 @@ var Plenix = (function(exports, React2, reactDom, client) {
       () => new Map(canonical2.map((record) => [recordKey(record[index2]), record])),
       [canonical2, index2]
     );
-    const replaceData = (rows) => new Promise((resolve) => {
-      mutations.current.push(resolve);
-      setEdited({ input: incoming, rows: rows.slice() });
+    const { replaceData, updateRecord, commitEdit } = editActions({
+      incoming,
+      source,
+      canonical: canonical2,
+      index: index2,
+      childField,
+      props,
+      setEdited,
+      setEditing,
+      mutations,
+      pendingEdit
     });
     const changeGroups = (value) => {
       setGroupOwner(groupSignal);
@@ -19386,20 +19443,6 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setCollapsed(next);
       if (changed) announce(expand ? S2.expanded : S2.collapsed);
       props.onViewChange?.({ collapsed: [...next] });
-    };
-    const updateRecord = (key, change) => new Promise((resolve) => {
-      mutations.current.push(resolve);
-      setEdited((old) => ({
-        input: incoming,
-        rows: changeRecord(old?.input === incoming ? old.rows : source, key, change, index2, childField)
-      }));
-    });
-    const commitEdit = (key, field, value) => {
-      const old = canonical2.find((record) => recordKey(record[index2]) === key), previous = valueAt(old, field);
-      updateRecord(key, (record) => setField(record, field, value));
-      setEditing(null);
-      pendingEdit.current = { key, field };
-      props.onCellEdit?.(setField(old, field, value), { field, value, previous, row: old });
     };
     const emit = (name, ...args) => {
       live.current.props.on?.[name]?.(...args);
@@ -20404,14 +20447,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         }
       }
     };
-    React2.useLayoutEffect(() => {
-      mutations.current.splice(0).forEach((resolve) => resolve());
-      if (pendingEdit.current) {
-        const { key, field } = pendingEdit.current;
-        pendingEdit.current = null;
-        emit("cellEdit", api.cell(key, field));
-      }
-    }, [source]);
+    useEditEffect({ source, mutations, pendingEdit, emit, api });
     const enterCut = (event, id) => {
       if (cutOpen.current) return;
       const v = event.currentTarget.querySelector("." + B + "__value");
