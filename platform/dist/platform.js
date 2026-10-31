@@ -18644,6 +18644,78 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     return { selectionRows, selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow };
   }
+  function useColumns({ initial, props, columns, frame, live, emit, api }) {
+    const [order, setOrder] = React2.useState(initial.order), [visibility, setVisibility] = React2.useState(initial.visibility);
+    const orderSignal = JSON.stringify(props.columnOrder), hiddenSignal = JSON.stringify(props.hiddenColumns);
+    const [orderOwner, setOrderOwner] = React2.useState(null), [hiddenOwner, setHiddenOwner] = React2.useState(null);
+    const [sizing, setSizing] = React2.useState(
+      () => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)]))
+    );
+    const [autoSizing, setAutoSizing] = React2.useState({}), [floors, setFloors] = React2.useState({});
+    const widthsSignal = JSON.stringify(props.columnWidths || {});
+    React2.useEffect(() => {
+      if (!props.onViewChange) return;
+      const known = new Set(columns.map((column) => column.field)), next = Object.fromEntries(
+        Object.entries(props.columnWidths || {}).filter(([field, value]) => known.has(field) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0).map(([field, value]) => [field, parseFloat(value)])
+      );
+      setSizing((old) => JSON.stringify(old) === JSON.stringify(next) ? old : next);
+    }, [widthsSignal, !!props.onViewChange, columns]);
+    const controlledVisibility = React2.useMemo(() => visibilityOf(props.hiddenColumns), [hiddenSignal]);
+    const columnOrder = props.onViewChange ? props.columnOrder || order : orderOwner === orderSignal ? order : props.columnOrder || order, columnVisibility = props.onViewChange ? controlledVisibility : hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? controlledVisibility : visibility;
+    const resize = (field, value) => {
+      const definition = columns.find((c) => c.field === field), at2 = frame.current;
+      const min2 = Math.max(floors[field] || 0, tokenPixels(definition?.minWidth || "--plx-ref-size-80px", at2)), max2 = Math.min(
+        definition?.maxWidth ? tokenPixels(definition.maxWidth, at2) : SIZE_STEPS[SIZE_STEPS.length - 1],
+        Math.max(min2, shareOf(at2?.clientWidth, at2))
+      );
+      const width = snapToGrid(snapSize(tokenPixels(value, at2), min2, max2), { el: at2 });
+      live.current.sizing = { ...live.current.sizing || sizing, [field]: width };
+      setSizing((s) => ({ ...s, [field]: width }));
+      props.onViewChange?.({ widths: { ...sizing, [field]: width } });
+    };
+    const changeOrder = (next) => {
+      setOrderOwner(orderSignal);
+      setOrder(next);
+      props.onViewChange?.({ columnOrder: next });
+    };
+    const changeVisibility = (next) => {
+      setHiddenOwner(hiddenSignal);
+      setVisibility(next);
+      props.onViewChange?.({ hiddenColumns: Object.keys(next).filter((field) => next[field] === false) });
+    };
+    const move2 = (field, target, after) => {
+      const current2 = live.current.table.getAllLeafColumns().map((c) => c.id).filter((id) => !id.startsWith("__") && id !== field);
+      const at2 = current2.indexOf(target);
+      current2.splice(Math.max(0, at2 + (after ? 1 : 0)), 0, field);
+      changeOrder(current2);
+      emit("columnMoved", api.column(field), current2.map(api.column));
+    };
+    const pinnedAt = columns.findIndex((c) => c.rowLabel), pinnedIds = columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map((c) => c.field);
+    const orderAt = (id) => {
+      const i = (columnOrder || []).indexOf(id);
+      return i < 0 ? (columnOrder || []).length + columns.findIndex((c) => c.field === id) : i;
+    };
+    const columnPinning = React2.useMemo(
+      () => ({ left: pinnedIds.slice().sort((a, b) => orderAt(a) - orderAt(b)), right: [] }),
+      [JSON.stringify(pinnedIds), JSON.stringify(columnOrder)]
+    );
+    return {
+      sizing,
+      autoSizing,
+      setAutoSizing,
+      floors,
+      setFloors,
+      columnOrder,
+      columnVisibility,
+      resize,
+      changeOrder,
+      changeVisibility,
+      move: move2,
+      pinnedAt,
+      orderAt,
+      columnPinning
+    };
+  }
   const headerKeys = ({ column }) => (e) => {
     if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
       e.preventDefault();
@@ -19202,21 +19274,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const warnedActions = React2.useRef(/* @__PURE__ */ new Set()), viewportId = React2.useId(), displayElements = React2.useRef(/* @__PURE__ */ new Map()), parkedFocus = React2.useRef(null), pendingEdit = React2.useRef(null), mutations = React2.useRef([]), printView = React2.useRef(null);
     const deliveredReady = React2.useRef(null);
     const listeners2 = React2.useRef(/* @__PURE__ */ new Map()), rowElements = React2.useRef(/* @__PURE__ */ new Map()), headerElements = React2.useRef(/* @__PURE__ */ new Map());
-    const [localSort, setSorting] = React2.useState(initial.sorting), [order, setOrder] = React2.useState(initial.order), [visibility, setVisibility] = React2.useState(initial.visibility);
-    const sortSignal = JSON.stringify(props.sort), orderSignal = JSON.stringify(props.columnOrder), hiddenSignal = JSON.stringify(props.hiddenColumns);
-    const [sortOwner, setSortOwner] = React2.useState(null), [orderOwner, setOrderOwner] = React2.useState(null), [hiddenOwner, setHiddenOwner] = React2.useState(null);
-    const [sizing, setSizing] = React2.useState(
-      () => Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)]))
-    );
-    const [autoSizing, setAutoSizing] = React2.useState({}), [floors, setFloors] = React2.useState({});
-    const widthsSignal = JSON.stringify(props.columnWidths || {});
-    React2.useEffect(() => {
-      if (!props.onViewChange) return;
-      const known = new Set(columns.map((column) => column.field)), next = Object.fromEntries(
-        Object.entries(props.columnWidths || {}).filter(([field, value]) => known.has(field) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0).map(([field, value]) => [field, parseFloat(value)])
-      );
-      setSizing((old) => JSON.stringify(old) === JSON.stringify(next) ? old : next);
-    }, [widthsSignal, !!props.onViewChange, columns]);
+    const [localSort, setSorting] = React2.useState(initial.sorting);
+    const sortSignal = JSON.stringify(props.sort);
+    const [sortOwner, setSortOwner] = React2.useState(null);
     const [rowHeight, setRowHeight] = React2.useState(initial.rowHeight), [wrapHeaders, setWrapHeaders] = React2.useState(initial.wrapHeaders);
     const [cutAt, setCutAt] = React2.useState(null), cutOpen = React2.useRef(false);
     const [wrapColumns, setWrapColumns] = React2.useState(() => props.wrapColumns || initial.wrapColumns || {});
@@ -19274,8 +19334,6 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (props.sort?.length && sortOwner !== sortSignal) setSortOwner(null);
     }, [sortSignal]);
     const sorting = props.onViewChange ? controlledSort : sortOwner === sortSignal || !props.sort?.length && sortOwner !== null ? localSort : props.sort?.length ? controlledSort : appliedSort.current ? EMPTY_ROWS : localSort;
-    const controlledVisibility = React2.useMemo(() => visibilityOf(props.hiddenColumns), [hiddenSignal]);
-    const columnOrder = props.onViewChange ? props.columnOrder || order : orderOwner === orderSignal ? order : props.columnOrder || order, columnVisibility = props.onViewChange ? controlledVisibility : hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? controlledVisibility : visibility;
     const sortingRef = React2.useRef(sorting);
     sortingRef.current = sorting;
     const remoteMode = typeof props.fetchRows === "function" && (mode === "pages" || mode === "load-more" || mode === "fill"), scrollFill = remoteMode && mode === "fill", incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
@@ -19357,34 +19415,22 @@ var Plenix = (function(exports, React2, reactDom, client) {
       canonical2.filter((record) => [].concat(keys2).includes(record[index2])),
       true
     );
-    const resize = (field, value) => {
-      const definition = columns.find((c) => c.field === field), at2 = frame.current;
-      const min2 = Math.max(floors[field] || 0, tokenPixels(definition?.minWidth || "--plx-ref-size-80px", at2)), max2 = Math.min(
-        definition?.maxWidth ? tokenPixels(definition.maxWidth, at2) : SIZE_STEPS[SIZE_STEPS.length - 1],
-        Math.max(min2, shareOf(at2?.clientWidth, at2))
-      );
-      const width = snapToGrid(snapSize(tokenPixels(value, at2), min2, max2), { el: at2 });
-      live.current.sizing = { ...live.current.sizing || sizing, [field]: width };
-      setSizing((s) => ({ ...s, [field]: width }));
-      props.onViewChange?.({ widths: { ...sizing, [field]: width } });
-    };
-    const changeOrder = (next) => {
-      setOrderOwner(orderSignal);
-      setOrder(next);
-      props.onViewChange?.({ columnOrder: next });
-    };
-    const changeVisibility = (next) => {
-      setHiddenOwner(hiddenSignal);
-      setVisibility(next);
-      props.onViewChange?.({ hiddenColumns: Object.keys(next).filter((field) => next[field] === false) });
-    };
-    const move2 = (field, target, after) => {
-      const current2 = live.current.table.getAllLeafColumns().map((c) => c.id).filter((id) => !id.startsWith("__") && id !== field);
-      const at2 = current2.indexOf(target);
-      current2.splice(Math.max(0, at2 + (after ? 1 : 0)), 0, field);
-      changeOrder(current2);
-      emit("columnMoved", api.column(field), current2.map(api.column));
-    };
+    const {
+      sizing,
+      autoSizing,
+      setAutoSizing,
+      floors,
+      setFloors,
+      columnOrder,
+      columnVisibility,
+      resize,
+      changeOrder,
+      changeVisibility,
+      move: move2,
+      pinnedAt,
+      orderAt,
+      columnPinning
+    } = useColumns({ initial, props, columns, frame, live, emit, api });
     const { selection, notifySelection, pick, selectionInfo, selectionAnchor } = useSelection$1({
       selected,
       live,
@@ -19437,15 +19483,6 @@ var Plenix = (function(exports, React2, reactDom, client) {
         meta: c
       })),
       [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]
-    );
-    const pinnedAt = columns.findIndex((c) => c.rowLabel), pinnedIds = columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map((c) => c.field);
-    const orderAt = (id) => {
-      const i = (columnOrder || []).indexOf(id);
-      return i < 0 ? (columnOrder || []).length + columns.findIndex((c) => c.field === id) : i;
-    };
-    const columnPinning = React2.useMemo(
-      () => ({ left: pinnedIds.slice().sort((a, b) => orderAt(a) - orderAt(b)), right: [] }),
-      [JSON.stringify(pinnedIds), JSON.stringify(columnOrder)]
     );
     const table = useReactTable({
       data: source,
