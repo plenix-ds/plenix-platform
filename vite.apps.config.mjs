@@ -4,7 +4,7 @@
 // files only when every bundle compiled. Run alone, it writes one target into the ignored build/vite/:
 //   PLENIX_APP=dashboard npx vite build --config vite.apps.config.mjs      (PLENIX_APP=dam for the Asset Manager)
 //
-// What it keeps from the old bundler of build-app.js:
+// What it keeps from the old bundler of build-app.js (Babel and a module table; retired in #709 step 6):
 //   - react, react-dom and react-dom/client are the React and ReactDOM globals, plenix-platform is window.Plenix
 //   - the classic JSX runtime (React.createElement), no minifying, no source map
 //   - the GENERATED FILE banner in the first lines (tools/icons/site-icons.js and the checks read a bundle's source instead)

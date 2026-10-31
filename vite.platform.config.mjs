@@ -3,7 +3,7 @@
 // pre-steps (tokens, icons, the library block of index.js) and writes the file only when every bundle compiled and
 // passed its checks. Run alone (npx vite build --config vite.platform.config.mjs), it writes into the ignored build/vite/.
 //
-// What it keeps from the old bundler of build-app.js:
+// What it keeps from the old bundler of build-app.js (Babel and a module table; retired in #709 step 6):
 //   - react, react-dom and react-dom/client are the React and ReactDOM globals the page loads from platform/vendor/
 //   - the classic JSX runtime (React.createElement): the vendored UMD React has no jsx-runtime
 //   - process.env.NODE_ENV is 'production' in the bundled packages (@tanstack)

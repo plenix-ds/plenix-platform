@@ -200,6 +200,8 @@ ${icons.length} icons, outline and filled, 20px and 24px: Material Symbols Sharp
 
 // ---------- styles ----------
 const S = path.join(PKG, 'styles');
+// esbuild bundles the stylesheet and writes its minified copy: the owner kept esbuild as the CSS minifier (#711). Every
+// JavaScript bundle here is Vite's (below).
 const cssOpts = { entryPoints: [path.join(P, 'platform.css')], bundle: true, logLevel: 'silent', loader: { '.svg': 'dataurl', '.png': 'dataurl', '.woff2': 'dataurl' } };
 esbuild.buildSync(Object.assign({}, cssOpts, { outfile: path.join(S, 'plenix.css') }));
 esbuild.buildSync(Object.assign({}, cssOpts, { outfile: path.join(S, 'plenix.min.css'), minify: true }));
