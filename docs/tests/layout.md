@@ -40,7 +40,7 @@ Plenix pages keep the right shape for their kind (full width, a centered column,
 - A split view could stay side by side when too narrow, or lose its divider or keyboard focus when it stacks.
 - In Arabic, check boxes and radio buttons could sit on the wrong side of their labels.
 - Every page could scroll a little for no visible reason.
-- A failing child test stops Layout at that point: the remaining children and Layout's own checks do not run.
+- A failing child test no longer stops Layout (issue #768). Every child still runs, Layout's own checks still run, and the end of the run lists the failed children ("LAYOUT_FAIL children: …"). Layout then fails.
 
 ## Fixed defect
 - Issue #750 is fixed (commit 173ae712): the test used to close its browser before its last checks (SplitView, right to left, icons, hidden text, settings). The browser now closes only after the last check, so every check runs as written.
