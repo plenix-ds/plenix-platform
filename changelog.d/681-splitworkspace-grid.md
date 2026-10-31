@@ -1,0 +1,2 @@
+### Added
+- SplitWorkspace: `grid`, the list's DataGrid options, passed to the grid it draws from `rows` and `columns` (#681; RedSave P-61). For example `onRowClick` to open a row in the detail side, `openKey` to mark the open row (`aria-current`), `selectable`, `selected` and `onSelectionChange` (a plain click selects only that row), and `rowMenu`. `grid.label` renames the list; the default is still `paneTitle`. The grid keeps its own fill and scroll. Nothing breaks: without `grid` the template draws as before.
