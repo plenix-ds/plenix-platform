@@ -42,7 +42,7 @@ import { formatNumber } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
-import { SIZE_STEPS, stepSize, snapSize } from '../../utils/sizeSteps.js';
+import { SIZE_STEPS } from '../../utils/sizeSteps.js';
 import { shareOf } from '../../utils/paneLimit.js';
 import { tokenPixels } from './environment.js';
 import { Icon } from '../Icon/Icon.jsx';
@@ -55,7 +55,7 @@ import { Input, Select } from '../Input/Input.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Pagination } from '../Pagination/Pagination.jsx';
 import { EmptyState } from '../EmptyState/EmptyState.jsx';
-import { opening, writeView, recordKey, normalizeSort, visibilityOf, valueAt } from './state.js';
+import { opening, writeView, recordKey, normalizeSort, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 import { CellValue, byteFilter, textFilter, listFilter, valueText } from './cells.jsx';
 import { recordsOf, setField, changeRecord, groupDisplay, groupValue, valueKey } from './records.js';
@@ -88,6 +88,7 @@ import {
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
+import { useColumns } from './engine/useColumns.js';
 import { headerKeys, resizeKeys, makeFocusCell, groupKeys, rowKeys, cellKeys, tableKeys } from './engine/keys.js';
 import {
   CellEditor,
@@ -157,31 +158,10 @@ function NextEngine(props) {
   const listeners = React.useRef(new Map()),
     rowElements = React.useRef(new Map()),
     headerElements = React.useRef(new Map());
-  const [localSort, setSorting] = React.useState(initial.sorting),
-    [order, setOrder] = React.useState(initial.order),
-    [visibility, setVisibility] = React.useState(initial.visibility);
-  const sortSignal = JSON.stringify(props.sort),
-    orderSignal = JSON.stringify(props.columnOrder),
-    hiddenSignal = JSON.stringify(props.hiddenColumns);
-  const [sortOwner, setSortOwner] = React.useState(null),
-    [orderOwner, setOrderOwner] = React.useState(null),
-    [hiddenOwner, setHiddenOwner] = React.useState(null);
-  const [sizing, setSizing] = React.useState(() =>
-    Object.fromEntries(Object.entries(initial.widths).map(([k, v]) => [k, parseFloat(v)]))
-  );
-  const [autoSizing, setAutoSizing] = React.useState({}),
-    [floors, setFloors] = React.useState({});
-  const widthsSignal = JSON.stringify(props.columnWidths || {});
-  React.useEffect(() => {
-    if (!props.onViewChange) return;
-    const known = new Set(columns.map((column) => column.field)),
-      next = Object.fromEntries(
-        Object.entries(props.columnWidths || {})
-          .filter(([field, value]) => known.has(field) && Number.isFinite(parseFloat(value)) && parseFloat(value) > 0)
-          .map(([field, value]) => [field, parseFloat(value)])
-      );
-    setSizing((old) => (JSON.stringify(old) === JSON.stringify(next) ? old : next));
-  }, [widthsSignal, !!props.onViewChange, columns]);
+  const [localSort, setSorting] = React.useState(initial.sorting);
+  const sortSignal = JSON.stringify(props.sort);
+  const [sortOwner, setSortOwner] = React.useState(null);
+
   const [rowHeight, setRowHeight] = React.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = React.useState(initial.wrapHeaders);
   // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
@@ -277,19 +257,7 @@ function NextEngine(props) {
         : appliedSort.current
           ? EMPTY_ROWS
           : localSort;
-  const controlledVisibility = React.useMemo(() => visibilityOf(props.hiddenColumns), [hiddenSignal]);
-  const columnOrder = props.onViewChange
-      ? props.columnOrder || order
-      : orderOwner === orderSignal
-        ? order
-        : props.columnOrder || order,
-    columnVisibility = props.onViewChange
-      ? controlledVisibility
-      : hiddenOwner === hiddenSignal
-        ? visibility
-        : props.hiddenColumns
-          ? controlledVisibility
-          : visibility;
+
   const sortingRef = React.useRef(sorting);
   sortingRef.current = sorting;
   // rows from a server: a page at a time ("pages"), appended by Load more ("load-more"), or appended as the person scrolls
@@ -389,39 +357,23 @@ function NextEngine(props) {
       canonical.filter((record) => [].concat(keys).includes(record[index])),
       true
     );
-  const resize = (field, value) => {
-    const definition = columns.find((c) => c.field === field),
-      at = frame.current;
-    const min = Math.max(floors[field] || 0, tokenPixels(definition?.minWidth || '--plx-ref-size-80px', at)),
-      max = Math.min(
-        definition?.maxWidth ? tokenPixels(definition.maxWidth, at) : SIZE_STEPS[SIZE_STEPS.length - 1],
-        Math.max(min, shareOf(at?.clientWidth, at))
-      );
-    const width = snapToGrid(snapSize(tokenPixels(value, at), min, max), { el: at });
-    live.current.sizing = { ...(live.current.sizing || sizing), [field]: width };
-    setSizing((s) => ({ ...s, [field]: width }));
-    props.onViewChange?.({ widths: { ...sizing, [field]: width } });
-  };
-  const changeOrder = (next) => {
-    setOrderOwner(orderSignal);
-    setOrder(next);
-    props.onViewChange?.({ columnOrder: next });
-  };
-  const changeVisibility = (next) => {
-    setHiddenOwner(hiddenSignal);
-    setVisibility(next);
-    props.onViewChange?.({ hiddenColumns: Object.keys(next).filter((field) => next[field] === false) });
-  };
-  const move = (field, target, after) => {
-    const current = live.current.table
-      .getAllLeafColumns()
-      .map((c) => c.id)
-      .filter((id) => !id.startsWith('__') && id !== field);
-    const at = current.indexOf(target);
-    current.splice(Math.max(0, at + (after ? 1 : 0)), 0, field);
-    changeOrder(current);
-    emit('columnMoved', api.column(field), current.map(api.column));
-  };
+
+  const {
+    sizing,
+    autoSizing,
+    setAutoSizing,
+    floors,
+    setFloors,
+    columnOrder,
+    columnVisibility,
+    resize,
+    changeOrder,
+    changeVisibility,
+    move,
+    pinnedAt,
+    orderAt,
+    columnPinning
+  } = useColumns({ initial, props, columns, frame, live, emit, api });
   const { selection, notifySelection, pick, selectionInfo, selectionAnchor } = useSelection({
     selected,
     live,
@@ -488,18 +440,7 @@ function NextEngine(props) {
       })),
     [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]
   );
-  // pinned (frozen) columns are TanStack's left pinning, listed in the columns' current order (columnOrder first, then
-  // the rest as defined, as TanStack orders them), so a pinned column's offset is its getStart('left')
-  const pinnedAt = columns.findIndex((c) => c.rowLabel),
-    pinnedIds = columns.filter((c, i) => c.frozen || (pinnedAt >= 0 && i <= pinnedAt)).map((c) => c.field);
-  const orderAt = (id) => {
-    const i = (columnOrder || []).indexOf(id);
-    return i < 0 ? (columnOrder || []).length + columns.findIndex((c) => c.field === id) : i;
-  };
-  const columnPinning = React.useMemo(
-    () => ({ left: pinnedIds.slice().sort((a, b) => orderAt(a) - orderAt(b)), right: [] }),
-    [JSON.stringify(pinnedIds), JSON.stringify(columnOrder)]
-  );
+
   const table = useReactTable({
     data: source,
     columns: leafDefs,
