@@ -41,7 +41,7 @@ check('a number is written as the number', () => assert.strictEqual(fill('{n} of
 
 const floating = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'floating.js'), 'utf8');
 check('floating.js exports TOP_LAYER', () => assert.ok(/export const TOP_LAYER\s*=\s*FLOATING_ANCHOR\b/.test(floating)));
-check('no local fill or TOP_LAYER (the shared-fill rule)', () => {
+check('no local fill, TOP_LAYER or asIcon (the shared-fill rule, issues 693 and 719)', () => {
   const found = [], files = [];
   const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) { if (!/^(node_modules|\.git|release|Archived|dist|vendor)$/.test(e.name)) walk(p); } else files.push({ file: p }); } };
   walk(path.join(ROOT, 'platform'));

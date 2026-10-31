@@ -9744,7 +9744,6 @@ const TONES = ['success', 'danger', 'neutral'];
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
 // open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = _Icon.stateIcon;
 
 // a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
 const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
@@ -9813,7 +9812,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
   }));
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
-  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.stateIcon)(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__stack"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
@@ -9821,7 +9820,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
     className: labelClass
   }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
-  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.stateIcon)(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
     className: caretClass,
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -13828,7 +13827,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const MenuContext = /*#__PURE__*/_react.default.createContext(null);
 const RadioContext = /*#__PURE__*/_react.default.createContext(null);
-const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 // the menu's own items (not those of a submenu inside it)
 const itemsIn = list => list ? Array.prototype.filter.call(list.querySelectorAll('[data-plx-menu-item]:not([aria-disabled="true"])'), el => el.closest('[role="menu"]') === list) : [];
 const isRtl = el => !!el && getComputedStyle(el).direction === 'rtl';
@@ -13977,7 +13975,7 @@ function MenuItem({
     filled: false
   }) : null) : null, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-menu__icon"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.asIcon)(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-menu__label"
   }, children));
   return href && !disabled ? /*#__PURE__*/_react.default.createElement("a", _extends({
@@ -14124,7 +14122,7 @@ function MenuSub({
     }
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-menu__icon"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.asIcon)(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-menu__label"
   }, label), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-menu-sub__arrow",
@@ -15919,8 +15917,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The title is at the start of the header, the close button at its end, the actions in the footer.
      The layer renders in a portal on document.body.
 */
-const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
-
 // a non-modal dialog: focus moves in when it opens (not trapped), F6 moves between it and its opener, and focus goes back
 // to the opener when it closes from inside (useLayer does this only for modal layers)
 function useNonModalFocus(ref, open, active, firstFocus) {
@@ -16024,7 +16020,7 @@ function ModalShell({
     className: "plx-dialog__header"
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-dialog__icon"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
+  }, (0, _Icon.asIcon)(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
     id: id + 't',
     className: "plx-dialog__title"
   }, title), dismissible ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -17387,8 +17383,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The layer renders in a portal on document.body.
 */
 
-const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
-
 // one sheet at a time (HIG › Sheets): the open sheets in the order they opened; only the last one shows
 const openSheets = [];
 const listeners = new Set();
@@ -17554,7 +17548,7 @@ function Sheet({
   }, cancelLabel) : null, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-sheet__icon",
     "aria-hidden": "true"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
+  }, (0, _Icon.asIcon)(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
     id: id + 't',
     className: "plx-sheet__title"
   }, title), actions, task ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -38660,8 +38654,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
        chevron at the end.
 */
-const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
-
 function CollapsibleSection({
   title,
   icon,
@@ -38702,7 +38694,7 @@ function CollapsibleSection({
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-collapsible-section__icon",
     "aria-hidden": "true"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.asIcon)(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
     ref: titleRef,
     className: "plx-collapsible-section__title"
   }, title), /*#__PURE__*/_react.default.createElement("span", {
@@ -43273,7 +43265,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 // the selected tab fills its icon (the tab owns its state)
-const asIcon = _Icon.stateIcon;
 const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
 /* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
    lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
@@ -43404,7 +43395,7 @@ function Tabs({
       onClick: () => select(t.value)
     }, t.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tabs__icon"
-    }, asIcon(t.icon, on)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }, (0, _Icon.stateIcon)(t.icon, on)) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tabs__label"
     }, t.label), t.count !== undefined ? /*#__PURE__*/_react.default.createElement(_Count.Count, {
       value: t.count,
@@ -44749,7 +44740,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
 // gives keeps its own fill when it sets one
-const asIcon = _Icon.stateIcon;
 // the current item is the open one: a folder shows as an open folder (filled, like every current icon)
 const OPEN_ICONS = {
   folder: _folderOpen.default
@@ -44823,7 +44813,7 @@ function Item({
   };
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, item.icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-nav-list__icon', item.muted && !on && 'plx-nav-list__icon--muted')
-  }, asIcon(iconOf(item.icon, on), on)) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.stateIcon)(iconOf(item.icon, on), on)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-list__label"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-list__name"
@@ -45069,7 +45059,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      An open folder shows the open-folder icon (batch 239). Icons are outline while closed and open and filled while the item
      is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
-const asIcon = (i, filled) => typeof i === 'string' || (0, _Icon.isIconModule)(i) ? (0, _Icon.asIcon)(i, {
+const treeIcon = (i, filled) => typeof i === 'string' || (0, _Icon.isIconModule)(i) ? (0, _Icon.asIcon)(i, {
   filled
 }) : /*#__PURE__*/_react.default.isValidElement(i) && i.type === _Icon.Icon ? /*#__PURE__*/_react.default.cloneElement(i, {
   filled: filled || i.props.filled
@@ -45142,7 +45132,7 @@ function TreeItem({
     filled: false
   }) : null), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-tree__icon"
-  }, asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, treeIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-tree__label"
   }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-tree__meta"
@@ -54667,8 +54657,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (a primary Button) instead.
 */
 const SIZES = ['sm', 'md', 'lg'];
-const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
-
 const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.default.forwardRef(function FloatingActionButton({
   icon,
   label,
@@ -54699,7 +54687,7 @@ const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.
   }, rest), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-floating-action-button__icon",
     "aria-hidden": "true"
-  }, asIcon(icon)), extended ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _Icon.asIcon)(icon)), extended ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-floating-action-button__label"
   }, label) : null);
 });
@@ -63504,7 +63492,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        item's aria-checked says its state. For a flat list use a select or Combobox; for picking among thousands of
        items in folders use a file or entity picker.
 */
-const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 const OPEN_ICONS = {
   folder: _folderOpen.default
 };
@@ -63722,7 +63709,7 @@ function TreeSelect({
       }
     }) : null, n.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__icon"
-    }, asIcon(iconOf(n, isOpen || state === 'true'))) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }, (0, _Icon.asIcon)(iconOf(n, isOpen || state === 'true'))) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__label"
     }, n.label)), isOpen ? /*#__PURE__*/_react.default.createElement("ul", {
       role: "group",

@@ -61,7 +61,6 @@ import PinFilledIcon from 'plenix-platform/icons/plenix/pin-filled';
 
 // the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
 // gives keeps its own fill when it sets one
-const asIcon = stateIcon;
 // the current item is the open one: a folder shows as an open folder (filled, like every current icon)
 const OPEN_ICONS = { folder: FolderOpenIcon };
 const iconOf = (icon, on) => (on && OPEN_ICONS[iconKey(icon)]) || icon;
@@ -94,7 +93,7 @@ function Item({ item, current, onSelect, t, loc }) {
   const props = { className: cx('plx-nav-list__item', item.muted && 'plx-nav-list__item--muted', on && 'is-current', (item.actions || item.onPin) && 'plx-nav-list__item--in-actions'), 'aria-current': on ? 'page' : undefined };
   const content = (
     <>
-      {item.icon ? <span className={cx('plx-nav-list__icon', item.muted && !on && 'plx-nav-list__icon--muted')}>{asIcon(iconOf(item.icon, on), on)}</span> : null}
+      {item.icon ? <span className={cx('plx-nav-list__icon', item.muted && !on && 'plx-nav-list__icon--muted')}>{stateIcon(iconOf(item.icon, on), on)}</span> : null}
       <span className="plx-nav-list__label"><span className="plx-nav-list__name">{item.label}</span>
         {item.count !== undefined ? <span className="plx-nav-list__count">({typeof item.count === 'number' ? item.count.toLocaleString(loc) : item.count})</span> : null}</span>
     </>

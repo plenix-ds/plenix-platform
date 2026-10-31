@@ -44,7 +44,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { isRtl } from '../../utils/direction.js';
-import { Icon, asIcon as iconElement, iconKey } from '../Icon/Icon.jsx';
+import { Icon, asIcon, iconKey } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.js';
@@ -56,7 +56,6 @@ import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
 import SquareMinusIcon from 'plenix-platform/icons/plenix/square-minus';
 
-const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 const OPEN_ICONS = { folder: FolderOpenIcon };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon);
 const kidsOf = (n) => (n.children && n.children.length ? n.children : null);
