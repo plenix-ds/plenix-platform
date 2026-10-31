@@ -7,6 +7,8 @@
 import { recordKey, valueAt } from './state.js';
 import { valueText } from './cells.jsx';
 export function createAdapter(current) {
+  // a person's code names a row by its own id (3, 'r10'); the grid keys its rows by recordKey(id). A key already in the grid's form passes through (issue 736).
+  const asKey = id => current.current.recordsByKey.has(id) ? id : recordKey(id);
   const row = key => {
     const captured=current.current.recordsByKey.get(key);
     const data = () => current.current.recordsByKey.get(key) || captured;
@@ -60,7 +62,7 @@ export function createAdapter(current) {
     off: (name, fn) => current.current.listeners.get(name)?.delete(fn),
     getGroups:()=>current.current.groups.map(group),setGroupBy:value=>current.current.changeGroups(value),
     copyToClipboard:()=>{const fields=current.current.table.getVisibleLeafColumns();const text=[fields.map(c=>c.columnDef.meta.title||c.id),...api.getData(true).map(record=>fields.map(c=>valueAt(record,c.id)))].map(values=>values.map(value=>valueText(value).replace(/[\t\r\n]/g,' ')).join('\t')).join('\n');return navigator.clipboard.writeText(text);},
-    print:()=>window.print(),options: {}, row, column, cell
+    print:()=>window.print(),options: {}, row: id => row(asKey(id)), column, cell: (id, field) => cell(asKey(id), field)
   };
   return api;
 }
