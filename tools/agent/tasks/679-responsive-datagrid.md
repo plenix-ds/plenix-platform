@@ -18,6 +18,7 @@ The default DataGrid currently pins the leading row label or selection cell and 
 - `platform/components/DataGrid/DataGrid.jsx`
 - `platform/components/DataGrid/data-grid.css`
 - `platform/components/DataGrid/scrollbars.jsx`
+- `tests/data-grid-narrow-168.test.js` (update the old default-layout expectation; do not run it locally)
 - `tools/agent/tasks/679-responsive-datagrid.md`
 
 ## Bugfix definition
