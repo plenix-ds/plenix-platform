@@ -27,7 +27,6 @@ import { Scrollbars } from './scrollbars.jsx';
 import { useSortable } from '../../utils/dnd.js';
 import { DragHandle } from '../DragHandle/DragHandle.jsx';
 
-import { formatNumber } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
 
@@ -44,33 +43,18 @@ import { Pagination } from '../Pagination/Pagination.jsx';
 import { EmptyState } from '../EmptyState/EmptyState.jsx';
 import { opening, writeView, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
-import { CellValue, valueText } from './cells.jsx';
+import { valueText } from './cells.jsx';
 import { recordsOf } from './records.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import AddIcon from 'plenix-platform/icons/plenix/add';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
-import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 import EdTextIcon from 'plenix-platform/icons/plenix/ed-text';
-import ExpandIcon from 'plenix-platform/icons/plenix/expand';
 import FilterIcon from 'plenix-platform/icons/plenix/filter';
 import GroupByIcon from 'plenix-platform/icons/plenix/group-by';
-import MoreIcon from 'plenix-platform/icons/plenix/more';
 import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
 import SortAscendingIcon from 'plenix-platform/icons/plenix/sort-ascending';
 import SortDescendingIcon from 'plenix-platform/icons/plenix/sort-descending';
-import {
-  EMPTY_ROWS,
-  GRID,
-  cellDirection,
-  interactive,
-  kinds,
-  lengthName,
-  sorted,
-  typeIcons,
-  typeOf,
-  words
-} from './engine/helpers.jsx';
+import { EMPTY_ROWS, GRID, interactive, kinds, lengthName, typeIcons, typeOf, words } from './engine/helpers.jsx';
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
@@ -83,19 +67,9 @@ import { groupActions } from './engine/groupActions.js';
 import { useRowModel } from './engine/useRowModel.js';
 import { useRemoteRows } from './engine/useRemoteRows.js';
 import { useTableModel } from './engine/useTableModel.js';
-import { headerKeys, resizeKeys, makeFocusCell, groupKeys, rowKeys, cellKeys, tableKeys } from './engine/keys.js';
-import {
-  CellEditor,
-  Check,
-  CustomCell,
-  MemoGridRow,
-  PressTrigger,
-  RowGap,
-  RowMenuContent,
-  RowTarget,
-  Width,
-  WidthPixels
-} from './engine/parts.jsx';
+import { bodyRows } from './engine/bodyRows.jsx';
+import { headerKeys, resizeKeys, makeFocusCell, tableKeys } from './engine/keys.js';
+import { Check, MemoGridRow, PressTrigger, RowGap, Width, WidthPixels } from './engine/parts.jsx';
 
 function NextEngine(props) {
   const inPane = React.useContext(GridPane);
@@ -1238,95 +1212,7 @@ function NextEngine(props) {
     );
   };
   const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
-  const groupNode = (group, sticky = false) => (
-    <div
-      key={group.id}
-      data-plx-group={group.id}
-      className={cx(
-        '' + B + '__grid-row ' + B + '__grid-group',
-        '' + B + '__grid-group-level-' + group.depth,
-        group.separated && B + '__group--gap'
-      )}
-      role="row"
-      tabIndex={0}
-      aria-rowindex={semanticIndex.get(group.id)}
-      aria-label={words(S.groupRow, {
-        value: valueText(group.value) || S.noValue,
-        count: group.rows.length,
-        records: group.rows.length === 1 ? S.record : S.records
-      })}
-      aria-level={group.depth + 1}
-      aria-expanded={!collapsed.has(group.id)}
-      onKeyDown={groupKeys({ toggleGroup, group, model, virtual, holder, B })}
-    >
-      <div
-        className={cx(B + '__group-head', group.separated && !sticky && B + '__group-head--gap')}
-        role="presentation"
-      >
-        {ordered.map((column, i) => (
-          <Width
-            key={column.id}
-            width={widths[column.id] + (i === 0 && selectable ? metrics.lead : 0)}
-            className={cx(
-              B + '__group-cell',
-              i === 0 && B + '__group-cell--first',
-              column.columnDef.meta.summary && B + '__group-cell--summary',
-              isNarrow && B + '__group-cell--narrow'
-            )}
-            role="gridcell"
-            aria-colspan={i === 0 && selectable ? 2 : undefined}
-          >
-            {i === 0 ? (
-              <div
-                className={cx(
-                  B + '__group-label',
-                  group.depth >= 1 && group.depth <= 3 && B + '__group-label--level-' + group.depth
-                )}
-              >
-                <span className={B + '__group-chevron'} aria-hidden="true" onClick={() => toggleGroup(group.id)}>
-                  <Icon name={collapsed.has(group.id) ? ChevronRightIcon : ChevronDownIcon} />
-                </span>
-                <div className={B + '__group-text'}>
-                  <span dir="auto" className={B + '__group-eyebrow'}>
-                    {columns.find((c) => c.field === group.field)?.title || group.field}
-                  </span>
-                  <span
-                    className={cx(
-                      B + '__group-value',
-                      kinds(columns.find((c) => c.field === group.field) || {}).includes('data') &&
-                        B + '__group-value--data'
-                    )}
-                    data-plx-text-follow="size"
-                    data-plx-kind={
-                      kinds(columns.find((c) => c.field === group.field) || {}).includes('data') ? 'data' : undefined
-                    }
-                  >
-                    {valueText(group.value) || S.noValue}
-                  </span>
-                </div>
-                <span className={B + '__group-count'}>{formatNumber(group.rows.length)}</span>
-              </div>
-            ) : column.columnDef.meta.summary ? (
-              <span className={B + '__group-summary'}>
-                <span className={B + '__group-summary-name'}>
-                  {
-                    { sum: S.sum, count: S.countOf, average: S.average, min: S.min, max: S.max }[
-                      column.columnDef.meta.summary
-                    ]
-                  }
-                </span>
-                <span className={B + '__group-summary-value'}>
-                  {group.summary?.[column.columnDef.meta.field] == null
-                    ? null
-                    : formatNumber(group.summary[column.columnDef.meta.field])}
-                </span>
-              </span>
-            ) : null}
-          </Width>
-        ))}
-      </div>
-    </div>
-  );
+
   const rememberRow = (row, node) => {
     const displayKey = row.displayKey || row.id,
       previous = displayElements.current.get(displayKey),
@@ -1366,363 +1252,67 @@ function NextEngine(props) {
     }
   };
   useEditEffect({ source, mutations, pendingEdit, emit, api });
-  const enterCut = (event, id) => {
-    if (cutOpen.current) return;
-    const v = event.currentTarget.querySelector('.' + B + '__value');
-    const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
-    setCutAt(cut ? id : null);
-  };
-  const leaveCut = (id) => {
-    if (!cutOpen.current) setCutAt((at) => (at === id ? null : at));
-  };
-  const anyWrap = table
-    .getVisibleLeafColumns()
-    .some((col) => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
-  const rowNode = (row) => {
-    if (row.__group) return groupNode(row.__group);
-    if (row.__add)
-      return (
-        <div key={row.id} className={B + '__add-row'} role="row" aria-rowindex={semanticIndex.get(row.id)}>
-          <div
-            role="gridcell"
-            aria-colspan={ordered.length + (selectable ? 1 : 0)}
-            className={cx(
-              B + '__group-cell',
-              B + '__group-cell--first',
-              B + '__group-cell--add',
-              isNarrow && B + '__group-cell--narrow'
-            )}
-          >
-            <Button
-              variant="ghost"
-              size="xs"
-              iconOnly
-              icon={AddIcon}
-              label={words(S.addTo, { value: valueText(row.__add.value) || S.noValue })}
-              onClick={() => props.onAddToGroup(row.__add.value, row.__add.path)}
-            />
-          </div>
-        </div>
-      );
-    if (row.__gap)
-      return (
-        <div key={row.id} className={B + '__group--gap'}>
-          <div className={B + '__group-band'} />
-        </div>
-      );
-    const rowApi = api.row(row.id),
-      record = row.original;
-    const step = !isStatic && !isNarrow ? effectiveStep : undefined,
-      sized = step != null,
-      lines = sized && step !== 'short',
-      modes = cx(
-        isStatic && B + '__grid-cell--static',
-        isNarrow && B + '__grid-cell--narrow',
-        sized && B + '__grid-cell--sized',
-        lines && B + '__grid-cell--lines'
-      );
-    const node = (
-      <RowTarget
-        key={row.displayKey || row.id}
-        {...(!(props.movableRows ?? options.movableRows) || !recordPositions.has(record)
-          ? null
-          : rowDnd.itemProps(recordPositions.get(record)))}
-        data-plx-unread={unread.has(record) || undefined}
-        aria-label={
-          unread.has(record)
-            ? S.unreadRow.replace('{label}', String(valueAt(record, columns[0]?.field) ?? record[index]))
-            : undefined
-        }
-        data-plx-record={row.id}
-        onAttach={(node) => rememberRow(row, node)}
-        role="row"
-        aria-rowindex={(mode === 'pages' ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2)}
-        aria-selected={selectable || options.selectableRows ? !!selection[row.id] : undefined}
-        aria-current={isOpen(row.id) ? 'true' : undefined}
-        tabIndex={props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined}
-        aria-level={childField ? row.depth + 1 : undefined}
-        aria-expanded={row.getCanExpand?.() ? row.getIsExpanded() : undefined}
-        className={cx(
-          '' + B + '__grid-row',
-          (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable',
-          childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth),
-          marked(row.id) && '' + B + '__grid-selected',
-          isStatic && B + '__grid-row--static',
-          anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap',
-          isNarrow && B + '__grid-row--narrow',
-          virtualized && B + '__grid-row--virtual',
-          row === model[0] && B + '__grid-row--first'
-        )}
-        onClick={(e) => {
-          if (e.target.closest(interactive)) return;
-          chooseRow(row, e);
-          emit('rowClick', e, rowApi);
-          props.onRowClick?.(record, e);
-          if (props.onRowClick || on.rowClick) {
-            unread.open(record);
-            setOwnOpen(row.id);
-          }
-        }}
-        onDoubleClick={(e) => {
-          if (!e.target.closest(interactive)) {
-            props.onRowDoubleClick?.(record, e);
-            emit('rowDblClick', e, rowApi);
-          }
-        }}
-        onKeyDown={rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })}
-      >
-        {selectable ? (
-          <div
-            className={cx(
-              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
-              modes,
-              selection[row.id] && B + '__grid-cell--selected-start'
-            )}
-            role="gridcell"
-          >
-            <Check
-              label={S.selectRow + ' ' + record[index]}
-              checked={selection[row.id]}
-              onChange={(e) => pickCheckbox(row, e)}
-            />
-          </div>
-        ) : null}
-        {ordered.map((column) => {
-          const c = column.columnDef.meta,
-            k = kindsOf(c),
-            pinned = column.getIsPinned() === 'left',
-            sticky = pinned ? pinStart(column) : 0;
-          const cell = api.cell(row.id, c.field),
-            canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
-          const value = valueAt(record, c.field),
-            isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field),
-            isEditing = editing?.key === row.id && editing.field === c.field,
-            handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
-            actions = k.includes('actions');
-          const mods =
-              cx(
-                isStatic && B + '__value--static',
-                k.includes('wrap') && B + '__value--wrap',
-                sized && B + '__value--sized',
-                lines && k.includes('wrap') && B + '__value--lines'
-              ) || undefined,
-            shown = CellValue({
-              block: B,
-              column: c,
-              value,
-              strings: S,
-              record,
-              pill: cells === 'pill',
-              pillField: c.field,
-              icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
-              mods
-            }); // a pill carries a type icon only when it says something (a date, a number)
-          const bare =
-            !isEditing &&
-            !handled &&
-            !c.render &&
-            !actions &&
-            !(pinned && !isStatic) &&
-            React.isValidElement(shown) &&
-            shown.type === 'span' &&
-            String(shown.props.className)
-              .split(' ')
-              .includes(B + '__value');
-          return (
-            <Width
-              key={c.field}
-              width={isNarrow ? null : widths[c.field]}
-              frozenOffset={pinned && !isNarrow ? sticky : undefined}
-              role={isStatic ? (c.rowLabel ? 'rowheader' : 'cell') : 'gridcell'}
-              tabIndex={isStatic ? undefined : -1}
-              data-plx-field={c.field}
-              data-plx-unread={unread.has(record) || undefined}
-              {...(!isStatic && !c.render && !actions && !isEditing
-                ? {
-                    onPointerEnter: (e) => enterCut(e, row.id + '|' + c.field),
-                    onFocus: (e) => enterCut(e, row.id + '|' + c.field),
-                    onPointerLeave: () => leaveCut(row.id + '|' + c.field)
-                  }
-                : null)}
-              dir={(pinned && !isStatic) || kinds(c).includes('id') ? undefined : 'auto'}
-              onDoubleClick={() => {
-                if (canEdit) setEditing({ key: row.id, field: c.field, value });
-              }}
-              onKeyDown={cellKeys({
-                isStatic,
-                value,
-                canEdit,
-                setEditing,
-                row,
-                c,
-                model,
-                ordered,
-                column,
-                frame,
-                focusCell
-              })}
-              data-plx-sticky={pinned && sticky ? sticky + 'px' : undefined}
-              data-plx-text-follow={c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family'}
-              className={cx(
-                '' + B + '__grid-cell',
-                modes,
-                !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start',
-                bare && B + '__grid-cell--bare',
-                selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead',
-                ordered.indexOf(column) > 0 &&
-                  ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' &&
-                  column.getIsPinned() !== 'left' &&
-                  B + '__grid-cell--after-frozen',
-                isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth),
-                editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing',
-                k.map((kind) => B + '__cell--' + kind).join(' '),
-                (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data',
-                []
-                  .concat(groupBy || [])
-                  .some((level) => (typeof level === 'object' ? level.field : level) === c.field) &&
-                  B + '__cell--grouped',
-                c.type === 'bytes' && B + '__cell--data',
-                c.rowHandle && B + '__cell--handle',
-                childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell',
-                pinned && '' + B + '__grid-frozen',
-                (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label',
-                k.includes('icon') && B + '__w-lead',
-                keys.includes(c.field) && B + '__cell--key',
-                keys[0] === c.field && B + '__cell--key-first',
-                (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right')
-              )}
-            >
-              {childField && c.field === (props.treeColumn || columns[0]?.field) ? (
-                <span className={B + '__tree-level'} data-plx-depth={0}>
-                  {row.getCanExpand() ? (
-                    <button
-                      type="button"
-                      className={B + '__grid-data-tree-control'}
-                      aria-expanded={row.getIsExpanded()}
-                      aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
-                      onClick={() => row.toggleExpanded()}
-                    >
-                      <span
-                        className={B + '__grid-data-tree-control-' + (row.getIsExpanded() ? 'collapse' : 'expand')}
-                      />
-                    </button>
-                  ) : null}
-                </span>
-              ) : null}
-              {editing?.key === row.id && editing.field === c.field ? (
-                cellDirection(
-                  pinned && !isStatic,
-                  <CellEditor
-                    column={c}
-                    value={value}
-                    onCommit={(next) => commitEdit(row.id, c.field, next)}
-                    onCancel={() => setEditing(null)}
-                  />
-                )
-              ) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? (
-                <Menu
-                  label={S.moveRow}
-                  trigger={<DragHandle dnd={rowDnd.handleProps(recordPositions.get(record) ?? -1)} />}
-                >
-                  <MenuItem
-                    disabled={!rowDnd.canMove(recordPositions.get(record) ?? -1, -1)}
-                    onSelect={() =>
-                      rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) - 1)
-                    }
-                  >
-                    {S.moveUp}
-                  </MenuItem>
-                  <MenuItem
-                    disabled={!rowDnd.canMove(recordPositions.get(record) ?? -1, 1)}
-                    onSelect={() =>
-                      rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) + 1)
-                    }
-                  >
-                    {S.moveDown}
-                  </MenuItem>
-                  <MenuItem onSelect={() => rowDnd.moveTo(recordPositions.get(record) ?? -1, 0)}>{S.moveTop}</MenuItem>
-                  <MenuItem onSelect={() => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical.length - 1)}>
-                    {S.moveBottom}
-                  </MenuItem>
-                </Menu>
-              ) : c.render ? (
-                <span
-                  className={cx(B + '__portal', actions && B + '__portal--actions')}
-                  dir={pinned && !isStatic && !kinds(c).includes('id') ? 'auto' : undefined}
-                  data-plx-link-target="cell"
-                >
-                  <CustomCell
-                    column={c}
-                    record={record}
-                    cell={cell}
-                    rowId={row.id}
-                    selected={!!selection[row.id]}
-                    block={B}
-                    mods={mods}
-                  />
-                </span>
-              ) : actions ? (
-                <span
-                  className={B + '__portal ' + B + '__portal--actions'}
-                  dir={pinned && !isStatic && !kinds(c).includes('id') ? 'auto' : undefined}
-                >
-                  {shown}
-                </span>
-              ) : cutAt === row.id + '|' + c.field ? (
-                <>
-                  {cellDirection(pinned && !isStatic && !kinds(c).includes('id'), shown)}
-                  <span className={B + '__cut'}>
-                    <Popover
-                      label={c.title}
-                      title={c.title}
-                      size="sm"
-                      placement="bottom-end"
-                      onOpenChange={(open) => {
-                        cutOpen.current = open;
-                        if (!open) setCutAt(null);
-                      }}
-                      trigger={<Button variant="ghost" size="xs" iconOnly icon={ExpandIcon} label={S.fullText} />}
-                    >
-                      <div className={B + '__full-text'}>{valueText(value)}</div>
-                    </Popover>
-                  </span>
-                </>
-              ) : (
-                cellDirection(pinned && !isStatic && !kinds(c).includes('id'), shown)
-              )}
-            </Width>
-          );
-        })}
-        {props.viewMenu ? <div className={cx(`${B}__grid-cell ${B}__w-view`, modes)} role="gridcell" /> : null}
-        {rowMenu && rowMenuButton ? (
-          <Width width={metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, modes)} role="gridcell">
-            <Menu
-              label={S.rowActions}
-              trigger={
-                <Button
-                  className={B + '__row-menu'}
-                  variant="ghost"
-                  size="xs"
-                  iconOnly
-                  icon={MoreIcon}
-                  label={S.rowActions}
-                />
-              }
-            >
-              <RowMenuContent build={menuItems} items={rowMenu} record={record} rowApi={rowApi} />
-            </Menu>
-          </Width>
-        ) : null}
-      </RowTarget>
-    );
-    return rowMenu ? (
-      <ContextMenu key={row.displayKey || row.id} target={node} label={S.rowActions}>
-        <RowMenuContent build={menuItems} items={rowMenu} record={record} rowApi={rowApi} />
-      </ContextMenu>
-    ) : (
-      node
-    );
-  };
+
+  const { groupNode, rowNode } = bodyRows({
+    B,
+    semanticIndex,
+    S,
+    collapsed,
+    toggleGroup,
+    model,
+    virtual,
+    holder,
+    ordered,
+    widths,
+    selectable,
+    metrics,
+    isNarrow,
+    columns,
+    cutOpen,
+    setCutAt,
+    table,
+    wrapOf,
+    props,
+    api,
+    isStatic,
+    effectiveStep,
+    options,
+    recordPositions,
+    rowDnd,
+    unread,
+    index,
+    rememberRow,
+    mode,
+    page,
+    pageSize,
+    selection,
+    isOpen,
+    on,
+    childField,
+    marked,
+    virtualized,
+    chooseRow,
+    emit,
+    setOwnOpen,
+    focusCell,
+    pickCheckbox,
+    kindsOf,
+    pinStart,
+    editing,
+    cells,
+    showTypes,
+    setEditing,
+    frame,
+    pinnedAt,
+    groupBy,
+    keys,
+    commitEdit,
+    canonical,
+    cutAt,
+    rowMenu,
+    rowMenuButton,
+    menuItems
+  });
   const rowVersion = React.useMemo(
     () => ({}),
     [
