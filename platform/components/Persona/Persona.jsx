@@ -32,7 +32,7 @@ import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Link } from '../Link/Link.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];

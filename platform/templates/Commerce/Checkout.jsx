@@ -39,7 +39,7 @@ import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { StatusIcon } from '../../components/Icon/Icon.jsx';
 import { CommerceLine, OrderSummary, orderTotals, money, useCommercePage } from './shared.jsx';
 import { fill } from '../../utils/fill.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import BriefcaseIcon from 'plenix-platform/icons/plenix/briefcase';
 import EdUndoIcon from 'plenix-platform/icons/plenix/ed-undo';
 import LockIcon from 'plenix-platform/icons/plenix/lock';

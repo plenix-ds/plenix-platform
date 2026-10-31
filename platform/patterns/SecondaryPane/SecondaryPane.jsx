@@ -62,7 +62,7 @@ import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShe
 import { focusables } from '../../utils/layer.ts';
 import { gridWithin } from '../../utils/grid.ts';
 import { paneMax } from '../../utils/paneLimit.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PanelLeftCloseIcon from 'plenix-platform/icons/plenix/panel-left-close';

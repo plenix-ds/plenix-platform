@@ -54,7 +54,7 @@ import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';

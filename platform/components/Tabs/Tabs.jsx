@@ -52,7 +52,7 @@ import { useUid } from '../../utils/layer.ts';
 import { Count } from '../Count/Count.jsx';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CaretIcon from 'plenix-platform/icons/plenix/caret';
 
 // the selected tab fills its icon (the tab owns its state)

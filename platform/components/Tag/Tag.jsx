@@ -55,7 +55,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 
 function RemoveButton({ label, onClick }) {

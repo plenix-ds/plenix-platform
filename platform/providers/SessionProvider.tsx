@@ -28,7 +28,17 @@ import React from 'react';
 // the demo session: the sample account and notifications every application shows until the back end sends them
 // a fictional sample session, for demonstrations (the design system site sets it as its default); the Platform's own
 // default is empty: no person's name, address or messages ship in an application that does not pass its own
-export const DEMO_SESSION = {
+export type Account = { name?: string; firstName?: string; lastName?: string; email?: string; src?: string; [field: string]: unknown };
+export type Notification = { id: string | number; text: string; time?: string; unread?: boolean; [field: string]: unknown };
+export type Session = { account?: Account; notifications?: Notification[]; pinnedApps?: string[] };
+export type SessionValue = {
+  // undefined only outside a provider, when the site's default session has no account
+  account: Account | undefined; notifications: Notification[]; setNotifications(next: React.SetStateAction<Notification[]>): void;
+  pinnedApps: string[]; setPinnedApps(next: string[] | ((prev: string[]) => string[])): void; setPicture(dataUrl: string | null): void;
+};
+export type SessionProviderProps = { session?: Session | null; children?: React.ReactNode };
+
+export const DEMO_SESSION: Session & { pinnedApps: string[] } = {
   account: { name: 'Alex Morgan', firstName: 'Alex', lastName: 'Morgan', email: 'alex.morgan@example.com' },
   notifications: [
     { id: 1, text: 'Jordan Lee uploaded 12 new assets to Brand', time: '5 min ago', unread: true },
@@ -41,19 +51,19 @@ export const DEMO_SESSION = {
 };
 
 // the default when no session is passed: nobody signed in, no notifications; every application pinned
-const EMPTY_SESSION = { account: {}, notifications: [], pinnedApps: DEMO_SESSION.pinnedApps };
-let defaultSession = EMPTY_SESSION;
+const EMPTY_SESSION: Session & { pinnedApps: string[] } = { account: {}, notifications: [], pinnedApps: DEMO_SESSION.pinnedApps };
+let defaultSession: Session = EMPTY_SESSION;
 // a site sets the session its pages show when they pass none (the design system: DEMO_SESSION); null restores the empty one
-export function setDefaultSession(session) { defaultSession = session || EMPTY_SESSION; }
+export function setDefaultSession(session: Session | null | undefined): void { defaultSession = session || EMPTY_SESSION; }
 
-const SessionContext = React.createContext(null);
+const SessionContext = React.createContext<SessionValue | null>(null);
 
 const PINS_KEY = 'plenix.pinnedApps';
 const PICTURE_KEY = 'plenix.accountPicture';
 const readPicture = () => { try { return localStorage.getItem(PICTURE_KEY) || null; } catch (e) { return null; } };
 
 // the file picker for a picture: the image cut to a centered square and drawn at 128px (a small data: URL, a PNG)
-export function choosePicture() {
+export function choosePicture(): Promise<string | null> {
   return new Promise((resolve) => {
     const input = document.createElement('input');
     input.type = 'file'; input.accept = 'image/*';
@@ -66,11 +76,11 @@ export function choosePicture() {
         img.onload = () => {
           const side = Math.min(img.naturalWidth, img.naturalHeight), c = document.createElement('canvas');
           c.width = 128; c.height = 128;
-          c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 128, 128);
+          c.getContext('2d')!.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 128, 128);
           resolve(c.toDataURL('image/png'));
         };
         img.onerror = () => resolve(null);
-        img.src = reader.result;
+        img.src = reader.result as string;
       };
       reader.onerror = () => resolve(null);
       reader.readAsDataURL(file);
@@ -78,34 +88,34 @@ export function choosePicture() {
     input.click();
   });
 }
-const readPins = (fallback) => { try { const v = JSON.parse(localStorage.getItem(PINS_KEY)); return Array.isArray(v) ? v : fallback; } catch (e) { return fallback; } };
+const readPins = (fallback: string[]): string[] => { try { const v = JSON.parse(localStorage.getItem(PINS_KEY) as string); return Array.isArray(v) ? v : fallback; } catch (e) { return fallback; } };
 
-export function SessionProvider({ session: sessionProp, children }) {
+export function SessionProvider({ session: sessionProp, children }: SessionProviderProps) {
   const session = sessionProp || defaultSession;
   const [notifications, setNotifications] = React.useState(session.notifications || []);
   const [pinnedApps, setPins] = React.useState(() => readPins(session.pinnedApps || EMPTY_SESSION.pinnedApps));
-  const [picture, setPictureState] = React.useState(readPicture);
-  const setPicture = React.useCallback((v) => {
+  const [picture, setPictureState] = React.useState<string | null>(readPicture);
+  const setPicture = React.useCallback((v: string | null) => {
     try { if (v) localStorage.setItem(PICTURE_KEY, v); else localStorage.removeItem(PICTURE_KEY); } catch (e) { /* not stored: it lasts for this visit */ }
     setPictureState(v || null);
   }, []);
   React.useEffect(() => { setNotifications(session.notifications || []); }, [session]);
-  const setPinnedApps = React.useCallback((next) => setPins((prev) => {
+  const setPinnedApps = React.useCallback((next: string[] | ((prev: string[]) => string[])) => setPins((prev) => {
     const v = typeof next === 'function' ? next(prev) : next;
     try { localStorage.setItem(PINS_KEY, JSON.stringify(v)); } catch (e) { /* not stored: the pins last for this visit */ }
     return v;
   }), []);
   const account = React.useMemo(() => Object.assign({}, session.account || {}, picture ? { src: picture } : null), [session, picture]);
-  const value = React.useMemo(() => ({ account, notifications, setNotifications, pinnedApps, setPinnedApps, setPicture }), [account, notifications, pinnedApps, setPinnedApps, setPicture]);
+  const value = React.useMemo((): SessionValue => ({ account, notifications, setNotifications, pinnedApps, setPinnedApps, setPicture }), [account, notifications, pinnedApps, setPinnedApps, setPicture]);
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 
 // the session, or the default session outside a provider (setDefaultSession; empty unless the site set one)
-export function useSession() {
+export function useSession(): SessionValue {
   const ctx = React.useContext(SessionContext);
   if (ctx) return ctx;
   const pic = readPicture();
   const s = defaultSession;
   return { account: pic ? Object.assign({}, s.account, { src: pic }) : s.account, notifications: s.notifications || [], setNotifications: () => {}, pinnedApps: s.pinnedApps || EMPTY_SESSION.pinnedApps, setPinnedApps: () => {},
-    setPicture: (v) => { try { if (v) localStorage.setItem(PICTURE_KEY, v); else localStorage.removeItem(PICTURE_KEY); } catch (e) { /* not stored */ } location.reload(); } };
+    setPicture: (v: string | null) => { try { if (v) localStorage.setItem(PICTURE_KEY, v); else localStorage.removeItem(PICTURE_KEY); } catch (e) { /* not stored */ } location.reload(); } };
 }

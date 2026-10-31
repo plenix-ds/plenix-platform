@@ -35,7 +35,7 @@ import { scaleBand, scaleLinear, niceTicks } from './scales.js';
 import { Axis } from './parts/Axis.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, labelRoom, halfRoom, finite, AXIS_TITLE_ROOM } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const BAR = 1 / 3;      // the value bar's thickness, a share of the band
 const TARGET = 2 / 3;   // the target line's length, a share of the band

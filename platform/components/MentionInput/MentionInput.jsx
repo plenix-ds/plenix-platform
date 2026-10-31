@@ -18,8 +18,8 @@ import { RichTextEditor } from '../RichTextEditor/RichTextEditor.jsx';
 import { EntityPicker } from '../EntityPicker/EntityPicker.jsx';
 import { Button } from '../Button/Button.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 
 export const MentionInput = React.forwardRef(function MentionInput({ mode = 'textarea', label, value = '', onChange, defaultValue = '', options = [], loadOptions,
   onMention, disabled = false, readOnly: readOnlyOwn, strings, editorStrings, pickerStrings, className }, ref) {

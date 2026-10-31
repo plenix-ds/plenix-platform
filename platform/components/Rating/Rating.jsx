@@ -18,7 +18,7 @@
 import React from 'react';
 import { arrowStep } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 
 export function Rating({ value = 0, onChange, max = 5, label, readOnly = false, className, ...rest }) {
   const tw = useStrings('rating'), loc = useLocale();

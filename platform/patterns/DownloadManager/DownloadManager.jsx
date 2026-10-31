@@ -17,7 +17,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';

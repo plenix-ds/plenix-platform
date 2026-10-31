@@ -55,7 +55,7 @@ import { ToolRail, BarContext } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { gridWithin } from '../../utils/grid.ts';
 import { paneMax } from '../../utils/paneLimit.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import MenuLinesIcon from 'plenix-platform/icons/plenix/menu-lines';
 import PanelLeftCloseIcon from 'plenix-platform/icons/plenix/panel-left-close';

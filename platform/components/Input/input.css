@@ -59,7 +59,7 @@
    underline appearance */
 .plx-input:is(:disabled, [aria-disabled="true"], .is-disabled):where(:not([type="color"])){--plx-state-input-background:var(--plx-comp-input-disabled-background);cursor:not-allowed;}
 .plx-input:is([readonly], [aria-readonly="true"]):where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled)){--plx-state-input-background:var(--plx-comp-input-context-readonly-background,var(--plx-comp-input-readonly-background));}
-/* inside a read-only region (providers/ReadOnly.jsx, system/read-only.css) a read-only field takes the region's border
+/* inside a read-only region (providers/ReadOnly.tsx, system/read-only.css) a read-only field takes the region's border
    while it is not focused, over hover and invalid; outside one the context is unset and nothing changes */
 .plx-input:is([readonly], [aria-readonly="true"]):where(:not(:focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible)){--plx-state-input-readonly-border:var(--plx-comp-input-context-readonly-border);}
 .plx-input[aria-invalid="true"]:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-readonly="true"])){--plx-state-input-background:var(--plx-comp-input-invalid-background);}

@@ -39,7 +39,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const KEEP = { numeric: /[^0-9]/g, alphanumeric: /[^0-9a-zA-Z]/g };
 

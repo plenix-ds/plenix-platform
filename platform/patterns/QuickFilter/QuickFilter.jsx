@@ -44,7 +44,7 @@ import { formatNumber } from '../../utils/format.ts';
 import { PanelTrigger, Pill, toggle } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
 import { DATE_PRESETS, CATEGORY_ORDER, fieldWords } from '../../utils/fields.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 import FilterOffIcon from 'plenix-platform/icons/plenix/filter-off';
 

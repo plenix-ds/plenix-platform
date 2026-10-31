@@ -52,7 +52,7 @@ import { EntityPicker } from '../../components/EntityPicker/EntityPicker.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ForwardIcon from 'plenix-platform/icons/plenix/forward';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 import PersonIcon from 'plenix-platform/icons/plenix/person';

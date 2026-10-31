@@ -34,7 +34,7 @@ import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, finite } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // px: a node's bar and the least space between two nodes of a column (on the 4px grid)
 const NODE_WIDTH = 12, NODE_GAP = 12;

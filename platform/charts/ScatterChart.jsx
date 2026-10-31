@@ -40,7 +40,7 @@ import { GridLines } from './parts/GridLines.jsx';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints } from './a11y.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // SVG geometry on the 4px grid: a point's radius, the largest and smallest bubble's, the active ring's room
 const POINT = 4, BUBBLE_MAX = 24, BUBBLE_MIN = 4, RING = 4;

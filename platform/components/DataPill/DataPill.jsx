@@ -44,7 +44,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { devWarn } from '../../utils/devWarn.ts';
 import { Icon } from '../Icon/Icon.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { Isolate } from '../Isolate/Isolate.jsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 import PersonFemaleIcon from 'plenix-platform/icons/plenix/person-female';

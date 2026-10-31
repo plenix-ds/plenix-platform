@@ -63,7 +63,7 @@ import { useEChartsPlot, plotGrid } from './echarts/EChartsPlot.jsx';
 import { tickLineHeight } from './echarts/engine.js';
 import { snapToGrid } from '../utils/grid.ts';
 import { halfRoom } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const DASH = '—';
 // an empty list that stays the same between renders (the drawing redraws when its data changes)

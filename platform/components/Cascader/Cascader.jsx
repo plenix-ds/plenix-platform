@@ -43,13 +43,13 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';

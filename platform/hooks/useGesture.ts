@@ -47,10 +47,34 @@
 import React from 'react';
 import { isRtl } from '../utils/direction.ts';
 
+export type GestureTokens = { slop: number; swipeDistance: number; flingVelocity: number; flingDecay: number; longPressDelay: number; pullDistance: number; pullResistance: number; pinchMaxScale: number };
+export type GesturePress = { x: number; y: number; pointerType: string };
+export type GesturePan = { dx: number; dy: number; vx: number; vy: number; pointerType: string; canceled?: boolean };
+export type GestureSwipe = { direction: 'left' | 'right' | 'up' | 'down'; inline: 'start' | 'end' | null; distance: number; velocity: number };
+export type GestureFling = { vx: number; vy: number; direction: 'left' | 'right' | 'up' | 'down'; travelX: number; travelY: number };
+export type GesturePinch = { scale: number; originX: number; originY: number; maxScale: number; first: boolean };
+export type GesturePull = { distance: number; progress: number; ready: boolean; released: boolean };
+export type GestureOptions = {
+  axis?: 'x' | 'y' | 'both'; pull?: boolean; disabled?: boolean;
+  onTap?(g: GesturePress): void; onLongPress?(g: GesturePress): void;
+  onPanStart?(g: GesturePan): void; onPan?(g: GesturePan): void; onPanEnd?(g: GesturePan): void;
+  onSwipe?(g: GestureSwipe): void; onFling?(g: GestureFling): void;
+  onPinch?(g: GesturePinch): void; onPinchEnd?(g: { scale: number }): void;
+  onPull?(g: GesturePull): void; onRefresh?(): void;
+};
+export type GestureMode = 'press' | 'pan' | 'pinch' | 'pull' | 'none';
+type Point = { x: number; y: number };
+type Sample = Point & { t: number };
+// the gesture under way (a pinch keeps the press's fields, and adds its start distance and last scale)
+type Gesture = {
+  mode: GestureMode; pointerId: number; pointerType: string; start: Sample; samples: Sample[]; tokens: GestureTokens;
+  timer: ReturnType<typeof setTimeout> | null; long: boolean; atTop: boolean; ready?: boolean; startDist?: number; lastScale?: number;
+};
+
 const VELOCITY_WINDOW = 100;   // the last 100 ms of movement give the release velocity (a sampling window, not a look)
 
 // a token's value on the element: a length in px (rem converted), a time in ms, or a number
-function tokenOn(el, name) {
+function tokenOn(el: Element, name: string): number {
   const cs = getComputedStyle(el), v = cs.getPropertyValue(name).trim(), n = parseFloat(v);
   if (isNaN(n)) return NaN;
   if (/rem$/.test(v)) return n * parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -60,23 +84,23 @@ function tokenOn(el, name) {
 }
 
 // the gesture tokens as numbers, read from the element (or the page)
-export function gestureTokens(el) {
+export function gestureTokens(el?: Element | null): GestureTokens {
   const at = el || (typeof document !== 'undefined' ? document.documentElement : null);
-  const t = (name) => (at ? tokenOn(at, '--plx-sys-gesture-' + name) : NaN);
+  const t = (name: string) => (at ? tokenOn(at, '--plx-sys-gesture-' + name) : NaN);
   return { slop: t('slop'), swipeDistance: t('swipe-distance'), flingVelocity: t('fling-velocity'), flingDecay: t('fling-decay'),
     longPressDelay: t('long-press-delay'), pullDistance: t('pull-distance'), pullResistance: t('pull-resistance'), pinchMaxScale: t('pinch-max-scale') };
 }
 
 // how far something released at velocity v (px per ms) coasts when it keeps decay of its speed each millisecond
-export function flingDistance(v, decay) {
+export function flingDistance(v: number, decay: number): number {
   if (!(decay > 0 && decay < 1)) return 0;
   return v * decay / (1 - decay);
 }
 
-const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const dist = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
 
-export function useGesture(ref, options = {}) {
-  const [active, setActive] = React.useState(null);
+export function useGesture(ref: React.RefObject<HTMLElement | null>, options: GestureOptions = {}): { active: GestureMode | null } {
+  const [active, setActive] = React.useState<GestureMode | null>(null);
   const latest = React.useRef(options);
   latest.current = options;
   const disabled = !!options.disabled;
@@ -84,18 +108,18 @@ export function useGesture(ref, options = {}) {
   React.useEffect(() => {
     const el = ref.current;
     if (!el || disabled) return undefined;
-    const pointers = new Map();
-    let g = null;        // the gesture: { mode, start, samples, tokens, timer, … }
-    const call = (name, arg) => { const f = latest.current[name]; if (f) f(arg); };
-    const mode = (m) => { if (g) g.mode = m; setActive(m); };
+    const pointers = new Map<number, Point>();
+    let g: Gesture | null = null;        // the gesture: { mode, start, samples, tokens, timer, … }
+    const call = (name: keyof GestureOptions, arg?: object) => { const f = latest.current[name] as ((a?: object) => void) | undefined; if (f) f(arg); };
+    const mode = (m: GestureMode) => { if (g) g.mode = m; setActive(m); };
     const velocity = () => {
-      const s = g.samples, last = s[s.length - 1];
+      const s = g!.samples, last = s[s.length - 1];
       let first = s[0];
       for (let i = s.length - 1; i >= 0; i--) { if (last.t - s[i].t > VELOCITY_WINDOW) break; first = s[i]; }
       const dt = last.t - first.t;
       return dt > 0 ? { vx: (last.x - first.x) / dt, vy: (last.y - first.y) / dt } : { vx: 0, vy: 0 };
     };
-    const capture = (e) => { if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (err) { /* the pointer is gone */ } } };
+    const capture = (e: PointerEvent) => { if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (err) { /* the pointer is gone */ } } };
     const clearTimer = () => { if (g && g.timer) { clearTimeout(g.timer); g.timer = null; } };
     const finish = () => { clearTimer(); g = null; setActive(null); };
     const pinchState = () => {
@@ -103,7 +127,7 @@ export function useGesture(ref, options = {}) {
       return { a, b, d: dist(a, b), cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 };
     };
 
-    const onDown = (e) => {
+    const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       const o = latest.current;
@@ -111,7 +135,7 @@ export function useGesture(ref, options = {}) {
         clearTimer();
         if (g && g.mode === 'pan') call('onPanEnd', { dx: 0, dy: 0, vx: 0, vy: 0, pointerType: g.pointerType, canceled: true });
         const p = pinchState();
-        g = Object.assign(g || {}, { startDist: p.d || 1, tokens: (g && g.tokens) || gestureTokens(el) });
+        g = Object.assign(g || {} as Gesture, { startDist: p.d || 1, tokens: (g && g.tokens) || gestureTokens(el) });
         mode('pinch');
         call('onPinch', { scale: 1, originX: p.cx, originY: p.cy, maxScale: g.tokens.pinchMaxScale, first: true });
         return;
@@ -130,14 +154,14 @@ export function useGesture(ref, options = {}) {
       }
     };
 
-    const onMove = (e) => {
+    const onMove = (e: PointerEvent) => {
       if (!g || !pointers.has(e.pointerId)) return;
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       const o = latest.current;
       if (g.mode === 'pinch') {
         if (pointers.size < 2) return;
         const p = pinchState();
-        call('onPinch', { scale: p.d / g.startDist, originX: p.cx, originY: p.cy, maxScale: g.tokens.pinchMaxScale, first: false });
+        call('onPinch', { scale: p.d / g.startDist!, originX: p.cx, originY: p.cy, maxScale: g.tokens.pinchMaxScale, first: false });
         return;
       }
       if (e.pointerId !== g.pointerId) return;
@@ -168,7 +192,7 @@ export function useGesture(ref, options = {}) {
       }
     };
 
-    const onUp = (e) => {
+    const onUp = (e: PointerEvent) => {
       if (!pointers.has(e.pointerId)) return;
       pointers.delete(e.pointerId);
       if (!g) return;
@@ -210,7 +234,7 @@ export function useGesture(ref, options = {}) {
     };
 
     // the pinch's last scale, kept for onPinchEnd
-    const onPinchTrack = () => { if (g && g.mode === 'pinch' && pointers.size === 2) g.lastScale = pinchState().d / g.startDist; };
+    const onPinchTrack = () => { if (g && g.mode === 'pinch' && pointers.size === 2) g.lastScale = pinchState().d / g.startDist!; };
 
     el.addEventListener('pointerdown', onDown);
     el.addEventListener('pointermove', onMove);
