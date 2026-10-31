@@ -35,8 +35,8 @@
          "max" in each group header; empty: the text for a missing value (zero and false are values)
        width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
-         text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
-         the columns before it are the row header (pinned and shaded)
+         text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: explicitly pinned at the start; rowLabel: this and
+         the columns before it are emphasized as row headers without being pinned
        align: "left" | "center" | "right" (the cells); every header label starts at the start edge, whatever the column's
          align (owner rule), and headerAlign is ignored; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
@@ -102,14 +102,15 @@
        Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
        reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
        control it from outside; the saved view keeps it (owner, 2026-10-24)
-     narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
+     narrow: "auto" (default: switch to a labeled row list when visible columns cannot fit the container) | "table" (explicit fixed table) | "list" (switch below narrowAt)
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
      A column is dragged no wider than --plx-sys-shell-pane-window-share (90%) of the table, down to the 4px grid; a smaller maxWidth still applies.
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
-     Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
+     The default switches to a vertical row list before horizontal scrolling is needed. An explicit table layout may scroll horizontally;
+       only columns marked frozen stay pinned. Row actions and selection remain available in the row list.
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
