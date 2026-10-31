@@ -1,5 +1,14 @@
 /* Plenix · DataGrid engine · the engine's small shared values and functions
-   Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx. */
+   Summary: The engine's small shared values and functions: the grid's class name (GRID), what counts as interactive
+     inside a row, the icon for each column type (typeIcons), how a column's type is found (typeOf), the sort helpers
+     (sorted, compare), words (fills a template) and cellDirection (marks a cell's text direction).
+   Usage:
+     import { GRID, typeIcons, typeOf, sorted, compare, words, cellDirection } from './engine/helpers.jsx';
+   Props:
+     none: a module of constants and plain functions, used only by the DataGrid engine (not a public export)
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
 import React from 'react';
 import { valueText } from '../cells.jsx';
 import AttachmentIcon from 'plenix-platform/icons/plenix/attachment';

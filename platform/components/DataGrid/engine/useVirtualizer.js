@@ -1,5 +1,14 @@
 /* Plenix · DataGrid engine · the virtual window of rows
-   Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx. */
+   Summary: The grid's virtual window: TanStack Virtual, unmodified, redrawing only when the window of rows changes, so a
+     scroll inside the same window needs no render.
+   Usage:
+     import { useVirtualizer } from './engine/useVirtualizer.js';
+     const virtualizer = useVirtualizer({ count, getScrollElement, estimateSize, overscan });
+   Props:
+     options: TanStack Virtual's Virtualizer options; returns the Virtualizer
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
 import React from 'react';
 import { flushSync } from 'react-dom';
 import { observeElementRect, observeElementOffset, elementScroll, Virtualizer } from '@tanstack/react-virtual';

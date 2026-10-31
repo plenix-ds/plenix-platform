@@ -1,5 +1,16 @@
 /* Plenix · DataGrid engine · the engine's own small parts (gaps, the cell editor, the checkbox, the width wrapper, the row targets)
-   Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx. */
+   Summary: The engine's own small parts: the gaps that stand for rows not drawn (Gap, RowGap), the cell editor
+     (CellEditor), the checkbox (Check), a header's small trigger (PressTrigger, built on usePressable), the width wrapper
+     for a column's cells (Width, WidthPixels), a row's menu (RowMenuContent), the custom cell with the data-font helper
+     (CustomCell), the memoized row (MemoGridRow) and the row target (RowTarget).
+   Usage:
+     import { RowGap, CellEditor, Check, PressTrigger, Width, RowMenuContent, CustomCell, MemoGridRow, RowTarget } from './engine/parts.jsx';
+   Props:
+     each part takes the props the engine passes it (for example CellEditor: column, value, onCommit, onCancel; Check:
+     checked, mixed, label, onChange); used only by the DataGrid engine (not public exports)
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
 import React from 'react';
 import { dataWhenText } from '../../../utils/dataText.jsx';
 import { cx } from '../../../utils/cx.js';

@@ -1,5 +1,17 @@
 /* Plenix · DataGrid engine · a pill's text measured as the page draws it
-   Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx. */
+   Summary: Measures a pill's text the way the page draws it, with a hidden probe pill, so the grid can size a column's
+     pills.
+   Usage:
+     import { pillFont, pillSheet } from './engine/pill.js';
+     const { scale, font, wordSpacing } = pillFont(gridElement, ctx, data);
+     const { rules, flush } = pillSheet(document);
+   Props:
+     pillFont(at, ctx, data): at, an element inside the grid; ctx, a canvas 2D context (left set to the pill's font);
+       data, true for a data pill; returns { scale, font, wordSpacing }, scale being the page's width over the canvas's
+     pillSheet(doc): the one constructed sheet per document that holds the uniform pill widths; returns { rules, flush }
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 688). The engine is documented in DataGridEngine.jsx.
+*/
 
 // a pill's text measured as the page draws it: a hidden probe pill (md, data or not) inside the grid gives its font, size,
 // weight and word spacing, and the ratio between the page's width of a sample and the canvas's (the mono font's
