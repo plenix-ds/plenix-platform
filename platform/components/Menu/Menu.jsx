@@ -26,9 +26,9 @@
      MenuItem.danger: shows the item in the danger color (a destructive action); default false
      MenuItem.disabled: skips the item; it cannot be chosen; default false
      MenuItem.checked: makes it a checkbox item, checked or not; leave it out for a plain item
-     MenuItem.type: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
+     MenuItem.type: a string: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
        MenuRadioGroup a MenuItem with a value is a radio item without it)
-     MenuItem.value: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
+     MenuItem.value: a string: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
      MenuItem.keepOpen: leaves the menu open after choosing (for choosing several); default false
      MenuItem.href: renders the item as a link
      MenuItem.onSelect(event): runs when the item is chosen

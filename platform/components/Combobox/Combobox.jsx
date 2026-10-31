@@ -11,10 +11,10 @@
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      data: true forces the technical-value font on the field, false keeps the interface font; when not set, a chosen option whose label is wholly
        a number, a date or another technical value ("10", "Oct 25, 2026") shows in the data font, as a Select does
-     size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
+     size: "sm" | "md" (default): "sm" uses the existing toolbar control height; "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
-     value: the chosen value, for a single choice
-     values: the chosen values, with multiple
+     value: a string or a number: the chosen value, for a single choice
+     values: an array: the chosen values, with multiple
      onChange(value): runs with the chosen value; with multiple it runs with the new array of values
      multiple: allows several values; chosen values show as tags before the field (default false)
      creatable: offers "Create “text”" when nothing matches exactly (default false)
@@ -25,7 +25,7 @@
      disabled: the field cannot be used
      readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
        default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on
-     emptyText: the text when nothing matches (default "No matches")
+     emptyText: a string: the text when nothing matches (default "No matches")
      loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
        the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
      loadDelay: the pause after typing before loadOptions runs, in milliseconds (default 300; 0 when the field is empty)
