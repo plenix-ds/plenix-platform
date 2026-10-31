@@ -3,6 +3,9 @@
 // way the audit measured (#684, #685): the repository's esbuild, minified, React external, against the built package
 // (packages/react, from node build-packages.js). Prints the minified and gzipped size of each; --check fails when an import
 // goes above its limit, so tree-shaking cannot break again unseen. Not a test: it builds and measures, it runs no page.
+// Why esbuild and not Vite (#709 step 6): it stands in for the application's bundler, not for Plenix's build. esbuild is a
+// standard bundler many applications use, it tree-shakes the package as a typical application bundler would, and keeping it
+// keeps every limit comparable with the audit's numbers (#684, #685).
 'use strict';
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
 const esbuild = require('esbuild');
