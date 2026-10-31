@@ -79,12 +79,7 @@
     "input-group-disabled-text": {
       "$value": "{plx-comp.input-disabled-text}",
       "$type": "color",
-      "$description": "InputGroup: the affixes and the icon of a disabled field.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "InputGroup: the affixes and the icon of a disabled field."
     },
     "input-group-readonly-background": {
       "$value": "{plx-comp.input-readonly-background}",

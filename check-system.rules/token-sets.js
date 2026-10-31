@@ -11,6 +11,9 @@
 //   globs      a glob set is <folder>/*.tokens.json; each of its files is <name>.tokens.json or <name>.<context>.tokens.json,
 //              and its context is one the output's own sets have
 //   print      a token with a print value has no contrast values (forced colors, more contrast)
+//   conditions (#372 step 4) a condition set, <set>.<condition>.tokens.json (forced-colors, more-contrast, print,
+//              reduced-motion), sits beside its base set and holds only values of the base set's tokens: a token it
+//              names that the base set does not define is a finding (its value would be written nowhere)
 //   text roles a token is never a W3C "typography" composite: a text role is six separate tokens (#372 step 3), because
 //              plain Style Dictionary writes no composite
 // A file that is not valid JSON is a finding too (the build stops on it).
@@ -23,6 +26,9 @@ const ROOT = path.join(__dirname, '..');
 const EXT = 'com.plenix';
 const TIERS = ['plx-ref', 'plx-sys', 'plx-comp'];
 const COLOR_LITERAL = /#[0-9a-f]{3,8}\b|\b(?:rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)\(/i;
+// a condition set's file name (#372 step 4; build-tokens.js, CONDITIONS), and the extension key build-tokens.js reads it into
+const CONDITIONS = { 'forced-colors': 'forcedColors', 'more-contrast': 'contrastMore', print: 'print', 'reduced-motion': 'reducedMotion' };
+const CONDITION_FILE = new RegExp('\\.(' + Object.keys(CONDITIONS).join('|') + ')\\.tokens\\.json$');
 const TYPOGRAPHY_COMPOSITE = 'a typography composite is not built: write the role as six tokens, -font-family, -font-size, -font-weight, -letter-spacing, -line-height and -word-spacing';
 
 // [{ file, text }]: every finding, in the order build-tokens.js meets them
@@ -31,6 +37,29 @@ function findings(root = ROOT) {
   const at = (rel) => path.join(SRC, rel);
   const say = (file, text) => { if (!out.some((f) => f.file === file && f.text === text)) out.push({ file, text }); };
   const read = (file) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { say(file, path.relative(root, file).split(path.sep).join('/') + ': ' + e.message); return null; } };
+  // a set with its condition sets' values on its tokens, as build-tokens.js reads it (withConditions); a condition set's
+  // token that the base set does not define is a finding
+  const withConditions = (rel, data) => {
+    if (!data) return data;
+    for (const [cond, key] of Object.entries(CONDITIONS)) {
+      const file = rel.replace(/\.tokens\.json$/, '.' + cond + '.tokens.json');
+      if (!fs.existsSync(at(file))) continue;
+      const set = read(at(file)); if (!set) continue;
+      for (const tier of TIERS) for (const [k, token] of Object.entries(set[tier] || {})) {
+        const base = data[tier] && data[tier][k];
+        if (!base) { say(at(file), 'platform/tokens/' + file + ': --' + tier + '-' + k + ' is not defined in ' + rel + ' (a condition set holds only values of its base set\'s tokens)'); continue; }
+        base.$extensions = Object.assign({}, base.$extensions, { [EXT]: Object.assign({}, base.$extensions && base.$extensions[EXT], { [key]: token && token.$value }) });
+      }
+    }
+    return data;
+  };
+  // every condition set has its base set beside it
+  const walk = (dir) => { if (!fs.existsSync(dir)) return; for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) { walk(p); continue; }
+    if (CONDITION_FILE.test(e.name) && !fs.existsSync(p.replace(CONDITION_FILE, '.tokens.json'))) say(p, path.relative(root, p).split(path.sep).join('/') + ': a condition set with no base set (' + e.name.replace(CONDITION_FILE, '.tokens.json') + ')');
+  } };
+  walk(SRC);
   // a set's tokens in order (build-tokens.js, tokensOf); a typography composite is a finding
   const tokensOf = (set, file) => {
     const list = [];
@@ -56,7 +85,7 @@ function findings(root = ROOT) {
   const manifest = read(at('build.json'));
   if (manifest) for (const o of manifest.outputs || []) {
     const own = [];
-    for (const s of o.sets) if (s.tokens) { const data = read(at(s.tokens)); if (data) own.push({ tokens: s.tokens, data }); }
+    for (const s of o.sets) if (s.tokens) { const data = withConditions(s.tokens, read(at(s.tokens))); if (data) own.push({ tokens: s.tokens, data }); }
     const sets = [];
     for (const s of o.sets) {
       if (s.tokens) { const x = own.find((y) => y.tokens === s.tokens); if (x) sets.push(x); continue; }
@@ -64,13 +93,13 @@ function findings(root = ROOT) {
       const dir = path.dirname(s.glob), pat = path.basename(s.glob);
       if (pat !== '*.tokens.json') { say(at('build.json'), 'platform/tokens/build.json: a glob set must be <folder>/*.tokens.json (' + s.glob + ')'); continue; }
       if (!fs.existsSync(at(dir))) continue;
-      for (const f of fs.readdirSync(at(dir)).filter((n) => n.endsWith('.tokens.json')).sort()) {
+      for (const f of fs.readdirSync(at(dir)).filter((n) => n.endsWith('.tokens.json') && !CONDITION_FILE.test(n)).sort()) {
         const m = f.match(/^([^.]+)(?:\.(.+))?\.tokens\.json$/);
         if (!m) { say(at(dir + '/' + f), 'platform/tokens/' + dir + '/' + f + ': not <name>.tokens.json or <name>.<context>.tokens.json'); continue; }
         const ctx = m[2] || '';
         const r = ctx ? own.findIndex((x) => x.tokens.endsWith('.' + ctx + '.tokens.json')) : -1;
         if (ctx && r < 0) { say(at(dir + '/' + f), 'platform/tokens/' + dir + ': no shared set for the context "' + ctx + '" in ' + o.file); continue; }
-        const data = read(at(dir + '/' + f)); if (!data) continue;
+        const data = withConditions(dir + '/' + f, read(at(dir + '/' + f))); if (!data) continue;
         const like = r < 0 ? own[0] : own[r];
         const selector = data.$extensions && data.$extensions[EXT] ? data.$extensions[EXT].selector : like && like.data.$extensions && like.data.$extensions[EXT] && like.data.$extensions[EXT].selector;
         sets.push({ tokens: dir + '/' + f, data, selector, base: m[1], rank: r });
@@ -113,7 +142,7 @@ function findings(root = ROOT) {
         const th = std.themes[name];
         if (!th.foundations) say(path.join(root, 'platform', 'standards', 'themes.json'), name + ': no foundations token file');
         else {
-          const data = read(at(th.foundations));
+          const data = withConditions(th.foundations, read(at(th.foundations)));
           if (data) {
             const toks = tokensOf(data, at(th.foundations)), list = toks.map((x) => x.name).sort().join(',');
             toks.forEach((x) => { if (COLOR_LITERAL.test(String(x.token.$value))) say(at(th.foundations), th.foundations + ': ' + x.name + ' writes a color (' + x.token.$value + ')'); });
@@ -123,7 +152,7 @@ function findings(root = ROOT) {
         }
         for (const mode of ['light', 'dark']) {
           if (!th[mode]) { say(path.join(root, 'platform', 'standards', 'themes.json'), name + ': no ' + mode + ' token file'); continue; }
-          const data = read(at(th[mode])); if (!data) continue;
+          const data = withConditions(th[mode], read(at(th[mode]))); if (!data) continue;
           const toks = tokensOf(data, at(th[mode]));
           toks.forEach((x) => { if (COLOR_LITERAL.test(String(x.token.$value))) say(at(th[mode]), th[mode] + ': ' + x.name + ' writes a color (' + x.token.$value + '): point to a palette color, e.g. {plx-ref.color-blue-400}'); });
           const list = toks.map((x) => x.name).sort().join(',');
@@ -138,7 +167,7 @@ function findings(root = ROOT) {
 }
 
 function check({ add }) { for (const f of findings()) add(NAME, f.file, 0, f.text); }
-module.exports = { check, findings, NAME };
+module.exports = { check, findings, NAME, CONDITION_FILE };
 
 if (require.main === module) {
   const list = findings();

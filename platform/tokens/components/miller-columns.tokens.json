@@ -134,12 +134,7 @@
     "miller-columns-item-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "MillerColumns item selected: background (state-selected).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "MillerColumns item selected: background (state-selected)."
     },
     "miller-columns-item-selected-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
@@ -149,12 +144,7 @@
     "miller-columns-item-selected-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "MillerColumns item selected: text color (selected-content).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "MillerColumns item selected: text color (selected-content)."
     },
     "miller-columns-item-selected-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
@@ -164,12 +154,7 @@
     "miller-columns-list-focus-item-selected-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color",
-      "$description": "MillerColumns list focus item selected outline color: list focus item selected outline color (focus-ring-color).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "MillerColumns list focus item selected outline color: list focus item selected outline color (focus-ring-color)."
     },
     "miller-columns-list-focus-item-selected-outline-offset": {
       "$value": "calc({plx-sys.border-width-medium} * -1)",
@@ -184,12 +169,7 @@
     "miller-columns-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "MillerColumns item disabled: text color (content-disabled).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "MillerColumns item disabled: text color (content-disabled)."
     },
     "miller-columns-icon-text": {
       "$value": "{plx-sys.content-muted}",
@@ -199,12 +179,7 @@
     "miller-columns-item-selected-icon-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "MillerColumns item selected icon: text color (selected-content).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "MillerColumns item selected icon: text color (selected-content)."
     },
     "miller-columns-description-text": {
       "$value": "{plx-sys.content-muted}",

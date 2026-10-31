@@ -1,0 +1,26 @@
+{
+  "source": [
+    "platform/tokens/semantic.forced-colors.tokens.json"
+  ],
+  "platforms": {
+    "css": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/",
+      "files": [
+        {
+          "destination": "semantic.forced-colors.css",
+          "format": "css/variables",
+          "options": {
+            "selector": [
+              "@media (forced-colors: active)",
+              ":root"
+            ],
+            "outputReferences": true
+          }
+        }
+      ]
+    }
+  }
+}

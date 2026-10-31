@@ -59,32 +59,17 @@
     "progress-steps-current-marker-background": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color",
-      "$description": "ProgressSteps current step: the marker on the action color.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "ProgressSteps current step: the marker on the action color."
     },
     "progress-steps-current-marker-border-color": {
       "$value": "{plx-sys.action-primary-border}",
       "$type": "color",
-      "$description": "ProgressSteps current step: the marker's edge.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "ProgressSteps current step: the marker's edge."
     },
     "progress-steps-current-marker-text": {
       "$value": "{plx-sys.action-primary-content}",
       "$type": "color",
-      "$description": "ProgressSteps current step: the number on the action color.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "ProgressSteps current step: the number on the action color."
     },
     "progress-steps-complete-marker-background": {
       "$value": "{plx-sys.state-selected}",

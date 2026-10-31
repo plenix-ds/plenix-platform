@@ -1,0 +1,17 @@
+{
+  "$description": "components/rich-text-editor.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/rich-text-editor.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "rich-text-editor-disabled-text": {
+      "$value": "GrayText",
+      "$type": "color"
+    },
+    "rich-text-editor-selected-cell-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "rich-text-editor-selected-node-outline-color": {
+      "$value": "HighlightText",
+      "$type": "color"
+    }
+  }
+}

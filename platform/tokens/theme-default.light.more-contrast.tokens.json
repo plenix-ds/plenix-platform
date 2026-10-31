@@ -1,0 +1,29 @@
+{
+  "$description": "theme-default.light.tokens.json: the values under more contrast (@media (prefers-contrast: more)). A condition set: each token is defined in theme-default.light.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-sys": {
+    "content-muted": {
+      "$value": "var(--plx-sys-content-default)",
+      "$type": "color"
+    },
+    "content-subtle": {
+      "$value": "var(--plx-sys-content-default)",
+      "$type": "color"
+    },
+    "border-default": {
+      "$value": "var(--plx-sys-border-strong)",
+      "$type": "color"
+    },
+    "border-subtle": {
+      "$value": "var(--plx-sys-border-strong)",
+      "$type": "color"
+    },
+    "border-divider": {
+      "$value": "var(--plx-sys-border-strong)",
+      "$type": "color"
+    },
+    "control-border": {
+      "$value": "var(--plx-sys-border-strong)",
+      "$type": "color"
+    }
+  }
+}

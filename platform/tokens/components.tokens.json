@@ -77,21 +77,11 @@
     },
     "button-size-md-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "button-size-md-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "button-size-md-primary-ring": {
       "$value": "none",
@@ -139,21 +129,11 @@
     },
     "button-size-sm-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "button-size-sm-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "button-size-sm-primary-ring": {
       "$value": "none",
@@ -201,21 +181,11 @@
     },
     "button-size-xs-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "button-size-xs-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "button-size-xs-primary-ring": {
       "$value": "none",
@@ -315,21 +285,11 @@
     },
     "button-size-lg-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "button-size-lg-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "button-size-lg-primary-ring": {
       "$value": "none",
@@ -579,8 +539,7 @@
         "com.plenix": {
           "before": [
             "  /* states: selected (its border and text come from the size), disabled, focus */"
-          ],
-          "forcedColors": "Highlight"
+          ]
         }
       }
     },
@@ -633,21 +592,11 @@
     },
     "button-disabled-border": {
       "$value": "{plx-sys.border-subtle}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "button-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "button-disabled-quiet-background": {
       "$value": "transparent",
@@ -655,12 +604,7 @@
     },
     "button-disabled-quiet-border": {
       "$value": "transparent",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "button-focus-ring-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -925,12 +869,7 @@
     },
     "input-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "input-readonly-background": {
       "$value": "{plx-sys.surface-sunken}",
@@ -1274,21 +1213,11 @@
     },
     "choice-selected-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "choice-selected-border-color": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "choice-input-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -1416,12 +1345,7 @@
     },
     "switch-input-checked-track-background": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "switch-input-checked-track-after-transform": {
       "$value": "translateX(calc({plx-ref.size-36px} - {plx-ref.size-20px}))",
@@ -2383,30 +2307,15 @@
     },
     "chip-selected-background": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "chip-selected-text": {
       "$value": "{plx-sys.action-primary-content}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "chip-selected-border-color": {
       "$value": "{plx-sys.action-primary-border}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "tag-remove-height": {
       "$value": "{plx-ref.size-16px}",
@@ -3030,21 +2939,11 @@
     },
     "tabs-tab-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-tab-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-tab-selected-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
@@ -3112,21 +3011,11 @@
     "tabs-segmented-tab-selected-background": {
       "$value": "{plx-comp.segmented-item-selected-background}",
       "$type": "color",
-      "$description": "The selected-state blue tint.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "The selected-state blue tint."
     },
     "tabs-segmented-tab-selected-text": {
       "$value": "{plx-comp.segmented-item-selected-text}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-segmented-panel-padding-block-start": {
       "$value": "{plx-sys.space-stack-md}",
@@ -3194,48 +3083,23 @@
     },
     "tabs-folder-tab-selected-background": {
       "$value": "{plx-sys.surface-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "tabs-folder-tab-selected-border-left-color": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-folder-tab-selected-border-right-color": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-folder-tab-selected-border-top-color": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-folder-tab-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tabs-folder-tab-selected-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
@@ -3283,12 +3147,7 @@
     },
     "tabs-folder-tab-selected-after-background": {
       "$value": "{plx-sys.surface-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "tabs-folder-tab-selected-after-height": {
       "$value": "calc({plx-sys.border-width-thin} * 2)",
@@ -3568,12 +3427,7 @@
     },
     "app-switcher-pinned-background": {
       "$value": "{plx-sys.surface-sunken}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "app-switcher-pinned-radius": {
       "$value": "{plx-sys.radius-surface-6px}",
@@ -3645,12 +3499,7 @@
     },
     "app-switcher-tile-current-open-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "app-switcher-open-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -3690,12 +3539,7 @@
     },
     "app-switcher-tile-pinned-pin-text": {
       "$value": "{plx-sys.content-link}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "app-switcher-pin-hover-background": {
       "$value": "{plx-sys.state-hover}",
@@ -3803,12 +3647,7 @@
     },
     "tool-rail-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "tool-rail-divider-background-image": {
       "$value": "linear-gradient({plx-sys.border-divider},{plx-sys.border-divider})",
@@ -3951,12 +3790,7 @@
     },
     "menu-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "menu-check-height": {
       "$value": "{plx-ref.size-16px}",
@@ -4026,22 +3860,12 @@
     "app-header-accent-selected": {
       "$value": "{plx-sys.accent-state-hover}",
       "$type": "color",
-      "$description": "The accent app header's selected",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "The accent app header's selected"
     },
     "app-header-accent-selected-content": {
       "$value": "{plx-sys.accent-content}",
       "$type": "color",
-      "$description": "The accent app header's selected content",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "The accent app header's selected content"
     },
     "app-header-accent-surface": {
       "$value": "{plx-sys.accent-surface}",
@@ -4076,22 +3900,12 @@
     "app-header-frost-selected": {
       "$value": "{plx-sys.frost-state-selected}",
       "$type": "color",
-      "$description": "The frost app header's selected",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "The frost app header's selected"
     },
     "app-header-frost-selected-content": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "The frost app header's selected content",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "The frost app header's selected content"
     },
     "app-header-frost-surface": {
       "$value": "{plx-sys.frost-surface}",
@@ -4126,22 +3940,12 @@
     "app-header-plain-selected": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color",
-      "$description": "The plain app header's selected",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "The plain app header's selected"
     },
     "app-header-plain-selected-content": {
       "$value": "{plx-sys.action-primary-content}",
       "$type": "color",
-      "$description": "The plain app header's selected content",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "The plain app header's selected content"
     },
     "app-header-plain-surface": {
       "$value": "{plx-sys.surface-default}",
@@ -4348,12 +4152,7 @@
     },
     "breadcrumbs-current-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "panel-background": {
       "$value": "{plx-sys.surface-default}",
@@ -4507,12 +4306,7 @@
     },
     "card-selected-border-color": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "card-icon-size": {
       "$value": "{plx-sys.control-icon-standard}",
@@ -5790,12 +5584,7 @@
     },
     "combobox-option-selected-text": {
       "$value": "{plx-sys.content-link}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "combobox-option-selected-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
@@ -5927,12 +5716,7 @@
     },
     "data-grid-row-selected-background": {
       "$value": "{plx-sys.data-grid-row-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "data-grid-row-selected-hover-background": {
       "$value": "{plx-sys.data-grid-row-selected-hover}",
@@ -5941,12 +5725,7 @@
     "data-grid-row-selected-color": {
       "$value": "currentcolor",
       "$type": "color",
-      "$description": "A selected row's text: the text around it; HighlightText in forced colors, on the Highlight fill.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "A selected row's text: the text around it; HighlightText in forced colors, on the Highlight fill."
     },
     "data-grid-line-height": {
       "$value": "{plx-sys.data-grid-row-height}",
@@ -6810,12 +6589,7 @@
     },
     "nav-list-entry-actions-item-current-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "nav-list-entry-actions-item-current-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
@@ -6835,12 +6609,7 @@
     },
     "nav-list-item-current-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "nav-list-item-current-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
@@ -6848,12 +6617,7 @@
     },
     "nav-list-item-current-text": {
       "$value": "{plx-sys.selected-content}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "nav-list-item-current-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
@@ -6861,12 +6625,7 @@
     },
     "nav-list-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "nav-list-label-gap": {
       "$value": "{plx-sys.space-inline-xs}",
@@ -6919,12 +6678,7 @@
     "nav-list-pin-pinned-background": {
       "$value": "transparent",
       "$type": "color",
-      "$description": "A pinned row's pin: no fill; Highlight in forced colors (a toggle that is on).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "A pinned row's pin: no fill; Highlight in forced colors (a toggle that is on)."
     },
     "nav-list-pin-hover-text": {
       "$value": "{plx-sys.content-default}",
@@ -6932,12 +6686,7 @@
     },
     "nav-list-entry-pinned-pin-text": {
       "$value": "{plx-sys.content-link}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "nav-list-pin-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -6970,12 +6719,7 @@
     },
     "nav-list-item-group-current-parent-text": {
       "$value": "{plx-sys.selected-content}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "nav-list-items-nested-padding-inline-start": {
       "$value": "calc({plx-sys.control-icon-standard} + {plx-sys.space-inline-sm})",
@@ -7067,30 +6811,15 @@
     },
     "pagination-page-current-background": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "pagination-page-current-border-color": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "pagination-page-current-text": {
       "$value": "{plx-sys.action-primary-content}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "pagination-page-disabled-opacity": {
       "$value": "{plx-sys.opacity-mid}",
@@ -7278,21 +7007,11 @@
     },
     "radio-tile-selected-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "radio-tile-selected-border-color": {
       "$value": "{plx-sys.action-primary-background}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "radio-tile-input-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -7400,22 +7119,12 @@
     },
     "row-button-selected-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "row-button-selected-text": {
       "$value": "currentcolor",
       "$type": "color",
-      "$description": "A selected row's text: its own color (the text around it); HighlightText in forced colors.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "A selected row's text: its own color (the text around it); HighlightText in forced colors."
     },
     "row-button-selected-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
@@ -7441,12 +7150,7 @@
     },
     "row-button-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "search-input-background": {
       "$value": "{plx-sys.field-background}",
@@ -7732,22 +7436,12 @@
     "segmented-item-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "SegmentedControl: the chosen segment, the selected-state blue tint (owner, 2026-10-14: look A).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "SegmentedControl: the chosen segment, the selected-state blue tint (owner, 2026-10-14: look A)."
     },
     "segmented-item-selected-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "SegmentedControl: the chosen segment's text and icon, the selected blue.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "SegmentedControl: the chosen segment's text and icon, the selected blue."
     },
     "segmented-item-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -8250,12 +7944,7 @@
     },
     "tree-item-selected-row-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "tree-item-selected-row-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
@@ -8263,12 +7952,7 @@
     },
     "tree-item-selected-row-text": {
       "$value": "{plx-sys.selected-content}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "tree-item-selected-row-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
@@ -8412,12 +8096,7 @@
     },
     "activity-list-item-selected-background": {
       "$value": "{plx-sys.state-selected}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$type": "color"
     },
     "activity-list-stacked-meta-font-size": {
       "$value": "{plx-ref.font-size-09}",
@@ -9120,12 +8799,7 @@
     },
     "nav-bar-item-current-text": {
       "$value": "{plx-sys.selected-content}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$type": "color"
     },
     "nav-bar-item-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -9141,12 +8815,7 @@
     },
     "nav-bar-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$type": "color"
     },
     "nav-bar-label-font-size": {
       "$value": "{plx-ref.font-size-12}",

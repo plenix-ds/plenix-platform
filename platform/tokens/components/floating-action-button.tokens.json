@@ -159,12 +159,7 @@
     "floating-action-button-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "Disabled: the icon and label.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "Disabled: the icon and label."
     },
     "floating-action-button-inset": {
       "$value": "{plx-sys.space-layout-md}",

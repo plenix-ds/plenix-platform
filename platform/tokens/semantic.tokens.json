@@ -526,21 +526,13 @@
     "boundary-outline-width": {
       "$value": "0px",
       "$type": "dimension",
-      "$description": "The outline of a surface that floats on a shadow (menus, dialogs, cards): none, and a thin line in forced colors, where shadows are not drawn.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "{plx-sys.border-width-thin}"
-        }
-      }
+      "$description": "The outline of a surface that floats on a shadow (menus, dialogs, cards): none, and a thin line in forced colors, where shadows are not drawn."
     },
     "boundary-outline-color": {
       "$value": "transparent",
       "$type": "color",
       "$description": "The color of the boundary outline: none, and the text color in forced colors.",
       "$extensions": {
-        "com.plenix": {
-          "forcedColors": "CanvasText"
-        },
         "plenix": {
           "group": "border",
           "purpose": "The outline of a surface that floats on a shadow, drawn only in forced colors (CanvasText there)."
@@ -549,102 +541,47 @@
     },
     "forced-indicator": {
       "$value": "initial",
-      "$description": "An indicator's fill in forced colors (a progress fill): Highlight there; otherwise not set (initial), so the component keeps its own color.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "An indicator's fill in forced colors (a progress fill): Highlight there; otherwise not set (initial), so the component keeps its own color."
     },
     "forced-gap": {
       "$value": "initial",
-      "$description": "The gap in a ring in forced colors (the spinner's): Canvas there; otherwise not set (initial), so the component keeps its own.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Canvas"
-        }
-      }
+      "$description": "The gap in a ring in forced colors (the spinner's): Canvas there; otherwise not set (initial), so the component keeps its own."
     },
     "print-hidden": {
       "$value": "initial",
-      "$description": "On paper the chrome is left out (the app header, the navigation pane, the skip link, the scrim, the floating action button, toasts, the spotlight): their display reads it. Not set on screen (initial: the element keeps its own).",
-      "$extensions": {
-        "com.plenix": {
-          "print": "none"
-        }
-      }
+      "$description": "On paper the chrome is left out (the app header, the navigation pane, the skip link, the scrim, the floating action button, toasts, the spotlight): their display reads it. Not set on screen (initial: the element keeps its own)."
     },
     "print-block-size": {
       "$value": "initial",
-      "$description": "On paper the shell is as tall as its content: the shell's fixed heights read it. Not set on screen.",
-      "$extensions": {
-        "com.plenix": {
-          "print": "auto"
-        }
-      }
+      "$description": "On paper the shell is as tall as its content: the shell's fixed heights read it. Not set on screen."
     },
     "print-max-block-size": {
       "$value": "initial",
-      "$description": "On paper nothing is cut to a maximum height: a region with a set height (a data grid's) reads it. Not set on screen.",
-      "$extensions": {
-        "com.plenix": {
-          "print": "none"
-        }
-      }
+      "$description": "On paper nothing is cut to a maximum height: a region with a set height (a data grid's) reads it. Not set on screen."
     },
     "print-overflow": {
       "$value": "initial",
-      "$description": "On paper nothing scrolls: the shell's scrolling regions read it. Not set on screen.",
-      "$extensions": {
-        "com.plenix": {
-          "print": "visible"
-        }
-      }
+      "$description": "On paper nothing scrolls: the shell's scrolling regions read it. Not set on screen."
     },
     "print-position": {
       "$value": "initial",
-      "$description": "On paper the shell's positioned regions take their place in the flow. Not set on screen.",
-      "$extensions": {
-        "com.plenix": {
-          "print": "static"
-        }
-      }
+      "$description": "On paper the shell's positioned regions take their place in the flow. Not set on screen."
     },
     "print-shown": {
       "$value": "initial",
-      "$description": "On paper what Show print marks is shown: its box reads it. Not set on screen (initial: hidden).",
-      "$extensions": {
-        "com.plenix": {
-          "print": "contents"
-        }
-      }
+      "$description": "On paper what Show print marks is shown: its box reads it. Not set on screen (initial: hidden)."
     },
     "print-keep": {
       "$value": "initial",
-      "$description": "On paper cards, notices and figures are not split across two sheets and headings stay with what follows them: their break-inside and break-after read it. Not set on screen (initial: auto).",
-      "$extensions": {
-        "com.plenix": {
-          "print": "avoid"
-        }
-      }
+      "$description": "On paper cards, notices and figures are not split across two sheets and headings stay with what follows them: their break-inside and break-after read it. Not set on screen (initial: auto)."
     },
     "print-url-before": {
       "$value": "initial",
-      "$description": "On paper inside plx-print-urls, the text before an external link's address. Not set on screen (initial: no address).",
-      "$extensions": {
-        "com.plenix": {
-          "print": "\" (\""
-        }
-      }
+      "$description": "On paper inside plx-print-urls, the text before an external link's address. Not set on screen (initial: no address)."
     },
     "print-url-after": {
       "$value": "initial",
-      "$description": "On paper inside plx-print-urls, the text after an external link's address. Not set on screen.",
-      "$extensions": {
-        "com.plenix": {
-          "print": "\")\""
-        }
-      }
+      "$description": "On paper inside plx-print-urls, the text after an external link's address. Not set on screen."
     }
   }
 }
