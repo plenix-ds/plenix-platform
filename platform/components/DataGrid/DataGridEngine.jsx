@@ -31,22 +31,14 @@ import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
 
 import { tokenPixels } from './environment.js';
 
-import { Button } from '../Button/Button.jsx';
-import { Inline } from '../Stack/Stack.jsx';
-import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
-import { ManageColumnsDialog } from '../../patterns/ColumnsMenu/ColumnsMenu.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Select } from '../Input/Input.jsx';
+import { MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 
-import { Pagination } from '../Pagination/Pagination.jsx';
-import { EmptyState } from '../EmptyState/EmptyState.jsx';
 import { opening, writeView, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 import { valueText } from './cells.jsx';
 import { recordsOf } from './records.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
-import { EMPTY_ROWS, GRID, kinds, lengthName, typeIcons, typeOf, words } from './engine/helpers.jsx';
+import { EMPTY_ROWS, GRID, kinds, lengthName, typeOf, words } from './engine/helpers.jsx';
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
@@ -61,6 +53,7 @@ import { useRemoteRows } from './engine/useRemoteRows.js';
 import { useTableModel } from './engine/useTableModel.js';
 import { bodyRows } from './engine/bodyRows.jsx';
 import { headerRows } from './engine/headerRows.jsx';
+import { manageDialog, failureState, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
 import { makeFocusCell, tableKeys } from './engine/keys.js';
 import { Check, MemoGridRow, RowGap, Width, WidthPixels } from './engine/parts.jsx';
 
@@ -1131,24 +1124,7 @@ function NextEngine(props) {
     failed = error || (moreFailed ? null : remoteError);
   return (
     <WidthPixels.Provider value={widthPixels}>
-      {headerMenu && !isStatic && managing ? (
-        <ManageColumnsDialog
-          trigger={null}
-          open={managing}
-          onOpenChange={setManaging}
-          fields={chooserColumns().map((col) => ({ value: col.id, label: col.columnDef.meta.title || col.id }))}
-          value={{
-            order: chooserColumns().map((col) => col.id),
-            hidden: chooserColumns()
-              .filter((col) => !col.getIsVisible())
-              .map((col) => col.id)
-          }}
-          onChange={(next) => {
-            changeOrder(next.order);
-            changeVisibility(Object.fromEntries((next.hidden || []).map((field) => [field, false])));
-          }}
-        />
-      ) : null}
+      {manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility })}
       <div
         ref={frame}
         className={cx(
@@ -1171,28 +1147,7 @@ function NextEngine(props) {
         data-plx-height={lengthName(height)}
         data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
       >
-        {failed ? (
-          <EmptyState
-            className={B + '__error'}
-            tone="error"
-            title={S.failed}
-            action={
-              onRetry || remoteError ? (
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    setRetry((n) => n + 1);
-                    onRetry?.();
-                  }}
-                >
-                  {S.retry}
-                </Button>
-              ) : null
-            }
-          >
-            {String(failed === true ? '' : failed.message || failed)}
-          </EmptyState>
-        ) : null}
+        {failureState({ failed, B, S, onRetry, remoteError, setRetry })}
 
         <div
           className={cx(
@@ -1245,39 +1200,7 @@ function NextEngine(props) {
                   </div>
                 ) : null}
                 {ordered.map(headerCell)}
-                {props.viewMenu ? (
-                  <div className={`${B}__grid-col ${B}__w-view`} role="columnheader">
-                    <Menu
-                      label={S.view}
-                      trigger={
-                        <Button variant="ghost" size="xs" iconOnly icon={SettingsCustomizeIcon} label={S.view} />
-                      }
-                    >
-                      {['short', 'medium', 'tall', 'extra-tall'].map((step) => (
-                        <MenuItem
-                          key={step}
-                          checked={effectiveStep === step}
-                          onSelect={() => {
-                            setRowHeight(step);
-                            props.onViewChange?.({ rowHeight: step });
-                          }}
-                        >
-                          {S[step]}
-                        </MenuItem>
-                      ))}
-                      <MenuDivider />
-                      <MenuItem
-                        checked={effectiveWrap}
-                        onSelect={() => {
-                          setWrapHeaders(!effectiveWrap);
-                          props.onViewChange?.({ wrapHeaders: !effectiveWrap });
-                        }}
-                      >
-                        {S.wrapHeaders}
-                      </MenuItem>
-                    </Menu>
-                  </div>
-                ) : null}
+                {viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders })}
                 {rowMenu && rowMenuButton ? (
                   <Width
                     width={metrics.menu}
@@ -1346,95 +1269,27 @@ function NextEngine(props) {
               {shown.map(renderRow)}
               <RowGap rows={model.slice(last)} />
             </div>
-            {!model.length ? (
-              <div className={cx(`${B}__grid-placeholder`, isStatic && B + '__grid-placeholder--static')} role="row">
-                <div
-                  className={`${B}__grid-placeholder-contents`}
-                  role={isStatic ? 'cell' : 'gridcell'}
-                  aria-colspan={Math.max(1, ordered.length)}
-                >
-                  <span className={B + '__empty'}>{remoteMode && remoteBusy ? S.loading : empty || S.empty}</span>
-                </div>
-              </div>
-            ) : null}
-            {scrollFill && model.length && (remoteBusy || moreFailed) ? (
-              <div className={`${B}__grid-placeholder`} role="row" aria-rowindex={semanticRows.length + 2}>
-                <div
-                  className={`${B}__grid-placeholder-contents`}
-                  role="gridcell"
-                  aria-colspan={Math.max(1, ordered.length)}
-                >
-                  {moreFailed ? (
-                    <Inline gap="sm" align="center">
-                      <span className={B + '__empty'}>{S.failed}</span>
-                      <Button size="sm" onClick={() => setRetry((n) => n + 1)}>
-                        {S.retry}
-                      </Button>
-                    </Inline>
-                  ) : (
-                    <span className={B + '__empty'} role="status">
-                      {S.loading}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ) : null}
+            {emptyRow({ model, B, isStatic, ordered, remoteMode, remoteBusy, S, empty })}
+            {moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered, S, setRetry })}
           </div>
         </div>
         {!isStatic ? <Scrollbars holder={holder} viewportId={viewportId} /> : null}
-        {mode === 'pages' && !failed ? (
-          <div className={B + '__footer'}>
-            <Text variant="data" className={B + '__range'}>
-              {words(S.range, {
-                first: displayedTotal ? Math.min(page * pageSize + 1, displayedTotal) : 0,
-                last: Math.min((page + 1) * pageSize, displayedTotal),
-                total: displayedTotal
-              })}
-            </Text>
-            <label className={B + '__page-size'}>
-              <span>{S.perPage}</span>
-              <Select
-                value={String(pageSize)}
-                options={(props.pageSizes || [25, 50, 100]).map((n) => ({ value: String(n), label: String(n) }))}
-                onChange={(e) => {
-                  setPage(0);
-                  setPageSize(+e.target.value);
-                }}
-              />
-            </label>
-            <Pagination
-              className={B + '__pages'}
-              label={words(S.pages, { label })}
-              page={page + 1}
-              pageCount={Math.max(1, Math.ceil(displayedTotal / pageSize))}
-              onPageChange={(n) => setPage(n - 1)}
-            />
-          </div>
-        ) : null}
-        {mode === 'load-more' && !failed ? (
-          <div className={B + '__footer'}>
-            <Text variant="data" className={B + '__range'}>
-              {words(S.count, { shown: Math.min(loadedRows.length, displayedTotal), total: displayedTotal })}
-            </Text>
-            {loadedRows.length < displayedTotal ? (
-              <Button
-                size="sm"
-                loading={remoteMode && remoteBusy}
-                className={B + '__more'}
-                onClick={() => {
-                  if (remoteMode) {
-                    if (!fetching.current) {
-                      fetching.current = true;
-                      setPage((n) => n + 1);
-                    }
-                  } else setLoaded((n) => Math.min(allRows.length, n + pageSize));
-                }}
-              >
-                {S.loadMore}
-              </Button>
-            ) : null}
-          </div>
-        ) : null}
+        {pagesFooter({ mode, failed, B, S, displayedTotal, page, pageSize, props, setPage, setPageSize, label })}
+        {loadMoreFooter({
+          mode,
+          failed,
+          B,
+          S,
+          loadedRows,
+          displayedTotal,
+          remoteMode,
+          remoteBusy,
+          fetching,
+          setPage,
+          setLoaded,
+          allRows,
+          pageSize
+        })}
       </div>
     </WidthPixels.Provider>
   );
