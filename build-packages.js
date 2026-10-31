@@ -208,9 +208,15 @@ esbuild.buildSync(Object.assign({}, cssOpts, { outfile: path.join(S, 'plenix.min
 copyDir(path.join(P, 'fonts'), path.join(S, 'fonts'));
 write(path.join(S, 'fonts.css'), fs.readFileSync(path.join(P, 'system', 'fonts.css'), 'utf8').split('url("../fonts/').join('url("fonts/'));
 copy(path.join(P, 'providers', 'theme-boot.js'), path.join(S, 'theme-boot.js'));
-json(path.join(S, 'package.json'), manifest('styles', 'Plenix styles: the whole Platform stylesheet (tokens, theme, foundations, every component and pattern) in one file.', {
+// the same rules per part (#710, option S1), cut from plenix.css by tools/style-parts.js: foundations.css once, then
+// parts/<part>.css for each part an app uses (each imports the parts it needs). plenix.css and the CDN stay as they are;
+// tools/agent/style-parts-check.js proves the files add up to plenix.css (check-bundle.js runs it)
+fs.rmSync(path.join(S, 'parts'), { recursive: true, force: true });
+for (const [file, text] of Object.entries(require('./tools/style-parts.js').files(fs.readFileSync(path.join(S, 'plenix.css'), 'utf8'), VERSION).out)) write(path.join(S, file), text);
+json(path.join(S, 'package.json'), manifest('styles', 'Plenix styles: the whole Platform stylesheet (tokens, theme, foundations, every component and pattern) in one file, or per part.', {
   style: 'plenix.css',
-  exports: { '.': './plenix.css', './plenix.css': './plenix.css', './plenix.min.css': './plenix.min.css', './fonts.css': './fonts.css', './fonts/*': './fonts/*', './theme-boot.js': './theme-boot.js', './package.json': './package.json' },
+  exports: { '.': './plenix.css', './plenix.css': './plenix.css', './plenix.min.css': './plenix.min.css', './foundations.css': './foundations.css', './parts/*': './parts/*',
+    './fonts.css': './fonts.css', './fonts/*': './fonts/*', './theme-boot.js': './theme-boot.js', './package.json': './package.json' },
 }));
 readme('styles', `
 - \`plenix.css\` (and \`plenix.min.css\`): tokens, the Plenix theme, the foundations and every component and pattern.
@@ -223,7 +229,21 @@ readme('styles', `
   <script src="node_modules/${SCOPE}/styles/theme-boot.js"></script>
   <link rel="stylesheet" href="node_modules/${SCOPE}/styles/fonts.css">
   <link rel="stylesheet" href="node_modules/${SCOPE}/styles/plenix.css">
-\`\`\``);
+\`\`\`
+
+## Per part (optional)
+
+The same rules, cut by part, for an app that uses a few parts: \`foundations.css\` once (the layer order, tokens, theme and base), then \`parts/<part>.css\` for each part it uses. Each part file imports the parts it needs. Together they are exactly \`plenix.css\`, in its order.
+
+\`\`\`js
+import '${SCOPE}/styles/foundations.css';
+import '${SCOPE}/styles/parts/button.css';
+import '${SCOPE}/styles/parts/badge.css';
+\`\`\`
+
+- Load either \`plenix.css\` or the per-part files, never both: the rules would load twice.
+- Import them in one place, at the app's start, through your bundler. It loads each part once.
+- A part is named after its component in kebab case: \`data-grid\`, \`nav-pane\`, \`side-panel\`. \`parts/utilities.css\` holds the one-purpose classes (\`plx-u-*\`).`);
 
 // ---------- react ----------
 const R = path.join(PKG, 'react');
