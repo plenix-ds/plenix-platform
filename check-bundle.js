@@ -162,5 +162,9 @@ if (fs.existsSync(parts.entryOf())) {
   console.log('  one import from @plenix-ds/react (minified, React external):');
   for (const r of parts.measure()) { if (r.over) over++; console.log('        ' + parts.line(r)); }
 } else { console.log('BUNDLE_FAIL: packages/react is missing: run node build-packages.js'); process.exit(1); }
-if (up || over) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
+// the styles per part (#710): foundations.css and parts/*.css add up to plenix.css, in its order, and ties keep it
+// (tools/agent/style-parts-check.js)
+if (!fs.existsSync(path.join(ROOT, 'packages', 'styles', 'foundations.css'))) { console.log('BUNDLE_FAIL: packages/styles/foundations.css is missing: run node build-packages.js'); process.exit(1); }
+const styleParts = require('./tools/agent/style-parts-check.js').check(LIST).bad ? 1 : 0;
+if (up || over || styleParts) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
 console.log(down ? 'BUNDLE_OK (' + down + ' went down: lower the baseline)' : 'BUNDLE_OK');

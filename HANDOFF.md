@@ -55,6 +55,9 @@ One design system and the suite of applications built on it, owned by one person
   - Commit freely while working. Right before a push run only the build and the static checks: `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`.
   - The full suite and the on-demand tests are started by the owner. CI is a separate owner decision.
   - The owner starts tests with a run-tests issue in plenix-ds/owner-requests, which `~/team/test-runner.sh` runs. No agent opens, edits or comments on those issues.
+- **No custom tooling unless absolutely necessary (owner, 2026-10-31, #712).**
+  - Build, check, test and release work uses standard tools; a new custom script, generator or check needs a pull request that shows no standard tool or plugin can do the job.
+  - Every custom tool is listed in [docs/build.md](docs/build.md), with what it writes or checks, whether it is necessary, and its standard replacement. The rule itself is in `CLAUDE.md`.
 - **Show me, then ship it (owner, 2026-10-26).**
   - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
   - "Ship it" comes only after the owner picks: then build, check before the push, open the PR, and merge on the owner's word.

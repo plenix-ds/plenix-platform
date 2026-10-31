@@ -38,7 +38,7 @@ import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
 import SquareMinusIcon from 'plenix-platform/icons/plenix/square-minus';
 
-const asIcon = (i, filled) => (typeof i === 'string' || isIconModule(i) ? iconElement(i, { filled }) : React.isValidElement(i) && i.type === Icon ? React.cloneElement(i, { filled: filled || i.props.filled }) : i);
+const treeIcon = (i, filled) => (typeof i === 'string' || isIconModule(i) ? iconElement(i, { filled }) : React.isValidElement(i) && i.type === Icon ? React.cloneElement(i, { filled: filled || i.props.filled }) : i);
 // the icon an open item shows: its own openIcon, else an open folder for a folder
 const OPEN_ICONS = { folder: FolderOpenIcon };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon);
@@ -57,7 +57,7 @@ function TreeItem({ n, level, tree }) {
       <div className={cx('plx-tree__row', n.id === selected && 'is-selected', focusVisible && 'is-focus-visible')} data-plx-level={Math.min(level, 12)} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
         <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
           onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined}>{kids ? <Icon icon={isOpen ? SquareMinusIcon : SquarePlusIcon} filled={false} /> : null}</span>
-        {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)}</span> : null}
+        {n.icon ? <span className="plx-tree__icon">{treeIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)}</span> : null}
         <span className="plx-tree__label">{n.label}</span>
         {n.meta !== undefined ? <span className="plx-tree__meta">{n.meta}</span> : null}
       </div>

@@ -1,2 +1,0 @@
-{"localeCalls":0,"tokenReads":2,"value":"Record 59","elapsedMs":310}
-GRID_SEARCH_OK 600 rows, 11 columns; filtered sort preserved

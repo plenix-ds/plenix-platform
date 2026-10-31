@@ -1,6 +1,0 @@
-data-display/feature-card dark base=0 head=0 added=0
-content/user-card light base=0 head=0 added=0
-content/user-card dark base=0 head=0 added=0
-data-display/media-card light base=5 head=5 added=0
-data-display/media-card dark base=5 head=5 added=0
-TYPO_COMPARE_OK 5

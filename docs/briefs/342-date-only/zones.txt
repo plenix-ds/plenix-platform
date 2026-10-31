@@ -1,8 +1,0 @@
-before America/New_York     date=Oct 17, 2026 [2026-10-17] | label=Yesterday [2026-10-17] | datetime=Oct 17, 2026, 8:00 PM [2026-10-18T00:00:00.000Z] | stamp=Oct 18, 2026 [2026-10-18] | formatDate: Oct 18, 2026
-before America/Los_Angeles  date=Oct 17, 2026 [2026-10-17] | label=Yesterday [2026-10-17] | datetime=Oct 17, 2026, 5:00 PM [2026-10-18T00:00:00.000Z] | stamp=Oct 18, 2026 [2026-10-18] | formatDate: Oct 18, 2026
-before Africa/Cairo         date=Oct 18, 2026 [2026-10-18] | label=Yesterday [2026-10-18] | datetime=Oct 18, 2026, 3:00 AM [2026-10-18T00:00:00.000Z] | stamp=Oct 18, 2026 [2026-10-18] | formatDate: Oct 18, 2026
-before Asia/Tokyo           date=Oct 18, 2026 [2026-10-18] | label=Yesterday [2026-10-18] | datetime=Oct 18, 2026, 9:00 AM [2026-10-18T00:00:00.000Z] | stamp=Oct 19, 2026 [2026-10-19] | formatDate: Oct 18, 2026
-after  America/New_York     date=Oct 18, 2026 [2026-10-18] | label=Yesterday [2026-10-18] | datetime=Oct 18, 2026, 12:00 AM [2026-10-18T04:00:00.000Z] | stamp=Oct 18, 2026 [2026-10-18] | formatDate: Oct 18, 2026
-after  America/Los_Angeles  date=Oct 18, 2026 [2026-10-18] | label=Yesterday [2026-10-18] | datetime=Oct 18, 2026, 12:00 AM [2026-10-18T07:00:00.000Z] | stamp=Oct 18, 2026 [2026-10-18] | formatDate: Oct 18, 2026
-after  Africa/Cairo         date=Oct 18, 2026 [2026-10-18] | label=Yesterday [2026-10-18] | datetime=Oct 18, 2026, 12:00 AM [2026-10-17T21:00:00.000Z] | stamp=Oct 18, 2026 [2026-10-18] | formatDate: Oct 18, 2026
-after  Asia/Tokyo           date=Oct 18, 2026 [2026-10-18] | label=Yesterday [2026-10-18] | datetime=Oct 18, 2026, 12:00 AM [2026-10-17T15:00:00.000Z] | stamp=Oct 19, 2026 [2026-10-19] | formatDate: Oct 18, 2026

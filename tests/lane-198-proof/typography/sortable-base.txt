@@ -1,1 +1,0 @@
-{"base":"f795b8be","route":"data-display-sortable-table","errors":["ra.getData is not a function"]}

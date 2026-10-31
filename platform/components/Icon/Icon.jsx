@@ -70,13 +70,19 @@
      A bare class name (plx-icon plx-icon--<name>, no component) is deprecated (owner, issue 277 Q3): it still draws the mask from
        the stylesheet in this release, and development warns (dev/style-audit.js); iconMarkup(icon) writes the component's
        markup where a page builds HTML.
+     The Material library's names (library.js) are built into the browser global, the CDN's plenix.esm.js and the suite. The
+       npm package's ES modules load them the first time a name is not a Plenix name or a registered module (issue 702):
+       until they arrive that icon draws nothing, then it draws; an unknown name warns after they arrive. With
+       library="material" every name that is not a registered module waits for them, so a name in both sets never draws
+       the Plenix symbol first.
      StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
        keeps the text color and size of where it sits.
 */
 import React from 'react';
 import { devWarn, development } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
-import { SYMBOLS, NAMES, MIRRORED, LIBRARY, LIBRARY_COMMIT } from './glyphs.js';
+import { SYMBOLS, NAMES, MIRRORED, LIBRARY_COMMIT } from './glyphs.js';
+import { LIBRARY, loadLibrary } from './library.js';
 import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.js';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
@@ -101,7 +107,18 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 // The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
 const LARGE = { lg: true, xl: true };
 const VARIANT = ['', '-fill', '-24', '-24-fill'];   // outline 20, filled 20, outline 24, filled 24
-const library = new Set(LIBRARY.split(' ')), plenix = new Set(SYMBOLS.split(' ')), mirroredSymbols = new Set(MIRRORED.split(' '));
+const plenix = new Set(SYMBOLS.split(' ')), mirroredSymbols = new Set(MIRRORED.split(' '));
+// the whole library's names: built in (library.js), or in the npm package's ES modules loaded the first time a name is
+// not found without them (issue 702); until they arrive such a name draws nothing and does not warn
+let library = new Set(LIBRARY ? LIBRARY.split(' ') : []), libraryLoad = null, libraryDone = !!LIBRARY || !loadLibrary;
+function libraryWaits() {
+  if (libraryDone) return null;
+  if (!libraryLoad) libraryLoad = Promise.resolve().then(loadLibrary).then((names) => { library = new Set(String(names || '').split(' ').filter(Boolean)); }, () => {})
+    .then(() => { libraryDone = true; });
+  return libraryLoad;
+}
+// a name in the library: asking starts the load when the names are not here yet (resolveIcon answers null until then)
+const inLibrary = (symbol) => { libraryWaits(); return library.has(symbol); };
 // a Plenix symbol -> its Plenix name (the dashed spelling: the asset layout's file names; an alias has no file of its own)
 const nameOfSymbol = new Map();
 for (const n of Object.keys(NAMES)) if (!n.includes('_') && !nameOfSymbol.has(NAMES[n][0])) nameOfSymbol.set(NAMES[n][0], n);
@@ -170,7 +187,10 @@ export function resolveIcon(name, options) {
   if (lib === 'material') {
     const reg = fromRegistry('material'); if (reg) return reg;
     const symbol = n.toLowerCase().replace(/-/g, '_');
-    if (library.has(symbol)) return { kind: 'library', symbol, fillOutline: false };
+    if (inLibrary(symbol)) return { kind: 'library', symbol, fillOutline: false };
+    // the npm ES modules: until the library's names arrive, wait (null) rather than draw the Plenix symbol of a name both
+    // sets have (176 do, account_circle among them); Icon redraws when they arrive (useDrawings)
+    if (!libraryDone) return null;
     // Plenix's own drawings (platform/icons/custom) are not in the library: their files are in the Plenix layout
     return plenix.has(symbol) && nameOfSymbol.has(symbol) ? { kind: 'plenix', symbol, fillOutline: false, file: nameOfSymbol.get(symbol) } : null;
   }
@@ -190,7 +210,7 @@ function resolvePlenix(n) {
   if (NAMES[dashed]) return named(dashed);
   const symbol = n.toLowerCase().replace(/-/g, '_');
   if (plenix.has(symbol) && nameOfSymbol.has(symbol)) return { kind: 'plenix', symbol, fillOutline: false, file: nameOfSymbol.get(symbol) };
-  if (library.has(symbol)) return { kind: 'library', symbol, fillOutline: false };
+  if (inLibrary(symbol)) return { kind: 'library', symbol, fillOutline: false };
   return null;
 }
 // where the library's files are: set by the page (setIconLibrary or window.PlenixIconLibrary), else beside the bundle's script or
@@ -351,13 +371,19 @@ function useDrawings(name, size, filled, found, optical) {
   const [, redraw] = React.useReducer((x) => x + 1, 0);
   const pending = fetched ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
   React.useEffect(() => {
-    if (!found) { warnUnknown(name); return undefined; }
+    if (!found) {
+      const waits = libraryWaits();
+      if (!waits) { warnUnknown(name); return undefined; }
+      let live = true;
+      waits.then(() => { if (live) redraw(); });
+      return () => { live = false; };
+    }
     if (fetched) noticeFetch(found);
     if (!pending.length) return undefined;
     let live = true;
     Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => { if (live) redraw(); });
     return () => { live = false; };
-  }, [found && found.kind, found && (found.file || found.symbol), fill, LARGE[size] ? 1 : 0, optical, pending.length]);
+  }, [found && found.kind, found && (found.file || found.symbol), fill, LARGE[size] ? 1 : 0, optical, pending.length, libraryDone]);
   if (!found) return [];
   const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
   if (!glyphs.length) return [];

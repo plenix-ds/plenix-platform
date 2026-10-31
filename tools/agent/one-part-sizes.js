@@ -10,26 +10,44 @@ const esbuild = require('esbuild');
 const ROOT = path.resolve(__dirname, '../..');
 const PKG = path.join(ROOT, 'packages', 'react');
 // the imports measured, with their limits in KB, minified (#685). Before #685 every one-part import cost the whole library,
-// 913 KB; the whole library was 1,608.0 KB. A limit holds the size measured when it was set, with a little room
+// 913 KB; the whole library was 1,608.0 KB. A limit holds the size measured when it was set, with a little room. #702
+// (Arabic opt-in, the icon names loaded when needed): Button 317.5 -> 101.4, Badge 79.0 -> 25.0, DataGrid 645.0 -> 428.9,
+// * as P 1608.5 -> 1392.4 (Button's start is now mostly the English words, 53 KB, and Icon, 24 KB)
 const CASES = [
-  { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 330 },
-  { name: '{ Badge }', code: 'import { Badge } from "plenix"; console.log(Badge);', limit: 100 },
-  { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 700 },
-  { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1610 },
+  { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 105 },
+  { name: '{ Badge }', code: 'import { Badge } from "plenix"; console.log(Badge);', limit: 30 },
+  { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 440 },
+  { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1400 },
 ];
 // the module the application imports: the package's ES module entry, as a bundler reads it (package.json "module")
 const entryOf = () => path.join(PKG, JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf8')).module);
 
-// each case bundled against entry: [{ name, kb, gz, limit, over }]
+// each case bundled against entry: [{ name, kb, gz, limit, over }]. Bundled with splitting, as an application's bundler
+// does, and counted as what loads at the start: the entry and the chunks it imports statically. A chunk only a dynamic
+// import() reaches (the icon name list, #702) loads later, when needed, and is not counted. With no dynamic import this is
+// the same number as one flat file (#685's measure).
 function measure(entry = entryOf()) {
   return CASES.map((c) => {
     const out = esbuild.buildSync({
-      stdin: { contents: c.code, resolveDir: ROOT, loader: 'js' }, bundle: true, minify: true, write: false, format: 'esm', target: 'es2019', logLevel: 'silent',
+      entryPoints: { app: caseFile(c) }, absWorkingDir: ROOT,
+      bundle: true, minify: true, write: false, format: 'esm', target: 'es2019', logLevel: 'silent', splitting: true, outdir: path.join(ROOT, '.one-part-sizes'), metafile: true,
       external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'], alias: { plenix: entry },
     });
-    const code = out.outputFiles[0].contents, kb = code.length / 1024;
+    const files = new Map(out.outputFiles.map((f) => [f.path, f.contents]));
+    const outputs = out.metafile.outputs, start = Object.keys(outputs).find((k) => outputs[k].entryPoint), seen = new Set();
+    const walk = (k) => { if (seen.has(k)) return; seen.add(k); outputs[k].imports.filter((i) => i.kind === 'import-statement' && outputs[i.path]).forEach((i) => walk(i.path)); };
+    walk(start);
+    const code = Buffer.concat([...seen].map((k) => Buffer.from(files.get(path.resolve(ROOT, k))))), kb = code.length / 1024;
     return { name: c.name, kb, gz: zlib.gzipSync(code).length / 1024, limit: c.limit, over: kb > c.limit };
   });
+}
+// a case's code as a file in the scratch folder: splitting needs a real entry point (stdin cannot be split)
+function caseFile(c) {
+  const dir = path.join(require('os').tmpdir(), 'plenix-one-part-sizes');
+  fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, c.name.replace(/\W+/g, '_') + '.js');
+  fs.writeFileSync(file, c.code);
+  return file;
 }
 const line = (r) => r.name.padEnd(13) + (r.kb.toFixed(1) + ' KB').padStart(11) + (r.gz.toFixed(1) + ' KB gzipped').padStart(19) + '   limit ' + r.limit + ' KB' + (r.over ? '   OVER' : '');
 module.exports = { measure, line, entryOf, CASES };

@@ -97,6 +97,10 @@ jobs:
       - name: Bundle rules (the built CDN files against check-bundle.baseline.json; bundle-check-27)
         run: node check-bundle.js
 
+      - name: Vendored libraries (information only; "Wanted" is the version copied into platform/vendor/; issue 724)
+        continue-on-error: true
+        run: npm outdated --prefix platform/vendor --long || true
+
       - name: Typed props (the `any` props of packages/react/index.d.ts never go up from types-any.baseline.json; issue 687)
         run: node tools/agent/types-any.js --check
 

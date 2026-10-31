@@ -208,9 +208,15 @@ esbuild.buildSync(Object.assign({}, cssOpts, { outfile: path.join(S, 'plenix.min
 copyDir(path.join(P, 'fonts'), path.join(S, 'fonts'));
 write(path.join(S, 'fonts.css'), fs.readFileSync(path.join(P, 'system', 'fonts.css'), 'utf8').split('url("../fonts/').join('url("fonts/'));
 copy(path.join(P, 'providers', 'theme-boot.js'), path.join(S, 'theme-boot.js'));
-json(path.join(S, 'package.json'), manifest('styles', 'Plenix styles: the whole Platform stylesheet (tokens, theme, foundations, every component and pattern) in one file.', {
+// the same rules per part (#710, option S1), cut from plenix.css by tools/style-parts.js: foundations.css once, then
+// parts/<part>.css for each part an app uses (each imports the parts it needs). plenix.css and the CDN stay as they are;
+// tools/agent/style-parts-check.js proves the files add up to plenix.css (check-bundle.js runs it)
+fs.rmSync(path.join(S, 'parts'), { recursive: true, force: true });
+for (const [file, text] of Object.entries(require('./tools/style-parts.js').files(fs.readFileSync(path.join(S, 'plenix.css'), 'utf8'), VERSION).out)) write(path.join(S, file), text);
+json(path.join(S, 'package.json'), manifest('styles', 'Plenix styles: the whole Platform stylesheet (tokens, theme, foundations, every component and pattern) in one file, or per part.', {
   style: 'plenix.css',
-  exports: { '.': './plenix.css', './plenix.css': './plenix.css', './plenix.min.css': './plenix.min.css', './fonts.css': './fonts.css', './fonts/*': './fonts/*', './theme-boot.js': './theme-boot.js', './package.json': './package.json' },
+  exports: { '.': './plenix.css', './plenix.css': './plenix.css', './plenix.min.css': './plenix.min.css', './foundations.css': './foundations.css', './parts/*': './parts/*',
+    './fonts.css': './fonts.css', './fonts/*': './fonts/*', './theme-boot.js': './theme-boot.js', './package.json': './package.json' },
 }));
 readme('styles', `
 - \`plenix.css\` (and \`plenix.min.css\`): tokens, the Plenix theme, the foundations and every component and pattern.
@@ -223,7 +229,21 @@ readme('styles', `
   <script src="node_modules/${SCOPE}/styles/theme-boot.js"></script>
   <link rel="stylesheet" href="node_modules/${SCOPE}/styles/fonts.css">
   <link rel="stylesheet" href="node_modules/${SCOPE}/styles/plenix.css">
-\`\`\``);
+\`\`\`
+
+## Per part (optional)
+
+The same rules, cut by part, for an app that uses a few parts: \`foundations.css\` once (the layer order, tokens, theme and base), then \`parts/<part>.css\` for each part it uses. Each part file imports the parts it needs. Together they are exactly \`plenix.css\`, in its order.
+
+\`\`\`js
+import '${SCOPE}/styles/foundations.css';
+import '${SCOPE}/styles/parts/button.css';
+import '${SCOPE}/styles/parts/badge.css';
+\`\`\`
+
+- Load either \`plenix.css\` or the per-part files, never both: the rules would load twice.
+- Import them in one place, at the app's start, through your bundler. It loads each part once.
+- A part is named after its component in kebab case: \`data-grid\`, \`nav-pane\`, \`side-panel\`. \`parts/utilities.css\` holds the one-purpose classes (\`plx-u-*\`).`);
 
 // ---------- react ----------
 const R = path.join(PKG, 'react');
@@ -247,12 +267,21 @@ esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(
 // npm package carries no icon folder (an app registers or imports its icons), as before.
 const partEntries = { index: path.join(P, 'index.js') };
 for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/from '\.\/([^']+)'/g)) partEntries[m[1].replace(/\.jsx?$/, '')] = path.join(P, m[1]);
-esbuild.buildSync(Object.assign({}, jsOpts, { entryPoints: partEntries, format: 'esm', splitting: true, outdir: path.join(R, 'dist'), chunkNames: 'chunks/[name]-[hash]' }));
+// What loads only when asked, in these ES modules only (#702): the browser global, plenix.esm.js and the CommonJS build keep
+// both built in. Arabic: LocaleProvider's import of i18n/ar.js becomes an empty catalog (i18n/optional.js) that
+// dist/i18n/ar.js fills: an app turns Arabic on with import '@plenix-ds/react/i18n/ar'. The icon names: Icon's library.js
+// becomes an empty list with a loader, and the 54 KB list is a chunk of its own, loaded the first time a name needs it.
+// The swap is an esbuild plugin, which needs esbuild's asynchronous API: tools/npm-esm.js runs this one build.
+partEntries['i18n/ar'] = path.join(P, 'i18n', 'ar.optin.js');
+require('child_process').execFileSync(process.execPath, [path.join(ROOT, 'tools', 'npm-esm.js')], { stdio: ['pipe', 'inherit', 'inherit'],
+  input: JSON.stringify(Object.assign({}, jsOpts, { entryPoints: partEntries, format: 'esm', splitting: true, outdir: path.join(R, 'dist'), chunkNames: 'chunks/[name]-[hash]' })) });
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));
 copy(path.join(P, 'engines', 'plenix-engines.js'), path.join(R, 'dist', 'plenix-engines.js'));
 // the TypeScript definitions, from the components' header comments (build-types.js)
 require('./build-types.js')(path.join(R, 'index.d.ts'), VERSION);
+// the Arabic opt-in is imported for what it does, and exports nothing (#702)
+write(path.join(R, 'i18n', 'ar.d.ts'), '/* @plenix-ds/react ' + VERSION + ' · import \'@plenix-ds/react/i18n/ar\': Plenix\'s own words in Arabic on an Arabic page (generated). */\nexport {};\n');
 const exportsList = [];
 for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/export \{([^}]+)\} from '([^']+)'/g)) {
   // a renamed export ("PLACEMENTS as FLOATING_PLACEMENTS") is listed by its public name
@@ -261,9 +290,11 @@ for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/expo
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
   main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
   // only the CSS and the two scripts that act when loaded (the browser global sets window.Plenix; the engines script loads
-  // the engines) have side effects: every ES module part is pure, so a bundler drops the parts an app does not import (#685)
-  sideEffects: ['*.css', './dist/plenix.global.js', './dist/plenix-engines.js'],
-  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './plenix-engines.js': './dist/plenix-engines.js', './package.json': './package.json' },
+  // the engines) have side effects: every ES module part is pure, so a bundler drops the parts an app does not import (#685);
+  // a language's opt-in (dist/i18n/ar.js, #702) acts when imported too
+  sideEffects: ['*.css', './dist/plenix.global.js', './dist/plenix-engines.js', './dist/i18n/*.js'],
+  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './i18n/ar': { types: './i18n/ar.d.ts', import: './dist/i18n/ar.js' },
+    './plenix.global.js': './dist/plenix.global.js', './plenix-engines.js': './dist/plenix-engines.js', './package.json': './package.json' },
   // React 18 and 19 (#686, the audit #684): the source was checked for what React 19 removes (defaultProps on function parts,
   // propTypes, string refs, findDOMNode, legacy context, ReactDOM.render, element.ref); the script-tag build keeps React 18
   peerDependencies: { react: '>=18.2.0 <20', 'react-dom': '>=18.2.0 <20' },

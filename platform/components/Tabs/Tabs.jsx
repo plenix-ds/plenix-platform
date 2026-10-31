@@ -56,7 +56,6 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CaretIcon from 'plenix-platform/icons/plenix/caret';
 
 // the selected tab fills its icon (the tab owns its state)
-const asIcon = stateIcon;
 export const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
 /* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
    lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
@@ -143,7 +142,7 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
                 tabIndex={on ? 0 : -1} disabled={t.disabled || undefined} hidden={!shown(i) || undefined}
                 className={cx('plx-tabs__tab', 'plx-tabs__tab--' + kind, on && 'is-selected', seg && shown(i) && i !== firstShown && 'plx-tabs__tab--joined',
                   seg && i === firstShown && 'plx-tabs__tab--first', seg && i === lastShown && 'plx-tabs__tab--last')} onClick={() => select(t.value)}>
-                {t.icon ? <span className="plx-tabs__icon">{asIcon(t.icon, on)}</span> : null}
+                {t.icon ? <span className="plx-tabs__icon">{stateIcon(t.icon, on)}</span> : null}
                 <span className="plx-tabs__label">{t.label}</span>
                 {t.count !== undefined ? <Count value={t.count} tone="neutral" /> : null}
               </button>

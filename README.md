@@ -95,7 +95,7 @@ git clone --recurse-submodules https://github.com/plenix-ds/plenix-platform.git 
   - `tokens/*.tokens.json` (the source of every value);
   - `icons/`, `system/` (generated token CSS and themes), `vendor/` (React), `dist/` (built bundles), `dev/` (runtime style guard).
 - The apps, one folder each: `dam`, `dashboard`, `notes`, `tasks`, `calendar`, `contacts`, `projects`, `messages`, `files`, `bookmarks`, `settings`, with `suite/` shared by the apps.
-- `capabilities/` holds the PRDs and `docs/` the PRD viewer; dated material is in `Archived/` (on disk only, not in git).
+- `capabilities/` holds the PRDs and `docs/` the PRD viewer and the live documents; dated material is in `Archived/` (on disk only, not in git), and the team's working history (briefs, study pages, proof folders) is in an archive described by [docs/ARCHIVE.md](docs/ARCHIVE.md).
 - Scripts:
   - `build-app.js` builds the tokens, icons and bundles;
   - `build-packages.js` builds the release: the four packages, the CDN files and the API;

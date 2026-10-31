@@ -1,5 +1,0 @@
-.t-page{background:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);margin:0;}
-.t-doc{display:grid;padding:var(--plx-sys-space-inset-xl);row-gap:var(--plx-sys-space-stack-lg);}
-.t-h{font-size:var(--plx-ref-font-size-15);font-weight:var(--plx-sys-font-weight-semibold);margin:0;}
-.t-grid{align-items:start;display:grid;gap:var(--plx-sys-space-inline-lg);grid-template-columns:repeat(auto-fill,minmax(18rem,1fr));}
-.t-grid--wide{grid-template-columns:repeat(auto-fill,minmax(26rem,1fr));}

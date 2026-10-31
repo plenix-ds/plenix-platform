@@ -1,4 +1,4 @@
-# {APP_NAME} — Codebase Rules
+# Plenix Platform: Codebase Rules
 
 ## Migration / Rename Protocol
 
@@ -38,6 +38,17 @@ It writes only these generated files, each starting with `GENERATED FILE — DO 
 
 Source files use `import`/`export`; `react`, `react-dom` and `plenix-platform` resolve to the scripts already on the page. React and ReactDOM are vendored in `platform/vendor/` (see its README), so nothing needs the network and the dashboard still opens from `file://`. The build fails and writes nothing if a file does not compile, an import does not resolve, or a public export is missing. Page script order: `platform.css`, `platform/vendor/react-loader.js` (production React; `?react=dev` for the development build), `platform/dist/platform.js`, then the application bundle. The DataGrid renderer and its dependencies are bundled with the Platform. CSS needs no build. The window.* data in `suite/plenix-app-data.js` needs no build.
 
+## No custom tooling unless absolutely necessary
+
+**No custom tooling unless absolutely necessary (owner, 2026-10-31).**
+- Build, check, test and release work uses standard tools: Vite, Style Dictionary, TypeScript, ESLint, Stylelint, Playwright, Storybook and Changesets.
+- A new custom script, generator or check is allowed only when its pull request shows that no standard tool or plugin can do the job.
+- The owner's design rules are written as Stylelint or ESLint plugins where possible.
+- Every remaining custom tool is listed in docs/build.md with what it writes and why it is necessary.
+- One-time scripts are deleted after use.
+
+The inventory is [docs/build.md](docs/build.md): each custom tool, what it writes or checks, necessary or replaceable, and the standard replacement.
+
 ## No tests
 
 Never run a test. Tests run only when the owner starts them himself. Reading the code and the quick static checks (check-system, check-style, lint) are fine. `HANDOFF.md` ("No tests") states the rule once; every other file points there.
@@ -49,7 +60,7 @@ Every application uses only the Plenix Platform: React components and patterns f
 ## Project Structure
 
 ```
-Z:\Plenix\
+plenix-platform/
 ├── CLAUDE.md                # Codebase rules (this file)
 ├── build-docs.js            # Build script — reads capabilities/, writes docs/plenix-docs.html
 ├── build-app.js             # The single build: icon stylesheet, Platform bundle, every application's page script
@@ -82,7 +93,7 @@ Z:\Plenix\
 ├── dam/                     # The Asset Manager: index.html, settings-system.html, settings-myaccount.html,
 │                            #   image-editor.html, app/ (source; app/assets.js GENERATED), assets/ (thumbnails, editor art).
 │                            #   Its history (audit/, handoff/, originals) stays in ../Plenix - DAM/ (see its MOVED.md)
-├── capabilities/            # 73 capability subfolders
+├── capabilities/            # One subfolder per capability (the folder is the count: ls capabilities)
 │   ├── 00-conventions.md    # Shared PRD conventions
 │   ├── terminology.md       # Product terminology
 │   └── <name>/              # One folder per capability
