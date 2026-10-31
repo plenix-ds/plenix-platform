@@ -273,7 +273,10 @@ const KEPT = [
         const out = clean(html), r = { name, out, problems: [], stable: true, ran: 0 };
         const holder = document.createElement('div'); holder.innerHTML = out; r.problems = problems(holder);
         if (/<\s*(script|style|iframe|object|embed|svg|math|template|noscript|meta|link|base|form|frame)/i.test(out)) r.problems.push('the output text holds a dangerous tag');
-        if (/\son[a-z]+\s*=/i.test(out)) r.problems.push('the output text holds an on* attribute');
+        // in the tags only: hostile markup the cleaner keeps as text arrives escaped ("&lt;img … onerror=…&gt;"), which is inert
+        // words, not an attribute (issue 777: the check read that text as an attribute; the DOM check above already sees none)
+        const tags = (out.match(/<[^>]*>/g) || []).join('');
+        if (/\son[a-z]+\s*=/i.test(tags)) r.problems.push('the output text holds an on* attribute');
         r.stable = clean(out) === out;
         // execution: put it on the page in two parsing contexts
         const before = window.__pwn;
