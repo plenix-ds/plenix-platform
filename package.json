@@ -40,11 +40,13 @@
     "test:types": "node tests/types.test.js",
     "lint:css": "stylelint \"platform/**/*.css\" \"services/**/*.css\"",
     "lint:unused": "knip --no-exit-code",
-    "lint:bundle": "node check-bundle.js"
+    "lint:bundle": "node check-bundle.js",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@babel/standalone": "^7.29.9",
     "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
     "axe-core": "4.10.3",
     "esbuild": "0.25.10",
     "knip": "^6.43.0",
