@@ -1,4 +1,0 @@
-SCOPE utilities: changed since f500fa5ea (16 files) · every utility
-FAIL no page errors: ["Failed to load resource: the server responded with a status of 404 (Not Found)"]
-
-1 failed, 16 passed

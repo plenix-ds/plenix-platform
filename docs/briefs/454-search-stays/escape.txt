@@ -1,6 +1,0 @@
-before
-  Escape in search → (no search shown while ticked)
-  Escape on Archive → selection: none
-after
-  Escape in search → (no search shown while ticked)
-  Escape on Archive → selection: none
