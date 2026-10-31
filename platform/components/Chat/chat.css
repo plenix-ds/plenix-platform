@@ -5,7 +5,7 @@
   display: inline-flex;
   position: relative;
 }
-.plx-chat__typing > span[aria-hidden] {
+.plx-chat__typing>span[aria-hidden] {
   animation-duration: var(--plx-comp-chat-typing-dot-animation-duration);
   animation-iteration-count: infinite;
   animation-name: motion-pulse;
@@ -19,10 +19,10 @@
   display: inline-block;
   inline-size: var(--plx-comp-chat-typing-dot-width);
 }
-.plx-chat__typing > span[aria-hidden]:nth-child(2) {
+.plx-chat__typing>span[aria-hidden]:nth-child(2) {
   animation-delay: var(--plx-comp-chat-typing-second-dot-delay);
 }
-.plx-chat__typing > span[aria-hidden]:nth-child(3) {
+.plx-chat__typing>span[aria-hidden]:nth-child(3) {
   animation-delay: var(--plx-comp-chat-typing-third-dot-delay);
 }
 .plx-chat__header {
