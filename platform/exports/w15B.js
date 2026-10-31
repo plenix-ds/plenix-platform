@@ -1,1 +1,1 @@
-export { browserSupport } from '../utils/browserSupport.js';
+export { browserSupport } from '../utils/browserSupport.ts';

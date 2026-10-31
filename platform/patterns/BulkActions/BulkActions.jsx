@@ -46,16 +46,16 @@
      and "Clear" keep their places and are disabled, never hidden; the look is the command bar's (white, framed, ghost
      buttons), never tinted by a selection. */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useBarFit } from '../../utils/barFit.js';
-import { formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { useBarFit } from '../../utils/barFit.ts';
+import { formatNumber } from '../../utils/format.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Toolbar } from '../../components/Toolbar/Toolbar.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { BarActions, foldOrder } from '../CommandBar/BarActions.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);
 

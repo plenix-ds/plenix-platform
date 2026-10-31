@@ -16,7 +16,7 @@ In a very narrow pane, the command bar's search folds into one "Find and view" b
 - Added in commit b7616898 (2026-10-24) "CommandBar: the find side folds into Find and view when it does not fit (#274)".
 
 ## How it checks
-- Opens the brief's stage page `docs/briefs/commandbar-find-fold/stage.html?find=more` in headless Chrome, narrows the stage to the tiny size and back, clicks "Find and view", types in the popover, and reads where the bar's buttons and fields sit.
+- Opens its stage page `tests/fixtures/stages/commandbar-find-fold.html?find=more` in headless Chrome, narrows the stage to the tiny size and back, clicks "Find and view", types in the popover, and reads where the bar's buttons and fields sit.
 
 ## What a failure means
 - In a narrow side panel, the search box would stick out of its card or become unreachable.
@@ -27,4 +27,4 @@ In a very narrow pane, the command bar's search folds into one "Find and view" b
 
 ## What it needs
 - Headless Chrome and the local test server (`tests/lib.js`).
-- The stage page `docs/briefs/commandbar-find-fold/stage.html`.
+- The stage page `tests/fixtures/stages/commandbar-find-fold.html` and its widths in `tests/fixtures/stages/stage.css` (issue #772: the page and the 200px width used to live in `docs/briefs/`, and when #694 archived `review.css` the stage lost its narrow width, so the bar never had to fold).

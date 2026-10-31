@@ -8,7 +8,7 @@ const PORT = +process.env.TEST_PORT || 8879;
   try {
     browser = await launch(); const page = await browser.newPage();
     await page.setViewport({ width: 1100, height: 900 });
-    await page.goto('http://localhost:' + PORT + '/Plenix/docs/briefs/header-labels-start/stage.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/stages/header-labels-start.html', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => document.querySelectorAll('[role="columnheader"]').length >= 8, { timeout: 60000 });
     await new Promise((r) => setTimeout(r, 800));
     const out = await page.evaluate(() => ['grid', 'table'].map((id) => {

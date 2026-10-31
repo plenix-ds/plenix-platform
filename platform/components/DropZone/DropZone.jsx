@@ -16,7 +16,7 @@
      overlay: covers its positioned parent while files are dragged over a page (the asset browser), and lets the drop
        reach the page (default false)
      onDropItem(data, type): makes the zone a drop target for items dragged in the page with the drag-and-drop engine
-       (utils/dnd.js: useDraggable, a sortable list's items do not drop here); it runs when one is dropped on it
+       (utils/dnd.ts: useDraggable, a sortable list's items do not drop here); it runs when one is dropped on it
      accepts(data, type): with onDropItem, true when the zone takes the item (default: every item)
      name: with onDropItem, the zone's name in the announcements ("Over Archive", "Archive does not take Cross 014")
      children: the zone's content
@@ -31,8 +31,8 @@
        through to the element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useDropTarget } from '../../utils/dnd.js';
+import { cx } from '../../utils/cx.ts';
+import { useDropTarget } from '../../utils/dnd.ts';
 
 export function DropZone({ as: As = 'div', active = false, reject = false, rejectContent, overlay = false, onDropItem, accepts, name, className, children, ...rest }) {
   const target = useDropTarget({ name, accepts, onDrop: onDropItem, disabled: !onDropItem });

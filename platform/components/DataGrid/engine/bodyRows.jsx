@@ -15,7 +15,7 @@
      function, in the same order with the same values. The engine is documented in DataGridEngine.jsx.
 */
 import React from 'react';
-import { cx } from '../../../utils/cx.js';
+import { cx } from '../../../utils/cx.ts';
 import { words, kinds, interactive, typeOf, typeIcons, cellDirection } from './helpers.jsx';
 import { valueText, CellValue } from '../cells.jsx';
 import { groupKeys, rowKeys, cellKeys } from './keys.js';
@@ -23,7 +23,7 @@ import { Width, RowTarget, Check, CellEditor, CustomCell, RowMenuContent } from 
 import { Icon } from '../../Icon/Icon.jsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
-import { formatNumber } from '../../../utils/format.js';
+import { formatNumber } from '../../../utils/format.ts';
 import { Button } from '../../Button/Button.jsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 import { valueAt } from '../state.js';

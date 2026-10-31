@@ -17,8 +17,8 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 
 export function Count({ value, max, variant = 'plain', tone = 'danger', label, moreThan = 'More than {max}', className, ...rest }) {
   devWarn('Count', { variant, tone }, { variant: ['plain','pill'], tone: ['info','success','warning','danger','neutral'] });

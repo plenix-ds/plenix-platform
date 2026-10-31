@@ -17,7 +17,7 @@ import { Textarea } from '../Input/Input.jsx';
 import { RichTextEditor } from '../RichTextEditor/RichTextEditor.jsx';
 import { EntityPicker } from '../EntityPicker/EntityPicker.jsx';
 import { Button } from '../Button/Button.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 

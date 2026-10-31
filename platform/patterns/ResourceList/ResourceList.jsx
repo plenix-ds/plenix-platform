@@ -53,8 +53,8 @@
      A pattern of the Polaris resource list. Use the DataGrid when people compare records by column or sort by a column.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { useSelection } from '../../hooks/useSelection.js';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Thumbnail } from '../../components/Thumbnail/Thumbnail.jsx';
@@ -63,7 +63,7 @@ import { SectionHeading } from '../../components/SectionHeading/SectionHeading.j
 import { Count } from '../../components/Count/Count.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 // a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]
 const phrase = (s, map) => s.split(/(\{n\}|\{total\})/).map((p, i) => (p === '{n}' || p === '{total}' ? <Text key={i} variant="data">{map[p.slice(1, -1)]}</Text> : fill(p, map)));

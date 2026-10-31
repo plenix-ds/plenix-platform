@@ -21,7 +21,7 @@
        the other direction than the page.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export const Heading = React.forwardRef(function Heading({ level = 2, size, id, className, children, ...rest }, ref) {
   const lv = Math.min(6, Math.max(1, Math.round(Number(level) || 2)));

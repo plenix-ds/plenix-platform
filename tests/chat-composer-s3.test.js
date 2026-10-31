@@ -34,9 +34,13 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       }, dir, stub, files || null);
       await wait(900); return page;
     };
+    // the buttons by their names in the page's language: the right-to-left page is Arabic (lang="ar"), where they read
+    // "إرفاق ملف" and "إضافة رمز تعبيري" (issue 777: the English names found nothing there)
     const tools = (p) => p.evaluate(() => {
+      const ar = document.documentElement.getAttribute('lang') === 'ar';
       const x = (el) => el.getBoundingClientRect().left + el.getBoundingClientRect().width / 2, q = (s) => document.querySelector(s);
-      return { attach: x(q('[aria-label="Attach a file"]')), emoji: x(q('[aria-label="Add an emoji"]')), mic: x(q('.plx-chat__mic button')), send: x(q('button[type=submit]')) };
+      return { attach: x(q('[aria-label="' + (ar ? 'إرفاق ملف' : 'Attach a file') + '"]')), emoji: x(q('[aria-label="' + (ar ? 'إضافة رمز تعبيري' : 'Add an emoji') + '"]')),
+        mic: x(q('.plx-chat__mic button')), send: x(q('button[type=submit]')) };
     });
     // the probe sees the microphone appear
     let page = await open('ltr', false);

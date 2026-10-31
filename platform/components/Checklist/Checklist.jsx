@@ -19,7 +19,7 @@ import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Checklist({ title, items = [], completed = [], onChange, progress = true, collapsible = false, onDismiss, strings, className }) {

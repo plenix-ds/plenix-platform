@@ -26,8 +26,8 @@
      The button is a Button (secondary, with the arrow-up icon: Material's arrow_upward); its target is at least the standard control height.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { useIntersection } from '../../hooks/useIntersection.js';
 import ArrowUpIcon from 'plenix-platform/icons/plenix/arrow-up';

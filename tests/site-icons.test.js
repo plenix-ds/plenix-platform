@@ -18,7 +18,7 @@ const ROOT = path.join(__dirname, '..');
 const TOOL = path.join(ROOT, 'tools', 'icons', 'site-icons.js');
 const sites = require(TOOL);
 const layout = require(path.join(ROOT, 'platform', 'icons', 'layout.js'));
-const code = Babel.transform(fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'iconSafety.js'), 'utf8'), { sourceType: 'module', plugins: ['transform-modules-commonjs'] }).code;
+const code = Babel.transform(fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'iconSafety.ts'), 'utf8'), { sourceType: 'module', filename: 'iconSafety.ts', presets: ['typescript'], plugins: ['transform-modules-commonjs'] }).code;
 const mod = { exports: {} };
 new Function('module', 'exports', 'require', code)(mod, mod.exports, require);
 const S = mod.exports;

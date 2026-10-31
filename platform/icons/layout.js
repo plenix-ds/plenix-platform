@@ -28,13 +28,13 @@ const MIRROR = ['arrow_back', 'arrow_forward', 'arrow_right', 'chevron_left', 'c
   'right_panel_close', 'right_panel_open', 'send', 'undo'];
 const dashed = (s) => s.replace(/_/g, '-');
 
-// the allow-list every icon file passes (platform/utils/iconSafety.js, #285): the same module the Icon component uses,
-// loaded here through Babel (it is written as an ES module for the Platform bundle)
+// the allow-list every icon file passes (platform/utils/iconSafety.ts, #285): the same module the Icon component uses,
+// loaded here through Babel (it is written in TypeScript as an ES module for the Platform bundle; Babel strips the types)
 let safety = null;
 function iconSafety() {
   if (safety) return safety;
   const Babel = require('@babel/standalone');
-  const code = Babel.transform(fs.readFileSync(path.join(__dirname, '..', 'utils', 'iconSafety.js'), 'utf8'), { sourceType: 'module', plugins: ['transform-modules-commonjs'] }).code;
+  const code = Babel.transform(fs.readFileSync(path.join(__dirname, '..', 'utils', 'iconSafety.ts'), 'utf8'), { sourceType: 'module', filename: 'iconSafety.ts', presets: ['typescript'], plugins: ['transform-modules-commonjs'] }).code;
   const m = { exports: {} }; new Function('module', 'exports', 'require', code)(m, m.exports, require);
   return (safety = m.exports);
 }

@@ -11,7 +11,11 @@
 const assert = require('assert/strict'), fs = require('fs'), path = require('path'), { serve, launch } = require('./lib');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const ROOT = path.resolve(__dirname, '..');
-const NAMES = (/export const LIBRARY = "([^"]*)"/.exec(fs.readFileSync(path.join(ROOT, 'platform', 'components', 'Icon', 'glyphs.js'), 'utf8'))[1]).split(' ').filter((_, i) => i % 90 === 0).slice(0, 40);
+// library names only: a name that is also a Plenix icon (library_add, open_in_full, redo among every 90th) draws from the
+// Plenix set, not the library, so it would never ask for a library file (issue 777: 37 files for 40 names)
+const GLYPHS = fs.readFileSync(path.join(ROOT, 'platform', 'components', 'Icon', 'glyphs.js'), 'utf8');
+const PLENIX = new Set(/export const SYMBOLS = "([^"]*)"/.exec(GLYPHS)[1].split(' ').concat(Object.keys(JSON.parse(/export const NAMES = (\{.*\});/.exec(GLYPHS)[1]))));
+const NAMES = (/export const LIBRARY = "([^"]*)"/.exec(GLYPHS)[1]).split(' ').filter((n) => !PLENIX.has(n) && !PLENIX.has(n.replace(/_/g, '-'))).filter((_, i) => i % 90 === 0).slice(0, 40);
 const UNIQUE = new Set(NAMES).size;
 (async () => {
   const PORT = +process.env.TEST_PORT || 9632, server = await serve(PORT); let browser;

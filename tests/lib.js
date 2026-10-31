@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer-core');
 const limit = require('./limit.js');   // every test's hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.resolve(__dirname, '..');
-const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.jsx': 'text/plain; charset=utf-8',
+const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.jsx': 'text/plain; charset=utf-8', '.ts': 'text/plain; charset=utf-8', '.tsx': 'text/plain; charset=utf-8',
   '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.md': 'text/plain; charset=utf-8' };
 
 // serves ROOT at /Plenix/ (directories answer with index.html); everything else is 404. Two more places (tests/site.js):

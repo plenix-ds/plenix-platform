@@ -38,11 +38,11 @@
      A delegation ends by itself after its last day; End delegation ends it sooner.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatRange } from '../../utils/format.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatRange } from '../../utils/format.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -56,7 +56,7 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ForwardIcon from 'plenix-platform/icons/plenix/forward';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 export function AssignControl({ label, people = [], value = null, onChange, me, clearable = true, variant = 'assign',
   delegation, onDelegate, onEndDelegation, strings, className, ...rest }) {

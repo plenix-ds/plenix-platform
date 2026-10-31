@@ -45,23 +45,23 @@
      For a few known choices use Select; for anything that is not a record, Combobox.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { IconTile } from '../IconTile/IconTile.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
+import { announce } from '../../utils/announce.tsx';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber } from '../../utils/format.ts';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';
 import OpenIcon from 'plenix-platform/icons/plenix/open';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const NAMES = { people: 'people', teams: 'teams', records: 'records' };
 export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'records', options = [], value, values, onChange, multiple = false,

@@ -11,7 +11,7 @@
 //
 //   node tools/icons/site-icons.js <site> <folder or file> [<folder or file> …] [--out <folder>] [--allow-unknown]
 //     <site>: the file's name (plenix-icons-<site>.js): lowercase letters, digits and dashes
-//     reads .js, .jsx, .mjs, .html and .htm (folders recursively; node_modules, dist, vendor and dot folders skipped)
+//     reads .js, .jsx, .ts, .tsx, .mjs, .html and .htm (folders recursively; node_modules, dist, vendor and dot folders skipped)
 //     --out: where to write it (default: the current folder)
 //     --allow-unknown: write the file even when a name is unknown or built at run time (reported either way)
 //   Exit codes: 0 written, 1 unknown or run-time names (nothing written), 2 usage or a file that cannot be read.
@@ -35,7 +35,7 @@ const uses = require(path.join(ROOT, 'platform/icons/uses.js'));
 
 const HEADER = 'GENERATED FILE — DO NOT EDIT';
 const COMPAT = 'platform/dist/plenix-icons-plenix.js';
-const SCRIPT = /\.(jsx?|mjs)$/i, PAGE = /\.html?$/i;
+const SCRIPT = /\.([jt]sx?|mjs)$/i, PAGE = /\.html?$/i;
 const SKIP = /^(node_modules|dist|vendor|\..*)$/;
 const IMPORT = /(?:plenix-platform|\/cdn\/[^/'"\s]+)\/icons\/(plenix|material)\/([a-z0-9_-]+)(?:\.js)?['"]/g;
 const CLASS = /\bplx-icon--([a-z0-9][a-z0-9_-]*)/g;

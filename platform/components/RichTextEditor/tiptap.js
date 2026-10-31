@@ -18,7 +18,7 @@
        @tiptap/extension-list, -mention, -table, -text-style, -text-align, -highlight, -subscript, -superscript, -image and
        -typography, and their dependencies (platform/vendor/README.md: versions, licenses, how it is built). */
 
-import { engine } from '../../utils/engines.js';
+import { engine } from '../../utils/engines.ts';
 
 export function loadTiptap(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);

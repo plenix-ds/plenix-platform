@@ -34,7 +34,7 @@ Formatted text that people write (notes, comments, descriptions) cannot carry ha
 - Or normal formatting (links, tables, colors) is stripped from what people write.
 
 ## When it runs
-- A child of `layout.test.js`. Layout runs it when the rich-text cleaner (`utils/richTextClean.js`), RichText or RichTextEditor changes, or when this file or the fixture it loads (`platform-host.html`) changes. In a full run it always runs.
+- A child of `layout.test.js`. Layout runs it when the rich-text cleaner (`utils/richTextClean.ts`), RichText or RichTextEditor changes, or when this file or the fixture it loads (`platform-host.html`) changes. In a full run it always runs.
 - CI (`ci.yml`): inside the "fixtures" browser job (the layout test), on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`full.yml`): inside the "fixtures" browser job.
 - By hand: `node tests/rich-text-clean-689.test.js`.

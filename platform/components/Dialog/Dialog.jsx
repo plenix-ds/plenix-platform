@@ -75,10 +75,10 @@
      The layer renders in a portal on document.body.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { createPortal } from 'react-dom';
-import { cx } from '../../utils/cx.js';
-import { focusables, useLayer, useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { focusables, useLayer, useUid } from '../../utils/layer.ts';
 import { Icon, asIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Field } from '../Field/Field.jsx';

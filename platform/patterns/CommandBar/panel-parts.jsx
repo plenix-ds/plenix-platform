@@ -15,19 +15,19 @@
      useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
        row; each move is announced (WCAG 2.5.7: a way without dragging) */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { LiveRegion } from '../../utils/announce.jsx';
+import { LiveRegion } from '../../utils/announce.tsx';
 import { CommandBarButton, useCommandBar } from './CommandBar.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 import DragIcon from 'plenix-platform/icons/plenix/drag';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 export const toggle = (list, v) => (list.indexOf(v) >= 0 ? list.filter((x) => x !== v) : list.concat(v));
 // the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in

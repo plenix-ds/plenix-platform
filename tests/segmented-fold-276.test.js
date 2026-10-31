@@ -12,7 +12,7 @@ const PORT = +process.env.TEST_PORT || 8876;
       const out = [...b.querySelectorAll('*')].some((el) => el.getBoundingClientRect().right > card.right + 0.5);
       return { seg: !!b.querySelector('[role="radiogroup"]'), select: !!b.querySelector('select'), out }; }));
     await page.setViewport({ width: 900, height: 500 });
-    await page.goto('http://localhost:' + PORT + '/Plenix/docs/briefs/segmented-fold/stage.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/stages/segmented-fold.html', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#alone > *'); await new Promise((r) => setTimeout(r, 400));
     let s = await state();
     assert.deepEqual(s.map((x) => x.seg), [true, true], 'wide: segments'); assert.ok(!s[0].out && !s[1].out);

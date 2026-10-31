@@ -8,15 +8,15 @@
      the same as in Chat.jsx (Chat.Attachment: type, src, name, alt, size, href, onDownload; Chat.Voice: src, duration, peaks, label, rates, strings).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Text } from '../Text/Text.jsx';
 import { MediaViewer } from '../MediaViewer/MediaViewer.jsx';
 import { useStrings, useDigits } from '../../providers/LocaleProvider.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { formatBytes, formatNumber, formatDuration, formatLocale, numeralLocale } from '../../utils/format.js';
-import { localDigits } from '../../utils/digits.js';
+import { announce } from '../../utils/announce.tsx';
+import { formatBytes, formatNumber, formatDuration, formatLocale, numeralLocale } from '../../utils/format.ts';
+import { localDigits } from '../../utils/digits.ts';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';
 import FilePdfIcon from 'plenix-platform/icons/plenix/file-pdf';
 import FileJpgIcon from 'plenix-platform/icons/plenix/file-jpg';
@@ -28,7 +28,7 @@ import PlayIcon from 'plenix-platform/icons/material/play-arrow';
 import PauseIcon from 'plenix-platform/icons/material/pause';
 import DownloadIcon from 'plenix-platform/icons/material/download';
 import BrokenImageIcon from 'plenix-platform/icons/material/broken-image';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const FILE_ICONS = { pdf: FilePdfIcon, jpg: FileJpgIcon, jpeg: FileJpgIcon, png: FilePngIcon, svg: FileSvgIcon, psd: FilePsdIcon, ai: FileAiIcon };
 const fileIconOf = (name) => FILE_ICONS[String(name || '').split('.').pop().toLowerCase()] || DocumentIcon;

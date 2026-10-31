@@ -23,8 +23,8 @@
      The set and its geometry are in illustrations.js; other props pass through to the <svg>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { illustrationByName } from './illustrations.js';
 
 export function Illustration({ name, size = 'md', tone = 'default', label, className, ...rest }) {

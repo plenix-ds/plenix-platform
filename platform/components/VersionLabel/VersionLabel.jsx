@@ -23,8 +23,8 @@
      Other props pass through to the <span>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Badge } from '../Badge/Badge.jsx';
 import { Link } from '../Link/Link.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';

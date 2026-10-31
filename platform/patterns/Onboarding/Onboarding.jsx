@@ -18,7 +18,7 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Checklist } from '../../components/Checklist/Checklist.jsx';
 import { Tour } from '../Tour/Tour.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Onboarding({ title, children, welcome = true, tasks = [], completed = [], onChange, steps = [], onDismiss, onWelcomeDismiss, onTourStep, onTourFinish, strings, className }) {

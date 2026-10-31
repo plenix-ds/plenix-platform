@@ -40,7 +40,7 @@
        (issue 413)
    Behavior:
      The toolbar is one Tab stop (arrow keys move inside it). Its groups that do not fit the frame's width move, in
-       order from the end, into a More formatting menu at the end of the row (the Platform overflow: utils/overflow.js).
+       order from the end, into a More formatting menu at the end of the row (the Platform overflow: utils/overflow.ts).
        Its buttons are icon-only ghost buttons named by their format (aria-label), each with a tooltip of the name and
        its shortcut as hotkeyLabel writes it (Bold (Ctrl B); Bold (⌘ B) on a Mac) and aria-keyshortcuts. A format button
        shows whether the text at the caret has that format (aria-pressed). Text style, font, size and table are menus.
@@ -82,11 +82,11 @@
        only color, background-color, font-family, font-size and text-align; everything else is unwrapped or dropped.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
-import { useOverflow, splitAt } from '../../utils/overflow.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
+import { useOverflow, splitAt } from '../../utils/overflow.ts';
 import { Toolbar } from '../Toolbar/Toolbar.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Input } from '../Input/Input.jsx';
@@ -94,12 +94,12 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../Menu/Menu.jsx';
 import { ColorSwatch } from '../ColorSwatch/ColorSwatch.jsx';
 import { CATEGORY_COLORS } from '../ColorSwatch/categoryColors.js';
-import { hotkeyLabel, isMac } from '../../utils/hotkey.js';
+import { hotkeyLabel, isMac } from '../../utils/hotkey.ts';
 import { loadTiptap } from './tiptap.js';
-import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF } from '../../utils/richTextClean.js';
+import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF } from '../../utils/richTextClean.ts';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber } from '../../utils/format.ts';
 import AddColumnLeftIcon from 'plenix-platform/icons/plenix/add-column-left';
 import AddColumnRightIcon from 'plenix-platform/icons/plenix/add-column-right';
 import AddRowAboveIcon from 'plenix-platform/icons/plenix/add-row-above';

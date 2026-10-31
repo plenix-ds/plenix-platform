@@ -44,9 +44,9 @@
        option's aria-selected says it is checked.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
 import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useVirtualizer, VirtualGap, VirtualProbe } from '../../hooks/useVirtualizer.js';
@@ -56,7 +56,7 @@ import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const AUTO_VIRTUAL = 500;
 

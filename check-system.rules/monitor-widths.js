@@ -1,6 +1,6 @@
 // Plenix · check-system rule "monitor-widths" (owner, issue 463 option C, step 3): the width a person dragged a pane to is remembered per monitor.
 // What it rejects:
-//   helper   utils/monitorWidths.js without monitorKey, useMonitorWidth and the plenix.paneWidths store, or no longer limited by paneMax
+//   helper   utils/monitorWidths.ts without monitorKey, useMonitorWidth and the plenix.paneWidths store, or no longer limited by paneMax
 //   zoom     monitorKey reading screen.width alone (a browser reports it zoom-adjusted, so every Ctrl+plus would look like a new monitor), or the
 //            test not setting the zoom (issue 463)
 //   use      SidePanel or AppShell (the navigation pane's width) no longer asking useMonitorWidth, or writing the old single key again
@@ -14,8 +14,8 @@ const ROOT = path.join(__dirname, '..');
 const read = (f) => { try { return fs.readFileSync(path.join(ROOT, f), 'utf8'); } catch (e) { return ''; } };
 
 function check({ add }) {
-  const h = read('platform/utils/monitorWidths.js'), hf = path.join(ROOT, 'platform/utils/monitorWidths.js');
-  if (!/export const monitorKey/.test(h) || !/export function useMonitorWidth/.test(h)) add(NAME, hf, 0, 'monitorWidths.js must export monitorKey and useMonitorWidth');
+  const h = read('platform/utils/monitorWidths.ts'), hf = path.join(ROOT, 'platform/utils/monitorWidths.ts');
+  if (!/export const monitorKey/.test(h) || !/export function useMonitorWidth/.test(h)) add(NAME, hf, 0, 'monitorWidths.ts must export monitorKey and useMonitorWidth');
   const code = h.replace(/\/\*[^]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');   // code, not comments
   if (!/devicePixelRatio/.test(code) || /Math\.round\(s\.width\)/.test(code)) add(NAME, hf, 0, 'monitorKey must multiply the screen size by devicePixelRatio (screen.width alone is zoom-adjusted and changes with every Ctrl+plus)');
   if (!/devicePixelRatio/.test(read('tests/monitor-widths.test.js'))) add(NAME, path.join(ROOT, 'tests/monitor-widths.test.js'), 0, 'the test must set the zoom (devicePixelRatio and a scaled screen size) and check the width survives it');

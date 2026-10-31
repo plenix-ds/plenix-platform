@@ -16,7 +16,7 @@
      Separators are drawn by CSS and hidden from assistive technology.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Breadcrumbs({ items = [], label, className }) {

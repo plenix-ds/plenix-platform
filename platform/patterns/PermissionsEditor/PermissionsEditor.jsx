@@ -22,7 +22,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permissions';

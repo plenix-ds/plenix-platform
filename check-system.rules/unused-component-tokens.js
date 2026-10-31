@@ -25,7 +25,7 @@ const ALLOWED = {
 };
 const SKIP_DIRS = /^(node_modules|\.git|Archived|dist|vendor|release|\.claude|tests|docs|design-system|agent)$/;
 const SKIP_FILES = /(^|[\\/])(tokens[\\/](components|semantic|reference)\.css|tokens\.index\.json|app\.js|assets\.js|CHANGELOG\.md)$/;
-const SOURCE = /\.(css|js|jsx|mjs|cjs|html|json|md|swift|kt|dart)$/;
+const SOURCE = /\.(css|js|jsx|ts|tsx|mjs|cjs|html|json|md|swift|kt|dart)$/;
 
 const rel = (f) => path.relative(ROOT, f).split(path.sep).join('/');
 const walk = (d, out) => { if (!fs.existsSync(d)) return out; for (const e of fs.readdirSync(d, { withFileTypes: true })) {

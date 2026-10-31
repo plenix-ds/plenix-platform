@@ -43,8 +43,8 @@
      Pressing Enter in the header search opens it with the query kept.
 */
 import React from 'react';
-import { numeralLocale } from '../../utils/format.js';
-import { cx } from '../../utils/cx.js';
+import { numeralLocale } from '../../utils/format.ts';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { CommandBar, CommandBarButton } from '../CommandBar/CommandBar.jsx';
@@ -52,13 +52,13 @@ import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Chip } from '../../components/Tag/Tag.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
-import { useUid } from '../../utils/layer.js';
+import { useUid } from '../../utils/layer.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChecklistIcon from 'plenix-platform/icons/plenix/checklist';
 import SaveIcon from 'plenix-platform/icons/plenix/save';
 import SortIcon from 'plenix-platform/icons/plenix/sort';
 import ViewTableIcon from 'plenix-platform/icons/plenix/view-table';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const label = (f, v) => { const o = (f.options || []).find((x) => x.value === v); return o ? o.label : String(v); };
 

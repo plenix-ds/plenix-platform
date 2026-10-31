@@ -1,0 +1,2 @@
+### Fixed
+- Tests (#772): commandbar-find-fold-274 failed because its stage page had lost its 200px pane, not because of a CommandBar change. The page lived in docs/briefs and drew its widths from docs/briefs/review.css, which #694 moved to the archive. Without the width the bar never had to fold. The stage pages of commandbar-find-fold-274, segmented-fold-276 and header-labels-start-326 now live in tests/fixtures/stages/ with their widths in stage.css. A change to a stage page now starts its test, which docs/ never did.

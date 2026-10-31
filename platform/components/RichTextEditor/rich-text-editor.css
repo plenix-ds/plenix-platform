@@ -14,7 +14,7 @@
 .plx-rich-text-editor.is-disabled{background-color:var(--plx-comp-rich-text-editor-disabled-background);color:var(--plx-comp-rich-text-editor-disabled-text);}
 /* the toolbar: one row over the area, a divider under it */
 .plx-rich-text-editor__toolbar{border-block-end-color:var(--plx-comp-rich-text-editor-toolbar-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-rich-text-editor-border-width);padding-block-end:var(--plx-comp-rich-text-editor-toolbar-padding-block);padding-block-start:var(--plx-comp-rich-text-editor-toolbar-padding-block);padding-inline-end:var(--plx-comp-rich-text-editor-toolbar-padding-inline);padding-inline-start:var(--plx-comp-rich-text-editor-toolbar-padding-inline);}
-/* the toolbar's groups: one row that clips what does not fit (those groups move into the More formatting menu, utils/overflow.js) */
+/* the toolbar's groups: one row that clips what does not fit (those groups move into the More formatting menu, utils/overflow.ts) */
 .plx-rich-text-editor__groups{align-items:center;block-size:var(--plx-comp-rich-text-editor-groups-height);column-gap:var(--plx-comp-rich-text-editor-groups-gap);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;flex-wrap:wrap;min-inline-size:0;overflow-x:clip;overflow-y:clip;row-gap:var(--plx-comp-rich-text-editor-groups-gap);}
 .plx-rich-text-editor__slot{align-items:center;block-size:var(--plx-comp-rich-text-editor-groups-height);display:flex;}
 /* the field under the toolbar while a link, an image, a color or a custom font or size is added */

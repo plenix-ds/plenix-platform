@@ -1,5 +1,5 @@
 // Plenix · check-system rule "logical-properties" (library plan wave 2; the RTL / bidirectional UI page, platform/utils/
-// direction.js and DirectionProvider): a component, pattern or template stylesheet says start and end, never left and right,
+// direction.ts and DirectionProvider): a component, pattern or template stylesheet says start and end, never left and right,
 // so the layout mirrors on its own in a right-to-left page. A finding is a declaration that names a physical side:
 //   margin-left/-right, padding-left/-right, left, right, border-left-*/border-right-* and the corner radii
 //   (border-top-left-radius …) when the rule does not set the mirrored side to the same value, float/clear: left|right,

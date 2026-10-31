@@ -39,7 +39,7 @@
      A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
 */
 import React from 'react';
-import { isRtl } from '../utils/direction.js';
+import { isRtl } from '../utils/direction.ts';
 
 export const VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
 

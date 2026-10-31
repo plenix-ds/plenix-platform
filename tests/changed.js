@@ -134,7 +134,7 @@ function platform() {
     }
   }
   const users = {};   // unit -> units that import it
-  for (const f of walk(P, (n) => /\.jsx?$/.test(n)).filter((f) => /^platform\/(components|patterns|hooks|utils|providers)\//.test(rel(f)))) {
+  for (const f of walk(P, (n) => /\.[jt]sx?$/.test(n)).filter((f) => /^platform\/(components|patterns|hooks|utils|providers)\//.test(rel(f)))) {
     const from = unitOf(rel(f).replace(/^platform\//, '')); if (!from) continue;
     for (const m of read(f).matchAll(/(?:from|import)\s*'(\.{1,2}\/[^']+)'/g)) {
       const to = unitOf(path.posix.normalize(path.posix.join(rel(path.dirname(f)).replace(/^platform\//, ''), m[1])));

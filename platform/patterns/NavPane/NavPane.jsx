@@ -22,7 +22,7 @@
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css; its dragged width is remembered per monitor, utils/monitorWidths.js), resizable 140–320px with the splitter on its
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css; its dragged width is remembered per monitor, utils/monitorWidths.ts), resizable 140–320px with the splitter on its
        edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
        --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
@@ -48,13 +48,13 @@
 */
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { cx } from '../../utils/cx.js';
-import { useLayer } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useLayer } from '../../utils/layer.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail, BarContext } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
-import { gridWithin } from '../../utils/grid.js';
-import { paneMax } from '../../utils/paneLimit.js';
+import { gridWithin } from '../../utils/grid.ts';
+import { paneMax } from '../../utils/paneLimit.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import MenuLinesIcon from 'plenix-platform/icons/plenix/menu-lines';

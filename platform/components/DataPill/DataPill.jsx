@@ -41,8 +41,8 @@
      DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { devWarn } from '../../utils/devWarn.js';
+import { cx } from '../../utils/cx.ts';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Isolate } from '../Isolate/Isolate.jsx';

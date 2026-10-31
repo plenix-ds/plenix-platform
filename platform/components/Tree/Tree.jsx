@@ -29,9 +29,9 @@
      is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
 import React from 'react';
-import { isRtl } from '../../utils/direction.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { isRtl } from '../../utils/direction.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Icon, asIcon as iconElement, isIconModule, iconKey } from '../Icon/Icon.jsx';
 import { useFocusable } from '../../hooks/useFocusable.js';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';

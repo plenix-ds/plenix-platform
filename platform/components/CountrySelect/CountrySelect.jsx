@@ -41,8 +41,8 @@
      Other props pass through to Combobox's <input>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatLocale } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatLocale } from '../../utils/format.ts';
 import { Combobox } from '../Combobox/Combobox.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 

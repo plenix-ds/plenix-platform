@@ -24,15 +24,15 @@ function files() {
   const out = [];
   const walk = (dir) => { if (!fs.existsSync(dir)) return; for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) walk(p); else if (e.name.endsWith('.jsx')) out.push(p);
+    if (e.isDirectory()) walk(p); else if (/\.[jt]sx$/.test(e.name)) out.push(p);
   } };
   for (const a of APPS) walk(path.join(ROOT, a));
   return out;
 }
 let Babel = null;
-const parse = (src) => {
+const parse = (src, file = '') => {
   Babel = Babel || require(path.join(ROOT, 'node_modules/@babel/standalone'));
-  return Babel.transform(src, { ast: true, code: false, sourceType: 'module', plugins: ['syntax-jsx'] }).ast;   // JSX parsed, not transformed
+  return Babel.transform(src, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: /\.tsx$/.test(file) ? ['jsx', 'typescript'] : ['jsx'] } }).ast;   // JSX (and TypeScript) parsed, not transformed
 };
 const nameOf = (n) => (n && n.type === 'JSXIdentifier' ? n.name : n && n.type === 'JSXMemberExpression' ? nameOf(n.object) + '.' + n.property.name : '');
 
@@ -40,7 +40,7 @@ const nameOf = (n) => (n && n.type === 'JSXIdentifier' ? n.name : n && n.type ==
 function scan(file, S) {
   const out = [];
   let ast;
-  try { ast = parse(fs.readFileSync(file, 'utf8')); } catch (e) { return [{ line: 0, text: 'cannot be parsed: ' + e.message.split('\n')[0] }]; }
+  try { ast = parse(fs.readFileSync(file, 'utf8'), file); } catch (e) { return [{ line: 0, text: 'cannot be parsed: ' + e.message.split('\n')[0] }]; }
   const SKIP = new Set(['loc', 'start', 'end', 'leadingComments', 'trailingComments', 'innerComments', 'extra']);
   const each = (node, fn) => { for (const k of Object.keys(node)) if (!SKIP.has(k)) fn(node[k]); };
   // the file's own components (const Row = (…) => …, function Row(…) {…}): name -> body

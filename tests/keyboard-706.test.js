@@ -117,9 +117,13 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     for (const [dir, into, out] of [['ltr', 'ArrowRight', 'ArrowLeft'], ['rtl', 'ArrowLeft', 'ArrowRight']]) {
       await render(MILLER, dir); const d = 'miller ' + dir + ': ';
       assert.equal(await count('[role=listbox][tabindex="0"]'), 1, d + 'one column, one Tab stop');
-      await focus('[role=listbox]');
-      await press('ArrowDown'); assert.equal(await activeText(), 'Brand', d + 'Arrow Down chooses the first item');
+      // focusing a column with nothing chosen chooses its first item (MillerColumns' onFocus; issue 777: the test had pressed
+      // Arrow Down for it, which then moved on to Events)
+      await focus('[role=listbox]'); await wait(150);
+      assert.equal(await activeText(), 'Brand', d + 'focusing the column chooses its first item');
       assert.equal(await count('[role=listbox]'), 2, d + 'choosing a parent lists its children in the next column');
+      await press('ArrowDown'); assert.equal(await activeText(), 'Events', d + 'Arrow Down chooses the next item');
+      await press('ArrowUp'); assert.equal(await activeText(), 'Brand', d + 'Arrow Up chooses the one before');
       await press('End'); assert.equal(await activeText(), 'Archive', d + 'End chooses the last item');
       await press('Home'); assert.equal(await activeText(), 'Brand', d + 'Home chooses the first item');
       await press('e'); assert.equal(await activeText(), 'Events', d + 'typing a letter moves to the next item that starts with it');

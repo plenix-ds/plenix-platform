@@ -9,8 +9,8 @@
    Notes: The caller owns the transport, decoding and stop request; partial output is retained when stopped.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { LiveRegion } from '../../utils/announce.jsx';
+import { cx } from '../../utils/cx.ts';
+import { LiveRegion } from '../../utils/announce.tsx';
 import { Stack } from '../Stack/Stack.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Badge } from '../Badge/Badge.jsx';

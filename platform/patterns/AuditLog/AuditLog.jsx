@@ -9,14 +9,14 @@
    Notes: Supply authorized immutable audit events; retention, redaction and pagination belong to the caller.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Time } from '../../components/Time/Time.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const display = (v) => v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);

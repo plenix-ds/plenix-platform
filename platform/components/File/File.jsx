@@ -38,12 +38,12 @@
      Other props pass through to the outer <span>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatBytes, formatDate, formatNumber } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { development } from '../../utils/devWarn.js';
+import { development } from '../../utils/devWarn.ts';
 import CodeIcon from 'plenix-platform/icons/plenix/code';
 import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';
@@ -58,7 +58,7 @@ import FolderIcon from 'plenix-platform/icons/plenix/folder';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import ImageA2Icon from 'plenix-platform/icons/plenix/image-a-2';
 import TableIcon from 'plenix-platform/icons/plenix/table';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const BY_EXT = {
   pdf: 'file-pdf', png: 'file-png', jpg: 'file-jpg', jpeg: 'file-jpg', svg: 'file-svg', psd: 'file-psd', ai: 'file-ai',

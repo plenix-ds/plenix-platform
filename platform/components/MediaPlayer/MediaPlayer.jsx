@@ -29,8 +29,8 @@ import { Slider } from '../Slider/Slider.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Link } from '../Link/Link.jsx';
-import { useUid } from '../../utils/layer.js';
-import { cx } from '../../utils/cx.js';
+import { useUid } from '../../utils/layer.ts';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const clock = (seconds) => { const n = Math.max(0, Math.floor(Number(seconds) || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };

@@ -19,8 +19,8 @@ const FOUNDATIONS = '';   // the owner name of the foundations
 const TOKENS = 'platform/system/tokens/components.css', STEPS = 'platform/system/steps.css';
 // parts whose source is not one folder: the chart files in platform/charts (one part per stylesheet), and three shared ones
 const SOURCES = { 'chart-parts': ['platform/charts/parts'], 'chart-a11y': ['platform/charts/a11y.js'], 'chart-interaction': ['platform/charts/interaction.js', 'platform/charts/useChartInteraction.js'],
-  floating: ['platform/utils/floating.js'], virtual: ['platform/hooks/useVirtualizer.js'], dnd: ['platform/utils/dnd.js'],
-  'chart-base': ['platform/charts/ChartFrame.jsx', 'platform/utils/dataviz.js'] };
+  floating: ['platform/utils/floating.ts'], virtual: ['platform/hooks/useVirtualizer.js'], dnd: ['platform/utils/dnd.ts'],
+  'chart-base': ['platform/charts/ChartFrame.jsx', 'platform/utils/dataviz.ts'] };
 // foundation files that only some parts use: their own part, needed by the parts whose source imports the module that
 // writes their attributes (SOURCES above). The source files stay where they are, so platform.css and the CDN do not change
 const SYSTEM_PARTS = { 'platform/system/floating.css': 'floating', 'platform/system/virtual.css': 'virtual', 'platform/system/dnd.css': 'dnd',
@@ -46,13 +46,13 @@ function sourcesOf(part, cssFiles) {
   const out = new Set();
   const add = (abs) => {
     if (!fs.existsSync(abs)) return;
-    if (fs.statSync(abs).isDirectory()) fs.readdirSync(abs).filter((f) => /\.jsx?$/.test(f)).forEach((f) => out.add(path.join(abs, f)));
+    if (fs.statSync(abs).isDirectory()) fs.readdirSync(abs).filter((f) => /\.[jt]sx?$/.test(f) && !/\.d\.ts$/.test(f)).forEach((f) => out.add(path.join(abs, f)));
     else out.add(abs);
   };
   if (SOURCES[part]) SOURCES[part].forEach((s) => add(path.join(ROOT, s)));
   for (const rel of cssFiles) {
     const dir = path.join(ROOT, path.dirname(rel));
-    if (/^platform\/charts\/[^/]+\.css$/.test(rel)) fs.readdirSync(dir).filter((f) => /\.jsx?$/.test(f) && kebab(f.replace(/\.jsx?$/, '')) === part).forEach((f) => add(path.join(dir, f)));
+    if (/^platform\/charts\/[^/]+\.css$/.test(rel)) fs.readdirSync(dir).filter((f) => /\.[jt]sx?$/.test(f) && kebab(f.replace(/\.[jt]sx?$/, '')) === part).forEach((f) => add(path.join(dir, f)));
     else if (!/^platform\/(charts|system)\//.test(rel)) add(dir);
   }
   return [...out];
@@ -146,7 +146,7 @@ function split(css) {
     while (queue.length) {
       const s = queue.shift();
       for (const imp of importsOf(s)) {
-        const abs = [imp, imp + '.jsx', imp + '.js'].find((x) => fs.existsSync(x) && fs.statSync(x).isFile());
+        const abs = [imp, imp + '.jsx', imp + '.js', imp + '.tsx', imp + '.ts'].find((x) => fs.existsSync(x) && fs.statSync(x).isFile());
         if (!abs || seen.has(abs)) continue;
         seen.add(abs);
         const owner = partOfSource.get(abs);

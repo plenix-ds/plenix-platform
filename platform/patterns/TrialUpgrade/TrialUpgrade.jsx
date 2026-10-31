@@ -21,7 +21,7 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 

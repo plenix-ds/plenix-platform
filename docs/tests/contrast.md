@@ -5,7 +5,7 @@ This test makes sure text and other important marks always stand out enough from
 - File: `tests/contrast.test.js`
 
 ## What it checks
-- The contrast helper (`platform/utils/contrast.js`) gives right answers on known colors: black on white is 21:1, a color on itself is 1:1, #767676 on white passes for text and #777777 fails, a non-color gives no number, and an unknown rule is refused.
+- The contrast helper (`platform/utils/contrast.ts`) gives right answers on known colors: black on white is 21:1, a color on itself is 1:1, #767676 on white passes for text and #777777 fails, a non-color gives no number, and an unknown rule is refused.
 - Every color pair in the helper's list of role pairs (CONTRAST_PAIRS) meets its rule in every theme of `platform/standards/themes.json`, in light and dark mode.
 - The rules: 4.5:1 for normal text, 3:1 for large text and for non-text marks such as borders and icons.
 - Every pair must resolve to real colors.
@@ -34,4 +34,4 @@ This test makes sure text and other important marks always stand out enough from
 
 ## What it needs
 - Node only. No browser, no server, no test site.
-- The token files, `platform/standards/themes.json` and `platform/utils/contrast.js`.
+- The token files, `platform/standards/themes.json` and `platform/utils/contrast.ts`.

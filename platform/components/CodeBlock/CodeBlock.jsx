@@ -26,9 +26,9 @@
      The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
-import { LiveRegion } from '../../utils/announce.jsx';
+import { LiveRegion } from '../../utils/announce.tsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 

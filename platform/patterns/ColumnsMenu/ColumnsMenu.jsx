@@ -30,7 +30,7 @@
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
@@ -40,9 +40,9 @@ import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { LiveRegion } from '../../utils/announce.jsx';
+import { LiveRegion } from '../../utils/announce.tsx';
 import { PanelTrigger, toggle } from '../CommandBar/panel-parts.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';

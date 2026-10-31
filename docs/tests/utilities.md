@@ -37,7 +37,7 @@ Long lists scroll smoothly, keyboard shortcuts work, and copying a value tells t
 
 ## When it runs
 - AUTOMATIC group in `tests/run.js`.
-- In changed mode it runs only when one of these changes: the virtualization, hotkey, live-region or clipboard records of the design system; the code for virtualization (`hooks/useVirtualizer.js`), hotkeys (`utils/hotkey.js`), announcements (`utils/announce.jsx`) or the clipboard (`utils/clipboard.js`); RichText or RichTextEditor; a global file; or this test's own file.
+- In changed mode it runs only when one of these changes: the virtualization, hotkey, live-region or clipboard records of the design system; the code for virtualization (`hooks/useVirtualizer.js`), hotkeys (`utils/hotkey.ts`), announcements (`utils/announce.tsx`) or the clipboard (`utils/clipboard.ts`); RichText or RichTextEditor; a global file; or this test's own file.
 - CI (`ci.yml`): the "behavior" browser job, on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`full.yml`): the "fixtures" browser job.
 - By hand: `node tests/utilities.test.js`, or `npm run test:utilities`.

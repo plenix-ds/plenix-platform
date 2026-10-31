@@ -1,5 +1,5 @@
 /* Plenix · Floating positioning (platform/system/floating.css). Places a floating element (a menu, popover, tooltip or
-   list) beside its anchor; utils/floating.js (useFloating) writes the data attributes this file reads, so no position is
+   list) beside its anchor; utils/floating.ts (useFloating) writes the data attributes this file reads, so no position is
    ever written as a style.
      data-plx-floating-anchor="N" / data-plx-floating="N"   the pair, by a slot (1-16) held while it is open
      data-plx-floating-placement   12 placements: top | bottom | start | end (the side; start and end follow the

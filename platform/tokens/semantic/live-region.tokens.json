@@ -1,5 +1,5 @@
 {
-  "$description": "Live regions (utils/announce.jsx): the timing of announcements.",
+  "$description": "Live regions (utils/announce.tsx): the timing of announcements.",
   "plx-sys": {
     "live-region-delay": {
       "$value": "50ms",

@@ -23,7 +23,7 @@
      Other props pass through to the <figure>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function Figure({ children, caption, credit, captionPosition = 'below', className, ...rest }) {
   const overlay = captionPosition === 'overlay' && caption;

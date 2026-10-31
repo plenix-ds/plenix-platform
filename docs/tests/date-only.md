@@ -20,7 +20,7 @@ This test makes sure a date with no time, such as a due date of October 18, show
 - Added in commit 65797dab "#342: a date-only value is that calendar day wherever the reader is, everywhere (the owner's option A)".
 
 ## How it checks
-- First in Node: loads `platform/utils/format.js`, `utils/fields.js` and `charts/scales.js` (converted with Babel) and switches the time zone between checks.
+- First in Node: loads `platform/utils/format.ts`, `utils/fields.ts` and `charts/scales.js` (converted with Babel) and switches the time zone between checks.
 - Then in headless Chrome at 1100 by 900 pixels: emulates each time zone, opens `tests/fixtures/platform-host.html`, draws the charts, Time and DatePicker, and reads their text.
 
 ## What a failure means
@@ -28,7 +28,7 @@ This test makes sure a date with no time, such as a due date of October 18, show
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`. Before issue #756 it was started by hand only.
-- In changed mode (`npm test` and CI), Layout starts it when DatePicker, Time or `utils/format.js` changes, or a part built on one of them changes.
+- In changed mode (`npm test` and CI), Layout starts it when DatePicker, Time or `utils/format.ts` changes, or a part built on one of them changes.
 - Layout also starts it when a global file changes (the small fixed slice) or when `tests/layout.test.js` itself changes. A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches that slice too.
 - Layout also starts it when this test's own file, or a fixture it loads, changes. By hand: `node tests/date-only.test.js`.
 - A full run (`npm run test:full`, and the full suite `.github/workflows/full.yml`) runs it every time.

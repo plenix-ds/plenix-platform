@@ -38,19 +38,19 @@
        whole path is read as the field’s description.
    Notes:
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
-     The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
+     The list is a menu surface (the menu's corner, --plx-comp-cascader-popup-radius, and the menu elevation); its columns take the narrowest width step (160px).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
+import { cx } from '../../utils/cx.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
+import { announce } from '../../utils/announce.tsx';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 

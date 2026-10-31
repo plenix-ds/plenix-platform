@@ -41,10 +41,10 @@
      Not for choosing a value in a form (Combobox), nor for searching records (SearchField and its results).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { hotkeyLabel } from '../../utils/hotkey.js';
-import { LiveRegion } from '../../utils/announce.jsx';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { hotkeyLabel } from '../../utils/hotkey.ts';
+import { LiveRegion } from '../../utils/announce.tsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -52,7 +52,7 @@ import { SearchField } from '../SearchField/SearchField.jsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { dataPhrase } from '../../utils/dataText.jsx';
+import { dataPhrase } from '../../utils/dataText.tsx';
 
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,
 // 1 the keywords, description or group do, 0 no match

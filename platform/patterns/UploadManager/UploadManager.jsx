@@ -66,11 +66,11 @@
      for uploads that outlast the moment. Say the limits before people choose.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { formatBytes, formatNumber, formatPercent } from '../../utils/format.js';
-import { announce } from '../../utils/announce.jsx';
-import { useUid } from '../../utils/layer.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { formatBytes, formatNumber, formatPercent } from '../../utils/format.ts';
+import { announce } from '../../utils/announce.tsx';
+import { useUid } from '../../utils/layer.ts';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
@@ -90,8 +90,8 @@ import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import TextCardIcon from 'plenix-platform/icons/plenix/text-card';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
 import UploadN2Icon from 'plenix-platform/icons/plenix/upload-2';
-import { dataPhrase, dataNumber } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase, dataNumber } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 const clamp = (n) => Math.max(0, Math.min(100, Number(n) || 0));
 const MOVING = { queued: true, uploading: true };

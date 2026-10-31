@@ -26,7 +26,7 @@
        options.tone, options.duration: as toast.show
    Behavior:
      A danger toast stays until dismissed (unless a duration is given).
-     Each toast is announced once when it appears, through announce() (utils/announce.jsx): its text and its action's
+     Each toast is announced once when it appears, through announce() (utils/announce.tsx): its text and its action's
        label ("Asset moved to Crosses. Undo"), at once (assertive) for a danger toast and politely for the others. The
        messages are queued, so toasts that appear together are all read, in order. The toast region itself is not a
        live region, so its buttons are never read as part of a message.
@@ -39,11 +39,11 @@
 */
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
-import { tokenMs } from '../../utils/tokenTime.js';
-import { announce } from '../../utils/announce.jsx';
+import { tokenMs } from '../../utils/tokenTime.ts';
+import { announce } from '../../utils/announce.tsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';

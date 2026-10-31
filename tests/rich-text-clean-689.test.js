@@ -1,5 +1,5 @@
 /* Plenix tests · the rich-text sanitizer against hostile input (issue 689, audit finding #684).
-   Summary: cleanRichText (platform/utils/richTextClean.js, published as Plenix.cleanRichText) is the allow-list that RichText and RichTextEditor pass every piece of HTML from people through. It had no test
+   Summary: cleanRichText (platform/utils/richTextClean.ts, published as Plenix.cleanRichText) is the allow-list that RichText and RichTextEditor pass every piece of HTML from people through. It had no test
      with hostile input. This one feeds it an OWASP-style list and asserts two things: nothing executable survives, and the allowed formatting still does.
    The probe is proved able to see a failure first: a sanitizer that returned its input unchanged fails the structural check on the first payload (a script element), the execution check (the counter
      goes up when the output is put on the page) and the scheme checks.
@@ -273,7 +273,10 @@ const KEPT = [
         const out = clean(html), r = { name, out, problems: [], stable: true, ran: 0 };
         const holder = document.createElement('div'); holder.innerHTML = out; r.problems = problems(holder);
         if (/<\s*(script|style|iframe|object|embed|svg|math|template|noscript|meta|link|base|form|frame)/i.test(out)) r.problems.push('the output text holds a dangerous tag');
-        if (/\son[a-z]+\s*=/i.test(out)) r.problems.push('the output text holds an on* attribute');
+        // in the tags only: hostile markup the cleaner keeps as text arrives escaped ("&lt;img … onerror=…&gt;"), which is inert
+        // words, not an attribute (issue 777: the check read that text as an attribute; the DOM check above already sees none)
+        const tags = (out.match(/<[^>]*>/g) || []).join('');
+        if (/\son[a-z]+\s*=/i.test(tags)) r.problems.push('the output text holds an on* attribute');
         r.stable = clean(out) === out;
         // execution: put it on the page in two parsing contexts
         const before = window.__pwn;

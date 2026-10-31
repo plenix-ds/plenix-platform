@@ -9,7 +9,7 @@
    Props:
      actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, priority, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
    actions[].priority: "high" | "normal" | "low" (default "normal"): low folds into More first, then normal, then high; within a priority the last
-     command first, the danger ones last of theirs (utils/foldOrder.js; platform/standards/fit-and-overflow.md); the primary command never folds
+     command first, the danger ones last of theirs (utils/foldOrder.ts; platform/standards/fit-and-overflow.md); the primary command never folds
      actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
        onSelect(next) runs with the new state; folded into More it is a checked menu item
      actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
@@ -31,14 +31,14 @@
      The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
      and keeps its label. */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../../components/Menu/Menu.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { Spinner } from '../../components/Loading/Loading.jsx';
-import { focusables } from '../../utils/layer.js';
-import { foldOrder, menuOrder } from '../../utils/foldOrder.js';
+import { focusables } from '../../utils/layer.ts';
+import { foldOrder, menuOrder } from '../../utils/foldOrder.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 
@@ -114,7 +114,7 @@ const itemsOf = (a, off) => {
   return list.map((it) => <MenuItem key={it.id || it.label} icon={it.icon} danger={it.danger} disabled={off(it)} onSelect={it.onSelect}>{it.label}</MenuItem>);
 };
 
-// the commands that fold, in their folding order (utils/foldOrder.js): low priority first, the last command first within a priority, the danger ones last of theirs
+// the commands that fold, in their folding order (utils/foldOrder.ts): low priority first, the last command first within a priority, the danger ones last of theirs
 export { foldOrder };
 
 export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a) => !!a.disabled, why = (a) => a.why, moreLabel,

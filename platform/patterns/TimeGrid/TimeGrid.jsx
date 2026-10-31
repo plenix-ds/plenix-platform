@@ -22,7 +22,7 @@
      first hour), and the row height is --plx-comp-time-grid-hour (a size token): nothing is positioned by a style.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { DateBadge } from '../../components/DateBadge/DateBadge.jsx';
 import { EventChip } from '../../components/EventChip/EventChip.jsx';
 

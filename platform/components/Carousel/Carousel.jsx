@@ -32,15 +32,15 @@
        is a paged scroll view with the system page control; on Android, Material's carousel.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { isRtl } from '../../utils/direction.js';
-import { tokenMs } from '../../utils/tokenTime.js';
+import { cx } from '../../utils/cx.ts';
+import { isRtl } from '../../utils/direction.ts';
+import { tokenMs } from '../../utils/tokenTime.ts';
 import { useGesture } from '../../hooks/useGesture.js';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));

@@ -51,9 +51,9 @@
      One row per service; for many accounts on one service, a row per account with the account in the title.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatDate, dateTimeAttr } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatDate, dateTimeAttr } from '../../utils/format.ts';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
@@ -61,7 +61,7 @@ import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import LinkIcon from 'plenix-platform/icons/plenix/link';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const STATUS = { connected: ['success', 'check'], disconnected: ['neutral', 'link'], error: ['negative', 'alert'] };
 // a sentence with a node in place of {key}: the words around it stay in the UI font

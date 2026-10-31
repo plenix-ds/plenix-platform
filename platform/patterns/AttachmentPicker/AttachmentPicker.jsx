@@ -7,12 +7,12 @@
    Notes: The caller owns upload and persistence. Limits apply to device files, not an authorization policy.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';

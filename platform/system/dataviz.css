@@ -1,5 +1,5 @@
 /* Plenix · Data visualization colors (platform/system/dataviz.css): data-plx-dataviz="<scale>-<step>" on any element makes that
-   step of the chart scales (--plx-sys-dataviz-*, utils/dataviz.js) the element’s data color, --plx-comp-data-color, as
+   step of the chart scales (--plx-sys-dataviz-*, utils/dataviz.ts) the element’s data color, --plx-comp-data-color, as
    data-plx-color does for a hue (system/steps.css). A chart part fills or strokes itself with var(--plx-comp-data-color). */
 [data-plx-dataviz="categorical-1"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-1);}
 [data-plx-dataviz="categorical-2"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-2);}

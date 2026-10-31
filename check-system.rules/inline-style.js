@@ -11,7 +11,7 @@
 //              el.style.x = …, el.style[x] = …, el.style.setProperty(name, …), el.setAttribute('style', …), el.style.cssText = …,
 //              a JSX style={{…}} object, a style: {…} object in h() / createElement props
 //   off-grid  a length (width, height, inset, margin, padding, gap, transform, a custom property…) written from an
-//            expression that is neither a token nor passed through the grid helper (utils/grid.js: gridPx, snapToGrid)
+//            expression that is neither a token nor passed through the grid helper (utils/grid.ts: gridPx, snapToGrid)
 //            or the size steps (utils/sizeSteps.js: snapSize, stepSize): the output "has to conform to fit into the grid
 //            system!!! important" (owner, 2026-10-13)
 // What it accepts (a JavaScript adjustment, React's style prop included; owner, 2026-10-13):
@@ -108,7 +108,7 @@ function literal(expr, prop, spec) {
   // a length: a token, the grid helper or the size steps (a keyword, '', 0 or a percentage needs neither)
   if (prop && prop !== 'any' && LENGTH_PROP.test(prop) && !ON_GRID.test(e) && !/^(['"`])\s*(-?\d*\.?\d+%|0(px)?|[a-z-]*)\s*\1$/i.test(e) && !/^0$/.test(e)) {
     const lit = /^(['"`])([^'"`]*)\1$/.exec(e);
-    if (!lit || /\d|\$\{/.test(lit[2])) return 'a length off the grid helper (' + e.slice(0, 40) + '): use gridPx / snapToGrid (utils/grid.js) or a token';
+    if (!lit || /\d|\$\{/.test(lit[2])) return 'a length off the grid helper (' + e.slice(0, 40) + '): use gridPx / snapToGrid (utils/grid.ts) or a token';
   }
   for (let s of strings(e)) {
     s = s.replace(spec ? /var\(\s*--(plx|ds)-[\w-]+\s*\)/g : /var\(\s*--plx-[\w-]+\s*\)/g, ' ');
@@ -161,7 +161,7 @@ function scan(text, opts) {
 function check({ files, add }) {
   for (const f of files) {
     const file = f.file || f;
-    if (!/\.(jsx|js|html)$/.test(file) || SKIP_FILE.test(file)) continue;
+    if (!/\.(jsx|js|tsx|ts|html)$/.test(file) || SKIP_FILE.test(file)) continue;
     const text = fs.readFileSync(file, 'utf8');
     if (!/style/i.test(text)) continue;
     scan(text, { html: /\.html$/.test(file), spec: SPEC_PAGE.test(file) }).forEach((x) => add(NAME, file, x.line, x.text));

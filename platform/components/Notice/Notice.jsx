@@ -24,8 +24,8 @@
      Without a title, actions or onDismiss the markup is the plain inline message (the icon and the text).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

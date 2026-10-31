@@ -7,16 +7,16 @@
    Notes: Links retain browser download behavior. File preparation belongs to the caller.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { DownloadButton } from '../../components/DownloadButton/DownloadButton.jsx';
 import { Menu,MenuItem } from '../../components/Menu/Menu.jsx';
-import { formatBytes } from '../../utils/format.js';
+import { formatBytes } from '../../utils/format.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
 export function RenditionList({items=[],variant='table',strings,className}){

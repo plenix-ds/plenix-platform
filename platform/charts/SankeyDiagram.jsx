@@ -28,8 +28,8 @@
        many thin bands do not read. For a linear drop-off use a funnel.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
