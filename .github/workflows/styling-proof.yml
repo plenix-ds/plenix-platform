@@ -73,7 +73,7 @@ jobs:
           (cd head && git submodule update --init --depth 1)
           (cd base && git submodule update --init --depth 1)
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm, cache-dependency-path: head/package-lock.json }
 
       - name: Install and build both
