@@ -2,6 +2,10 @@
 
 These files are copied into the project so both Plenix applications load React without network access and the dashboard still opens from `file://`. They are runtime files, not a package installation: nothing here is managed by npm.
 
+- `package.json` records the version of each library copied here. It is never installed. CI runs `npm outdated --prefix platform/vendor --long` as information only: "Wanted" is the copied version, "Latest" the newest release (issue 724).
+- When you update a library, change its version in `package.json` too.
+- The licenses of everything copied or bundled are gathered in `THIRD-PARTY-NOTICES.md` at the repository root.
+
 `tiptap/` holds the engine every Plenix rich-text editor runs on (Tiptap 3.31.3 with ProseMirror, MIT, added 2026-10-14):
 one bundled file, `tiptap.min.js` (481 KB, 153 KB gzipped; `window.PlenixTiptap`), built with esbuild from the npm packages
 @tiptap/core, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-list, @tiptap/extension-mention, @tiptap/extension-table,
