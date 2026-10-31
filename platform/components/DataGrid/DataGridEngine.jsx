@@ -26,21 +26,11 @@ import { flushSync } from 'react-dom';
 import { Scrollbars } from './scrollbars.jsx';
 import { useSortable } from '../../utils/dnd.js';
 import { DragHandle } from '../DragHandle/DragHandle.jsx';
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  getExpandedRowModel,
-  getFacetedUniqueValues
-} from '@tanstack/react-table';
-import { isRtl } from '../../utils/direction.js';
+
 import { formatNumber } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
-import { SIZE_STEPS } from '../../utils/sizeSteps.js';
-import { shareOf } from '../../utils/paneLimit.js';
+
 import { tokenPixels } from './environment.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -54,7 +44,7 @@ import { Pagination } from '../Pagination/Pagination.jsx';
 import { EmptyState } from '../EmptyState/EmptyState.jsx';
 import { opening, writeView, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
-import { CellValue, byteFilter, textFilter, listFilter, valueText } from './cells.jsx';
+import { CellValue, valueText } from './cells.jsx';
 import { recordsOf } from './records.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
@@ -73,7 +63,6 @@ import {
   EMPTY_ROWS,
   GRID,
   cellDirection,
-  compare,
   interactive,
   kinds,
   lengthName,
@@ -92,6 +81,8 @@ import { sortActions } from './engine/sortActions.js';
 import { useGrouping } from './engine/useGrouping.js';
 import { groupActions } from './engine/groupActions.js';
 import { useRowModel } from './engine/useRowModel.js';
+import { useRemoteRows } from './engine/useRemoteRows.js';
+import { useTableModel } from './engine/useTableModel.js';
 import { headerKeys, resizeKeys, makeFocusCell, groupKeys, rowKeys, cellKeys, tableKeys } from './engine/keys.js';
 import {
   CellEditor,
@@ -199,11 +190,7 @@ function NextEngine(props) {
   const [filters, setFilters] = React.useState([]),
     [page, setPage] = React.useState(0),
     [pageSize, setPageSize] = React.useState(props.pageSize || 50);
-  const fetching = React.useRef(false);
-  const [remoteBusy, setRemoteBusy] = React.useState(false);
-  const [remote, setRemote] = React.useState(null),
-    [remoteError, setRemoteError] = React.useState(null),
-    [retry, setRetry] = React.useState(0);
+
   // a sort, filter, search or page size change starts again from page 1 in the same render as the change (issue 614), so
   // no request for the old page number with the new search or filter goes out first
   const resetBy = [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize],
@@ -229,10 +216,15 @@ function NextEngine(props) {
 
   // rows from a server: a page at a time ("pages"), appended by Load more ("load-more"), or appended as the person scrolls
   // near the end ("fill", issue 522: one list, no page controls)
-  const remoteMode =
-      typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more' || mode === 'fill'),
-    scrollFill = remoteMode && mode === 'fill',
-    incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
+  const { fetching, remoteBusy, remote, remoteError, setRetry, remoteMode, scrollFill } = useRemoteRows({
+    props,
+    mode,
+    page,
+    pageSize,
+    sorting,
+    filters
+  });
+  const incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
   const { setEdited, editing, setEditing, mutations, pendingEdit, source } = useEditedRows(incoming);
   const canonical = React.useMemo(() => recordsOf(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
@@ -337,113 +329,44 @@ function NextEngine(props) {
   });
 
   const { changeSort } = sortActions({ sorting, setSortOwner, sortSignal, setSorting, setPage, props, emit });
-  const leafDefs = React.useMemo(
-    () =>
-      columns.map((c) => ({
-        id: c.field,
-        accessorFn: (r) => valueAt(r, c.field),
-        header: c.title || c.field,
-        enableSorting: c.sortable !== false,
-        filterFn: c.type === 'bytes' ? byteFilter : c.filter === 'list' ? listFilter : textFilter,
-        sortingFn:
-          typeof c.sorter === 'function'
-            ? (a, b, id) =>
-                c.sorter(
-                  a.getValue(id),
-                  b.getValue(id),
-                  a.original,
-                  b.original,
-                  id,
-                  sortingRef.current.find((s) => s.id === id)?.desc ? 'desc' : 'asc'
-                )
-            : c.sorter === 'number' || c.type === 'bytes'
-              ? 'basic'
-              : compare,
-        size: kinds(c).includes('icon')
-          ? metrics.lead
-          : Math.max(
-              metrics.min,
-              floors[c.field] || 0,
-              autoSizing[c.field] || tokenPixels(c.width, frame.current) || metrics.min
-            ),
-        minSize: kinds(c).includes('icon')
-          ? metrics.lead
-          : Math.max(floors[c.field] || 0, tokenPixels(c.minWidth, frame.current) || metrics.min),
-        maxSize: kinds(c).includes('icon')
-          ? metrics.lead
-          : Math.min(
-              c.maxWidth ? tokenPixels(c.maxWidth, frame.current) : SIZE_STEPS[SIZE_STEPS.length - 1],
-              Math.max(
-                Math.max(floors[c.field] || 0, tokenPixels(c.minWidth, frame.current) || metrics.min),
-                shareOf(metrics.room, frame.current)
-              )
-            ),
-        meta: c
-      })),
-    [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]
-  );
 
-  const table = useReactTable({
-    data: source,
-    columns: leafDefs,
-    getRowId: (r) => recordKey(r[index]),
-    getSubRows: childField ? (r) => r[childField] : undefined,
-    onExpandedChange: setExpanded,
-    filterFromLeafRows: true,
-    state: {
-      expanded: printing ? true : expanded,
-      sorting,
-      columnOrder,
-      columnVisibility,
-      columnSizing: sizing,
-      columnFilters: filters,
-      globalFilter: activeFilter,
-      pagination: { pageIndex: page, pageSize },
-      rowSelection: selection,
-      columnPinning
-    },
-    onSortingChange: changeSort,
-    enableMultiRowSelection: options.selectableRows !== 1,
-    enableSubRowSelection: false,
-    onRowSelectionChange: (update) =>
-      notifySelection(typeof update === 'function' ? update(live.current.selection || selection) : update),
-    onColumnVisibilityChange: (update) => {
-      changeVisibility(typeof update === 'function' ? update(columnVisibility) : update);
-    },
-    onColumnOrderChange: (update) => {
-      changeOrder(typeof update === 'function' ? update(columnOrder) : update);
-    },
-    onColumnSizingChange: (update) => {
-      const before = live.current.sizing || sizing,
-        next = typeof update === 'function' ? update(before) : update;
-      Object.keys(next).forEach((id) => {
-        if (next[id] !== before[id]) resize(id, next[id]);
-      });
-    },
-    columnResizeMode: 'onChange',
-    columnResizeDirection: frame.current && isRtl(frame.current) ? 'rtl' : 'ltr',
-    onColumnFiltersChange: (update) => {
-      setFilters(update);
-      setPage(0);
-    },
-    getColumnCanGlobalFilter: () => true,
-    globalFilterFn: recordFilter,
-    globalFilter: deferredFilter,
-    manualPagination: remoteMode,
-    manualSorting: remoteMode,
-    manualFiltering: remoteMode,
-    pageCount: remoteMode ? Math.ceil((remote?.total || 0) / pageSize) : undefined,
-    getExpandedRowModel: getExpandedRowModel(),
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: (t) => () => {
-      const all = t.getPreFilteredRowModel();
-      return { rows: all.rows, flatRows: all.rows, rowsById: all.rowsById };
-    },
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getPaginationRowModel: mode === 'pages' ? getPaginationRowModel() : undefined,
-    autoResetPageIndex: false
+  const { table } = useTableModel({
+    columns,
+    sortingRef,
+    metrics,
+    floors,
+    autoSizing,
+    frame,
+    source,
+    index,
+    childField,
+    setExpanded,
+    printing,
+    expanded,
+    sorting,
+    columnOrder,
+    columnVisibility,
+    sizing,
+    filters,
+    activeFilter,
+    page,
+    pageSize,
+    selection,
+    columnPinning,
+    changeSort,
+    options,
+    notifySelection,
+    live,
+    changeVisibility,
+    changeOrder,
+    resize,
+    setFilters,
+    setPage,
+    recordFilter,
+    deferredFilter,
+    remoteMode,
+    remote,
+    mode
   });
   const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
   // uniform pill widths (CTM, 2026-10-22; always on, owner uniform-pills-always-35): every standard pill of a column as wide as the
@@ -953,51 +876,6 @@ function NextEngine(props) {
     };
   }, []);
 
-  React.useEffect(() => {
-    if (!remoteMode) return;
-    fetching.current = true;
-    setRemoteBusy(true);
-    let alive = true;
-    const controller = new AbortController();
-    setRemoteError(null);
-    Promise.resolve()
-      .then(() =>
-        props.fetchRows({
-          page: page + 1,
-          size: pageSize,
-          sort: sorted(sorting),
-          filters: filters.map((f) => ({ field: f.id, type: 'like', value: f.value })),
-          search: props.search,
-          signal: controller.signal
-        })
-      )
-      .then(
-        (result) => {
-          if (alive) {
-            fetching.current = false;
-            setRemoteBusy(false);
-            setRemote((old) => {
-              const append = mode === 'load-more' || mode === 'fill',
-                got = result.rows || [],
-                rows = append && page > 0 ? [...(old?.rows || []), ...got] : got;
-              // an empty or short page ends the list (issue 614), even when the total says there are more
-              return { rows, total: append && got.length < pageSize ? rows.length : result.total || 0 };
-            });
-          }
-        },
-        (failure) => {
-          if (alive) {
-            fetching.current = false;
-            setRemoteBusy(false);
-            setRemoteError(failure);
-          }
-        }
-      );
-    return () => {
-      alive = false;
-      controller.abort();
-    };
-  }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
   const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
   // fill with a server (issue 522): the next page is asked for when the scroll comes within 8 rows of the end, and again
   // while the rows do not yet fill the room; never while one is on its way, after a failure (Retry asks again) or at the total
