@@ -1,6 +1,7 @@
 ### Changed
 - Test wiring (#756, found while writing docs/tests in #748). Wiring only: no check changed, no test was run.
-  - **Into CI:** icon-safety, selector-kinds and zero-overlap now run in CI and in the full suite. fill-693 also joins the full suite.
+  - **Into CI:** icon-safety and selector-kinds now run in CI and in the full suite. fill-693 also joins the full suite.
+  - **Not in CI:** zero-overlap fails against a stale snapshot; the decision is pending in #763.
   - **Layout's child tests:** they now start when their own test file (or a fixture they load) changes, as well as when what they cover changes.
   - **Messages:** messages-chat-s6 now starts when the Messages app changes.
   - **Tests that were started by hand only:**

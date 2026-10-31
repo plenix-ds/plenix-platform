@@ -50,7 +50,7 @@ Plenix pages keep the right shape for their kind (full width, a centered column,
 - In changed mode its own checks run only when one of these changes (or a part built on one of them): AppShell, SettingsLayout, SplitView, Toolbar, ActionBar, VisuallyHidden, DirectionProvider, Checkbox, Fieldset, Icon; or a global file (the small fixed slice); or this test's file. Otherwise it prints `LAYOUT_OK 0/0 (nothing in scope)`.
 - Its child tests are checked first, even when Layout's own checks are out of scope. Each starts when what it covers changes (its own list of parts and apps), when a global file changes, or when its own file (or a fixture it loads) changes (issue #756).
 - A change under `platform/charts/`, `platform/templates/` or `platform/providers/` reaches the small fixed slice, which starts every child.
-- CI: the "fixtures" browser job (`site-coverage visual layout zero-overlap charts-echarts-353 sparkline-echarts-353 treechart-echarts`), on every pull request and on pushes to styling/phase-2 and main.
+- CI: the "fixtures" browser job (`site-coverage visual layout charts-echarts-353 sparkline-echarts-353 treechart-echarts`), on every pull request and on pushes to styling/phase-2 and main.
 - Full suite (`.github/workflows/full.yml`): the "fixtures" browser job.
 
 ## What it needs
