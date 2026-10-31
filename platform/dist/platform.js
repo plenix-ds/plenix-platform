@@ -9078,7 +9078,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      content: the tooltip text (in a rich tooltip, its body: one to three sentences)
      placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
      title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+     action: an element: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
        it opens on click (Enter or Space on the trigger) instead of on hover and focus
      rich: the rich look without a title or an action (default false; true when title or action is given)
      describe: false keeps the tooltip from describing the trigger (no aria-describedby) and hides the bubble from assistive technology (aria-hidden; sighted users still see it) when the trigger's own name already says the same text, as a cut heading's or label's
@@ -13757,9 +13757,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MenuItem.danger: shows the item in the danger color (a destructive action); default false
      MenuItem.disabled: skips the item; it cannot be chosen; default false
      MenuItem.checked: makes it a checkbox item, checked or not; leave it out for a plain item
-     MenuItem.type: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
+     MenuItem.type: a string: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
        MenuRadioGroup a MenuItem with a value is a radio item without it)
-     MenuItem.value: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
+     MenuItem.value: a string: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
      MenuItem.keepOpen: leaves the menu open after choosing (for choosing several); default false
      MenuItem.href: renders the item as a link
      MenuItem.onSelect(event): runs when the item is chosen
@@ -14529,15 +14529,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      description: help text under the control (under the label with "row")
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
-     info: content for a small (i) button next to the label
+     info: an element: content for a small (i) button next to the label
      infoLabel: the accessible name of the (i) button (default the catalog's field.about, "About {label}")
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end); without it, the layout of the Form around the
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
-     counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
+     counter: true or a number: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
        as a number; default none
      strings: the counter's words for screen readers: { left: '{n} characters left', over: '{n} characters too many' }
-     labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
+     labelWidth: a string: the width of the label column, as a size name (adds plx-field--label-<value>)
      type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
        unless it sets its own
      children: exactly one control
@@ -15266,13 +15266,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
      <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
-     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
+     Input.size: "sm" | "md" (default) | a number: "sm" uses the existing toolbar control height; "md" keeps today’s standard height; a number keeps the native size attribute.
      Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
        leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
-     Select.width: the same values
+     Select.width: as Input.width
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
@@ -17006,8 +17006,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Show print><Text>Printed 12 October 2026</Text></Show>          <Hide print><ActionBar…/></Hide>
    Props:
      header: the header across the top (AppHeader)
-     sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
-     panel: the inspector panel on the right (SidePanel)
+     sideNav: an element: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
+     panel: an element: the inspector panel on the right (SidePanel)
      footer: the footer across the bottom (StatusBar)
      page: what kind of page this is (default "workspace"): "workspace" | "dashboard" | "settings" | "form" | "detail" |
        "master-detail" | "editor". The design system's layout standard (providers/pageLayouts.js) decides its layout mode:
@@ -26691,7 +26691,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Radio.className: more classes on the row
      RadioGroup.label: the legend of the group
      RadioGroup.name: the radio name (default a generated one)
-     RadioGroup.value: the selected option value
+     RadioGroup.value: a string: the selected option value
      RadioGroup.onChange(value): runs with the chosen option value
      RadioGroup.options: the choices: [{ value, label, description, disabled }]
      RadioGroup.layout: "column" (default) | "row"
@@ -26951,8 +26951,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
        onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
    Props:
-     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
-     value: the search text
+     size: "sm" | "md" (default): "sm" selects the existing toolbar control height; "md" preserves today’s search height.
+     value: a string: the search text
      onChange(event): runs when the text changes
      onClear(): runs from the clear button; without it there is no clear button
      placeholder: the placeholder text; default "Search"
@@ -26960,9 +26960,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      shortcut: a keyboard shortcut hint ("Ctrl K")
      loading: shows a spinner in place of the search icon; default false
      onAccent: the look for the blue header; default false
-     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
+     suggestions: an array: what to offer while there is text, already matched to it by the caller: strings, or
        [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
-     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
+     recent: an array of strings: the person's recent searches (newest first: useSearchHistory), offered while the field is empty
      onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
        'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
      onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
@@ -41304,15 +41304,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
      Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
-     Chat.Group.author / avatar / mine: one sender's run of messages: the photo and the name go on the first message only,
-       and the messages sit closer together; mine applies to every message of the run; only Chat.Message children take
-       these (a Chat.Divider inside the run stays as given)
+     Chat.Group.author: one sender's run of messages, by this sender: the photo and the name go on the first message only,
+       and the messages sit closer together; only Chat.Message children take them (a Chat.Divider inside the run stays as given)
+     Chat.Group.avatar: the sender's Avatar, on the run's first message
+     Chat.Group.mine: true: the run is the person's own; it applies to every message of the run
      Chat.Divider.children: a line across the thread with a date ("Today"); unread: the "New messages" line (its default
        text), above the first unread message
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
-     Chat.Message.time: when it was sent, as shown, in the footer line at the bottom of the bubble ("Sent <time>");
+     Chat.Message.time: a string: when it was sent, as shown, in the footer line at the bottom of the bubble ("Sent <time>");
        dateTime: the same as a machine-readable date
-     Chat.Message.status: sending | sent | delivered | read (your messages): a clock, one gray check, two gray checks, two
+     Chat.Message.status: "sending" | "sent" | "delivered" | "read" (your messages): a clock, one gray check, two gray checks, two
        green checks, after the times; readTime / readDateTime: when it was read, shown as "| Read <time>" once read
      Chat.Message.avatar: the sender's Avatar (size "sm"), on the bubble's top edge, 8px in from the start edge for theirs and
        from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
@@ -41324,7 +41325,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Message.reactions: [{ emoji, count, mine, label }]: pills under the text (the emoji and its count; yours outlined in the action color, aria-pressed),
        then an Add reaction button; a pill toggles through onReact(emoji). label names an emoji outside the six quick ones
      Chat.Message.quote: { author, text }: a quoted or replied-to message inside the bubble (a bar, the author, one line)
-     Chat.Message.edited: "· Edited" in the footer; deleted: "This message was deleted", muted, with no actions, reactions or quote
+     Chat.Message.edited: true: "· Edited" in the footer; deleted: "This message was deleted", muted, with no actions, reactions or quote
      Chat.Message.strings: the words, for other languages
      Chat.Attachments: the pictures and files of one message, in a row (two or more pictures) or a column; its pictures open together in one MediaViewer
      Chat.Attachment.type: "image" (default) | "file"; src: the picture's URL (a file's download URL); name: its file name; alt: the picture's description (default the name);
@@ -41352,7 +41353,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
      Chat.Composer.sendLabel: default "Send"; disabled: the composer is inert
      Chat.Typing.label: the text announced to assistive technology (default "Typing")
-     Chat.Typing.variant: typing (default) | thinking | steps; steps: [{label,status}], current: active step index
+     Chat.Typing.variant: "typing" (default) | "thinking" | "steps"; steps: [{label,status}], current: active step index
      Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
      className on every part: more classes
    Behavior:
@@ -42473,10 +42474,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      data: true forces the technical-value font on the field, false keeps the interface font; when not set, a chosen option whose label is wholly
        a number, a date or another technical value ("10", "Oct 25, 2026") shows in the data font, as a Select does
-     size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
+     size: "sm" | "md" (default): "sm" uses the existing toolbar control height; "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
-     value: the chosen value, for a single choice
-     values: the chosen values, with multiple
+     value: a string or a number: the chosen value, for a single choice
+     values: an array: the chosen values, with multiple
      onChange(value): runs with the chosen value; with multiple it runs with the new array of values
      multiple: allows several values; chosen values show as tags before the field (default false)
      creatable: offers "Create “text”" when nothing matches exactly (default false)
@@ -42487,7 +42488,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      disabled: the field cannot be used
      readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
        default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on
-     emptyText: the text when nothing matches (default "No matches")
+     emptyText: a string: the text when nothing matches (default "No matches")
      loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
        the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
      loadDelay: the pause after typing before loadOptions runs, in milliseconds (default 300; 0 when the field is empty)
@@ -43108,11 +43109,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      items[].count: a count after the label
      items[].content: the tab's panel; without content Tabs draws only the tab list
      items[].disabled: the tab cannot be chosen and keys skip it
-     value: the selected tab's value (controlled)
-     defaultValue: the first selected tab when uncontrolled; default the first item
+     value: a string: the selected tab's value (controlled)
+     defaultValue: a string: the first selected tab when uncontrolled; default the first item
      onChange(value): runs when another tab is selected
      label: the accessible name of the tab list
-     idBase: the base of the tab and panel ids, for a panel the application renders
+     idBase: a string: the base of the tab and panel ids, for a panel the application renders
      className: more classes on the tabs
      panelClassName: more classes on each panel
      strings: the words it shows, for other languages: { more: "More", moreLabel: "More tabs" }
@@ -44214,7 +44215,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        onRowClick={(asset) => open(asset)} />
    Props:
      label: names the grid for screen readers (required)
-     data: the rows, plain objects; index: the field that identifies a row (default "id")
+     data: an array: the rows, plain objects; index: the field that identifies a row (default "id")
      columns: [{ title, field, … }]:
        kind: "name" (the row's name, medium weight) | "data" (technical values in the data font, Reddit Mono, on the row's
          baseline) | "icon" (a mark column as wide as the checkbox column; its header shows icon) | "center" (centered in
@@ -44248,7 +44249,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
-     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+     openKey: a string or a number: the key of the record whose details show (the open row); default the row last opened by a click or Enter
        (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
        selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
@@ -44292,7 +44293,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        more asking at total. In "fill" and "load-more" an empty or short page (fewer rows than size) ends the list, even
        when total says more (issue 614). A sort, filter or search change starts again from page 1, in the same render
        as the change. size is pageSize (default 50)
-     storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
+     storageKey: a string: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      onFilterField(field): the header menu's "Filter by this field" calls it instead of opening the header filter box; useCollectionView
@@ -55652,18 +55653,18 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <NumberInput stepper="quantity" value={qty} onChange={setQty} min={1} max={5} aria-label="Quantity, Blue chair" />
    Props:
      value: the number (null when empty); with onChange, a controlled field
-     defaultValue: the first number of an uncontrolled field (default null)
+     defaultValue: a number: the first number of an uncontrolled field (default null)
      onChange(value, event): the new number (null when the field is emptied) as it is typed, stepped or corrected
-     min: the least value; a smaller one is brought back to it when the field is left
-     max: the greatest value; a larger one is brought back to it when the field is left
+     min: a number: the least value; a smaller one is brought back to it when the field is left
+     max: a number: the greatest value; a larger one is brought back to it when the field is left
      step: the change of one step (default 1); a value is kept to the step's decimals when it is stepped
      bigStep: the change of Page Up and Page Down, in steps (default 10)
-     decimals: the decimals shown when the field is left (default: the currency's own, else as typed)
+     decimals: a number: the decimals shown when the field is left (default: the currency's own, else as typed)
      format: "number" (default) | "currency" (the currency's symbol or code inside the field, where the locale puts it) |
        "percent" (the percent sign after the value; the value is the percentage: 25 means 25%)
-     currency: an ISO 4217 code ("USD", "EUR"), with format "currency"
+     currency: a string: an ISO 4217 code ("USD", "EUR"), with format "currency"
      currencyDisplay: "symbol" (default; "$") | "code" ("USD", for pages that mix currencies)
-     unit: a short unit shown after the value ("kg", "px", "GB"); say it in the label too when it is not obvious
+     unit: a string: a short unit shown after the value ("kg", "px", "GB"); say it in the label too when it is not obvious
      stepper: "none" (default) | "buttons" (minus and plus joined at the end) | "quantity" (minus before and plus after a
        short centered count: carts, copies, seats)
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
@@ -88623,7 +88624,7 @@ function ImageAnnotation({
     }
   }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data"
-  }, i + 1), " ", /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.label || a.location), " ", /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.kind === 'region' ? t.region : t.pin)))), !annotations.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.none) : null, active ? /*#__PURE__*/_react.default.createElement(_CommentThread.CommentThread, {
+  }, i + 1), " ", /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.label || a.location), ' ', /*#__PURE__*/_react.default.createElement(_Text.Text, null, a.kind === 'region' ? t.region : t.pin)))), !annotations.length ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.none) : null, active ? /*#__PURE__*/_react.default.createElement(_CommentThread.CommentThread, {
     key: active.id,
     title: active.label || active.location,
     comments: active.comments || [],
@@ -91103,7 +91104,7 @@ function SuggestedEdit({
       as: "p"
     }, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.before + ': '), /*#__PURE__*/_react.default.createElement("del", {
       className: "plx-suggested-edit__before"
-    }, e.before), " ", /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.after + ': '), /*#__PURE__*/_react.default.createElement("ins", {
+    }, e.before), ' ', /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.after + ': '), /*#__PURE__*/_react.default.createElement("ins", {
       className: "plx-suggested-edit__after"
     }, e.after)), s ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
       icon: s === 'accepted' ? _check.default : _close.default,
