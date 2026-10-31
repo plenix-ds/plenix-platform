@@ -1,9 +1,0 @@
-data-display/feature-card coarse base=0 head=0 added=0
-content/user-card coarse base=0 head=0 added=0
-data-display/card coarse base=0 head=0 added=0
-data-display/media-card coarse base=5 head=5 added=0
-data-display/feature-card fine base=0 head=0 added=0
-content/user-card fine base=0 head=0 added=0
-data-display/card fine base=0 head=0 added=0
-data-display/media-card fine base=0 head=0 added=0
-CARD_TARGETS_SAME 8

@@ -1,8 +1,0 @@
-SCOPE labs: full · 1 of 1 labs
-  FAIL text-field: 2364 checks, 24 tokens
-       xs/default/default/value mw: --plx-comp-input-max-width set to 77px but max-width reads min(77px, 100%) (was min(600px, 100%))
-       xs/default/default/placeholder mw: --plx-comp-input-max-width set to 77px but max-width reads min(77px, 100%) (was min(600px, 100%))
-       xs/default/hover/value mw: --plx-comp-input-max-width set to 77px but max-width reads min(77px, 100%) (was min(600px, 100%))
-       xs/default/hover/placeholder mw: --plx-comp-input-max-width set to 77px but max-width reads min(77px, 100%) (was min(600px, 100%))
-       xs/default/focus/value mw: --plx-comp-input-max-width set to 77px but max-width reads min(77px, 100%) (was min(600px, 100%))
-LABS_FAIL 0/1 labs

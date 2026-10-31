@@ -62,7 +62,7 @@
   "cross-component": 47,
   "order-decided": 269,
   "redundant": 373,
-  "state-variant": 575,
+  "state-variant": 573,
   "variant-repeat": 236
  },
  "coverage": [
@@ -3622,10 +3622,6 @@
   },
   "--plx-comp-record-page-actions-gap": {
    "n": 7,
-   "fallback": false
-  },
-  "--plx-comp-card-accent-border-inline-start-width": {
-   "n": 6,
    "fallback": false
   },
   "--plx-comp-badge-icon-size": {
@@ -22398,20 +22394,6 @@
   {
    "kind": "state-variant",
    "pages": [
-    "dashboard",
-    "calendar"
-   ],
-   "p": "border-left-color",
-   "a": ".plx-card",
-   "b": ".plx-card--accent",
-   "va": "var(--plx-comp-card-border-color)",
-   "vb": "var(--plx-comp-card-accent)",
-   "files": "components/Card/card.css / components/Card/card.css",
-   "same": false
-  },
-  {
-   "kind": "state-variant",
-   "pages": [
     "messages"
    ],
    "p": "border-left-color",
@@ -22527,20 +22509,6 @@
    "va": "var(--plx-comp-button-border-width)",
    "vb": "0px",
    "files": "components/Button/button.css / components/Button/button.css",
-   "same": false
-  },
-  {
-   "kind": "state-variant",
-   "pages": [
-    "dashboard",
-    "calendar"
-   ],
-   "p": "border-left-width",
-   "a": ".plx-card",
-   "b": ".plx-card--accent",
-   "va": "var(--plx-comp-card-border-width)",
-   "vb": "var(--plx-comp-card-accent-border-inline-start-width)",
-   "files": "components/Card/card.css / components/Card/card.css",
    "same": false
   },
   {
