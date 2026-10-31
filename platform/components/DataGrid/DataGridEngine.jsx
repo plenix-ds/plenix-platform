@@ -58,7 +58,7 @@ import { EmptyState } from '../EmptyState/EmptyState.jsx';
 import { opening, writeView, recordKey, normalizeSort, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 import { CellValue, byteFilter, textFilter, listFilter, valueText } from './cells.jsx';
-import { recordsOf, setField, changeRecord, groupDisplay, groupValue, valueKey } from './records.js';
+import { recordsOf, groupDisplay, groupValue, valueKey } from './records.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
@@ -89,6 +89,7 @@ import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
 import { useColumns } from './engine/useColumns.js';
+import { useEditedRows, editActions, useEditEffect } from './engine/useEditing.js';
 import { headerKeys, resizeKeys, makeFocusCell, groupKeys, rowKeys, cellKeys, tableKeys } from './engine/keys.js';
 import {
   CellEditor,
@@ -151,8 +152,6 @@ function NextEngine(props) {
     viewportId = React.useId(),
     displayElements = React.useRef(new Map()),
     parkedFocus = React.useRef(null),
-    pendingEdit = React.useRef(null),
-    mutations = React.useRef([]),
     printView = React.useRef(null);
   const deliveredReady = React.useRef(null);
   const listeners = React.useRef(new Map()),
@@ -186,9 +185,7 @@ function NextEngine(props) {
   };
   const [filterField, setFilterField] = React.useState(null),
     [managing, setManaging] = React.useState(false);
-  const [edited, setEdited] = React.useState(null),
-    [editing, setEditing] = React.useState(null),
-    [expanded, setExpanded] = React.useState(props.treeExpanded ?? false);
+  const [expanded, setExpanded] = React.useState(props.treeExpanded ?? false);
   const [localGroups, setGroups] = React.useState(() => initial.groupBy),
     [groupOwner, setGroupOwner] = React.useState(null),
     [collapsed, setCollapsed] = React.useState(() => new Set(initial.collapsed));
@@ -266,8 +263,8 @@ function NextEngine(props) {
       typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more' || mode === 'fill'),
     scrollFill = remoteMode && mode === 'fill',
     incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
-  const source = edited?.input === incoming ? edited.rows : incoming,
-    canonical = React.useMemo(() => recordsOf(source, index, childField), [source, index, childField]);
+  const { setEdited, editing, setEditing, mutations, pendingEdit, source } = useEditedRows(incoming);
+  const canonical = React.useMemo(() => recordsOf(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
   const unreadKey = React.useCallback((record) => record[index], [index]);
   const [ownOpen, setOwnOpen] = React.useState(null);
@@ -303,11 +300,18 @@ function NextEngine(props) {
     () => new Map(canonical.map((record) => [recordKey(record[index]), record])),
     [canonical, index]
   );
-  const replaceData = (rows) =>
-    new Promise((resolve) => {
-      mutations.current.push(resolve);
-      setEdited({ input: incoming, rows: rows.slice() });
-    });
+  const { replaceData, updateRecord, commitEdit } = editActions({
+    incoming,
+    source,
+    canonical,
+    index,
+    childField,
+    props,
+    setEdited,
+    setEditing,
+    mutations,
+    pendingEdit
+  });
   const changeGroups = (value) => {
     setGroupOwner(groupSignal);
     setGroups(() => value);
@@ -324,22 +328,6 @@ function NextEngine(props) {
     setCollapsed(next);
     if (changed) announce(expand ? S.expanded : S.collapsed);
     props.onViewChange?.({ collapsed: [...next] });
-  };
-  const updateRecord = (key, change) =>
-    new Promise((resolve) => {
-      mutations.current.push(resolve);
-      setEdited((old) => ({
-        input: incoming,
-        rows: changeRecord(old?.input === incoming ? old.rows : source, key, change, index, childField)
-      }));
-    });
-  const commitEdit = (key, field, value) => {
-    const old = canonical.find((record) => recordKey(record[index]) === key),
-      previous = valueAt(old, field);
-    updateRecord(key, (record) => setField(record, field, value));
-    setEditing(null);
-    pendingEdit.current = { key, field };
-    props.onCellEdit?.(setField(old, field, value), { field, value, previous, row: old });
   };
   const emit = (name, ...args) => {
     live.current.props.on?.[name]?.(...args);
@@ -1642,14 +1630,7 @@ function NextEngine(props) {
       }
     }
   };
-  React.useLayoutEffect(() => {
-    mutations.current.splice(0).forEach((resolve) => resolve());
-    if (pendingEdit.current) {
-      const { key, field } = pendingEdit.current;
-      pendingEdit.current = null;
-      emit('cellEdit', api.cell(key, field));
-    }
-  }, [source]);
+  useEditEffect({ source, mutations, pendingEdit, emit, api });
   const enterCut = (event, id) => {
     if (cutOpen.current) return;
     const v = event.currentTarget.querySelector('.' + B + '__value');
