@@ -1,2 +1,0 @@
-plenix     {"first":"ltr","wrapped":true,"untouched":true,"turned":"ltr","back":"ltr"} → FAILS
-plenix-b1  {"first":"ltr","wrapped":false,"untouched":true,"turned":"rtl","back":"ltr"} → passes

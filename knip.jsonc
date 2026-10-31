@@ -15,9 +15,8 @@
     "services/**/*.js",
     // run by hand from a runbook: services/login/README.md ("with services/auth/npm-advanced-config.mjs, dry run first")
     "services/auth/*.mjs",
-    // proof tools run by hand from their READMEs (tests/phase2-182-proof, tests/lane-198-proof)
+    // a proof tool run by hand (the other proof folders moved to the archive, docs/ARCHIVE.md)
     "tests/ci197-*.cjs",
-    "tests/lane-198-proof/**/*.cjs",
     // loaded by script tags in pages
     "platform/dev/*.js",
     "platform/providers/theme-boot.js",

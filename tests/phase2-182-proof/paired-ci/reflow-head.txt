@@ -1,2 +1,0 @@
-SCOPE reflow: changed since e9782b790 (49 files) · 21 app pages, 14 of 14 sampled design-system pages
-REFLOW_OK 0 known findings on 36 pages at 320px (15 exempt two-dimensional scrollers)

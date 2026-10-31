@@ -1,4 +1,0 @@
-table-base.css on disk: 85,845 -> 80,481 bytes (-5,364)
-plenix.css bundle: before {"raw":2677765,"min":2396456,"brotli":185007}
-                   after  {"raw":2670974,"min":2391217,"brotli":184812}
-saved: raw 6,791 bytes (6.6 KB), minified 5,239 bytes, brotli 195 bytes

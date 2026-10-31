@@ -1,7 +1,0 @@
-/* The live preview's own rules (docs/briefs/charts-echarts/preview.html): ECharts' drawing fills ChartFrame's plot.
-   Every value is a token or a layout keyword; no color, size or font is written here. */
-.rv-ec-host{block-size:100%;inline-size:100%;}
-/* ECharts draws an SVG inside its host; the pointer belongs to ChartFrame's plot (the Plenix interaction) */
-.rv-ec-host svg{display:block;pointer-events:none;}
-.rv-ec-label{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-sys-font-weight-semibold);margin:0;}
-.rv-ec-cell{display:grid;row-gap:var(--plx-sys-space-stack-xs);}
