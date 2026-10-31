@@ -10,7 +10,7 @@
        rule's field, removing moves it to Add rule), FilterBar (a filter is a menu button: a multiple filter stays open while choosing, a single one closes), SearchWorkspace (typing searches,
        a chip's remove button removes its filter), ProductOptions (the sizes are one radio group: arrows choose and skip a sold-out size; a sold-out swatch does nothing).
      And the four APG gaps of issue 706: Combobox opens on Arrow Up at its last option, Alt+Arrow Down opens without moving, Escape on a closed list keeps the value (recorded as intentional in
-       Combobox's header); Menu type-ahead (a letter moves to the next item that starts with it).
+       Combobox's header); Menu type-ahead (a letter moves to the next item that starts with it; in a sub menu, a letter no sub item starts with keeps focus there and the sub menu open).
    Proof first: each check is written so that the broken behavior fails it by name. A MillerColumns whose arrows did not swap right to left fails "miller rtl: the arrow toward the reading end
      moves into the children"; an AssignControl that dropped focus after Escape fails "assign: Escape puts the row back with focus on Reassign"; a DeleteFlow that opened on Delete fails "delete
      confirm: focus starts on Cancel"; a Menu without type-ahead fails "menu type-ahead ltr: a letter moves to the item that starts with it"; a Combobox that ignored Arrow Up on a closed list
@@ -328,6 +328,21 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       await press('m'); assert.equal((await at()).text, 'Move to', d + 'another letter moves to its item');
       await press('x'); assert.equal((await at()).text, 'Move to', d + 'a letter no item starts with moves nothing');
       await press('Escape');
+    }
+    // a sub menu: a letter no sub item starts with stays in the sub menu, even when a parent item starts with it
+    const SUB = (h, P) => h(P.Menu, { trigger: h(P.Button, { id: 'trigger' }, 'Actions'), label: 'Actions' },
+      h(P.MenuItem, null, 'Rename'), h(P.MenuSub, { label: 'Share' }, h(P.MenuItem, null, 'Email'), h(P.MenuItem, null, 'Link')), h(P.MenuItem, null, 'Delete'));
+    for (const dir of ['ltr', 'rtl']) {
+      await render(SUB, dir); const d = 'menu sub type-ahead ' + dir + ': ';
+      await focus('#trigger'); await press('Enter');
+      await press('s'); assert.equal((await at()).text, 'Share', d + 'a letter reaches the sub menu item');
+      await press(dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight');
+      assert.equal((await at()).text, 'Email', d + 'the arrow toward the reading end opens the sub menu on its first item');
+      await press('l'); assert.equal((await at()).text, 'Link', d + 'type-ahead works inside the sub menu');
+      await press('d'); assert.equal((await at()).text, 'Link', d + 'a letter no sub item starts with keeps focus in the sub menu');
+      assert.equal(await inside('.plx-menu-sub__list'), true, d + 'focus stays inside the sub menu');
+      assert.equal(await page.evaluate(() => document.querySelector('.plx-menu-sub__item').getAttribute('aria-expanded')), 'true', d + 'the sub menu stays open');
+      await press('Escape'); await press('Escape');
     }
 
     assert.deepEqual(errors, [], 'no script errors');
