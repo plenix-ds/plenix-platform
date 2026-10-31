@@ -14,7 +14,9 @@ function check({ add }) {
   const hf = path.join(ROOT, 'platform/utils/dataValue.ts'), h = read('platform/utils/dataValue.ts');
   if (!/export const isDataValue/.test(h)) add(NAME, hf, 0, 'dataValue.ts must export isDataValue');
   else {
-    const fn = new Function(h.replace(/export const isDataValue/, 'const isDataValue') + '; return isDataValue;')();
+    // the helper is TypeScript: Babel's typescript preset strips its types before it runs here
+    const js = require('@babel/standalone').transform(h, { filename: 'dataValue.ts', presets: ['typescript'] }).code;
+    const fn = new Function(js.replace(/export const isDataValue/, 'const isDataValue') + '; return isDataValue;')();
     for (const yes of ['10', '1,000', '2026-10-25', 'Oct 25, 2026', 'September 3, 2026', '25 Oct 2026', '10:42 AM', '12 MB', '3 kB', 'v1.2.3', 'report.csv', 'IMG_2041.jpg', 'plenix-0.73.0.zip', '#1234']) if (!fn(yes)) add(NAME, hf, 0, '"' + yes + '" must be a data value');
     for (const no of ['Compact', '15 minutes', 'Oct 25, 2026 and later', 'Light', '', 'Mark 5', 'Market 3', 'Junior 2', '3 Decisions', 'Node.js', 'Vue.js', 'Character.ai', 'Read me.md', 'Export as report.csv', '5 b']) if (fn(no)) add(NAME, hf, 0, '"' + no + '" must not be a data value');
   }
