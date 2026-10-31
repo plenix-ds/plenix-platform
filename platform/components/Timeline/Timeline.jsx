@@ -35,7 +35,7 @@
      Other props pass through to the <ol>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 
 export function Timeline({ items = [], orientation = 'vertical', align = 'start', label, className, ...rest }) {

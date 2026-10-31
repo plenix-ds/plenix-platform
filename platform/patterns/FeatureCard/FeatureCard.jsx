@@ -28,8 +28,8 @@
        to Card's <article>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Card } from '../../components/Card/Card.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Image } from '../../components/Image/Image.jsx';

@@ -33,7 +33,7 @@
        menu radius and shadow), from the chart-parts tokens. Swatches take the series' data-viz color.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 // the room the tooltip may take beside its point, in pixels (SVG geometry): it is laid out inside this box
 const BOX_W = 240, BOX_H = 200;

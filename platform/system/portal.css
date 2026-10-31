@@ -1,4 +1,4 @@
-/* Plenix · Portal (platform/system/portal.css). Where utils/portal.jsx (Portal) draws content outside its parent's layout:
+/* Plenix · Portal (platform/system/portal.css). Where utils/portal.tsx (Portal) draws content outside its parent's layout:
    one shared root at the end of <body> (plx-portal-root), one container per Portal in it (plx-portal), carrying the
    density, theme and direction of the place the Portal was written, so its tokens resolve as they would there.
    The containers take no space of their own: what is drawn in them positions itself (a fixed overlay, a floating menu).

@@ -33,8 +33,8 @@
        short activity log, the Timeline list.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatDate as fmtDate } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatDate as fmtDate } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand, scaleTime, seriesColor, wholeDays } from './scales.js';
 import { Axis } from './parts/Axis.jsx';

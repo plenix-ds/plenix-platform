@@ -1,5 +1,5 @@
 {
-  "$description": "Floating positioning (library plan wave 1, foundation floating): the gaps between an anchor and its floating element (a menu, popover, tooltip or list) and the margin a pointer-placed element keeps from the window's edges. utils/floating.js names the step; system/floating.css draws it.",
+  "$description": "Floating positioning (library plan wave 1, foundation floating): the gaps between an anchor and its floating element (a menu, popover, tooltip or list) and the margin a pointer-placed element keeps from the window's edges. utils/floating.ts names the step; system/floating.css draws it.",
   "plx-sys": {
     "floating-offset-xs": {
       "$value": "{plx-ref.space-4px}",

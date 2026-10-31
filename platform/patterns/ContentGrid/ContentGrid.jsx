@@ -26,8 +26,8 @@
      Masonry and justified rows are for browsing pictures; when the order matters (sorted results) use the grid.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
 

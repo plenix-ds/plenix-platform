@@ -44,10 +44,10 @@
        the menu item with open and onClose. Leading and trailing spaces are taken off before the rules run.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
-import { useUid } from '../../utils/layer.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
+import { useUid } from '../../utils/layer.ts';
 import { InlineEdit } from '../../components/InlineEdit/InlineEdit.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -55,7 +55,7 @@ import { Input } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import RenameIcon from 'plenix-platform/icons/plenix/rename';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 // the name before a file's extension (the whole name when it has none, or starts with its only dot)
 export function baseNameEnd(name) { const i = String(name).lastIndexOf('.'); return i > 0 ? i : String(name).length; }

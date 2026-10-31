@@ -30,8 +30,8 @@
        access shows it with a role (PermissionSummary for what that role allows).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatNumber } from '../../utils/format.ts';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
@@ -40,7 +40,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 // "8 members" with the number in the data font
 function Members({ n, t }) {

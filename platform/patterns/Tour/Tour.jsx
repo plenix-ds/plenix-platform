@@ -16,7 +16,7 @@ import React from 'react';
 import { Inline } from '../../components/Stack/Stack.jsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Tour({ steps = [], open = false, onOpenChange, step, defaultStep = 0, onStepChange, onFinish, spotlight = true, strings, className }) {

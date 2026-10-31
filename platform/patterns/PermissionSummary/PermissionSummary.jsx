@@ -32,9 +32,9 @@
        permission: Manage access shows the rest. A role's full grid of rights is the permissions editor's.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { formatList } from '../../utils/format.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { formatList } from '../../utils/format.ts';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { List } from '../../components/List/List.jsx';
 import { Button } from '../../components/Button/Button.jsx';
@@ -43,7 +43,7 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const lower = (x) => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 

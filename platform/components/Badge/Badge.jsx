@@ -31,7 +31,7 @@
      A badge is text: give a count enough context nearby or an accessible name on its control.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Icon } from '../Icon/Icon.jsx';
 
 const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];

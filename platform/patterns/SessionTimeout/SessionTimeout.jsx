@@ -44,13 +44,13 @@
        server's answer).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const clock = (sec) => { const s = Math.max(0, Math.ceil(sec)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };

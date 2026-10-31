@@ -22,7 +22,7 @@
      <Stack gap="sm"> (the heading and its content), see Stack.gap.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 // the levels with their own size (section-heading.css); the others keep the base size
 const LEVELS = [2, 3, 4];

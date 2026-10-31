@@ -2,7 +2,7 @@
 // window-share token (--plx-sys-shell-pane-window-share, 90%) of the window, of the table for a column, down to the 4px grid.
 // What it rejects:
 //   token    the token is missing, or is not a percentage between 50% and 100%
-//   helper   utils/paneLimit.js is gone, or no longer reads the token
+//   helper   utils/paneLimit.ts is gone, or no longer reads the token
 //   use      PanelSplitter (Resizable), NavPane, SecondaryPane, SidePanel or the DataGrid's table model (engine/useTableModel.js) no longer ask paneMax / shareOf for their limit
 // Alone: node check-system.rules/pane-limit.js     -> PANE_LIMIT_OK, or the findings and exit 1
 const fs = require('fs');
@@ -25,8 +25,8 @@ function check({ add }) {
   const file = path.join(ROOT, 'platform/tokens/semantic.density-standard.tokens.json');
   if (!m) add(NAME, file, 0, 'the token shell-pane-window-share is missing or is not a percentage');
   else if (+m[1] < 50 || +m[1] > 100) add(NAME, file, 0, 'shell-pane-window-share is ' + m[1] + '%: it must be between 50% and 100%');
-  const helper = read('platform/utils/paneLimit.js');
-  if (!/--plx-sys-shell-pane-window-share/.test(helper) || !/export function paneMax/.test(helper) || !/export function shareOf/.test(helper)) add(NAME, path.join(ROOT, 'platform/utils/paneLimit.js'), 0, 'paneLimit.js must export paneMax and shareOf and read --plx-sys-shell-pane-window-share');
+  const helper = read('platform/utils/paneLimit.ts');
+  if (!/--plx-sys-shell-pane-window-share/.test(helper) || !/export function paneMax/.test(helper) || !/export function shareOf/.test(helper)) add(NAME, path.join(ROOT, 'platform/utils/paneLimit.ts'), 0, 'paneLimit.js must export paneMax and shareOf and read --plx-sys-shell-pane-window-share');
   for (const [f, re] of USERS) if (!re.test(read(f))) add(NAME, path.join(ROOT, f), 0, 'does not ask the window-share limit (' + re.source.replace('\\(', '') + ') for how far it can be dragged');
 }
 module.exports = { name: NAME, check };

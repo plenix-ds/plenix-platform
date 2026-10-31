@@ -45,13 +45,13 @@
      item.actions are siblings of the row's own button, never inside it.
 */
 import React from 'react';
-import { numeralLocale } from '../../utils/format.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { numeralLocale } from '../../utils/format.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Icon, stateIcon, iconKey } from '../Icon/Icon.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useTruncated } from '../../utils/overflow.js';
+import { useTruncated } from '../../utils/overflow.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';

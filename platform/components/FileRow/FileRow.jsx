@@ -53,8 +53,8 @@
      Other props pass through to the row element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatBytes, formatDate, formatNumber, formatPercent, dateTimeAttr } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatBytes, formatDate, formatNumber, formatPercent, dateTimeAttr } from '../../utils/format.ts';
 import { File } from '../File/File.jsx';
 import { Checkbox } from '../Checkbox/Checkbox.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -70,7 +70,7 @@ import MoreIcon from 'plenix-platform/icons/plenix/more';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import RenameIcon from 'plenix-platform/icons/plenix/rename';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 export function FileRow({ file, as = 'div', selectable = false, selected = false, onSelectChange, href, onOpen, owner, status,
   progress, progressLabel, onCancel, error, onRetry, onDownload, onRename, names, onDelete, deleteVariant = 'confirm', onRestore,

@@ -15,10 +15,10 @@
      className: more classes on the scrim
    Behavior:
      The scrim is decoration: it is hidden from assistive technology and is never a Tab stop. The modal layer above it makes
-       the page inert and traps focus (utils/layer.js); the scrim only shows that the page is unavailable and takes the
+       the page inert and traps focus (utils/layer.ts); the scrim only shows that the page is unavailable and takes the
        pointer.
      It fades in with the modal layer (motion-fade-in at the fast duration); with reduced motion it appears at once.
-     Over the window it stops the page scrolling (utils/scrollLock.js) for as long as it is shown; locks are counted, so
+     Over the window it stops the page scrolling (utils/scrollLock.ts) for as long as it is shown; locks are counted, so
        nested layers release the page only when the last one closes.
    Notes:
      Never put text or controls on the scrim: they go in the layer above it. One scrim at a time.
@@ -26,9 +26,9 @@
      Other props pass through to the <div>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useScrollLock } from '../../utils/scrollLock.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useScrollLock } from '../../utils/scrollLock.ts';
 
 const VARIANTS = ['modal', 'light', 'inverse'];
 

@@ -26,9 +26,9 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
-import { numeralLocale } from '../../utils/format.js';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { numeralLocale } from '../../utils/format.ts';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 
 const SIZES = ['sm', 'md', 'lg'];
 const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];

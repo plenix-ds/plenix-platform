@@ -6,7 +6,7 @@
    Notes: Browsers without timeline and anchor support retain their native scrollbars. The thumb carries its axis
      (__thumb--x, --y) and its size (data-plx-thumb) itself, so its rules need no track above it. */
 import React from 'react';
-import { isRtl } from '../../utils/direction.js';
+import { isRtl } from '../../utils/direction.ts';
 export function Scrollbars({ holder, viewportId }) {
   const thumbs = React.useRef({});
   const [sizes, setSizes] = React.useState({}),

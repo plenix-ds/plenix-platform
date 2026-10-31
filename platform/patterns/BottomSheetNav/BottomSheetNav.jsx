@@ -33,7 +33,7 @@
        list, with groups.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { NavList } from '../../components/NavList/NavList.jsx';
 import { RowButton } from '../../components/RowButton/RowButton.jsx';

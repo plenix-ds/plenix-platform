@@ -41,7 +41,7 @@
        imported module or a name with a registered module (no module: the span without a drawing, and a development
        warning); for code that writes HTML instead of the deprecated bare class plx-icon--<name>
      Every loaded icon file and every module drawing is untrusted (issue 285): it is read through the allow-list in
-       utils/iconSafety.js (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
+       utils/iconSafety.ts (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
        warns once with the reason. Nothing is ever inserted as HTML: the values become React props.
      A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
        should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
@@ -79,11 +79,11 @@
        keeps the text color and size of where it sits.
 */
 import React from 'react';
-import { devWarn, development } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn, development } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { SYMBOLS, NAMES, MIRRORED, LIBRARY_COMMIT } from './glyphs.js';
 import { LIBRARY, loadLibrary } from './library.js';
-import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.js';
+import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.ts';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
@@ -254,7 +254,7 @@ function plenixFiles() {
 }
 // an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
 // an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
-// untrusted; utils/iconSafety.js): anything else in the file refuses it, and development warns once with the reason
+// untrusted; utils/iconSafety.ts): anything else in the file refuses it, and development warns once with the reason
 const refused = new Set();
 function parseSvg(svg, from) {
   if (!svg) return null;

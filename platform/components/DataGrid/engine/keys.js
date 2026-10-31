@@ -21,7 +21,7 @@
 */
 import { stepSize } from '../../../utils/sizeSteps.js';
 import { valueText } from '../cells.jsx';
-import { isRtl } from '../../../utils/direction.js';
+import { isRtl } from '../../../utils/direction.ts';
 
 export const headerKeys =
   ({ column }) =>

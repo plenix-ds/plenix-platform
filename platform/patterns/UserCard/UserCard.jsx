@@ -38,8 +38,8 @@
        preview on hover is the hover card. Other props pass through to Card's <article>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Card } from '../../components/Card/Card.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';

@@ -40,7 +40,7 @@
      Every value is a --plx-comp-vote-tally-* token; the colors are Button's tone and Badge's.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -52,7 +52,7 @@ import LockIcon from 'plenix-platform/icons/plenix/lock';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
 const RESULT_TONE = { open: 'neutral', passing: 'active', failing: 'action-required', passed: 'success', failed: 'negative', tied: 'waiting', 'no-quorum': 'waiting' };

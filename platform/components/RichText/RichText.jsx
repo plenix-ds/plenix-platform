@@ -36,9 +36,9 @@
      Other props pass through to the container.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { cleanRichText } from '../../utils/richTextClean.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { cleanRichText } from '../../utils/richTextClean.ts';
 
 export function RichText({ variant = 'article', html, as: Tag = 'div', label, className, children, ...rest }) {
   devWarn('RichText', { variant }, { variant: ['article','compact'] });

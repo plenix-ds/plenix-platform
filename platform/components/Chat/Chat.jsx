@@ -107,8 +107,8 @@
      It was TypingIndicator in the loading family (batch 168); the owner placed it under Chat.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
@@ -121,11 +121,11 @@ import { Badge } from '../Badge/Badge.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { Attachment, Attachments, Voice, FileIcon } from './ChatMedia.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { formatBytes } from '../../utils/format.js';
-import { copyText } from '../../utils/clipboard.js';
+import { announce } from '../../utils/announce.tsx';
+import { formatBytes } from '../../utils/format.ts';
+import { copyText } from '../../utils/clipboard.ts';
 import { MessageActions, Reactions, Quote, ReplyPreview } from './ChatActions.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';

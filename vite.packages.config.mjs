@@ -52,7 +52,7 @@ const STAND_INS = [
 // and the Arabic opt-in
 function partEntries() {
   const entries = { index: path.join(P, 'index.js') };
-  for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/from '\.\/([^']+)'/g)) entries[m[1].replace(/\.jsx?$/, '')] = path.join(P, m[1]);
+  for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/from '\.\/([^']+)'/g)) entries[m[1].replace(/\.[jt]sx?$/, '')] = path.join(P, m[1]);
   entries['i18n/ar'] = path.join(P, 'i18n', 'ar.optin.js');
   return entries;
 }

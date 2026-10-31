@@ -42,12 +42,12 @@
        items in folders use a file or entity picker.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { isRtl } from '../../utils/direction.js';
+import { cx } from '../../utils/cx.ts';
+import { isRtl } from '../../utils/direction.ts';
 import { Icon, asIcon, iconKey } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useTruncated } from '../../utils/overflow.js';
+import { useTruncated } from '../../utils/overflow.ts';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';

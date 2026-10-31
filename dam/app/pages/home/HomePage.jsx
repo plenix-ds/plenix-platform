@@ -27,7 +27,7 @@ const DIALOGS = { ...BROWSE_DIALOGS, ...UPLOAD_DIALOGS, ...METADATA_DIALOGS, ...
 // the View menu's card sizes (s, m, l) as ContentGrid sizes; the Search workspace's own size names (S, M, L) too
 const GRID_SIZE = { s: 'xs', m: 'sm', l: 'md', S: 'xs', M: 'sm', L: 'md' };
 
-/* the command bar's fields (utils/fields.js) of each collection the home page lists: what Filter, Sort, Group and the
+/* the command bar's fields (utils/fields.ts) of each collection the home page lists: what Filter, Sort, Group and the
    quick filters work on. Dates are written "Aug 28, 2026" in the data; the fields read them as ISO dates. */
 const isoDate = (s) => { const d = new Date(s + ' 00:00 UTC'); return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10); };
 const uniq = (values) => Array.from(new Set(values)).sort();

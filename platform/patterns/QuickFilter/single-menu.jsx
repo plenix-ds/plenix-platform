@@ -9,7 +9,7 @@ import { MenuRadioGroup, MenuItem } from '../../components/Menu/Menu.jsx';
 import { singleChoice } from './single-choice.js';
 import { Text } from '../../components/Text/Text.jsx';
 import { Inline } from '../../components/Stack/Stack.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber } from '../../utils/format.ts';
 export function SingleQuickFilterMenu({ label, options = [], value, required, onChange, counts, strings }) {
   const chosen = singleChoice(options, value, required);
   const items = options.map(option => typeof option === 'string' ? { value: option, label: option } : option);

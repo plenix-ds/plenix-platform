@@ -41,17 +41,17 @@
      Other props of RetryNotice pass through to the Notice.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { tokenMs } from '../../utils/tokenTime.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatDuration } from '../../utils/format.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { tokenMs } from '../../utils/tokenTime.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatDuration } from '../../utils/format.ts';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
-import { fill } from '../../utils/fill.js';
-import { fillNodes } from '../../utils/fillNodes.jsx';
+import { fill } from '../../utils/fill.ts';
+import { fillNodes } from '../../utils/fillNodes.tsx';
 
 export function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, immediate = true } = {}) {
   const [state, setState] = React.useState({ status: immediate ? 'running' : 'idle', attempt: immediate ? 1 : 0, seconds: 0, error: null, result: undefined });

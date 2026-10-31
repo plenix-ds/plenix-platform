@@ -62,7 +62,7 @@ for (const { file } of files) {
 for (const { file } of files) {
   const text = fs.readFileSync(file, 'utf8');
   const lines = text.split(/\r?\n/);
-  const isCode = /\.(js|jsx|html)$/.test(file);
+  const isCode = /\.(js|jsx|ts|tsx|html)$/.test(file);
   lines.forEach((line, i) => {
     const n = i + 1;
     // defined: a used token exists (a name ending in "-" is built in code, e.g. 'var(--plx-ref-radius-' + n + 'px)')
@@ -103,7 +103,7 @@ for (const { file } of files) {
 // palette-class: an application never colors with a palette utility (plx-u-text-gray-700, plx-u-bg-white…): its look comes
 // from Platform components and their tokens (the owner, batches 199–202)
 for (const { file, app } of files) {
-  if (app === 'platform' || !/\.(jsx|js|html)$/.test(file)) continue;
+  if (app === 'platform' || !/\.(jsx|js|tsx|ts|html)$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
   for (const m of text.matchAll(/plx-u-(?:bg|text|border|border-[trbl]|accent|outline)-(?:white|black|gray-\d+|blue-\d+|red-\d+|green-\d+|brown-\d+|purple-\d+)(?![\w-])/g)) add('palette-class', file, text.slice(0, m.index).split('\n').length, m[0]);
 }

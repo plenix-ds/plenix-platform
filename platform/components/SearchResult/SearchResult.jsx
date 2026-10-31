@@ -54,8 +54,8 @@
      Other props pass through to the <li> (SearchResult) and the outer <div> (SearchResultGroup).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { Thumbnail } from '../Thumbnail/Thumbnail.jsx';

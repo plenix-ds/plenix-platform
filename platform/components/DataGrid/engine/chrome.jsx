@@ -18,7 +18,7 @@ import { EmptyState } from '../../EmptyState/EmptyState.jsx';
 import { Button } from '../../Button/Button.jsx';
 import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
 import { Menu, MenuItem, MenuDivider } from '../../Menu/Menu.jsx';
-import { cx } from '../../../utils/cx.js';
+import { cx } from '../../../utils/cx.ts';
 import { Inline } from '../../Stack/Stack.jsx';
 import { words } from './helpers.jsx';
 import { Text } from '../../Text/Text.jsx';

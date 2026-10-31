@@ -30,9 +30,9 @@
        (the toast's action) instead of asking first.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

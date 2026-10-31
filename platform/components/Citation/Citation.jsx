@@ -13,12 +13,12 @@
    Notes: A citation identifies a reference; it does not assert that the source was verified or supports every claim.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Stack,Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Link } from '../Link/Link.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 function hrefOf(value){if(typeof value!=='string'||!value.trim())return null;try{const u=new URL(value,'https://plenix.invalid/');return ['http:','https:'].includes(u.protocol)?value:null;}catch(e){return null;}}

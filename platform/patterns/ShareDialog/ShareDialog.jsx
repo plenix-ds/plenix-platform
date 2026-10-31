@@ -27,7 +27,7 @@ import { Tabs } from '../../components/Tabs/Tabs.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const ROLES = [{ value: 'viewer', label: 'Viewer' }, { value: 'editor', label: 'Editor' }];

@@ -22,7 +22,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Wizard({ steps = [], label, defaultStep = 0, navigation = 'linear', summary, onComplete, onCancel, strings, className }) {

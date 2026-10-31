@@ -1,7 +1,7 @@
 /* Plenix · CopyButton
    Summary: A button that copies one value (an ID, a path, a link, a code sample) to the clipboard and confirms it in
      place: the icon turns to a check (and the label to "Copied") for a moment, and the result is announced
-     (04 Actions › Clipboard › Copy). Built on Button and useClipboard (utils/clipboard.js).
+     (04 Actions › Clipboard › Copy). Built on Button and useClipboard (utils/clipboard.ts).
    Usage:
      <CopyButton value="ASSET-0142" label="Copy ID" />                                  an icon button beside the value
      <CopyButton value={link} showLabel label="Copy link" />                            the icon and its label
@@ -35,9 +35,9 @@
        form is for a value people may also read or select (a share link, an API endpoint).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useClipboard } from '../../utils/clipboard.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useClipboard } from '../../utils/clipboard.ts';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

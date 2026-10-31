@@ -25,11 +25,11 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const SIZES = ['xs', 'sm', 'md', 'lg'];
 

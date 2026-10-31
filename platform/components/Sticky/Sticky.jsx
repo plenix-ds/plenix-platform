@@ -28,7 +28,7 @@
      Other props pass through to the element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export const Sticky = React.forwardRef(function Sticky({ as: As = 'div', edge = 'top', fixed = false, shadow = 'stuck', safeArea = false, stuck = false, label, className, children, ...rest }, ref) {
   return (

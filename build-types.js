@@ -29,9 +29,10 @@ function structured(c) {
   });
   return seen ? out : null;
 }
-// the defaults a component's function gives its props: { name: 'value as written' } (spec-catalog.js defaultsOf())
+// the defaults a component's function gives its props: { name: 'value as written' } (spec-catalog.js defaultsOf()); a TypeScript
+// component's props type after the braces ({ … }: ButtonProps) is read past
 function defaultsOf(jsx, name) {
-  const re = new RegExp('export\\s+(?:const\\s+' + name + '\\s*=\\s*(?:React\\.forwardRef\\()?function\\s*\\w*|function\\s+' + name + ')\\s*\\(\\{([\\s\\S]*?)\\}\\s*[,)]');
+  const re = new RegExp('export\\s+(?:const\\s+' + name + '\\s*=\\s*(?:React\\.forwardRef\\()?function\\s*\\w*|function\\s+' + name + ')\\s*\\(\\{([\\s\\S]*?)\\}\\s*(?::\\s*[\\w$.<>\\[\\]|&, ]+?)?\\s*[,)]');
   const m = re.exec(jsx || ''); if (!m) return {};
   const out = {}; let depth = 0, cur = '', q = null;
   for (const ch of m[1] + ',') {
@@ -212,7 +213,7 @@ module.exports = function buildTypes(outFile, version) {
         lines.push(doc(text + (d ? ' Default: ' + d + '.' : '')) + '  ' + n + '?: ' + type + ';');
       });
       // a component whose function spreads the rest of its props (…, ...rest }) also takes its element's attributes
-      const params = new RegExp(String.raw`export\s+(?:function\s+` + name + String.raw`|const\s+` + name + String.raw`\s*=[^{(]*\(?\s*(?:function\s*\w*)?)\s*\(\s*\{([\s\S]*?)\}\s*[,)=]`).exec(src);
+      const params = new RegExp(String.raw`export\s+(?:function\s+` + name + String.raw`|const\s+` + name + String.raw`\s*=[^{(]*\(?\s*(?:function\s*\w*)?)\s*\(\s*\{([\s\S]*?)\}\s*(?::\s*[\w$.<>\[\]|&, ]+?)?\s*[,)=]`).exec(src);
       if (params && /\.\.\.\s*\w+\s*$/.test(params[1])) rest = true;
       if (!props.length) rest = true;   // a part or an undocumented component: its element's attributes and anything else
       const summary = first && head ? head.summary : '';

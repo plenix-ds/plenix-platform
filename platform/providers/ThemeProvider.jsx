@@ -37,7 +37,7 @@
 */
 import React from 'react';
 import { THEMES, DEFAULT_THEME } from './themes.js';
-import { cx } from '../utils/cx.js';
+import { cx } from '../utils/cx.ts';
 
 export const ThemeContext = React.createContext(null);
 

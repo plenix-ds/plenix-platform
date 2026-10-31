@@ -6,7 +6,7 @@
    Notes: Existing roles and the existing sparkle icon only. Caller owns AI output, data, authorization and persistence.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../Stack/Stack.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';

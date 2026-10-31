@@ -9,13 +9,13 @@
    Notes: Preserve source order when it matters. Asset grid already belongs to the DAM template record.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
 import { MediaViewer } from '../../components/MediaViewer/MediaViewer.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function AssetGallery({ items = [], layout = 'masonry', size = 'md', lightbox = false, onOpen, label, strings, className }) {

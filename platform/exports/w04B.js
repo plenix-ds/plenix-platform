@@ -4,5 +4,5 @@ export { AvatarGroup } from '../components/AvatarGroup/AvatarGroup.jsx';
 export { Persona } from '../components/Persona/Persona.jsx';
 export { ProgressCircle } from '../components/ProgressCircle/ProgressCircle.jsx';
 export { QRCode } from '../components/QRCode/QRCode.jsx';
-export { qrEncode } from '../utils/qr.js';
+export { qrEncode } from '../utils/qr.ts';
 export { VersionLabel } from '../components/VersionLabel/VersionLabel.jsx';

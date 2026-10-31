@@ -32,7 +32,7 @@
        name says the trend; link to the full chart (with its table) when there is one.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
+import { cx } from '../utils/cx.ts';
 import { summarizeSeries } from './a11y.js';
 import { scaleLinear, scaleBand } from './scales.js';
 import { EChartsHost } from './echarts/EChartsPlot.jsx';

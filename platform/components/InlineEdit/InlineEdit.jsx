@@ -36,9 +36,9 @@
      The read view is a button (it opens an editor), never a link; it shows a pencil on hover and focus.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
 import { Input, Textarea, Select } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';

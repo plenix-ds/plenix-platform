@@ -1,5 +1,5 @@
 {
-  "$description": "Hotkey (utils/hotkey.js): the timing of keyboard shortcut sequences.",
+  "$description": "Hotkey (utils/hotkey.ts): the timing of keyboard shortcut sequences.",
   "plx-sys": {
     "hotkey-sequence-timeout": {
       "$value": "1s",

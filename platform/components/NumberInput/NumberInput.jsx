@@ -48,8 +48,8 @@
      Numbers that are really codes (ZIP codes, card numbers, phone numbers) are text: use Input.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.ts';
 import { Input } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';

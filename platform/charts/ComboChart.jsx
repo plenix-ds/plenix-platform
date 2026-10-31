@@ -32,8 +32,8 @@
      Points are the frame's point marks; their radius is a combo-chart token.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand, scaleLinear, niceTicks, seriesColor } from './scales.js';
 import { Axis } from './parts/Axis.jsx';

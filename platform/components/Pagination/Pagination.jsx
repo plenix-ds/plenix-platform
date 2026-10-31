@@ -23,10 +23,10 @@
      The current page carries aria-current="page".
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { dataPhrase } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count));

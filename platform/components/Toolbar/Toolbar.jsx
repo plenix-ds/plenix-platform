@@ -37,11 +37,11 @@
      Other props reach the toolbar or group element.
 */
 import React from 'react';
-import { roveTo } from '../../utils/roving.js';
+import { roveTo } from '../../utils/roving.ts';
 import { useFocusGroup } from '../../hooks/useFocusable.js';
-import { cx } from '../../utils/cx.js';
-import { useBarFit } from '../../utils/barFit.js';
-import { foldOrder, menuOrder } from '../../utils/foldOrder.js';
+import { cx } from '../../utils/cx.ts';
+import { useBarFit } from '../../utils/barFit.ts';
+import { foldOrder, menuOrder } from '../../utils/foldOrder.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';

@@ -20,7 +20,7 @@
      equals one of the font-weight tokens (--plx-sys-font-weight-*). Any other inline property inside the engine, and
      everything Plenix draws on top of it, is checked as everywhere else.
      5. off the grid: an inline length that is neither a Platform token reference (var) nor a whole number of grid steps (the base
-        spacing token, --plx-ref-space-4px; utils/grid.js): "has to conform to fit into the grid system!!! important"
+        spacing token, --plx-ref-space-4px; utils/grid.ts): "has to conform to fit into the grid system!!! important"
         (owner, 2026-10-13). A length in another unit than px (rem, em, vw…) is reported too; a percentage is a
         proportion, not a length, and 0 is on every grid. Border widths and separator thickness may equal the thin-border token (owner, 2026-10-16).
    Inline styles written by JavaScript are otherwise allowed (owner, 2026-10-13): "sometimes we have situations in which
@@ -68,7 +68,7 @@
     var cls = (typeof el.className === 'string' ? el.className : '').trim().split(/\s+/).filter(Boolean).slice(0, 3);
     return cls.length ? s + '.' + cls.join('.') : s;
   }
-  // the grid step: the base spacing token in pixels (utils/grid.js reads the same token)
+  // the grid step: the base spacing token in pixels (utils/grid.ts reads the same token)
   function gridStep(el) {
     return context(el).step;
   }

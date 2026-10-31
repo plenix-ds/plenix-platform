@@ -17,10 +17,10 @@
      See Commerce.jsx.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber, formatLocale } from '../../utils/format.js';
-import { compareLevels } from '../../utils/fields.js';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber, formatLocale } from '../../utils/format.ts';
+import { compareLevels } from '../../utils/fields.ts';
 import { useCollectionView } from '../../hooks/useCollectionView.js';
 import { CommandBar, CommandBarSearch } from '../../patterns/CommandBar/CommandBar.jsx';
 import { FilterPanel } from '../../patterns/FilterPanel/FilterPanel.jsx';
@@ -44,9 +44,9 @@ import { Link } from '../../components/Link/Link.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Tabs } from '../../components/Tabs/Tabs.jsx';
 import { Table } from '../../components/Table/Table.jsx';
-import { useUid } from '../../utils/layer.js';
+import { useUid } from '../../utils/layer.ts';
 import { useCommercePage } from './shared.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 import { useStrings, createTranslator } from '../../providers/LocaleProvider.jsx';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
@@ -56,10 +56,10 @@ import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 import SettingsCategoriesIcon from 'plenix-platform/icons/plenix/settings-categories';
-import { dataPhrase } from '../../utils/dataText.jsx';
+import { dataPhrase } from '../../utils/dataText.tsx';
 
 
-// the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
+// the products' fields, for the filter, the category quick filter and the sort (utils/fields.ts)
 // Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; ProductListing passes its own words in strings.
 export function productFields(categories = [], strings) {
   // not a hook (it is exported, and ProductListing calls it inside useMemo): the page locale's catalog words, with strings on top

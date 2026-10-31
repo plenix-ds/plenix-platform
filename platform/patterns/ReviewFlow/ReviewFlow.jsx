@@ -52,10 +52,10 @@
      Decisions are final for the reviewer; to change one, decide again (the history keeps both).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber, formatDate } from '../../utils/format.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber, formatDate } from '../../utils/format.ts';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Field } from '../../components/Field/Field.jsx';
@@ -79,7 +79,7 @@ import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
 // the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it

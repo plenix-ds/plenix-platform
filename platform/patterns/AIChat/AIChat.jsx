@@ -14,8 +14,8 @@
      React version content, never model HTML. No generated answer is accepted or applied automatically.
 */
 import React from 'react';
-import { LiveRegion } from '../../utils/announce.jsx';
-import { cx } from '../../utils/cx.js';
+import { LiveRegion } from '../../utils/announce.tsx';
+import { cx } from '../../utils/cx.ts';
 import { Chat } from '../../components/Chat/Chat.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';

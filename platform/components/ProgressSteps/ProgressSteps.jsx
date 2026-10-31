@@ -40,14 +40,14 @@
      Other props pass through to the outer element.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
-import { dataPhrase } from '../../utils/dataText.jsx';
+import { dataPhrase } from '../../utils/dataText.tsx';
 
 
 export function ProgressSteps({ steps = [], current = 0, orientation = 'horizontal', variant = 'default', onStepClick, label, strings, className, ...rest }) {

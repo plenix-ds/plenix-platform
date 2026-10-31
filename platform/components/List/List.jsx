@@ -29,8 +29,8 @@
      A nested list starts under its statement's text (the same keyline); nest one level only (two at most).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 
 const kindOf = (ordered) => (ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null);

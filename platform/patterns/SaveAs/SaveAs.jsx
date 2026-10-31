@@ -18,7 +18,7 @@ import { TreeSelect } from '../../components/TreeSelect/TreeSelect.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function SaveAs({ locations = [], initialName = '', initialLocation = '', initialFormat = '', formats = [], onSave, onCancel, strings, className }) {
