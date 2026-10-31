@@ -88,6 +88,7 @@ import {
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
+import { headerKeys, resizeKeys, makeFocusCell, groupKeys, rowKeys, cellKeys, tableKeys } from './engine/keys.js';
 import {
   CellEditor,
   Check,
@@ -1444,12 +1445,7 @@ function NextEngine(props) {
         onClick={(e) => {
           if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
         }}
-        onKeyDown={(e) => {
-          if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
-            e.preventDefault();
-            column.toggleSorting();
-          }
-        }}
+        onKeyDown={headerKeys({ column })}
       >
         <div
           className={cx(
@@ -1564,24 +1560,7 @@ function NextEngine(props) {
             onMouseDown={(e) => startResize(e, column)}
             onTouchStart={(e) => startResize(e, column)}
             onDoubleClick={() => fit(c.field)}
-            onKeyDown={(e) => {
-              if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-                e.preventDefault();
-                resize(
-                  c.field,
-                  e.key === 'Home'
-                    ? column.columnDef.minSize
-                    : e.key === 'End'
-                      ? column.columnDef.maxSize
-                      : stepSize(
-                          column.getSize(),
-                          e.key === 'ArrowRight' ? 1 : -1,
-                          column.columnDef.minSize,
-                          column.columnDef.maxSize
-                        )
-                );
-              }
-            }}
+            onKeyDown={resizeKeys({ resize, c, column })}
           />
         ) : null}
       </Width>
@@ -1594,21 +1573,7 @@ function NextEngine(props) {
       node
     );
   };
-  const focusCell = (rowIndex, columnIndex, step = 1) => {
-    while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
-    const record = model[rowIndex],
-      column = ordered[columnIndex];
-    if (!record || (columnIndex !== null && !column)) return;
-    if (virtualized) virtual.scrollToIndex(rowIndex, { align: 'auto' });
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        const node = displayElements.current.get(record.displayKey || record.id);
-        (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
-          preventScroll: true
-        });
-      })
-    );
-  };
+  const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
   const groupNode = (group, sticky = false) => (
     <div
       key={group.id}
@@ -1628,27 +1593,7 @@ function NextEngine(props) {
       })}
       aria-level={group.depth + 1}
       aria-expanded={!collapsed.has(group.id)}
-      onKeyDown={(event) => {
-        if (event.target !== event.currentTarget) return;
-        if (['Enter', ' ', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
-          event.preventDefault();
-          toggleGroup(group.id, event.key === 'ArrowRight' ? true : event.key === 'ArrowLeft' ? false : undefined);
-        } else if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
-          event.preventDefault();
-          const headers = model.filter((row) => row.__group),
-            next = headers[headers.findIndex((row) => row.id === group.id) + (event.key === 'ArrowDown' ? 1 : -1)];
-          if (next) {
-            virtual.scrollToIndex(model.indexOf(next), { align: 'center' });
-            requestAnimationFrame(() =>
-              requestAnimationFrame(() =>
-                holder.current
-                  ?.querySelector('.' + B + '__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')
-                  ?.focus({ preventScroll: true })
-              )
-            );
-          }
-        }
-      }}
+      onKeyDown={groupKeys({ toggleGroup, group, model, virtual, holder, B })}
     >
       <div
         className={cx(B + '__group-head', group.separated && !sticky && B + '__group-head--gap')}
@@ -1867,27 +1812,7 @@ function NextEngine(props) {
             emit('rowDblClick', e, rowApi);
           }
         }}
-        onKeyDown={(e) => {
-          if (
-            e.key === 'Enter' &&
-            !e.defaultPrevented &&
-            (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')
-          ) {
-            e.preventDefault();
-            chooseRow(row, e);
-            emit('rowClick', e, rowApi);
-            props.onRowClick?.(record, e);
-            if (props.onRowClick || on.rowClick) {
-              unread.open(record);
-              setOwnOpen(row.id);
-            }
-          }
-          if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
-            e.preventDefault();
-            const step = e.key === 'ArrowDown' ? 1 : -1;
-            focusCell(model.indexOf(row) + step, null, step);
-          }
-        }}
+        onKeyDown={rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })}
       >
         {selectable ? (
           <div
@@ -1966,32 +1891,19 @@ function NextEngine(props) {
               onDoubleClick={() => {
                 if (canEdit) setEditing({ key: row.id, field: c.field, value });
               }}
-              onKeyDown={(event) => {
-                if (isStatic || event.target !== event.currentTarget) return;
-                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
-                  if (document.getSelection()?.toString()) return;
-                  event.preventDefault();
-                  navigator.clipboard.writeText(valueText(value));
-                  return;
-                }
-                if (event.key === 'Enter' && canEdit) {
-                  event.preventDefault();
-                  setEditing({ key: row.id, field: c.field, value });
-                  return;
-                }
-                const index = model.indexOf(row),
-                  at = ordered.indexOf(column),
-                  keys = {
-                    ArrowDown: [index + 1, at],
-                    ArrowUp: [index - 1, at],
-                    ArrowLeft: [index, at + (isRtl(frame.current) ? 1 : -1)],
-                    ArrowRight: [index, at + (isRtl(frame.current) ? -1 : 1)]
-                  };
-                if (keys[event.key]) {
-                  event.preventDefault();
-                  focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
-                }
-              }}
+              onKeyDown={cellKeys({
+                isStatic,
+                value,
+                canEdit,
+                setEditing,
+                row,
+                c,
+                model,
+                ordered,
+                column,
+                frame,
+                focusCell
+              })}
               data-plx-sticky={pinned && sticky ? sticky + 'px' : undefined}
               data-plx-text-follow={c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family'}
               className={cx(
@@ -2381,12 +2293,7 @@ function NextEngine(props) {
             data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
             role="rowgroup"
             tabIndex={isStatic ? undefined : 0}
-            onKeyDown={(event) => {
-              if (event.target === event.currentTarget && event.key === 'ArrowDown') {
-                event.preventDefault();
-                focusCell(first, 0);
-              }
-            }}
+            onKeyDown={tableKeys({ focusCell, first })}
             onScroll={(e) => {
               if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
               if (
