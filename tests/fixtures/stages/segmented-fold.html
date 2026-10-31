@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented fold stage · Plenix review</title>
+<!-- The stage for #276: the side panel's Show control (RedSave), in a card, alone and in a row with a
+     button. ?w=narrow puts it in a 360px side panel; the test toggles that class to narrow and widen it. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="stage.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="../../../platform/engines/plenix-engines.js"></script>
+</head>
+<body class="rv-page">
+<div id="root" class="rv-doc"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  const options = [{ value: 'all', label: 'Everyone (17)' }, { value: 'new', label: 'Not saved yet' }, { value: 'saved', label: 'Already saved' }];
+  function Stage() {
+    const [show, setShow] = React.useState('new');
+    window.__seg276 = show;
+    return h('div', { id: 'stage', className: new URLSearchParams(location.search).get('w') === 'narrow' ? 'rv-narrow' : undefined },
+      h(P.Card, null,
+        h(P.Stack, { gap: 'md' },
+          h('div', { id: 'alone' }, h(P.SegmentedControl, { label: 'Show', options, value: show, onChange: setShow })),
+          h(P.Inline, { id: 'row', gap: 'sm' }, h(P.SegmentedControl, { label: 'Show in row', options, value: show, onChange: setShow }), h(P.Button, { variant: 'secondary' }, 'Scan page')))));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Stage));
+})();
+</script>
+</body>
+</html>

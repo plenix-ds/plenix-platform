@@ -2,7 +2,7 @@
    Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
      a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
      dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
-     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
+     anchor positioning (utils/floating.ts), so no card, pane or scroll area can cover or clip it.
    Usage:
      <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
      <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
@@ -59,10 +59,10 @@
      ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { focusables, useLayer, useUid } from '../../utils/layer.js';
-import { useFloating, PLACEMENTS, TOP_LAYER } from '../../utils/floating.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { focusables, useLayer, useUid } from '../../utils/layer.ts';
+import { useFloating, PLACEMENTS, TOP_LAYER } from '../../utils/floating.ts';
 import { Button } from '../Button/Button.jsx';
 import { Sheet } from '../Sheet/Sheet.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';

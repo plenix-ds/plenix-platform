@@ -1,5 +1,5 @@
 {
-  "$description": "The Formats standard: how Plenix writes numbers, units, dates, money, percentages, names, addresses and phone numbers. platform/utils/format.js applies it on the browser's Intl formatters (its FORMATS constant is this data; tests/formats.test.js keeps the two equal). Separators, symbol positions and date orders always come from the locale, never from here.",
+  "$description": "The Formats standard: how Plenix writes numbers, units, dates, money, percentages, names, addresses and phone numbers. platform/utils/format.ts applies it on the browser's Intl formatters (its FORMATS constant is this data; tests/formats.test.js keeps the two equal). Separators, symbol positions and date orders always come from the locale, never from here.",
   "number": {
     "$description": "Precision: the decimals a value gets when the caller does not fix them; keep one precision per column.",
     "decimals": { "default": 0, "ratio": 0, "compact": 1, "bytes": 1 }

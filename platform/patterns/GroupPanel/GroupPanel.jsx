@@ -8,7 +8,7 @@
      <DataGrid … groupBy={groups} sort={groups.concat(sort)} />
      (or useCollectionView)
    Props:
-     fields: the fields rows can be grouped by (utils/fields.js); groupable: false excludes a field; date fields offer UTC calendar periods
+     fields: the fields rows can be grouped by (utils/fields.ts); groupable: false excludes a field; date fields offer UTC calendar periods
      value: the levels: [{ field, dir: "asc" | "desc", hideEmpty, interval: "day" | "week" | "month" | "year", range }], the first the outer group
      onChange(value): runs on every change
      table: the table controller, or a ref to it: Collapse all and Expand all close and open its
@@ -30,8 +30,8 @@ import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { PanelTrigger, PanelHead, Pick, useReorder } from '../CommandBar/panel-parts.jsx';
-import { fill } from '../../utils/fill.js';
-import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.js';
+import { fill } from '../../utils/fill.ts';
+import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import GroupByIcon from 'plenix-platform/icons/plenix/group-by';
 import MoreIcon from 'plenix-platform/icons/plenix/more';

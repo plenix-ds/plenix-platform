@@ -27,7 +27,7 @@ An icon file cannot be used to sneak harmful code into a Plenix page.
 - Added in commit ac70356c "Icons stage 4 (#285): a loaded icon file is untrusted".
 
 ## How it checks
-- Loads `platform/utils/iconSafety.js` (the allow-list reader) in Node, the way the formats test loads its module. No browser.
+- Loads `platform/utils/iconSafety.ts` (the allow-list reader) in Node, the way the formats test loads its module. No browser.
 - Feeds it a good sample and many hostile variants, and reads every `.svg` file in `platform/icons`, `platform/icons/custom` and `platform/icons/library`.
 
 ## What a failure means
@@ -42,4 +42,4 @@ An icon file cannot be used to sneak harmful code into a Plenix page.
 
 ## What it needs
 - Node only (no browser, no server), with the installed packages (`@babel/standalone`).
-- `platform/utils/iconSafety.js`, `platform/icons/layout.js` and the icon files in `platform/icons/`.
+- `platform/utils/iconSafety.ts`, `platform/icons/layout.js` and the icon files in `platform/icons/`.

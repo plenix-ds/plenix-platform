@@ -98,9 +98,9 @@
      Other props go on the header element (AppHeader) or the button (AppHeader.Item, AppHeader.Action).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { createPortal } from 'react-dom';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
@@ -112,7 +112,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useSession } from '../../providers/SessionProvider.jsx';
 import { PLENIX_APPS, appById, appHref, appIcon } from '../../providers/apps.js';
-import { useLayer, useUid } from '../../utils/layer.js';
+import { useLayer, useUid } from '../../utils/layer.ts';
 import { useDensity } from '../../hooks/useDensity.js';
 import { useMedia, below, tokenPx } from '../AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
@@ -129,7 +129,7 @@ import SignOutIcon from 'plenix-platform/icons/plenix/sign-out';
 import DensityCompactIcon from 'plenix-platform/icons/plenix/density-compact';
 import DensityStandardIcon from 'plenix-platform/icons/plenix/density-standard';
 import DensityComfortableIcon from 'plenix-platform/icons/plenix/density-comfortable';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel,
   action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {

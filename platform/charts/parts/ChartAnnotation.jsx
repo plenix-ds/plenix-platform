@@ -24,7 +24,7 @@
        the chart-parts tokens (existing roles: content colors and the sunken surface).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 // SVG geometry, in pixels on the 4px grid: the ring's radius and the leader line's length
 const RING = 6, LEADER = 24;

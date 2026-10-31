@@ -11,7 +11,7 @@
    Notes: Compose inside AppShell.panel for the inspector. Caller owns context permissions and transport cancellation.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { SidePanel } from '../SidePanel/SidePanel.jsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';

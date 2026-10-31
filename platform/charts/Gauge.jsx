@@ -32,9 +32,9 @@
        gauge: to compare values, use a bar or bullet chart; for a value without a range, a metric.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
-import { dataWhenText } from '../utils/dataText.jsx';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
+import { dataWhenText } from '../utils/dataText.tsx';
 import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Badge } from '../components/Badge/Badge.jsx';

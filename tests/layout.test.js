@@ -34,17 +34,17 @@ child({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane
 // the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): when AppShell or the side panel changed
 child({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns/NavPane'] }, 'monitor-widths.test.js');
 // the toolbar and footer ladder (issue 477, stage 4): when the Toolbar, the ActionBar, the fold helpers or Button changed
-child({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar', 'utils/barFit.js', 'utils/foldOrder.js'] }, 'toolbar-ladder.test.js');
+child({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar', 'utils/barFit.ts', 'utils/foldOrder.ts'] }, 'toolbar-ladder.test.js');
 // field sizing in bars (issues 558 and 554): when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
-child({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.js', 'utils/overflow.js', 'system/layout-modes.css'] }, 'field-sizing.test.js');
+child({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.ts', 'utils/overflow.ts', 'system/layout-modes.css'] }, 'field-sizing.test.js');
 // controls follow read-only (issue 262, PR 1): when one of them or the ReadOnly provider changed
-child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'providers/ReadOnly.jsx'] }, 'readonly-adoption.test.js');
+child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'components/TimePicker', 'components/Cascader', 'components/RelativeDateInput', 'providers/ReadOnly.jsx'] }, 'readonly-adoption.test.js');   // the last three added in issue 762: the test checks them too
 // descriptions through useDescribedBy (issue 262, PR 3): when one of those controls or the helper changed
-child({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.js'] }, 'describedby-adoption.test.js');
+child({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.ts'] }, 'describedby-adoption.test.js');
 // pressing through usePressable (issue 262, PR 4): when the DataGrid or the hook changed
 child({ units: ['components/DataGrid', 'hooks/usePressable.js', 'components/Menu', 'components/Popover'] }, 'pressing-adoption.test.js');
 // hand-made live regions through LiveRegion (issue 262, PR 7): when one of those units or the helper changed
-child({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.jsx'] }, 'announce-adoption.test.js');
+child({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.tsx'] }, 'announce-adoption.test.js');
 // every suite page has one level-1 heading (issue 603): when a suite page or the hidden-text component changed
 child({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'], apps: ['dashboard', 'projects', 'contacts', 'notes', 'messages', 'calendar', 'tasks', 'bookmarks', 'files', 'settings'] }, 'page-h1.test.js');
 child({ units: ['components/Chat', 'components/Avatar'] }, 'chat-s1-637.test.js');   // the chat bubbles and photos (issue 637)
@@ -79,29 +79,29 @@ child({ units: ['patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePane
 // SplitWorkspace passes its list's DataGrid options (issue 681): when the grid's units or the test's own file changed; a
 // change under templates/ is not a unit in changed.js and reaches the slice, which starts it too
 child({ units: ['components/DataGrid', 'patterns/SplitView', 'patterns/ReadingPane'] }, 'splitworkspace-grid-681.test.js');
-child({ units: ['components/Banner', 'components/Field', 'components/Checkbox', 'utils/dataText.jsx'] }, 'data-phrase-260b-feedback.test.js');   // a count in a banner, hint or check description is in the data font (issue 260)
+child({ units: ['components/Banner', 'components/Field', 'components/Checkbox', 'utils/dataText.tsx'] }, 'data-phrase-260b-feedback.test.js');   // a count in a banner, hint or check description is in the data font (issue 260)
 child({ units: ['patterns/SettingsLayout'] }, 'data-phrase-260b-settings.test.js');   // a count in a settings description is in the data font (issue 260)
 child({ units: ['components/Metric', 'charts', 'patterns/RecordPage', 'patterns/ActivityList', 'components/DataGrid', 'components/Table'] }, 'data-phrase-260b-data.test.js');   // a count in a metric, chart, record header, activity row or table value is in the data font (issue 260)
 // the Messages app on the Chat parts and the Chat spec page (issue 637, slice 6): messages/ is an app in changed.js, not a unit (issue 756)
 child({ units: ['components/Chat', 'components/Avatar'], apps: ['messages'] }, 'messages-chat-s6.test.js');
-child({ units: ['utils/richTextClean.js', 'components/RichText', 'components/RichTextEditor'] }, 'rich-text-clean-689.test.js');   // the rich-text sanitizer against hostile input (issue 689)
+child({ units: ['utils/richTextClean.ts', 'components/RichText', 'components/RichTextEditor'] }, 'rich-text-clean-689.test.js');   // the rich-text sanitizer against hostile input (issue 689)
 // the keyboard patterns of the parts keyboard.test.js does not cover (issue 691)
 child({ units: ['components/Menu', 'components/SplitButton', 'components/Combobox', 'components/Dialog', 'components/Sheet', 'components/Popover', 'patterns/Popconfirm', 'components/Slider', 'components/Checkbox', 'patterns/SplitView', 'components/Resizable', 'components/Calendar', 'components/OtpInput'] }, 'keyboard-apg-691.test.js');
 // the last parts without a keyboard test, and the APG gaps (issue 706)
 child({ units: ['components/CommandMenu', 'components/EntityPicker', 'components/MillerColumns', 'components/RowButton', 'patterns/AssignControl', 'patterns/ImageUpload', 'patterns/RenameAction', 'components/InlineEdit', 'patterns/SessionTimeout', 'patterns/DeleteFlow', 'patterns/DraftState', 'patterns/QueryBuilder', 'patterns/FilterBar', 'patterns/SearchWorkspace', 'components/ProductOptions', 'components/RadioTiles', 'components/ColorSwatch', 'components/Combobox', 'components/Menu'] }, 'keyboard-706.test.js');
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): when CollapsibleSection, NavList, Tooltip or the truncation helper changed
-child({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] }, 'section-headings-502.test.js');
+child({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.ts'] }, 'section-headings-502.test.js');
 // Joined in issue 756 (each was started by hand only). A change under platform/charts/, platform/templates/ or
 // platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
 // a date with no time is that calendar day in every time zone (issue 342)
-child({ units: ['components/DatePicker', 'components/Time', 'utils/format.js'] }, 'date-only.test.js');
+child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
 child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.js'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)
-child({ units: ['utils/format.js'] }, 'line-ticks-593.test.js');
+child({ units: ['utils/format.ts'] }, 'line-ticks-593.test.js');
 // a Select or Combobox holding a number or a date shows it in the data font (issue 252)
-child({ units: ['components/Input', 'components/Combobox', 'utils/dataText.jsx'] }, 'select-data-font.test.js');
+child({ units: ['components/Input', 'components/Combobox', 'utils/dataText.tsx'] }, 'select-data-font.test.js');
 // right to left (issue 413): the app frame; charts (time runs left to right); CTM's question block in a page of the other
 // direction; the editing and time parts; every suite page
 child({ units: ['patterns/AppShell', 'patterns/AppHeader', 'patterns/NavPane', 'patterns/SidePanel', 'patterns/CommandBar', 'components/Tooltip', 'components/Toast'], apps: ['projects', 'dam'] }, 'rtl-app-frame.test.js');
@@ -305,7 +305,7 @@ async function cleanup() {
     extra.remove(); return out;
   });
   check('VisuallyHidden: screen-reader texts at the page end take no room, so the page does not scroll #288', quiet.scroll <= 0 && quiet.box[0] <= 1 && quiet.box[1] <= 1, JSON.stringify(quiet));
-  // #288, the bug as RedSave met it: a page with a sortable list (dnd.js appends its keyboard instructions to the body) and
+  // #288, the bug as RedSave met it: a page with a sortable list (dnd.ts appends its keyboard instructions to the body) and
   // a live region that has spoken, left to right and right to left: the document is no taller and no wider than the window
   const quietBoth = await page.evaluate(async () => {
     const P = window.Plenix, h = React.createElement, root = document.getElementById('root'), out = {};

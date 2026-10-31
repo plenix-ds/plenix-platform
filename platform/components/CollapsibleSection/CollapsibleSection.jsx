@@ -31,17 +31,17 @@
        chevron at the end.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Icon, asIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useTruncated } from '../../utils/overflow.js';
+import { useTruncated } from '../../utils/overflow.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
-import { dataPhrase } from '../../utils/dataText.jsx';
+import { dataPhrase } from '../../utils/dataText.tsx';
 
 
 export function CollapsibleSection({ title, icon, expanded, defaultExpanded = true, onToggle, actions, headingLevel = 3, className, bodyClassName, children }) {

@@ -53,13 +53,13 @@
        ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { dataWhenText } from '../utils/dataText.jsx';
-import { isRtl } from '../utils/direction.js';
+import { cx } from '../utils/cx.ts';
+import { dataWhenText } from '../utils/dataText.tsx';
+import { isRtl } from '../utils/direction.ts';
 import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Button } from '../components/Button/Button.jsx';
-import { snapToGrid } from '../utils/grid.js';
+import { snapToGrid } from '../utils/grid.ts';
 import { useStrings } from '../providers/LocaleProvider.jsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 

@@ -16,10 +16,10 @@
      See Commerce.jsx.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatDate, formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatDate, formatNumber } from '../../utils/format.ts';
 import { useCollectionView } from '../../hooks/useCollectionView.js';
 import { CommandBar, CommandBarSearch } from '../../patterns/CommandBar/CommandBar.jsx';
 import { FilterPanel } from '../../patterns/FilterPanel/FilterPanel.jsx';
@@ -43,7 +43,7 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
 import { CommerceLine, OrderSummary, orderTotals, money, useCommercePage } from './shared.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
@@ -55,7 +55,7 @@ import OpenIcon from 'plenix-platform/icons/plenix/open';
 import ProgressIcon from 'plenix-platform/icons/plenix/progress';
 import ReplyIcon from 'plenix-platform/icons/plenix/reply';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
-import { dataPhrase } from '../../utils/dataText.jsx';
+import { dataPhrase } from '../../utils/dataText.tsx';
 
 // a calendar day ("2026-10-15") read in the reader's locale, at noon so no time zone moves it to another day
 const day = (iso) => (iso ? formatDate(/T/.test(iso) ? iso : iso + 'T12:00:00') : '');

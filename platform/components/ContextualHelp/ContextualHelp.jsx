@@ -28,8 +28,8 @@
      Help that everyone needs is helper text, not hidden help; errors and warnings are never contextual help.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Link } from '../Link/Link.jsx';

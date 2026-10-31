@@ -34,15 +34,15 @@
        change it.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ImageCrop } from '../ImageUpload/ImageUpload.jsx';
-import { formatBytes } from '../../utils/format.js';
+import { formatBytes } from '../../utils/format.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 

@@ -29,8 +29,8 @@
        connector and the value axis are tokens (--plx-comp-waterfall-chart-*). Up to about ten steps: group the small ones.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand, scaleLinear, seriesColor } from './scales.js';
 import { scalePosition } from './parts/position.js';

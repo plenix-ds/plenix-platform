@@ -65,8 +65,8 @@
      owner). Pictures people recognize by sight belong in a grid of MediaCards (FileBrowser's grid).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { formatBytes, formatDate, formatNumber } from '../../utils/format.ts';
 import { File } from '../../components/File/File.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
@@ -77,7 +77,7 @@ import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Menu, MenuItem, MenuRadioGroup, MenuSub } from '../../components/Menu/Menu.jsx';
 import { RenameAction } from '../RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
-import { useDraggable, useDropTarget } from '../../utils/dnd.js';
+import { useDraggable, useDropTarget } from '../../utils/dnd.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
 import FolderIcon from 'plenix-platform/icons/plenix/folder';
@@ -88,7 +88,7 @@ import RenameIcon from 'plenix-platform/icons/plenix/rename';
 import SortAscendingIcon from 'plenix-platform/icons/plenix/sort-ascending';
 import SortDescendingIcon from 'plenix-platform/icons/plenix/sort-descending';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const idOf = (f) => (f.id === undefined ? f.name : f.id);

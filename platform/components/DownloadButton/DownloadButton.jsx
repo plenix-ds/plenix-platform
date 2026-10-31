@@ -35,12 +35,12 @@
      Opening a file in the browser is a Link, not a download.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { ProgressCircle } from '../ProgressCircle/ProgressCircle.jsx';
-import { formatBytes, formatPercent } from '../../utils/format.js';
-import { announce } from '../../utils/announce.jsx';
+import { formatBytes, formatPercent } from '../../utils/format.ts';
+import { announce } from '../../utils/announce.tsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import DownloadArrowIcon from 'plenix-platform/icons/plenix/download-arrow';
 

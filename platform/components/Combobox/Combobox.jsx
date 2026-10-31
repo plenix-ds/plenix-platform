@@ -63,18 +63,18 @@
      Other props pass through to the <input>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { useFloating, TOP_LAYER } from '../../utils/floating.js';
+import { announce } from '../../utils/announce.tsx';
+import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
-import { isDataValue } from '../../utils/dataValue.js';
-import { formatNumber } from '../../utils/format.js';
+import { isDataValue } from '../../utils/dataValue.ts';
+import { formatNumber } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useTruncated } from '../../utils/overflow.js';
+import { useTruncated } from '../../utils/overflow.ts';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 

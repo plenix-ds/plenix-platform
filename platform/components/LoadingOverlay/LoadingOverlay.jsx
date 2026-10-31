@@ -28,7 +28,7 @@
      Other props pass through to the region element.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Scrim } from '../Scrim/Scrim.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';

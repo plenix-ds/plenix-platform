@@ -53,16 +53,16 @@
      A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { arrowStep, isRtl } from '../../utils/direction.js';
+import { cx } from '../../utils/cx.ts';
+import { arrowStep, isRtl } from '../../utils/direction.ts';
 import { SIZE_STEPS, GRID_MIN, GRID_BOX_MAX } from '../../utils/sizeSteps.js';
-import { gridStep, gridWithin } from '../../utils/grid.js';
-import { paneMax } from '../../utils/paneLimit.js';
+import { gridStep, gridWithin } from '../../utils/grid.ts';
+import { paneMax } from '../../utils/paneLimit.ts';
 import { resizeScale } from './resize-scale.js';
-import { useFloating } from '../../utils/floating.js';
-import { LiveRegion } from '../../utils/announce.jsx';
+import { useFloating } from '../../utils/floating.ts';
+import { LiveRegion } from '../../utils/announce.tsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;

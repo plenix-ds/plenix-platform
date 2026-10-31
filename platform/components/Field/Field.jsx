@@ -39,14 +39,14 @@
        the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useTruncated } from '../../utils/overflow.js';
+import { cx } from '../../utils/cx.ts';
+import { useTruncated } from '../../utils/overflow.ts';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber } from '../../utils/format.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { dataWhenText } from '../../utils/dataText.jsx';
+import { dataWhenText } from '../../utils/dataText.tsx';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
@@ -77,7 +77,7 @@ export function Field({ label, hideLabel = false, description, error, required =
     if (!max || !near || said.current === null) { said.current = length; return; }
     if (said.current !== length) { said.current = length; announce(over ? countText(t.over, length - max) : countText(t.left, max - length)); }
   }, [length, max, near, over, t.over, t.left]);
-  // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
+  // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.ts)
   const describedBy = useDescribedBy(child.props['aria-describedby'], descId, countId, errId);
   const props = {
     id: child.props.id || controlId,

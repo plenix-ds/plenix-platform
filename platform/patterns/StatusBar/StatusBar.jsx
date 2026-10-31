@@ -10,7 +10,7 @@
      It is a footer (contentinfo landmark) on the inverse surface.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function StatusBar({ start, end, className }) {
   return (

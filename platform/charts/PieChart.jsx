@@ -41,8 +41,8 @@
        No style is written here.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber, formatPercent } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber, formatPercent } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
@@ -51,7 +51,7 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { useChartInteraction } from './interaction.js';
 import { legendItems, finite } from './chart-kit.js';
 import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';
-import { snapToGrid } from '../utils/grid.js';
+import { snapToGrid } from '../utils/grid.ts';
 import { useStrings } from '../providers/LocaleProvider.jsx';
 
 const VARIANTS = ['pie', 'donut', 'half'];

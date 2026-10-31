@@ -23,7 +23,7 @@ import { Fieldset } from '../../components/Fieldset/Fieldset.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function FormFlow({ mode = 'create', surface = 'page', open = true, title, initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel, children, strings, className }) {

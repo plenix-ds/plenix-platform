@@ -12,14 +12,14 @@
    Notes: Identification does not imply accuracy, certainty or verified sources. No new accent or color is introduced.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Badge } from '../Badge/Badge.jsx';
 import { Inline } from '../Stack/Stack.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Popover } from '../Popover/Popover.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export const AILabel=React.forwardRef(function AILabel({variant='badge',children,explanation,strings,className},ref){
   devWarn('AILabel', { variant }, { variant: ['badge','inline','explanation'] });

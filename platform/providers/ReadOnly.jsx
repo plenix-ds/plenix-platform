@@ -35,7 +35,7 @@
        with the same stops (readOnlyProps, inside the Platform), so their own readOnly works outside a region too.
 */
 import React from 'react';
-import { useDescriptionId, joinIds } from '../utils/describedBy.js';
+import { useDescriptionId, joinIds } from '../utils/describedBy.ts';
 import { Icon } from '../components/Icon/Icon.jsx';
 import { Text } from '../components/Text/Text.jsx';
 import { Inline } from '../components/Stack/Stack.jsx';

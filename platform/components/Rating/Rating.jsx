@@ -16,8 +16,8 @@
      Read-only, it is announced as "Rating: 3 of 5".
 */
 import React from 'react';
-import { arrowStep } from '../../utils/direction.js';
-import { cx } from '../../utils/cx.js';
+import { arrowStep } from '../../utils/direction.ts';
+import { cx } from '../../utils/cx.ts';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
 export function Rating({ value = 0, onChange, max = 5, label, readOnly = false, className, ...rest }) {

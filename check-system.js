@@ -42,7 +42,7 @@ const files = collect();
 const { add, runModules, finish } = reporter();
 
 for (const { file } of files) {
-  if (!/\.(jsx|js|html)$/.test(file)) continue;
+  if (!/\.(jsx|js|tsx|ts|html)$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
   const lineOf = (i) => text.slice(0, i).split('\n').length;
   // page-layout: an application says what a page is (<AppShell page="settings">); the layout standard picks the mode

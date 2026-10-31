@@ -3,14 +3,14 @@
      rules: each rule is a field, an operator in the field type's words and a value in the field type's own control (text,
      a NumberInput, a DatePicker, a Combobox of options); a group joins its rules with And or Or and can hold groups of its
      own (nested, up to maxDepth). The text view reads the whole query back as one sentence. It uses the command bar's
-     condition model (utils/fields.js), so matchesFilter tests rows against it like FilterPanel's filter.
+     condition model (utils/fields.ts), so matchesFilter tests rows against it like FilterPanel's filter.
    Usage:
      const [query, setQuery] = React.useState({ join: 'and', items: [] });
      <QueryBuilder label="Audience" fields={fields} value={query} onChange={setQuery} matches={rows.filter((r) => matchesFilter(query, r, fields)).length} />
      formatQuery(query, fields)   // "Type is any of “Image” and (Size > 40 or Modified is within the past week)"
    Props:
      fields: the fields rules test: [{ value, label, kind: "text" | "select" | "multi" | "number" | "date", options, get }]
-       (utils/fields.js)
+       (utils/fields.ts)
      value: the query: { join: "and" | "or", items: [rule | { group: true, id, join, items }] }; a rule is { id, field, op,
        value } (FilterPanel's filter, with groups to any depth)
      onChange(value): runs on every change
@@ -39,10 +39,10 @@
      hard to read; keep maxDepth at 3 or less.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
-import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.js';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber } from '../../utils/format.ts';
+import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
@@ -53,10 +53,10 @@ import { CodeBlock } from '../../components/CodeBlock/CodeBlock.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { createTranslator } from '../../providers/LocaleProvider.jsx';
-import { formatLocale } from '../../utils/format.js';
+import { formatLocale } from '../../utils/format.ts';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 const NO_VALUE = { empty: true, nempty: true };

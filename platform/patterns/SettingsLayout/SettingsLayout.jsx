@@ -51,9 +51,9 @@
 */
 import React from 'react';
 import { useAppLayout } from '../AppShell/AppShell.jsx';
-import { cx } from '../../utils/cx.js';
-import { dataWhenText } from '../../utils/dataText.jsx';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { dataWhenText } from '../../utils/dataText.tsx';
+import { useUid } from '../../utils/layer.ts';
 import { useViewState, readView } from '../../providers/ScreenLocation.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { NavPane } from '../NavPane/NavPane.jsx';

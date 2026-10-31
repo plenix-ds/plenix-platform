@@ -12,7 +12,7 @@
      Other props pass through to the <div>.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 
 export function Divider({ orientation = 'horizontal', className, ...rest }) {
   return <div role="separator" aria-orientation={orientation} className={cx('plx-divider', 'plx-divider--' + orientation, className)} {...rest} />;

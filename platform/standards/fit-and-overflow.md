@@ -13,7 +13,7 @@ How every Plenix part behaves when its content does not fit its space (owner, 20
 - Every cut keeps a way to see the whole thing.
 - Toolbars, menu bars and action bars skip the reflow step. They are always one row: a bar never wraps.
 - A step is set by the width of the space the content sits in (a container query), not by the window. A pane at 192px adapts the same way in any window.
-- Where a step depends on how long the content is (four short labels or two long ones), it is measured, with the Platform's own tools: `useOverflow`, `useFold` and `useTruncated` (`platform/utils/overflow.js`).
+- Where a step depends on how long the content is (four short labels or two long ones), it is measured, with the Platform's own tools: `useOverflow`, `useFold` and `useTruncated` (`platform/utils/overflow.ts`).
 - Every step lands on the 4px grid. A heading on two lines uses a 16px line height; with 4px above and below, two lines are 40px and one line stays 32px.
 - Every step uses tokens only: no new colors, no inline styles, no `!important`, corners 2 to 6px. New names live in the existing tiers (`--plx-ref-`, `--plx-sys-`, `--plx-comp-`).
 - A container query writes its width in the query (CSS cannot read a token there). Each width is a 4px-grid value with a token of the same value beside it, as `field.css` (180px) and `entity-header.css` (640px) do.

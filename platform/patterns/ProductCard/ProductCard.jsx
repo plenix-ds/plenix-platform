@@ -56,9 +56,9 @@
      Other props go on the <article>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { formatCurrency, formatNumber } from '../../utils/format.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { formatCurrency, formatNumber } from '../../utils/format.ts';
 import { Image } from '../../components/Image/Image.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Rating } from '../../components/Rating/Rating.jsx';
@@ -71,8 +71,8 @@ import DoNotDisturbIcon from 'plenix-platform/icons/plenix/do-not-disturb';
 import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TagsIcon from 'plenix-platform/icons/plenix/tags';
-import { dataPhrase } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 const RATIOS = ['1-1', '4-3', '3-4'];
 

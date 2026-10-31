@@ -19,7 +19,7 @@
        written. Use the lines of one direction in most charts: horizontal for columns and lines, vertical for bars.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { scalePosition, scaleTicks } from './position.js';
 
 export function GridLines({ scale, direction = 'horizontal', inner, ticks, className }) {

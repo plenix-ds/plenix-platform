@@ -28,8 +28,8 @@
        UI text, the ring values the data font. Compare three items at most.
 */
 import React from 'react';
-import { cx } from '../utils/cx.js';
-import { formatNumber } from '../utils/format.js';
+import { cx } from '../utils/cx.ts';
+import { formatNumber } from '../utils/format.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleLinear } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';

@@ -48,12 +48,12 @@
        lang override it, for text in the other direction than the page (an Arabic question in an English page).
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.jsx';
 import { useStrings, useDigits } from '../../providers/LocaleProvider.jsx';
-import { localDigits } from '../../utils/digits.js';
+import { localDigits } from '../../utils/digits.ts';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 

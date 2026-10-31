@@ -1,6 +1,6 @@
 // Plenix tests · icon safety (#285, stage 4 of the icon plan #277): an icon file or an icon module's drawing is
-// untrusted, and platform/utils/iconSafety.js reads it through an allow-list. Node only (no browser): it loads the module
-// as the formats test loads utils/format.js. Each hostile sample must be refused, every shipped icon file must pass and
+// untrusted, and platform/utils/iconSafety.ts reads it through an allow-list. Node only (no browser): it loads the module
+// as the formats test loads utils/format.ts. Each hostile sample must be refused, every shipped icon file must pass and
 // read as the build reads it, and the limits must hold. Prints ICON_SAFETY_OK or each failure, and exits 1 on a failure.
 //   node tests/icon-safety.test.js
 const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
@@ -11,7 +11,7 @@ const Babel = require('@babel/standalone');
 require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.join(__dirname, '..');
-const code = Babel.transform(fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'iconSafety.js'), 'utf8'), { sourceType: 'module', plugins: ['transform-modules-commonjs'] }).code;
+const code = Babel.transform(fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'iconSafety.ts'), 'utf8'), { sourceType: 'module', filename: 'iconSafety.ts', presets: ['typescript'], plugins: ['transform-modules-commonjs'] }).code;
 const mod = { exports: {} };
 new Function('module', 'exports', 'require', code)(mod, mod.exports, require);
 const S = mod.exports;

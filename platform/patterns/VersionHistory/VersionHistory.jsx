@@ -7,12 +7,12 @@
    Notes: Caller owns version storage, authorization and currentId. No history is rewritten optimistically.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn } from '../../utils/devWarn.ts';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
 import { ConfirmDialog,Dialog } from '../../components/Dialog/Dialog.jsx';

@@ -45,10 +45,10 @@
        and pass idBase so the tabs point at it.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { arrowStep } from '../../utils/direction.js';
-import { cx } from '../../utils/cx.js';
-import { useUid } from '../../utils/layer.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { arrowStep } from '../../utils/direction.ts';
+import { cx } from '../../utils/cx.ts';
+import { useUid } from '../../utils/layer.ts';
 import { Count } from '../Count/Count.jsx';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';

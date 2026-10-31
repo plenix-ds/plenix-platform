@@ -11,7 +11,7 @@
      Moved out of DataGridEngine.jsx without any change to the code (issue 714, the grouping concern): the parts were lines of
      the engine function, in the same order with the same values. The engine is documented in DataGridEngine.jsx.
 */
-import { announce } from '../../../utils/announce.jsx';
+import { announce } from '../../../utils/announce.tsx';
 
 export function groupActions({ setGroupOwner, groupSignal, setGroups, setCollapsed, props, live, S }) {
   const changeGroups = (value) => {

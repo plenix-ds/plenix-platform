@@ -11,7 +11,7 @@
          <ViewMenu {...v.viewProps} /></>} />
      <DataGrid label="Assets" data={rows} columns={columns} {...v.tableProps} />
    Props:
-     fields: the collection's fields (utils/fields.js)
+     fields: the collection's fields (utils/fields.ts)
      options.data: optional source rows for immediate facet counts; otherwise the ready DataGrid supplies its data
      options.text(row): the text the search looks in (without it there is no search)
      options.quick: the quick filters, by field: "list" (the row's value is one of the chosen) | "date" (a date range), or { kind: "single", required: true }.
@@ -33,7 +33,7 @@
      other quick filter, excluding only their own selection. Repeated values in one row count that record once. */
 import React from 'react';
 import { singleChoice } from '../patterns/QuickFilter/single-choice.js';
-import { matchesFilter, matchesDate, valueOf, fieldOf, DATE_PRESETS } from '../utils/fields.js';
+import { matchesFilter, matchesDate, valueOf, fieldOf, DATE_PRESETS } from '../utils/fields.ts';
 
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 

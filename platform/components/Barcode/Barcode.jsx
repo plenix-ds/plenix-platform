@@ -24,14 +24,14 @@
      Black on white in both themes, as the QR code (the media roles do not follow the theme), so scanners read it; the line
        under the bars is on the plate in the bars' black. An invalid value has no plate (the message is on the surface).
    Notes:
-     Encoding is platform/utils/barcode.js (encodeBarcode). Other props pass through to the outer <div>.
+     Encoding is platform/utils/barcode.ts (encodeBarcode). Other props pass through to the outer <div>.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { encodeBarcode, BARCODE_QUIET_ZONE } from '../../utils/barcode.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { encodeBarcode, BARCODE_QUIET_ZONE } from '../../utils/barcode.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { fill } from '../../utils/fill.js';
+import { fill } from '../../utils/fill.ts';
 
 // the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox
 const HEIGHT_MODULES = 32;

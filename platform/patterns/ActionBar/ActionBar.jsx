@@ -27,9 +27,9 @@
      on the right). A toolbar of tools (an editor's Save, Export) is a Toolbar, not an ActionBar.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useBarFit } from '../../utils/barFit.js';
-import { foldOrder, menuOrder } from '../../utils/foldOrder.js';
+import { cx } from '../../utils/cx.ts';
+import { useBarFit } from '../../utils/barFit.ts';
+import { foldOrder, menuOrder } from '../../utils/foldOrder.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useMedia, below } from '../AppShell/AppShell.jsx';
 import { Button } from '../../components/Button/Button.jsx';

@@ -30,7 +30,7 @@
      range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
      chosen. A required single choice omits All and Clear.
    Notes:
-     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
+     The page applies the choice (useCollectionView, or matchesDate from utils/fields.ts). */
 import React from 'react';
 import { singleChoice } from './single-choice.js';
 import { Button } from '../../components/Button/Button.jsx';
@@ -40,10 +40,10 @@ import { Input } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Inline } from '../../components/Stack/Stack.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber } from '../../utils/format.ts';
 import { PanelTrigger, Pill, toggle } from '../CommandBar/panel-parts.jsx';
-import { fill } from '../../utils/fill.js';
-import { DATE_PRESETS, CATEGORY_ORDER, fieldWords } from '../../utils/fields.js';
+import { fill } from '../../utils/fill.ts';
+import { DATE_PRESETS, CATEGORY_ORDER, fieldWords } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 import FilterOffIcon from 'plenix-platform/icons/plenix/filter-off';

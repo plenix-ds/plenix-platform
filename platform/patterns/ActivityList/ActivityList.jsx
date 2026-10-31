@@ -31,8 +31,8 @@
      Row padding follows the density.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { dataWhenText } from '../../utils/dataText.jsx';
+import { cx } from '../../utils/cx.ts';
+import { dataWhenText } from '../../utils/dataText.tsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // stacked lists set the meta's text in the smallest type: text inside the meta follows it (data-plx-text-follow)

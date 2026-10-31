@@ -33,9 +33,9 @@
      For dragging files in, use DropZone; for images with a preview, an image upload.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useDescribedBy } from '../../utils/describedBy.js';
-import { formatBytes } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { useDescribedBy } from '../../utils/describedBy.ts';
+import { formatBytes } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

@@ -61,16 +61,16 @@
      ranks and limits the suggestions (about eight) and the recent searches (about five).
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { cx } from '../../utils/cx.ts';
+import { announce } from '../../utils/announce.tsx';
+import { formatNumber } from '../../utils/format.ts';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useTruncated, useInBar } from '../../utils/overflow.js';
+import { useTruncated, useInBar } from '../../utils/overflow.ts';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import SearchIcon from 'plenix-platform/icons/plenix/search';

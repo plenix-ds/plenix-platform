@@ -31,8 +31,8 @@
      Built only from Platform parts: Dialog, CommandMenu and useHotkey.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useHotkey, isMac } from '../../utils/hotkey.js';
+import { cx } from '../../utils/cx.ts';
+import { useHotkey, isMac } from '../../utils/hotkey.ts';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { CommandMenu } from '../../components/CommandMenu/CommandMenu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';

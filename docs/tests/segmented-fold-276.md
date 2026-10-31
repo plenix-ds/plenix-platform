@@ -16,7 +16,7 @@ A row of segmented choices that no longer fits its space turns into a drop-down 
 - Added in commit 7b2ac3a8 "SegmentedControl becomes a drop-down list when its options do not fit (#276)".
 
 ## How it checks
-- Starts the local test server and opens the stage page `docs/briefs/segmented-fold/stage.html` in a 900 by 500 window.
+- Starts the local test server and opens the stage page `tests/fixtures/stages/segmented-fold.html` in a 900 by 500 window.
 - Narrows the stage by adding a class, then widens it again, and reads which form each control has and whether anything sticks out of the card.
 - Picks an option in the drop-down list and reads the value the page received.
 - No baseline.
@@ -33,4 +33,4 @@ A row of segmented choices that no longer fits its space turns into a drop-down 
 ## What it needs
 - Headless Chrome (`launch` in `tests/lib.js`, CHROME_PATH).
 - The local test server (`serve` in `tests/lib.js`).
-- The stage page `docs/briefs/segmented-fold/stage.html`.
+- The stage page `tests/fixtures/stages/segmented-fold.html` and its 360px width in `tests/fixtures/stages/stage.css` (issue #772: the width went missing when #694 archived `docs/briefs/review.css`).

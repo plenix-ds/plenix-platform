@@ -22,8 +22,8 @@
      The preview is decorative (aria-hidden); the label and description name the option.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

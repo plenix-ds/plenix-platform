@@ -24,7 +24,7 @@
        are the tokens read here.
      Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
 
-import { engine } from '../../utils/engines.js';
+import { engine } from '../../utils/engines.ts';
 
 export function loadECharts(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);

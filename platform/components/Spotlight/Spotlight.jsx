@@ -33,12 +33,12 @@
        window it covers only the window (fixed); give a contained spotlight a positioned parent.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
-import { cx } from '../../utils/cx.js';
-import { useLayer } from '../../utils/layer.js';
-import { Portal } from '../../utils/portal.jsx';
-import { FLOATING_ANCHOR } from '../../utils/floating.js';
-import { snapToGrid } from '../../utils/grid.js';
+import { devWarn } from '../../utils/devWarn.ts';
+import { cx } from '../../utils/cx.ts';
+import { useLayer } from '../../utils/layer.ts';
+import { Portal } from '../../utils/portal.tsx';
+import { FLOATING_ANCHOR } from '../../utils/floating.ts';
+import { snapToGrid } from '../../utils/grid.ts';
 
 const VARIANTS = ['cutout', 'beacon'];
 const SIDES = ['top', 'bottom', 'start', 'end'];

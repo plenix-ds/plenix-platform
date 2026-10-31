@@ -1,7 +1,14 @@
 // W15C node regressions: actual generated packages, JSON-RPC/stdio, API fallbacks, budgets and date-only values.
 const fs = require('fs'), path = require('path'), assert = require('assert'), { execFileSync, spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
-if (!fs.existsSync(path.join(ROOT, 'platform/design-system/inventory.js'))) { console.log('W15C_PACKAGES_OK skipped: no design system'); process.exit(0); }
+// without the design system nothing here can be checked: a visible skip, never an OK (issue 762). On GitHub it is also a
+// warning on the run's summary, so a green run never hides an unchecked one
+if (!fs.existsSync(path.join(ROOT, 'platform/design-system/inventory.js'))) {
+  const why = 'skipped: design system not available (platform/design-system is not checked out); nothing was checked';
+  console.log('W15C_PACKAGES_SKIPPED ' + why);
+  if (process.env.GITHUB_ACTIONS) console.log('::warning title=w15c-packages skipped::' + why);
+  process.exit(0);
+}
 (async () => {
   let checks = 0; const check = (value, message) => { assert(value, message); checks++; };
   const { createServer, createDataSource, TOOLS, PROTOCOL } = require('../packages/mcp/server.cjs');
@@ -56,7 +63,7 @@ if (!fs.existsSync(path.join(ROOT, 'platform/design-system/inventory.js'))) { co
   const messages = output.trim().split('\n').map((s) => JSON.parse(s));
   check(messages.length === 4 && messages[1].result.structuredContent.components[0].id === 'button' && messages[2].error.code === -32700 && messages[3].id === 3, 'Actual stdio is clean JSON-RPC and recovers after parse errors');
 
-  const dateSource = fs.readFileSync(path.join(ROOT, 'platform/utils/format.js'), 'utf8');
+  const dateSource = require('@babel/standalone').transform(fs.readFileSync(path.join(ROOT, 'platform/utils/format.ts'), 'utf8'), { filename: 'format.ts', presets: ['typescript'] }).code;
   const url = 'data:text/javascript;base64,' + Buffer.from(dateSource).toString('base64');
   for (const tz of ['America/Los_Angeles', 'America/New_York', 'Asia/Tokyo', 'Europe/London']) {
     const script = '(async()=>{const F=await import(' + JSON.stringify(url) + ');console.log(JSON.stringify({normal:F.formatDate("2026-03-08",{locale:"en-US",dateStyle:"long"}),leap:F.formatDate("2024-02-29",{locale:"en-US",dateStyle:"long"}),bad:F.formatDate("2026-02-30"),instant:F.formatDate("2026-03-08T00:00:00Z",{locale:"en-US",dateStyle:"long",timeZone:"America/Los_Angeles"})}));})()';

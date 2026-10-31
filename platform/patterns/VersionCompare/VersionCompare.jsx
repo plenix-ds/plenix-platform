@@ -51,10 +51,10 @@
      side-by-side view with Show only differences on; versions of different items are not compared here.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { formatDate, formatNumber } from '../../utils/format.js';
-import { announce } from '../../utils/announce.jsx';
-import { useUid } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { formatDate, formatNumber } from '../../utils/format.ts';
+import { announce } from '../../utils/announce.tsx';
+import { useUid } from '../../utils/layer.ts';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
@@ -67,8 +67,8 @@ import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
-import { dataPhrase } from '../../utils/dataText.jsx';
-import { fill } from '../../utils/fill.js';
+import { dataPhrase } from '../../utils/dataText.tsx';
+import { fill } from '../../utils/fill.ts';
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 export function diffLines(before, after) {

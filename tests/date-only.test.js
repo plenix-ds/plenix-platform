@@ -2,8 +2,8 @@
    calendar day wherever the reader is, everywhere.
    Summary: in five time zones (New York, Los Angeles, UTC, Cairo, Tokyo; the cases of the issue's measurement) the value
      2026-10-18 lands on October 18:
-       Node (utils, no browser): parseDate and isoDay (utils/format.js), the "within N days" filter and the date quick filter
-         (utils/fields.js: today and the days before it are local days), the time scale (charts/scales.js scaleTime: its
+       Node (utils, no browser): parseDate and isoDay (utils/format.ts), the "within N days" filter and the date quick filter
+         (utils/fields.ts: today and the days before it are local days), the time scale (charts/scales.js scaleTime: its
          domain read from date-only texts)
        the browser (the zone emulated): GanttChart (its data table's start and end), HeatMap's calendar (its data table's
          day), LineChart with a time axis (its data table's x), and what was already right stays right: Time, formatDate,
@@ -25,19 +25,19 @@ const cache = new Map();
 function load(file) {
   if (cache.has(file)) return cache.get(file);
   const mod = { exports: {} }; cache.set(file, mod.exports);
-  const code = Babel.transform(fs.readFileSync(file, 'utf8'), { sourceType: 'module', plugins: ['transform-modules-commonjs'], presets: [['react', { runtime: 'classic' }]], filename: file }).code;
+  const code = Babel.transform(fs.readFileSync(file, 'utf8'), { sourceType: 'module', plugins: ['transform-modules-commonjs'], presets: [['react', { runtime: 'classic' }], 'typescript'], filename: file }).code;
   const req = (spec) => {
     if (spec === 'react') return { createElement: () => null };
     if (/^plenix-platform\/icons\//.test(spec)) return { default: { name: spec.split('/').pop() } };
-    if (spec.startsWith('.')) { let p = path.resolve(path.dirname(file), spec); if (!fs.existsSync(p)) p += fs.existsSync(p + '.js') ? '.js' : '.jsx'; return load(p); }
+    if (spec.startsWith('.')) { let p = path.resolve(path.dirname(file), spec); if (!fs.existsSync(p)) p += ['.js', '.jsx', '.ts'].find((x) => fs.existsSync(p + x)) || '.tsx'; return load(p); }
     return require(spec);
   };
   new Function('module', 'exports', 'require', code)(mod, mod.exports, req);
   cache.set(file, mod.exports);
   return mod.exports;
 }
-const F = load(path.join(ROOT, 'platform', 'utils', 'format.js'));
-const fields = load(path.join(ROOT, 'platform', 'utils', 'fields.js'));
+const F = load(path.join(ROOT, 'platform', 'utils', 'format.ts'));
+const fields = load(path.join(ROOT, 'platform', 'utils', 'fields.ts'));
 const scales = load(path.join(ROOT, 'platform', 'charts', 'scales.js'));
 
 (async () => {

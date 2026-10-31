@@ -13,7 +13,7 @@
      collapseLabel: the Collapse button's label (default "Collapse panel")
      width: it opens at --plx-comp-side-panel-width-default: 240px, 320px from a window 1440px wide, 400px from 1920px (the -from-1440 and
        -from-1920 tokens, set in system/grid.css); a width a person dragged to wins
-     the width a person dragged to is remembered per monitor (utils/monitorWidths.js): one value per monitor, named by its physical screen size,
+     the width a person dragged to is remembered per monitor (utils/monitorWidths.ts): one value per monitor, named by its physical screen size,
        used only when it still fits the window; the single value saved before carries over as the current monitor's
      resizable: its start edge can be dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
        -max; the width is remembered; Home and End jump to the smallest and largest (batch 259); default false
@@ -35,17 +35,17 @@
      Without onOpenChange it cannot close, so at Narrow it stays the overlay rather than a sheet nobody can dismiss.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
-import { useLayer } from '../../utils/layer.js';
+import { cx } from '../../utils/cx.ts';
+import { useLayer } from '../../utils/layer.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
-import { gridWithin } from '../../utils/grid.js';
-import { paneMax } from '../../utils/paneLimit.js';
+import { gridWithin } from '../../utils/grid.ts';
+import { paneMax } from '../../utils/paneLimit.ts';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useMonitorWidth } from '../../utils/monitorWidths.js';
+import { useMonitorWidth } from '../../utils/monitorWidths.ts';
 import PanelRightCloseIcon from 'plenix-platform/icons/plenix/panel-right-close';
 import PanelRightOpenIcon from 'plenix-platform/icons/plenix/panel-right-open';
 
@@ -66,7 +66,7 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
   React.useEffect(() => { if (small && !wasSmall.current && open) set(false); wasSmall.current = small; }, [small]);
   const name = label || title || 'Panel';
   // the width dragged on its edge, remembered across visits (resizable, docked only)
-  // remembered per monitor (utils/monitorWidths.js); the single value saved before is this monitor's first value
+  // remembered per monitor (utils/monitorWidths.ts); the single value saved before is this monitor's first value
   const [size, resize] = useMonitorWidth('side', { legacy: () => { try { return localStorage.getItem(WIDTH_KEY); } catch (e) { return null; } }, min: () => tokenPx('--plx-comp-side-panel-width-min'), max: () => tokenPx('--plx-comp-side-panel-width-max') });
   const docked = resizable && !small;
   const railEl = onOpenChange ? (

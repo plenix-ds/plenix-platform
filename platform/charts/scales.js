@@ -1,7 +1,7 @@
 /* Plenix · Chart scales (platform/charts/scales.js)
    Summary: The math every Plenix chart shares (07 Data Display › Charts › Chart foundations): scales that turn a value
      into a position (linear, log, band, time), "nice" tick values on round numbers and calendar steps, tick labels in
-     the reader's locale (utils/format.js), and the series color of the data-viz scales (utils/dataviz.js). No
+     the reader's locale (utils/format.ts), and the series color of the data-viz scales (utils/dataviz.ts). No
      dependency: ChartFrame draws the SVG, the chart parts (wave 8) and the charts (wave 9) build on these.
    Usage:
      import { scaleLinear, scaleBand, scaleTime, scaleLog, niceTicks, seriesColor } from 'plenix-platform';
@@ -40,8 +40,8 @@
      A series keeps its color by its order in the data, never by rank (Data visualization colors). Positions are SVG user
        units (pixels inside ChartFrame's plot).
 */
-import { formatNumber, formatLocale, numeralLocale, parseDate } from '../utils/format.js';
-import { datavizCategory } from '../utils/dataviz.js';
+import { formatNumber, formatLocale, numeralLocale, parseDate } from '../utils/format.ts';
+import { datavizCategory } from '../utils/dataviz.ts';
 
 const E10 = Math.sqrt(50), E5 = Math.sqrt(10), E2 = Math.sqrt(2);
 // a step of 1, 2 or 5 × 10ⁿ for about count ticks over the span

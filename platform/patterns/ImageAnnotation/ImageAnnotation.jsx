@@ -6,15 +6,15 @@
    Notes: Caller owns persistence and permissions; strings translates every built-in word. Existing roles only.
 */
 import React from 'react';
-import { cx } from '../../utils/cx.js';
+import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
-import { useReposition } from '../../utils/dnd.js';
-import { snapToGrid } from '../../utils/grid.js';
+import { useReposition } from '../../utils/dnd.ts';
+import { snapToGrid } from '../../utils/grid.ts';
 import { Image } from '../../components/Image/Image.jsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { CommentThread } from '../CommentThread/CommentThread.jsx';
