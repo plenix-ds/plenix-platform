@@ -1,2 +1,0 @@
-### Changed
-- One `asIcon` (#719, audit finding #684). Six components defined their own `asIcon = (i) => iconElement(i)` over the one exported by `Icon.jsx`; they import it directly now. Three (Button, NavList, Tabs) named `stateIcon` as `asIcon`; they call `stateIcon` by its name, and Tree's own helper (it also fills an Icon element the caller gives) is `treeIcon`, so the name `asIcon` means one thing. The check-system `shared-fill` rule refuses a new local `asIcon`. No behavior change.
