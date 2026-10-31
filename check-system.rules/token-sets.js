@@ -13,7 +13,9 @@
 //   print      a token with a print value has no contrast values (forced colors, more contrast)
 //   conditions (#372 step 4) a condition set, <set>.<condition>.tokens.json (forced-colors, more-contrast, print,
 //              reduced-motion), sits beside its base set and holds only values of the base set's tokens: a token it
-//              names that the base set does not define is a finding (its value would be written nowhere)
+//              names that the base set does not define is a finding (its value would be written nowhere). Only a
+//              condition set may point to a token as var(--plx-…) (web-only values); every other set refers by
+//              {plx-….…}, because the phone files and Figma read it: a var() there is a finding
 //   text roles a token is never a W3C "typography" composite: a text role is six separate tokens (#372 step 3), because
 //              plain Style Dictionary writes no composite
 // A file that is not valid JSON is a finding too (the build stops on it).
@@ -57,7 +59,17 @@ function findings(root = ROOT) {
   const walk = (dir) => { if (!fs.existsSync(dir)) return; for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) { walk(p); continue; }
-    if (CONDITION_FILE.test(e.name) && !fs.existsSync(p.replace(CONDITION_FILE, '.tokens.json'))) say(p, path.relative(root, p).split(path.sep).join('/') + ': a condition set with no base set (' + e.name.replace(CONDITION_FILE, '.tokens.json') + ')');
+    if (!e.name.endsWith('.tokens.json') || e.name === 'tokens.index.json') continue;
+    const relp = path.relative(root, p).split(path.sep).join('/');
+    if (CONDITION_FILE.test(e.name)) { if (!fs.existsSync(p.replace(CONDITION_FILE, '.tokens.json'))) say(p, relp + ': a condition set with no base set (' + e.name.replace(CONDITION_FILE, '.tokens.json') + ')'); continue; }
+    // var() only in a condition set: every other set refers by {plx-….…}
+    const data = read(p); if (!data) continue;
+    const values = (o, at2) => { for (const [k, v] of Object.entries(o || {})) {
+      if (!v || typeof v !== 'object' || (k.charAt(0) === '$' && k !== '$value')) continue;
+      if (v.$value !== undefined) { if (/\bvar\(/.test(JSON.stringify(v.$value))) say(p, relp + ': ' + (at2 ? at2 + '.' : '') + k + ' writes var() (' + JSON.stringify(v.$value) + '): refer to a token as {tier.name}; only a condition set may use var()'); }
+      else values(v, at2 ? at2 + '.' + k : k);
+    } };
+    values(data, '');
   } };
   walk(SRC);
   // a set's tokens in order (build-tokens.js, tokensOf); a typography composite is a finding
