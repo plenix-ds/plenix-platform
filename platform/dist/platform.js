@@ -31998,6 +31998,186 @@ function useVirtualizer(options) {
   return instance;
 }
   } },
+  "platform/components/DataGrid/engine/useSelection.js": { deps: {"react":null,"../state.js":"platform/components/DataGrid/state.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.selectionActions = selectionActions;
+exports.useSelection = useSelection;
+var _react = _interopRequireDefault(require("react"));
+var _state = require("../state.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataGrid engine · selection
+   Summary: The grid's row selection: the selection map and its owner (the caller's selected list, or the grid's own),
+     what a change tells the caller and the events, the one-row pick, and the clicks and checkboxes that choose rows
+     (a plain click, Ctrl or Command, Shift for a range, select all).
+   Usage:
+     import { useSelection, selectionActions } from './engine/useSelection.js';
+     const { selection, notifySelection, pick, selectionInfo, selectionAnchor } = useSelection({ selected, live, canonical, index, options, onSelectionChange, emit, api });
+     const { selectionRows, selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow } = selectionActions({ table, live, selection, selectionAnchor, pick, selectable, options });
+   Props:
+     useSelection: selected, an array of record keys (controlled) or undefined (the grid keeps its own); live, the engine's
+       ref of current values; canonical, the records; index, the key field; options, the grid options (selectableRows);
+       onSelectionChange(keys, { count, hidden }); emit and api, the engine's event emitter and adapter.
+       Returns selection (a { key: true } map), notifySelection(next) (store, tell the caller and emit rowSelectionChanged),
+       pick(key, value), and the refs selectionInfo (how many selected records a filter hides) and selectionAnchor (the
+       row a Shift range starts from).
+     selectionActions: table (the TanStack table), live, selection, selectionAnchor, pick, selectable, options; returns the
+       rows that select all works on (selectionRows), selectedVisible, allVisible, selectAll(value), pickCheckbox(row, event)
+       and chooseRow(row, event).
+   Notes:
+     Moved out of DataGridEngine.jsx without any change to the code (issue 714, first of its concerns): the hook's parts were
+     lines of the engine function, read in the same order with the same values. The engine is documented in DataGridEngine.jsx.
+*/
+
+function useSelection({
+  selected,
+  live,
+  canonical,
+  index,
+  options,
+  onSelectionChange,
+  emit,
+  api
+}) {
+  const selectionInfo = _react.default.useRef({
+      hidden: 0
+    }),
+    selectionAnchor = _react.default.useRef(null);
+  const [ownSelection, setSelection] = _react.default.useState({});
+  const selection = Array.isArray(selected) ? Object.fromEntries(selected.map(k => [(0, _state.recordKey)(k), true])) : ownSelection;
+  const notifySelection = next => {
+    live.current.selection = next;
+    setSelection(next);
+    const active = new Set(live.current.table.getFilteredRowModel().flatRows.map(r => r.id)),
+      records = canonical.filter(r => next[(0, _state.recordKey)(r[index])]);
+    selectionInfo.current = {
+      hidden: records.filter(r => !active.has((0, _state.recordKey)(r[index]))).length
+    };
+    onSelectionChange?.(records.map(r => r[index]), {
+      count: records.length,
+      hidden: selectionInfo.current.hidden
+    });
+    emit('rowSelectionChanged', records, records.map(r => api.row((0, _state.recordKey)(r[index]))));
+  };
+  const pick = (key, value) => {
+    const now = live.current;
+    if (!!now.selection[key] === !!value) return;
+    let row = null;
+    try {
+      row = now.table.getRow(key, true);
+    } catch (e) {
+      row = null;
+    }
+    if (row && row.getIsSelected() === !!now.selection[key]) row.toggleSelected(!!value, {
+      selectChildren: false
+    });else now.table.setRowSelection(old => {
+      const next = {
+        ...old
+      };
+      if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
+      if (value) next[key] = true;else delete next[key];
+      return next;
+    });
+  };
+  return {
+    selection,
+    notifySelection,
+    pick,
+    selectionInfo,
+    selectionAnchor
+  };
+}
+function selectionActions({
+  table,
+  live,
+  selection,
+  selectionAnchor,
+  pick,
+  selectable,
+  options
+}) {
+  const selectionRows = table.getPrePaginationRowModel().rows,
+    selectedVisible = selectionRows.filter(r => selection[r.id]),
+    allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
+  const selectAll = value => {
+    const next = {
+      ...selection
+    };
+    selectionRows.forEach(r => {
+      if (value) next[r.id] = true;else delete next[r.id];
+    });
+    table.setRowSelection(next);
+  };
+  const pickCheckbox = (row, event) => {
+    const wanted = event.target.checked,
+      from = selectionRows.findIndex(r => r.id === selectionAnchor.current),
+      to = selectionRows.indexOf(row);
+    if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
+      const next = {
+        ...live.current.selection
+      };
+      selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
+        if (wanted) next[record.id] = true;else delete next[record.id];
+      });
+      table.setRowSelection(next);
+    } else pick(row.id, wanted);
+    selectionAnchor.current = row.id;
+  };
+  // a click on the row (or Enter on it), not on its checkbox (#452, as a file manager): a plain one selects only that row,
+  // Ctrl or ⌘ toggles it, Shift extends from the anchor, Ctrl or ⌘ with Shift adds the range to the selection; the
+  // checkbox and select all keep toggling
+  const chooseRow = (row, e) => {
+    if (!selectable && !options.selectableRows) return;
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: true
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    } // Ctrl/⌘+Shift adds the range
+    if (e.ctrlKey || e.metaKey) {
+      if (selectable) pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: false
+      });else pick(row.id, !selection[row.id]);
+      return;
+    }
+    if (e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    }
+    const now = live.current.selection,
+      keys = Object.keys(now).filter(k => now[k]);
+    if (!(keys.length === 1 && keys[0] === String(row.id))) table.setRowSelection({
+      [row.id]: true
+    });
+    selectionAnchor.current = row.id;
+  };
+  return {
+    selectionRows,
+    selectedVisible,
+    allVisible,
+    selectAll,
+    pickCheckbox,
+    chooseRow
+  };
+}
+  } },
   "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -32733,7 +32913,7 @@ const RowTarget = exports.RowTarget = /*#__PURE__*/_react.default.forwardRef(fun
   }));
 });
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","./engine/helpers.jsx":"platform/components/DataGrid/engine/helpers.jsx","./engine/pill.js":"platform/components/DataGrid/engine/pill.js","./engine/useVirtualizer.js":"platform/components/DataGrid/engine/useVirtualizer.js","./engine/parts.jsx":"platform/components/DataGrid/engine/parts.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js","./engine/helpers.jsx":"platform/components/DataGrid/engine/helpers.jsx","./engine/pill.js":"platform/components/DataGrid/engine/pill.js","./engine/useVirtualizer.js":"platform/components/DataGrid/engine/useVirtualizer.js","./engine/useSelection.js":"platform/components/DataGrid/engine/useSelection.js","./engine/parts.jsx":"platform/components/DataGrid/engine/parts.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32786,6 +32966,7 @@ var _sortDescending = _interopRequireDefault(require("plenix-platform/icons/plen
 var _helpers = require("./engine/helpers.jsx");
 var _pill = require("./engine/pill.js");
 var _useVirtualizer = require("./engine/useVirtualizer.js");
+var _useSelection = require("./engine/useSelection.js");
 var _parts = require("./engine/parts.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGridEngine (TanStack)
@@ -32854,10 +33035,6 @@ function NextEngine(props) {
     live = _react.default.useRef({}),
     ready = _react.default.useRef(false);
   const warnedActions = _react.default.useRef(new Set()),
-    selectionInfo = _react.default.useRef({
-      hidden: 0
-    }),
-    selectionAnchor = _react.default.useRef(null),
     viewportId = _react.default.useId(),
     displayElements = _react.default.useRef(new Map()),
     parkedFocus = _react.default.useRef(null),
@@ -32930,8 +33107,7 @@ function NextEngine(props) {
   const groupSignal = JSON.stringify(props.groupBy),
     groupBy = props.onViewChange ? props.groupBy ?? false : groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
   const childField = props.tree ? props.childrenField || 'children' : null;
-  const [ownSelection, setSelection] = _react.default.useState({}),
-    [filters, setFilters] = _react.default.useState([]),
+  const [filters, setFilters] = _react.default.useState([]),
     [page, setPage] = _react.default.useState(0),
     [pageSize, setPageSize] = _react.default.useState(props.pageSize || 50);
   const fetching = _react.default.useRef(false);
@@ -32969,7 +33145,6 @@ function NextEngine(props) {
   }, [metrics]);
   const effectiveStep = props.rowHeight || rowHeight,
     effectiveWrap = props.wrapHeaders ?? wrapHeaders;
-  const selection = Array.isArray(selected) ? Object.fromEntries(selected.map(k => [(0, _state.recordKey)(k), true])) : ownSelection;
   const controlledSort = _react.default.useMemo(() => (0, _state.normalizeSort)(props.sort), [sortSignal]);
   const deferredFilter = _react.default.useDeferredValue(props.filter);
   const initiallyControlledSort = _react.default.useRef(!!props.sort?.length),
@@ -33120,40 +33295,22 @@ function NextEngine(props) {
     changeOrder(current);
     emit('columnMoved', api.column(field), current.map(api.column));
   };
-  const notifySelection = next => {
-    live.current.selection = next;
-    setSelection(next);
-    const active = new Set(live.current.table.getFilteredRowModel().flatRows.map(r => r.id)),
-      records = canonical.filter(r => next[(0, _state.recordKey)(r[index])]);
-    selectionInfo.current = {
-      hidden: records.filter(r => !active.has((0, _state.recordKey)(r[index]))).length
-    };
-    onSelectionChange?.(records.map(r => r[index]), {
-      count: records.length,
-      hidden: selectionInfo.current.hidden
-    });
-    emit('rowSelectionChanged', records, records.map(r => api.row((0, _state.recordKey)(r[index]))));
-  };
-  const pick = (key, value) => {
-    const now = live.current;
-    if (!!now.selection[key] === !!value) return;
-    let row = null;
-    try {
-      row = now.table.getRow(key, true);
-    } catch (e) {
-      row = null;
-    }
-    if (row && row.getIsSelected() === !!now.selection[key]) row.toggleSelected(!!value, {
-      selectChildren: false
-    });else now.table.setRowSelection(old => {
-      const next = {
-        ...old
-      };
-      if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
-      if (value) next[key] = true;else delete next[key];
-      return next;
-    });
-  };
+  const {
+    selection,
+    notifySelection,
+    pick,
+    selectionInfo,
+    selectionAnchor
+  } = (0, _useSelection.useSelection)({
+    selected,
+    live,
+    canonical,
+    index,
+    options,
+    onSelectionChange,
+    emit,
+    api
+  });
   const changeSort = update => {
     const next = typeof update === 'function' ? update(sorting) : update;
     setSortOwner(sortSignal);
@@ -33834,75 +33991,22 @@ function NextEngine(props) {
   const openId = props.openKey !== undefined ? props.openKey == null ? null : (0, _state.recordKey)(props.openKey) : ownOpen;
   const isOpen = id => openId != null && String(id) === String(openId),
     marked = id => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
-  const selectionRows = table.getPrePaginationRowModel().rows,
-    selectedVisible = selectionRows.filter(r => selection[r.id]),
-    allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
-  const selectAll = value => {
-    const next = {
-      ...selection
-    };
-    selectionRows.forEach(r => {
-      if (value) next[r.id] = true;else delete next[r.id];
-    });
-    table.setRowSelection(next);
-  };
-  const pickCheckbox = (row, event) => {
-    const wanted = event.target.checked,
-      from = selectionRows.findIndex(r => r.id === selectionAnchor.current),
-      to = selectionRows.indexOf(row);
-    if ((event.nativeEvent?.shiftKey || event.shiftKey) && from >= 0 && to >= 0) {
-      const next = {
-        ...live.current.selection
-      };
-      selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
-        if (wanted) next[record.id] = true;else delete next[record.id];
-      });
-      table.setRowSelection(next);
-    } else pick(row.id, wanted);
-    selectionAnchor.current = row.id;
-  };
-  // a click on the row (or Enter on it), not on its checkbox (#452, as a file manager): a plain one selects only that row,
-  // Ctrl or ⌘ toggles it, Shift extends from the anchor, Ctrl or ⌘ with Shift adds the range to the selection; the
-  // checkbox and select all keep toggling
-  const chooseRow = (row, e) => {
-    if (!selectable && !options.selectableRows) return;
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && selectable) {
-      pickCheckbox(row, {
-        target: {
-          checked: true
-        },
-        nativeEvent: e.nativeEvent,
-        shiftKey: true
-      });
-      return;
-    } // Ctrl/⌘+Shift adds the range
-    if (e.ctrlKey || e.metaKey) {
-      if (selectable) pickCheckbox(row, {
-        target: {
-          checked: !selection[row.id]
-        },
-        nativeEvent: e.nativeEvent,
-        shiftKey: false
-      });else pick(row.id, !selection[row.id]);
-      return;
-    }
-    if (e.shiftKey && selectable) {
-      pickCheckbox(row, {
-        target: {
-          checked: !selection[row.id]
-        },
-        nativeEvent: e.nativeEvent,
-        shiftKey: true
-      });
-      return;
-    }
-    const now = live.current.selection,
-      keys = Object.keys(now).filter(k => now[k]);
-    if (!(keys.length === 1 && keys[0] === String(row.id))) table.setRowSelection({
-      [row.id]: true
-    });
-    selectionAnchor.current = row.id;
-  };
+  const {
+    selectionRows,
+    selectedVisible,
+    allVisible,
+    selectAll,
+    pickCheckbox,
+    chooseRow
+  } = (0, _useSelection.selectionActions)({
+    table,
+    live,
+    selection,
+    selectionAnchor,
+    pick,
+    selectable,
+    options
+  });
   const fit = field => {
     const c = columns.find(c => c.field === field),
       ctx = document.createElement('canvas').getContext('2d'),
