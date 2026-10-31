@@ -33,7 +33,9 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
               rowMenu: [{ label: 'Rename', icon: 'pencil', onSelect: (r) => window.__calls.push(['rename', r.id]) }] }, props.label ? { label: props.label } : {}) },
             chosen ? h(P.Text, { as: 'p', id: 'detail' }, chosen.name) : null);
         }
-        document.getElementById('main').innerHTML = '<div id="a" style="block-size:600px;display:flex"></div><div id="b" style="block-size:300px;display:flex"></div>';
+        // the hosts are grids: in a flex row with no grow, SplitWorkspace shrank to its content and its grid was 0px wide,
+        // so a click on a row landed on the host (issue 777, measured by a probe; a page puts it in a block, as AppShell does)
+        document.getElementById('main').innerHTML = '<div id="a" style="block-size:600px;display:grid"></div><div id="b" style="block-size:300px;display:grid"></div>';
         ReactDOM.createRoot(document.getElementById('a')).render(h(App));
         ReactDOM.createRoot(document.getElementById('b')).render(h(App, { label: 'My files' }));
         await new Promise((r) => setTimeout(r, 900));

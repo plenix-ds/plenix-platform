@@ -7,6 +7,7 @@ Toolbars and footer button bars stay on one line as space runs out, folding butt
 ## What it checks
 - A Toolbar with five Buttons (New, Edit, Share, Export, Delete) never wraps and never overflows:
   - At 520px every Button keeps its words and there is no More.
+  - A late font (issue #777): a toolbar first measured with wider text folds; when the page's fonts finish loading it measures again and shows every word. Before the fix a bar measured while DM Sans was still loading stayed folded.
   - At 360px the Buttons with an icon drop their words (icon only; the name stays as the accessible name); the primary keeps its words.
   - At 240px the bar shows New, Edit, Delete and More: the primary keeps its words and Delete stays (danger folds last).
 - An ActionBar (a footer bar: Delete, Another choice, Cancel, Save changes) is one row at 520px, 360px and 240px, never overflows and never hides all its words:

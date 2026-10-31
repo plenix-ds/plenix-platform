@@ -5,7 +5,8 @@
    step means). The rows measured are the elements in ref that match rows (default [data-plx-bar-row]): a row fits while every visible child of
    it lies inside it on one line (rows ':self': the element itself is the row). The step starts again from `min` whenever the bar's width or `key` (anything that changes
    the controls' widths: labels, a selection) changes, unless hold (the bar's search is open across it), and goes up one step at a time, before the browser paints,
-   until every row fits or `max` is reached. Nothing is written to the page: the bar draws each step from its classes. */
+   until every row fits or `max` is reached. It also starts again when the page's web fonts finish loading (a bar measured
+   with the fallback font must not stay folded; issue 777). Nothing is written to the page: the bar draws each step from its classes. */
 import React from 'react';
 
 // a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
@@ -25,7 +26,20 @@ export function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', h
   const [step, setStep] = React.useState(min);
   const [width, setWidth] = React.useState(0);
   const measured = React.useRef(null);
-  React.useLayoutEffect(() => { if (!hold) setStep(min); }, [width, key, min, hold]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // the page's web fonts: a bar first measured with the fallback font (often wider) would stay folded once the real font
+  // arrives, since neither its width nor its key changes. The ladder starts again when fonts finish loading, and once on
+  // fonts.ready in case they finished before this bar mounted (issue 777)
+  const [fonts, setFonts] = React.useState(0);
+  React.useEffect(() => {
+    const set = typeof document !== 'undefined' && document.fonts;
+    if (!set || typeof set.addEventListener !== 'function') return undefined;
+    let live = true;
+    const again = () => { if (live) setFonts((n) => n + 1); };
+    set.addEventListener('loadingdone', again);
+    if (set.ready && typeof set.ready.then === 'function') set.ready.then(again, () => {});
+    return () => { live = false; set.removeEventListener('loadingdone', again); };
+  }, []);
+  React.useLayoutEffect(() => { if (!hold) setStep(min); }, [width, key, min, hold, fonts]);   // eslint-disable-line react-hooks/exhaustive-deps
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return undefined;
@@ -38,7 +52,7 @@ export function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', h
     if (!el || step >= max || hold) return;
     // Text covers count/custom-slot changes not represented by the caller's key. Reading it does not force layout.
     // Keep this check after the commit: a render-time dependency would still see the previous DOM text.
-    const signature = [el, width, key, max, min, rows, step, el.textContent];
+    const signature = [el, width, key, max, min, rows, step, el.textContent, fonts];
     if (measured.current && signature.every((value, i) => value === measured.current[i])) return;
     measured.current = signature;
     if (Array.prototype.some.call(rows === ':self' ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);

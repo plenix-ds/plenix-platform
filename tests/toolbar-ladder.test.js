@@ -63,6 +63,17 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     assert.ok(phone.saveFirst, 'phone: the primary button is first'); assert.ok(phone.full, 'phone: the primary button is full width'); assert.ok(phone.sameRow, "phone: More is on Cancel's row");
     await page.setViewport({ width: 900, height: 900 }); await new Promise((r) => setTimeout(r, 800));
     assert.equal((await read('a520', '.plx-action-bar')).names.length, 4, 'back in a wide window the footer shows every button again');
+    // a font that arrives late (issue 777): a bar first measured with wider text (as with the fallback font before the web font
+    // has loaded) folds; when the fonts finish loading it measures again and shows its words. Proof first: the old build kept
+    // it folded, since neither its width nor its labels changed. The wider text is a letter spacing taken off before the
+    // fonts' "loadingdone" event, which the page sends here as the browser would
+    await page.evaluate(() => { const s = document.createElement('style'); s.id = 'wide-text'; s.textContent = '.plx-button{letter-spacing:6px}'; document.head.appendChild(s); });
+    await draw('ltr');
+    const late = await read('t520', '[role=toolbar]');
+    assert.ok(late.words.filter(Boolean).length < 5, 'late font: the probe sees it: with the wider text the 520px toolbar folds');
+    await page.evaluate(() => { document.getElementById('wide-text').remove(); document.fonts.dispatchEvent(new Event('loadingdone')); });
+    await new Promise((r) => setTimeout(r, 600));
+    assert.equal((await read('t520', '[role=toolbar]')).words.filter(Boolean).length, 5, 'late font: when the fonts finish loading the 520px toolbar shows every word again');
     assert.deepEqual(errors, [], 'no script errors');
     console.log('toolbar-ladder: OK');
   } finally { if (browser) await browser.close(); server.close(); }
