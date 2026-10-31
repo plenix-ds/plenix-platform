@@ -101,15 +101,44 @@ Each line links to the test's page. A test that a group test starts is listed un
 
 ### Pages and layout
 
-- Described in a following pull request (issue #748).
+- [field-sizing](field-sizing.md): Fields inside toolbars (drop-down lists, search boxes, text boxes) size to their content within sensible limits, give way only after buttons have folded, and show cut-off text in full in a tooltip.
+- [fill-693](fill-693.md): Messages with blanks in them ("Go to page {n}") are filled in the same correct way everywhere in Plenix, and never show the words "undefined" or "null" to a person.
+- [layout](layout.md): Plenix pages keep the right shape for their kind (full width, a centered column, panes, or a distraction-free editor), and split views, right-to-left rows and hidden screen-reader text behave on every page. Known defect: #750, being fixed.
+- [monitor-widths](monitor-widths.md): A side panel remembers the width a person dragged it to separately for each monitor, so moving between a laptop and a large screen keeps the right width on each.
+- [navpane-fit-677](navpane-fit-677.md): Controls placed in the header of a side pane (a drop-down list, a button with long words) stay inside the pane instead of sticking out past its edge.
+- [pages](pages.md): Every Plenix application page and every page of the St. John test site opens cleanly, with no errors, no plain tables, no boxes nested three deep and no inline styles the system forbids.
+- [pane-defaults](pane-defaults.md): Side panes start wider on larger screens, so a big monitor gets roomier panes without anyone dragging them.
+- [pane-limit](pane-limit.md): A side pane can never be dragged wider than 90% of the window, and a table column never wider than 90% of its table, so the rest of the screen always stays in view.
+- [perf](perf.md): The Plenix packages that apps download stay under fixed size limits, so pages that use them do not get slow to load.
+- [reflow](reflow.md): On a phone-width screen (or at 400% zoom), Plenix pages scroll in one direction only, and no text or control is cut off at the edge.
+- [resize-caps](resize-caps.md): A resizable box or pane dragged or set past its largest size stops at that largest size (1600px), instead of jumping back to its starting size.
+- [segmented-fold-276](segmented-fold-276.md): A row of segmented choices that no longer fits its space turns into a drop-down list with the same choice and the same behavior, and turns back when space returns.
+- [site-coverage](site-coverage.md): The St. John test site really uses every part of Plenix, so the automatic tests that run on it reach every component.
+- [toolbar-ladder](toolbar-ladder.md): Toolbars and footer button bars stay on one line as space runs out, folding buttons in a fixed order into a More menu, and unfold again when space comes back.
+- [visual](visual.md): Every Plenix button keeps exactly its approved look (colors, borders, sizes, fonts, focus ring) in every variant, size and state.
 
 ### Components
 
-- Described in a following pull request (issue #748).
+- [avatar-ai-637](avatar-ai-637.md): An avatar for an AI assistant (Claude, Gemini and others) shows that provider's known logo, cleanly sized and colored, while people's avatars keep their initials.
+- [button-610](button-610.md): Button labels sit exactly in the middle of the button, letters with tails are not cut off, and red Delete buttons visibly darken when pressed.
+- [button-elevation-610](button-elevation-610.md): Action buttons look slightly raised at rest, lift on hover and go flat when pressed or disabled, exactly as the owner chose, in light and dark.
+- [button-selected-645](button-selected-645.md): A button that is switched on (selected) stays readable in the dark theme, with its text and icon clearly standing out from its fill.
+- [card-accent-621](card-accent-621.md): Cards no longer draw a colored edge, and the suite pages that used that edge still show each item's color in a clear new form.
+- [chat-composer-s3](chat-composer-s3.md): The chat message box works as one clean outlined box: typing and sending, attaching files, the emoji button and speaking a message aloud (dictation), in English and Arabic.
+- [chat-media-s5](chat-media-s5.md): Pictures, files and voice messages inside a chat bubble work: pictures open full size, files download, voice messages play one at a time, and a broken picture says so.
+- [chat-s1-637](chat-s1-637.md): Chat bubbles use the owner's chosen colors, outlines and corners, and each sender's photo sits on the bubble's top edge without covering any text, in light, dark and right to left.
+- [chat-s2-637](chat-s2-637.md): A chat conversation groups each person's messages, shows date and "New messages" lines, and tells the sender whether each message was sent, delivered or read, readably in light and dark and in Arabic.
+- [chat-s4-637](chat-s4-637.md): People can react to, reply to, quote, copy, forward, edit and delete chat messages from a small action bar that appears only when wanted and never covers the text.
+- [labs](labs.md): In the design spec, each component lab's Edit dialog changes the setting it says it changes, so a designer adjusting a color or size edits the right token.
+- [messages-chat-s6](messages-chat-s6.md): The Messages app shows conversations with the shared chat parts (date lines, grouped messages, photos and sent/read status) and still sends replies, and the design spec's Chat page shows every part with the owner's rules.
+- [project-notes-632](project-notes-632.md): In the Projects app, each project shows the notes that belong to it.
 
 ### Charts
 
-- Described in a following pull request (issue #748).
+- [charts-echarts-353](charts-echarts-353.md): Line, area, bar and pie charts draw with the chart engine Plenix chose (Apache ECharts), load it only once, and bar and pie charts can be explored with the keyboard.
+- [line-ticks-593](line-ticks-593.md): Charts of whole days label their time axis with dates (Oct 1, Oct 2), never with meaningless times such as "12:00 AM" and "12:00 PM".
+- [sparkline-echarts-353](sparkline-echarts-353.md): Small inline trend charts (sparklines) draw with ECharts, look exactly like the older version they replaced, stay accessible, and many of them still draw quickly.
+- [treechart-echarts](treechart-echarts.md): Tree charts (such as an organization chart) draw left to right or top to bottom without overlapping labels, and can be explored and folded with the keyboard or a click.
 
 ### Tokens and style
 
