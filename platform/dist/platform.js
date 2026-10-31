@@ -16404,6 +16404,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     else el.removeAttribute("title");
   }
   function createAdapter(current2) {
+    const asKey = (id) => current2.current.recordsByKey.has(id) ? id : recordKey(id);
     const row = (key) => {
       const captured = current2.current.recordsByKey.get(key);
       const data = () => current2.current.recordsByKey.get(key) || captured;
@@ -16513,9 +16514,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       },
       print: () => window.print(),
       options: {},
-      row,
+      row: (id) => row(asKey(id)),
       column,
-      cell
+      cell: (id, field) => cell(asKey(id), field)
     };
     return api;
   }
