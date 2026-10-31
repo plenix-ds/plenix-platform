@@ -56,8 +56,15 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     assert.ok(sat && mon && sat[1] > mon[1], 'TimeGrid: the days run from the right: ' + JSON.stringify(days));
     const prevS = await btn('#car', ['previous', 'السابقة']), nextS = await btn('#car', ['next', 'التالية']);
     assert.ok(prevS && nextS && prevS.left > nextS.left && prevS.scale === '-1 1' && nextS.scale === '-1 1', 'Carousel: Previous right of Next, both arrows mirrored: ' + JSON.stringify({ prevS, nextS }));
-    const prevP = await btn('#doc', ['previous', 'السابقة']), nextP = await btn('#doc', ['next', 'التالية']);
-    assert.ok(prevP && nextP && prevP.left > nextP.left, 'DocumentViewer: Previous page right of Next page: ' + JSON.stringify({ prevP, nextP }));
+    // DocumentViewer: its page buttons show once the PDF has pages (sample.pdf has two; the engines script is on the host
+    // page, served over http), and they are named by their text ("الصفحة السابقة", "الصفحة التالية"; "Previous page",
+    // "Next page" in English), with no aria-label, so the aria-label lookup above found neither (issue 777)
+    const pageNames = { prev: ['الصفحة السابقة', 'previous page'], next: ['الصفحة التالية', 'next page'] };
+    await page.waitForFunction((names) => { const t = [...document.querySelectorAll('#doc button')].map((b) => b.textContent.trim().toLowerCase()); return names.prev.some((w) => t.includes(w)) && names.next.some((w) => t.includes(w)); }, { timeout: 20000 }, pageNames).catch(() => {});
+    const pageBtn = (words) => page.evaluate((words) => { const b = [...document.querySelectorAll('#doc button')].find((x) => words.includes((x.getAttribute('aria-label') || x.textContent).trim().toLowerCase())); return b && b.getClientRects().length ? { left: b.getBoundingClientRect().left, text: b.textContent.trim() } : null; }, words);
+    const prevP = await pageBtn(pageNames.prev), nextP = await pageBtn(pageNames.next);
+    const viewer = prevP && nextP ? null : await page.evaluate(() => (document.querySelector('#doc') || {}).innerText);   // the viewer's own message when the PDF did not load
+    assert.ok(prevP && nextP && prevP.left > nextP.left, 'DocumentViewer: Previous page right of Next page: ' + JSON.stringify({ prevP, nextP, viewer }));
     assert.equal(await page.evaluate(() => document.scrollingElement.scrollWidth - document.scrollingElement.clientWidth), 0, 'no sideways scroll in right to left');
 
     // a left-to-right page with one Arabic editor (dir and lang on the editor)

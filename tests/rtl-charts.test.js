@@ -19,10 +19,11 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.Plenix && window.ReactDOM, { timeout: 60000 });
     await page.evaluate(() => { document.documentElement.setAttribute('dir', 'rtl'); document.documentElement.setAttribute('lang', 'ar'); });
-    await page.evaluate(async () => {
+    // the time chart's data: date-only values, mid-January to mid-June
+    const MONTHS = ['2026-01-15', '2026-02-15', '2026-03-15', '2026-04-15', '2026-05-15', '2026-06-15'];
+    await page.evaluate(async (months) => {
       const h = React.createElement, P = window.Plenix;
       document.getElementById('main').innerHTML = '<div id="c"></div>';
-      const months = ['2026-01-15', '2026-02-15', '2026-03-15', '2026-04-15', '2026-05-15', '2026-06-15'];
       ReactDOM.createRoot(document.getElementById('c')).render(h(P.Stack, { gap: 'xl' },
         h('div', { id: 'line' }, h(P.LineChart, { title: 'الرفع الشهري', x: 'day', xType: 'time', series: [{ id: 'n', label: 'الملفات' }], data: months.map((d, i) => ({ day: d, n: [3, 5, 4, 8, 7, 12][i] })) })),
         h('div', { id: 'band' }, h(P.LineChart, { title: 'حسب الشهر', x: 'm', series: [{ id: 'n', label: 'الملفات' }], data: ['يناير', 'فبراير', 'مارس', 'أبريل'].map((m, i) => ({ m, n: [2, 6, 4, 9][i] })) })),
@@ -30,7 +31,7 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
         h('div', { id: 'heat' }, h(P.HeatMap, { variant: 'calendar', title: 'التعديلات اليومية', valueLabel: 'التعديلات', data: Array.from({ length: 42 }, (x, i) => { const d = new Date(2026, 8, 1 + i), p = (n) => String(n).padStart(2, '0'); return { date: d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()), value: (i * 7) % 11 }; }) })),
         h('div', { id: 'bar' }, h(P.BarChart, { title: 'التخزين حسب الفريق', categories: ['التصميم', 'التسويق', 'المبيعات'], series: [{ id: 'gb', label: 'التخزين', values: [420, 310, 120] }] }))));
       await new Promise((r) => setTimeout(r, 3000));
-    });
+    }, MONTHS);
     // every label drawn in a chart, in drawing order, with its left edge; and the plot's middle
     const read = (id) => page.evaluate((id) => {
       const texts = [...document.querySelectorAll('#' + id + ' .plx-chart__engine svg text, #' + id + ' .plx-chart__svg text')].filter((t) => t.getClientRects().length)
@@ -44,11 +45,27 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     const line = await read('line');
     const dates = line.texts.filter((l) => !digits.test(l.t)), values = line.texts.filter((l) => digits.test(l.t));
     assert.ok(increasing(dates.map((l) => l.x)), 'LineChart (time): the dates run left to right: ' + JSON.stringify(dates));
-    // the data runs Jan 15 to Jun 15. Since #593 (21f931d3) date-only values get day ticks or coarser, never hours: for this
-    // five-month span the step is two weeks on whole days, so the first tick is the first one inside the data, 1 February,
-    // and the last 7 June (the CI run of #771 drew exactly these). The earliest date is at the left (issue 777)
-    assert.equal(dates[0].t, '١ فبراير', 'LineChart (time): the first tick, at the left, is 1 February: ' + JSON.stringify(dates));
-    assert.equal(dates[dates.length - 1].t, '٧ يونيو', 'LineChart (time): the last tick, at the right, is 7 June: ' + JSON.stringify(dates));
+    // the first and last ticks, from the data and #593's rule (issue 777). LineChart asks its time scale for about one tick
+    // per 64px of plot (TICK_ROOM), and since #593 (21f931d3) date-only values take a calendar step of a day or coarser,
+    // never hours: the step nearest span / count by ratio. Here the span is 151 days over a plot of about 800px (12 or 13
+    // ticks wanted, about 12 days each), so the step is one week; week ticks fall on Sundays (local time), the first one
+    // on or after the first date and the last one on or before the last date. That is 18 January to 14 June for this data
+    const ymd = (s) => s.split('-').map(Number), iso = (d) => d.toISOString().slice(0, 10);
+    const sunday = (s, dir) => { const [y, m, d] = ymd(s), t = new Date(Date.UTC(y, m - 1, d)); t.setUTCDate(d + (dir > 0 ? (7 - t.getUTCDay()) % 7 : -t.getUTCDay())); return iso(t); };
+    const want = { first: sunday(MONTHS[0], 1), last: sunday(MONTHS[MONTHS.length - 1], -1) };
+    // the Platform's own scale over the same data, at the drawn plot's width: its step, its end ticks and their labels
+    const scale = await page.evaluate((months, room) => {
+      const P = window.Plenix, day = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+      const width = document.querySelector('#line .plx-chart__plot').getBoundingClientRect().width, count = Math.max(2, Math.floor(width / room));
+      const ts = P.scaleTime({ domain: [day(months[0]), day(months[months.length - 1])], range: [0, width], unit: 'day' }), ticks = ts.ticks(count);
+      const local = (d) => [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+      return { width, count, step: ts.step(count).slice(0, 2), first: local(ticks[0]), last: local(ticks[ticks.length - 1]), firstText: ts.format(ticks[0], count), lastText: ts.format(ticks[ticks.length - 1], count) };
+    }, MONTHS, 64);
+    assert.deepEqual(scale.step, ['week', 1], 'LineChart (time): date-only values over five months take week ticks (#593: days or coarser): ' + JSON.stringify(scale));
+    assert.deepEqual({ first: scale.first, last: scale.last }, want, 'LineChart (time): the ticks run from the first Sunday in the data to the last: ' + JSON.stringify({ scale, want }));
+    assert.equal(dates[0].t, scale.firstText, 'LineChart (time): the first tick, at the left, is ' + want.first + ': ' + JSON.stringify(dates));
+    assert.equal(dates[dates.length - 1].t, scale.lastText, 'LineChart (time): the last tick, at the right, is ' + want.last + ': ' + JSON.stringify(dates));
+    assert.ok(/يناير/.test(dates[0].t) && /يونيو/.test(dates[dates.length - 1].t), 'LineChart (time): January first (left), June last (right): ' + JSON.stringify(dates));
     assert.ok(values.length > 1 && values.every((l) => l.x < line.mid), 'LineChart (time): the value axis is at the left: ' + JSON.stringify(values));
     assert.ok(dates.every((l) => /[٠-٩]/.test(l.t) && !/[0-9]/.test(l.t)), 'LineChart (time): the dates keep their Arabic-Indic digits: ' + JSON.stringify(dates));
 

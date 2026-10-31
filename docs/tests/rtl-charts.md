@@ -6,7 +6,7 @@ This test makes sure charts read correctly on Arabic (right-to-left) pages: time
 
 ## What it checks
 - With the page set to right to left (RTL, for Arabic):
-  - LineChart over time: dates run left to right (data from January 15 to June 15; since #593 the ticks are whole days, so the first tick, at the left, is 1 February and the last, at the right, 7 June); the value axis is at the left; the dates keep their Arabic-Indic digits;
+  - LineChart over time: dates run left to right (data from January 15 to June 15; since #593 date-only values get day ticks or coarser, here one a week on Sundays, so the first tick, at the left, is the first Sunday in the data, January 18, and the last, at the right, the last Sunday, June 14; the test works both out from the data and the Platform's time scale); the value axis is at the left; the dates keep their Arabic-Indic digits;
   - LineChart by category: the categories run left to right in their data order;
   - GanttChart: dates run left to right; the task labels sit whole at the left of the bars, not cut by the edge;
   - HeatMap calendar: the 7 weeks run left to right after room for the weekday labels; each weekday label sits whole left of the first week; no label overlaps a cell;
