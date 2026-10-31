@@ -39,6 +39,11 @@ import { cx } from '../../utils/cx.js';
 import { useDescribedBy } from '../../utils/describedBy.js';
 import { Icon } from '../Icon/Icon.jsx';
 
+// the field's own ref, so the group's ref callback can pass the node on: React 19 keeps a ref in the element's props (reading
+// element.ref warns there, issue 686); React 18 keeps it on the element and never in its props
+const REACT_19 = parseInt(String(React.version || '18').split('.')[0], 10) >= 19;
+const childRef = (child) => (REACT_19 ? child.props.ref : child.ref);
+
 const list = (x) => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
 
 export function InputGroup({ prefix, suffix, icon, start, end, width, compact = false, data = false, invalid, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
@@ -57,7 +62,7 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, compact = 
     readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,
     required: own.required !== undefined ? own.required : required,
     className: cx(own.className, 'plx-input-group__input', (icon || prefix != null) && 'plx-input-group__input--after-affix', suffix != null && 'plx-input-group__input--before-affix'),
-    ref: (node) => { inputRef.current = node; const r = child.ref; if (typeof r === 'function') r(node); else if (r) r.current = node; },
+    ref: (node) => { inputRef.current = node; const r = childRef(child); if (typeof r === 'function') r(node); else if (r) r.current = node; },
   };
   const isInvalid = pass.invalid, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
   // a press on the box outside the field (an affix, the icon) focuses the field

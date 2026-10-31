@@ -56,8 +56,8 @@ import { createTranslator } from '../../providers/LocaleProvider.jsx';
 import { formatLocale } from '../../utils/format.js';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 const NO_VALUE = { empty: true, nempty: true };
 const quote = (s) => '“' + s + '”';

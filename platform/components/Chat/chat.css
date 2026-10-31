@@ -1,120 +1,795 @@
 /* Plenix · Chat (platform/components/Chat): header, thread, messages, composer and the typing dots. Anatomy and API: Chat.jsx. */
-.plx-chat__typing{align-items:center;column-gap:var(--plx-comp-chat-typing-gap);display:inline-flex;position:relative;}
-.plx-chat__typing>span[aria-hidden]{animation-duration:var(--plx-comp-chat-typing-dot-animation-duration);animation-iteration-count:infinite;animation-name:motion-pulse;animation-timing-function:ease-in-out;background-color:var(--plx-comp-chat-typing-dot-background);block-size:var(--plx-comp-chat-typing-dot-height);border-bottom-left-radius:var(--plx-comp-chat-typing-dot-radius);border-bottom-right-radius:var(--plx-comp-chat-typing-dot-radius);border-top-left-radius:var(--plx-comp-chat-typing-dot-radius);border-top-right-radius:var(--plx-comp-chat-typing-dot-radius);display:inline-block;inline-size:var(--plx-comp-chat-typing-dot-width);}
-.plx-chat__typing>span[aria-hidden]:nth-child(2){animation-delay:var(--plx-comp-chat-typing-second-dot-delay);}
-.plx-chat__typing>span[aria-hidden]:nth-child(3){animation-delay:var(--plx-comp-chat-typing-third-dot-delay);}
-.plx-chat__header{align-items:center;border-block-end-color:var(--plx-comp-chat-header-border-block-end-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-header-border-block-end-width);column-gap:var(--plx-comp-chat-header-gap);display:flex;min-inline-size:0;padding-block-end:var(--plx-comp-chat-header-padding-block);padding-block-start:var(--plx-comp-chat-header-padding-block);padding-inline-end:var(--plx-comp-chat-header-padding-inline);padding-inline-start:var(--plx-comp-chat-header-padding-inline);}
-.plx-chat__header-text{flex-basis:0%;flex-grow:1;min-inline-size:0;}
-.plx-chat__header-title{color:var(--plx-comp-chat-header-title-text);font-family:var(--plx-comp-chat-header-title-font-family);font-size:var(--plx-comp-chat-header-title-font-size);font-weight:var(--plx-comp-chat-header-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-sys-text-title-line-height);word-spacing:normal;}
-.plx-chat__header-meta{color:var(--plx-comp-chat-header-meta-text);font-size:var(--plx-comp-chat-header-meta-font-size);}
-.plx-chat__header-actions{align-items:center;column-gap:var(--plx-comp-chat-header-actions-gap);display:flex;}
-.plx-chat__thread{background-color:var(--plx-comp-chat-thread-background);display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-block-size:0;overflow-y:auto;padding-block-end:var(--plx-comp-chat-thread-padding-block);padding-block-start:var(--plx-comp-chat-thread-padding-block);padding-inline-end:var(--plx-comp-chat-thread-padding-inline);padding-inline-start:var(--plx-comp-chat-thread-padding-inline);row-gap:var(--plx-comp-chat-thread-row-gap);}
+.plx-chat__typing {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-typing-gap);
+  display: inline-flex;
+  position: relative;
+}
+.plx-chat__typing>span[aria-hidden] {
+  animation-duration: var(--plx-comp-chat-typing-dot-animation-duration);
+  animation-iteration-count: infinite;
+  animation-name: motion-pulse;
+  animation-timing-function: ease-in-out;
+  background-color: var(--plx-comp-chat-typing-dot-background);
+  block-size: var(--plx-comp-chat-typing-dot-height);
+  border-bottom-left-radius: var(--plx-comp-chat-typing-dot-radius);
+  border-bottom-right-radius: var(--plx-comp-chat-typing-dot-radius);
+  border-top-left-radius: var(--plx-comp-chat-typing-dot-radius);
+  border-top-right-radius: var(--plx-comp-chat-typing-dot-radius);
+  display: inline-block;
+  inline-size: var(--plx-comp-chat-typing-dot-width);
+}
+.plx-chat__typing>span[aria-hidden]:nth-child(2) {
+  animation-delay: var(--plx-comp-chat-typing-second-dot-delay);
+}
+.plx-chat__typing>span[aria-hidden]:nth-child(3) {
+  animation-delay: var(--plx-comp-chat-typing-third-dot-delay);
+}
+.plx-chat__header {
+  align-items: center;
+  border-block-end-color: var(--plx-comp-chat-header-border-block-end-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-header-border-block-end-width);
+  column-gap: var(--plx-comp-chat-header-gap);
+  display: flex;
+  min-inline-size: 0;
+  padding-block-end: var(--plx-comp-chat-header-padding-block);
+  padding-block-start: var(--plx-comp-chat-header-padding-block);
+  padding-inline-end: var(--plx-comp-chat-header-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-header-padding-inline);
+}
+.plx-chat__header-text {
+  flex-basis: 0%;
+  flex-grow: 1;
+  min-inline-size: 0;
+}
+.plx-chat__header-title {
+  color: var(--plx-comp-chat-header-title-text);
+  font-family: var(--plx-comp-chat-header-title-font-family);
+  font-size: var(--plx-comp-chat-header-title-font-size);
+  font-weight: var(--plx-comp-chat-header-title-font-weight);
+  letter-spacing: var(--plx-sys-text-title-letter-spacing);
+  line-height: var(--plx-sys-text-title-line-height);
+  word-spacing: normal;
+}
+.plx-chat__header-meta {
+  color: var(--plx-comp-chat-header-meta-text);
+  font-size: var(--plx-comp-chat-header-meta-font-size);
+}
+.plx-chat__header-actions {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-header-actions-gap);
+  display: flex;
+}
+.plx-chat__thread {
+  background-color: var(--plx-comp-chat-thread-background);
+  display: flex;
+  flex-basis: 0%;
+  flex-direction: column;
+  flex-grow: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+  padding-block-end: var(--plx-comp-chat-thread-padding-block);
+  padding-block-start: var(--plx-comp-chat-thread-padding-block);
+  padding-inline-end: var(--plx-comp-chat-thread-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-thread-padding-inline);
+  row-gap: var(--plx-comp-chat-thread-row-gap);
+}
 /* a message: its bubble, and the sender's photo ON the bubble's top edge (the owner's mockup, issue 637): 8px in from the start
    edge for theirs, from the end edge for yours, 12px above and 16px inside, covering the border; in its bubble's own fill and
    outline. Logical sides, so right to left mirrors it. The row keeps the room above; the bubble's top padding clears the photo.
    Each part styles itself (no rule here reaches into another part). */
-.plx-chat__message{align-self:flex-start;display:flex;max-inline-size:80%;min-inline-size:0;position:relative;}
-.plx-chat__message--mine{align-self:flex-end;}
-.plx-chat__message--avatar{margin-block-start:var(--plx-comp-chat-avatar-above);}
-.plx-chat__avatar{--plx-comp-avatar-context-background:var(--plx-comp-chat-bubble-background);--plx-comp-avatar-context-border-color:var(--plx-comp-chat-bubble-border-color);--plx-comp-avatar-context-content:var(--plx-comp-chat-bubble-text);display:flex;inset-block-start:calc(var(--plx-comp-chat-avatar-above) * -1);inset-inline-start:var(--plx-comp-chat-avatar-inset);position:absolute;z-index:1;}
-.plx-chat__avatar--mine{--plx-comp-avatar-context-background:var(--plx-comp-chat-message-mine-bubble-background);--plx-comp-avatar-context-border-color:var(--plx-comp-chat-message-mine-bubble-border-color);--plx-comp-avatar-context-content:var(--plx-comp-chat-message-mine-bubble-text);inset-inline-end:var(--plx-comp-chat-avatar-inset);inset-inline-start:auto;}
-.plx-chat__bubble{background-color:var(--plx-comp-chat-bubble-background);border-bottom-color:var(--plx-comp-chat-bubble-border-color);border-bottom-left-radius:var(--plx-comp-chat-bubble-radius);border-bottom-right-radius:var(--plx-comp-chat-bubble-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-chat-bubble-border-width);border-left-color:var(--plx-comp-chat-bubble-border-color);border-left-style:solid;border-left-width:var(--plx-comp-chat-bubble-border-width);border-right-color:var(--plx-comp-chat-bubble-border-color);border-right-style:solid;border-right-width:var(--plx-comp-chat-bubble-border-width);border-top-color:var(--plx-comp-chat-bubble-border-color);border-top-left-radius:var(--plx-comp-chat-bubble-radius);border-top-right-radius:var(--plx-comp-chat-bubble-radius);border-top-style:solid;border-top-width:var(--plx-comp-chat-bubble-border-width);color:var(--plx-comp-chat-bubble-text);display:grid;font-size:var(--plx-comp-chat-bubble-font-size);min-inline-size:0;overflow-wrap:anywhere;padding-block-end:var(--plx-comp-chat-bubble-padding-block);padding-block-start:var(--plx-comp-chat-bubble-padding-block);padding-inline-end:var(--plx-comp-chat-bubble-padding-inline);padding-inline-start:var(--plx-comp-chat-bubble-padding-inline);row-gap:var(--plx-comp-chat-bubble-row-gap);}
-.plx-chat__bubble--avatar{padding-block-start:var(--plx-comp-chat-bubble-avatar-padding-block-start);}
-.plx-chat__bubble--mine{background-color:var(--plx-comp-chat-message-mine-bubble-background);border-bottom-color:var(--plx-comp-chat-message-mine-bubble-border-color);border-left-color:var(--plx-comp-chat-message-mine-bubble-border-color);border-right-color:var(--plx-comp-chat-message-mine-bubble-border-color);border-top-color:var(--plx-comp-chat-message-mine-bubble-border-color);color:var(--plx-comp-chat-message-mine-bubble-text);}
-.plx-chat__meta{align-items:baseline;column-gap:var(--plx-comp-chat-meta-gap);display:flex;font-size:var(--plx-comp-chat-meta-font-size);}
-.plx-chat__author{font-weight:var(--plx-comp-chat-author-font-weight);}
+.plx-chat__message {
+  align-self: flex-start;
+  display: flex;
+  max-inline-size: 80%;
+  min-inline-size: 0;
+  position: relative;
+}
+.plx-chat__message--mine {
+  align-self: flex-end;
+}
+.plx-chat__message--avatar {
+  margin-block-start: var(--plx-comp-chat-avatar-above);
+}
+.plx-chat__avatar {
+  --plx-comp-avatar-context-background: var(--plx-comp-chat-bubble-background);
+  --plx-comp-avatar-context-border-color: var(--plx-comp-chat-bubble-border-color);
+  --plx-comp-avatar-context-content: var(--plx-comp-chat-bubble-text);
+  display: flex;
+  inset-block-start: calc(var(--plx-comp-chat-avatar-above) * -1);
+  inset-inline-start: var(--plx-comp-chat-avatar-inset);
+  position: absolute;
+  z-index: 1;
+}
+.plx-chat__avatar--mine {
+  --plx-comp-avatar-context-background: var(--plx-comp-chat-message-mine-bubble-background);
+  --plx-comp-avatar-context-border-color: var(--plx-comp-chat-message-mine-bubble-border-color);
+  --plx-comp-avatar-context-content: var(--plx-comp-chat-message-mine-bubble-text);
+  inset-inline-end: var(--plx-comp-chat-avatar-inset);
+  inset-inline-start: auto;
+}
+.plx-chat__bubble {
+  background-color: var(--plx-comp-chat-bubble-background);
+  border-bottom-color: var(--plx-comp-chat-bubble-border-color);
+  border-bottom-left-radius: var(--plx-comp-chat-bubble-radius);
+  border-bottom-right-radius: var(--plx-comp-chat-bubble-radius);
+  border-bottom-style: solid;
+  border-bottom-width: var(--plx-comp-chat-bubble-border-width);
+  border-left-color: var(--plx-comp-chat-bubble-border-color);
+  border-left-style: solid;
+  border-left-width: var(--plx-comp-chat-bubble-border-width);
+  border-right-color: var(--plx-comp-chat-bubble-border-color);
+  border-right-style: solid;
+  border-right-width: var(--plx-comp-chat-bubble-border-width);
+  border-top-color: var(--plx-comp-chat-bubble-border-color);
+  border-top-left-radius: var(--plx-comp-chat-bubble-radius);
+  border-top-right-radius: var(--plx-comp-chat-bubble-radius);
+  border-top-style: solid;
+  border-top-width: var(--plx-comp-chat-bubble-border-width);
+  color: var(--plx-comp-chat-bubble-text);
+  display: grid;
+  font-size: var(--plx-comp-chat-bubble-font-size);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  padding-block-end: var(--plx-comp-chat-bubble-padding-block);
+  padding-block-start: var(--plx-comp-chat-bubble-padding-block);
+  padding-inline-end: var(--plx-comp-chat-bubble-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-bubble-padding-inline);
+  row-gap: var(--plx-comp-chat-bubble-row-gap);
+}
+.plx-chat__bubble--avatar {
+  padding-block-start: var(--plx-comp-chat-bubble-avatar-padding-block-start);
+}
+.plx-chat__bubble--mine {
+  background-color: var(--plx-comp-chat-message-mine-bubble-background);
+  border-bottom-color: var(--plx-comp-chat-message-mine-bubble-border-color);
+  border-left-color: var(--plx-comp-chat-message-mine-bubble-border-color);
+  border-right-color: var(--plx-comp-chat-message-mine-bubble-border-color);
+  border-top-color: var(--plx-comp-chat-message-mine-bubble-border-color);
+  color: var(--plx-comp-chat-message-mine-bubble-text);
+}
+.plx-chat__meta {
+  align-items: baseline;
+  column-gap: var(--plx-comp-chat-meta-gap);
+  display: flex;
+  font-size: var(--plx-comp-chat-meta-font-size);
+}
+.plx-chat__author {
+  font-weight: var(--plx-comp-chat-author-font-weight);
+}
 /* the footer line at the bottom of a bubble (the owner's slice 2, issue 637): "Sent <time> | Read <time>" and the status
    (sending: a clock; sent: one gray check; delivered: two gray checks; read: two green checks), small and in a second gray */
-.plx-chat__footer{align-items:center;color:var(--plx-comp-chat-time-text);column-gap:var(--plx-comp-chat-footer-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-chat-footer-font-size);line-height:var(--plx-sys-text-caption-line-height);}
-.plx-chat__time{font-family:var(--plx-comp-chat-time-font-family);font-variant-numeric:tabular-nums;word-spacing:var(--plx-sys-font-data-word-spacing);}
-.plx-chat__status{display:inline-flex;}
-.plx-chat__status--read{color:var(--plx-comp-chat-status-read-icon);}
+.plx-chat__footer {
+  align-items: center;
+  color: var(--plx-comp-chat-time-text);
+  column-gap: var(--plx-comp-chat-footer-gap);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--plx-comp-chat-footer-font-size);
+  line-height: var(--plx-sys-text-caption-line-height);
+}
+.plx-chat__time {
+  font-family: var(--plx-comp-chat-time-font-family);
+  font-variant-numeric: tabular-nums;
+  word-spacing: var(--plx-sys-font-data-word-spacing);
+}
+.plx-chat__status {
+  display: inline-flex;
+}
+.plx-chat__status--read {
+  color: var(--plx-comp-chat-status-read-icon);
+}
 /* a run of messages from one sender (Chat.Group): one photo and one name, the messages closer together */
-.plx-chat__group{display:flex;flex-direction:column;row-gap:var(--plx-comp-chat-group-row-gap);}
+.plx-chat__group {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--plx-comp-chat-group-row-gap);
+}
 /* a date line or the "New messages" line across the thread */
-.plx-chat__divider{align-items:center;color:var(--plx-comp-chat-divider-text);column-gap:var(--plx-comp-chat-divider-gap);display:flex;font-size:var(--plx-comp-chat-divider-font-size);margin-block-end:var(--plx-comp-chat-divider-margin-block);margin-block-start:var(--plx-comp-chat-divider-margin-block);}
-.plx-chat__divider--unread{font-weight:var(--plx-comp-chat-divider-unread-font-weight);}
-.plx-chat__divider-line{border-block-start-color:var(--plx-comp-chat-divider-line-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-divider-line-width);flex-basis:0%;flex-grow:1;}
-@property --plx-state-chat-box-border{syntax:"*";inherits:false;}
-@property --plx-state-chat-box-background{syntax:"*";inherits:false;}
-.plx-chat__composer{container-name:plx-chat-composer;container-type:inline-size;display:flex;flex-direction:column;padding-block-end:var(--plx-comp-chat-composer-padding-block);padding-block-start:var(--plx-comp-chat-composer-padding-block);padding-inline-end:var(--plx-comp-chat-composer-padding-inline);padding-inline-start:var(--plx-comp-chat-composer-padding-inline);}
+.plx-chat__divider {
+  align-items: center;
+  color: var(--plx-comp-chat-divider-text);
+  column-gap: var(--plx-comp-chat-divider-gap);
+  display: flex;
+  font-size: var(--plx-comp-chat-divider-font-size);
+  margin-block-end: var(--plx-comp-chat-divider-margin-block);
+  margin-block-start: var(--plx-comp-chat-divider-margin-block);
+}
+.plx-chat__divider--unread {
+  font-weight: var(--plx-comp-chat-divider-unread-font-weight);
+}
+.plx-chat__divider-line {
+  border-block-start-color: var(--plx-comp-chat-divider-line-color);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-divider-line-width);
+  flex-basis: 0%;
+  flex-grow: 1;
+}
+@property --plx-state-chat-box-border {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-chat-box-background {
+  syntax: "*";
+  inherits: false;
+}
+.plx-chat__composer {
+  container-name: plx-chat-composer;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  padding-block-end: var(--plx-comp-chat-composer-padding-block);
+  padding-block-start: var(--plx-comp-chat-composer-padding-block);
+  padding-inline-end: var(--plx-comp-chat-composer-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-composer-padding-inline);
+}
 /* the one outlined box: the text, the files waiting and the tools; the focus turns its border, as a field (the input's look: 1px, its radius) */
-.plx-chat__box{background-color:var(--plx-state-chat-box-background,var(--plx-comp-chat-composer-box-background));border-block-end-color:var(--plx-state-chat-box-border,var(--plx-comp-chat-composer-box-border-color));border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-composer-box-border-width);border-block-start-color:var(--plx-state-chat-box-border,var(--plx-comp-chat-composer-box-border-color));border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-composer-box-border-width);border-end-end-radius:var(--plx-comp-chat-composer-box-radius);border-end-start-radius:var(--plx-comp-chat-composer-box-radius);border-inline-end-color:var(--plx-state-chat-box-border,var(--plx-comp-chat-composer-box-border-color));border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-chat-composer-box-border-width);border-inline-start-color:var(--plx-state-chat-box-border,var(--plx-comp-chat-composer-box-border-color));border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-composer-box-border-width);border-start-end-radius:var(--plx-comp-chat-composer-box-radius);border-start-start-radius:var(--plx-comp-chat-composer-box-radius);display:flex;flex-direction:column;overflow:hidden;position:relative;}
-.plx-chat__box:focus-within{--plx-state-chat-box-border:var(--plx-comp-chat-composer-box-focus-border-color);}
-.plx-chat__box--drop{--plx-state-chat-box-background:var(--plx-comp-chat-composer-box-drop-background);--plx-state-chat-box-border:var(--plx-comp-chat-composer-box-drop-border-color);}
-.plx-chat__drop{align-items:center;display:flex;inset-block:0;inset-inline:0;justify-content:center;position:absolute;z-index:1;background-color:var(--plx-comp-chat-composer-box-drop-background);font-weight:var(--plx-comp-chat-author-font-weight);}
-.plx-chat__strip{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:var(--plx-comp-chat-composer-strip-padding);padding-inline-end:var(--plx-comp-chat-composer-strip-padding);padding-inline-start:var(--plx-comp-chat-composer-strip-padding);row-gap:var(--plx-comp-chat-composer-strip-gap);}
-.plx-chat__attachment{align-items:center;background-color:var(--plx-comp-chat-attachment-background);border-block-end-color:var(--plx-comp-chat-attachment-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-attachment-border-width);border-block-start-color:var(--plx-comp-chat-attachment-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-attachment-border-width);border-end-end-radius:var(--plx-comp-chat-attachment-radius);border-end-start-radius:var(--plx-comp-chat-attachment-radius);border-inline-end-color:var(--plx-comp-chat-attachment-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-chat-attachment-border-width);border-inline-start-color:var(--plx-comp-chat-attachment-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-attachment-border-width);border-start-end-radius:var(--plx-comp-chat-attachment-radius);border-start-start-radius:var(--plx-comp-chat-attachment-radius);column-gap:var(--plx-comp-chat-attachment-gap);display:flex;padding-block-end:var(--plx-comp-chat-attachment-padding);padding-block-start:var(--plx-comp-chat-attachment-padding);padding-inline-end:var(--plx-comp-chat-attachment-padding);padding-inline-start:var(--plx-comp-chat-attachment-padding);}
-.plx-chat__attachment-thumb{border-block-end-color:var(--plx-comp-chat-attachment-thumb-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-attachment-thumb-border-width);border-block-start-color:var(--plx-comp-chat-attachment-thumb-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-attachment-thumb-border-width);border-inline-end-color:var(--plx-comp-chat-attachment-thumb-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-chat-attachment-thumb-border-width);border-inline-start-color:var(--plx-comp-chat-attachment-thumb-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-attachment-thumb-border-width);align-items:center;background-color:var(--plx-comp-chat-attachment-thumb-background);block-size:var(--plx-comp-chat-attachment-thumb-size);border-end-end-radius:var(--plx-comp-chat-attachment-thumb-radius);border-end-start-radius:var(--plx-comp-chat-attachment-thumb-radius);border-start-end-radius:var(--plx-comp-chat-attachment-thumb-radius);border-start-start-radius:var(--plx-comp-chat-attachment-thumb-radius);display:flex;flex-shrink:0;inline-size:var(--plx-comp-chat-attachment-thumb-size);justify-content:center;overflow:hidden;}
-.plx-chat__attachment-image{block-size:100%;inline-size:100%;object-fit:cover;}
-.plx-chat__attachment-body{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-chat-attachment-meta-gap);}
-.plx-chat__attachment-name{font-weight:var(--plx-comp-chat-author-font-weight);overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-chat__attachment-meta{align-items:center;color:var(--plx-comp-chat-header-meta-text);column-gap:var(--plx-comp-chat-attachment-meta-gap);display:flex;font-size:var(--plx-comp-chat-meta-font-size);}
-.plx-chat__attachment-progress{display:block;inline-size:var(--plx-comp-chat-attachment-progress-width);max-inline-size:100%;}
+.plx-chat__box {
+  background-color: var(--plx-state-chat-box-background, var(--plx-comp-chat-composer-box-background));
+  border-block-end-color: var(--plx-state-chat-box-border, var(--plx-comp-chat-composer-box-border-color));
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-composer-box-border-width);
+  border-block-start-color: var(--plx-state-chat-box-border, var(--plx-comp-chat-composer-box-border-color));
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-composer-box-border-width);
+  border-end-end-radius: var(--plx-comp-chat-composer-box-radius);
+  border-end-start-radius: var(--plx-comp-chat-composer-box-radius);
+  border-inline-end-color: var(--plx-state-chat-box-border, var(--plx-comp-chat-composer-box-border-color));
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-comp-chat-composer-box-border-width);
+  border-inline-start-color: var(--plx-state-chat-box-border, var(--plx-comp-chat-composer-box-border-color));
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-composer-box-border-width);
+  border-start-end-radius: var(--plx-comp-chat-composer-box-radius);
+  border-start-start-radius: var(--plx-comp-chat-composer-box-radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.plx-chat__box:focus-within {
+  --plx-state-chat-box-border: var(--plx-comp-chat-composer-box-focus-border-color);
+}
+.plx-chat__box--drop {
+  --plx-state-chat-box-background: var(--plx-comp-chat-composer-box-drop-background);
+  --plx-state-chat-box-border: var(--plx-comp-chat-composer-box-drop-border-color);
+}
+.plx-chat__drop {
+  align-items: center;
+  display: flex;
+  inset-block: 0;
+  inset-inline: 0;
+  justify-content: center;
+  position: absolute;
+  z-index: 1;
+  background-color: var(--plx-comp-chat-composer-box-drop-background);
+  font-weight: var(--plx-comp-chat-author-font-weight);
+}
+.plx-chat__strip {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding-block-end: 0;
+  padding-block-start: var(--plx-comp-chat-composer-strip-padding);
+  padding-inline-end: var(--plx-comp-chat-composer-strip-padding);
+  padding-inline-start: var(--plx-comp-chat-composer-strip-padding);
+  row-gap: var(--plx-comp-chat-composer-strip-gap);
+}
+.plx-chat__attachment {
+  align-items: center;
+  background-color: var(--plx-comp-chat-attachment-background);
+  border-block-end-color: var(--plx-comp-chat-attachment-border-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-attachment-border-width);
+  border-block-start-color: var(--plx-comp-chat-attachment-border-color);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-attachment-border-width);
+  border-end-end-radius: var(--plx-comp-chat-attachment-radius);
+  border-end-start-radius: var(--plx-comp-chat-attachment-radius);
+  border-inline-end-color: var(--plx-comp-chat-attachment-border-color);
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-comp-chat-attachment-border-width);
+  border-inline-start-color: var(--plx-comp-chat-attachment-border-color);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-attachment-border-width);
+  border-start-end-radius: var(--plx-comp-chat-attachment-radius);
+  border-start-start-radius: var(--plx-comp-chat-attachment-radius);
+  column-gap: var(--plx-comp-chat-attachment-gap);
+  display: flex;
+  padding-block-end: var(--plx-comp-chat-attachment-padding);
+  padding-block-start: var(--plx-comp-chat-attachment-padding);
+  padding-inline-end: var(--plx-comp-chat-attachment-padding);
+  padding-inline-start: var(--plx-comp-chat-attachment-padding);
+}
+.plx-chat__attachment-thumb {
+  border-block-end-color: var(--plx-comp-chat-attachment-thumb-border-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-attachment-thumb-border-width);
+  border-block-start-color: var(--plx-comp-chat-attachment-thumb-border-color);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-attachment-thumb-border-width);
+  border-inline-end-color: var(--plx-comp-chat-attachment-thumb-border-color);
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-comp-chat-attachment-thumb-border-width);
+  border-inline-start-color: var(--plx-comp-chat-attachment-thumb-border-color);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-attachment-thumb-border-width);
+  align-items: center;
+  background-color: var(--plx-comp-chat-attachment-thumb-background);
+  block-size: var(--plx-comp-chat-attachment-thumb-size);
+  border-end-end-radius: var(--plx-comp-chat-attachment-thumb-radius);
+  border-end-start-radius: var(--plx-comp-chat-attachment-thumb-radius);
+  border-start-end-radius: var(--plx-comp-chat-attachment-thumb-radius);
+  border-start-start-radius: var(--plx-comp-chat-attachment-thumb-radius);
+  display: flex;
+  flex-shrink: 0;
+  inline-size: var(--plx-comp-chat-attachment-thumb-size);
+  justify-content: center;
+  overflow: hidden;
+}
+.plx-chat__attachment-image {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
+}
+.plx-chat__attachment-body {
+  display: flex;
+  flex-basis: 0%;
+  flex-direction: column;
+  flex-grow: 1;
+  min-inline-size: 0;
+  row-gap: var(--plx-comp-chat-attachment-meta-gap);
+}
+.plx-chat__attachment-name {
+  font-weight: var(--plx-comp-chat-author-font-weight);
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.plx-chat__attachment-meta {
+  align-items: center;
+  color: var(--plx-comp-chat-header-meta-text);
+  column-gap: var(--plx-comp-chat-attachment-meta-gap);
+  display: flex;
+  font-size: var(--plx-comp-chat-meta-font-size);
+}
+.plx-chat__attachment-progress {
+  display: block;
+  inline-size: var(--plx-comp-chat-attachment-progress-width);
+  max-inline-size: 100%;
+}
 /* the text area inside the box: no border or fill of its own (Input's context hooks), grows from two lines, one at a phone width */
-.plx-chat__field{--plx-comp-input-context-background:transparent;--plx-comp-input-context-border-block-width:0;--plx-comp-input-context-border-end-width:0;--plx-comp-input-context-border-start-width:0;--plx-comp-input-context-resize:none;flex-grow:1;}
-@container plx-chat-composer (max-width: 30rem){.plx-chat__field{--plx-comp-textarea-context-min-height:var(--plx-comp-chat-field-min-height-narrow);}}
-.plx-chat__problem{padding-inline-end:var(--plx-comp-chat-composer-tools-padding-inline);padding-inline-start:var(--plx-comp-chat-composer-tools-padding-inline);}
-.plx-chat__tools{align-items:center;column-gap:var(--plx-comp-chat-composer-tools-gap);display:flex;padding-block-end:var(--plx-comp-chat-composer-tools-padding-block);padding-block-start:var(--plx-comp-chat-composer-tools-padding-block);padding-inline-end:var(--plx-comp-chat-composer-tools-padding-inline);padding-inline-start:var(--plx-comp-chat-composer-tools-padding-inline);}
-.plx-chat__tools-end{align-items:center;column-gap:var(--plx-comp-chat-composer-tools-gap);display:flex;margin-inline-start:auto;}
-.plx-chat__listening{align-items:center;column-gap:var(--plx-comp-chat-voice-gap);display:inline-flex;font-weight:var(--plx-comp-chat-author-font-weight);}
-.plx-chat__dot{animation-duration:var(--plx-comp-chat-typing-dot-animation-duration);animation-iteration-count:infinite;animation-name:motion-pulse;animation-timing-function:ease-in-out;background-color:var(--plx-comp-chat-voice-dot-background);block-size:var(--plx-comp-chat-voice-dot-size);border-end-end-radius:var(--plx-comp-chat-typing-dot-radius);border-end-start-radius:var(--plx-comp-chat-typing-dot-radius);border-start-end-radius:var(--plx-comp-chat-typing-dot-radius);border-start-start-radius:var(--plx-comp-chat-typing-dot-radius);display:inline-block;inline-size:var(--plx-comp-chat-voice-dot-size);}
-.plx-chat__mic{border-end-end-radius:var(--plx-comp-chat-composer-box-radius);border-end-start-radius:var(--plx-comp-chat-composer-box-radius);border-start-end-radius:var(--plx-comp-chat-composer-box-radius);border-start-start-radius:var(--plx-comp-chat-composer-box-radius);display:inline-flex;}
-.plx-chat__mic--listening{outline-color:var(--plx-comp-chat-voice-ring-color);outline-style:solid;outline-width:var(--plx-comp-chat-voice-ring-width);}
-.plx-chat__panel{padding-block-end:var(--plx-comp-chat-panel-padding);padding-block-start:var(--plx-comp-chat-panel-padding);padding-inline-end:var(--plx-comp-chat-panel-padding);padding-inline-start:var(--plx-comp-chat-panel-padding);}
+.plx-chat__field {
+  --plx-comp-input-context-background: transparent;
+  --plx-comp-input-context-border-block-width: 0;
+  --plx-comp-input-context-border-end-width: 0;
+  --plx-comp-input-context-border-start-width: 0;
+  --plx-comp-input-context-resize: none;
+  flex-grow: 1;
+}
+@container plx-chat-composer (max-width: 30rem) {
+  .plx-chat__field {
+    --plx-comp-textarea-context-min-height: var(--plx-comp-chat-field-min-height-narrow);
+  }
+}
+.plx-chat__problem {
+  padding-inline-end: var(--plx-comp-chat-composer-tools-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-composer-tools-padding-inline);
+}
+.plx-chat__tools {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-composer-tools-gap);
+  display: flex;
+  padding-block-end: var(--plx-comp-chat-composer-tools-padding-block);
+  padding-block-start: var(--plx-comp-chat-composer-tools-padding-block);
+  padding-inline-end: var(--plx-comp-chat-composer-tools-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-composer-tools-padding-inline);
+}
+.plx-chat__tools-end {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-composer-tools-gap);
+  display: flex;
+  margin-inline-start: auto;
+}
+.plx-chat__listening {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-voice-gap);
+  display: inline-flex;
+  font-weight: var(--plx-comp-chat-author-font-weight);
+}
+.plx-chat__dot {
+  animation-duration: var(--plx-comp-chat-typing-dot-animation-duration);
+  animation-iteration-count: infinite;
+  animation-name: motion-pulse;
+  animation-timing-function: ease-in-out;
+  background-color: var(--plx-comp-chat-voice-dot-background);
+  block-size: var(--plx-comp-chat-voice-dot-size);
+  border-end-end-radius: var(--plx-comp-chat-typing-dot-radius);
+  border-end-start-radius: var(--plx-comp-chat-typing-dot-radius);
+  border-start-end-radius: var(--plx-comp-chat-typing-dot-radius);
+  border-start-start-radius: var(--plx-comp-chat-typing-dot-radius);
+  display: inline-block;
+  inline-size: var(--plx-comp-chat-voice-dot-size);
+}
+.plx-chat__mic {
+  border-end-end-radius: var(--plx-comp-chat-composer-box-radius);
+  border-end-start-radius: var(--plx-comp-chat-composer-box-radius);
+  border-start-end-radius: var(--plx-comp-chat-composer-box-radius);
+  border-start-start-radius: var(--plx-comp-chat-composer-box-radius);
+  display: inline-flex;
+}
+.plx-chat__mic--listening {
+  outline-color: var(--plx-comp-chat-voice-ring-color);
+  outline-style: solid;
+  outline-width: var(--plx-comp-chat-voice-ring-width);
+}
+.plx-chat__panel {
+  padding-block-end: var(--plx-comp-chat-panel-padding);
+  padding-block-start: var(--plx-comp-chat-panel-padding);
+  padding-inline-end: var(--plx-comp-chat-panel-padding);
+  padding-inline-start: var(--plx-comp-chat-panel-padding);
+}
 /* the thread scrolls and is in the Tab order: the focus ring, as every control (batch 215) */
-.plx-chat__thread:focus-visible{outline-color:var(--plx-comp-chat-thread-focus-outline-color);outline-offset:var(--plx-comp-chat-thread-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-chat-thread-focus-outline-width);}
+.plx-chat__thread:focus-visible {
+  outline-color: var(--plx-comp-chat-thread-focus-outline-color);
+  outline-offset: var(--plx-comp-chat-thread-focus-outline-offset);
+  outline-style: solid;
+  outline-width: var(--plx-comp-chat-thread-focus-outline-width);
+}
 
 /* what a message carries (the owner's slice 5, issue 637): pictures and files in the bubble, and the voice-message player.
    A picture is a button that opens the viewer; a file is a card with a bordered icon and Download. Every icon-only control is a bordered button. */
-.plx-chat__media{align-items:flex-start;display:flex;flex-direction:column;max-inline-size:100%;row-gap:var(--plx-comp-chat-media-gap);}
-.plx-chat__media--row{align-items:stretch;column-gap:var(--plx-comp-chat-media-gap);flex-direction:row;flex-wrap:wrap;}
-.plx-chat__image{background-color:transparent;block-size:var(--plx-comp-chat-media-image-height);cursor:pointer;display:block;inline-size:var(--plx-comp-chat-media-image-width);max-inline-size:100%;overflow-x:hidden;overflow-y:hidden;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;border-block-end-color:var(--plx-comp-chat-media-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-media-border-width);border-block-start-color:var(--plx-comp-chat-media-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-media-border-width);border-inline-end-color:var(--plx-comp-chat-media-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-chat-media-border-width);border-inline-start-color:var(--plx-comp-chat-media-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-media-border-width);border-end-end-radius:var(--plx-comp-chat-media-radius);border-end-start-radius:var(--plx-comp-chat-media-radius);border-start-end-radius:var(--plx-comp-chat-media-radius);border-start-start-radius:var(--plx-comp-chat-media-radius);}
-.plx-chat__image--row{block-size:var(--plx-comp-chat-media-row-image-height);flex-basis:0%;flex-grow:1;inline-size:auto;min-inline-size:var(--plx-comp-chat-media-row-image-height);}
-.plx-chat__image:focus-visible{outline-color:var(--plx-comp-chat-thread-focus-outline-color);outline-offset:var(--plx-comp-chat-thread-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-chat-thread-focus-outline-width);}
-.plx-chat__image-picture{block-size:100%;display:block;inline-size:100%;object-fit:cover;}
-.plx-chat__image--broken{align-items:center;background-color:var(--plx-comp-chat-media-broken-background);color:var(--plx-comp-chat-media-broken-text);cursor:default;display:flex;flex-direction:column;justify-content:center;row-gap:var(--plx-comp-chat-media-gap);}
-.plx-chat__image-broken-text{font-size:var(--plx-comp-chat-meta-font-size);}
-.plx-chat__file{align-items:center;background-color:var(--plx-comp-chat-attachment-background);column-gap:var(--plx-comp-chat-attachment-gap);display:flex;max-inline-size:100%;min-inline-size:var(--plx-comp-chat-file-min-width);border-block-end-color:var(--plx-comp-chat-attachment-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-attachment-border-width);border-block-start-color:var(--plx-comp-chat-attachment-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-attachment-border-width);border-inline-end-color:var(--plx-comp-chat-attachment-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-chat-attachment-border-width);border-inline-start-color:var(--plx-comp-chat-attachment-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-attachment-border-width);border-end-end-radius:var(--plx-comp-chat-attachment-radius);border-end-start-radius:var(--plx-comp-chat-attachment-radius);border-start-end-radius:var(--plx-comp-chat-attachment-radius);border-start-start-radius:var(--plx-comp-chat-attachment-radius);padding-block-end:var(--plx-comp-chat-attachment-padding);padding-block-start:var(--plx-comp-chat-attachment-padding);padding-inline-end:var(--plx-comp-chat-attachment-padding);padding-inline-start:var(--plx-comp-chat-attachment-padding);}
-.plx-chat__voice{align-items:center;column-gap:var(--plx-comp-chat-voice-gap-inline);display:flex;flex-wrap:wrap;max-inline-size:100%;min-inline-size:var(--plx-comp-chat-voice-min-width);}
-.plx-chat__voice-wave{align-items:center;block-size:var(--plx-comp-chat-voice-bar-height-4);display:flex;flex-basis:0%;flex-grow:1;min-inline-size:0;position:relative;border-end-end-radius:var(--plx-comp-chat-voice-bar-radius);border-end-start-radius:var(--plx-comp-chat-voice-bar-radius);border-start-end-radius:var(--plx-comp-chat-voice-bar-radius);border-start-start-radius:var(--plx-comp-chat-voice-bar-radius);}
-.plx-chat__voice-wave--focus{outline-color:var(--plx-comp-chat-thread-focus-outline-color);outline-offset:var(--plx-comp-chat-thread-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-chat-thread-focus-outline-width);}
-.plx-chat__voice-bars{align-items:center;display:flex;inline-size:100%;justify-content:space-between;overflow-x:hidden;overflow-y:hidden;}
-.plx-chat__bar{background-color:var(--plx-comp-chat-voice-bar-color);flex-shrink:0;inline-size:var(--plx-comp-chat-voice-bar-width);border-end-end-radius:var(--plx-comp-chat-voice-bar-radius);border-end-start-radius:var(--plx-comp-chat-voice-bar-radius);border-start-end-radius:var(--plx-comp-chat-voice-bar-radius);border-start-start-radius:var(--plx-comp-chat-voice-bar-radius);}
-.plx-chat__bar--h1{block-size:var(--plx-comp-chat-voice-bar-height-1);}
-.plx-chat__bar--h2{block-size:var(--plx-comp-chat-voice-bar-height-2);}
-.plx-chat__bar--h3{block-size:var(--plx-comp-chat-voice-bar-height-3);}
-.plx-chat__bar--h4{block-size:var(--plx-comp-chat-voice-bar-height-4);}
-.plx-chat__bar--played{background-color:var(--plx-comp-chat-voice-bar-played-color);}
-.plx-chat__voice-seek{block-size:100%;cursor:pointer;inline-size:100%;inset-block-start:0;inset-inline-start:0;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;opacity:0;position:absolute;}
-.plx-chat__voice-time{color:var(--plx-comp-chat-header-meta-text);font-size:var(--plx-comp-chat-voice-time-font-size);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.plx-chat__media {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  max-inline-size: 100%;
+  row-gap: var(--plx-comp-chat-media-gap);
+}
+.plx-chat__media--row {
+  align-items: stretch;
+  column-gap: var(--plx-comp-chat-media-gap);
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.plx-chat__image {
+  background-color: transparent;
+  block-size: var(--plx-comp-chat-media-image-height);
+  cursor: pointer;
+  display: block;
+  inline-size: var(--plx-comp-chat-media-image-width);
+  max-inline-size: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding-block-end: 0;
+  padding-block-start: 0;
+  padding-inline-end: 0;
+  padding-inline-start: 0;
+  border-block-end-color: var(--plx-comp-chat-media-border-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-media-border-width);
+  border-block-start-color: var(--plx-comp-chat-media-border-color);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-media-border-width);
+  border-inline-end-color: var(--plx-comp-chat-media-border-color);
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-comp-chat-media-border-width);
+  border-inline-start-color: var(--plx-comp-chat-media-border-color);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-media-border-width);
+  border-end-end-radius: var(--plx-comp-chat-media-radius);
+  border-end-start-radius: var(--plx-comp-chat-media-radius);
+  border-start-end-radius: var(--plx-comp-chat-media-radius);
+  border-start-start-radius: var(--plx-comp-chat-media-radius);
+}
+.plx-chat__image--row {
+  block-size: var(--plx-comp-chat-media-row-image-height);
+  flex-basis: 0%;
+  flex-grow: 1;
+  inline-size: auto;
+  min-inline-size: var(--plx-comp-chat-media-row-image-height);
+}
+.plx-chat__image:focus-visible {
+  outline-color: var(--plx-comp-chat-thread-focus-outline-color);
+  outline-offset: var(--plx-comp-chat-thread-focus-outline-offset);
+  outline-style: solid;
+  outline-width: var(--plx-comp-chat-thread-focus-outline-width);
+}
+.plx-chat__image-picture {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+}
+.plx-chat__image--broken {
+  align-items: center;
+  background-color: var(--plx-comp-chat-media-broken-background);
+  color: var(--plx-comp-chat-media-broken-text);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: var(--plx-comp-chat-media-gap);
+}
+.plx-chat__image-broken-text {
+  font-size: var(--plx-comp-chat-meta-font-size);
+}
+.plx-chat__file {
+  align-items: center;
+  background-color: var(--plx-comp-chat-attachment-background);
+  column-gap: var(--plx-comp-chat-attachment-gap);
+  display: flex;
+  max-inline-size: 100%;
+  min-inline-size: var(--plx-comp-chat-file-min-width);
+  border-block-end-color: var(--plx-comp-chat-attachment-border-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-attachment-border-width);
+  border-block-start-color: var(--plx-comp-chat-attachment-border-color);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-attachment-border-width);
+  border-inline-end-color: var(--plx-comp-chat-attachment-border-color);
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-comp-chat-attachment-border-width);
+  border-inline-start-color: var(--plx-comp-chat-attachment-border-color);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-attachment-border-width);
+  border-end-end-radius: var(--plx-comp-chat-attachment-radius);
+  border-end-start-radius: var(--plx-comp-chat-attachment-radius);
+  border-start-end-radius: var(--plx-comp-chat-attachment-radius);
+  border-start-start-radius: var(--plx-comp-chat-attachment-radius);
+  padding-block-end: var(--plx-comp-chat-attachment-padding);
+  padding-block-start: var(--plx-comp-chat-attachment-padding);
+  padding-inline-end: var(--plx-comp-chat-attachment-padding);
+  padding-inline-start: var(--plx-comp-chat-attachment-padding);
+}
+.plx-chat__voice {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-voice-gap-inline);
+  display: flex;
+  flex-wrap: wrap;
+  max-inline-size: 100%;
+  min-inline-size: var(--plx-comp-chat-voice-min-width);
+}
+.plx-chat__voice-wave {
+  align-items: center;
+  block-size: var(--plx-comp-chat-voice-bar-height-4);
+  display: flex;
+  flex-basis: 0%;
+  flex-grow: 1;
+  min-inline-size: 0;
+  position: relative;
+  border-end-end-radius: var(--plx-comp-chat-voice-bar-radius);
+  border-end-start-radius: var(--plx-comp-chat-voice-bar-radius);
+  border-start-end-radius: var(--plx-comp-chat-voice-bar-radius);
+  border-start-start-radius: var(--plx-comp-chat-voice-bar-radius);
+}
+.plx-chat__voice-wave--focus {
+  outline-color: var(--plx-comp-chat-thread-focus-outline-color);
+  outline-offset: var(--plx-comp-chat-thread-focus-outline-offset);
+  outline-style: solid;
+  outline-width: var(--plx-comp-chat-thread-focus-outline-width);
+}
+.plx-chat__voice-bars {
+  align-items: center;
+  display: flex;
+  inline-size: 100%;
+  justify-content: space-between;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.plx-chat__bar {
+  background-color: var(--plx-comp-chat-voice-bar-color);
+  flex-shrink: 0;
+  inline-size: var(--plx-comp-chat-voice-bar-width);
+  border-end-end-radius: var(--plx-comp-chat-voice-bar-radius);
+  border-end-start-radius: var(--plx-comp-chat-voice-bar-radius);
+  border-start-end-radius: var(--plx-comp-chat-voice-bar-radius);
+  border-start-start-radius: var(--plx-comp-chat-voice-bar-radius);
+}
+.plx-chat__bar--h1 {
+  block-size: var(--plx-comp-chat-voice-bar-height-1);
+}
+.plx-chat__bar--h2 {
+  block-size: var(--plx-comp-chat-voice-bar-height-2);
+}
+.plx-chat__bar--h3 {
+  block-size: var(--plx-comp-chat-voice-bar-height-3);
+}
+.plx-chat__bar--h4 {
+  block-size: var(--plx-comp-chat-voice-bar-height-4);
+}
+.plx-chat__bar--played {
+  background-color: var(--plx-comp-chat-voice-bar-played-color);
+}
+.plx-chat__voice-seek {
+  block-size: 100%;
+  cursor: pointer;
+  inline-size: 100%;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  opacity: 0;
+  position: absolute;
+}
+.plx-chat__voice-time {
+  color: var(--plx-comp-chat-header-meta-text);
+  font-size: var(--plx-comp-chat-voice-time-font-size);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 /* the record control is a placeholder until voice messages are built (issue 654): drawn disabled, it answers with a tooltip and does nothing */
-.plx-chat__record{cursor:default;display:inline-flex;border-end-end-radius:var(--plx-comp-chat-composer-box-radius);border-end-start-radius:var(--plx-comp-chat-composer-box-radius);border-start-end-radius:var(--plx-comp-chat-composer-box-radius);border-start-start-radius:var(--plx-comp-chat-composer-box-radius);}
-.plx-chat__record:focus-visible{outline-color:var(--plx-comp-chat-thread-focus-outline-color);outline-offset:var(--plx-comp-chat-thread-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-chat-thread-focus-outline-width);}
+.plx-chat__record {
+  cursor: default;
+  display: inline-flex;
+  border-end-end-radius: var(--plx-comp-chat-composer-box-radius);
+  border-end-start-radius: var(--plx-comp-chat-composer-box-radius);
+  border-start-end-radius: var(--plx-comp-chat-composer-box-radius);
+  border-start-start-radius: var(--plx-comp-chat-composer-box-radius);
+}
+.plx-chat__record:focus-visible {
+  outline-color: var(--plx-comp-chat-thread-focus-outline-color);
+  outline-offset: var(--plx-comp-chat-thread-focus-outline-offset);
+  outline-style: solid;
+  outline-width: var(--plx-comp-chat-thread-focus-outline-width);
+}
 /* message actions (issue 637 slice 4, ChatActions.jsx): the bar beside the bubble, in the free space (it never covers the text): at the bubble's
    end side for theirs, its start side for yours; logical sides, so right to left mirrors it. Hidden as a visually hidden box until hover, keyboard
    focus or a long press (it stays in the Tab order: a Tab into it reveals it). */
-.plx-chat__actions{column-gap:var(--plx-comp-chat-actions-gap);display:flex;inset-block-start:0;inset-inline-start:calc(100% + var(--plx-comp-chat-actions-offset));position:absolute;z-index:2;}
-.plx-chat__actions--mine{inset-inline-end:calc(100% + var(--plx-comp-chat-actions-offset));inset-inline-start:auto;}
-.plx-chat__picker{display:flex;flex-direction:column;row-gap:var(--plx-comp-chat-picker-gap);}
-.plx-chat__quick{column-gap:var(--plx-comp-chat-quick-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-chat-quick-gap);}
+.plx-chat__actions {
+  column-gap: var(--plx-comp-chat-actions-gap);
+  display: flex;
+  inset-block-start: 0;
+  inset-inline-start: calc(100% + var(--plx-comp-chat-actions-offset));
+  position: absolute;
+  z-index: 2;
+}
+.plx-chat__actions--mine {
+  inset-inline-end: calc(100% + var(--plx-comp-chat-actions-offset));
+  inset-inline-start: auto;
+}
+.plx-chat__picker {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--plx-comp-chat-picker-gap);
+}
+.plx-chat__quick {
+  column-gap: var(--plx-comp-chat-quick-gap);
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--plx-comp-chat-quick-gap);
+}
 /* the reactions under the text: pills (emoji and count), yours outlined in the action color; then Add reaction */
-.plx-chat__reactions{align-items:center;column-gap:var(--plx-comp-chat-reactions-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-chat-reactions-gap);}
-.plx-chat__reaction{align-items:center;appearance:none;background-color:var(--plx-comp-chat-reaction-background);block-size:var(--plx-comp-chat-reaction-height);border-block-end-color:var(--plx-comp-chat-reaction-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-reaction-border-width);border-block-start-color:var(--plx-comp-chat-reaction-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-chat-reaction-border-width);border-end-end-radius:var(--plx-comp-chat-reaction-radius);border-end-start-radius:var(--plx-comp-chat-reaction-radius);border-inline-end-color:var(--plx-comp-chat-reaction-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-chat-reaction-border-width);border-inline-start-color:var(--plx-comp-chat-reaction-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-reaction-border-width);border-start-end-radius:var(--plx-comp-chat-reaction-radius);border-start-start-radius:var(--plx-comp-chat-reaction-radius);color:var(--plx-comp-chat-reaction-text);column-gap:var(--plx-comp-chat-reaction-gap);cursor:pointer;display:inline-flex;font-family:inherit;font-size:var(--plx-comp-chat-reaction-font-size);font-variant-numeric:tabular-nums;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-chat-reaction-padding-inline);padding-inline-start:var(--plx-comp-chat-reaction-padding-inline);}
-.plx-chat__reaction:hover:where(:not(:disabled)){background-color:var(--plx-comp-chat-reaction-hover-background);}
-.plx-chat__reaction:disabled{cursor:default;}
-.plx-chat__reaction:focus-visible{outline-color:var(--plx-comp-chat-reaction-focus-ring-color);outline-offset:var(--plx-comp-chat-reaction-focus-ring-offset);outline-style:solid;outline-width:var(--plx-comp-chat-reaction-focus-ring-width);}
-.plx-chat__reaction--mine{background-color:var(--plx-comp-chat-reaction-mine-background);border-block-end-color:var(--plx-comp-chat-reaction-mine-border-color);border-block-start-color:var(--plx-comp-chat-reaction-mine-border-color);border-inline-end-color:var(--plx-comp-chat-reaction-mine-border-color);border-inline-start-color:var(--plx-comp-chat-reaction-mine-border-color);}
+.plx-chat__reactions {
+  align-items: center;
+  column-gap: var(--plx-comp-chat-reactions-gap);
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--plx-comp-chat-reactions-gap);
+}
+.plx-chat__reaction {
+  align-items: center;
+  appearance: none;
+  background-color: var(--plx-comp-chat-reaction-background);
+  block-size: var(--plx-comp-chat-reaction-height);
+  border-block-end-color: var(--plx-comp-chat-reaction-border-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-reaction-border-width);
+  border-block-start-color: var(--plx-comp-chat-reaction-border-color);
+  border-block-start-style: solid;
+  border-block-start-width: var(--plx-comp-chat-reaction-border-width);
+  border-end-end-radius: var(--plx-comp-chat-reaction-radius);
+  border-end-start-radius: var(--plx-comp-chat-reaction-radius);
+  border-inline-end-color: var(--plx-comp-chat-reaction-border-color);
+  border-inline-end-style: solid;
+  border-inline-end-width: var(--plx-comp-chat-reaction-border-width);
+  border-inline-start-color: var(--plx-comp-chat-reaction-border-color);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-reaction-border-width);
+  border-start-end-radius: var(--plx-comp-chat-reaction-radius);
+  border-start-start-radius: var(--plx-comp-chat-reaction-radius);
+  color: var(--plx-comp-chat-reaction-text);
+  column-gap: var(--plx-comp-chat-reaction-gap);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: var(--plx-comp-chat-reaction-font-size);
+  font-variant-numeric: tabular-nums;
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding-block-end: 0;
+  padding-block-start: 0;
+  padding-inline-end: var(--plx-comp-chat-reaction-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-reaction-padding-inline);
+}
+.plx-chat__reaction:hover:where(:not(:disabled)) {
+  background-color: var(--plx-comp-chat-reaction-hover-background);
+}
+.plx-chat__reaction:disabled {
+  cursor: default;
+}
+.plx-chat__reaction:focus-visible {
+  outline-color: var(--plx-comp-chat-reaction-focus-ring-color);
+  outline-offset: var(--plx-comp-chat-reaction-focus-ring-offset);
+  outline-style: solid;
+  outline-width: var(--plx-comp-chat-reaction-focus-ring-width);
+}
+.plx-chat__reaction--mine {
+  background-color: var(--plx-comp-chat-reaction-mine-background);
+  border-block-end-color: var(--plx-comp-chat-reaction-mine-border-color);
+  border-block-start-color: var(--plx-comp-chat-reaction-mine-border-color);
+  border-inline-end-color: var(--plx-comp-chat-reaction-mine-border-color);
+  border-inline-start-color: var(--plx-comp-chat-reaction-mine-border-color);
+}
 /* a quoted or replied-to message: a bar at the start edge, the author, one line of the text */
-.plx-chat__quote{border-inline-start-color:var(--plx-comp-chat-quote-bar-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-chat-quote-bar-width);display:grid;font-size:var(--plx-comp-chat-quote-font-size);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;padding-inline-start:var(--plx-comp-chat-quote-padding-inline);row-gap:var(--plx-comp-chat-quote-gap);}
-.plx-chat__quote--replying{flex-basis:0%;flex-grow:1;}
-.plx-chat__quote-author{font-weight:var(--plx-comp-chat-quote-author-font-weight);}
-.plx-chat__quote-text{color:var(--plx-comp-chat-quote-text);overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-chat__quote {
+  border-inline-start-color: var(--plx-comp-chat-quote-bar-color);
+  border-inline-start-style: solid;
+  border-inline-start-width: var(--plx-comp-chat-quote-bar-width);
+  display: grid;
+  font-size: var(--plx-comp-chat-quote-font-size);
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  min-inline-size: 0;
+  padding-inline-start: var(--plx-comp-chat-quote-padding-inline);
+  row-gap: var(--plx-comp-chat-quote-gap);
+}
+.plx-chat__quote--replying {
+  flex-basis: 0%;
+  flex-grow: 1;
+}
+.plx-chat__quote-author {
+  font-weight: var(--plx-comp-chat-quote-author-font-weight);
+}
+.plx-chat__quote-text {
+  color: var(--plx-comp-chat-quote-text);
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* the composer's "Replying to" line, above the text, with Cancel */
-.plx-chat__replying{align-items:center;border-block-end-color:var(--plx-comp-chat-replying-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-chat-replying-border-width);column-gap:var(--plx-comp-chat-replying-gap);display:flex;padding-block-end:var(--plx-comp-chat-replying-padding-block);padding-block-start:var(--plx-comp-chat-replying-padding-block);padding-inline-end:var(--plx-comp-chat-replying-padding-inline);padding-inline-start:var(--plx-comp-chat-replying-padding-inline);}
-.plx-chat__replying-icon{color:var(--plx-comp-chat-replying-icon);display:inline-flex;}
-.plx-chat__deleted{color:var(--plx-comp-chat-deleted-text);font-style:italic;}
+.plx-chat__replying {
+  align-items: center;
+  border-block-end-color: var(--plx-comp-chat-replying-border-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--plx-comp-chat-replying-border-width);
+  column-gap: var(--plx-comp-chat-replying-gap);
+  display: flex;
+  padding-block-end: var(--plx-comp-chat-replying-padding-block);
+  padding-block-start: var(--plx-comp-chat-replying-padding-block);
+  padding-inline-end: var(--plx-comp-chat-replying-padding-inline);
+  padding-inline-start: var(--plx-comp-chat-replying-padding-inline);
+}
+.plx-chat__replying-icon {
+  color: var(--plx-comp-chat-replying-icon);
+  display: inline-flex;
+}
+.plx-chat__deleted {
+  color: var(--plx-comp-chat-deleted-text);
+  font-style: italic;
+}
 
 /* Thinking reuses existing loading motion and typing spacing roles. */
-.plx-chat__thinking { display: flex; flex-direction: column; gap: var(--plx-comp-chat-typing-gap); }
-.plx-chat__thinking-label { display: inline-flex; align-items: center; gap: var(--plx-comp-chat-typing-gap); }
+.plx-chat__thinking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--plx-comp-chat-typing-gap);
+}
+.plx-chat__thinking-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--plx-comp-chat-typing-gap);
+}

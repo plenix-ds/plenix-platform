@@ -31,11 +31,10 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { encodeBarcode, BARCODE_QUIET_ZONE } from '../../utils/barcode.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { fill } from '../../utils/fill.js';
 
 // the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox
 const HEIGHT_MODULES = 32;
-const fill = (s, v) => s.replace(/\{(\w+)\}/g, (all, k) => (v[k] !== undefined ? v[k] : all));
-
 export function Barcode({ value, format = 'code128', size = 'md', showText = true, label, strings, className, ...rest }) {
   devWarn('Barcode', { size }, { size: ['md','sm','lg'] });
   const t = useStrings('barcode', strings);   // formats merge key by key

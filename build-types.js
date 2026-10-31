@@ -43,7 +43,14 @@ function defaultsOf(jsx, name) {
   }
   return out;
 }
-const NODE = /^(children|label|title|description|icon|iconEnd|media|actions|footer|header|meta|prefix|suffix|start|end|empty|aside|topStart|bottomEnd|caption|eyebrow|help|error|hint|badge|avatar|trailing|leading)$/;
+const NODE = /^(children|label|title|description|icon|iconEnd|media|actions|footer|header|meta|prefix|suffix|start|end|empty|aside|topStart|bottomEnd|caption|eyebrow|help|error|hint|badge|avatar|trailing|leading|legend|message|trigger|tooltip|content|author|[a-z]\w*Label)$/;
+// props whose type their name settles, when the header text does not give one of its own (#687): the same meaning in every
+// part (an HTML attribute, Plenix's words, a ref)
+const BY_NAME = { className: 'string', id: 'string', href: 'string', src: 'string', alt: 'string', name: 'string', placeholder: 'string', locale: 'string',
+  target: 'string', lang: 'string', ref: 'React.Ref<any>', as: 'React.ElementType', strings: '{ [key: string]: any }', shortcut: 'string',
+  // the corners a group squares where a control meets its neighbor (ButtonGroup, InputGroup): the same shape on every control
+  joined: '{ start?: "square" | "seam"; end?: "square" | "seam" }' };
+const BOOLEAN = /^(disabled|readOnly|required|invalid|expanded|open|checked|pressed|selected|loading|hidden|multiple|defaultOpen|defaultChecked|block|tree|selectable|focusOnOpen|uniformPillWidths)$/;
 // the text outside bracketed shapes ([{ … }], { … }): quoted choices inside a shape belong to its fields, not to the prop
 function topLevel(t) {
   let out = '', depth = 0;
@@ -77,8 +84,25 @@ function choicesOf(t) {
   }
   return found ? { opts: [...new Set(opts)], open } : null;
 }
-function typeOf(name, text, def) {
+const AS = '@@as@@';   // marks a type taken from another part's prop ("as Input.size"), resolved when the file is written
+function typeOf(name, text, def, called) {
   if (/^on[A-Z]/.test(name)) return '(...args: any[]) => void';
+  // a prop documented as a call ("validate(value): …", "format(n)") is a function (#687)
+  if (called && !NODE.test(name)) return '(...args: any[]) => any';
+  // a part's words for other languages, written as their object shape ({ online: "Online", … }): an object of words
+  if (name === 'strings') return BY_NAME.strings;
+  // "as Input.size": the same type as that part's prop, filled in once every part is read (see AS below)
+  const same = /^as (\w+)\.(\w+)\b/.exec(text.trim());
+  if (same) return AS + same[1] + '.' + same[2] + AS;
+  if (name === 'joined') return BY_NAME.joined;
+  // the text starts with what it is (a pinned header): "a string: …", "a ref to …"
+  if (/^(a )?(string or a number|number or a string)\b/i.test(text.trim())) return 'number | string';
+  if (/^true or a number\b/i.test(text.trim())) return 'boolean | number';
+  if (/^(a |the )?string\b/i.test(text.trim())) return 'string';
+  if (/^a ref\b/i.test(text.trim())) return 'React.Ref<any>';
+  if (/^an (element|node)\b/i.test(text.trim())) return 'React.ReactNode';
+  if (/^an array of strings\b/i.test(text.trim())) return 'string[]';
+  if (/^an array\b/i.test(text.trim())) return 'any[]';
   // an array shape that a function can also give: "[{ label, onSelect(record) }] or (record) => that list" (rowMenu, #455)
   if (/^\s*\[/.test(text) && /\]\s+or\s+\([^)]*\)\s*=>/.test(text)) return 'any[] | ((...args: any[]) => any[])';
   if (/^\s*\[/.test(text)) return 'any[]';   // the prop is written as an array shape: [{ title, field, … }]
@@ -86,12 +110,19 @@ function typeOf(name, text, def) {
   if (def && /^\[/.test(def)) return 'any[]';   // an array by its default: a chain in its description is a field's
   const head = text.split(/[;(:]/)[0];
   const chain = choicesOf(topLevel(text)) || choicesOf(text.replace(/\[[^\]]*\]|\{[^}]*\}/g, ''));
-  if (chain && chain.opts.length > 1) return chain.opts.map((o) => JSON.stringify(o)).join(' | ') + (chain.open ? ' | (string & {})' : '') + (/\btrue\b/.test(text) || def === 'true' || def === 'false' ? ' | boolean' : '') + (NODE.test(name) ? ' | React.ReactNode' : '');
-  if (def === 'true' || def === 'false' || /^(true|false)\b/.test(text) || /\btrue\b.*\bfalse\b|\bfalse\b.*\btrue\b/.test(head)) return 'boolean';
+  if (chain && chain.opts.length > 1) return chain.opts.map((o) => JSON.stringify(o)).join(' | ') + (chain.open ? ' | (string & {})' : '')
+    + (/\|\s*(a |any )?number\b/.test(topLevel(text)) ? ' | number' : '') + (/\btrue\b/.test(text) || def === 'true' || def === 'false' ? ' | boolean' : '') + (NODE.test(name) ? ' | React.ReactNode' : '');
+  if (def === 'true' || def === 'false' || /^(true|false)\b/.test(text) || /;\s*default (true|false)\s*$/.test(text) || /\btrue\b.*\bfalse\b|\bfalse\b.*\btrue\b/.test(head)) return 'boolean';
   if (def && /^-?\d+(\.\d+)?$/.test(def)) return 'number';
   if (NODE.test(name)) return 'React.ReactNode';
   if (def && /^['"`]/.test(def)) return 'string';
   if (def && /^\[/.test(def)) return 'any[]';
+  // the name settles it (#687): an attribute (className, id, href …), Plenix's words (strings), a ref, a state (disabled …)
+  if (BY_NAME[name] || /ClassName$/.test(name)) return BY_NAME[name] || 'string';
+  if (BOOLEAN.test(name)) return 'boolean';
+  // the text says what it is: "the number …", "how many …", "a number or a string" (#687)
+  if (/\ba number or a string\b|\ba string or a number\b/i.test(text)) return 'number | string';
+  if (/^(the |a )?(number|count|how many|how much|amount)\b/i.test(text.trim()) && !/\bstring\b|\[|\{/.test(text)) return 'number';
   const shape = /:\s*([[{])/.exec(text);     // described, then shown: "the levels: [{ … }]", "the filter: { … }"
   if (shape) return shape[1] === '[' ? 'any[]' : 'any';
   return 'any';
@@ -107,7 +138,7 @@ const doc = (t) => '  /** ' + t.replace(/\*\//g, '* /').replace(/\s+/g, ' ').tri
 
 module.exports = function buildTypes(outFile, version) {
   const index = fs.readFileSync(path.join(P, 'index.js'), 'utf8');
-  const blocks = [], names = [];
+  const blocks = [], names = [], typed = {};
   const published = [...index.matchAll(/export \{([^}]+)\}/g)].map((x) => x[1]).join(',');
   for (const m of index.matchAll(/export \{([^}]+)\} from '([^']+)'/g)) {
     const file = path.join(P, m[2]);
@@ -129,8 +160,23 @@ module.exports = function buildTypes(outFile, version) {
       const parts = /^[A-Z][a-z]/.test(name) && new RegExp(String.raw`export\s+const\s+` + name + String.raw`\s*=\s*\{([\w\s,:]+)\}`).exec(src);
       if (parts) {
         const keys = parts[1].split(',').map((x) => x.trim()).filter(Boolean).map((x) => x.split(':').map((y) => y.trim()));
-        if (keys.every(([k, v]) => new RegExp(String.raw`function\s+` + (v || k) + String.raw`\b|const\s+` + (v || k) + String.raw`\s*=`).test(src))) {
-          blocks.push('export declare const ' + name + ': {\n' + keys.map(([k]) => '  ' + k + ': React.ComponentType<{ [prop: string]: any }>;').join('\n') + '\n};');
+        // each part defined in the file, or imported into it (Chat's media parts come from ChatMedia.jsx)
+        if (keys.every(([k, v]) => new RegExp(String.raw`function\s+` + (v || k) + String.raw`\b|const\s+` + (v || k) + String.raw`\s*=|import\s*\{[^}]*\b` + (v || k) + String.raw`\b[^}]*\}\s*from`).test(src))) {
+          // a part documented in the header ("Chat.Message.mine: …") gets its own Props interface, typed as a component's
+          const partTypes = keys.map(([k]) => {
+            const own = [], lines = [];
+            if (head) head.props.forEach(([p, text]) => {
+              const d = new RegExp('^' + name + '\\.' + k + '\\.([\\w$]+)(\\(|$)').exec(p);
+              if (!d || own.includes(d[1])) return;
+              own.push(d[1]);
+              lines.push(doc(text) + '  ' + d[1] + '?: ' + typeOf(d[1], text, undefined, d[2] === '(') + ';');
+            });
+            if (!own.length) return '{ [prop: string]: any }';
+            blocks.push('export interface ' + name + k + 'Props extends Omit<React.HTMLAttributes<HTMLElement>, ' + own.map((n) => JSON.stringify(n)).join(' | ') + '> {\n'
+              + lines.join('\n') + '\n  [prop: string]: any;\n}');
+            return name + k + 'Props';
+          });
+          blocks.push('export declare const ' + name + ': {\n' + keys.map(([k], i) => '  ' + k + ': React.ComponentType<' + partTypes[i] + '>;').join('\n') + '\n};');
           continue;
         }
       }
@@ -154,14 +200,16 @@ module.exports = function buildTypes(outFile, version) {
         const k = p.replace(/\(.*$/, '');
         const dotted = /^(\w+)\.(\w+)$/.exec(k);
         const n = /^\.\.\./.test(k) ? (first ? '...' : '') : dotted ? (dotted[1] === name ? dotted[2] : '') : first && /^[\w$]+$/.test(k) ? k : '';
-        if (n && !seen.has(n)) { seen.add(n); props.push([n, text]); }
+        if (n && !seen.has(n)) { seen.add(n); props.push([n, text, /\(/.test(p)]); }
       });
       let rest = false; const lines = [], own = [];
-      props.forEach(([n, text]) => {
+      props.forEach(([n, text, called]) => {
         if (n === '...') { rest = true; return; }
         const d = defs[n];
         own.push(n);
-        lines.push(doc(text + (d ? ' Default: ' + d + '.' : '')) + '  ' + n + '?: ' + typeOf(n, text, d) + ';');
+        const type = typeOf(n, text, d, called);
+        typed[name + '.' + n] = type;
+        lines.push(doc(text + (d ? ' Default: ' + d + '.' : '')) + '  ' + n + '?: ' + type + ';');
       });
       // a component whose function spreads the rest of its props (…, ...rest }) also takes its element's attributes
       const params = new RegExp(String.raw`export\s+(?:function\s+` + name + String.raw`|const\s+` + name + String.raw`\s*=[^{(]*\(?\s*(?:function\s*\w*)?)\s*\(\s*\{([\s\S]*?)\}\s*[,)=]`).exec(src);
@@ -179,7 +227,7 @@ module.exports = function buildTypes(outFile, version) {
   // write a definition TypeScript cannot parse)
   names.forEach((n, i) => { if (!/^[A-Za-z_$][\w$]*$/.test(n) || names.indexOf(n) !== i) throw new Error('build-types: cannot type the export "' + n + '" of platform/index.js'); });
   const text = '/* @plenix-ds/react ' + version + ' · TypeScript definitions, generated by build-types.js from the components\' header comments (do not edit). */\n'
-    + 'import * as React from \'react\';\n\n' + blocks.join('\n\n') + '\n';
+    + 'import * as React from \'react\';\n\n' + blocks.join('\n\n').replace(new RegExp(AS + '([\\w.]+?)' + AS, 'g'), (x, k) => (typed[k] && !typed[k].includes(AS) ? typed[k] : 'any')) + '\n';
   checkCoverage(index, text);
   fs.writeFileSync(outFile, text);
   return { exports: names.length, file: outFile };

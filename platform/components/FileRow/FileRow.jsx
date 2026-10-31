@@ -70,8 +70,7 @@ import MoreIcon from 'plenix-platform/icons/plenix/more';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import RenameIcon from 'plenix-platform/icons/plenix/rename';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
+import { fill } from '../../utils/fill.js';
 
 export function FileRow({ file, as = 'div', selectable = false, selected = false, onSelectChange, href, onOpen, owner, status,
   progress, progressLabel, onCancel, error, onRetry, onDownload, onRename, names, onDelete, deleteVariant = 'confirm', onRestore,

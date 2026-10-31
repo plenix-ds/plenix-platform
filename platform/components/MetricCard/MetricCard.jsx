@@ -104,14 +104,13 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import { dataPhrase } from '../../utils/dataText.jsx';
+import { fill } from '../../utils/fill.js';
 
 const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison', 'list', 'summary', 'person', 'week', 'month', 'table'];
 const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];
 const APPEARANCES = ['plain', 'edge', 'soft', 'filled', 'gradient'];
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
 const ORDER = ['blue', 'purple', 'brown', 'green', 'red', 'gray'];   // breakdown parts without a color, by their order
-
-const fill = (s, o) => Object.keys(o).reduce((t, k) => t.split('{' + k + '}').join(o[k]), s);
 
 function toneOf(change, goodWhen) {
   if (!change || goodWhen === 'none' || !goodWhen) return 'neutral';

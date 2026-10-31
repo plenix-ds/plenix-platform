@@ -56,8 +56,8 @@ import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (all, k) => (o[k] !== undefined ? o[k] : all));
 const AUTO_VIRTUAL = 500;
 
 // one list: header (check all, title, count, the order buttons), search field, the listbox

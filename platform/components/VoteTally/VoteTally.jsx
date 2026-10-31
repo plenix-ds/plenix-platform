@@ -52,11 +52,10 @@ import LockIcon from 'plenix-platform/icons/plenix/lock';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
+import { fill } from '../../utils/fill.js';
 
 const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
 const RESULT_TONE = { open: 'neutral', passing: 'active', failing: 'action-required', passed: 'success', failed: 'negative', tied: 'waiting', 'no-quorum': 'waiting' };
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] === undefined || v[k] === null ? m : v[k]));
-
 // the three counts when the app gives no outcome: only the members who are not turned off
 function countOf(members) {
   const c = { approve: 0, deny: 0, abstain: 0, notVoted: 0, turnedOff: 0 };

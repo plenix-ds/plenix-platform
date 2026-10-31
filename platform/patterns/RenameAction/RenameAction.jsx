@@ -55,8 +55,7 @@ import { Input } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import RenameIcon from 'plenix-platform/icons/plenix/rename';
-
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+import { fill } from '../../utils/fill.js';
 
 // the name before a file's extension (the whole name when it has none, or starts with its only dot)
 export function baseNameEnd(name) { const i = String(name).lastIndexOf('.'); return i > 0 ? i : String(name).length; }

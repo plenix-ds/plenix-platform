@@ -58,6 +58,7 @@ import FolderIcon from 'plenix-platform/icons/plenix/folder';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import ImageA2Icon from 'plenix-platform/icons/plenix/image-a-2';
 import TableIcon from 'plenix-platform/icons/plenix/table';
+import { fill } from '../../utils/fill.js';
 
 const BY_EXT = {
   pdf: 'file-pdf', png: 'file-png', jpg: 'file-jpg', jpeg: 'file-jpg', svg: 'file-svg', psd: 'file-psd', ai: 'file-ai',
@@ -95,8 +96,6 @@ function fileIconModule(name, type) {
   if (!unmapped.has(n) && development() && typeof console !== 'undefined') { unmapped.add(n); console.warn('[Plenix] File: the type icon "' + n + '" has no import in File.jsx (TYPE_ICONS); the document icon is drawn.'); }
   return DocumentIcon;
 }
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 function Picture({ src, icon }) {
   const [failed, setFailed] = React.useState(false);

@@ -56,8 +56,7 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ForwardIcon from 'plenix-platform/icons/plenix/forward';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
+import { fill } from '../../utils/fill.js';
 
 export function AssignControl({ label, people = [], value = null, onChange, me, clearable = true, variant = 'assign',
   delegation, onDelegate, onEndDelegation, strings, className, ...rest }) {

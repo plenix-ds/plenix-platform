@@ -8,8 +8,8 @@
        suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
        onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
    Props:
-     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
-     value: the search text
+     size: "sm" | "md" (default): "sm" selects the existing toolbar control height; "md" preserves today’s search height.
+     value: a string: the search text
      onChange(event): runs when the text changes
      onClear(): runs from the clear button; without it there is no clear button
      placeholder: the placeholder text; default "Search"
@@ -17,9 +17,9 @@
      shortcut: a keyboard shortcut hint ("Ctrl K")
      loading: shows a spinner in place of the search icon; default false
      onAccent: the look for the blue header; default false
-     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
+     suggestions: an array: what to offer while there is text, already matched to it by the caller: strings, or
        [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
-     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
+     recent: an array of strings: the person's recent searches (newest first: useSearchHistory), offered while the field is empty
      onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
        'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
      onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)

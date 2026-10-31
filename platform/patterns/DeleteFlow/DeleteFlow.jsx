@@ -60,8 +60,8 @@ import { Text } from '../../components/Text/Text.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { dataPhrase } from '../../utils/dataText.jsx';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const SHOWN = 5;
 
 export function DeleteFlow({ items = [], noun, plural, variant = 'confirm', consequence, confirmPhrase, retention,

@@ -49,6 +49,7 @@ import { ProductPrice } from '../../patterns/ProductCard/ProductCard.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
 import { dataPhrase } from '../../utils/dataText.jsx';
+import { fill } from '../../utils/fill.js';
 
 export const COMMERCE_PAGES = {
   'product-discovery': 'workspace', 'product-listing': 'workspace', 'product-detail': 'detail', cart: 'workspace', checkout: 'form',
@@ -63,7 +64,6 @@ export function useCommercePage(template) {
   React.useEffect(() => (claim && kind ? claim(kind) : undefined), [claim, kind]);
 }
 
-export const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 export const money = (n, currency) => formatCurrency(n, currency || 'USD');
 const round = (n) => Math.round(n * 100) / 100;
 

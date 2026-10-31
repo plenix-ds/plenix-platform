@@ -26,8 +26,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { dataPhrase } from '../../utils/dataText.jsx';
-
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+import { fill } from '../../utils/fill.js';
 
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count));

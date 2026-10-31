@@ -11,18 +11,18 @@
      <NumberInput stepper="quantity" value={qty} onChange={setQty} min={1} max={5} aria-label="Quantity, Blue chair" />
    Props:
      value: the number (null when empty); with onChange, a controlled field
-     defaultValue: the first number of an uncontrolled field (default null)
+     defaultValue: a number: the first number of an uncontrolled field (default null)
      onChange(value, event): the new number (null when the field is emptied) as it is typed, stepped or corrected
-     min: the least value; a smaller one is brought back to it when the field is left
-     max: the greatest value; a larger one is brought back to it when the field is left
+     min: a number: the least value; a smaller one is brought back to it when the field is left
+     max: a number: the greatest value; a larger one is brought back to it when the field is left
      step: the change of one step (default 1); a value is kept to the step's decimals when it is stepped
      bigStep: the change of Page Up and Page Down, in steps (default 10)
-     decimals: the decimals shown when the field is left (default: the currency's own, else as typed)
+     decimals: a number: the decimals shown when the field is left (default: the currency's own, else as typed)
      format: "number" (default) | "currency" (the currency's symbol or code inside the field, where the locale puts it) |
        "percent" (the percent sign after the value; the value is the percentage: 25 means 25%)
-     currency: an ISO 4217 code ("USD", "EUR"), with format "currency"
+     currency: a string: an ISO 4217 code ("USD", "EUR"), with format "currency"
      currencyDisplay: "symbol" (default; "$") | "code" ("USD", for pages that mix currencies)
-     unit: a short unit shown after the value ("kg", "px", "GB"); say it in the label too when it is not obvious
+     unit: a string: a short unit shown after the value ("kg", "px", "GB"); say it in the label too when it is not obvious
      stepper: "none" (default) | "buttons" (minus and plus joined at the end) | "quantity" (minus before and plus after a
        short centered count: carts, copies, seats)
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
