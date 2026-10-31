@@ -1,0 +1,22 @@
+{
+  "source": [
+    "platform/tokens/reference.tokens.json",
+    "platform/tokens/reference/*.tokens.json"
+  ],
+  "platforms": {
+    "css": {
+      "transforms": ["name/kebab"],
+      "buildPath": "build/sd/",
+      "files": [
+        {
+          "destination": "reference.css",
+          "format": "css/variables",
+          "options": {
+            "selector": ":root",
+            "outputReferences": true
+          }
+        }
+      ]
+    }
+  }
+}

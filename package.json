@@ -10,6 +10,8 @@
     "lint:spec": "node check-spec.js",
     "build:docs": "node build-docs.js",
     "build:packages": "node build-packages.js",
+    "tokens:sd": "style-dictionary build --config style-dictionary/reference.config.json",
+    "tokens:sd:check": "npm run tokens:sd && node tools/agent/sd-reference-compare.js",
     "release:build": "node build-app.js && node build-usage.js && node check-system.js && node check-style.js && node build-packages.js",
     "test": "node tests/run.js",
     "test:full": "node tests/run.js --full",
@@ -50,6 +52,7 @@
     "knip": "^6.43.0",
     "postcss": "^8.5.32",
     "puppeteer-core": "25.12.0",
+    "style-dictionary": "5.7.0",
     "stylelint": "^17.16.0",
     "typescript": "5.6.3",
     "vite": "7.3.7"
