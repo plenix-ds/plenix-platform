@@ -17698,6 +17698,36 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     }, [source]);
   }
+  function columnSizing({ columns, frame, source, resize, metrics, table, B }) {
+    const fit2 = (field) => {
+      const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
+      const data = kinds(c).includes("data");
+      ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size") + " " + cs.getPropertyValue(data ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family");
+      ctx.wordSpacing = data ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
+      const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
+      resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
+    };
+    const startResize = (event, column) => {
+      if (event.type === "mousedown" && event.button !== 0) return;
+      if (event.type === "mousedown") event.preventDefault();
+      event.stopPropagation();
+      const head = table.getFlatHeaders().find((h2) => h2.column.id === column.id);
+      const doc = frame.current?.ownerDocument || document, cover = doc.createElement("div");
+      cover.className = B + "__resize-cover";
+      doc.body.appendChild(cover);
+      const end = () => {
+        cover.remove();
+        doc.removeEventListener("mouseup", end);
+        doc.removeEventListener("touchend", end);
+        doc.removeEventListener("touchcancel", end);
+      };
+      doc.addEventListener("mouseup", end);
+      doc.addEventListener("touchend", end);
+      doc.addEventListener("touchcancel", end);
+      head?.getResizeHandler(doc)(event);
+    };
+    return { fit: fit2, startResize };
+  }
   function syncLive({
     live,
     props,
@@ -19473,9 +19503,58 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const [step, setStep] = React$1.useState(min2);
     const [width, setWidth] = React$1.useState(0);
     const measured2 = React$1.useRef(null);
+    const [fonts, setFonts] = React$1.useState(0);
+    React$1.useEffect(() => {
+      const set2 = typeof document !== "undefined" ? document.fonts : void 0;
+      if (!set2 || typeof set2.addEventListener !== "function") return void 0;
+      let live = true;
+      const again = () => {
+        if (live) setFonts((n) => n + 1);
+      };
+      set2.addEventListener("loadingdone", again);
+      if (set2.ready && typeof set2.ready.then === "function") set2.ready.then(again, () => {
+      });
+      return () => {
+        live = false;
+        set2.removeEventListener("loadingdone", again);
+      };
+    }, []);
+    const later = React$1.useRef(null);
+    React$1.useEffect(() => () => {
+      if (later.current) later.current();
+    }, []);
     React$1.useLayoutEffect(() => {
       if (!hold) setStep(min2);
     }, [width, key, min2, hold]);
+    React$1.useLayoutEffect(() => {
+      if (!fonts || hold) return;
+      const el = ref.current;
+      if (later.current) {
+        later.current();
+        later.current = null;
+      }
+      const open = !!el && !!el.querySelector('[aria-expanded="true"]'), focused = !!el && el.contains(document.activeElement);
+      if (el && (open || focused)) {
+        const again = () => {
+          if (later.current) {
+            later.current();
+            later.current = null;
+          }
+          setFonts((n) => n + 1);
+        };
+        const out = (e) => {
+          if (!e.relatedTarget || !el.contains(e.relatedTarget)) again();
+        };
+        el.addEventListener("focusout", out);
+        const timer = open ? setTimeout(again, 1e3) : null;
+        later.current = () => {
+          el.removeEventListener("focusout", out);
+          if (timer) clearTimeout(timer);
+        };
+        return;
+      }
+      setStep(min2);
+    }, [fonts]);
     React$1.useLayoutEffect(() => {
       const el = ref.current;
       if (!el || typeof ResizeObserver === "undefined") return void 0;
@@ -19486,7 +19565,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     React$1.useLayoutEffect(() => {
       const el = ref.current;
       if (!el || step >= max2 || hold) return;
-      const signature = [el, width, key, max2, min2, rows, step, el.textContent];
+      const signature = [el, width, key, max2, min2, rows, step, el.textContent, fonts];
       if (measured2.current && signature.every((value, i) => value === measured2.current[i])) return;
       measured2.current = signature;
       if (Array.prototype.some.call(rows === ":self" ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
@@ -21215,14 +21294,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       selectable,
       options
     });
-    const fit2 = (field) => {
-      const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
-      const data2 = kinds(c).includes("data");
-      ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size") + " " + cs.getPropertyValue(data2 ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family");
-      ctx.wordSpacing = data2 ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
-      const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
-      resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
-    };
+    const { fit: fit2, startResize } = columnSizing({ columns, frame, source, resize, metrics, table, B });
     const menuItems = (items, row, extra) => items.map((item, i) => {
       if (!item.separator && !item.disabled && typeof (item.onSelect || item.action) !== "function" && Object.prototype.hasOwnProperty.call(React$1.createElement("span"), "_store") && !warnedActions.current.has(item.label)) {
         warnedActions.current.add(item.label);
@@ -21242,25 +21314,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         item.label
       );
     });
-    const startResize = (event, column) => {
-      if (event.type === "mousedown" && event.button !== 0) return;
-      if (event.type === "mousedown") event.preventDefault();
-      event.stopPropagation();
-      const head = table.getFlatHeaders().find((h2) => h2.column.id === column.id);
-      const doc = frame.current?.ownerDocument || document, cover = doc.createElement("div");
-      cover.className = B + "__resize-cover";
-      doc.body.appendChild(cover);
-      const end = () => {
-        cover.remove();
-        doc.removeEventListener("mouseup", end);
-        doc.removeEventListener("touchend", end);
-        doc.removeEventListener("touchcancel", end);
-      };
-      doc.addEventListener("mouseup", end);
-      doc.addEventListener("touchend", end);
-      doc.addEventListener("touchcancel", end);
-      head?.getResizeHandler(doc)(event);
-    };
     const { chooserColumns, headerCell } = headerRows({
       groupBy: groupBy2,
       columnMenu,
