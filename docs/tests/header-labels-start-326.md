@@ -16,7 +16,7 @@ This test makes sure every table column title lines up at the start (left) edge,
 - Added in commit b48bb7d5 "Every column header label at the start edge, number columns included (#326)".
 
 ## How it checks
-- Opens the brief's stage page `docs/briefs/header-labels-start/stage.html` in headless Chrome at 1100 by 900 pixels, waits for at least 8 column headers, and measures each label's position against its header and each number against its cell.
+- Opens its stage page `tests/fixtures/stages/header-labels-start.html` in headless Chrome at 1100 by 900 pixels, waits for at least 8 column headers, and measures each label's position against its header and each number against its cell.
 
 ## What a failure means
 - Column titles would jump between left and right across a table, making it harder to scan; the owner reported this as inconsistent.
@@ -26,8 +26,8 @@ This test makes sure every table column title lines up at the start (left) edge,
 - In changed mode, data-grid starts it when DataGrid, DataGridEngine or Table changes, or when this test's own file (or a fixture it loads) changes.
 - In a full run it always runs.
 - CI: with data-grid in the "behavior" browser job (every pull request, and pushes to styling/phase-2 and main). The full suite: its "behavior" job.
-- The stage page lives under `docs/`, which changed mode ignores: a change to the stage page alone does not start it.
+- Its stage page is a test fixture (`tests/fixtures/stages/`, since issue #772), so a change to it starts this test too.
 
 ## What it needs
 - Headless Chrome (CHROME_PATH) and the local test server (`tests/lib.js`).
-- The stage page `docs/briefs/header-labels-start/stage.html`.
+- The stage page `tests/fixtures/stages/header-labels-start.html` and `tests/fixtures/stages/stage.css`.
