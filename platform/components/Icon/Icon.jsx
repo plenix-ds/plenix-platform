@@ -72,7 +72,9 @@
        markup where a page builds HTML.
      The Material library's names (library.js) are built into the browser global, the CDN's plenix.esm.js and the suite. The
        npm package's ES modules load them the first time a name is not a Plenix name or a registered module (issue 702):
-       until they arrive that icon draws nothing, then it draws; an unknown name warns after they arrive.
+       until they arrive that icon draws nothing, then it draws; an unknown name warns after they arrive. With
+       library="material" every name that is not a registered module waits for them, so a name in both sets never draws
+       the Plenix symbol first.
      StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
        keeps the text color and size of where it sits.
 */
@@ -186,6 +188,9 @@ export function resolveIcon(name, options) {
     const reg = fromRegistry('material'); if (reg) return reg;
     const symbol = n.toLowerCase().replace(/-/g, '_');
     if (inLibrary(symbol)) return { kind: 'library', symbol, fillOutline: false };
+    // the npm ES modules: until the library's names arrive, wait (null) rather than draw the Plenix symbol of a name both
+    // sets have (176 do, account_circle among them); Icon redraws when they arrive (useDrawings)
+    if (!libraryDone) return null;
     // Plenix's own drawings (platform/icons/custom) are not in the library: their files are in the Plenix layout
     return plenix.has(symbol) && nameOfSymbol.has(symbol) ? { kind: 'plenix', symbol, fillOutline: false, file: nameOfSymbol.get(symbol) } : null;
   }
