@@ -183,9 +183,11 @@ Every selector is one of five kinds. A selector that is none of them fails the s
   element reads it, with its screen value as the fallback: `display: var(--plx-sys-print-hidden, flex)`.
 - **Condition sets:** a token's value under a condition (forced colors, more contrast, print, reduced motion) sits in a
   condition set beside its set, `<set>.<condition>.tokens.json` (issue 372, step 4).
-  - A condition value may point to another token as `var(--plx-…)`, never `{plx-….…}`: plain Style Dictionary then
-    builds each condition set alone, and condition values are web-only, so the phone files and Figma never read them.
-  - Every other token set refers by `{plx-….…}` only; the check `check-system.rules/token-sets.js` fails on a `var()` there.
+  - A condition value may point to another token only through a CSS variable reference, never a token reference: plain
+    Style Dictionary then builds each condition set alone, and condition values are web-only, so the phone files and
+    Figma never read them.
+  - Every other token set points to another token only through a token reference; the check
+    `check-system.rules/token-sets.js` fails on a CSS variable reference there.
 
 ## 4. How a parent changes a child
 
