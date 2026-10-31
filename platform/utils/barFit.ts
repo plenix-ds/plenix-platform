@@ -40,7 +40,29 @@ export function useBarFit(ref: React.RefObject<HTMLElement | null>, key: unknown
     if (set.ready && typeof set.ready.then === 'function') set.ready.then(again, () => {});
     return () => { live = false; set.removeEventListener('loadingdone', again); };
   }, []);
-  React.useLayoutEffect(() => { if (!hold) setStep(min); }, [width, key, min, hold, fonts]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // a fonts refit never pulls the bar out from under the person: while one of its menus is open (a control with
+  // aria-expanded="true": More, a View or Sort menu) or focus is inside it, the refit waits and tries again shortly after.
+  // Opening a menu can itself load a font face (its words in another weight), and that "loadingdone" must not close it
+  // (issue 777, QA on #781)
+  const later = React.useRef<(() => void) | null>(null);
+  React.useEffect(() => () => { if (later.current) later.current(); }, []);
+  React.useLayoutEffect(() => { if (!hold) setStep(min); }, [width, key, min, hold]);   // eslint-disable-line react-hooks/exhaustive-deps
+  React.useLayoutEffect(() => {
+    if (!fonts || hold) return;
+    const el = ref.current;
+    if (later.current) { later.current(); later.current = null; }
+    const open = !!el && !!el.querySelector('[aria-expanded="true"]'), focused = !!el && el.contains(document.activeElement);
+    if (el && (open || focused)) {
+      // try again once focus leaves the bar, or (a menu open, its focus elsewhere) a moment later
+      const again = (): void => { if (later.current) { later.current(); later.current = null; } setFonts((n) => n + 1); };
+      const out = (e: FocusEvent): void => { if (!e.relatedTarget || !el.contains(e.relatedTarget as Node)) again(); };
+      el.addEventListener('focusout', out);
+      const timer = open ? setTimeout(again, 1000) : null;
+      later.current = () => { el.removeEventListener('focusout', out); if (timer) clearTimeout(timer); };
+      return;
+    }
+    setStep(min);
+  }, [fonts]);   // eslint-disable-line react-hooks/exhaustive-deps
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return undefined;

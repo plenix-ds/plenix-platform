@@ -74,6 +74,12 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     await page.evaluate(() => { document.getElementById('wide-text').remove(); document.fonts.dispatchEvent(new Event('loadingdone')); });
     await new Promise((r) => setTimeout(r, 600));
     assert.equal((await read('t520', '[role=toolbar]')).words.filter(Boolean).length, 5, 'late font: when the fonts finish loading the 520px toolbar shows every word again');
+    // a font that finishes while a bar's menu is open (QA on #781): the refit waits, so the menu stays open
+    await page.click('#t240 [aria-label="More actions"]'); await new Promise((r) => setTimeout(r, 300));
+    assert.equal(await page.evaluate(() => document.querySelectorAll('[role=menu]').length), 1, 'late font: the 240px More menu is open');
+    await page.evaluate(() => document.fonts.dispatchEvent(new Event('loadingdone'))); await new Promise((r) => setTimeout(r, 600));
+    assert.equal(await page.evaluate(() => document.querySelectorAll('[role=menu]').length), 1, 'late font: a font that finishes while the menu is open does not close it');
+    await page.keyboard.press('Escape'); await new Promise((r) => setTimeout(r, 200));
     assert.deepEqual(errors, [], 'no script errors');
     console.log('toolbar-ladder: OK');
   } finally { if (browser) await browser.close(); server.close(); }
