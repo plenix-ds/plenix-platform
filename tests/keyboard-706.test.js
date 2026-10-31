@@ -31,7 +31,10 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const render = async (src, dir) => {
       await page.evaluate(async (src, dir) => {
         window.__root && window.__root.unmount();
-        document.documentElement.setAttribute('dir', dir || 'ltr'); document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
+        // right to left by dir alone: the language stays English, so the checks find the same button names in both directions
+        // (issue 784: with lang="ar" the parts speak Arabic, "Reassign" is "إعادة الإسناد", and the English names found
+        // nothing). The parts read their direction from dir, so the arrow and side checks stay real
+        document.documentElement.setAttribute('dir', dir || 'ltr'); document.documentElement.setAttribute('lang', 'en');
         window.__log = []; document.querySelector('main').innerHTML = '<div id="c" style="padding:24px;min-block-size:520px"></div>';
         const el = (0, eval)('(' + src + ')')(React.createElement, Plenix, React);
         window.__root = ReactDOM.createRoot(document.getElementById('c')); window.__root.render(el);
