@@ -261,7 +261,7 @@ height, the focus border, a font family, internal paddings. Plenix's own applica
 - Word spacing is part of every role:
   - the data and code roles carry the fitted word spacing (`--plx-sys-font-data-word-spacing`);
   - the DM Sans roles carry `normal`.
-- A role is never a W3C `typography` composite token: plain Style Dictionary writes no composite (#372 step 3), and the
+- A role is never a W3C `typography` composite token: plain Style Dictionary writes no composite (issue 372, step 3), and the
   check `check-system.rules/token-sets.js` fails on one.
 - The roles point to the existing tokens, never to new values: `platform/tokens/semantic/typography.tokens.json` holds
   them (body, secondary, caption, label, heading, title, eyebrow, display, lead) as `--plx-sys-text-<role>-font-family`,
