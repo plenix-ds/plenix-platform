@@ -45,7 +45,7 @@ Automatic tests cannot hear a page. This checklist is the owner's run with real 
 | Chat thread | A new message arrives | The thread is a live log: the sender and the text are spoken once, your own messages say "You"; the status (sent, read) is spoken in words. |
 | Chat composer | Type, Enter, attach a file | The field has a name; Send says it is disabled when there is nothing to send; an upload says its progress and its end; "Listening" is spoken once when dictation starts. |
 | Chat picture and file | Tab to a picture and a file card | The picture is a button ("Open image: name"); a file says its name and size; Download names the file. |
-| Chat voice message | Play, seek with the arrows | "Play voice message" becomes "Pause"; the seek bar says "Voice message position" with "0:08 / 0:23"; the speed says its value. |
+| Chat voice message | Play, seek with the arrows | "Play voice message" becomes "Pause voice message"; the seek bar says "Voice message position" with its value in words, "8 seconds of 23 seconds" (a minute or more reads "1 minute, 5 seconds"); the speed says "Playback speed, 1 times" and its new value at each press. |
 | Loading and progress | A page or a button loads | "Busy" or "Loading" is spoken once; a progress bar speaks its percent; the end is announced. |
 | Pagination, Breadcrumb, Navigation | Tab and arrows | "Navigation" with its name; the current page is spoken as current; the numbers read as numbers. |
 | Page structure | Jump by headings and landmarks | One level 1 heading; the landmarks (banner, navigation, main) are named; skip links work. |
