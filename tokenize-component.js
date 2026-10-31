@@ -100,7 +100,9 @@ for (const m of body.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     if (!taken(name)) { comp[name] = { $value: value, $type: TYPE(short) }; added.push('--plx-comp-' + name + ' = ' + value); }
     return p + ':var(--plx-comp-' + name + ')';
   });
-  out += body.slice(last, m.index) + selRaw + '{' + newDecls.join(';') + ';}';
+  // a rule written one declaration per line (the reflowed sheets, issue 688) stays that way; a one-line rule stays one line
+  const lines = /\n/.test(decls), indent = (/\n([ \t]*)\S/.exec(decls) || [])[1] || '  ';
+  out += body.slice(last, m.index) + selRaw + '{' + (lines ? '\n' + indent + newDecls.join(';\n' + indent) + ';\n' : newDecls.join(';') + ';') + '}';
   last = m.index + m[0].length;
 }
 out += body.slice(last);
