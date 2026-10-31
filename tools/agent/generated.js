@@ -6,8 +6,9 @@
 // change them, so every pull request would conflict with the next. The integrator rebuilds them when it merges
 // (tools/agent/take-pr.js, take-lane.js) and release.sh commits them. Owner, 2026-10-15 (the Claude + Codex pilot).
 // package.json is the one partly generated file: release.sh writes only its "version" field. --check fails on package.json
-// only when that field differs from the merge base, so a branch may change its devDependencies, scripts and the rest
-// (Dependabot, the Vite steps of #709). package-lock.json is not on the list: npm writes it with the dependencies.
+// only when that field differs from the merge base, --restore puts back only that field, and take-pr.js takes the rest of
+// the file from the branch, so a branch may change its devDependencies, scripts and the rest (Dependabot, the Vite steps
+// of #709). package-lock.json is not on the list: npm writes it with the dependencies.
 const { execSync } = require('child_process');
 const path = require('path');
 const GENERATED = [
@@ -31,7 +32,11 @@ const PARTIAL = ['platform/index.js', 'platform/platform.css'];
 const BLOCK = /\/\* BEGIN library parts[^]*?\/\* END library parts \*\//;
 const generatedBlock = (text) => (text.match(BLOCK) || [''])[0];
 const isGenerated = (file) => GENERATED.some((re) => re.test(file));
-module.exports = { GENERATED, isGenerated };
+// package.json's release-written field: the text with its top-level "version" set to version (the rest unchanged)
+const VERSION_FIELD = /^(\s*"version"\s*:\s*)"[^"]*"/m;
+const versionOf = (text) => { try { return JSON.parse(text).version; } catch (e) { return undefined; } };
+const withVersion = (text, version) => (version === undefined ? text : text.replace(VERSION_FIELD, (m, key) => key + JSON.stringify(version)));
+module.exports = { GENERATED, isGenerated, versionOf, withVersion };
 if (require.main === module) {
   const ROOT = path.resolve(__dirname, '../..');
   const sh = (c) => execSync(c, { cwd: ROOT, encoding: 'utf8' });
@@ -43,7 +48,7 @@ if (require.main === module) {
     // (which also holds the base's newer commits, e.g. "Generated files rebuilt", and read as the branch's own: #623)
     const base = process.argv[3], head = process.argv[4] || 'HEAD'; if (!base) { console.error('usage: --check <base ref> [<head ref>]'); process.exit(2); }
     const from = sh('git merge-base ' + base + ' ' + head).trim();
-    const version = (ref) => { try { return JSON.parse(sh('git show ' + ref + ':package.json')).version; } catch (e) { return undefined; } };
+    const version = (ref) => { try { return versionOf(sh('git show ' + ref + ':package.json')); } catch (e) { return undefined; } };
     const changed = sh('git diff --name-only ' + from + ' ' + head).split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'package.json' && version(from) === version(head)) && !(file === 'platform/components/DataGrid/data-grid-steps.css' && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/DataGrid.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/data-grid-steps.css').trim()));
     for (const file of PARTIAL) if (generatedBlock(sh('git show ' + from + ':' + file)) !== generatedBlock(sh('git show ' + head + ':' + file))) changed.push(file);
     if (changed.length) {
@@ -56,13 +61,20 @@ if (require.main === module) {
   if (arg === '--restore') {
     const files = sh('git status --porcelain').split('\n').filter(Boolean).map((l) => ({ code: l.slice(0, 2), file: l.slice(3).replace(/^"|"$/g, '') }))
       .filter((x) => isGenerated(x.file) && x.code.trim() !== '??');
+    // package.json: only its "version" goes back to HEAD's; the branch's other changes stay
+    const pkg = files.find((x) => x.file === 'package.json');
+    if (pkg) {
+      files.splice(files.indexOf(pkg), 1);
+      const full = path.join(ROOT, 'package.json'), current = require('fs').readFileSync(full, 'utf8'), committed = versionOf(sh('git show HEAD:package.json'));
+      if (versionOf(current) !== committed) { require('fs').writeFileSync(full, withVersion(current, committed)); files.push({ file: 'package.json ("version" only)' }); }
+    }
     for (const file of PARTIAL) {
       const full = path.join(ROOT, file);
       if (!require('fs').existsSync(full)) continue; // Partial build fixtures need not contain public entry files.
       const current = require('fs').readFileSync(full, 'utf8'), committed = generatedBlock(sh('git show HEAD:' + file));
       require('fs').writeFileSync(full, current.replace(BLOCK, () => committed));
     }
-    for (const { file } of files.filter((x) => x.file !== 'platform/components/DataGrid/data-grid-steps.css' || require('fs').existsSync(path.join(ROOT, 'platform/components/DataGrid/DataGrid.jsx')) || require('fs').existsSync(path.join(ROOT, x.file)))) sh('git checkout -- "' + file + '"');
+    for (const { file } of files.filter((x) => x.file !== 'package.json ("version" only)').filter((x) => x.file !== 'platform/components/DataGrid/data-grid-steps.css' || require('fs').existsSync(path.join(ROOT, 'platform/components/DataGrid/DataGrid.jsx')) || require('fs').existsSync(path.join(ROOT, x.file)))) sh('git checkout -- "' + file + '"');
     console.log(files.length ? 'restored: ' + files.map((x) => x.file).join(', ') : 'nothing to restore'); process.exit(0);
   }
   console.error('usage: node tools/agent/generated.js --check <base> | --restore | --list'); process.exit(2);

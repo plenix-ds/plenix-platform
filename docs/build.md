@@ -5,13 +5,14 @@ This is the one inventory of every custom tool in this repository (owner decisio
 - Every custom tool is listed here with what it writes or checks, whether it is necessary or replaceable, and the standard tool that would replace it.
 - N means necessary: no standard tool or plugin does the job today. R means replaceable by the standard tool named in the last column. ★ means the tool enforces one of the owner's design rules (no new colors, the 4px grid, corners 2 to 6px, tokens only, no inline styles).
 - A new custom script, generator or check is added only when its pull request shows that no standard tool or plugin can do the job, and it is added to this table in the same pull request.
-- Checked against the code on 2026-10-31 (the `styling/phase-2` branch).
+- Checked against the code on 2026-10-31 (the `styling/phase-2` branch; Vite step 2 of #709).
 
 ## Build
 
 | Tool | What it writes | N or R | Standard replacement |
 |---|---|---|---|
-| `build-app.js` (`npm run build:app`) | Runs the other builds, then bundles `platform/dist/platform.js` and each application's `app.js` (Babel and esbuild) | R | Vite |
+| `build-app.js` (`npm run build:app`) | Runs the other builds (the pre-steps), then Vite for `platform/dist/platform.js`, then its own bundler (Babel) for each application's `app.js` and the Asset Manager's `assets.js`. Writes nothing when any bundle fails | R | Vite (the applications move in #709 steps 3 and 4) |
+| `vite.platform.config.mjs` and its two small plugins | The Vite settings of the Platform bundle. `plenix-icons` resolves the icon modules (`plenix-platform/icons/<set>/<name>`) to the icon asset layout and writes a Material one on demand. `plenix-finish` adds the GENERATED banner, freezes `window.Plenix` as a plain object and checks the public API (every name `platform/index.js` exports, defined, once, and nothing else). The hidden source map goes to the ignored `build/vite/` | N | none: Vite has no option for these three Plenix rules, and Vite drops Rollup's banner from a one-file (iife) library |
 | `build-exports.js` | The flattened export list of the library lanes (`platform/index.js` and `platform.css` blocks) | R | a plain index file, or Vite |
 | `build-tokens.js` (`--check` is run by check-system) | The token stylesheets (`platform/system/tokens/*.css`, the themes) and `tokens.index.json`, from `platform/tokens/*.tokens.json` | R | Style Dictionary |
 | `build-mobile.js` | The native token files: `PlenixTokens.swift`, `PlenixTokens.kt`, `plenix_tokens.dart` | R | Style Dictionary |
@@ -35,7 +36,7 @@ This is the one inventory of every custom tool in this repository (owner decisio
 | `check-common.js` | The file list and the reporter the two checks share | N | none |
 | `check-copy.js` | Wording of the default texts | N | none |
 | `check-spec.js` | The design spec against its own standard | N | none |
-| `check-bundle.js` and `check-bundle.baseline.json` | The built CDN files against the size and content rules | R | size-limit |
+| `check-bundle.js` and `check-bundle.baseline.json` | The built CDN files against the size and content rules; traces each finding in `plenix.js` to its source file through the Platform bundle's source map (`build/vite/platform.js.map`) | R | size-limit |
 | `tools/agent/one-part-sizes.js` | The size of one import from the npm package (`{ Button }`, `{ Badge }`, `{ DataGrid }`, `* as P`); `check-bundle.js` calls it, and it prints the same numbers on its own (#685) | R | size-limit |
 | `tools/agent/types-any.js` and `types-any.baseline.json` | The count of `any` props in `packages/react/index.d.ts` never goes up (CI, #687) | R | `tsc` with `noImplicitAny`, after the source moves to TypeScript |
 | `tools/fixtures/` | The fixtures a check proves its own rule on (`spec-color-samples/`: the good and the shrunk color sample of `check-spec.js`) | N | none |
@@ -73,6 +74,8 @@ This is the one inventory of every custom tool in this repository (owner decisio
 | `tools/agent/datagrid/`, `native/`, `library/`, `spec-merge/`, `web/s3/addtok.js` (with its entry files `web/s3/*.json`), `web/s3/merge-base.js`, `build-study.js`, `native/merge.js` | Measuring and comparison probes, the native-guidance and Figma generators, the library plan generators, small helpers. Kept after the clean-up because a person may still run them by hand | R in part | delete when no one runs them |
 
 ## What is deleted when it has been used
+
+- `tools/agent/compare-vite-platform.js` (one-time, #709): compares the old bundler's `platform.js` with Vite's; deleted in Vite step 6.
 
 - One-time scripts (migrations, one-off patches, throwaway probes) are deleted in the pull request that used them.
 - The clean-up of 2026-10-31 (issue #712) removed 59 scripts from `tools/agent` that no build, check, workflow, test or npm script referenced, with the data only they read (`web/s3/reflow-base.json`, `color-migration.report.txt`). The pull request lists each file and why.

@@ -20,5 +20,5 @@ tests/.density-test.html
 # the publish host, account and key (tools/publish-config.sh); never committed
 publish.config
 tools/overflow-report/
-# the side-by-side Vite build (#709, steps 1 to 2); never committed
+# the Platform bundle's hidden source map (node build-app.js, Vite; check-bundle.js reads it, #709); never committed
 build/vite/
