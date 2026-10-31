@@ -129,6 +129,7 @@ import SignOutIcon from 'plenix-platform/icons/plenix/sign-out';
 import DensityCompactIcon from 'plenix-platform/icons/plenix/density-compact';
 import DensityStandardIcon from 'plenix-platform/icons/plenix/density-standard';
 import DensityComfortableIcon from 'plenix-platform/icons/plenix/density-comfortable';
+import { fill } from '../../utils/fill.js';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel,
   action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {
@@ -275,7 +276,6 @@ AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon: iconProp, label
 const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
 AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, appSettings = {}, signOut = { href: SIGN_OUT }, density = false, extra, strings }) {
   const t = Object.assign({}, ACCOUNT_STRINGS, strings);
-  const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => (values[k] != null ? values[k] : m));
   const { account } = useSession();   // who is signed in: the session, unless the application names someone
   const name = nameProp || account.name, email = emailProp || account.email, src = srcProp || account.src;
   const [dens, setDens] = useDensity();

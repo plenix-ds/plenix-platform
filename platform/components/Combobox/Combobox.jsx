@@ -64,7 +64,7 @@ import { cx } from '../../utils/cx.js';
 import { Tag } from '../Tag/Tag.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { isDataValue } from '../../utils/dataValue.js';
@@ -74,8 +74,6 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.js';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
-// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate, width,
   placeholder, label, invalid, disabled, readOnly: readOnlyOwn, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,

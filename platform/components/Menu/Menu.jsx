@@ -80,7 +80,7 @@ import { cx } from '../../utils/cx.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Portal } from '../../utils/portal.jsx';
-import { useFloating } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 import { useGesture } from '../../hooks/useGesture.js';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
@@ -106,9 +106,6 @@ function moveIn(list, e) {
   return true;
 }
 
-// the top layer and CSS anchor positioning (Chrome 125, Firefox 147, Safari 26), checked once
-const TOP_LAYER = typeof window !== 'undefined' && typeof CSS !== 'undefined' && CSS.supports && CSS.supports('anchor-name', '--plx-a')
-  && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 export function Menu({ trigger, label, placement = 'bottom-start', className, children }) {
   const id = useUid('plx-menu');
   const [open, setOpen] = React.useState(false);

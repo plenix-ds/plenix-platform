@@ -75,15 +75,13 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { gridPx } from '../../utils/grid.js';
 import { isDataValue } from '../../utils/dataValue.js';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated, useInBar } from '../../utils/overflow.js';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
-// the top layer and CSS anchor positioning (as Menu and Popover), checked once
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {

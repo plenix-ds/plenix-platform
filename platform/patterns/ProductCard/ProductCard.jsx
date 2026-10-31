@@ -72,8 +72,8 @@ import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TagsIcon from 'plenix-platform/icons/plenix/tags';
 import { dataPhrase } from '../../utils/dataText.jsx';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const RATIOS = ['1-1', '4-3', '3-4'];
 
 // the price line: the price now in the data font, and on sale the old price struck through after it ("Now …, was …" to

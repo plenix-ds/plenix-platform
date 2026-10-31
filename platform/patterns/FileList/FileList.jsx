@@ -88,9 +88,9 @@ import RenameIcon from 'plenix-platform/icons/plenix/rename';
 import SortAscendingIcon from 'plenix-platform/icons/plenix/sort-ascending';
 import SortDescendingIcon from 'plenix-platform/icons/plenix/sort-descending';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
+import { fill } from '../../utils/fill.js';
 
 const FIELDS = ['name', 'size', 'modified', 'owner'];
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const idOf = (f) => (f.id === undefined ? f.name : f.id);
 const stamp = (v) => (v instanceof Date ? v.toISOString() : String(v || ''));
 

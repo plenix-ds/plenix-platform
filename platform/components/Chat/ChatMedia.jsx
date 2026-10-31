@@ -28,11 +28,11 @@ import PlayIcon from 'plenix-platform/icons/material/play-arrow';
 import PauseIcon from 'plenix-platform/icons/material/pause';
 import DownloadIcon from 'plenix-platform/icons/material/download';
 import BrokenImageIcon from 'plenix-platform/icons/material/broken-image';
+import { fill } from '../../utils/fill.js';
 
 const FILE_ICONS = { pdf: FilePdfIcon, jpg: FileJpgIcon, jpeg: FileJpgIcon, png: FilePngIcon, svg: FileSvgIcon, psd: FilePsdIcon, ai: FileAiIcon };
 const fileIconOf = (name) => FILE_ICONS[String(name || '').split('.').pop().toLowerCase()] || DocumentIcon;
 export const FileIcon = ({ name }) => <Icon icon={fileIconOf(name)} size="lg" />;
-export const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => (values[k] === undefined ? m : values[k]));
 const clock = (seconds) => { const n = Math.max(0, Math.floor(Number(seconds) || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
 
 const GroupContext = React.createContext(null);

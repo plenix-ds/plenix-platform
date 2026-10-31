@@ -40,8 +40,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
-
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
+import { fill } from '../../utils/fill.js';
 
 // "8 members" with the number in the data font
 function Members({ n, t }) {

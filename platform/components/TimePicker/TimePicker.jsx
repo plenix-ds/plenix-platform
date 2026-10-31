@@ -49,12 +49,10 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
-import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useFloating, TOP_LAYER } from '../../utils/floating.js';
 import { localDigits, toLatinDigits } from '../../utils/digits.js';
 import { useDigits } from '../../providers/LocaleProvider.jsx';
 
-// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
-const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';

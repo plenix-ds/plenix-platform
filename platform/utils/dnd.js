@@ -75,11 +75,11 @@ import { tokenMs } from './tokenTime.js';
 import { gestureTokens } from '../hooks/useGesture.js';
 import { useStrings } from '../providers/LocaleProvider.jsx';
 import english from '../i18n/en.js';
+import { fill } from './fill.js';
 
 // the default (English) words, as before: the catalog's dnd section, so the words live in one place
 export const DND_STRINGS = english.dnd;
 
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ── list helpers ── */

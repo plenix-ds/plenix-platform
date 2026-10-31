@@ -62,6 +62,7 @@ import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.js';
 import { LiveRegion } from '../../utils/announce.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { fill } from '../../utils/fill.js';
 const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;
@@ -99,7 +100,6 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
 }
 
 /* ── Resizable: a box with its own resize edges ── */
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = (name) => (typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0);
 const limit = (v, name) => (v != null ? v : tokenPx('--plx-comp-resizable-' + name));

@@ -86,8 +86,8 @@ import LockIcon from 'plenix-platform/icons/plenix/lock';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
 import { dataPhrase } from '../../utils/dataText.jsx';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const H = ({ level, ...props }) => React.createElement('h' + Math.min(6, Math.max(1, level || 1)), props);

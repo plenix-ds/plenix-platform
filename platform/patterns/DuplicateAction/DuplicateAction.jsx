@@ -54,8 +54,8 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { createTranslator } from '../../providers/LocaleProvider.jsx';
 import { formatLocale } from '../../utils/format.js';
 import EdCopyIcon from 'plenix-platform/icons/plenix/ed-copy';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const q = (x) => '“' + x + '”';
 
 export function copyName(name, taken = [], strings) {

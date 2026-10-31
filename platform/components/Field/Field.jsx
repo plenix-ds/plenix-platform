@@ -51,7 +51,7 @@ import { dataWhenText } from '../../utils/dataText.jsx';
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
 
-const fill = (t, n) => String(t).replace('{n}', formatNumber(n));
+const countText = (t, n) => String(t).replace('{n}', formatNumber(n));
 
 export function Field({ label, hideLabel = false, description, error, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
   const id = React.useId();
@@ -75,7 +75,7 @@ export function Field({ label, hideLabel = false, description, error, required =
   const said = React.useRef(null);
   React.useEffect(() => {
     if (!max || !near || said.current === null) { said.current = length; return; }
-    if (said.current !== length) { said.current = length; announce(over ? fill(t.over, length - max) : fill(t.left, max - length)); }
+    if (said.current !== length) { said.current = length; announce(over ? countText(t.over, length - max) : countText(t.left, max - length)); }
   }, [length, max, near, over, t.over, t.left]);
   // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
   const describedBy = useDescribedBy(child.props['aria-describedby'], descId, countId, errId);
@@ -110,7 +110,7 @@ export function Field({ label, hideLabel = false, description, error, required =
             {lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}
             <div className={cx('plx-field__counter', over && 'is-over')}>
               <span className="plx-field__count" aria-hidden="true">{formatNumber(length) + '/' + formatNumber(max)}</span>
-              <span className="plx-visually-hidden" id={countId}>{over ? fill(t.over, length - max) : fill(t.left, max - length)}</span>
+              <span className="plx-visually-hidden" id={countId}>{over ? countText(t.over, length - max) : countText(t.left, max - length)}</span>
             </div>
           </div>
         ) : lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}

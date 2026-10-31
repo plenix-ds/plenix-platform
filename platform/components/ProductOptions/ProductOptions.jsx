@@ -62,8 +62,8 @@ import { Field } from '../Field/Field.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import { fill } from '../../utils/fill.js';
 
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const labelOf = (v) => (v.label !== undefined ? v.label : String(v.value));
 
 // the option's name and its chosen value ("Size: M")
