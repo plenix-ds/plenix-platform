@@ -18825,6 +18825,93 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     return { changeGroups, toggleGroup };
   }
+  function useRowModel({ mode, remoteMode, allRows, loaded, groupBy: groupBy2, columns, printing, collapsed, props }) {
+    const loadedRows = React2.useMemo(
+      () => mode === "load-more" && !remoteMode ? allRows.slice(0, loaded) : allRows,
+      [allRows, mode, remoteMode, loaded]
+    );
+    const levels = React2.useMemo(
+      () => typeof groupBy2 === "string" || typeof groupBy2 === "function" ? [groupBy2] : Array.isArray(groupBy2) ? groupBy2.filter(Boolean) : [],
+      [typeof groupBy2 === "function" ? groupBy2 : JSON.stringify(groupBy2)]
+    );
+    const levelField = (level) => typeof level === "object" ? level.field : level;
+    const groupInput = React2.useMemo(() => {
+      if (!levels.length) return EMPTY_ROWS;
+      const out = [];
+      for (const row of loadedRows) {
+        if (!row.original) continue;
+        let members = [[]];
+        levels.forEach((level) => {
+          const field = levelField(level), column = columns.find((c) => c.field === field) || {}, raw = typeof field === "function" ? field(row.original) : valueAt(row.original, field);
+          const values = (column.multi || column.type === "multi") && Array.isArray(raw) ? raw.length ? raw : [null] : [raw], seen = /* @__PURE__ */ new Set(), buckets = [];
+          for (const value of values) {
+            const bucket = groupValue(value, level, column), key = valueKey(bucket);
+            if (!seen.has(key)) {
+              seen.add(key);
+              buckets.push(bucket);
+            }
+          }
+          members = members.flatMap((member) => buckets.map((bucket) => member.concat([bucket])));
+        });
+        members.forEach((member) => out.push({ row, member }));
+      }
+      return out;
+    }, [loadedRows, levels, columns]);
+    const onceEach = (name) => (id, leafRows) => {
+      const once = [...new Map(leafRows.map((leaf) => [leaf.original.row.id, leaf])).values()];
+      return aggregationFns[name](id, once, once);
+    };
+    const summaryColumns = React2.useMemo(() => columns.filter((c) => c.summary), [columns]);
+    const groupColumns = React2.useMemo(
+      () => levels.map((level, i) => ({
+        id: "__level" + i,
+        accessorFn: (item) => item.member[i],
+        getGroupingValue: (item) => valueKey(item.member[i])
+      })).concat(
+        summaryColumns.map((c) => ({
+          id: "__summary:" + c.field,
+          accessorFn: (item) => valueAt(item.row.original, c.field),
+          aggregationFn: onceEach(
+            { sum: "sum", average: "mean", min: "min", max: "max", count: "count" }[c.summary] || "count"
+          )
+        }))
+      ),
+      [levels, summaryColumns]
+    );
+    const groupingState = React2.useMemo(() => levels.map((level, i) => "__level" + i), [levels]);
+    const groupTable = useReactTable({
+      data: groupInput,
+      columns: groupColumns,
+      getCoreRowModel: getCoreRowModel(),
+      getGroupedRowModel: getGroupedRowModel(),
+      state: { grouping: groupingState },
+      groupedColumnMode: false
+    });
+    const groupedModel = groupTable.getRowModel();
+    const groups = React2.useMemo(() => {
+      if (!levels.length) return [];
+      const build = (rows, path) => rows.filter((row) => row.getIsGrouped()).map((row, i) => {
+        const depth2 = row.depth, field = levelField(levels[depth2]), value = row.leafRows[0].original.member[depth2], nextPath = path.concat({ field, value });
+        return {
+          id: "group:" + JSON.stringify(nextPath.map((part) => [part.field, valueKey(part.value)])),
+          field,
+          value,
+          depth: depth2,
+          separated: i > 0,
+          path: nextPath,
+          rows: [...new Map(row.leafRows.map((leaf) => [leaf.original.row.id, leaf.original.row])).values()],
+          groups: build(row.subRows, nextPath),
+          summary: Object.fromEntries(summaryColumns.map((c) => [c.field, row.getValue("__summary:" + c.field)]))
+        };
+      });
+      return build(groupedModel.rows, []);
+    }, [groupedModel, levels, summaryColumns]);
+    const model = React2.useMemo(
+      () => groups.length ? groupDisplay(groups, printing ? /* @__PURE__ */ new Set() : collapsed, !!props.onAddToGroup) : loadedRows,
+      [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]
+    );
+    return { loadedRows, groups, model };
+  }
   const headerKeys = ({ column }) => (e) => {
     if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
       e.preventDefault();
@@ -19665,90 +19752,18 @@ var Plenix = (function(exports, React2, reactDom, client) {
       },
       []
     );
-    const loadedRows = React2.useMemo(
-      () => mode === "load-more" && !remoteMode ? allRows.slice(0, loaded) : allRows,
-      [allRows, mode, remoteMode, loaded]
-    );
-    const levels = React2.useMemo(
-      () => typeof groupBy2 === "string" || typeof groupBy2 === "function" ? [groupBy2] : Array.isArray(groupBy2) ? groupBy2.filter(Boolean) : [],
-      [typeof groupBy2 === "function" ? groupBy2 : JSON.stringify(groupBy2)]
-    );
-    const levelField = (level) => typeof level === "object" ? level.field : level;
-    const groupInput = React2.useMemo(() => {
-      if (!levels.length) return EMPTY_ROWS;
-      const out = [];
-      for (const row of loadedRows) {
-        if (!row.original) continue;
-        let members = [[]];
-        levels.forEach((level) => {
-          const field = levelField(level), column = columns.find((c) => c.field === field) || {}, raw = typeof field === "function" ? field(row.original) : valueAt(row.original, field);
-          const values = (column.multi || column.type === "multi") && Array.isArray(raw) ? raw.length ? raw : [null] : [raw], seen = /* @__PURE__ */ new Set(), buckets = [];
-          for (const value of values) {
-            const bucket = groupValue(value, level, column), key = valueKey(bucket);
-            if (!seen.has(key)) {
-              seen.add(key);
-              buckets.push(bucket);
-            }
-          }
-          members = members.flatMap((member) => buckets.map((bucket) => member.concat([bucket])));
-        });
-        members.forEach((member) => out.push({ row, member }));
-      }
-      return out;
-    }, [loadedRows, levels, columns]);
-    const onceEach = (name) => (id, leafRows) => {
-      const once = [...new Map(leafRows.map((leaf) => [leaf.original.row.id, leaf])).values()];
-      return aggregationFns[name](id, once, once);
-    };
-    const summaryColumns = React2.useMemo(() => columns.filter((c) => c.summary), [columns]);
-    const groupColumns = React2.useMemo(
-      () => levels.map((level, i) => ({
-        id: "__level" + i,
-        accessorFn: (item) => item.member[i],
-        getGroupingValue: (item) => valueKey(item.member[i])
-      })).concat(
-        summaryColumns.map((c) => ({
-          id: "__summary:" + c.field,
-          accessorFn: (item) => valueAt(item.row.original, c.field),
-          aggregationFn: onceEach(
-            { sum: "sum", average: "mean", min: "min", max: "max", count: "count" }[c.summary] || "count"
-          )
-        }))
-      ),
-      [levels, summaryColumns]
-    );
-    const groupingState = React2.useMemo(() => levels.map((level, i) => "__level" + i), [levels]);
-    const groupTable = useReactTable({
-      data: groupInput,
-      columns: groupColumns,
-      getCoreRowModel: getCoreRowModel(),
-      getGroupedRowModel: getGroupedRowModel(),
-      state: { grouping: groupingState },
-      groupedColumnMode: false
+    const virtualized = !isStatic && mode !== "pages" && !isNarrow && !printing;
+    const { loadedRows, groups, model } = useRowModel({
+      mode,
+      remoteMode,
+      allRows,
+      loaded,
+      groupBy: groupBy2,
+      columns,
+      printing,
+      collapsed,
+      props
     });
-    const groupedModel = groupTable.getRowModel();
-    const groups = React2.useMemo(() => {
-      if (!levels.length) return [];
-      const build = (rows, path) => rows.filter((row) => row.getIsGrouped()).map((row, i) => {
-        const depth2 = row.depth, field = levelField(levels[depth2]), value = row.leafRows[0].original.member[depth2], nextPath = path.concat({ field, value });
-        return {
-          id: "group:" + JSON.stringify(nextPath.map((part) => [part.field, valueKey(part.value)])),
-          field,
-          value,
-          depth: depth2,
-          separated: i > 0,
-          path: nextPath,
-          rows: [...new Map(row.leafRows.map((leaf) => [leaf.original.row.id, leaf.original.row])).values()],
-          groups: build(row.subRows, nextPath),
-          summary: Object.fromEntries(summaryColumns.map((c) => [c.field, row.getValue("__summary:" + c.field)]))
-        };
-      });
-      return build(groupedModel.rows, []);
-    }, [groupedModel, levels, summaryColumns]);
-    const model = React2.useMemo(
-      () => groups.length ? groupDisplay(groups, printing ? /* @__PURE__ */ new Set() : collapsed, !!props.onAddToGroup) : loadedRows,
-      [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]
-    ), virtualized = !isStatic && mode !== "pages" && !isNarrow && !printing;
     const estimate = (row) => row?.__group ? metrics.group + metrics.line * (row.__group.separated ? 2 : 1) : row?.__gap ? metrics.groupGap : row?.__add ? metrics.add + metrics.line : metrics.row + metrics.line;
     const virtual = useVirtualizer$1({
       count: model.length,
