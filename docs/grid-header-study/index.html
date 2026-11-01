@@ -68,7 +68,7 @@ const options = [
 ];
 // the application's field actions in the column menu (the grid adds sort, filter and group after them)
 const act = () => {};
-const columnMenu = [{ label: 'Duplicate field', icon: 'ed-copy', onSelect: act }, { label: 'Insert left', icon: 'arrow-left', onSelect: act }, { label: 'Insert right', icon: 'forward', onSelect: act }, { separator: true },
+const columnMenu = [{ label: 'Duplicate field', icon: 'ed-copy', onSelect: act }, { label: 'Insert left', icon: 'arrow-left', onSelect: act }, { label: 'Insert right', icon: 'arrow-right', onSelect: act }, { separator: true },
   { label: 'Copy field URL', icon: 'link', onSelect: act }, { label: 'Edit field description', icon: 'circle-info', onSelect: act }, { label: 'Edit field permissions', icon: 'lock', onSelect: act }];
 function App() {
   return h(React.Fragment, null,
