@@ -27,11 +27,9 @@
      check-system's count-phrases rule (check-system.rules/count-phrases.js) finds a count joined to words in code; these
      helpers are what it asks for. A text for screen readers (aria-label, an announcement) stays a plain string. */
 import React from 'react';
-import { Text } from '../components/Text/Text.jsx';
+import { Text } from '../components/Text/Text.tsx';
 import { formatNumber, type FormatOptions } from './format.ts';
 
-// Text as this file draws it (Text.jsx is not typed yet: its inferred props would all be required)
-const DataText = Text as React.ComponentType<{ variant?: string; children?: React.ReactNode }>;
 
 const D = '[0-9\\u0660-\\u0669]';
 const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
@@ -42,12 +40,12 @@ const HAS_DIGIT = new RegExp(D);
 // a finished text -> its runs: words as text, data in the data font
 function runs(text: unknown, key: string | number): React.ReactNode[] {
   if (typeof text !== 'string' || !HAS_DIGIT.test(text)) return [text as React.ReactNode];
-  return text.split(DATUM).map((p, i) => (i % 2 ? <DataText key={key + '-' + i} variant="data">{p}</DataText> : p || null));
+  return text.split(DATUM).map((p, i) => (i % 2 ? <Text key={key + '-' + i} variant="data">{p}</Text> : p || null));
 }
 
 export function dataNumber(value: unknown, options?: FormatOptions): React.ReactElement | null {
   if (value === null || value === undefined || value === '') return null;
-  return <DataText variant="data">{typeof value === 'number' ? formatNumber(value, options) : String(value)}</DataText>;
+  return <Text variant="data">{typeof value === 'number' ? formatNumber(value, options) : String(value)}</Text>;
 }
 
 export function dataPhrase(text: unknown, values?: Record<string, unknown> | null, options?: FormatOptions): React.ReactElement | null {
@@ -60,7 +58,7 @@ export function dataPhrase(text: unknown, values?: Record<string, unknown> | nul
       if (!m || !(m[1] in values!)) { out.push(...runs(part, i)); return; }
       const v = values![m[1]];
       if (v === null || v === undefined) return;
-      if (typeof v === 'number') out.push(<DataText key={i} variant="data">{formatNumber(v, options)}</DataText>);
+      if (typeof v === 'number') out.push(<Text key={i} variant="data">{formatNumber(v, options)}</Text>);
       else if (React.isValidElement(v)) out.push(React.cloneElement(v, { key: i }));
       else out.push(...runs(String(v), i));
     });

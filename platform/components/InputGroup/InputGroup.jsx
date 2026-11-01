@@ -37,7 +37,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 
 // the field's own ref, so the group's ref callback can pass the node on: React 19 keeps a ref in the element's props (reading
 // element.ref warns there, issue 686); React 18 keeps it on the element and never in its props

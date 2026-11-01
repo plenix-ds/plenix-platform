@@ -187,7 +187,7 @@ function buildPages(root, opts = {}) {
   return { pages: PAGES.length + 1, icons: icons + LOGIN.names.length, unknown, stale, changed: !!stale.length };
 }
 
-// an icon module as the markup the Icon component renders with no size and no fill (iconMarkup in Icon.jsx writes the
+// an icon module as the markup the Icon component renders with no size and no fill (iconMarkup in Icon.tsx writes the
 // same in the browser): the span, then one svg holding the 20 and 24 outlines when they share a box
 const ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESCAPE[c]);

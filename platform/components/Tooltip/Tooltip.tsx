@@ -49,12 +49,13 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.ts';
 import { useDescriptionId, useDescribedBy } from '../../utils/describedBy.ts';
 
 const SIDES = ['bottom', 'top', 'start', 'end'];
+type Timer = ReturnType<typeof setTimeout>;
 
 // true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
 export const InTooltip = React.createContext(false);
 
 // a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el, name) => {
+const ms = (el: Element | null, name: string) => {
   const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
   const n = parseFloat(v);
   return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
@@ -69,58 +70,72 @@ const listen = () => {
   document.addEventListener('keydown', () => { lastInput = 'key'; }, true);
 };
 
-export function Tooltip({ content, placement = 'bottom', title, action, rich = false, disabled = false, describe = true, className, children }) {
+// the props Tooltip reads from, and puts on, its one child (the trigger)
+type TriggerProps = { 'aria-describedby'?: string; onClick?: (e: React.MouseEvent<HTMLElement>) => void };
+export type TooltipProps = {
+  content?: React.ReactNode;
+  placement?: 'bottom' | 'top' | 'start' | 'end';
+  title?: React.ReactNode;
+  action?: React.ReactNode;
+  rich?: boolean;
+  disabled?: boolean;
+  describe?: boolean;
+  className?: string;
+  /** the trigger: one element */
+  children: React.ReactElement;
+};
+export function Tooltip({ content, placement = 'bottom', title, action, rich = false, disabled = false, describe = true, className, children }: TooltipProps) {
   const id = useDescriptionId('tt');   // plx-tt<id> (utils/describedBy.ts)
   const [open, setOpen] = React.useState(false);
-  const wrap = React.useRef(null);
-  const bubble = React.useRef(null);
-  const press = React.useRef(null);     // the long-press timer
-  const hide = React.useRef(null);      // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
+  const wrap = React.useRef<HTMLSpanElement>(null);
+  const bubble = React.useRef<HTMLSpanElement>(null);
+  const press = React.useRef<Timer | null>(null);     // the long-press timer
+  const hide = React.useRef<Timer | null>(null);      // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
   const pressed = React.useRef(false);  // this touch opened the tooltip by a long press
   const isRich = !!(rich || title || action);
   const toggle = !!action;              // a toggletip: opened by a click on the trigger
   const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
-  const clear = () => { clearTimeout(press.current); clearTimeout(hide.current); };
+  const clear = () => { clearTimeout(press.current as Timer); clearTimeout(hide.current as Timer); };
   React.useEffect(() => { listen(); return clear; }, []);
   // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
   useFloating(wrap, bubble, { open: open && !disabled && FLOATING_ANCHOR, placement: side, offset: 'sm', flip: isRich, shift: isRich });
   React.useEffect(() => {
     if (!open) return undefined;
-    const esc = (e) => {
+    const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       const inside = wrap.current && wrap.current.contains(document.activeElement);
       setOpen(false);
       // a toggletip gives focus back to its trigger when Escape closes it from inside
-      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+      if (toggle && inside && wrap.current!.firstElementChild && (wrap.current!.firstElementChild as HTMLElement).focus) (wrap.current!.firstElementChild as HTMLElement).focus();
     };
-    const outside = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
+    const outside = (e: MouseEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener('keydown', esc);
     if (toggle) document.addEventListener('mousedown', outside);
     return () => { document.removeEventListener('keydown', esc); document.removeEventListener('mousedown', outside); };
   }, [open, toggle]);
-  const child = React.Children.only(children);
+  const child = React.Children.only(children) as React.ReactElement<TriggerProps>;
   const describedBy = useDescribedBy(child.props['aria-describedby'], id);
   const described = describe ? { 'aria-describedby': describedBy } : {};   // describe={false}: the trigger's own name is the same text, so it is not described by it again
   const trigger = disabled ? child : React.cloneElement(child, toggle ? Object.assign(described, {
     'aria-expanded': open, 'aria-controls': open ? id + 'b' : undefined,
-    onClick: (e) => { if (child.props.onClick) child.props.onClick(e); setOpen(!open); },
+    onClick: (e: React.MouseEvent<HTMLElement>) => { if (child.props.onClick) child.props.onClick(e); setOpen(!open); },
   }) : described);
   if (disabled) return <span className={cx('plx-tooltip', className)}><InTooltip.Provider value>{trigger}</InTooltip.Provider></span>;
-  const onPointerDown = (e) => {
+  const onPointerDown = (e: React.PointerEvent<HTMLSpanElement>) => {
     if (e.pointerType !== 'touch' || toggle) return;
     clear(); pressed.current = false;
     press.current = setTimeout(() => { pressed.current = true; setOpen(true); }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
   };
-  const onPointerEnd = (e) => {
+  const onPointerEnd = (e: React.PointerEvent<HTMLSpanElement>) => {
     if (e.pointerType !== 'touch' || toggle) return;
-    clearTimeout(press.current);
+    clearTimeout(press.current as Timer);
     if (pressed.current) hide.current = setTimeout(() => { setOpen(false); pressed.current = false; }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
   };
-  const onEnter = (e) => { if (e.pointerType === 'touch' || toggle) return; clearTimeout(hide.current); setOpen(true); };
-  const onLeave = (e) => {
+  const onEnter = (e: React.PointerEvent<HTMLSpanElement>) => { if (e.pointerType === 'touch' || toggle) return; clearTimeout(hide.current as Timer); setOpen(true); };
+  const onLeave = (e: React.PointerEvent<HTMLSpanElement>) => {
     if (e.pointerType === 'touch' || toggle) return;
     // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
-    if (isRich) { clearTimeout(hide.current); hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay')); }
+    if (isRich) { clearTimeout(hide.current as Timer); hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay')); }
     else setOpen(false);
   };
   const bubbleCls = cx('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
@@ -131,7 +146,7 @@ export function Tooltip({ content, placement = 'bottom', title, action, rich = f
       onContextMenu={(e) => { if (pressed.current) e.preventDefault(); }}
       onClickCapture={(e) => { if (pressed.current) { e.preventDefault(); e.stopPropagation(); pressed.current = false; } }}
       onFocus={() => { if (!toggle && lastInput !== 'touch') setOpen(true); }}
-      onBlur={(e) => { if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false); }}>
+      onBlur={(e) => { if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget as Node | null))) setOpen(false); }}>
       <InTooltip.Provider value>{trigger}</InTooltip.Provider>
       {isRich ? (
         <span ref={bubble} id={id + 'b'} className={bubbleCls} aria-hidden={describe ? undefined : true}>

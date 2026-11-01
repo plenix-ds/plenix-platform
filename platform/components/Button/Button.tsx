@@ -59,13 +59,15 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon, stateIcon } from '../Icon/Icon.jsx';
-import { Spinner } from '../Loading/Loading.jsx';
+import { Icon, stateIcon } from '../Icon/Icon.tsx';
+import type { IconModule } from '../Icon/Icon.tsx';
+import { Spinner } from '../Loading/Loading.tsx';
 import { SurfaceContext } from '../../providers/Surface.tsx';
-import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
-import { Kbd } from '../Kbd/Kbd.jsx';
+import { Tooltip, InTooltip } from '../Tooltip/Tooltip.tsx';
+import { Kbd } from '../Kbd/Kbd.tsx';
 import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 const TONES = ['success', 'danger', 'neutral'];
@@ -74,22 +76,56 @@ const TONES = ['success', 'danger', 'neutral'];
 // open; an Icon element the caller gives keeps its own fill when it sets one
 
 // a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
-const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
-const ariaShortcut = (binding) => {
+const ARIA_MODS: Array<['ctrl' | 'alt' | 'shift' | 'meta', string]> = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
+const ariaShortcut = (binding: string) => {
   const steps = parseHotkey(binding);
   if (steps.length !== 1 || !steps[0].key) return undefined;
   const k = steps[0].key;
   return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
 };
 
+// where two buttons meet in a group, each side's corner: square, or the seam the later button draws
+export type ButtonJoined = { start?: 'square' | 'seam'; end?: 'square' | 'seam' };
+export type ButtonProps = Omit<React.HTMLAttributes<HTMLElement>, 'onClick'> & {
+  variant?: 'secondary' | 'primary' | 'tertiary' | 'ghost' | 'danger' | 'danger-secondary' | 'quiet';
+  size?: 'md' | 'sm' | 'xs' | '2xs' | 'lg';
+  /** an <Icon>, an icon name or an imported icon module, before the label */
+  icon?: React.ReactNode | IconModule;
+  /** the same, after the label */
+  iconEnd?: React.ReactNode | IconModule;
+  iconOnly?: boolean;
+  /** the accessible name (aria-label) */
+  label?: string;
+  caret?: boolean;
+  expanded?: boolean;
+  pressed?: boolean;
+  selected?: boolean;
+  tone?: 'success' | 'danger' | 'neutral';
+  loading?: boolean;
+  disabled?: boolean;
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  joined?: ButtonJoined;
+  truncate?: boolean;
+  stackedLabel?: boolean;
+  labelRow?: boolean;
+  /** its tooltip; false: none */
+  tooltip?: React.ReactNode;
+  /** a hotkey binding ("Mod+Shift+A") */
+  shortcut?: string;
+  /** read by a Toolbar or ActionBar that folds it into More */
+  priority?: 'high' | 'normal' | 'low';
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  strings?: Catalog | null;
+};
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, tone, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, priority, className, children, onClick, strings, ...rest }, ref) {   // priority: read by a Toolbar or ActionBar that folds it into More; the Button itself ignores it
+  expanded, pressed, selected = false, tone, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, priority, className, children, onClick, strings, ...rest }: ButtonProps, ref: React.ForwardedRef<HTMLElement>) {   // priority: read by a Toolbar or ActionBar that folds it into More; the Button itself ignores it
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = useStrings('button', strings);
   // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
   const surface = React.useContext(SurfaceContext);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
-    caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+    caret && 'plx-button--caret', TONES.includes(tone as string) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
   // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
   const v = variant === 'quiet' ? 'ghost' : variant;
   const on = !!(selected || pressed || expanded);
@@ -99,7 +135,7 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
   // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
   // (aria-busy says it is working, so the spinner itself is not read)
   const over = loading && !icon && hasLabel;
-  const spinner = (cls) => <span className={cls} aria-hidden="true"><Spinner size="sm" label={t.working} /></span>;
+  const spinner = (cls: string) => <span className={cls} aria-hidden="true"><Spinner size="sm" label={t.working as React.ReactNode} /></span>;
   const content = (
     <>
       {loading && !over ? spinner('plx-button__icon') : (icon ? <span className="plx-button__icon">{stateIcon(icon, on)}</span> : null)}
@@ -112,9 +148,9 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
   const a11y = { 'aria-label': iconOnly ? (label || (typeof children === 'string' ? children : undefined)) : label, 'aria-expanded': expanded,
     'aria-pressed': pressed, 'aria-disabled': disabled || loading ? true : undefined, 'aria-busy': loading || undefined,
     'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined };
-  const handle = (e) => { if (disabled || loading) { e.preventDefault(); return; } if (onClick) onClick(e); };
-  const el = href ? <a ref={ref} href={disabled ? undefined : href} className={classes} {...a11y} onClick={handle} {...rest}>{content}</a>
-    : <button ref={ref} type={type} className={classes} disabled={disabled && !loading ? true : undefined} {...a11y} onClick={handle} {...rest}>{content}</button>;
+  const handle = (e: React.MouseEvent<HTMLElement>) => { if (disabled || loading) { e.preventDefault(); return; } if (onClick) onClick(e); };
+  const el = href ? <a ref={ref as React.Ref<HTMLAnchorElement>} href={disabled ? undefined : href} className={classes} {...a11y} onClick={handle} {...rest}>{content}</a>
+    : <button ref={ref as React.Ref<HTMLButtonElement>} type={type} className={classes} disabled={disabled && !loading ? true : undefined} {...a11y} onClick={handle} {...rest}>{content}</button>;
   // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
   // Tooltip, which already names it
   const inTooltip = React.useContext(InTooltip);
@@ -124,8 +160,9 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
 });
 
 /* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-export function ButtonGroup({ label, className, children, ...rest }) {
+export type ButtonGroupProps = React.HTMLAttributes<HTMLDivElement> & { label?: string };
+export function ButtonGroup({ label, className, children, ...rest }: ButtonGroupProps) {
   // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
-  const all = React.Children.toArray(children).filter(React.isValidElement);
+  const all = React.Children.toArray(children).filter(React.isValidElement) as React.ReactElement<{ joined?: ButtonJoined }>[];
   return <div role="group" aria-label={label} className={cx('plx-button-group', className)} {...rest}>{all.map((el, i) => React.cloneElement(el, { joined: { start: i > 0 ? 'seam' : undefined, end: i < all.length - 1 ? 'square' : undefined } }))}</div>;
 }

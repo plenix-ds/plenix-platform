@@ -20,11 +20,11 @@ import { words, kinds, interactive, typeOf, typeIcons, cellDirection } from './h
 import { valueText, CellValue } from '../cells.jsx';
 import { groupKeys, rowKeys, cellKeys } from './keys.js';
 import { Width, RowTarget, Check, CellEditor, CustomCell, RowMenuContent } from './parts.jsx';
-import { Icon } from '../../Icon/Icon.jsx';
+import { Icon } from '../../Icon/Icon.tsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import { formatNumber } from '../../../utils/format.ts';
-import { Button } from '../../Button/Button.jsx';
+import { Button } from '../../Button/Button.tsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 import { valueAt } from '../state.js';
 import { Menu, MenuItem, ContextMenu } from '../../Menu/Menu.jsx';

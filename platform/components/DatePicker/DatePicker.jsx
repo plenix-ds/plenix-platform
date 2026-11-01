@@ -63,11 +63,11 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, numeralLocale } from '../../utils/format.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Input } from '../Input/Input.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { Popover } from '../Popover/Popover.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';

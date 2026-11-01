@@ -12,11 +12,11 @@
 */
 import React from 'react';
 import { SidePanel } from '../SidePanel/SidePanel.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Link } from '../../components/Link/Link.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
