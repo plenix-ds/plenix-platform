@@ -302,8 +302,12 @@ A page that shows a rich-text editor, a chart or a PDF also loads \`dist/plenix-
 React 18 or 19 is a peer dependency (\`>=18.2.0 <20\`) for the ES module and CommonJS builds. \`dist/plenix.global.js\` (the CDN's \`plenix.js\`) needs React 18 on the page: React 19 publishes no UMD script, so the script-tag way stays on React 18.2.0. Rules: compose from these components and the tokens only; no inline styles or hard-coded values.`);
 
 // ---------- CDN: the same files at a fixed address per version ----------
-copy(path.join(S, 'plenix.css'), path.join(CDN, 'plenix.css'));
-copy(path.join(S, 'plenix.min.css'), path.join(CDN, 'plenix.min.css'));
+// the version stamp (#842): the CDN's stylesheet names its release as --plx-version (one rule at the end, outside the layers),
+// so plenix.js, the loader and a check can tell a page that mixes releases. Only the CDN copies carry it: the npm stylesheet
+// and its per-part files stay exactly as cut (tools/agent/style-parts-check.js)
+const STAMP = '/* Plenix ' + VERSION + ': the release of this stylesheet (#842) */\n:root{--plx-version:"' + VERSION + '"}\n';
+write(path.join(CDN, 'plenix.css'), fs.readFileSync(path.join(S, 'plenix.css'), 'utf8') + STAMP);
+write(path.join(CDN, 'plenix.min.css'), fs.readFileSync(path.join(S, 'plenix.min.css'), 'utf8').replace(/\n?$/, '\n') + ':root{--plx-version:"' + VERSION + '"}\n');
 copy(path.join(S, 'fonts.css'), path.join(CDN, 'fonts.css'));
 copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefaces beside fonts.css (batch 227)
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
