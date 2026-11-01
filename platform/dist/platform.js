@@ -1124,6 +1124,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "error": "The options could not be loaded",
       "emptyText": "No matches",
       "removeItem": "Remove {label}",
+      "clear": "Clear",
       "results": {
         "one": "{n} option",
         "other": "{n} options"
@@ -3459,6 +3460,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
       "emptyText": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629",
       "removeItem": "\u0625\u0632\u0627\u0644\u0629 {label}",
+      "clear": "\u0645\u0633\u062D",
       "results": {
         "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062E\u064A\u0627\u0631\u0627\u062A",
         "one": "\u062E\u064A\u0627\u0631 \u0648\u0627\u062D\u062F",
@@ -12279,29 +12281,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
     return sortCollator.compare(valueText(x), valueText(y));
   };
-  const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
-  function pillFont(at2, ctx, data) {
-    const doc = at2.ownerDocument, box = doc.createElement("span"), pill = doc.createElement("span"), value = doc.createElement("span");
-    box.className = "plx-visually-hidden";
-    pill.className = "plx-data-pill plx-data-pill--md" + (data ? " plx-data-pill--data" : "");
-    value.className = "plx-data-pill__value";
-    value.textContent = PROBE;
-    pill.appendChild(value);
-    box.appendChild(pill);
-    (at2.querySelector(".plx-data-grid__grid-row .plx-data-grid__grid-cell") || at2).appendChild(box);
-    const cs = getComputedStyle(value), page = value.scrollWidth;
-    ctx.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
-    ctx.wordSpacing = cs.wordSpacing || "0px";
-    const canvas2 = ctx.measureText(PROBE).width;
-    box.remove();
-    return { scale: canvas2 ? page / canvas2 : 1, font: ctx.font, wordSpacing: ctx.wordSpacing };
-  }
-  function pillSheet(doc) {
-    if (doc.__plxPillWidths) return doc.__plxPillWidths;
-    const sheet = new doc.defaultView.CSSStyleSheet(), rules = /* @__PURE__ */ new Map();
-    doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
-    return doc.__plxPillWidths = { rules, flush: () => sheet.replaceSync([...rules.values()].join("\n")) };
-  }
   function getMeasurementKey(item) {
     return typeof item === "object" ? item.key : item;
   }
@@ -17707,6 +17686,278 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     }, [source]);
   }
+  const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
+  function pillFont(at2, ctx, data) {
+    const doc = at2.ownerDocument, box = doc.createElement("span"), pill = doc.createElement("span"), value = doc.createElement("span");
+    box.className = "plx-visually-hidden";
+    pill.className = "plx-data-pill plx-data-pill--md" + (data ? " plx-data-pill--data" : "");
+    value.className = "plx-data-pill__value";
+    value.textContent = PROBE;
+    pill.appendChild(value);
+    box.appendChild(pill);
+    (at2.querySelector(".plx-data-grid__grid-row .plx-data-grid__grid-cell") || at2).appendChild(box);
+    const cs = getComputedStyle(value), page = value.scrollWidth;
+    ctx.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+    ctx.wordSpacing = cs.wordSpacing || "0px";
+    const canvas2 = ctx.measureText(PROBE).width;
+    box.remove();
+    return { scale: canvas2 ? page / canvas2 : 1, font: ctx.font, wordSpacing: ctx.wordSpacing };
+  }
+  function pillSheet(doc) {
+    if (doc.__plxPillWidths) return doc.__plxPillWidths;
+    const sheet = new doc.defaultView.CSSStyleSheet(), rules = /* @__PURE__ */ new Map();
+    doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
+    return doc.__plxPillWidths = { rules, flush: () => sheet.replaceSync([...rules.values()].join("\n")) };
+  }
+  function usePillWidths({ frame, cells, metrics, columns, allRows, showTypes }) {
+    const gridKey = React$1.useId(), [fontsReady, setFontsReady] = React$1.useState(0);
+    React$1.useEffect(() => {
+      const fonts = frame.current?.ownerDocument.fonts;
+      if (fonts && fonts.ready) fonts.ready.then(() => setFontsReady((n) => n + 1));
+    }, []);
+    React$1.useLayoutEffect(() => {
+      const at2 = frame.current;
+      if (!at2 || typeof CSSStyleSheet === "undefined" || !at2.ownerDocument.defaultView) return void 0;
+      const store = pillSheet(at2.ownerDocument);
+      if (cells !== "pill" || !metrics.row) {
+        if (store.rules.delete(gridKey)) store.flush();
+        return void 0;
+      }
+      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), faces = { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) }, px = (name) => tokenPixels(name, at2), step = gridStep(at2);
+      const sides = px("--plx-comp-data-pill-md-padding-inline-start") + px("--plx-comp-data-pill-md-padding-inline-end") + 2 * px("--plx-comp-data-pill-border-width"), glyph = px("--plx-comp-data-pill-icon-size") + px("--plx-comp-data-pill-gap");
+      const key = CSS.escape(gridKey), rules = [];
+      columns.forEach((c) => {
+        const k = kinds(c);
+        if (c.render || c.pill === false || k.includes("tags") || k.includes("badge") || k.includes("deleted") || k.includes("icon"))
+          return;
+        const data = k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type);
+        const face = faces[data ? "data" : "text"], scale = face.scale;
+        ctx.font = face.font;
+        ctx.wordSpacing = face.wordSpacing;
+        let widest = 0;
+        allRows.forEach((r) => {
+          if (!r.original) return;
+          const v = valueAt(r.original, c.field);
+          if (v == null || v === "") return;
+          widest = Math.max(widest, ctx.measureText(valueText(v)).width * scale);
+        });
+        if (!widest) return;
+        const icon = c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text";
+        rules.push(
+          '[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + snapToGrid(widest + sides + (icon ? glyph : 0), { round: "up", step }) + "px;justify-content:center;}"
+        );
+      });
+      store.rules.set(gridKey, rules.join("\n"));
+      store.flush();
+      return void 0;
+    }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
+    React$1.useEffect(
+      () => () => {
+        const doc = frame.current?.ownerDocument || (typeof document !== "undefined" ? document : null);
+        if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
+      },
+      []
+    );
+    return { gridKey };
+  }
+  function useGridMetrics({
+    frame,
+    metrics,
+    cells,
+    columns,
+    effectiveWrap,
+    showTypes,
+    isStatic,
+    headerMenu,
+    source,
+    selectable,
+    rowMenu,
+    rowMenuButton,
+    props,
+    setAutoSizing,
+    setFloors,
+    setMetrics,
+    live,
+    narrow,
+    narrowAt,
+    listed,
+    setNarrow,
+    height,
+    mode,
+    holder,
+    inPane,
+    effectiveStep,
+    keys,
+    autoSizing,
+    sizing,
+    columnVisibility,
+    virtual,
+    model,
+    collapsed
+  }) {
+    React$1.useLayoutEffect(() => {
+      const at2 = frame.current;
+      if (!at2 || !metrics.min) return;
+      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), widths = {}, free = [], floor = {};
+      const scales = cells === "pill" ? { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) } : null, cs = getComputedStyle(at2), step = gridStep(at2);
+      const known = /* @__PURE__ */ new Map(), tokenPx2 = (name) => {
+        if (!known.has(name)) known.set(name, tokenPixels(name, at2));
+        return known.get(name);
+      }, snapUp = (px) => snapToGrid(px, { round: "up", step });
+      columns.forEach((c) => {
+        if (kinds(c).includes("icon")) {
+          widths[c.field] = metrics.lead;
+          return;
+        }
+        ctx.font = (cs.getPropertyValue("--plx-comp-data-grid-header-font-weight").trim() || "600") + " " + cs.getPropertyValue("--plx-comp-data-grid-header-font-size").trim() + " " + (cs.getPropertyValue("--plx-comp-data-grid-font-family").trim() || cs.fontFamily);
+        ctx.wordSpacing = "0px";
+        const title = String(c.title || c.field), words2 = title.split(/\s+/);
+        let text2 = ctx.measureText(title).width;
+        if (effectiveWrap)
+          for (let i = 1; i < words2.length; i += 1)
+            text2 = Math.min(
+              text2,
+              Math.max(
+                ctx.measureText(words2.slice(0, i).join(" ")).width,
+                ctx.measureText(words2.slice(i).join(" ")).width
+              )
+            );
+        const gap = tokenPx2("--plx-comp-data-grid-header-type-icon-gap"), arrow = 0;
+        const head = text2 + (showTypes ? tokenPx2("--plx-comp-data-grid-header-type-icon-size") + gap : 0) + arrow + (!isStatic && headerMenu ? tokenPx2("--plx-comp-data-grid-title-reserve") : 0);
+        floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
+        const explicit = tokenPx2(c.width);
+        if (explicit) {
+          widths[c.field] = Math.max(explicit, floor[c.field]);
+          return;
+        }
+        const family = cs.getPropertyValue(
+          kinds(c).includes("data") ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family"
+        ).trim() || cs.fontFamily;
+        ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size").trim() + " " + family;
+        ctx.wordSpacing = kinds(c).includes("data") ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
+        let width = head;
+        const k = kinds(c), pill = cells === "pill" && c.pill !== false && !k.includes("tags") && !k.includes("badge") && !k.includes("deleted");
+        const face = pill ? scales[k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type) ? "data" : "text"] : null, scale = face ? face.scale : 1;
+        if (face) {
+          ctx.font = face.font;
+          ctx.wordSpacing = face.wordSpacing;
+        }
+        const chrome = pill ? tokenPx2("--plx-comp-data-pill-md-padding-inline-start") + tokenPx2("--plx-comp-data-pill-md-padding-inline-end") + 2 * tokenPx2("--plx-comp-data-pill-border-width") + (c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text" ? tokenPx2("--plx-comp-data-pill-icon-size") + tokenPx2("--plx-comp-data-pill-gap") : 0) : 0;
+        source.forEach((record) => {
+          const value = valueAt(record, c.field);
+          width = Math.max(width, ctx.measureText(valueText(value)).width * scale + chrome);
+        });
+        widths[c.field] = snapUp(
+          Math.max(
+            metrics.min,
+            Math.min(width + metrics.space * 2, tokenPx2("--plx-comp-data-grid-auto-max-width") || Infinity)
+          )
+        );
+        free.push(c.field);
+      });
+      const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0), used = Object.values(widths).reduce((sum2, width) => sum2 + width, 0);
+      const units = Math.max(0, Math.floor((available - used) / step));
+      if (free.length) widths[free[free.length - 1]] += units * step;
+      setAutoSizing((old) => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
+      setFloors((old) => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
+    }, [
+      columns,
+      source,
+      metrics.room,
+      metrics.min,
+      metrics.space,
+      metrics.row,
+      selectable,
+      isStatic,
+      showTypes,
+      headerMenu,
+      cells,
+      effectiveWrap
+    ]);
+    const trailing = (at2, hold) => {
+      let sum2 = Math.max(0, at2.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+      for (let el = at2; el; el = el.parentElement) {
+        const cs = getComputedStyle(el);
+        sum2 += parseFloat(cs.marginBlockEnd) || 0;
+        if (el !== at2) sum2 += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+      }
+      return sum2;
+    };
+    React$1.useLayoutEffect(() => {
+      const at2 = frame.current;
+      if (!at2) return;
+      const doc = at2.ownerDocument;
+      let raf = 0;
+      const measure2 = () => {
+        raf = 0;
+        if (!doc.defaultView) return;
+        const next = {
+          step: gridStep(at2),
+          row: tokenPixels("--plx-comp-data-grid-record-height", at2),
+          line: tokenPixels("--plx-comp-data-grid-line-width", at2),
+          lead: tokenPixels("--plx-comp-data-grid-lead-column-width", at2),
+          menu: tokenPixels("--plx-comp-data-grid-row-menu-width", at2),
+          min: tokenPixels("--plx-ref-size-80px", at2),
+          space: tokenPixels("--plx-comp-data-grid-cell-padding-inline", at2),
+          room: at2.clientWidth,
+          add: tokenPixels("--plx-sys-data-grid-row-height", at2),
+          group: tokenPixels("--plx-comp-data-grid-group-header-height", at2),
+          groupGap: tokenPixels("--plx-comp-data-grid-group-gap", at2)
+        };
+        setMetrics((old) => Object.keys(next).every((k) => next[k] === old[k]) ? old : next);
+        const visible2 = live.current.table?.getVisibleLeafColumns() || [];
+        const required = visible2.reduce((sum2, column) => sum2 + (column.getSize() || next.min), 0) + (selectable ? next.lead : 0) + (rowMenu && rowMenuButton ? next.menu : 0) + (props.viewMenu ? next.lead : 0);
+        const threshold = narrow === "auto" ? required : tokenPixels(narrowAt, at2), want = listed && at2.clientWidth > 0 && at2.clientWidth < threshold;
+        setNarrow(want);
+        if (!isStatic && !height && mode !== "pages" && holder.current) {
+          const top = holder.current.getBoundingClientRect().top, room = at2.getBoundingClientRect().bottom - top;
+          holder.current.style.maxBlockSize = gridPx(
+            inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at2, holder.current)),
+            { round: "down", el: at2 }
+          );
+        }
+      };
+      const schedule = () => {
+        if (!raf) raf = requestAnimationFrame(measure2);
+      };
+      measure2();
+      const ro = new ResizeObserver(schedule);
+      ro.observe(at2);
+      const mo = new MutationObserver(schedule);
+      mo.observe(doc.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-plx-density", "data-plx-density-policy", "data-plx-interaction", "data-plx-mode"]
+      });
+      const region2 = at2.closest("[data-plx-density]");
+      if (region2 && region2 !== doc.documentElement)
+        mo.observe(region2, { attributes: true, attributeFilter: ["data-plx-density"] });
+      return () => {
+        ro.disconnect();
+        mo.disconnect();
+        if (raf) cancelAnimationFrame(raf);
+      };
+    }, [
+      inPane,
+      effectiveStep,
+      effectiveWrap,
+      height,
+      narrow,
+      narrowAt,
+      mode,
+      columns,
+      keys.join("|"),
+      JSON.stringify(autoSizing),
+      JSON.stringify(sizing),
+      JSON.stringify(columnVisibility),
+      selectable,
+      !!rowMenu,
+      rowMenuButton,
+      props.viewMenu
+    ]);
+    React$1.useLayoutEffect(() => {
+      virtual.measure();
+    }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
+  }
   function columnSizing({ columns, frame, source, resize, metrics, table, B }) {
     const fit2 = (field) => {
       const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
@@ -20976,54 +21227,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       mode
     });
     const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
-    const gridKey = React$1.useId(), [fontsReady, setFontsReady] = React$1.useState(0);
-    React$1.useEffect(() => {
-      const fonts = frame.current?.ownerDocument.fonts;
-      if (fonts && fonts.ready) fonts.ready.then(() => setFontsReady((n) => n + 1));
-    }, []);
-    React$1.useLayoutEffect(() => {
-      const at2 = frame.current;
-      if (!at2 || typeof CSSStyleSheet === "undefined" || !at2.ownerDocument.defaultView) return void 0;
-      const store = pillSheet(at2.ownerDocument);
-      if (cells !== "pill" || !metrics.row) {
-        if (store.rules.delete(gridKey)) store.flush();
-        return void 0;
-      }
-      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), faces = { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) }, px = (name) => tokenPixels(name, at2), step = gridStep(at2);
-      const sides = px("--plx-comp-data-pill-md-padding-inline-start") + px("--plx-comp-data-pill-md-padding-inline-end") + 2 * px("--plx-comp-data-pill-border-width"), glyph = px("--plx-comp-data-pill-icon-size") + px("--plx-comp-data-pill-gap");
-      const key = CSS.escape(gridKey), rules = [];
-      columns.forEach((c) => {
-        const k = kinds(c);
-        if (c.render || c.pill === false || k.includes("tags") || k.includes("badge") || k.includes("deleted") || k.includes("icon"))
-          return;
-        const data2 = k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type);
-        const face = faces[data2 ? "data" : "text"], scale = face.scale;
-        ctx.font = face.font;
-        ctx.wordSpacing = face.wordSpacing;
-        let widest = 0;
-        allRows.forEach((r) => {
-          if (!r.original) return;
-          const v = valueAt(r.original, c.field);
-          if (v == null || v === "") return;
-          widest = Math.max(widest, ctx.measureText(valueText(v)).width * scale);
-        });
-        if (!widest) return;
-        const icon = c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text";
-        rules.push(
-          '[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + snapToGrid(widest + sides + (icon ? glyph : 0), { round: "up", step }) + "px;justify-content:center;}"
-        );
-      });
-      store.rules.set(gridKey, rules.join("\n"));
-      store.flush();
-      return void 0;
-    }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
-    React$1.useEffect(
-      () => () => {
-        const doc = frame.current?.ownerDocument || (typeof document !== "undefined" ? document : null);
-        if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
-      },
-      []
-    );
+    const { gridKey } = usePillWidths({ frame, cells, metrics, columns, allRows, showTypes });
     const virtualized = !isStatic && mode !== "pages" && !isNarrow && !printing;
     const { loadedRows, groups, model } = useRowModel({
       mode,
@@ -21124,151 +21328,41 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       headerElements,
       listeners: listeners2
     });
-    React$1.useLayoutEffect(() => {
-      const at2 = frame.current;
-      if (!at2 || !metrics.min) return;
-      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), widths2 = {}, free = [], floor = {};
-      const scales = cells === "pill" ? { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) } : null, cs = getComputedStyle(at2), step = gridStep(at2);
-      const known = /* @__PURE__ */ new Map(), tokenPx2 = (name) => {
-        if (!known.has(name)) known.set(name, tokenPixels(name, at2));
-        return known.get(name);
-      }, snapUp = (px) => snapToGrid(px, { round: "up", step });
-      columns.forEach((c) => {
-        if (kinds(c).includes("icon")) {
-          widths2[c.field] = metrics.lead;
-          return;
-        }
-        ctx.font = (cs.getPropertyValue("--plx-comp-data-grid-header-font-weight").trim() || "600") + " " + cs.getPropertyValue("--plx-comp-data-grid-header-font-size").trim() + " " + (cs.getPropertyValue("--plx-comp-data-grid-font-family").trim() || cs.fontFamily);
-        ctx.wordSpacing = "0px";
-        const title = String(c.title || c.field), words2 = title.split(/\s+/);
-        let text2 = ctx.measureText(title).width;
-        if (effectiveWrap)
-          for (let i = 1; i < words2.length; i += 1)
-            text2 = Math.min(
-              text2,
-              Math.max(
-                ctx.measureText(words2.slice(0, i).join(" ")).width,
-                ctx.measureText(words2.slice(i).join(" ")).width
-              )
-            );
-        const gap = tokenPx2("--plx-comp-data-grid-header-type-icon-gap"), arrow = 0;
-        const head = text2 + (showTypes ? tokenPx2("--plx-comp-data-grid-header-type-icon-size") + gap : 0) + arrow + (!isStatic && headerMenu ? tokenPx2("--plx-comp-data-grid-title-reserve") : 0);
-        floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
-        const explicit = tokenPx2(c.width);
-        if (explicit) {
-          widths2[c.field] = Math.max(explicit, floor[c.field]);
-          return;
-        }
-        const family = cs.getPropertyValue(
-          kinds(c).includes("data") ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family"
-        ).trim() || cs.fontFamily;
-        ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size").trim() + " " + family;
-        ctx.wordSpacing = kinds(c).includes("data") ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
-        let width = head;
-        const k = kinds(c), pill = cells === "pill" && c.pill !== false && !k.includes("tags") && !k.includes("badge") && !k.includes("deleted");
-        const face = pill ? scales[k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type) ? "data" : "text"] : null, scale = face ? face.scale : 1;
-        if (face) {
-          ctx.font = face.font;
-          ctx.wordSpacing = face.wordSpacing;
-        }
-        const chrome = pill ? tokenPx2("--plx-comp-data-pill-md-padding-inline-start") + tokenPx2("--plx-comp-data-pill-md-padding-inline-end") + 2 * tokenPx2("--plx-comp-data-pill-border-width") + (c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text" ? tokenPx2("--plx-comp-data-pill-icon-size") + tokenPx2("--plx-comp-data-pill-gap") : 0) : 0;
-        source.forEach((record) => {
-          const value = valueAt(record, c.field);
-          width = Math.max(width, ctx.measureText(valueText(value)).width * scale + chrome);
-        });
-        widths2[c.field] = snapUp(
-          Math.max(
-            metrics.min,
-            Math.min(width + metrics.space * 2, tokenPx2("--plx-comp-data-grid-auto-max-width") || Infinity)
-          )
-        );
-        free.push(c.field);
-      });
-      const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0), used = Object.values(widths2).reduce((sum2, width) => sum2 + width, 0);
-      const units = Math.max(0, Math.floor((available - used) / step));
-      if (free.length) widths2[free[free.length - 1]] += units * step;
-      setAutoSizing((old) => JSON.stringify(old) === JSON.stringify(widths2) ? old : widths2);
-      setFloors((old) => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
-    }, [
-      columns,
-      source,
-      metrics.room,
-      metrics.min,
-      metrics.space,
-      metrics.row,
-      selectable,
-      isStatic,
-      showTypes,
-      headerMenu,
+    useGridMetrics({
+      frame,
+      metrics,
       cells,
-      effectiveWrap
-    ]);
-    const trailing = (at2, hold) => {
-      let sum2 = Math.max(0, at2.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
-      for (let el = at2; el; el = el.parentElement) {
-        const cs = getComputedStyle(el);
-        sum2 += parseFloat(cs.marginBlockEnd) || 0;
-        if (el !== at2) sum2 += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
-      }
-      return sum2;
-    };
-    React$1.useLayoutEffect(() => {
-      const at2 = frame.current;
-      if (!at2) return;
-      const doc = at2.ownerDocument;
-      let raf = 0;
-      const measure2 = () => {
-        raf = 0;
-        if (!doc.defaultView) return;
-        const next = {
-          step: gridStep(at2),
-          row: tokenPixels("--plx-comp-data-grid-record-height", at2),
-          line: tokenPixels("--plx-comp-data-grid-line-width", at2),
-          lead: tokenPixels("--plx-comp-data-grid-lead-column-width", at2),
-          menu: tokenPixels("--plx-comp-data-grid-row-menu-width", at2),
-          min: tokenPixels("--plx-ref-size-80px", at2),
-          space: tokenPixels("--plx-comp-data-grid-cell-padding-inline", at2),
-          room: at2.clientWidth,
-          add: tokenPixels("--plx-sys-data-grid-row-height", at2),
-          group: tokenPixels("--plx-comp-data-grid-group-header-height", at2),
-          groupGap: tokenPixels("--plx-comp-data-grid-group-gap", at2)
-        };
-        setMetrics((old) => Object.keys(next).every((k) => next[k] === old[k]) ? old : next);
-        const visible2 = live.current.table?.getVisibleLeafColumns() || [];
-        const required = visible2.reduce((sum2, column) => sum2 + (column.getSize() || next.min), 0) + (selectable ? next.lead : 0) + (rowMenu && rowMenuButton ? next.menu : 0) + (props.viewMenu ? next.lead : 0);
-        const threshold = narrow === "auto" ? required : tokenPixels(narrowAt, at2), want = listed && at2.clientWidth > 0 && at2.clientWidth < threshold;
-        setNarrow(want);
-        if (!isStatic && !height && mode !== "pages" && holder.current) {
-          const top = holder.current.getBoundingClientRect().top, room = at2.getBoundingClientRect().bottom - top;
-          holder.current.style.maxBlockSize = gridPx(
-            inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at2, holder.current)),
-            { round: "down", el: at2 }
-          );
-        }
-      };
-      const schedule = () => {
-        if (!raf) raf = requestAnimationFrame(measure2);
-      };
-      measure2();
-      const ro = new ResizeObserver(schedule);
-      ro.observe(at2);
-      const mo = new MutationObserver(schedule);
-      mo.observe(doc.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-plx-density", "data-plx-density-policy", "data-plx-interaction", "data-plx-mode"]
-      });
-      const region2 = at2.closest("[data-plx-density]");
-      if (region2 && region2 !== doc.documentElement)
-        mo.observe(region2, { attributes: true, attributeFilter: ["data-plx-density"] });
-      return () => {
-        ro.disconnect();
-        mo.disconnect();
-        if (raf) cancelAnimationFrame(raf);
-      };
-    }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join("|"), JSON.stringify(autoSizing), JSON.stringify(sizing), JSON.stringify(columnVisibility), selectable, !!rowMenu, rowMenuButton, props.viewMenu]);
-    React$1.useLayoutEffect(() => {
-      virtual.measure();
-    }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
+      columns,
+      effectiveWrap,
+      showTypes,
+      isStatic,
+      headerMenu,
+      source,
+      selectable,
+      rowMenu,
+      rowMenuButton,
+      props,
+      setAutoSizing,
+      setFloors,
+      setMetrics,
+      live,
+      narrow,
+      narrowAt,
+      listed,
+      setNarrow,
+      height,
+      mode,
+      holder,
+      inPane,
+      effectiveStep,
+      keys,
+      autoSizing,
+      sizing,
+      columnVisibility,
+      virtual,
+      model,
+      collapsed
+    });
     useViewSync({
       metrics,
       autoSizing,
@@ -23835,6 +23929,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     disabled,
     readOnly: readOnlyOwn,
     emptyText,
+    emptyAction,
+    clearable = false,
     loadOptions,
     loadDelay = 300,
     minChars = 0,
@@ -23907,14 +24003,19 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const tags = multiple && !marks2;
     const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
-    const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || matchesText(o.label, text2));
+    const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || matchesText(o.label, text2) || o.description && matchesText(o.description, text2));
     const groupOrder = [];
     matching.forEach((o) => {
       if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
     });
     const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
     const canCreate = creatable && q2 && !isLoading && !(async ? loaded : options).some((o) => String(o.label).toLowerCase() === q2);
-    const items = filtered.map((o) => ({ kind: "option", o })).concat(canCreate ? [{ kind: "create" }] : []);
+    const noMatch = !isLoading && !failed && !filtered.length && !canCreate, showAction = noMatch && !!emptyAction;
+    const items = filtered.map((o) => ({ kind: "option", o })).concat(canCreate ? [{ kind: "create" }] : []).concat(showAction ? [{ kind: "action" }] : []);
+    const shownAction = open && showAction;
+    React$1.useEffect(() => {
+      if (shownAction && emptyText) announce(String(emptyText));
+    }, [shownAction]);
     React$1.useEffect(() => {
       if (!open) return void 0;
       const off2 = (e) => {
@@ -23933,6 +24034,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (item.kind === "create") {
         if (onCreate) onCreate(text2.trim());
         setText("");
+        return;
+      }
+      if (item.kind === "action") {
+        const typed = text2.trim();
+        setText("");
+        setOpen(false);
+        if (emptyAction.onSelect) emptyAction.onSelect(typed);
         return;
       }
       const v = item.o.value;
@@ -23977,6 +24085,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onChange(chosen.slice(0, -1));
       }
     };
+    const clear = () => {
+      if (locked || disabled) return;
+      setText("");
+      onChange(multiple ? [] : "");
+      if (input.current) input.current.focus();
+    };
+    const canClear = clearable && !locked && !disabled && (chosen.length > 0 || !!text2);
     const optId = (i) => auto + "-o" + i;
     const label1 = !multiple && current2 ? String(current2.label) : "";
     const cutNow = useTruncated(input, open ? "open" : label1, !multiple), cutShut = React$1.useRef(false);
@@ -24019,7 +24134,21 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const o = optionOf(v);
       const t2 = o ? o.label : v;
       return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: locked ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: words2.removeItem.replace("{label}", t2) }, t2);
-    }) : null, multiple ? field : /* @__PURE__ */ React$1.createElement(Tooltip, { content: label1, disabled: !cut, describe: false, placement: open ? "top" : "bottom", className: "plx-combobox__tip" }, field), /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: SelectChevronIcon, filled: false }))), open ? /* @__PURE__ */ React$1.createElement("ul", { ref: list2, className: "plx-combobox__list", id: listId, role: "listbox", popover: TOP_LAYER$1 ? "manual" : void 0, onMouseDown: (e) => e.preventDefault(), "aria-multiselectable": multiple || void 0, "aria-busy": isLoading || void 0 }, items.length ? items.map((it, i) => it.kind === "create" ? /* @__PURE__ */ React$1.createElement(
+    }) : null, multiple ? field : /* @__PURE__ */ React$1.createElement(Tooltip, { content: label1, disabled: !cut, describe: false, placement: open ? "top" : "bottom", className: "plx-combobox__tip" }, field), canClear ? /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: CloseIcon, label: t.clear, className: "plx-combobox__clear", onMouseDown: (e) => e.preventDefault(), onClick: clear }) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: SelectChevronIcon, filled: false }))), open ? /* @__PURE__ */ React$1.createElement("ul", { ref: list2, className: "plx-combobox__list", id: listId, role: "listbox", popover: TOP_LAYER$1 ? "manual" : void 0, onMouseDown: (e) => e.preventDefault(), "aria-multiselectable": multiple || void 0, "aria-busy": isLoading || void 0 }, items.length ? [showAction ? /* @__PURE__ */ React$1.createElement("li", { key: "empty", className: "plx-combobox__empty", role: "presentation" }, emptyText) : null].concat(items.map((it, i) => it.kind === "action" ? /* @__PURE__ */ React$1.createElement(
+      "li",
+      {
+        key: "action",
+        id: optId(i),
+        role: "option",
+        "aria-selected": false,
+        className: cx("plx-combobox__option", "plx-combobox__action", i === active && "is-active"),
+        onMouseDown: (e) => e.preventDefault(),
+        onClick: () => choose(it),
+        onMouseEnter: () => setActive(i)
+      },
+      emptyAction.icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: emptyAction.icon })) : null,
+      emptyAction.label
+    ) : it.kind === "create" ? /* @__PURE__ */ React$1.createElement(
       "li",
       {
         key: "create",
@@ -24059,9 +24188,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             readOnly: true
           }
         ) : null,
-        /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2))
+        it.o.icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: it.o.icon })) : null,
+        it.o.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2)), /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-description" }, highlightMatch(it.o.description, text2))) : /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2))
       )
-    ]) : isLoading ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty plx-combobox__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty", role: "presentation" }, emptyText)) : null);
+    ])) : isLoading ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty plx-combobox__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty", role: "presentation" }, emptyText)) : null);
   });
   const ToastContext = React$1.createContext(null);
   const TONE_ICON = { info: CircleInfoIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };

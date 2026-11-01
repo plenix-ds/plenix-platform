@@ -612,6 +612,7 @@ export default {
     "error": "The options could not be loaded",
     "emptyText": "No matches",
     "removeItem": "Remove {label}",
+    "clear": "Clear",
     "results": {
       "one": "{n} option",
       "other": "{n} options"

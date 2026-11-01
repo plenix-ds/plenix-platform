@@ -50,7 +50,9 @@ const NODE = /^(children|label|title|description|icon|iconEnd|media|actions|foot
 const BY_NAME = { className: 'string', id: 'string', href: 'string', src: 'string', alt: 'string', name: 'string', placeholder: 'string', locale: 'string',
   target: 'string', lang: 'string', ref: 'React.Ref<any>', as: 'React.ElementType', strings: '{ [key: string]: any }', shortcut: 'string',
   // the corners a group squares where a control meets its neighbor (ButtonGroup, InputGroup): the same shape on every control
-  joined: '{ start?: "square" | "seam"; end?: "square" | "seam" }' };
+  joined: '{ start?: "square" | "seam"; end?: "square" | "seam" }',
+  // the one action under a Combobox's "No matches" (issue 811)
+  emptyAction: '{ label: string; onSelect: (text: string) => void; icon?: string }' };
 const BOOLEAN = /^(disabled|readOnly|required|invalid|expanded|open|checked|pressed|selected|loading|hidden|multiple|defaultOpen|defaultChecked|block|tree|selectable|focusOnOpen|uniformPillWidths)$/;
 // the text outside bracketed shapes ([{ … }], { … }): quoted choices inside a shape belong to its fields, not to the prop
 function topLevel(t) {
@@ -95,7 +97,7 @@ function typeOf(name, text, def, called) {
   // "as Input.size": the same type as that part's prop, filled in once every part is read (see AS below)
   const same = /^as (\w+)\.(\w+)\b/.exec(text.trim());
   if (same) return AS + same[1] + '.' + same[2] + AS;
-  if (name === 'joined') return BY_NAME.joined;
+  if (name === 'joined' || name === 'emptyAction') return BY_NAME[name];
   // the text starts with what it is (a pinned header): "a string: …", "a ref to …"
   if (/^(a )?(string or a number|number or a string)\b/i.test(text.trim())) return 'number | string';
   if (/^true or a number\b/i.test(text.trim())) return 'boolean | number';
