@@ -5658,7 +5658,9 @@
         "actions|Dropdown menu",
         "actions|Menu item",
         "actions|Checkbox menu item",
-        "actions|Menu group"
+        "actions|Menu group",
+        "actions|Menu bar",
+        "actions|Menu, menu bar and command bar: which one"
       ],
       "android": [
         "android-actions|Menu"
