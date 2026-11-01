@@ -182,5 +182,14 @@ if (fs.existsSync(parts.entryOf())) {
 // (tools/agent/style-parts-check.js)
 if (!fs.existsSync(path.join(ROOT, 'packages', 'styles', 'foundations.css'))) { console.log('BUNDLE_FAIL: packages/styles/foundations.css is missing: run node build-packages.js'); process.exit(1); }
 const styleParts = require('./tools/agent/style-parts-check.js').check(LIST).bad ? 1 : 0;
-if (up || over || styleParts) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
+// no non-ASCII character in the code of a shipped script (check-system.rules/ascii-bundles.js, the charset break of 2026-11-02): a page that loads
+// plenix.js or plenix.esm.js without a charset must still run (comments may hold any character); never a baseline, always zero
+let nonAscii = 0;
+const ascii = require('./check-system.rules/ascii-bundles.js');
+fs.readdirSync(CDN).filter((f) => /\.(c|m)?js$/.test(f)).forEach((f) => {
+  const hit = ascii.nonAsciiOutsideComments(fs.readFileSync(path.join(CDN, f), 'utf8'));
+  if (hit) { nonAscii++; console.log('BUNDLE_FAIL: ' + f + ':' + hit.line + ' a non-ASCII character in code (a page loaded without a charset breaks): ' + JSON.stringify(hit.text)); }
+});
+if (!nonAscii) console.log('  non-ASCII characters in the code of the CDN scripts: 0');
+if (up || over || styleParts || nonAscii) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : '', nonAscii ? nonAscii + ' script' + (nonAscii > 1 ? 's' : '') + ' with non-ASCII code' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
 console.log(down ? 'BUNDLE_OK (' + down + ' went down: lower the baseline)' : 'BUNDLE_OK');

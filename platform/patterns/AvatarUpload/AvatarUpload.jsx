@@ -39,7 +39,7 @@ import { cx } from '../../utils/cx.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ImageCrop } from '../ImageUpload/ImageUpload.jsx';
 import { formatBytes } from '../../utils/format.ts';

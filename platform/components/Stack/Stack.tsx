@@ -58,7 +58,28 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-function layout(kind, { as: As = 'div', gap, equal, align, justify, wrap, inset, grow, scroll, width, maxHeight, indent, push, reverse, reverseBelow, order, orderBelow, className, children, ...rest }, defaults) {
+type Gap = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'section';
+export type StackProps = React.HTMLAttributes<HTMLElement> & {
+  as?: React.ElementType;
+  gap?: Gap;
+  equal?: boolean;
+  align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
+  justify?: 'start' | 'center' | 'end' | 'between';
+  wrap?: boolean;
+  inset?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  grow?: boolean;
+  scroll?: boolean;
+  width?: 'xs' | 'sm' | 'md' | 'lg';
+  maxHeight?: 'sm' | 'md' | 'lg';
+  indent?: boolean;
+  push?: boolean;
+  reverse?: boolean;
+  reverseBelow?: 'narrow' | 'medium';
+  order?: 'first' | 'last';
+  orderBelow?: 'narrow' | 'medium';
+};
+export type InlineProps = StackProps;
+function layout(kind: 'stack' | 'inline', { as: As = 'div', gap, equal, align, justify, wrap, inset, grow, scroll, width, maxHeight, indent, push, reverse, reverseBelow, order, orderBelow, className, children, ...rest }: StackProps, defaults: { gap: Gap; align?: StackProps['align'] }) {
   return (
     <As className={cx('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align),
       justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push',
@@ -67,15 +88,17 @@ function layout(kind, { as: As = 'div', gap, equal, align, justify, wrap, inset,
     </As>
   );
 }
-export function Stack(props) { return layout('stack', props, { gap: 'md' }); }
-export function Inline(props) { return layout('inline', props, { gap: 'sm', align: 'center' }); }
-export function Center({ as: As = 'div', maxWidth = 'md', intrinsic, vertical, text, className, children, ...rest }) {
+export function Stack(props: StackProps) { return layout('stack', props, { gap: 'md' }); }
+export function Inline(props: InlineProps) { return layout('inline', props, { gap: 'sm', align: 'center' }); }
+export type CenterProps = React.HTMLAttributes<HTMLElement> & { as?: React.ElementType; maxWidth?: 'sm' | 'md' | 'lg' | 'page' | 'none'; intrinsic?: boolean; vertical?: boolean; text?: boolean };
+export function Center({ as: As = 'div', maxWidth = 'md', intrinsic, vertical, text, className, children, ...rest }: CenterProps) {
   return (
     <As className={cx('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)} {...rest}>
       {children}
     </As>
   );
 }
-export function Bleed({ as: As = 'div', space = 'md', sides = 'inline', className, children, ...rest }) {
+export type BleedProps = React.HTMLAttributes<HTMLElement> & { as?: React.ElementType; space?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'; sides?: 'inline' | 'block' | 'all' };
+export function Bleed({ as: As = 'div', space = 'md', sides = 'inline', className, children, ...rest }: BleedProps) {
   return <As className={cx('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)} {...rest}>{children}</As>;
 }

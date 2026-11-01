@@ -53,8 +53,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 

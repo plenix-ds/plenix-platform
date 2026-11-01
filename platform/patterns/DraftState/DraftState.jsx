@@ -12,10 +12,10 @@
 import React from 'react';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { SaveStatus } from '../Autosave/Autosave.jsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

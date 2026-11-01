@@ -36,7 +36,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 
 export function Timeline({ items = [], orientation = 'vertical', align = 'start', label, className, ...rest }) {
   const horizontal = orientation === 'horizontal';

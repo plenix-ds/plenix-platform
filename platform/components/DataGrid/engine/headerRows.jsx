@@ -24,13 +24,13 @@ import GroupByIcon from 'plenix-platform/icons/plenix/group-by';
 import { Width, PressTrigger } from '../engine/parts.jsx';
 import { cx } from '../../../utils/cx.ts';
 import { headerKeys, resizeKeys } from '../engine/keys.js';
-import { Icon } from '../../Icon/Icon.jsx';
+import { Icon } from '../../Icon/Icon.tsx';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 import { DragHandle } from '../../DragHandle/DragHandle.jsx';
 import EdTextIcon from 'plenix-platform/icons/plenix/ed-text';
 import { Popover } from '../../Popover/Popover.jsx';
 import { Select, Input } from '../../Input/Input.jsx';
-import { Button } from '../../Button/Button.jsx';
+import { Button } from '../../Button/Button.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 export function headerRows({

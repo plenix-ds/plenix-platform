@@ -18,9 +18,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Input, Textarea } from '../Input/Input.jsx';
-import { Stack, Inline } from '../Stack/Stack.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Field } from '../Field/Field.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { FileInput } from '../FileInput/FileInput.jsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Menu, MenuItem, MenuRadioGroup } from '../Menu/Menu.jsx';

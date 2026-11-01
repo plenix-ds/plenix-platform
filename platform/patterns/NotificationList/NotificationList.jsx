@@ -26,7 +26,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useSession } from '../../providers/SessionProvider.tsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

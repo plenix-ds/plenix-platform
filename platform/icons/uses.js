@@ -206,7 +206,7 @@ function scan(root, folders, { names, withIcon = false }) {
   for (const folder of folders) for (const f of files(path.join(root, folder))) if (!/[\\/]components[\\/]Icon[\\/]/.test(f)) scanFile(f, path.relative(root, f).split(path.sep).join('/'), report);
   // the Icon component itself: its icon slots and tables (StatusIcon's tone icons), not the returns of its resolver
   // functions (resolveIcon, asIcon, stateIcon: they pass on what they are given)
-  if (withIcon && folders.includes('platform/components')) { const f = path.join(root, 'platform', 'components', 'Icon', 'Icon.jsx'); if (fs.existsSync(f)) scanFile(f, 'platform/components/Icon/Icon.jsx', report, { fnReturns: false }); }
+  if (withIcon && folders.includes('platform/components')) { const f = path.join(root, 'platform', 'components', 'Icon', 'Icon.tsx'); if (fs.existsSync(f)) scanFile(f, 'platform/components/Icon/Icon.tsx', report, { fnReturns: false }); }
   return { found, unresolved, unknown, literals: [...literals.values()] };
 }
 

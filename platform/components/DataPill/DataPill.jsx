@@ -43,7 +43,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { Isolate } from '../Isolate/Isolate.jsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';

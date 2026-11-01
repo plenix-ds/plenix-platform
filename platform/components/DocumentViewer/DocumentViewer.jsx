@@ -21,14 +21,14 @@
      PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
 */
 import React from 'react';
-import { Stack,Inline } from '../Stack/Stack.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Stack,Inline } from '../Stack/Stack.tsx';
+import { Button } from '../Button/Button.tsx';
 import { Select } from '../Input/Input.jsx';
 import { Field } from '../Field/Field.jsx';
-import { Text } from '../Text/Text.jsx';
+import { Text } from '../Text/Text.tsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Image } from '../Image/Image.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { cx } from '../../utils/cx.ts';
 import { engine } from '../../utils/engines.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

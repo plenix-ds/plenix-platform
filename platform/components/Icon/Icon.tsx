@@ -70,7 +70,7 @@
      A bare class name (plx-icon plx-icon--<name>, no component) is deprecated (owner, issue 277 Q3): it still draws the mask from
        the stylesheet in this release, and development warns (dev/style-audit.js); iconMarkup(icon) writes the component's
        markup where a page builds HTML.
-     The Material library's names (library.js) are built into the browser global, the CDN's plenix.esm.js and the suite. The
+     The Material library's names (library.ts) are built into the browser global, the CDN's plenix.esm.js and the suite. The
        npm package's ES modules load them the first time a name is not a Plenix name or a registered module (issue 702):
        until they arrive that icon draws nothing, then it draws; an unknown name warns after they arrive. With
        library="material" every name that is not a registered module waits for them, so a name in both sets never draws
@@ -82,13 +82,15 @@ import React from 'react';
 import { devWarn, development } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { SYMBOLS, NAMES, MIRRORED, LIBRARY_COMMIT } from './glyphs.js';
-import { LIBRARY, loadLibrary } from './library.js';
+import { LIBRARY, loadLibrary } from './library.ts';
 import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.ts';
+import type { IconDrawing } from '../../utils/iconSafety.ts';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 
 // One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
 // inline SVG in the text color (inline paths paint about 200 times faster than masks).
@@ -104,86 +106,95 @@ import { useStrings } from '../../providers/LocaleProvider.tsx';
 //   at most 6 files at a time (#642); a density change on the page reads the optical size again and asks for the other file.
 //   A file that fails to load (the network, a 5xx) is asked for once more after a short pause; a 404 is answered once; after two
 //   failures the icon draws nothing for the session (#283).
+// an imported or registered icon module (#282; platform/icons/modules.d.ts describes the imported ones)
+export type IconModule = { name: string; set?: string; symbol?: string; fillOutline?: boolean; mirrored?: boolean; drawings: Record<20 | 24, { outline: IconDrawing; fill: IconDrawing }> };
+// what an icon slot takes: a name or a module
+export type IconValue = string | IconModule;
+export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+// where a name's drawing comes from (resolveIcon)
+export type IconFound = { kind: 'module' | 'plenix' | 'library'; symbol: string; fillOutline: boolean; file?: string; module?: IconModule };
+// a drawing as parseSvg and moduleGlyph give it: [path, viewBox, extra attributes]
+type Glyph = [string, string, Partial<Pick<IconDrawing, 'transform' | 'fillRule' | 'clipRule'>>];
 // The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
-const LARGE = { lg: true, xl: true };
+const LARGE: Record<string, boolean> = { lg: true, xl: true };
 const VARIANT = ['', '-fill', '-24', '-24-fill'];   // outline 20, filled 20, outline 24, filled 24
 const plenix = new Set(SYMBOLS.split(' ')), mirroredSymbols = new Set(MIRRORED.split(' '));
-// the whole library's names: built in (library.js), or in the npm package's ES modules loaded the first time a name is
+// the whole library's names: built in (library.ts), or in the npm package's ES modules loaded the first time a name is
 // not found without them (issue 702); until they arrive such a name draws nothing and does not warn
-let library = new Set(LIBRARY ? LIBRARY.split(' ') : []), libraryLoad = null, libraryDone = !!LIBRARY || !loadLibrary;
-function libraryWaits() {
+let library = new Set(LIBRARY ? LIBRARY.split(' ') : []), libraryLoad: Promise<void> | null = null, libraryDone = !!LIBRARY || !loadLibrary;
+function libraryWaits(): Promise<void> | null {
   if (libraryDone) return null;
-  if (!libraryLoad) libraryLoad = Promise.resolve().then(loadLibrary).then((names) => { library = new Set(String(names || '').split(' ').filter(Boolean)); }, () => {})
+  if (!libraryLoad) libraryLoad = Promise.resolve().then(loadLibrary as () => Promise<string>).then((names) => { library = new Set(String(names || '').split(' ').filter(Boolean)); }, () => {})
     .then(() => { libraryDone = true; });
   return libraryLoad;
 }
 // a name in the library: asking starts the load when the names are not here yet (resolveIcon answers null until then)
-const inLibrary = (symbol) => { libraryWaits(); return library.has(symbol); };
+const inLibrary = (symbol: string) => { libraryWaits(); return library.has(symbol); };
 // a Plenix symbol -> its Plenix name (the dashed spelling: the asset layout's file names; an alias has no file of its own)
-const nameOfSymbol = new Map();
+const nameOfSymbol = new Map<string, string>();
 for (const n of Object.keys(NAMES)) if (!n.includes('_') && !nameOfSymbol.has(NAMES[n][0])) nameOfSymbol.set(NAMES[n][0], n);
 // imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
 // The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
 // module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
 // project's own library, which <Icon library="acme"> draws from only
-const libraries = new Map();   // library -> Map(name -> module)
+const libraries = new Map<string, Map<string, IconModule>>();   // library -> Map(name -> module)
 // a module is untrusted (#285): its four drawings pass the same allow-list as a file, once per module object
-const checked = new WeakMap();
-function moduleProblem(m) {
-  if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
-  if (checked.has(m)) return checked.get(m);
-  let problem = null;
+const checked = new WeakMap<object, string | null>();
+function moduleProblem(m: unknown): string | null {
+  if (!(m && typeof m === 'object' && (m as IconModule).drawings && (m as IconModule).drawings[20] && (m as IconModule).drawings[24] && (m as IconModule).name)) return 'not an icon module';
+  if (checked.has(m)) return checked.get(m) as string | null;
+  let problem: string | null = null;
   // the problem is a message to developers (the console), not a word for people
-  for (const size of [20, 24]) for (const k of ['outline', 'fill']) { const r = checkDrawing(m.drawings[size][k]); if (!r.ok && !problem) problem = ['its', size, k, 'drawing:', r.reason].join(' '); }
+  for (const size of [20, 24] as const) for (const k of ['outline', 'fill'] as const) { const r = checkDrawing((m as IconModule).drawings[size][k]); if (!r.ok && !problem) problem = ['its', size, k, 'drawing:', r.reason].join(' '); }
   checked.set(m, problem);
   return problem;
 }
-const isModule = (m) => !moduleProblem(m);
+const isModule = (m: unknown): m is IconModule => !moduleProblem(m);
 // for the components that take an icon (#280, stage 5a): an imported module counts as an icon as a name does
 export const isIconModule = isModule;
 // an icon slot's value as an element: a name or an imported module becomes an Icon (props: more Icon props); an element,
 // null or anything else passes through
-export function asIcon(i, props) {
+export function asIcon(i: unknown, props?: Partial<IconProps>): React.ReactNode {
   if (typeof i === 'string') return <Icon name={i} {...props} />;
   if (isModule(i)) return <Icon icon={i} {...props} />;
-  return i;
+  return i as React.ReactNode;
 }
 // an icon slot's value as a key (a name, or a module's name): for the tables keyed by icon name (an open folder's icon)
-export const iconKey = (i) => (typeof i === 'string' ? i : isModule(i) ? i.name : null);
-export function registerIcons(...args) {
+export const iconKey = (i: unknown): string | null => (typeof i === 'string' ? i : isModule(i) ? i.name : null);
+export function registerIcons(...args: Array<IconModule | IconModule[] | { library: string }>): void {
   const last = args[args.length - 1], options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
-  for (const m of args.flat()) {
+  for (const m of args.flat() as IconModule[]) {
     const problem = moduleProblem(m);
     if (problem) { if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: refused (' + problem + ')', m); continue; }
-    const lib = (options && options.library) || m.set || 'plenix';
+    const lib = (options && (options as { library: string }).library) || m.set || 'plenix';
     if (!libraries.has(lib)) libraries.set(lib, new Map());
-    const map = libraries.get(lib); map.set(m.name, m); if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
+    const map = libraries.get(lib) as Map<string, IconModule>; map.set(m.name, m); if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
   }
 }
 // the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
 // before), "material", or a project's own registered library
 let defaultLibrary = 'plenix';
 // call it at startup, before icons draw: an icon already on the page does not draw again when it changes
-export function setDefaultIconLibrary(name) { defaultLibrary = name ? String(name) : 'plenix'; }
+export function setDefaultIconLibrary(name?: string | null): void { defaultLibrary = name ? String(name) : 'plenix'; }
 // a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
 // parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
-const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
-function moduleGlyph(m, i) {
+const SLOT: Array<[20 | 24, 'outline' | 'fill']> = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
+function moduleGlyph(m: IconModule, i: number): Glyph | null {
   const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
   if (!d || !d.d || !d.viewBox) return null;
-  const extra = {}; for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
+  const extra: Glyph[2] = {}; for (const key of ['transform', 'fillRule', 'clipRule'] as const) if (d[key]) extra[key] = d[key];
   return [d.d, d.viewBox, extra];
 }
-const normal = (name) => String(name == null ? '' : name).trim();
+const normal = (name: unknown): string => String(name == null ? '' : name).trim();
 // One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (its files
 // in the asset layout) and the Material library; for "material", the Material library only (a Material name draws
 // Material's own symbol even where a Plenix name exists); a project's library draws only its registered modules. A name
 // that is not registered is fetched at run time (development warns once that production should import or register it).
 // Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, file?, module? } or null; file is a Plenix
 // name's file in the asset layout.
-export function resolveIcon(name, options) {
+export function resolveIcon(name: unknown, options?: { library?: string | null } | null): IconFound | null {
   const n = normal(name), lib = (options && options.library) || defaultLibrary;
-  const fromRegistry = (l) => { const map = libraries.get(l); const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_'))); return m ? { kind: 'module', symbol: m.symbol || m.name, fillOutline: !!m.fillOutline, module: m } : null; };
+  const fromRegistry = (l: string): IconFound | null => { const map = libraries.get(l); const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_'))); return m ? { kind: 'module', symbol: m.symbol || m.name, fillOutline: !!m.fillOutline, module: m } : null; };
   if (lib === 'material') {
     const reg = fromRegistry('material'); if (reg) return reg;
     const symbol = n.toLowerCase().replace(/-/g, '_');
@@ -203,8 +214,8 @@ export function resolveIcon(name, options) {
 }
 // a Plenix name -> its symbol, its fill flag and its file in the Plenix asset layout (the name, dashed: an alias has no
 // file of its own, so mic_off loads mic-off's files)
-function resolvePlenix(n) {
-  const named = (key) => ({ kind: 'plenix', symbol: NAMES[key][0], fillOutline: NAMES[key][1] === 1, file: key.includes('_') && NAMES[key.replace(/_/g, '-')] ? key.replace(/_/g, '-') : key });
+function resolvePlenix(n: string): IconFound | null {
+  const named = (key: string): IconFound => ({ kind: 'plenix', symbol: NAMES[key][0], fillOutline: NAMES[key][1] === 1, file: key.includes('_') && NAMES[key.replace(/_/g, '-')] ? key.replace(/_/g, '-') : key });
   if (NAMES[n]) return named(n);
   const dashed = n.toLowerCase().replace(/_/g, '-');
   if (NAMES[dashed]) return named(dashed);
@@ -215,24 +226,24 @@ function resolvePlenix(n) {
 }
 // where the library's files are: set by the page (setIconLibrary or window.PlenixIconLibrary), else beside the bundle's script or
 // stylesheet, else beside the ES module itself (plenix.esm.js under any name, #284)
-let libraryBase = null, plenixBase;
-export function setIconLibrary(url) { libraryBase = url ? String(url).replace(/\/?$/, '/') : null; files.clear(); }
+let libraryBase: string | null = null, plenixBase: string | null | undefined;
+export function setIconLibrary(url?: string | null): void { libraryBase = url ? String(url).replace(/\/?$/, '/') : null; files.clear(); }
 // the Plenix bundle's own script or stylesheet on the page (its URL), or null
-function bundleUrl() {
+function bundleUrl(): string | null {
   if (typeof document === 'undefined') return null;
-  return [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map((el) => el.src || el.href)
+  return [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map((el) => (el as HTMLScriptElement).src || (el as HTMLLinkElement).href)
     .find((url) => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url)) || null;
 }
 // the URL of this module when it is the ES module build (the build gives it a banner constant: `const __plenixModuleUrl = import.meta.url`): a page
 // that imports plenix.esm.js, under any file name, finds its icons beside it with no setting (#284). Other builds have no such constant.
-function moduleUrl() {
+function moduleUrl(): string | null {
   try {
     const url = typeof __plenixModuleUrl === 'string' ? __plenixModuleUrl : null;
     // not the npm package's dist/index.js: it carries no icon folder (an app that installs it registers or imports its icons)
     return url && /^(https?|file|chrome-extension|moz-extension):/.test(url) && !/\/dist\/index\.js(\?|#|$)/.test(url) ? url : null;
   } catch (e) { return null; }
 }
-function base() {
+function base(): string | null {
   if (libraryBase) return libraryBase;
   // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
   if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return (libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/'));
@@ -245,7 +256,7 @@ function base() {
 }
 // where the Plenix set's files are (the asset layout, #279): icons/plenix/ beside plenix.js or plenix.css (the CDN's
 // /cdn/<version>/, a self-hosted archive) and beside dist/platform.js; platform/dist/icons/plenix/ from platform.css
-function plenixFiles() {
+function plenixFiles(): string | null {
   if (plenixBase !== undefined) return plenixBase;
   const at = bundleUrl() || moduleUrl();
   if (!at) return null;   // not kept: the bundle's tag may not be on the page yet
@@ -255,8 +266,8 @@ function plenixFiles() {
 // an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
 // an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
 // untrusted; utils/iconSafety.ts): anything else in the file refuses it, and development warns once with the reason
-const refused = new Set();
-function parseSvg(svg, from) {
+const refused = new Set<string>();
+function parseSvg(svg: string | null | undefined, from?: string): Glyph | null {
   if (!svg) return null;
   const r = checkIconSvg(svg);
   if (!r.ok) {
@@ -269,13 +280,13 @@ function parseSvg(svg, from) {
 }
 // a fetched file is read only up to the size limit (issue 285): a Content-Length over it is refused before reading, and a
 // body without one is read in chunks and dropped as soon as it passes the limit
-function readCapped(response) {
+function readCapped(response: Response): Promise<string | null> | null {
   const max = ICON_LIMITS.file, length = Number(response.headers && response.headers.get && response.headers.get('content-length'));
   if (length > max) return null;
   if (!response.body || typeof response.body.getReader !== 'function') return response.text().then((t) => (t.length > max ? null : t));
-  const reader = response.body.getReader(), parts = [];
+  const reader = response.body.getReader(), parts: Uint8Array[] = [];
   let size = 0;
-  const step = () => reader.read().then(({ done, value }) => {
+  const step = (): Promise<string | null> => reader.read().then(({ done, value }) => {
     if (done) return new TextDecoder().decode(parts.length === 1 ? parts[0] : parts.reduce((all, p) => { const out = new Uint8Array(all.length + p.length); out.set(all); out.set(p, all.length); return out; }, new Uint8Array(0)));
     size += value.length;
     if (size > max) { reader.cancel(); return null; }
@@ -286,29 +297,29 @@ function readCapped(response) {
 }
 // key -> [path, viewBox, extra] | null (missing) | a Promise while it loads. Keys: a library file (rocket_launch-24), or
 // "plenix:" and a Plenix layout file (plenix:chevron-right-24)
-const files = new Map();
+const files = new Map<string, Glyph | null | Promise<Glyph | null>>();
 const PLENIX_FILE = 'plenix:';
 const RETRY_AFTER_MS = 250;   // the pause before a failed icon file is asked for once more
 // at most this many icon files are in flight at once (#642): a page that names hundreds of icons asks in turn, so no burst reaches the server's limit on simultaneous requests
 const MAX_FETCHES = 6;
 let running = 0;
-const waiting = [];
-const pump = () => { while (running < MAX_FETCHES && waiting.length) { const next = waiting.shift(); running++; next(); } };
-const queued = (job) => new Promise((resolve) => { waiting.push(() => job().then(resolve, resolve).then(() => { running--; pump(); })); pump(); });
-function loadFile(key) {
-  if (files.has(key)) return files.get(key);
+const waiting: Array<() => void> = [];
+const pump = () => { while (running < MAX_FETCHES && waiting.length) { const next = waiting.shift(); running++; (next as () => void)(); } };
+const queued = <T,>(job: () => Promise<T>) => new Promise<T>((resolve) => { waiting.push(() => job().then(resolve, resolve).then(() => { running--; pump(); })); pump(); });
+function loadFile(key: string): Glyph | null | Promise<Glyph | null> {
+  if (files.has(key)) return files.get(key) as Glyph | null | Promise<Glyph | null>;
   const fromPlenix = key.startsWith(PLENIX_FILE), file = fromPlenix ? key.slice(PLENIX_FILE.length) : key, root = fromPlenix ? plenixFiles() : base();
   // a network failure or a server error (5xx) is tried once more after a short pause (#283); a file that is not there (404), too
   // large or not a drawing is answered once. Two failures draw nothing for the session (never a square).
-  const attempt = () => fetch(root + file + '.svg').then((r) => (r.ok ? readCapped(r) : r.status >= 500 ? Promise.reject(new Error('icon file ' + r.status)) : null));
+  const attempt = (): Promise<string | null> => fetch(root + file + '.svg').then((r) => (r.ok ? readCapped(r) : r.status >= 500 ? Promise.reject(new Error('icon file ' + r.status)) : null));
   const job = !root || typeof fetch !== 'function' ? Promise.resolve(null)
     : queued(() => attempt().catch(() => new Promise((resolve) => setTimeout(resolve, RETRY_AFTER_MS)).then(attempt))
       .then((text) => parseSvg(text, file + '.svg')).catch(() => null)).then((glyph) => { files.set(key, glyph); return glyph; });
   files.set(key, job);
   return job;
 }
-const warned = new Set();
-function warnUnknown(name) {
+const warned = new Set<string>();
+function warnUnknown(name: unknown): void {
   const n = normal(name);
   if (!n || warned.has(n)) return;
   warned.add(n);
@@ -317,8 +328,8 @@ function warnUnknown(name) {
   if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
 }
 // a name drawn by a run-time fetch: development warns once that production should import or register it
-const fetchedNotice = new Set();
-function noticeFetch(found) {
+const fetchedNotice = new Set<string>();
+function noticeFetch(found: IconFound): void {
   const key = found.kind + ':' + (found.file || found.symbol);
   if (fetchedNotice.has(key) || !development() || typeof console === 'undefined') return;
   fetchedNotice.add(key);
@@ -332,9 +343,9 @@ function noticeFetch(found) {
 // Only a fetched icon below lg reads it: a module (imported, registered, a site's icon file) carries both drawings and the stylesheet picks, so it
 // has no watcher, reads no style and sets no state. The one page-wide observer exists only while such a fetched icon is mounted.
 const useIsoLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
-const watchers = new Set();
-let observer = null;
-function watchOptical(callback) {
+const watchers = new Set<() => void>();
+let observer: MutationObserver | null = null;
+function watchOptical(callback: () => void): () => void {
   watchers.add(callback);
   if (!observer && typeof MutationObserver === 'function' && typeof document !== 'undefined') {
     observer = new MutationObserver(() => watchers.forEach((w) => w()));
@@ -342,10 +353,10 @@ function watchOptical(callback) {
   }
   return () => { watchers.delete(callback); if (!watchers.size && observer) { observer.disconnect(); observer = null; } };
 }
-const opticalOf = (el) => (el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-icon-glyph-show-24').trim() === 'block' ? 24 : 20);
-function useOptical(ref, size, fetched) {
-  const watched = fetched && !LARGE[size];
-  const [optical, setOptical] = React.useState(null);
+const opticalOf = (el: Element | null): 20 | 24 => (el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-icon-glyph-show-24').trim() === 'block' ? 24 : 20);
+function useOptical(ref: React.RefObject<HTMLSpanElement | null>, size: string | undefined, fetched: boolean): 20 | 24 | null {
+  const watched = fetched && !LARGE[size as string];
+  const [optical, setOptical] = React.useState<20 | 24 | null>(null);
   useIsoLayoutEffect(() => {
     if (!watched) return undefined;
     const read = () => setOptical(opticalOf(ref.current));
@@ -354,21 +365,21 @@ function useOptical(ref, size, fetched) {
     // forget the reading when the icon stops watching (a name that becomes a module, or lg): a later watch starts from unknown, never from a stale size
     return () => { stop(); setOptical(null); };
   }, [watched]);
-  return LARGE[size] ? 24 : watched ? optical : null;
+  return LARGE[size as string] ? 24 : watched ? optical : null;
 }
 // an icon's drawing source, resolved once per render: the imported module, else the name through the resolver
-const resolveShown = (name, mod, lib) => (mod ? { kind: 'module', symbol: mod.symbol || mod.name, fillOutline: !!mod.fillOutline, module: mod } : resolveIcon(name, { library: lib }));
-const isFetched = (found) => !!found && (found.kind === 'library' || found.kind === 'plenix');
-function useDrawings(name, size, filled, found, optical) {
-  const mod = found && found.kind === 'module' ? found.module : null;
+const resolveShown = (name: unknown, mod: IconModule | null, lib: string | undefined): IconFound | null => (mod ? { kind: 'module', symbol: mod.symbol || mod.name, fillOutline: !!mod.fillOutline, module: mod } : resolveIcon(name, { library: lib }));
+const isFetched = (found: IconFound | null) => !!found && (found.kind === 'library' || found.kind === 'plenix');
+function useDrawings(name: unknown, size: string | undefined, filled: boolean | undefined, found: IconFound | null, optical: 20 | 24 | null): React.ReactElement[] {
+  const mod = found && found.kind === 'module' ? (found.module as IconModule) : null;
   const fill = filled === true || (found && found.fillOutline);
   const fetched = isFetched(found);
   // a module has both drawings and the stylesheet picks; a fetched icon loads only the one it will show (none until its optical size is known)
-  const wanted = fetched ? (optical === null ? [] : [[fill ? (optical === 24 ? 3 : 1) : (optical === 24 ? 2 : 0), optical]])
-    : LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
+  const wanted: Array<[number, 20 | 24]> = fetched ? (optical === null ? [] : [[fill ? (optical === 24 ? 3 : 1) : (optical === 24 ? 2 : 0), optical]])
+    : LARGE[size as string] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
   // a fetched drawing's key: the library's file (symbol), or the Plenix layout's file (the Plenix name)
-  const fileOf = (i) => (found.kind === 'plenix' ? PLENIX_FILE + found.file : found.symbol) + VARIANT[i];
-  const [, redraw] = React.useReducer((x) => x + 1, 0);
+  const fileOf = (i: number) => ((found as IconFound).kind === 'plenix' ? PLENIX_FILE + (found as IconFound).file : (found as IconFound).symbol) + VARIANT[i];
+  const [, redraw] = React.useReducer((x: number) => x + 1, 0);
   const pending = fetched ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
   React.useEffect(() => {
     if (!found) {
@@ -383,19 +394,29 @@ function useDrawings(name, size, filled, found, optical) {
     let live = true;
     Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => { if (live) redraw(); });
     return () => { live = false; };
-  }, [found && found.kind, found && (found.file || found.symbol), fill, LARGE[size] ? 1 : 0, optical, pending.length, libraryDone]);
+  }, [found && found.kind, found && (found.file || found.symbol), fill, LARGE[size as string] ? 1 : 0, optical, pending.length, libraryDone]);
   if (!found) return [];
-  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
+  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod as IconModule, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph)) as Array<[Glyph, 20 | 24]>;
   if (!glyphs.length) return [];
   // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
   // drawing is its own svg in its own box
   if (glyphs.every(([glyph]) => glyph[1] === glyphs[0][0][1]))
-    return [<svg key="svg" className="plx-icon__svg plx-icon__svg--shared" viewBox={glyphs[0][0][1]} aria-hidden="true" focusable="false">{glyphs.map(([glyph, optical]) => <path key={optical} className={'plx-icon__glyph--' + optical} d={glyph[0]} {...(glyph[2] || null)} />)}</svg>];
-  return glyphs.map(([glyph, optical]) => <svg key={optical} className={'plx-icon__svg plx-icon__glyph--' + optical} viewBox={glyph[1]} aria-hidden="true" focusable="false"><path d={glyph[0]} {...(glyph[2] || null)} /></svg>);
+    return [<svg key="svg" className="plx-icon__svg plx-icon__svg--shared" viewBox={glyphs[0][0][1]} aria-hidden="true" focusable="false">{glyphs.map(([glyph, optical]) => <path key={optical} className={'plx-icon__glyph--' + optical} d={glyph[0]} {...((glyph[2] || null) as React.SVGProps<SVGPathElement> | null)} />)}</svg>];
+  return glyphs.map(([glyph, optical]) => <svg key={optical} className={'plx-icon__svg plx-icon__glyph--' + optical} viewBox={glyph[1]} aria-hidden="true" focusable="false"><path d={glyph[0]} {...((glyph[2] || null) as React.SVGProps<SVGPathElement> | null)} /></svg>);
 }
 
-const badIcon = new Set();
-export function Icon({ icon, name, library: lib, size, filled, label, className, ...rest }) {
+const badIcon = new Set<string>();
+export type IconProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  /** an imported icon module */
+  icon?: IconModule | null;
+  /** an icon name, or a module given as the name */
+  name?: IconValue | null;
+  library?: string;
+  size?: IconSize;
+  filled?: boolean;
+  label?: string;
+};
+export function Icon({ icon, name, library: lib, size, filled, label, className, ...rest }: IconProps) {
   if (icon == null && name != null && typeof name === 'object' && isModule(name)) { icon = name; name = undefined; }   // a module given as the name
   devWarn('Icon', { size }, { size: ['xs','sm','md','lg','xl'] });
   // an imported module (icon); else the name through the resolver (registered modules, the Plenix files, the library)
@@ -403,7 +424,7 @@ export function Icon({ icon, name, library: lib, size, filled, label, className,
   const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
   if (badKey && !badIcon.has(badKey)) { badIcon.add(badKey); if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon); }
   const shown = isModule(icon) ? icon.name : name;
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLSpanElement>(null);
   // fetched or not is decided first, so only a fetched icon watches its optical size (#642)
   const found = resolveShown(shown, isModule(icon) ? icon : null, lib);
   const optical = useOptical(ref, size, isFetched(found));
@@ -415,7 +436,7 @@ export function Icon({ icon, name, library: lib, size, filled, label, className,
 }
 // the classes of an Icon's span. Every icon that points along the reading direction is marked plx-icon--mirrored, which
 // icon.css mirrors in right to left (#557): a module by its mirrored flag, a name by its symbol (glyphs.js MIRRORED)
-function iconClasses(shown, mod, lib, size, filled, className) {
+function iconClasses(shown: unknown, mod: IconModule | null, lib: string | undefined, size: string | undefined, filled: boolean | undefined, className: string | undefined): string {
   const f = mod ? null : resolveIcon(shown, { library: lib });
   const m = mod || (f && f.kind === 'module' ? f.module : null);
   const mirrored = m ? !!m.mirrored : !!(f && mirroredSymbols.has(f.symbol));
@@ -427,20 +448,21 @@ function iconClasses(shown, mod, lib, size, filled, className) {
 // icon: an imported module, or a name with a registered module (an icon file on the page, registerIcons). The drawing
 // comes only from the module, through the allow-list (#285: numbers and path grammar only), and every value is escaped;
 // a name with no module gives the span without a drawing, and development warns once.
-const ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESCAPE[c]);
-const markupMissing = new Set();
-export function iconMarkup(icon, options) {
-  const o = options || {}, size = LARGE[o.size] || ['xs', 'sm', 'md'].includes(o.size) ? o.size : undefined;
-  const given = isModule(icon) ? icon : null, shown = given ? icon.name : normal(icon);
+const ESCAPE: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ESCAPE[c]);
+const markupMissing = new Set<string>();
+export type IconMarkupOptions = { size?: IconSize; filled?: boolean; label?: string; className?: string; library?: string };
+export function iconMarkup(icon: IconValue, options?: IconMarkupOptions | null): string {
+  const o: IconMarkupOptions = options || {}, size = LARGE[o.size as string] || ['xs', 'sm', 'md'].includes(o.size as string) ? o.size : undefined;
+  const given = isModule(icon) ? icon : null, shown = given ? (icon as IconModule).name : normal(icon);
   const f = given ? null : resolveIcon(shown, { library: o.library });
-  const mod = given || (f && f.kind === 'module' ? f.module : null);
+  const mod = given || (f && f.kind === 'module' ? (f.module as IconModule) : null);
   let svg = '';
   if (mod && !moduleProblem(mod)) {
     const fill = o.filled === true || !!mod.fillOutline;
-    const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
-    const glyphs = wanted.map(([i, optical]) => [moduleGlyph(mod, i), optical]).filter(([g]) => Array.isArray(g));
-    const attrs = (g) => ' d="' + esc(g[0]) + '"' + (g[2].transform ? ' transform="' + esc(g[2].transform) + '"' : '') + (g[2].fillRule ? ' fill-rule="' + esc(g[2].fillRule) + '"' : '') + (g[2].clipRule ? ' clip-rule="' + esc(g[2].clipRule) + '"' : '');
+    const wanted: Array<[number, 20 | 24]> = LARGE[size as string] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
+    const glyphs = wanted.map(([i, optical]) => [moduleGlyph(mod, i), optical]).filter(([g]) => Array.isArray(g)) as Array<[Glyph, 20 | 24]>;
+    const attrs = (g: Glyph) => ' d="' + esc(g[0]) + '"' + (g[2].transform ? ' transform="' + esc(g[2].transform) + '"' : '') + (g[2].fillRule ? ' fill-rule="' + esc(g[2].fillRule) + '"' : '') + (g[2].clipRule ? ' clip-rule="' + esc(g[2].clipRule) + '"' : '');
     if (glyphs.length && glyphs.every(([g]) => g[1] === glyphs[0][0][1]))
       svg = '<svg class="plx-icon__svg plx-icon__svg--shared" viewBox="' + esc(glyphs[0][0][1]) + '" aria-hidden="true" focusable="false">' + glyphs.map(([g, optical]) => '<path class="plx-icon__glyph--' + optical + '"' + attrs(g) + '></path>').join('') + '</svg>';
     else svg = glyphs.map(([g, optical]) => '<svg class="plx-icon__svg plx-icon__glyph--' + optical + '" viewBox="' + esc(g[1]) + '" aria-hidden="true" focusable="false"><path' + attrs(g) + '></path></svg>').join('');
@@ -450,7 +472,7 @@ export function iconMarkup(icon, options) {
   }
   const classes = iconClasses(shown, mod, o.library, size, o.filled, o.className).split(' ').map((c) => c.replace(/[^A-Za-z0-9_-]/g, '')).filter(Boolean).join(' ');
   // as Icon: with a label (the caller's words) an image, without one decorative
-  const named = o.label ? { role: 'img', 'aria-label': o.label } : { 'aria-hidden': 'true' };
+  const named: Record<string, string> = o.label ? { role: 'img', 'aria-label': o.label } : { 'aria-hidden': 'true' };
   return '<span class="' + esc(classes) + '"' + Object.keys(named).map((k) => ' ' + k + '="' + esc(named[k]) + '"').join('') + '>' + svg + '</span>';
 }
 
@@ -458,28 +480,34 @@ export function iconMarkup(icon, options) {
 // Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
 // name or an imported module; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
 // the Icon (a size), given only where the caller set none.
-export function stateIcon(icon, on, extra) {
+export function stateIcon(icon: unknown, on: unknown, extra?: Partial<IconProps> | null): React.ReactNode {
   if (typeof icon === 'string') return <Icon name={icon} filled={!!on} {...extra} />;
   if (isModule(icon)) return <Icon icon={icon} filled={!!on} {...extra} />;
-  if (React.isValidElement(icon) && icon.type === Icon) {
-    const add = {};
+  if (React.isValidElement<Record<string, unknown>>(icon) && icon.type === Icon) {
+    const add: Record<string, unknown> = {};
     if (icon.props.filled === undefined) add.filled = !!on;
-    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
+    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = (extra as Record<string, unknown>)[k];
     return Object.keys(add).length ? React.cloneElement(icon, add) : icon;
   }
-  return icon;
+  return icon as React.ReactNode;
 }
 
 // StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
-const STATUS_ICONS = { info: CircleInfoIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon, neutral: CircleInfoIcon };   // imported (#280)
-export function StatusIcon({ tone = 'info', size = 'md', label, children, strings, className, ...rest }) {
+const STATUS_ICONS: Record<string, IconModule> = { info: CircleInfoIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon, neutral: CircleInfoIcon };   // imported (#280)
+export type StatusIconProps = React.HTMLAttributes<HTMLSpanElement> & {
+  tone?: 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+  strings?: Catalog | null;
+};
+export function StatusIcon({ tone = 'info', size = 'md', label, children, strings, className, ...rest }: StatusIconProps) {
   devWarn('StatusIcon', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md','lg'] });
   const t = STATUS_ICONS[tone] ? tone : 'info';
   const words = useStrings('icon.status', strings);
   const shown = children !== undefined && children !== null && children !== false;
   return (
     <span className={cx('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)} {...rest}>
-      <span className={cx('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)}><Icon name={STATUS_ICONS[t]} size={size} label={shown ? undefined : (label || words[t])} /></span>
+      <span className={cx('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)}><Icon name={STATUS_ICONS[t]} size={size} label={shown ? undefined : (label || (words[t] as string))} /></span>
       {shown ? <span className="plx-status-icon__label">{children}</span> : null}
     </span>
   );
