@@ -11,6 +11,11 @@
       "$type": "dimension",
       "$description": "Carousel: how much of the next slide shows with several per view (size-40px)."
     },
+    "carousel-slide-min": {
+      "$value": "{plx-ref.size-152px}",
+      "$type": "dimension",
+      "$description": "Carousel: the least width of a slide with several per view; a narrower strip shows fewer at once (size-152px)."
+    },
     "carousel-controls-gap": {
       "$value": "{plx-sys.space-stack-sm}",
       "$type": "dimension",
