@@ -100,6 +100,8 @@ export function packageConfig(name, overrides = {}) {
     ] } : {},
     // every module, the bundled packages included, is lowered to es2019 as it is read (the old builds' target), so the
     // output needs no final esbuild pass (build.target 'esnext'): that pass drops the banner comment
+    // the release, as Plenix's version export (#842, platform/version.ts)
+    define: { __PLENIX_VERSION__: JSON.stringify(VERSION) },
     esbuild: { include: /\.[cm]?[jt]sx?$/, exclude: [], charset: 'ascii', target: 'es2019', jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },
     build: Object.assign({
       outDir: b.outDir,
