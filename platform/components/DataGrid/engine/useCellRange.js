@@ -18,7 +18,8 @@
      The range is kept as keys (a row's id and a column's id), so it survives scrolling and virtualization; the copy reads the grid's data, not
      the page, so a block of any size copies at once. One cell is not a range: with the anchor and the focus on the same cell there is no
      rectangle. Shift with an arrow moves the focus end one cell (the focus cell scrolls into view and keeps keyboard focus); Shift with Home
-     or End goes to the first or last column of the row; Escape, a plain arrow or a mouse press on a cell collapses the block to the active cell. In right to
+     or End goes to the first or last column of the row; when focus is on a cell the block never reached (moved there by script), Shift
+     with an arrow starts a new block from that cell; Escape, a plain arrow or a mouse press on a cell collapses the block to the active cell. In right to
      left the arrows are mirrored, and so are the block's start and end edges (they are logical).
      The count is announced politely once the arrow keys pause (400 ms), never once per key press while Shift and an arrow repeat.
    Notes:
@@ -43,7 +44,7 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
   const loc = useLocale();
   const [range, setRangeState] = React.useState(null);
   const told = React.useRef(false);   // onChange has been given a range: it is told when the range ends too
-  const latest = React.useRef({}), rangeRef = React.useRef(null);
+  const latest = React.useRef({}), rangeRef = React.useRef(null), trail = React.useRef(null);   // trail: the cells the block's focus end has been on ('rowId|field'), anchor included
   const setRange = (next) => { rangeRef.current = typeof next === 'function' ? next(rangeRef.current) : next; setRangeState(rangeRef.current); };
 
   // the position of each record row in the model (group rows have no cells)
@@ -89,8 +90,10 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
   // from the block's own latest range (so keys that repeat before a frame has drawn still start from where the last one ended)
   const extend = ({ row, c, key, rtl, focusCell }) => {
     run((o) => {
-      const now = latest.current, moved = o.extendTo({ range: rangeRef.current, row, c, key, rtl, rowAt: now.rowAt, model: now.model, ordered: now.ordered });
+      const now = latest.current, moved = o.extendTo({ range: rangeRef.current, trail: trail.current, row, c, key, rtl, rowAt: now.rowAt, model: now.model, ordered: now.ordered });
       if (!moved) return;
+      if (moved.collapse) { collapse(); return; }
+      trail.current = moved.trail;
       setRange(moved.range);
       focusCell(moved.nr, moved.nc, moved.step);
     });

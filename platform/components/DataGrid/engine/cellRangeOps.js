@@ -51,10 +51,15 @@ export const detailsOf = ({ rect, model, ordered, index }) => ({
 export const said = (loc, key, n) => helpers.announce(loc.t(key, { count: n, n: helpers.formatNumber(n) }));
 
 // Shift with an arrow, Home or End: the focus end of the block moves, the anchor stays where the block began. The focus end is the block's own
-// (not the cell that has DOM focus): focus follows a frame later, and keys that repeat must not start from where it still is.
-// Returns the new range and the cell to focus, or null when nothing moves.
-export const extendTo = ({ range, row, c, key, rtl, rowAt, model, ordered }) => {
-  const from = range ? range.focus : { key: row.id, field: c.field };
+// (not the cell that has DOM focus): focus follows a frame later, and keys that repeat must not start from where it still is. When keyboard focus is on
+// a cell the block never reached (moved there by script, or by any means other than these keys: trail is the cells its focus end has been on), the block's
+// focus end and the DOM focus disagree, so the old block ends and a new one starts from the cell that has focus.
+// Returns { range, nr, nc, step, trail } (the new range, the cell to focus, the cells reached), { collapse: true } when nothing moves and an old block
+// elsewhere ends, or null when nothing moves.
+export const extendTo = ({ range, trail, row, c, key, rtl, rowAt, model, ordered }) => {
+  const here = { key: row.id, field: c.field };
+  const cont = range && trail && trail.has(here.key + '|' + here.field) ? range : null;
+  const from = cont ? cont.focus : here;
   const r = rowAt.get(from.key), at = ordered.findIndex((x) => x.id === from.field);
   if (r === undefined || at < 0) return null;
   let nr = r, nc = at;
@@ -68,7 +73,8 @@ export const extendTo = ({ range, row, c, key, rtl, rowAt, model, ordered }) => 
   const step = nr < r ? -1 : 1;
   while (model[nr] && !model[nr].original) nr += step;   // a group row has no cells: skip it
   nc = Math.max(0, Math.min(ordered.length - 1, nc));
-  if (!model[nr] || !model[nr].original || (nr === r && nc === at)) return null;   // the edge: nothing moves
-  const anchor = range ? range.anchor : { key: row.id, field: c.field };
-  return { range: { anchor, focus: { key: model[nr].id, field: ordered[nc].id } }, nr, nc, step };
+  if (!model[nr] || !model[nr].original || (nr === r && nc === at)) return range && !cont ? { collapse: true } : null;   // the edge: nothing moves (an old block elsewhere ends)
+  const reached = cont ? trail : new Set([here.key + '|' + here.field]);
+  reached.add(model[nr].id + '|' + ordered[nc].id);
+  return { range: { anchor: cont ? cont.anchor : here, focus: { key: model[nr].id, field: ordered[nc].id } }, nr, nc, step, trail: reached };
 };

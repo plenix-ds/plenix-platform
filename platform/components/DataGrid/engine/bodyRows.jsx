@@ -230,6 +230,11 @@ export function bodyRows({
       );
     const rowApi = api.row(row.id),
       record = row.original;
+    // a row template (issue 839): a card (A or B, narrow) draws only the columns that fill a slot, each placed in the card's grid; wide keeps every column of the table
+    const tpl = props.rowTemplate,
+      card = !!tpl && isNarrow && tpl.layout !== 'wide',
+      slotted = !!tpl && (card || tpl.layout === 'wide'),
+      cellList = card ? ordered.filter((column) => tpl.keep.has(column.id)) : ordered;
     const step = !isStatic && !isNarrow ? effectiveStep : undefined,
       sized = step != null,
       lines = sized && step !== 'short',
@@ -268,6 +273,8 @@ export function bodyRows({
           isStatic && B + '__grid-row--static',
           anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap',
           isNarrow && B + '__grid-row--narrow',
+          card && B + '__grid-row--template ' + B + '__grid-row--template-' + tpl.layout.toLowerCase(),
+          slotted && !card && B + '__grid-row--template-wide',
           virtualized && B + '__grid-row--virtual',
           row === model[0] && B + '__grid-row--first'
         )}
@@ -293,6 +300,7 @@ export function bodyRows({
           <div
             className={cx(
               `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
+              card && B + '__grid-cell--template-check',
               leadFrozen && B + '__grid-frozen',
               modes,
               selection[row.id] && B + '__grid-cell--selected-start'
@@ -306,7 +314,7 @@ export function bodyRows({
             />
           </div>
         ) : null}
-        {ordered.map((column) => {
+        {cellList.map((column) => {
           const c = column.columnDef.meta,
             k = kindsOf(c),
             pinned = column.getIsPinned() === 'left',
@@ -319,7 +327,7 @@ export function bodyRows({
             handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
             actions = k.includes('actions');
           // in the row card (narrow, #679) every visible field that is not a key value shows as a labeled detail
-          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes('icon');
+          const detail = isNarrow && !tpl && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes('icon');
           const mods =
               cx(
                 isStatic && B + '__value--static',
@@ -389,6 +397,7 @@ export function bodyRows({
                 frame,
                 focusCell,
                 cellRange,
+                kept: card ? tpl.keep : undefined,
               })}
               data-plx-sticky={pinned && sticky ? sticky + 'px' : undefined}
               data-plx-label={detail ? c.title || c.field : undefined}
@@ -397,11 +406,11 @@ export function bodyRows({
               className={cx(
                 '' + B + '__grid-cell',
                 modes,
-                !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start',
+                !selectable && marked(row.id) && cellList.indexOf(column) === 0 && B + '__grid-cell--selected-start',
                 bare && B + '__grid-cell--bare',
-                selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead',
-                ordered.indexOf(column) > 0 &&
-                  ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' &&
+                selectable && cellList.indexOf(column) === 0 && B + '__grid-cell--after-lead',
+                cellList.indexOf(column) > 0 &&
+                  cellList[cellList.indexOf(column) - 1].getIsPinned() === 'left' &&
                   column.getIsPinned() !== 'left' &&
                   B + '__grid-cell--after-frozen',
                 isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth),
@@ -423,6 +432,8 @@ export function bodyRows({
                 pinned && '' + B + '__grid-frozen',
                 (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label',
                 k.includes('icon') && B + '__w-lead',
+                slotted && tpl.slotOf[c.field] && B + '__cell--slot ' + B + '__cell--slot-' + tpl.slotOf[c.field],
+                card && tpl.slotOf[c.field] && B + '__cell--place-' + tpl.layout.toLowerCase() + '-' + tpl.slotOf[c.field],
                 keys.includes(c.field) && B + '__cell--key',
                 detail && B + '__cell--list-detail',
                 keys[0] === c.field && B + '__cell--key-first',
@@ -532,7 +543,7 @@ export function bodyRows({
         })}
         {props.viewMenu ? <div className={cx(`${B}__grid-cell ${B}__w-view`, modes)} role="gridcell" /> : null}
         {rowMenu && rowMenuButton ? (
-          <Width width={metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, modes)} role="gridcell">
+          <Width width={metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + '__grid-cell--template-menu', modes)} role="gridcell">
             <Menu
               label={S.rowActions}
               trigger={

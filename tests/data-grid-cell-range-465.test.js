@@ -28,6 +28,7 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
         document.documentElement.setAttribute('dir', dir); document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
         window.__log = []; window.__copied = []; window.__live = [];
         Object.defineProperty(navigator, 'clipboard', { value: { writeText: (t) => { window.__copied.push(t); return Promise.resolve(); } }, configurable: true });
+        if (window.__root) { window.__root.unmount(); window.__root = null; }   // the page is shared: the previous grid and its portals go first
         document.querySelector('main').innerHTML = '<div id="c"></div>';
         new MutationObserver(() => { const t = [...document.querySelectorAll('[data-plx-announcer]')].map((e) => e.textContent).filter(Boolean).join('|'); if (t && window.__live[window.__live.length - 1] !== t) window.__live.push(t); }).observe(document.body, { subtree: true, childList: true, characterData: true });
         const h = React.createElement, n = variant === 'big' ? 600 : 12;
@@ -51,7 +52,7 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       await check(T + 'with the option off, Shift and an arrow select nothing', async () => {
         await mount('off'); await focusAt(0, 'role'); await key('ArrowRight', ['Shift']); await key('ArrowDown', ['Shift']);
         const s = await state(); assert.equal(s.cells, 0); assert.equal(await page.evaluate(() => window.__log.length), 0);
-        assert.equal(await page.evaluate(() => document.querySelectorAll('[aria-selected]').length), 0, 'no aria-selected on the grid\'s cells');
+        assert.equal(await page.evaluate(() => document.querySelectorAll('#c [role=gridcell][aria-selected]').length), 0, 'no aria-selected on the grid\'s cells');
       });
       await check(T + 'Shift and the arrows extend a block from the cell that had focus', async () => {
         await mount('on'); await focusAt(0, 'role'); await key('ArrowRight', ['Shift']); await key('ArrowDown', ['Shift']); await key('ArrowDown', ['Shift']);
@@ -91,8 +92,12 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
         await fresh(); await mount('selectable'); await focusAt(0, 'name'); await key('ArrowDown', ['Shift']); assert.equal(await page.evaluate(() => document.querySelectorAll('[role=row][aria-selected=true]').length), 0);
       });
       await check(T + 'Enter edits the active cell and ends the block', async () => {
-        await fresh(); await mount('on'); await focusAt(0, 'role'); await key('ArrowLeft', ['Shift']); // (mirrored: the block grows the other way; the focus end is the Name cell in LTR)
-        await focusAt(0, 'name'); await key('ArrowDown', ['Shift']); await key('ArrowUp'); await key('Enter');
+        // focus is then moved by script to the Name cell (in right to left the block's focus end is the City cell, so focus leaves the block):
+        // Shift with an arrow starts a new block from where focus is, the plain arrow comes back to the Name cell, Enter edits it
+        await fresh(); await mount('on'); await focusAt(0, 'role'); await key('ArrowLeft', ['Shift']);
+        await focusAt(0, 'name'); await key('ArrowDown', ['Shift']);
+        assert.equal((await state()).cols, mirrored ? 'name' : 'name,role', mirrored ? 'the new block starts from the cell that has focus' : 'the block goes on from its focus end'); await key('ArrowUp');
+        assert.equal((await state()).active, 'name', 'the plain arrow comes back to the Name cell'); await key('Enter');
         assert.equal((await state()).cells, 0); assert.ok(await page.$('.plx-data-grid__grid-editing'), 'the editor opened');
       });
       await check(T + 'in 600 rows the block grows past the drawn rows and copies whole', async () => {

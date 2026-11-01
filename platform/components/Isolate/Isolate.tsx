@@ -18,6 +18,8 @@
      children: the text
      ...rest: other attributes go on the element
    Behavior:
+     A value with no letter of a right-to-left script that asks for dir="auto" (a data value: a phone number, an IBAN, a date) is a left-to-right island too: with no
+       strong letter its digit groups would otherwise take the page's direction and swap places (issue 838). A value with an Arabic letter keeps dir="auto".
      The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
        and the text around it never reorders it. Left to right (the default) keeps "20261020-01" as written in an Arabic sentence;
        kind="id" lets a computed identifier read as the page reads, "01-20261020" (the two numbers swap places, each stays in its own order).
@@ -36,6 +38,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useDigits } from '../../providers/LocaleProvider.tsx';
 import { localDigits } from '../../utils/digits.ts';
+import { readsLeftToRight } from '../../utils/direction.ts';
 
 export type IsolateProps = React.HTMLAttributes<HTMLElement> & {
   as?: React.ElementType;
@@ -57,6 +60,7 @@ export function Isolate({ dir, as, kind, className, children, ...rest }: Isolate
   const shown = React.Children.map(children, (child) => (typeof child === 'string' || typeof child === 'number' ? (kind === 'id' ? pieces(child) : text(child)) : child));
   // an ID follows the direction around it: no dir of its own (a <bdi> without one would read its first letter), so it is a span; every other value keeps its own, left to right unless said
   const Tag = as || (kind === 'id' ? 'span' : 'bdi');
-  const own_dir = kind === 'id' ? dir : (dir || 'ltr');
+  // dir="auto" on a value with no letter of a right-to-left script is a left-to-right island (a phone number or an IBAN: its spaced digit groups would swap places, issue 838)
+  const own_dir = kind === 'id' ? dir : dir === 'auto' && readsLeftToRight(children) ? 'ltr' : (dir || 'ltr');
   return <Tag className={cx('plx-isolate', className)} dir={own_dir} {...rest}>{shown}</Tag>;
 }

@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.79.1] - 2026-11-01
+
+**In short.** A fix for apps that use Plenix from npm, or the CDN's `plenix.esm.js`: the DataGrid drew nothing and stopped with "React is not defined" in 0.79.0. Pages that load the classic `plenix.js` script were not affected. Nothing else changes.
+
+### Upgrading from 0.79.0
+Nothing to change. Apps on 0.79.0 that use the npm package or `plenix.esm.js` should move to 0.79.1.
+
+### Fixed
+- The npm package's DataGrid (and `plenix.esm.js`) failed to draw with "React is not defined" (0.79.0): `engine/chrome.jsx` and `engine/headerRows.jsx` used JSX without importing React, which only works where React is a global (the CDN script and the applications). Both import React now (#847).
+
 ## [0.79.0] - 2026-10-31
 
 **In short.** A large quality release from the code audit (#684). Apps that use the npm package load only the parts they use: a button costs about 101 KB instead of 913 KB, and a badge page needs 172 KB of styles instead of 2,166. React 19 is accepted. Plenix is now built with Vite (the main script and the 10 apps are 20 to 44% smaller), the first parts are in TypeScript, and the design tokens start moving to Style Dictionary. Toolbars, command bars and action bars no longer fold to icons too early on a fresh load. The rich-text cleaner is final in one pass. SplitWorkspace takes the list's grid options (row click, selection, the open row, the row menu). Behind the scenes: the data grid engine is split into clear modules, 120 tests are documented, and every test now runs in CI.
