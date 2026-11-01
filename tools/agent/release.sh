@@ -22,7 +22,7 @@ console.log(V);" "$CL" "$LOG")
 echo "version $V"
 (node build-app.js >/dev/null || node build-app.js >/dev/null || node build-app.js >/dev/null)   # retried: the CPU crashes builds; never release a stale bundle (0.31.48 merge committed an old dist/platform.js)
 node build-usage.js >/dev/null
-git -C platform/design-system add -A .
+git -C platform/design-system add -A .   # the generated spec files are ignored there (#692): only sources are committed
 git -C platform/design-system diff --cached --quiet || git -C platform/design-system commit -qm "$SUBJ
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"

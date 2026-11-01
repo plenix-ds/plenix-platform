@@ -51,3 +51,12 @@ build/sd/
 /*/app.js
 /*/plenix-icons-*.js
 /dam/app/assets.js
+# the design system's generated files never ride in a lane (lanes carry sources only; check-system "lanes")
+/lanes/*/design-system/spec-parts.js
+/lanes/*/design-system/ds-sample-parts.css
+/lanes/*/design-system/native-guidance.js
+/lanes/*/design-system/native-guidance-full.js
+/lanes/*/design-system/platforms-standard.js
+/lanes/*/design-system/styling-standard.js
+/lanes/*/design-system/reviewed.js
+/lanes/*/design-system/usage.js
