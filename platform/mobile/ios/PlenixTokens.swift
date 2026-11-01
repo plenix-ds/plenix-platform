@@ -611,7 +611,7 @@ public enum Plenix {
         public static let modalLayerBeforeOpacity: Double = 0.5
         public static let navBarHeight: CGFloat = 56
         public static let navBarIconSize: CGFloat = 20
-        public static let navBarItemMinWidth: CGFloat = 64
+        public static let navBarItemMinWidth: CGFloat = 24
         public static let navBarItemTarget: CGFloat = 24
         public static let navBarLabelFontSize: CGFloat = 12
         public static let navBarLabelGap: CGFloat = 4

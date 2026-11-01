@@ -153,7 +153,7 @@
      each at least the 44px target; the bar sits above the bottom safe area */
   --plx-comp-nav-bar-height: var(--plx-ref-size-56px);
   --plx-comp-nav-bar-background: var(--plx-sys-surface-default);
-  --plx-comp-nav-bar-item-min-width: var(--plx-ref-size-64px);
+  --plx-comp-nav-bar-item-min-width: var(--plx-sys-control-target-min);
   --plx-comp-nav-bar-item-target: var(--plx-sys-control-target-min);
   --plx-comp-nav-bar-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-nav-bar-label-gap: var(--plx-ref-size-4px);

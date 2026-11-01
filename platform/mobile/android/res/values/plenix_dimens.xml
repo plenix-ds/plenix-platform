@@ -193,7 +193,7 @@
     <dimen name="plx_component_miller_columns_item_min_height">32dp</dimen>
     <dimen name="plx_component_nav_bar_height">56dp</dimen>
     <dimen name="plx_component_nav_bar_icon_size">20dp</dimen>
-    <dimen name="plx_component_nav_bar_item_min_width">64dp</dimen>
+    <dimen name="plx_component_nav_bar_item_min_width">24dp</dimen>
     <dimen name="plx_component_nav_bar_item_target">24dp</dimen>
     <dimen name="plx_component_nav_bar_label_font_size">12dp</dimen>
     <dimen name="plx_component_nav_bar_label_gap">4dp</dimen>

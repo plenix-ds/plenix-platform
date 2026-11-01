@@ -14148,6 +14148,46 @@ var Plenix = (function(exports, React2, reactDom, client) {
     React2.useLayoutEffect(() => instance._willUpdate());
     return instance;
   }
+  function marginOf(value) {
+    if (!value || typeof document === "undefined") return "0px";
+    const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
+    return [].concat(value).slice(0, 4).map((name) => {
+      const v = getComputedStyle(root).getPropertyValue(name).trim(), n = parseFloat(v) || 0;
+      return Math.round(/rem$/.test(v) ? n * size : n) + "px";
+    }).join(" ");
+  }
+  function useIntersection(ref, options = {}) {
+    const { root = null, rootMargin = null, threshold = 0, once = false, disabled = false, onChange = null } = options;
+    const [state, setState] = React2.useState({ visible: false, ratio: 0, entry: null });
+    const seen = React2.useRef(false);
+    const change = React2.useRef(onChange);
+    change.current = onChange;
+    const margin = [].concat(rootMargin || []).join(" "), steps = [].concat(threshold).join(" ");
+    React2.useEffect(() => {
+      const el = ref && ref.current;
+      if (!el || disabled || once && seen.current) return void 0;
+      if (typeof IntersectionObserver === "undefined") {
+        seen.current = true;
+        setState({ visible: true, ratio: 1, entry: null });
+        return void 0;
+      }
+      const area = root && "current" in root ? root.current : root;
+      const min2 = Math.min.apply(null, [].concat(threshold));
+      const io = new IntersectionObserver((entries2) => {
+        const entry = entries2[entries2.length - 1];
+        const visible2 = entry.isIntersecting && entry.intersectionRatio >= min2;
+        if (change.current) change.current(entry);
+        setState({ visible: visible2 || once && seen.current, ratio: entry.intersectionRatio, entry });
+        if (visible2 && once) {
+          seen.current = true;
+          io.disconnect();
+        }
+      }, { root: area || null, rootMargin: marginOf(rootMargin), threshold });
+      io.observe(el);
+      return () => io.disconnect();
+    }, [ref, root, margin, steps, once, disabled]);
+    return state;
+  }
   function useSelection$1({ selected, live, canonical: canonical2, index: index2, options, onSelectionChange, emit, api }) {
     const selectionInfo = React2.useRef({ hidden: 0 }), selectionAnchor = React2.useRef(null);
     const [ownSelection, setSelection] = React2.useState({});
@@ -18334,11 +18374,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       );
     }
   };
-  const makeFocusCell = ({ model, ordered: ordered2, virtualized, virtual, displayElements }) => (rowIndex, columnIndex, step = 1) => {
+  const makeFocusCell = ({ model, ordered: ordered2, virtualized, virtual, displayElements, drawTo }) => (rowIndex, columnIndex, step = 1) => {
     while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
     const record = model[rowIndex], column = ordered2[columnIndex];
     if (!record || columnIndex !== null && !column) return;
     if (virtualized) virtual.scrollToIndex(rowIndex, { align: "auto" });
+    if (drawTo) drawTo(rowIndex);
     requestAnimationFrame(
       () => requestAnimationFrame(() => {
         const node = displayElements.current.get(record.displayKey || record.id);
@@ -18366,7 +18407,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
   };
-  const rowKeys = ({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model }) => (e) => {
+  const rowKeys = ({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model, chunked }) => (e) => {
+    if (chunked && e.key === "End" && !e.defaultPrevented && (e.target === e.currentTarget || e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      focusCell(model.length - 1, null, -1);
+      return;
+    }
     if (e.key === "Enter" && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute("role") === "gridcell")) {
       e.preventDefault();
       chooseRow(row, e);
@@ -18383,8 +18429,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
       focusCell(model.indexOf(row) + step, null, step);
     }
   };
-  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell, cellRange, kept }) => (event) => {
+  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell, cellRange, kept, chunked }) => (event) => {
     if (isStatic || event.target !== event.currentTarget) return;
+    if (chunked && event.key === "End" && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      focusCell(model.length - 1, ordered2.indexOf(column), -1);
+      return;
+    }
     if (cellRange && cellRange.enabled) {
       const plain = !event.ctrlKey && !event.metaKey && !event.altKey;
       if (event.shiftKey && plain && ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
@@ -19064,6 +19115,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     groupNode,
     model,
     shown,
+    cardMore,
     renderRow,
     last,
     empty,
@@ -19228,6 +19280,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             )) : null,
             /* @__PURE__ */ React2.createElement(RowGap, { rows: model.slice(0, first) }),
             shown.map(renderRow),
+            cardMore,
             /* @__PURE__ */ React2.createElement(RowGap, { rows: model.slice(last) })
           ),
           emptyRow({ model, B, isStatic, ordered: ordered2, remoteMode, remoteBusy, S: S2, empty }),
@@ -19609,6 +19662,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     emit,
     setOwnOpen,
     focusCell,
+    chunked,
     cellRange,
     pickCheckbox,
     kindsOf,
@@ -19789,7 +19843,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
               emit("rowDblClick", e, rowApi);
             }
           },
-          onKeyDown: rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })
+          onKeyDown: rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model, chunked })
         },
         selectable ? /* @__PURE__ */ React2.createElement(
           "div",
@@ -19872,6 +19926,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 column,
                 frame,
                 focusCell,
+                chunked,
                 cellRange,
                 kept: card ? tpl.keep : void 0
               }),
@@ -20250,6 +20305,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     return { chooserColumns, headerCell };
   }
+  const CARD_CHUNK = 100;
   function NextEngine(props) {
     const inPane = React2.useContext(GridPane);
     const {
@@ -20504,7 +20560,37 @@ var Plenix = (function(exports, React2, reactDom, client) {
     });
     const semanticRows = model.filter((row) => !row.__gap), semanticIndex = new Map(semanticRows.map((row, i) => [row.displayKey || row.id, i + 2]));
     const virtualItems = virtual.getVirtualItems(), first = virtualized ? virtualItems[0]?.index || 0 : 0, last = virtualized ? (virtualItems[virtualItems.length - 1]?.index ?? Math.min(model.length, 1) - 1) + 1 : model.length;
-    const shown = virtualized ? model.slice(first, last) : model;
+    const chunked = isNarrow && !virtualized && !isStatic && !printing && mode !== "pages" && !remoteMode;
+    const [cardLimit, setCardLimit] = React2.useState(CARD_CHUNK);
+    React2.useEffect(() => {
+      if (!chunked) setCardLimit(CARD_CHUNK);
+    }, [chunked]);
+    const drawTo = (index22) => {
+      if (chunked) setCardLimit((n) => Math.max(n, Math.ceil((index22 + 1) / CARD_CHUNK) * CARD_CHUNK));
+    };
+    const moreCards = chunked && model.length > cardLimit;
+    const cardEnd = React2.useRef(null);
+    const [cardRoot, setCardRoot] = React2.useState(null);
+    React2.useLayoutEffect(() => {
+      if (!moreCards) return;
+      const h2 = holder.current, next = h2 && h2.scrollHeight > h2.clientHeight + 1 ? holder : null;
+      setCardRoot((was) => was === next ? was : next);
+    });
+    const cardWatch = React2.useMemo(() => ({ current: cardRoot ? cardRoot.current : null }), [cardRoot, cardLimit]);
+    const askedAt = React2.useRef(0);
+    useIntersection(cardEnd, {
+      root: cardWatch,
+      rootMargin: "--plx-ref-size-400px",
+      disabled: !moreCards,
+      onChange: (entry) => {
+        if (entry.isIntersecting && askedAt.current !== cardLimit) {
+          askedAt.current = cardLimit;
+          setCardLimit((n) => n + CARD_CHUNK);
+        }
+      }
+    });
+    const shown = virtualized ? model.slice(first, last) : moreCards ? model.slice(0, cardLimit) : model;
+    const cardMore = moreCards ? /* @__PURE__ */ React2.createElement("div", { ref: cardEnd, className: B + "__card-more", "aria-hidden": "true" }) : null;
     const frozen = new Set(columnPinning.left), ordered2 = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
     const pinStart = (column) => (selectable ? metrics.lead : 0) + column.getStart("left");
     const leadFrozen = frozen.size > 0 && !isNarrow;
@@ -20769,7 +20855,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       scroller: holder
     });
     live.current.cellRange = cellRange;
-    const focusCell = makeFocusCell({ model, ordered: ordered2, virtualized, virtual, displayElements });
+    const focusCell = makeFocusCell({ model, ordered: ordered2, virtualized, virtual, displayElements, drawTo });
     const rememberRow = (row, node) => {
       const displayKey = row.displayKey || row.id, previous = displayElements.current.get(displayKey), active = document.activeElement;
       if (node) {
@@ -20847,6 +20933,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       emit,
       setOwnOpen,
       focusCell,
+      chunked,
       cellRange,
       pickCheckbox,
       kindsOf,
@@ -20982,6 +21069,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       groupNode,
       model,
       shown,
+      cardMore,
       renderRow,
       last,
       empty,
@@ -25952,7 +26040,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ), !selected && !legacyState ? bulk : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-search-ws__body" }, count2 ? children : /* @__PURE__ */ React2.createElement(EmptyState, { size: "inline" }, query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, { query }) : t.noMatchFilters)));
   }
   function DataToolbar({ label: label2, start: start2, end, className, children }) {
-    return /* @__PURE__ */ React2.createElement(Toolbar, { label: label2, className: cx("plx-data-toolbar", className) }, start2 ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-data-toolbar__group" }, start2) : null, children, /* @__PURE__ */ React2.createElement(Toolbar.Spacer, null), end ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-data-toolbar__group" }, end) : null);
+    return /* @__PURE__ */ React2.createElement(Toolbar, { label: label2, className: cx("plx-data-toolbar", className) }, start2 ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-data-toolbar__group" }, start2) : null, children, /* @__PURE__ */ React2.createElement(Toolbar.Spacer, null), end ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-data-toolbar__group plx-data-toolbar__group--end" }, end) : null);
   }
   const off = (a, count2) => !!a.disabled || !count2 || !!(a.single && count2 > 1);
   function Count$1({ count: count2, t }) {
@@ -27206,47 +27294,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
   };
-  const version$1 = "0.81.0";
-  function marginOf(value) {
-    if (!value || typeof document === "undefined") return "0px";
-    const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
-    return [].concat(value).slice(0, 4).map((name) => {
-      const v = getComputedStyle(root).getPropertyValue(name).trim(), n = parseFloat(v) || 0;
-      return Math.round(/rem$/.test(v) ? n * size : n) + "px";
-    }).join(" ");
-  }
-  function useIntersection(ref, options = {}) {
-    const { root = null, rootMargin = null, threshold = 0, once = false, disabled = false, onChange = null } = options;
-    const [state, setState] = React2.useState({ visible: false, ratio: 0, entry: null });
-    const seen = React2.useRef(false);
-    const change = React2.useRef(onChange);
-    change.current = onChange;
-    const margin = [].concat(rootMargin || []).join(" "), steps = [].concat(threshold).join(" ");
-    React2.useEffect(() => {
-      const el = ref && ref.current;
-      if (!el || disabled || once && seen.current) return void 0;
-      if (typeof IntersectionObserver === "undefined") {
-        seen.current = true;
-        setState({ visible: true, ratio: 1, entry: null });
-        return void 0;
-      }
-      const area = root && "current" in root ? root.current : root;
-      const min2 = Math.min.apply(null, [].concat(threshold));
-      const io = new IntersectionObserver((entries2) => {
-        const entry = entries2[entries2.length - 1];
-        const visible2 = entry.isIntersecting && entry.intersectionRatio >= min2;
-        if (change.current) change.current(entry);
-        setState({ visible: visible2 || once && seen.current, ratio: entry.intersectionRatio, entry });
-        if (visible2 && once) {
-          seen.current = true;
-          io.disconnect();
-        }
-      }, { root: area || null, rootMargin: marginOf(rootMargin), threshold });
-      io.observe(el);
-      return () => io.disconnect();
-    }, [ref, root, margin, steps, once, disabled]);
-    return state;
-  }
+  const version$1 = "0.82.0";
   const CONTRAST_MINIMUMS = Object.freeze({ text: 4.5, "large-text": 3, enhanced: 7, "non-text": 3 });
   const T = "text", N = "non-text";
   const CONTRAST_PAIRS = Object.freeze([

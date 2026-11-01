@@ -292,6 +292,8 @@
 .plx-table__grid-tableholder--narrow{--plx-state-data-grid-holder-overflow:hidden auto;}
 .plx-table__grid-table{background-color:var(--plx-comp-data-grid-background);color:var(--plx-comp-data-grid-text);display:block;inline-size:var(--plx-state-data-grid-table-inline-size,max-content);min-inline-size:var(--plx-state-data-grid-table-min-inline-size,100%);position:relative;white-space:nowrap;}
 .plx-table__grid-table--narrow{--plx-state-data-grid-table-inline-size:auto;--plx-state-data-grid-table-min-inline-size:0;}
+/* the end of a card list drawn in chunks (issue 809): an invisible line after the drawn cards; when it nears the view the next cards are drawn */
+.plx-table__card-more{block-size:var(--plx-ref-size-4px);}
 .plx-table__grid-table--virtual{--plx-sys-virtual-item-gap:var(--plx-comp-data-grid-line-width);--plx-sys-virtual-item-size:var(--plx-comp-data-grid-record-height);}
 @supports (animation-timeline: scroll()) and (anchor-name: --plx-a) and (timeline-scope: --plx-a) {
 .plx-table[data-plx-engine="next"]{anchor-scope:--plx-table-body;timeline-scope:--plx-table-y,--plx-table-x;}

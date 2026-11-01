@@ -618,7 +618,7 @@ object PlenixComponent {
     const val modalLayerBeforeOpacity = 0.5f
     val navBarHeight = 56.dp
     val navBarIconSize = 20.dp
-    val navBarItemMinWidth = 64.dp
+    val navBarItemMinWidth = 24.dp
     val navBarItemTarget = 24.dp
     val navBarLabelFontSize = 12.dp
     val navBarLabelGap = 4.dp
