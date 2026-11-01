@@ -102,7 +102,8 @@ One design system and the suite of applications built on it, owned by one person
   `platform/components/Icon/icon.css` and `glyphs.js`, `platform/mobile/`;
   in the spec, `spec-parts.js`, `ds-sample-parts.css`, `native-guidance.js`, `native-guidance-full.js`,
   `platforms-standard.js`, `styling-standard.js`, `reviewed.js` and `usage.js` (ignored in its repository too). Lanes carry
-  sources only: check-system fails on one of those under `lanes/<task>/design-system/`.
+  sources only: check-system fails on one of those under `lanes/<task>/design-system/`. Add `lanes/<task>/BASE` with the
+  spec commit you built on (check-system warns when it is missing).
 - Clean copy for builds and proofs: a detached `git worktree` (for example `../Plenix-b0`) with `node_modules` linked
   as a junction; copy in only your changed files; for build-app, write `platform/design-system/.git` as
   `gitdir: C:/Users/Administrator/Documents/Plenix/.git/modules/platform/design-system` and remove it after.

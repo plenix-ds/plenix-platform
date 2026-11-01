@@ -55,6 +55,8 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
 - Lanes carry sources only: never a file the build writes (`spec-parts.js`, `ds-sample-parts.css`, `native-guidance.js`,
   `native-guidance-full.js`, `platforms-standard.js`, `styling-standard.js`, `reviewed.js`, `usage.js`). They are ignored
   (#692), and check-system fails on a copy under `lanes/<task>/design-system/`.
+- Add `lanes/<task>/BASE` with the spec commit you built on (one line, the full commit id of `platform/design-system`);
+  the carry merges your lane with it, and check-system warns when it is missing.
 - The integrator moves them into the design system's repository at merge (`tools/agent/take-pr.js`).
 
 ## House rules (strict; the checks enforce most of them)
