@@ -204,7 +204,7 @@ function loadZone() {
     await open('America/Los_Angeles');
     // 22:30 UTC on July 1 is 15:30 on July 1 in Los Angeles and 01:30 on July 2 in Cairo (UTC+3 in summer)
     await draw([
-      { id: 'ar', zone: 'Africa/Cairo', locale: 'ar-EG', dir: 'rtl', value: '2026-07-01T22:30:00.000Z', props: { mode: 'date-time' } },
+      { id: 'ar', zone: 'Africa/Cairo', locale: 'ar-EG', dir: 'rtl', value: '2026-07-01T22:30:00.000Z', props: { mode: 'date-time', locale: 'ar-EG' } },   // the date's form and digits come from the picker's own locale; LocaleProvider gives the words and the zone
       { id: 'en', zone: 'Africa/Cairo', locale: 'en-US', dir: 'ltr', value: '2026-07-01T22:30:00.000Z', props: { mode: 'date-time' } },
     ]);
     r = await read('ar');
