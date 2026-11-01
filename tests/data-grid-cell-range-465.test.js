@@ -126,7 +126,7 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
         const z = await cellXY(5, 'amount'); await page.keyboard.down('Shift'); await page.mouse.click(z.x, z.y); await page.keyboard.up('Shift'); await wait(300);
         let s = await state(); assert.equal(s.cells, 8); assert.equal(s.rows, 4);
         const y = await cellXY(7, 'role'); await page.keyboard.down('Shift'); await page.mouse.click(y.x, y.y); await page.keyboard.up('Shift'); await wait(300);
-        s = await state(); assert.equal(s.rows, 6); assert.equal(await page.evaluate(() => window.__log.slice(-1)[0].split(' ')[1].split('>')[0]), 'r3.role', 'the anchor is where the block began');
+        s = await state(); assert.equal(s.rows, 6); assert.equal(await page.evaluate(() => window.__log.slice(-1)[0].split(' ')[2].split('>')[0]), 'r3.role', 'the anchor is where the block began');
       });
       await check(T + 'a plain click ends the block', async () => {
         const k2 = await cellXY(6, 'name'); await page.mouse.click(k2.x, k2.y); await wait(250); assert.equal((await state()).cells, 0);

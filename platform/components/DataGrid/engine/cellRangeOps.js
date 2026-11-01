@@ -115,7 +115,7 @@ export const beginDrag = ({ anchor, frame, scroller, rowAt, ordered, isDown, onM
     scroller.scrollTop += dy; scroller.scrollLeft += dx; hit();
     frameId = requestAnimationFrame(edge);
   };
-  const move = (e) => { x = e.clientX; y = e.clientY; hit(); if (!frameId) edge(); };
+  const move = (e) => { if (e.buttons === 0) { up(); return; } x = e.clientX; y = e.clientY; hit(); if (!frameId) edge(); };   // no button down: released outside the window, the drag ends
   const nothing = (e) => e.preventDefault();   // no text selection while dragging
   const stop = () => {
     window.removeEventListener('mousemove', move, true); window.removeEventListener('mouseup', up, true); document.removeEventListener('selectstart', nothing, true);
