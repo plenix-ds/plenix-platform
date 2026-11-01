@@ -48,7 +48,7 @@ const NODE = /^(children|label|title|description|icon|iconEnd|media|actions|foot
 // props whose type their name settles, when the header text does not give one of its own (#687): the same meaning in every
 // part (an HTML attribute, Plenix's words, a ref)
 const BY_NAME = { className: 'string', id: 'string', href: 'string', src: 'string', alt: 'string', name: 'string', placeholder: 'string', locale: 'string',
-  target: 'string', lang: 'string', ref: 'React.Ref<any>', as: 'React.ElementType', strings: '{ [key: string]: any }', shortcut: 'string',
+  target: 'string', lang: 'string', timeZone: 'string | null', ref: 'React.Ref<any>', as: 'React.ElementType', strings: '{ [key: string]: any }', shortcut: 'string',
   // the corners a group squares where a control meets its neighbor (ButtonGroup, InputGroup): the same shape on every control
   joined: '{ start?: "square" | "seam"; end?: "square" | "seam" }' };
 const BOOLEAN = /^(disabled|readOnly|required|invalid|expanded|open|checked|pressed|selected|loading|hidden|multiple|defaultOpen|defaultChecked|block|tree|selectable|focusOnOpen|uniformPillWidths)$/;
