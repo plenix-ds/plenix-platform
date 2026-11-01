@@ -12,7 +12,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     account: { name: "Jordan Avery", firstName: "Jordan", lastName: "Avery", email: "jordan.avery@example.com" },
     notifications: [
       { id: 1, text: "Fr. Daniel uploaded 12 new assets to Liturgy", time: "5 min ago", unread: true },
-      { id: 2, text: "Maya Chen sent a message: Round 3 concepts — confirm Thursday?", time: "10:24 AM", unread: true },
+      { id: 2, text: "Maya Chen sent a message: Round 3 concepts \u2014 confirm Thursday?", time: "10:24 AM", unread: true },
       { id: 3, text: "Sarah M. approved your batch download request", time: "22 min ago", unread: true },
       { id: 4, text: "Task due Mar 8: Deliver logo concepts round 3", time: "Yesterday", unread: false },
       { id: 5, text: "Version 3 of Banner Icon Set is now live", time: "Yesterday", unread: false }
@@ -88,14 +88,14 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   const CATEGORY_TOTAL = 48;
   const COLLECTION_CARDS = [["Website Assets", 84, "Aug 28, 2026", "jordan"], ["Social Media", 42, "Aug 25, 2026", "jordan"], ["Print ready", 156, "Aug 20, 2026", "sarah"], ["Needs review", 23, "Aug 14, 2026", "daniel"]].map(([name, count, updated, owner], i) => ({ id: i, name, count, updated, owner }));
   const ASSETS = [
-    ["Coptic Cross Gold Traditional", "Cross - Traditional", "Coptic_Cross_Gold.ai", "Adobe Illustrator (.ai)", "AI", "18.7 MB", "2400 × 3200 px", "Aug 12, 2026", "Complete"],
-    ["Cross Gold Ornate Large", "Cross - Majestic", "Cross_Gold_Ornate.psd", "Photoshop (.psd)", "PSD", "42.1 MB", "4800 × 6400 px", "Aug 10, 2026", "Complete"],
-    ["Cross Gold Pectoral", "Cross - Pectoral Silver", "Cross_Gold_Pectoral.ai", "Adobe Illustrator (.ai)", "AI", "8.3 MB", "1200 × 1600 px", "Aug 8, 2026", "Complete"],
-    ["Gold Cross Floral Border", "Cross - Floral", "Gold_Cross_Floral.png", "PNG", "PNG", "4.2 MB", "2000 × 2000 px", "Jul 28, 2026", "New"],
-    ["Cross Gold Diamond Pattern", "Cross - Diamond", "Cross_Gold_Diamond.ai", "Adobe Illustrator (.ai)", "AI", "12.6 MB", "3000 × 3000 px", "Jul 22, 2026", "Complete"],
-    ["Gold Cross Iconostasis", "Cross - Iconostasis", "Gold_Cross_Iconostasis.jpg", "JPEG", "JPG", "1.8 MB", "1920 × 2560 px", "Jul 15, 2026", "Complete"],
-    ["Cross Gold Procession", "Cross - Procession", "Cross_Gold_Procession.psd", "Photoshop (.psd)", "PSD", "28.4 MB", "4000 × 5000 px", "Jul 10, 2026", "New"],
-    ["Gold Coptic Cross Linear", "Cross - Linear", "Gold_Coptic_Linear.ai", "Adobe Illustrator (.ai)", "AI", "6.1 MB", "1800 × 2400 px", "Jul 5, 2026", "Complete"]
+    ["Coptic Cross Gold Traditional", "Cross - Traditional", "Coptic_Cross_Gold.ai", "Adobe Illustrator (.ai)", "AI", "18.7 MB", "2400 \xD7 3200 px", "Aug 12, 2026", "Complete"],
+    ["Cross Gold Ornate Large", "Cross - Majestic", "Cross_Gold_Ornate.psd", "Photoshop (.psd)", "PSD", "42.1 MB", "4800 \xD7 6400 px", "Aug 10, 2026", "Complete"],
+    ["Cross Gold Pectoral", "Cross - Pectoral Silver", "Cross_Gold_Pectoral.ai", "Adobe Illustrator (.ai)", "AI", "8.3 MB", "1200 \xD7 1600 px", "Aug 8, 2026", "Complete"],
+    ["Gold Cross Floral Border", "Cross - Floral", "Gold_Cross_Floral.png", "PNG", "PNG", "4.2 MB", "2000 \xD7 2000 px", "Jul 28, 2026", "New"],
+    ["Cross Gold Diamond Pattern", "Cross - Diamond", "Cross_Gold_Diamond.ai", "Adobe Illustrator (.ai)", "AI", "12.6 MB", "3000 \xD7 3000 px", "Jul 22, 2026", "Complete"],
+    ["Gold Cross Iconostasis", "Cross - Iconostasis", "Gold_Cross_Iconostasis.jpg", "JPEG", "JPG", "1.8 MB", "1920 \xD7 2560 px", "Jul 15, 2026", "Complete"],
+    ["Cross Gold Procession", "Cross - Procession", "Cross_Gold_Procession.psd", "Photoshop (.psd)", "PSD", "28.4 MB", "4000 \xD7 5000 px", "Jul 10, 2026", "New"],
+    ["Gold Coptic Cross Linear", "Cross - Linear", "Gold_Coptic_Linear.ai", "Adobe Illustrator (.ai)", "AI", "6.1 MB", "1800 \xD7 2400 px", "Jul 5, 2026", "Complete"]
   ].map(([name, cat, file, fmt2, badge, size, dims, date, status], i) => ({
     id: i,
     name,
@@ -132,13 +132,13 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   };
   const COLLECTION_DETAIL = { name: "Website Assets", count: "84 assets" };
   const CATEGORY_DOWNLOADS = [
-    { title: "Download entire category", items: [["file-zip", "All Files (Source)", "78 files · ~1.4 GB"]] },
-    { title: "Download by file type", items: [["file-ai", "Adobe Illustrator (.ai)", "42 files · ~820 MB"], ["file-png", "PNG Images", "78 files · ~340 MB"], ["file-jpg", "JPEG Thumbnails", "78 files · ~18 MB"], ["file-svg", "SVG Vectors", "35 files · ~12 MB"], ["file-pdf", "PDF Print-Ready", "42 files · ~280 MB"]] },
-    { title: "Variations", items: [["file-jpg", "Web Optimized (sRGB, 1200px)", "78 files · ~45 MB"], ["file-png", "Social Media (1080×1080)", "78 files · ~62 MB"]] }
+    { title: "Download entire category", items: [["file-zip", "All Files (Source)", "78 files \xB7 ~1.4 GB"]] },
+    { title: "Download by file type", items: [["file-ai", "Adobe Illustrator (.ai)", "42 files \xB7 ~820 MB"], ["file-png", "PNG Images", "78 files \xB7 ~340 MB"], ["file-jpg", "JPEG Thumbnails", "78 files \xB7 ~18 MB"], ["file-svg", "SVG Vectors", "35 files \xB7 ~12 MB"], ["file-pdf", "PDF Print-Ready", "42 files \xB7 ~280 MB"]] },
+    { title: "Variations", items: [["file-jpg", "Web Optimized (sRGB, 1200px)", "78 files \xB7 ~45 MB"], ["file-png", "Social Media (1080\xD71080)", "78 files \xB7 ~62 MB"]] }
   ];
   const ASSET_DOWNLOADS = [
     { title: "Download by file type", items: [["file-png", "Preview.png", "4.2 MB"], ["file-jpg", "Web.jpg", "245 KB"]] },
-    { title: "Variations", items: [["file-jpg", "Web Optimized (sRGB, 1200px)", "180 KB"], ["file-png", "Social Media (1080×1080)", "520 KB"]] }
+    { title: "Variations", items: [["file-jpg", "Web Optimized (sRGB, 1200px)", "180 KB"], ["file-png", "Social Media (1080\xD71080)", "520 KB"]] }
   ];
   const ASSET_STATUSES = ["Complete", "New", "In progress", "Pending review", "Archived"];
   const USAGE_RIGHTS = ["Internal use only", "Church Use", "Creative Commons", "Public domain"];
@@ -176,8 +176,8 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     const by = {
       Newest: (a, b) => Date.parse(b.date) - Date.parse(a.date),
       Oldest: (a, b) => Date.parse(a.date) - Date.parse(b.date),
-      "Name A–Z": (a, b) => a.name.localeCompare(b.name),
-      "Name Z–A": (a, b) => b.name.localeCompare(a.name),
+      "Name A\u2013Z": (a, b) => a.name.localeCompare(b.name),
+      "Name Z\u2013A": (a, b) => b.name.localeCompare(a.name),
       Size: (a, b) => parseFloat(b.size) - parseFloat(a.size)
     }[f.sort];
     return by ? list.slice().sort(by) : list;
@@ -243,7 +243,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     const recentShown = recent.filter((x) => x.toLowerCase().indexOf(typed) >= 0);
     const suggestions = recentShown.length ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(plenixPlatform.SectionHeading, null, "Recent searches"), /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList, { label: "Recent searches" }, recentShown.map((x) => /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList.Item, { key: x, leading: /* @__PURE__ */ React2.createElement(plenixPlatform.Icon, { name: "clock" }), title: x, onOpen: () => run(x) })))) : null;
     const found = typed ? findAssets({ ...FIND_EMPTY, query: q }) : null;
-    const results = found ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(plenixPlatform.SectionHeading, null, "Assets"), found.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList, { label: "Assets", stacked: true }, found.map((a) => /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList.Item, { key: a.id, leading: /* @__PURE__ */ React2.createElement(plenixPlatform.Thumbnail, { src: a.thumb, alt: "" }), title: a.name, meta: a.cat + " · " + a.badge, onOpen: () => openAsset(a) }))) : /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "secondary", as: "p" }, "Nothing matches “" + q.trim() + "”.")) : null;
+    const results = found ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(plenixPlatform.SectionHeading, null, "Assets"), found.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList, { label: "Assets", stacked: true }, found.map((a) => /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList.Item, { key: a.id, leading: /* @__PURE__ */ React2.createElement(plenixPlatform.Thumbnail, { src: a.thumb, alt: "" }), title: a.name, meta: a.cat + " \xB7 " + a.badge, onOpen: () => openAsset(a) }))) : /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "secondary", as: "p" }, "Nothing matches \u201C" + q.trim() + "\u201D.")) : null;
     return /* @__PURE__ */ React2.createElement(
       plenixPlatform.AppHeader,
       {
@@ -386,7 +386,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     ["Images", "jpg jpeg tiff tif gif png webp avif heic heif jxl pbm pgm pnm ppm hdr exr bmp icr tga svg svgz psd psb jp2 cr2 cr3 arw nef nrw orf raf raw2 dng 3fr iiq pef srw x3f gpr rwl dcr mrw erf kdc cdr cdt cmx cpx pat ai eps wmf emf", 5],
     ["Video", "mp4 mov avi flv wmv mkv mpg mpeg m4v webm ogv 3gp 3g2 maf ts vob divx rm rmvb asf m2ts mts", 6]
   ];
-  const HOT_FOLDERS = [{ name: "Plenix Import", enabled: true, meta: "Path: imports · Fully scanned Aug 18, 2026, 3:49 PM" }];
+  const HOT_FOLDERS = [{ name: "Plenix Import", enabled: true, meta: "Path: imports \xB7 Fully scanned Aug 18, 2026, 3:49 PM" }];
   const CONVERSIONS = [
     ["Image 3000x3000 JPG", "image3000x3000.jpg", "Yes", "Yes", "Image"],
     ["Webp Image 3000x3000", "image3000x3000.webp", "Yes", "Yes", "Image"],
@@ -401,9 +401,9 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   ];
   const USERS = [
     ["admin", "Administrator Administrator", "admin@example.com", "Administrators", "Dec 18, 2023", "Sep 1, 2026"],
-    ["agent", "Plenix Finder AI Helper", "—", null, "Sep 1, 2026", "—"],
+    ["agent", "Plenix Finder AI Helper", "\u2014", null, "Sep 1, 2026", "\u2014"],
     ["jordan", "Jordan Avery", "jordan.avery@example.com", "Administrators", "Sep 1, 2026", "Sep 19, 2026"],
-    ["testuser", "—", "—", null, "Dec 18, 2023", "Feb 13, 2015"]
+    ["testuser", "\u2014", "\u2014", null, "Dec 18, 2023", "Feb 13, 2015"]
   ];
   const GROUPS$1 = ["Administrators", "Catalogs Admins", "Uploaders", "Users"];
   const PERMISSION_ROLES = ["Entity owner", "Administrators", "Entity editor", "Users", "Anonymous"];
@@ -452,14 +452,14 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   const CATALOG_PARAMETERS = [
     ["Application site title", "sitetitle", "Plenix Library", "text"],
     ["Allow login by Email Address", "allowloginbyemail", "true"],
-    ["CDN prefix", "cdn_prefix", "—"],
-    ["AWS bucket", "awsbucket", "—"],
+    ["CDN prefix", "cdn_prefix", "\u2014"],
+    ["AWS bucket", "awsbucket", "\u2014"],
     ["AI: Enable Content Creation", "ai_create_enabled", "true"],
     ["AI: OpenAI Model (AI Chat)", "gpt-model", "gpt-4o"],
     ["AI: Ollama Server", "ollama-url", "https://ollama.example.com"],
     ["AI: Translate Server", "ai_translate_server", "http://translate.example.com:48991"],
     ["AI: Vectorizer Server", "ai_vectorizer_server", "http://vectorizer.example.com:48981"],
-    ["Face: Faceprofile Server", "faceprofileserver", "—"],
+    ["Face: Faceprofile Server", "faceprofileserver", "\u2014"],
     ["Catalog Asset Edit Groups", "catalogasseteditgroups", "administrators users"],
     ["Admin Catalog Asset View Groups", "catalogassetviewgroups", "administrators"]
   ];
@@ -470,32 +470,32 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   const DB_TABLES = ["asset", "category", "user", "group", "order", "library", "librarycollection", "customization", "entityperson", "faceprofilegroup", "module", "permission"];
   const DB_COLUMNS = ["AI tags", "Album", "Asset title", "Asset type", "Artist", "Categories", "Created on"];
   const DB_ROWS = [
-    ["gold, ornate", "—", "korban_stamp_010", "Image", "—", "Korban Stamp", "Aug 18, 2026"],
-    ["certificate, church", "—", "certificate_christ_the_teacher", "3D Models", "—", "Certificates", "Aug 15, 2026"],
+    ["gold, ornate", "\u2014", "korban_stamp_010", "Image", "\u2014", "Korban Stamp", "Aug 18, 2026"],
+    ["certificate, church", "\u2014", "certificate_christ_the_teacher", "3D Models", "\u2014", "Certificates", "Aug 15, 2026"],
     ["cross, gold", "Website Assets", "Coptic_Cross_Gold", "Image", "Mina Fahim", "Crosses", "Aug 10, 2026"],
-    ["baptism, sacrament", "—", "Certificate_Baptism_v3", "Documents", "—", "Certificate - Baptism", "Aug 8, 2026"]
+    ["baptism, sacrament", "\u2014", "Certificate_Baptism_v3", "Documents", "\u2014", "Certificate - Baptism", "Aug 8, 2026"]
   ];
   const DB_TOTAL = { records: "4,546", pages: 227 };
   const CUSTOMIZATIONS = [
     ["Supporting table", "Entity source type", "searchcategory", "9/1/26, 11:30 AM"],
-    ["Module", "Person", "—", "9/1/26, 11:30 AM"],
+    ["Module", "Person", "\u2014", "9/1/26, 11:30 AM"],
     ["Supporting table", "Start category ID", "desktopsyncfolder", "9/1/26, 11:30 AM"],
-    ["Module", "Document", "—", "9/1/26, 11:30 AM"],
-    ["Module", "Media profile", "—", "9/1/26, 11:30 AM"],
-    ["Module", "Categories", "—", "9/1/26, 11:30 AM"]
+    ["Module", "Document", "\u2014", "9/1/26, 11:30 AM"],
+    ["Module", "Media profile", "\u2014", "9/1/26, 11:30 AM"],
+    ["Module", "Categories", "\u2014", "9/1/26, 11:30 AM"]
   ];
   const SCHEDULED = [
-    ["Auto assign Entity Image", "autoassignproxyimage.html", "Runs: 2,736 · Repeats every 1m"],
-    ["Publish assets", "publishassets.html", "Runs: 541 · Repeats every 5m"],
-    ["Send collection chat notifications", "notifycollectionchatnotifications.html", "Runs: 541 · Repeats every 5m"],
-    ["Run media conversions", "runconversions.html", "Runs: 550 · Repeats every 5m"],
-    ["Transcript audio", "autotranscode.html", "Runs: 541 · Repeats every 5m"],
-    ["Semantic Index New", "semanticscan.html", "Runs: 270 · Repeats every 10m"],
-    ["Import hot folders", "importhotfolders.html", "Runs: 270 · Repeats every 10m"],
-    ["Check permission changes", "checkpermissionhistory.html", "Runs: 277 · Repeats every 10m"],
-    ["Apply Google Vision", "applygooglevision.html", "Runs: 180 · Repeats every 15m"],
-    ["Apply Google Transcode", "applygoogletranscode.html", "Runs: 180 · Repeats every 15m"],
-    ["Asset metadata notification", "assetmetadata.html", "Runs: 30 · Repeats every 30m"]
+    ["Auto assign Entity Image", "autoassignproxyimage.html", "Runs: 2,736 \xB7 Repeats every 1m"],
+    ["Publish assets", "publishassets.html", "Runs: 541 \xB7 Repeats every 5m"],
+    ["Send collection chat notifications", "notifycollectionchatnotifications.html", "Runs: 541 \xB7 Repeats every 5m"],
+    ["Run media conversions", "runconversions.html", "Runs: 550 \xB7 Repeats every 5m"],
+    ["Transcript audio", "autotranscode.html", "Runs: 541 \xB7 Repeats every 5m"],
+    ["Semantic Index New", "semanticscan.html", "Runs: 270 \xB7 Repeats every 10m"],
+    ["Import hot folders", "importhotfolders.html", "Runs: 270 \xB7 Repeats every 10m"],
+    ["Check permission changes", "checkpermissionhistory.html", "Runs: 277 \xB7 Repeats every 10m"],
+    ["Apply Google Vision", "applygooglevision.html", "Runs: 180 \xB7 Repeats every 15m"],
+    ["Apply Google Transcode", "applygoogletranscode.html", "Runs: 180 \xB7 Repeats every 15m"],
+    ["Asset metadata notification", "assetmetadata.html", "Runs: 30 \xB7 Repeats every 30m"]
   ];
   const NAV = [
     { heading: "Content", collapsible: true, items: [
@@ -603,7 +603,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   function Fields({ act }) {
     const [q, setQ] = React2.useState("");
     const rows = rowsOf(FIELDS.filter((r) => match$1(q, r)), ["name", "id2", "type"]);
-    return /* @__PURE__ */ React2.createElement(Screen, { id: "fields", title: "Fields", description: "The metadata field registry for assets — every field's name, internal ID, and type." }, /* @__PURE__ */ React2.createElement(Section$1, { title: "New field" }, /* @__PURE__ */ React2.createElement(plenixPlatform.SettingsRow, { label: "Field name", htmlFor: "system-new-field" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { gap: "sm", wrap: true }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { id: "system-new-field", name: "newFieldName", autoComplete: "off", enterKeyHint: "done", width: "lg", placeholder: "New field name..." }), /* @__PURE__ */ React2.createElement(B, { icon: "add", label: "Add field", act })))), /* @__PURE__ */ React2.createElement(Section$1, { title: "All fields", description: FIELD_TOTAL + " fields in the registry" }, /* @__PURE__ */ React2.createElement(Bar, { label: "Field actions" }, /* @__PURE__ */ React2.createElement(Search, { value: q, onChange: setQ, label: "Search " + FIELD_TOTAL + " fields" })), /* @__PURE__ */ React2.createElement(plenixPlatform.DataGrid, { label: "Fields", data: rows, empty: "No fields match", columns: [{ title: "Field name", field: "name", kind: "name", frozen: true, filter: true }, { title: "ID", field: "id2", kind: "data" }, { title: "Field type", field: "type", kind: "data", filter: "list" }] }), /* @__PURE__ */ React2.createElement(CountNote, { shown: rows.length, total: FIELD_TOTAL, what: "fields" })), /* @__PURE__ */ React2.createElement(Planned, { title: "Edit views" }, "Configure which fields appear on the asset edit form, and in what order."), /* @__PURE__ */ React2.createElement(Planned, { title: "Application views" }, "Configure which fields appear in application-wide views such as search results and tables."));
+    return /* @__PURE__ */ React2.createElement(Screen, { id: "fields", title: "Fields", description: "The metadata field registry for assets \u2014 every field's name, internal ID, and type." }, /* @__PURE__ */ React2.createElement(Section$1, { title: "New field" }, /* @__PURE__ */ React2.createElement(plenixPlatform.SettingsRow, { label: "Field name", htmlFor: "system-new-field" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { gap: "sm", wrap: true }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { id: "system-new-field", name: "newFieldName", autoComplete: "off", enterKeyHint: "done", width: "lg", placeholder: "New field name..." }), /* @__PURE__ */ React2.createElement(B, { icon: "add", label: "Add field", act })))), /* @__PURE__ */ React2.createElement(Section$1, { title: "All fields", description: FIELD_TOTAL + " fields in the registry" }, /* @__PURE__ */ React2.createElement(Bar, { label: "Field actions" }, /* @__PURE__ */ React2.createElement(Search, { value: q, onChange: setQ, label: "Search " + FIELD_TOTAL + " fields" })), /* @__PURE__ */ React2.createElement(plenixPlatform.DataGrid, { label: "Fields", data: rows, empty: "No fields match", columns: [{ title: "Field name", field: "name", kind: "name", frozen: true, filter: true }, { title: "ID", field: "id2", kind: "data" }, { title: "Field type", field: "type", kind: "data", filter: "list" }] }), /* @__PURE__ */ React2.createElement(CountNote, { shown: rows.length, total: FIELD_TOTAL, what: "fields" })), /* @__PURE__ */ React2.createElement(Planned, { title: "Edit views" }, "Configure which fields appear on the asset edit form, and in what order."), /* @__PURE__ */ React2.createElement(Planned, { title: "Application views" }, "Configure which fields appear in application-wide views such as search results and tables."));
   }
   function AssetTypes({ act }) {
     const [types, setTypes] = React2.useState(ASSET_TYPES.map(([name, ext, order]) => ({ name, ext, paths: "", order: String(order) })));
@@ -657,7 +657,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       { title: "Username", field: "user", kind: "name", frozen: true, filter: true },
       { title: "Name", field: "name", filter: true },
       { title: "Email", field: "email", filter: true },
-      { title: "Role", field: "role", kind: "center", filter: "list", render: (r) => r.role ? /* @__PURE__ */ React2.createElement(plenixPlatform.Badge, { tone: "active" }, r.role) : "—" },
+      { title: "Role", field: "role", kind: "center", filter: "list", render: (r) => r.role ? /* @__PURE__ */ React2.createElement(plenixPlatform.Badge, { tone: "active" }, r.role) : "\u2014" },
       { title: "Created", field: "created", kind: "data" },
       { title: "Last login", field: "login", kind: "data" }
     ] })));
@@ -696,7 +696,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   function CatalogParameters({ act }) {
     const [q, setQ] = React2.useState("");
     const rows = CATALOG_PARAMETERS.filter((r) => match$1(q, r));
-    return /* @__PURE__ */ React2.createElement(Form, { act, saved: "Save changes" }, /* @__PURE__ */ React2.createElement(Screen, { id: "catalog-parameters", title: "Catalog parameters", description: "Catalog-wide configuration keys — storage, AI providers, and access defaults." }, /* @__PURE__ */ React2.createElement(Section$1, { title: "Parameters", description: CATALOG_TOTAL + " catalog settings" }, /* @__PURE__ */ React2.createElement(Bar, { label: "Parameter actions" }, /* @__PURE__ */ React2.createElement(Search, { value: q, onChange: setQ, label: "Search catalog settings" })), /* @__PURE__ */ React2.createElement(plenixPlatform.DataGrid, { label: "Catalog parameters", empty: "No settings match", data: rows.map(([label, id, value, kind]) => ({ id, label, key: id, value, kind })), columns: [
+    return /* @__PURE__ */ React2.createElement(Form, { act, saved: "Save changes" }, /* @__PURE__ */ React2.createElement(Screen, { id: "catalog-parameters", title: "Catalog parameters", description: "Catalog-wide configuration keys \u2014 storage, AI providers, and access defaults." }, /* @__PURE__ */ React2.createElement(Section$1, { title: "Parameters", description: CATALOG_TOTAL + " catalog settings" }, /* @__PURE__ */ React2.createElement(Bar, { label: "Parameter actions" }, /* @__PURE__ */ React2.createElement(Search, { value: q, onChange: setQ, label: "Search catalog settings" })), /* @__PURE__ */ React2.createElement(plenixPlatform.DataGrid, { label: "Catalog parameters", empty: "No settings match", data: rows.map(([label, id, value, kind]) => ({ id, label, key: id, value, kind })), columns: [
       { title: "Setting", field: "label", kind: "name", frozen: true, filter: true },
       { title: "Key", field: "key", kind: "data", filter: true },
       { title: "Value", field: "value", render: (r) => r.kind !== "text" ? /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, r.value) : r.value }
@@ -712,7 +712,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     const rows = DB_ROWS.filter((r) => match$1(q, r)).map((r, i) => Object.assign({ id: i }, ...DB_COLUMNS.map((c, j) => ({ ["c" + j]: r[j] }))));
     const columns = DB_COLUMNS.map((c, j) => ({ title: c, field: "c" + j, frozen: j === 0, filter: true, kind: c === "Asset title" ? "name" : c === "Created on" ? "data" : void 0 }));
     const grid = (label) => /* @__PURE__ */ React2.createElement(plenixPlatform.DataGrid, { label, data: rows, columns, empty: "No records match" });
-    return /* @__PURE__ */ React2.createElement(Screen, { id: "database", title: "Database", description: "Browse, edit, import, or export any underlying data grid.", actions: /* @__PURE__ */ React2.createElement(B, { icon: "add", label: "New table", tone: "info", act }) }, /* @__PURE__ */ React2.createElement(Section$1, { title: "Table" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Table", layout: "inline" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Combobox, { options: DB_TABLES.map((t) => ({ value: t, label: t })), value: table, onChange: setTable }))), /* @__PURE__ */ React2.createElement(Section$1, { title: "Records in " + table, stateKey: "records", description: /* @__PURE__ */ React2.createElement(React2.Fragment, null, "Found ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, DB_TOTAL.records), " records · page ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, "1"), " of ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, DB_TOTAL.pages)) }, /* @__PURE__ */ React2.createElement(Bar, { label: "Record actions" }, bt({ icon: "add", label: "Add new", act }), /* @__PURE__ */ React2.createElement(plenixPlatform.Toolbar.Group, { role: "group", "aria-label": "Transfer" }, bt({ icon: "refresh", label: "Reindex", tone: "info", act }), bt({ icon: "import", label: "Import", act }), bt({ icon: "export", label: "Export", tone: "info", act })), bt({ icon: "doc-text", label: "Export text", tone: "info", act }), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", iconOnly: true, icon: "close", label: "Reset settings", onClick: act("Settings reset", "info") }), /* @__PURE__ */ React2.createElement(plenixPlatform.Menu, { label: "Delete", trigger: /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", variant: "danger-secondary", icon: "trash", caret: true }, "Delete") }, /* @__PURE__ */ React2.createElement(plenixPlatform.MenuItem, { icon: "trash", danger: true, onSelect: act("Delete " + DB_TOTAL.records + " records", "warning") }, "Delete " + DB_TOTAL.records + " records"), /* @__PURE__ */ React2.createElement(plenixPlatform.MenuItem, { icon: "trash", danger: true, onSelect: act("Delete table", "warning") }, "Delete table")), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", icon: "expand", onClick: () => setExpanded(true) }, "Expand"), /* @__PURE__ */ React2.createElement(Search, { value: q, onChange: setQ, label: "Search" })), grid("Table: " + table), /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { justify: "end" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", iconEnd: "chevron-right", onClick: act("Forward", "info") }, "Next page")), /* @__PURE__ */ React2.createElement(plenixPlatform.Dialog, { open: expanded, onClose: () => setExpanded(false), title: "Table: " + table, icon: "expand", size: "full" }, grid("Table: " + table + ", expanded"))), /* @__PURE__ */ React2.createElement(Planned, { title: "Customize fields" }, "Configure the fields available on this table — the same editor as Files > Fields, scoped to this table."), /* @__PURE__ */ React2.createElement(Planned, { title: "Customize views" }, "Configure how records in this table are displayed in lists and edit forms."), /* @__PURE__ */ React2.createElement(Planned, { title: "Elastic system info" }, "Raw Elasticsearch mapping and index info for this table."));
+    return /* @__PURE__ */ React2.createElement(Screen, { id: "database", title: "Database", description: "Browse, edit, import, or export any underlying data grid.", actions: /* @__PURE__ */ React2.createElement(B, { icon: "add", label: "New table", tone: "info", act }) }, /* @__PURE__ */ React2.createElement(Section$1, { title: "Table" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Table", layout: "inline" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Combobox, { options: DB_TABLES.map((t) => ({ value: t, label: t })), value: table, onChange: setTable }))), /* @__PURE__ */ React2.createElement(Section$1, { title: "Records in " + table, stateKey: "records", description: /* @__PURE__ */ React2.createElement(React2.Fragment, null, "Found ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, DB_TOTAL.records), " records \xB7 page ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, "1"), " of ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data" }, DB_TOTAL.pages)) }, /* @__PURE__ */ React2.createElement(Bar, { label: "Record actions" }, bt({ icon: "add", label: "Add new", act }), /* @__PURE__ */ React2.createElement(plenixPlatform.Toolbar.Group, { role: "group", "aria-label": "Transfer" }, bt({ icon: "refresh", label: "Reindex", tone: "info", act }), bt({ icon: "import", label: "Import", act }), bt({ icon: "export", label: "Export", tone: "info", act })), bt({ icon: "doc-text", label: "Export text", tone: "info", act }), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", iconOnly: true, icon: "close", label: "Reset settings", onClick: act("Settings reset", "info") }), /* @__PURE__ */ React2.createElement(plenixPlatform.Menu, { label: "Delete", trigger: /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", variant: "danger-secondary", icon: "trash", caret: true }, "Delete") }, /* @__PURE__ */ React2.createElement(plenixPlatform.MenuItem, { icon: "trash", danger: true, onSelect: act("Delete " + DB_TOTAL.records + " records", "warning") }, "Delete " + DB_TOTAL.records + " records"), /* @__PURE__ */ React2.createElement(plenixPlatform.MenuItem, { icon: "trash", danger: true, onSelect: act("Delete table", "warning") }, "Delete table")), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", icon: "expand", onClick: () => setExpanded(true) }, "Expand"), /* @__PURE__ */ React2.createElement(Search, { value: q, onChange: setQ, label: "Search" })), grid("Table: " + table), /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { justify: "end" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", iconEnd: "chevron-right", onClick: act("Forward", "info") }, "Next page")), /* @__PURE__ */ React2.createElement(plenixPlatform.Dialog, { open: expanded, onClose: () => setExpanded(false), title: "Table: " + table, icon: "expand", size: "full" }, grid("Table: " + table + ", expanded"))), /* @__PURE__ */ React2.createElement(Planned, { title: "Customize fields" }, "Configure the fields available on this table \u2014 the same editor as Files > Fields, scoped to this table."), /* @__PURE__ */ React2.createElement(Planned, { title: "Customize views" }, "Configure how records in this table are displayed in lists and edit forms."), /* @__PURE__ */ React2.createElement(Planned, { title: "Elastic system info" }, "Raw Elasticsearch mapping and index info for this table."));
   }
   function Customizations({ act }) {
     const rows = rowsOf(CUSTOMIZATIONS, ["type", "name", "modules", "date"]);
@@ -871,13 +871,13 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       /* @__PURE__ */ React2.createElement("img", { className: "plx-preview__media", src: asset.thumb, alt: "" })
     ), /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { gap: "xs" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Title", hideLabel: true }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { emphasis: true, value: f.title, onChange: (e) => setF({ ...f, title: e.target.value }) })), /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "secondary" }, asset.cat)), /* @__PURE__ */ React2.createElement(plenixPlatform.Tabs, { variant: "folder", label: "Asset details", items: [
       { value: "details", label: "Details", content: /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(EditBar, { act, onFields: () => onDialog("editFieldsFileModal") }), /* @__PURE__ */ React2.createElement(Accordion, { title: "File" }, /* @__PURE__ */ React2.createElement(Row, { label: "File name" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "fileName", ...text("file") })), /* @__PURE__ */ React2.createElement(plenixPlatform.PropertyList, null, /* @__PURE__ */ React2.createElement(plenixPlatform.PropertyList.Item, { label: "File size", data: true }, asset.size), /* @__PURE__ */ React2.createElement(plenixPlatform.PropertyList.Item, { label: "Format" }, asset.fmt), /* @__PURE__ */ React2.createElement(plenixPlatform.PropertyList.Item, { label: "Dimensions", data: true }, asset.dims), /* @__PURE__ */ React2.createElement(plenixPlatform.PropertyList.Item, { label: "Added", data: true }, asset.date))), /* @__PURE__ */ React2.createElement(Accordion, { title: "General" }, /* @__PURE__ */ React2.createElement(Row, { label: "Edit status" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "editStatus", ...text("status") }, ASSET_STATUSES.map((p) => /* @__PURE__ */ React2.createElement("option", { key: p }, p)))), /* @__PURE__ */ React2.createElement(Row, { label: "Category" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "category", ...text("cat") })), /* @__PURE__ */ React2.createElement(Row, { label: "Copyright" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "copyright", placeholder: "e.g. Diocese of LA", ...text("copyright") })), /* @__PURE__ */ React2.createElement(Row, { label: "Usage rights" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "usageRights", ...text("rights") }, /* @__PURE__ */ React2.createElement("option", { value: "" }, "-- Select --"), USAGE_RIGHTS.map((p) => /* @__PURE__ */ React2.createElement("option", { key: p }, p)))), /* @__PURE__ */ React2.createElement(Row, { label: "Rating" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Rating, { value: f.rating, onChange: (v) => setF({ ...f, rating: v }), label: "Rating" })), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Description" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Textarea, { name: "description", rows: 2, placeholder: "Add description...", ...text("description") }))), /* @__PURE__ */ React2.createElement(Accordion, { title: "Tags" }, /* @__PURE__ */ React2.createElement(Tags, { initial: asset.tags, act }))) },
-      { value: "downloads", label: "Downloads", content: /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(Downloads, { groups: [{ title: "Source file", items: [[asset.typeIcon, asset.file, asset.size + " · " + asset.fmt]] }].concat(ASSET_DOWNLOADS), act })) },
+      { value: "downloads", label: "Downloads", content: /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(Downloads, { groups: [{ title: "Source file", items: [[asset.typeIcon, asset.file, asset.size + " \xB7 " + asset.fmt]] }].concat(ASSET_DOWNLOADS), act })) },
       { value: "versions", label: "Versions", content: /* @__PURE__ */ React2.createElement(plenixPlatform.ActivityList, { label: "Versions" }, VERSIONS$1.map((v) => /* @__PURE__ */ React2.createElement(
         plenixPlatform.ActivityList.Item,
         {
           key: v.label,
           title: v.current ? /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { gap: "xs", wrap: true }, v.label, /* @__PURE__ */ React2.createElement(plenixPlatform.Badge, { tone: "info", icon: "check" }, "Current version")) : v.label,
-          meta: v.date + " · " + v.user,
+          meta: v.date + " \xB7 " + v.user,
           actions: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "xs", variant: "ghost", onClick: act("Download", "info") }, "Download"), v.current ? null : /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "xs", variant: "ghost", onClick: act("Restore", "info") }, "Restore"))
         }
       ))) }
@@ -1018,7 +1018,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       toast.show("Save", { tone: "success" });
       if (onSave) onSave({ name: form.name, description: form.description, tags, color });
     };
-    return /* @__PURE__ */ React2.createElement(plenixPlatform.Dialog, { open, onClose, title: "Categories › Add New", icon: "grid-2x2", size: "lg", footer: /* @__PURE__ */ React2.createElement(Footer$1, { onCancel: onClose }, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "circle-info", onClick: () => setFieldsOpen(true) }, "Fields"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { type: "submit", form: uid, variant: "primary" }, "Save")) }, /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "form", id: uid, noValidate: true, onSubmit: save }, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Category name" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "categoryName", placeholder: "Enter category name...", ...text("name") })), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Description" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Textarea, { name: "description", placeholder: "Optional description...", ...text("description") })), /* @__PURE__ */ React2.createElement("div", { className: "plx-field plx-field--stacked" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-field__head" }, /* @__PURE__ */ React2.createElement("label", { className: "plx-field__label", htmlFor: uid + "tags" }, "Tags")), /* @__PURE__ */ React2.createElement("div", { className: "plx-field__control" }, /* @__PURE__ */ React2.createElement(plenixPlatform.TagList, null, tags.map((t) => /* @__PURE__ */ React2.createElement(plenixPlatform.Tag, { key: t, onRemove: () => setTags(tags.filter((x) => x !== t)) }, t)), /* @__PURE__ */ React2.createElement(plenixPlatform.TagInput, { id: uid + "tags", name: "tags", placeholder: "Add a tag", "aria-describedby": uid + "tags-d", onAdd: addTag })), /* @__PURE__ */ React2.createElement("div", { className: "plx-field__description", id: uid + "tags-d" }, "Hit ", /* @__PURE__ */ React2.createElement(plenixPlatform.Kbd, null, "enter"), " or ", /* @__PURE__ */ React2.createElement(plenixPlatform.Kbd, null, "return"), " key after typing each tag"))), /* @__PURE__ */ React2.createElement("div", { className: "plx-field plx-field--stacked" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-field__head" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-field__label", id: uid + "color" }, "Category color")), /* @__PURE__ */ React2.createElement("div", { className: "plx-field__control" }, /* @__PURE__ */ React2.createElement(plenixPlatform.ColorPicker, { palette: "category", "aria-labelledby": uid + "color", label: null, value: color, onChange: setColor })))), /* @__PURE__ */ React2.createElement(EditFieldsCatDialog, { open: fieldsOpen, onClose: () => setFieldsOpen(false) }));
+    return /* @__PURE__ */ React2.createElement(plenixPlatform.Dialog, { open, onClose, title: "Categories \u203A Add New", icon: "grid-2x2", size: "lg", footer: /* @__PURE__ */ React2.createElement(Footer$1, { onCancel: onClose }, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "circle-info", onClick: () => setFieldsOpen(true) }, "Fields"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { type: "submit", form: uid, variant: "primary" }, "Save")) }, /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "form", id: uid, noValidate: true, onSubmit: save }, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Category name" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "categoryName", placeholder: "Enter category name...", ...text("name") })), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Description" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Textarea, { name: "description", placeholder: "Optional description...", ...text("description") })), /* @__PURE__ */ React2.createElement("div", { className: "plx-field plx-field--stacked" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-field__head" }, /* @__PURE__ */ React2.createElement("label", { className: "plx-field__label", htmlFor: uid + "tags" }, "Tags")), /* @__PURE__ */ React2.createElement("div", { className: "plx-field__control" }, /* @__PURE__ */ React2.createElement(plenixPlatform.TagList, null, tags.map((t) => /* @__PURE__ */ React2.createElement(plenixPlatform.Tag, { key: t, onRemove: () => setTags(tags.filter((x) => x !== t)) }, t)), /* @__PURE__ */ React2.createElement(plenixPlatform.TagInput, { id: uid + "tags", name: "tags", placeholder: "Add a tag", "aria-describedby": uid + "tags-d", onAdd: addTag })), /* @__PURE__ */ React2.createElement("div", { className: "plx-field__description", id: uid + "tags-d" }, "Hit ", /* @__PURE__ */ React2.createElement(plenixPlatform.Kbd, null, "enter"), " or ", /* @__PURE__ */ React2.createElement(plenixPlatform.Kbd, null, "return"), " key after typing each tag"))), /* @__PURE__ */ React2.createElement("div", { className: "plx-field plx-field--stacked" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-field__head" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-field__label", id: uid + "color" }, "Category color")), /* @__PURE__ */ React2.createElement("div", { className: "plx-field__control" }, /* @__PURE__ */ React2.createElement(plenixPlatform.ColorPicker, { palette: "category", "aria-labelledby": uid + "color", label: null, value: color, onChange: setColor })))), /* @__PURE__ */ React2.createElement(EditFieldsCatDialog, { open: fieldsOpen, onClose: () => setFieldsOpen(false) }));
   }
   function NameDialog({ open, onClose, onSave, title, icon, nameLabel, nameField, placeholder, saved }) {
     const toast = plenixPlatform.useToast();
@@ -1047,7 +1047,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     return /* @__PURE__ */ React2.createElement(NameDialog, { ...props, title: "Save search", icon: "save", nameLabel: "Search name", nameField: "searchName", placeholder: "e.g. High-res crosses", saved: "Search saved" });
   }
   function NewCollectionDialog(props) {
-    return /* @__PURE__ */ React2.createElement(NameDialog, { ...props, title: "Collections › Add New", icon: "briefcase-plus", nameLabel: "Collection name", nameField: "collectionName", placeholder: "Enter collection name...", saved: "Collection created" });
+    return /* @__PURE__ */ React2.createElement(NameDialog, { ...props, title: "Collections \u203A Add New", icon: "briefcase-plus", nameLabel: "Collection name", nameField: "collectionName", placeholder: "Enter collection name...", saved: "Collection created" });
   }
   function AdvancedSortDialog({ open, onClose, value, onApply }) {
     const toast = plenixPlatform.useToast();
@@ -1147,7 +1147,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     };
     const add = (e) => {
       const n = e.target.value;
-      if (n) setFields(fields.concat({ name: n, type: "—" }));
+      if (n) setFields(fields.concat({ name: n, type: "\u2014" }));
     };
     const done = () => {
       if (onDone) onDone({ fields, forAllUsers: forAll });
@@ -1452,7 +1452,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       "Country|IPTC: Country-PrimaryLocationName",
       "Country Code|IPTC: Country-PrimaryLocationCode"
     ]],
-    ["Video — Stream", "video", [
+    ["Video \u2014 Stream", "video", [
       "Duration|FFmpeg: Duration",
       "Frame Rate|FFmpeg: r_frame_rate",
       "Video Codec|FFmpeg: codec_name",
@@ -1471,14 +1471,14 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       "Audio Language|FFmpeg: language",
       "Subtitle Tracks|FFmpeg: subtitle streams"
     ]],
-    ["Video — Container Tags", "video", [
-      "Title|MP4: moov/udta ©nam",
-      "Artist|MP4: ©ART",
-      "Album|MP4: ©alb",
-      "Comment|MP4: ©cmt",
-      "Genre|MP4: ©gen / gnre",
-      "Year|MP4: ©day",
-      "Encoder|MP4: ©too",
+    ["Video \u2014 Container Tags", "video", [
+      "Title|MP4: moov/udta \xA9nam",
+      "Artist|MP4: \xA9ART",
+      "Album|MP4: \xA9alb",
+      "Comment|MP4: \xA9cmt",
+      "Genre|MP4: \xA9gen / gnre",
+      "Year|MP4: \xA9day",
+      "Encoder|MP4: \xA9too",
       "MKV Title|Matroska: TagName",
       "MKV Date|Matroska: DateUTC",
       "MKV Muxing App|Matroska: MuxingApp",
@@ -1492,7 +1492,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       "WMV Description|ASF: Description",
       "WMV Rating|ASF: Rating"
     ]],
-    ["Audio — ID3 Tags", "audio", [
+    ["Audio \u2014 ID3 Tags", "audio", [
       "Title|ID3v2: TIT2",
       "Subtitle|ID3v2: TIT3",
       "Artist|ID3v2: TPE1",
@@ -1520,7 +1520,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       "Media Type|ID3v2: TMED",
       "ReplayGain|ID3v2: TXXX"
     ]],
-    ["Audio — Stream", "audio", [
+    ["Audio \u2014 Stream", "audio", [
       "Duration|FFmpeg: Duration",
       "Audio Codec|FFmpeg: codec_name",
       "Bitrate|FFmpeg: bit_rate",
@@ -1571,7 +1571,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   }));
   const META_DEFAULTS = ["default"].concat(...META_GROUPS$1.map((g) => g.fields.filter((f) => f.on).map((f) => f.key)));
   function formatSize(bytes) {
-    if (bytes === null || bytes === void 0) return "—";
+    if (bytes === null || bytes === void 0) return "\u2014";
     const units = ["B", "KB", "MB", "GB", "TB"];
     let n = bytes, u = 0;
     while (n >= 1024 && u < units.length - 1) {
@@ -1734,7 +1734,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
           }
         }
       }
-    ), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", variant: "primary", onClick: importUrl }, "Import")), queue.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { gap: "xs", "aria-live": "polite" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { justify: "between", className: "plx-u-mt-stack-sm" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "label" }, "Queue ", /* @__PURE__ */ React2.createElement(plenixPlatform.Count, { value: queue.length, label: queue.length + " file(s) in the queue" })), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { variant: "ghost", size: "xs", onClick: clearQueue }, "Clear")), /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "ul", gap: "xs", maxHeight: "sm", "aria-label": "Upload queue" }, queue.map((q) => /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { as: "li", key: q.id }, /* @__PURE__ */ React2.createElement(plenixPlatform.Icon, { name: fileIcon(q), size: "sm" }), /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "span", gap: "none", grow: true }, /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data", truncate: true, title: q.path + q.name }, q.path, q.name), /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "caption", truncate: true }, formatSize(q.size), " · ", q.type || "Unknown")), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { variant: "ghost", size: "xs", iconOnly: true, icon: "close", label: "Remove " + q.name, onClick: () => removeFile(q.id) }))))) : null);
+    ), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { size: "sm", variant: "primary", onClick: importUrl }, "Import")), queue.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { gap: "xs", "aria-live": "polite" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { justify: "between", className: "plx-u-mt-stack-sm" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "label" }, "Queue ", /* @__PURE__ */ React2.createElement(plenixPlatform.Count, { value: queue.length, label: queue.length + " file(s) in the queue" })), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { variant: "ghost", size: "xs", onClick: clearQueue }, "Clear")), /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "ul", gap: "xs", maxHeight: "sm", "aria-label": "Upload queue" }, queue.map((q) => /* @__PURE__ */ React2.createElement(plenixPlatform.Inline, { as: "li", key: q.id }, /* @__PURE__ */ React2.createElement(plenixPlatform.Icon, { name: fileIcon(q), size: "sm" }), /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "span", gap: "none", grow: true }, /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "data", truncate: true, title: q.path + q.name }, q.path, q.name), /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "caption", truncate: true }, formatSize(q.size), " \xB7 ", q.type || "Unknown")), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { variant: "ghost", size: "xs", iconOnly: true, icon: "close", label: "Remove " + q.name, onClick: () => removeFile(q.id) }))))) : null);
   }
   function CategoriesPane() {
     const [useFolders, setUseFolders] = React2.useState(false);
@@ -1744,7 +1744,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     const [cat, setCat] = React2.useState({ name: "", description: "", tags: "", color: plenixPlatform.CATEGORY_COLORS[0] });
     const shown = CATEGORIES.filter((c) => !q.trim() || c.toLowerCase().includes(q.trim().toLowerCase()));
     const toggle = (c, on) => setPicked(on ? picked.concat(c) : picked.filter((p) => p !== c));
-    return /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "section", gap: "sm", "aria-labelledby": "upl-cats" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "h3", id: "upl-cats", variant: "heading" }, "Categories ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "danger", "aria-hidden": "true" }, "*")), /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "p", variant: "secondary" }, "Required. Logical grouping — assets can belong to multiple categories (1 to many)."), /* @__PURE__ */ React2.createElement(
+    return /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, { as: "section", gap: "sm", "aria-labelledby": "upl-cats" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "h3", id: "upl-cats", variant: "heading" }, "Categories ", /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { variant: "danger", "aria-hidden": "true" }, "*")), /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "p", variant: "secondary" }, "Required. Logical grouping \u2014 assets can belong to multiple categories (1 to many)."), /* @__PURE__ */ React2.createElement(
       plenixPlatform.Checkbox,
       {
         name: "useFolderNamesAsCategoriesMergeIfExists",
@@ -1939,7 +1939,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       ["Urgency", "urgency", "urgency"],
       ["Instructions", "instructions", "specialinstructions"]
     ] },
-    { title: "Video — Stream", types: ["video"], shown: 4, fields: [
+    { title: "Video \u2014 Stream", types: ["video"], shown: 4, fields: [
       ["Duration", "duration", "duration"],
       ["Frame rate", "frameRate", "r_frame_rate"],
       ["Video codec", "videoCodec", "codec_name"],
@@ -1956,7 +1956,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       ["Audio channels", "audioChannels", "channels"],
       ["Subtitle tracks", "subtitleTracks", "subtitle_streams"]
     ] },
-    { title: "Video — Container Tags", types: ["video"], shown: 2, fields: [
+    { title: "Video \u2014 Container Tags", types: ["video"], shown: 2, fields: [
       ["Title", "title", "mp4_nam"],
       ["Artist", "artist", "mp4_art"],
       ["Album", "album", "mp4_alb"],
@@ -1965,7 +1965,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       ["Year", "year", "mp4_day"],
       ["Encoder", "encoder", "mp4_too"]
     ] },
-    { title: "Audio — ID3 Tags", types: ["audio"], shown: 4, fields: [
+    { title: "Audio \u2014 ID3 Tags", types: ["audio"], shown: 4, fields: [
       ["Title", "title2", "id3_tit2"],
       ["Artist", "artist2", "id3_tpe1"],
       ["Album", "album2", "id3_talb"],
@@ -1986,7 +1986,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       ["Mood", "mood", "id3_tmoo"],
       ["ReplayGain", "replaygain", "id3_txxx"]
     ] },
-    { title: "Audio — Stream", types: ["audio"], shown: 3, fields: [
+    { title: "Audio \u2014 Stream", types: ["audio"], shown: 3, fields: [
       ["Duration", "duration2", "duration"],
       ["Audio codec", "audioCodec2", "codec_name"],
       ["Bitrate", "bitrate", "bit_rate"],
@@ -2087,7 +2087,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       {
         open,
         onClose: cancel,
-        title: "Advanced Filters — Metadata Fields",
+        title: "Advanced Filters \u2014 Metadata Fields",
         icon: "filter",
         size: "lg",
         footer: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { onClick: cancel }, "Cancel"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { variant: "primary", onClick: apply }, "Apply"))
@@ -2132,7 +2132,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     { name: "John Deacon", permission: "Can view" }
   ];
   const DOWNLOAD_ESTIMATE = "~24.5 MB";
-  const CART_FORMATS = ["Original / Source File", "Web Optimized (1200px max)", "Social Media (1080 × 1080)", "Custom Size..."];
+  const CART_FORMATS = ["Original / Source File", "Web Optimized (1200px max)", "Social Media (1080 \xD7 1080)", "Custom Size..."];
   const CART_FILE_TYPES = ["Keep original format", "PNG", "JPG (80% quality)", "WebP", "SVG (vector only)", "PDF"];
   const STATUSES = [
     { value: "Approved", tone: "success", icon: "circle-check" },
@@ -2233,14 +2233,14 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       ["stateProvince", "State / Province", "text", "State or province"],
       ["country", "Country", "text", "Country name"]
     ] },
-    { title: "Video — Stream", types: ["video"], fields: [
+    { title: "Video \u2014 Stream", types: ["video"], fields: [
       ["duration", "Duration", "text", "HH:MM:SS", true],
       ["frameRate", "Frame rate", "text", "e.g. 29.97", true],
       ["videoCodec", "Video codec", "text", "e.g. H.264", true],
       ["videoBitrate", "Video bitrate", "text", "e.g. 5000 kbps", true],
       ["resolution", "Resolution", "text", "e.g. 1920x1080", true]
     ] },
-    { title: "Audio — ID3 Tags", types: ["audio"], fields: [
+    { title: "Audio \u2014 ID3 Tags", types: ["audio"], fields: [
       ["title", "Title", "text", "Track title"],
       ["artist", "Artist", "text", "Artist name"],
       ["album", "Album", "text", "Album name"],
@@ -2250,7 +2250,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       ["composer", "Composer", "text", "Composer name"],
       ["comment", "Comment", "textarea", "Comment"]
     ] },
-    { title: "Audio — Stream", types: ["audio"], fields: [
+    { title: "Audio \u2014 Stream", types: ["audio"], fields: [
       ["duration2", "Duration", "text", "HH:MM:SS", true],
       ["codec", "Codec", "text", "e.g. AAC", true],
       ["bitrate", "Bitrate", "text", "e.g. 320 kbps", true],
@@ -2303,7 +2303,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     if (!id) return null;
     return { id, kind: CATEGORY_ACTIONS.indexOf(action) >= 0 ? "category" : "asset", singleOnly: SINGLE_ONLY.indexOf(action) >= 0 };
   }
-  const bulkComingSoon = (action) => action + " — coming soon";
+  const bulkComingSoon = (action) => action + " \u2014 coming soon";
   const Caption = ({ children }) => /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "p", variant: "secondary" }, children);
   const match = (q) => (s) => !q || s.toLowerCase().indexOf(q.trim().toLowerCase()) >= 0;
   const NoData = () => /* @__PURE__ */ React2.createElement(plenixPlatform.EmptyState, { title: "No data" });
@@ -2423,7 +2423,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
         description: "Add " + things(count, kind) + " to your download cart",
         footer: /* @__PURE__ */ React2.createElement(Footer, { onClose, label: "Add to Cart", onApply, values: { format, fileType } })
       },
-      /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(plenixPlatform.RadioGroup, { label: "Download format", name: "cartFmt", value: format, onChange: setFormat, options: CART_FORMATS.map((v) => ({ value: v, label: v })) }), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "File type" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "fileType", value: fileType, onChange: (e) => setFileType(e.target.value) }, CART_FILE_TYPES.map((v) => /* @__PURE__ */ React2.createElement("option", { key: v }, v)))), /* @__PURE__ */ React2.createElement(Caption, null, plenixPlatform.dataPhrase("Items in your cart: {cart} • Adding {count} more", { cart: CART_ITEMS, count })))
+      /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(plenixPlatform.RadioGroup, { label: "Download format", name: "cartFmt", value: format, onChange: setFormat, options: CART_FORMATS.map((v) => ({ value: v, label: v })) }), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "File type" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "fileType", value: fileType, onChange: (e) => setFileType(e.target.value) }, CART_FILE_TYPES.map((v) => /* @__PURE__ */ React2.createElement("option", { key: v }, v)))), /* @__PURE__ */ React2.createElement(Caption, null, plenixPlatform.dataPhrase("Items in your cart: {cart} \u2022 Adding {count} more", { cart: CART_ITEMS, count })))
     );
   }
   function BaStatusDialog({ open, onClose, count = 1, kind = "asset", onApply }) {
@@ -2505,7 +2505,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
         description: "Add or remove tags for " + things(count, kind, "selected "),
         footer: /* @__PURE__ */ React2.createElement(Footer, { onClose, label: "Apply tags", onApply, values })
       },
-      /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Add tags" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "addTags", placeholder: "Type tags separated by commas...", value: add, onChange: (e) => setAdd(e.target.value) })), /* @__PURE__ */ React2.createElement("div", { className: "plx-stack plx-stack--gap-xs" }, /* @__PURE__ */ React2.createElement(Caption, null, "Current Tags (click × to remove)"), current.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.TagList, { label: "Current tags" }, current.map((t) => /* @__PURE__ */ React2.createElement(plenixPlatform.Tag, { key: t, onRemove: () => setCurrent(current.filter((x) => x !== t)) }, t))) : /* @__PURE__ */ React2.createElement(NoData, null)), /* @__PURE__ */ React2.createElement("div", { className: "plx-stack plx-stack--gap-xs" }, /* @__PURE__ */ React2.createElement(Caption, null, "Suggested Tags (click to add)"), suggested.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.TagList, { label: "Suggested tags" }, suggested.map((s) => /* @__PURE__ */ React2.createElement(plenixPlatform.Chip, { key: s.t, selected: s.on, "aria-label": s.on ? "Remove tag " + s.t : void 0, onClick: () => clickSuggested(s) }, s.on ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, s.t, " ", /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "×")) : s.t))) : /* @__PURE__ */ React2.createElement(NoData, null)))
+      /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Add tags" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "addTags", placeholder: "Type tags separated by commas...", value: add, onChange: (e) => setAdd(e.target.value) })), /* @__PURE__ */ React2.createElement("div", { className: "plx-stack plx-stack--gap-xs" }, /* @__PURE__ */ React2.createElement(Caption, null, "Current Tags (click \xD7 to remove)"), current.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.TagList, { label: "Current tags" }, current.map((t) => /* @__PURE__ */ React2.createElement(plenixPlatform.Tag, { key: t, onRemove: () => setCurrent(current.filter((x) => x !== t)) }, t))) : /* @__PURE__ */ React2.createElement(NoData, null)), /* @__PURE__ */ React2.createElement("div", { className: "plx-stack plx-stack--gap-xs" }, /* @__PURE__ */ React2.createElement(Caption, null, "Suggested Tags (click to add)"), suggested.length ? /* @__PURE__ */ React2.createElement(plenixPlatform.TagList, { label: "Suggested tags" }, suggested.map((s) => /* @__PURE__ */ React2.createElement(plenixPlatform.Chip, { key: s.t, selected: s.on, "aria-label": s.on ? "Remove tag " + s.t : void 0, onClick: () => clickSuggested(s) }, s.on ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, s.t, " ", /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "\xD7")) : s.t))) : /* @__PURE__ */ React2.createElement(NoData, null)))
     );
   }
   function BaRatingDialog({ open, onClose, count = 1, kind = "asset", onApply }) {
@@ -2597,7 +2597,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
         description: "Convert and download " + things(count, kind, "selected "),
         footer: /* @__PURE__ */ React2.createElement(Footer, { onClose, label: "Download", onApply, values: v })
       },
-      /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Convert to" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "convertTo", value: v.convertTo, onChange: set("convertTo") }, CONVERT_TO.map((o) => /* @__PURE__ */ React2.createElement("option", { key: o }, o)))), /* @__PURE__ */ React2.createElement(plenixPlatform.Fieldset, { legend: "Resize" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-inline plx-inline--gap-sm plx-layout--align-center" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "width", "aria-label": "Width", placeholder: "Width", value: v.width, onChange: set("width") }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "×"), /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "height", "aria-label": "Height", placeholder: "Height", value: v.height, onChange: set("height") }), /* @__PURE__ */ React2.createElement("div", { className: "plx-layout--width-sm" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "unit", "aria-label": "Unit", value: v.unit, onChange: set("unit") }, UNITS.map((o) => /* @__PURE__ */ React2.createElement("option", { key: o }, o)))))), /* @__PURE__ */ React2.createElement("div", null, /* @__PURE__ */ React2.createElement(plenixPlatform.Checkbox, { name: "maintainAspectRatio", label: "Maintain aspect ratio", checked: v.maintainAspectRatio, onChange: set("maintainAspectRatio") }), /* @__PURE__ */ React2.createElement(plenixPlatform.Checkbox, { name: "stripMetadataExifIptc", label: "Strip metadata (EXIF/IPTC)", checked: v.stripMetadata, onChange: set("stripMetadata") })))
+      /* @__PURE__ */ React2.createElement(plenixPlatform.Stack, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Convert to" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "convertTo", value: v.convertTo, onChange: set("convertTo") }, CONVERT_TO.map((o) => /* @__PURE__ */ React2.createElement("option", { key: o }, o)))), /* @__PURE__ */ React2.createElement(plenixPlatform.Fieldset, { legend: "Resize" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-inline plx-inline--gap-sm plx-layout--align-center" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "width", "aria-label": "Width", placeholder: "Width", value: v.width, onChange: set("width") }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "\xD7"), /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "height", "aria-label": "Height", placeholder: "Height", value: v.height, onChange: set("height") }), /* @__PURE__ */ React2.createElement("div", { className: "plx-layout--width-sm" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "unit", "aria-label": "Unit", value: v.unit, onChange: set("unit") }, UNITS.map((o) => /* @__PURE__ */ React2.createElement("option", { key: o }, o)))))), /* @__PURE__ */ React2.createElement("div", null, /* @__PURE__ */ React2.createElement(plenixPlatform.Checkbox, { name: "maintainAspectRatio", label: "Maintain aspect ratio", checked: v.maintainAspectRatio, onChange: set("maintainAspectRatio") }), /* @__PURE__ */ React2.createElement(plenixPlatform.Checkbox, { name: "stripMetadataExifIptc", label: "Strip metadata (EXIF/IPTC)", checked: v.stripMetadata, onChange: set("stripMetadata") })))
     );
   }
   function BaRenameDialog({ open, onClose, itemName = CURRENT_CATEGORY, onApply }) {
@@ -2958,7 +2958,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
       }
     );
     const pagination = view === "categories" ? /* @__PURE__ */ React2.createElement(plenixPlatform.Pagination, { page: 1, pageCount: 3, total: CATEGORY_TOTAL, perPage: 16, perPageOptions: [16, 32, 64], onPageChange: (n2) => toast.show("Page " + n2, { tone: "info" }), onPerPageChange: () => {
-    } }) : view === "collections" ? /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "p", variant: "secondary" }, "Showing 1–4 of 4 collections") : view === "find" ? null : /* @__PURE__ */ React2.createElement(plenixPlatform.Pagination, { page: 1, pageCount: 27, total: ASSET_TOTAL, perPage: 8, perPageOptions: [8, 16, 32, 64], onPageChange: (n2) => toast.show("Page " + n2, { tone: "info" }), onPerPageChange: () => {
+    } }) : view === "collections" ? /* @__PURE__ */ React2.createElement(plenixPlatform.Text, { as: "p", variant: "secondary" }, "Showing 1\u20134 of 4 collections") : view === "find" ? null : /* @__PURE__ */ React2.createElement(plenixPlatform.Pagination, { page: 1, pageCount: 27, total: ASSET_TOTAL, perPage: 8, perPageOptions: [8, 16, 32, 64], onPageChange: (n2) => toast.show("Page " + n2, { tone: "info" }), onPerPageChange: () => {
     } });
     const title = view === "categories" ? "Categories" : view === "collections" ? "Collections" : heading || "Search results";
     const sidebar = /* @__PURE__ */ React2.createElement(
@@ -3014,13 +3014,13 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
         title: find.saved || (find.query ? "Search results" : "Search"),
         query: find.query,
         onQueryChange: setFindQuery,
-        placeholder: "Search assets by name, filename, metadata…",
+        placeholder: "Search assets by name, filename, metadata\u2026",
         noun: "asset",
         count: found.length,
         filters: filterDefs,
         onFilterChange: setFindFilter,
         onClearAll: () => commitFind({ ...find, filters: {}, saved: null }),
-        sort: { value: find.sort, options: ["Relevance", "Newest", "Oldest", "Name A–Z", "Name Z–A", "Size"], onChange: (o) => commitFind({ ...find, sort: o }) },
+        sort: { value: find.sort, options: ["Relevance", "Newest", "Oldest", "Name A\u2013Z", "Name Z\u2013A", "Size"], onChange: (o) => commitFind({ ...find, sort: o }) },
         view: { value: mode, onChange: setMode },
         onSave: saveSearch,
         selection: searchSelection
@@ -3171,7 +3171,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
         setRatio("Original");
         change({ crop: "" }, "Crop cleared");
       } }, "Reset"))),
-      rotate: /* @__PURE__ */ React2.createElement("div", { className: "plx-image-editor__presets" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-rotate-ccw", onClick: () => change({ rotate: edit.rotate - 90 }) }, "-90°"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-rotate-cw", onClick: () => change({ rotate: edit.rotate + 90 }) }, "+90°"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-flip-x", onClick: () => change({ flipX: !edit.flipX }) }, "Flip X"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-flip-y", onClick: () => change({ flipY: !edit.flipY }) }, "Flip Y")),
+      rotate: /* @__PURE__ */ React2.createElement("div", { className: "plx-image-editor__presets" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-rotate-ccw", onClick: () => change({ rotate: edit.rotate - 90 }) }, "-90\xB0"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-rotate-cw", onClick: () => change({ rotate: edit.rotate + 90 }) }, "+90\xB0"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-flip-x", onClick: () => change({ flipX: !edit.flipX }) }, "Flip X"), /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { icon: "ed-flip-y", onClick: () => change({ flipY: !edit.flipY }) }, "Flip Y")),
       text: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(plenixPlatform.Input, { name: "text", placeholder: "Enter text...", "aria-label": "Text", value: text.text, onChange: (e) => setText({ ...text, text: e.target.value }) }), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Font family" }, /* @__PURE__ */ React2.createElement(plenixPlatform.Select, { name: "fontFamily", value: text.font, onChange: (e) => setText({ ...text, font: e.target.value }) }, FONTS.map((x) => /* @__PURE__ */ React2.createElement("option", { key: x }, x)))), /* @__PURE__ */ React2.createElement(plenixPlatform.SegmentedControl, { label: "Font weight", value: text.weight, onChange: (w) => setText({ ...text, weight: w }), options: ["Regular", "Bold", "Italic"].map((w) => ({ value: w, label: w })) }), /* @__PURE__ */ React2.createElement(plenixPlatform.Field, { label: "Color" }, /* @__PURE__ */ React2.createElement(plenixPlatform.ColorPicker, { label: "Text color", size: "sm", value: text.color, onChange: (h) => setText({ ...text, color: h }) })), /* @__PURE__ */ React2.createElement(plenixPlatform.ButtonGroup, { label: "Align" }, [["left", "ed-align-left"], ["center", "ed-align-center"], ["right", "ed-align-right"]].map(([a, ic]) => /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { key: a, size: "sm", iconOnly: true, icon: ic, label: "Align " + a, pressed: text.align === a, onClick: () => setText({ ...text, align: a }) }))), /* @__PURE__ */ React2.createElement("div", null, /* @__PURE__ */ React2.createElement(plenixPlatform.Button, { variant: "primary", onClick: () => {
         const t = text.text.trim();
         if (!t) {

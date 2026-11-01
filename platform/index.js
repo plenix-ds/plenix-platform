@@ -127,7 +127,7 @@ export { ReadOnly, ReadOnlyProvider, ReadOnlyContext, useReadOnly } from './prov
 export { IconTile } from './components/IconTile/IconTile.jsx';
 export { Pictogram } from './components/Pictogram/Pictogram.jsx';
 export { Show, Hide } from './patterns/AppShell/AppShell.jsx';
-export { Center, Bleed } from './components/Stack/Stack.jsx';
+export { Center, Bleed } from './components/Stack/Stack.tsx';
 export { Sticky } from './components/Sticky/Sticky.jsx';
 export { Illustration } from './components/Illustration/Illustration.jsx';
 export { ILLUSTRATIONS, illustrationByName } from './components/Illustration/illustrations.js';
@@ -143,7 +143,7 @@ export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.jsx';
 export { QRCode } from './components/QRCode/QRCode.jsx';
 export { qrEncode } from './utils/qr.ts';
 export { VersionLabel } from './components/VersionLabel/VersionLabel.jsx';
-export { StatusIcon, resolveIcon, setIconLibrary, registerIcons, setDefaultIconLibrary, iconMarkup } from './components/Icon/Icon.jsx';
+export { StatusIcon, resolveIcon, setIconLibrary, registerIcons, setDefaultIconLibrary, iconMarkup } from './components/Icon/Icon.tsx';
 export { Banner } from './components/Banner/Banner.jsx';
 export { Scrim } from './components/Scrim/Scrim.jsx';
 export { LoadingOverlay } from './components/LoadingOverlay/LoadingOverlay.jsx';
