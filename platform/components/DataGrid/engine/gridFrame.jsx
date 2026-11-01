@@ -90,6 +90,7 @@ export function gridFrame({
   groupNode,
   model,
   shown,
+  cardMore,
   renderRow,
   last,
   empty,
@@ -259,6 +260,7 @@ export function gridFrame({
               ) : null}
               <RowGap rows={model.slice(0, first)} />
               {shown.map(renderRow)}
+              {cardMore}
               <RowGap rows={model.slice(last)} />
             </div>
             {emptyRow({ model, B, isStatic, ordered, remoteMode, remoteBusy, S, empty })}

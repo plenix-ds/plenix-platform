@@ -39,6 +39,7 @@ import { formatNumber } from '../../utils/format.ts';
 import { EMPTY_ROWS, GRID, kinds } from './engine/helpers.jsx';
 
 import { useVirtualizer } from './engine/useVirtualizer.js';
+import { useIntersection } from '../../hooks/useIntersection.ts';
 import { useSelection, selectionActions } from './engine/useSelection.js';
 import { useColumns } from './engine/useColumns.js';
 import { useEditedRows, editActions, useEditEffect } from './engine/useEditing.js';
@@ -61,6 +62,8 @@ import { headerRows } from './engine/headerRows.jsx';
 
 import { makeFocusCell } from './engine/keys.js';
 import { MemoGridRow } from './engine/parts.jsx';
+// the cards the narrow card list draws at a time (issue 809, first step)
+const CARD_CHUNK = 100;
 
 function NextEngine(props) {
   const inPane = React.useContext(GridPane);
@@ -377,7 +380,33 @@ function NextEngine(props) {
     last = virtualized
       ? (virtualItems[virtualItems.length - 1]?.index ?? Math.min(model.length, 1) - 1) + 1
       : model.length;
-  const shown = virtualized ? model.slice(first, last) : model;
+  // the card list (narrow, not virtualized) draws in chunks (issue 809, first step): the first CARD_CHUNK cards, the next
+  // CARD_CHUNK when the end nears the view (a sentinel after the last card), every card on End or a key past the end. A list
+  // of CARD_CHUNK or fewer draws as before; remote rows keep their own loading; the counts come from the data, not the cards.
+  const chunked = isNarrow && !virtualized && !isStatic && !printing && mode !== 'pages' && !remoteMode;
+  const [cardLimit, setCardLimit] = React.useState(CARD_CHUNK);
+  React.useEffect(() => { if (!chunked) setCardLimit(CARD_CHUNK); }, [chunked]);
+  // only ever grows (a memoized row may hold an older cardLimit in its closure)
+  const drawTo = (index) => { if (chunked) setCardLimit((n) => Math.max(n, Math.ceil((index + 1) / CARD_CHUNK) * CARD_CHUNK)); };
+  const moreCards = chunked && model.length > cardLimit;
+  const cardEnd = React.useRef(null);
+  // the area to watch the end in: the grid's own scroll area when it scrolls, else the window (a grid that grows with the
+  // page); read after each layout, so it follows the grid's height
+  const [cardRoot, setCardRoot] = React.useState(null);
+  React.useLayoutEffect(() => {
+    if (!moreCards) return;
+    const h = holder.current, next = h && h.scrollHeight > h.clientHeight + 1 ? holder : null;
+    setCardRoot((was) => (was === next ? was : next));
+  });
+  // a fresh observer for each chunk (the root object is new per cardLimit), so its first report says whether the end is still
+  // near after the cards just drawn: one chunk per report, never a run of chunks on a stale answer
+  const cardWatch = React.useMemo(() => ({ current: cardRoot ? cardRoot.current : null }), [cardRoot, cardLimit]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const askedAt = React.useRef(0);
+  useIntersection(cardEnd, { root: cardWatch, rootMargin: '--plx-ref-size-400px', disabled: !moreCards,
+    onChange: (entry) => { if (entry.isIntersecting && askedAt.current !== cardLimit) { askedAt.current = cardLimit; setCardLimit((n) => n + CARD_CHUNK); } } });
+  const shown = virtualized ? model.slice(first, last) : moreCards ? model.slice(0, cardLimit) : model;
+  // after the drawn cards: the sentinel the end is watched by
+  const cardMore = moreCards ? <div ref={cardEnd} className={B + '__card-more'} aria-hidden="true" /> : null;
   const frozen = new Set(columnPinning.left),
     ordered = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
   const pinStart = (column) => (selectable ? metrics.lead : 0) + column.getStart('left');
@@ -675,7 +704,7 @@ function NextEngine(props) {
     scroller: holder,
   });
   live.current.cellRange = cellRange;
-  const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
+  const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements, drawTo });
 
   const rememberRow = (row, node) => {
     const displayKey = row.displayKey || row.id,
@@ -759,6 +788,7 @@ function NextEngine(props) {
     emit,
     setOwnOpen,
     focusCell,
+    chunked,
     cellRange,
     pickCheckbox,
     kindsOf,
@@ -910,6 +940,7 @@ function NextEngine(props) {
     groupNode,
     model,
     shown,
+    cardMore,
     renderRow,
     last,
     empty,
