@@ -5,17 +5,11 @@
    Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
    history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
    unsaved entries (useUnsavedGuard). */
-import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState, VisuallyHidden } from 'plenix-platform';
+import { Icon, CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState, VisuallyHidden } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Projects ──────────────────────────────────────────────────── */
-/* Project icons: data in plain script (window.PROJ_ICONS), drawn in the text color around them */
-const ProjIco = ({ n, size = 15 }) => {
-  const html = window.PROJ_ICONS && window.PROJ_ICONS[n] ? window.PROJ_ICONS[n] : (window.PROJ_ICONS && window.PROJ_ICONS.notes) || '';
-  return <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden="true" className="plx-u-block plx-u-shrink-0" dangerouslySetInnerHTML={{ __html: html }} />;
-};
-
 /* ── Status badge ── */
 const STATUS = { active: ['active', 'Active'], paused: ['waiting', 'Paused'], completed: ['success', 'Completed'], archived: ['neutral', 'Archived'] };   // status pill variants (owner, 2026-10-14)
 const statusOf = (s) => { const v = STATUS[s] || STATUS.active; return { tone: v[0], label: v[1] }; };
@@ -74,8 +68,8 @@ function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
 function ProjectNav({ proj, active, onNav, caps }) {
   const [view, updateView] = useViewState('projects');
   const pCaps = caps || window.DEFAULT_CAPS;
-  const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project home', icon: <ProjIco n="home" size={14} /> }] }]
-    .concat(window.CAPABILITY_GROUPS.map((grp) => ({ heading: grp.group, items: grp.items.filter((it) => pCaps.has(it.id)).map((it) => ({ id: it.id, label: it.label, icon: <ProjIco n={it.icon} size={13} /> })) })).filter((g) => g.items.length));
+  const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project home', icon: <Icon name="home" /> }] }]
+    .concat(window.CAPABILITY_GROUPS.map((grp) => ({ heading: grp.group, items: grp.items.filter((it) => pCaps.has(it.id)).map((it) => ({ id: it.id, label: it.label, icon: <Icon name={it.icon} />/* plx-icons: analytics article auto_awesome bolt bug_report calculate calendar_month campaign cell_tower change_circle contacts contract dashboard description edit_calendar edit_note event_available event_repeat explore fact_check groups handshake home home_repair_service hub image info key link local_shipping mail palette payments pending_actions person_search photo_camera price_change receipt receipt_long request_quote schedule search sell settings share shopping_cart signpost slideshow sticky_note_2 target task_alt text_snippet timeline translate trending_up voice_selection warning web */ })) })).filter((g) => g.items.length));
   return (
     <SecondaryPane title={proj.name} width="md" collapsible resizable size={view.paneWidth} onSizeChange={(w) => updateView({ paneWidth: w })}
       actions={<Button size="xs" variant="ghost" iconOnly icon="gear" label="Project settings" onClick={() => onNav('settings')} />}
@@ -199,7 +193,7 @@ function ProjectContent({ proj, panel }) {
   };
   if (placeholders[panel]) {
     const [title, desc, icon] = placeholders[panel];
-    return <PageContent><VisuallyHidden as="h1">{title}</VisuallyHidden><EmptyState size="page" icon={<ProjIco n={icon} size={40} />} title={title}>{desc}</EmptyState></PageContent>;
+    return <PageContent><VisuallyHidden as="h1">{title}</VisuallyHidden><EmptyState size="page" icon={<Icon name={icon} size="xl" />} title={title}>{desc}</EmptyState></PageContent>;
   }
   return null;
 }

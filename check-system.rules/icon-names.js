@@ -4,8 +4,8 @@
 //   <Icon name="folder" />   icon="add"   { icon: 'pin' }   h(P.Icon, { name: 'close' })   "plx-icon--trash"   ok
 //   <Icon name="star" />     icon="collection"   { icon: 'image' }                                            finding
 // Only names written as whole literals are read (icon={'density-' + d.value} is computed at run time and not read).
-// The suite's capability records (suite/plenix-app-data.js and suite/settings-data.js, icon: "msg") name the projects page's own drawings
-// (window.PROJ_ICONS, ProjIco), not the set, and are not read. Documentation that shows a wrong name on purpose carries
+// The suite's capability records (suite/plenix-app-data.js and suite/settings-data.js, icon: "mail") name Material symbols, which the
+// pages list in a plx-icons comment (projects.jsx, settings.jsx); those records are not read here. Documentation that shows a wrong name on purpose carries
 // plx-allow-icon on its line.
 // The rule is a module check-system.js runs (it loads every file in check-system.rules/):
 //   require('./check-system.rules/icon-names.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
