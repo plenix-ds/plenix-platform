@@ -7,6 +7,8 @@
 // kinds, text contracts, the token-source rules: no new colors, the 4px grid, corners 2 to 6px). Both checks read the same
 // files (check-common.js).
 //
+//   built       (#692) the build outputs exist: they are not in git, npm ci builds them; without them the check stops
+//               at once with "run npm ci first"
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css, system/nesting.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
@@ -42,6 +44,17 @@ const fs = require('fs');
 const path = require('path');
 const { ROOT, DAM, SPEC_PAGE, STYLE_MODULES, collect, reporter } = require('./check-common.js');
 
+// built: the build outputs are not in git (#692); a checkout gets them from npm ci (package.json's prepare script). Without
+// them nothing else can be checked, so the check stops here and says so
+{
+  const need = ['platform/dist/platform.js', 'platform/system/tokens/semantic.css', 'platform/system/themes/default.css', 'platform/components/Icon/icon.css', 'dashboard/app.js', 'dam/app/assets.js'];
+  const missing = need.filter((f) => !fs.existsSync(path.join(ROOT, f)));
+  if (missing.length) {
+    console.log('The build outputs are missing (' + missing.join(', ') + '): run npm ci first (it builds them; or node build-app.js), then check again.');
+    console.log('SYSTEM_FAIL (the build outputs are missing)');
+    process.exit(1);
+  }
+}
 const files = collect();
 const { add, runModules, finish } = reporter();
 

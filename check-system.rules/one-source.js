@@ -50,7 +50,7 @@ function findings(root = ROOT) {
   // the files the loader asks for, in the source copy
   const need = ['suite/plenix-app-data.js', 'dam/app/assets.js', 'dam/plenix-icons-dam.js'];
   for (const { app } of pages(root)) if (app !== 'dam') need.push(app + '/app.js', app + '/plenix-icons-' + app + '.js');
-  for (const f of [...new Set(need)]) if (!fs.existsSync(path.join(root, f))) say(path.join(root, f), 0, f + ' is missing: the page loader loads it (run node build-app.js)');
+  for (const f of [...new Set(need)]) if (!fs.existsSync(path.join(root, f))) say(path.join(root, f), 0, f + ' is missing: the page loader loads it (run npm ci first, or node build-app.js)');
   return out;
 }
 

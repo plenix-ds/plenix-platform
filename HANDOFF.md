@@ -93,9 +93,14 @@ One design system and the suite of applications built on it, owned by one person
   - It fails (BUNDLE_FAIL) when any count goes up from `check-bundle.baseline.json`. When one goes down, lower the baseline in the same pull request with `node check-bundle.js --update`.
   - Never raise the baseline to pass. `--list` shows where each finding comes from: the source module, or the CSS rule.
   - `node build-packages.js` builds the CDN files and runs no test (#466, #472); CI also builds them.
-- Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
-  `platform/system/tokens/*.css`, `platform/tokens/tokens.index.json`, `platform/components/Icon/icon.css`,
-  `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js`.
+- **Run `npm ci` first in a fresh clone or worktree, and after pulling a build change.** The build outputs are not in git
+  (#692, `.gitignore`); `npm ci` builds them (package.json's prepare: `node build-app.js`). Without
+  it there is no `platform/dist/platform.js`, no `<app>/app.js` and no token CSS, so pages open blank and check-system
+  says "run npm ci first". `node build-app.js` alone rebuilds them after a source change.
+- Generated files (never edit by hand, never committed): `platform/dist/`, `<app>/app.js`, `<app>/plenix-icons-<app>.js`,
+  `platform/system/steps.css`, `platform/system/tokens/*.css`, `platform/system/themes/`, `platform/tokens/tokens.index.json`,
+  `platform/components/Icon/icon.css` and `glyphs.js`, `platform/mobile/`;
+  in the spec, `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js` (still committed in its own repository).
 - Clean copy for builds and proofs: a detached `git worktree` (for example `../Plenix-b0`) with `node_modules` linked
   as a junction; copy in only your changed files; for build-app, write `platform/design-system/.git` as
   `gitdir: C:/Users/Administrator/Documents/Plenix/.git/modules/platform/design-system` and remove it after.
@@ -119,7 +124,7 @@ One design system and the suite of applications built on it, owned by one person
 1. Move the "Unreleased" entries of `CHANGELOG.md` into a file (the release script inserts that file as the new
    version's entry; leaving them under Unreleased duplicates them).
 2. Before anything is deployed: `node tools/check-readiness.js` (no open `priority:1` issue; the CDN goes live before the tag, so this runs first). Export the git identity, then:
-   `bash tools/agent/release.sh "<subject>" <changelog-entry.md> <work-log-entry.md> platform/dist platform/system platform/tokens/tokens.index.json platform/components/Icon/icon.css platform/exports`
+   `bash tools/agent/release.sh "<subject>" <changelog-entry.md> <work-log-entry.md> platform/exports` (the build outputs are not committed, #692; the script leaves out any path git ignores)
    (the work log is `../Plenix - DAM/audit/batches/15-26.md`; the entry may use `{V}` for the version; take the next batch number).
 3. **The script's deploy step runs `check-system` on the folder named `Plenix` beside the deploy copy, which is the
    working folder.** If it stops ("check-system failed" with an OK check in the clean copy), deploy from a temporary

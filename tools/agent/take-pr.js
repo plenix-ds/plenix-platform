@@ -1,7 +1,7 @@
 // node tools/agent/take-pr.js <pull request number> [--dry]
 // The integrator's merge of one agent's pull request (Claude or Codex, owner 2026-10-15): copies every source file the
-// branch changed since it left main into this checkout. Generated files are skipped (tools/agent/generated.js): they
-// are rebuilt here by node build-app.js and committed by release.sh. package.json is taken except its "version", which
+// branch changed since it left main into this checkout. The files tools/agent/generated.js lists are skipped (since #692
+// the build outputs are not in git at all; the list keeps the release-written files, which release.sh commits). package.json is taken except its "version", which
 // release.sh writes: this checkout keeps its own. Files under lanes/<task>/design-system/ go into
 // platform/design-system (its own repository; tools/agent/lane-overlay.js). A file this checkout also changed since
 // the branch's base is reported, not overwritten. Then: node build-app.js, the quick gates, release.sh, and close the

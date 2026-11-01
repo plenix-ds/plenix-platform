@@ -93,7 +93,7 @@ git clone --recurse-submodules https://github.com/plenix-ds/plenix-platform.git 
 - `platform/` is the Platform:
   - `components/`, `patterns/`, `providers/`, `hooks/`, `utils/`;
   - `tokens/*.tokens.json` (the source of every value);
-  - `icons/`, `system/` (generated token CSS and themes), `vendor/` (React), `dist/` (built bundles), `dev/` (runtime style guard).
+  - `icons/`, `system/` (with the token CSS and themes `npm ci` builds), `vendor/` (React), `dist/` (bundles `npm ci` builds; not in git), `dev/` (runtime style guard).
 - The apps, one folder each: `dam`, `dashboard`, `notes`, `tasks`, `calendar`, `contacts`, `projects`, `messages`, `files`, `bookmarks`, `settings`, with `suite/` shared by the apps.
 - `capabilities/` holds the PRDs and `docs/` the PRD viewer and the live documents; dated material is in `Archived/` (on disk only, not in git), and the team's working history (briefs, study pages, proof folders) is in an archive described by [docs/ARCHIVE.md](docs/ARCHIVE.md).
 - Scripts:
@@ -105,8 +105,10 @@ git clone --recurse-submodules https://github.com/plenix-ds/plenix-platform.git 
 
 ## Work
 
+Run `npm ci` first: the built files (`platform/dist/`, each app's `app.js`, the token CSS) are not in git, and `npm ci` builds them (#692). Without it, pages open blank.
+
 ```
-npm install
+npm ci
 node build-app.js
 node check-system.js
 node check-style.js
