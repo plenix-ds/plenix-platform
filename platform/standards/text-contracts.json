@@ -3832,6 +3832,104 @@
    "props": [
     "font-size"
    ]
+  },
+  "plx-data-grid__cell--slot-title": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-data-grid__cell--slot-subtitle": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-secondary": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-date": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-primary": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "font-weight",
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-tertiary": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-title": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-table__cell--slot-subtitle": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-secondary": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-date": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-primary": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "font-weight",
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-tertiary": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono",
+   "adjusts": [
+    "line-height"
+   ]
   }
  }
 }

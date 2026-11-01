@@ -7,6 +7,8 @@
    caption) at that text's size, so the two share a baseline (owner, 2026-10-11) */
 .plx-text--data{font-family:var(--plx-comp-text-data-font-family);font-size:var(--plx-comp-text-data-font-size);word-spacing:var(--plx-sys-text-mono-word-spacing);}
 .plx-text .plx-text--data,p .plx-text--data{font-size:inherit;}
+/* a left-to-right data value keeps the order of its characters even with Arabic-Indic digits (bidi type AN): the digit groups of a spaced value never swap places (issue 838) */
+.plx-text--data[dir="ltr"]{unicode-bidi:isolate-override;}
 .plx-text--label{color:var(--plx-comp-text-label-text);font-family:var(--plx-comp-text-label-font-family);font-size:var(--plx-comp-text-label-font-size);font-weight:var(--plx-comp-text-label-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);word-spacing:normal;}
 .plx-text--strong{font-weight:var(--plx-comp-text-strong-font-weight);}
 .plx-text--title{color:var(--plx-comp-text-title-text);font-family:var(--plx-comp-text-title-font-family);font-size:var(--plx-comp-text-title-font-size);font-weight:var(--plx-comp-text-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-sys-text-title-line-height);word-spacing:normal;}

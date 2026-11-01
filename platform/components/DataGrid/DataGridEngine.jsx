@@ -382,14 +382,17 @@ function NextEngine(props) {
   const leadFrozen = frozen.size > 0 && !isNarrow;
   const widths = Object.fromEntries(ordered.map((column) => [column.id, column.getSize()]));
   const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ['icon', 'actions'].includes(kind));
-  const keys = keyColumns?.length
+  const keys = props.rowTemplate
+    ? []
+    : keyColumns?.length
     ? keyColumns
     : columns
         .filter((c) => !kinds(c).some((k) => ['icon', 'actions'].includes(k)) && !c.rowHandle)
         .slice(0, 3)
         .map((c) => c.field);
-  const listed =
-    narrow === 'auto'
+  const listed = props.rowTemplate
+    ? narrow !== 'table' && columns.some(listable)
+    : narrow === 'auto'
       ? columns.some(listable)
       : narrow === 'list' && columns.some((column) => listable(column) && !keys.includes(column.field));
   const columnDnd = useSortable({
