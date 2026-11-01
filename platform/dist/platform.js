@@ -1268,6 +1268,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "all": "All"
     },
     "dataGrid": {
+      "cellsSelected": {
+        "one": "{n} cell selected",
+        "other": "{n} cells selected"
+      },
+      "cellsCopied": {
+        "one": "{n} cell copied",
+        "other": "{n} cells copied"
+      },
       "empty": "Nothing to show",
       "failed": "The table could not load",
       "retry": "Retry",
@@ -3529,6 +3537,22 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "all": "\u0627\u0644\u0643\u0644"
     },
     "dataGrid": {
+      "cellsSelected": {
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062E\u0644\u0627\u064A\u0627 \u0645\u062D\u062F\u062F\u0629",
+        "one": "\u062E\u0644\u064A\u0629 \u0648\u0627\u062D\u062F\u0629 \u0645\u062D\u062F\u062F\u0629",
+        "two": "\u062E\u0644\u064A\u062A\u0627\u0646 \u0645\u062D\u062F\u062F\u062A\u0627\u0646",
+        "few": "{n} \u062E\u0644\u0627\u064A\u0627 \u0645\u062D\u062F\u062F\u0629",
+        "many": "{n} \u062E\u0644\u064A\u0629 \u0645\u062D\u062F\u062F\u0629",
+        "other": "{n} \u062E\u0644\u064A\u0629 \u0645\u062D\u062F\u062F\u0629"
+      },
+      "cellsCopied": {
+        "zero": "\u0644\u0645 \u062A\u064F\u0646\u0633\u062E \u062E\u0644\u0627\u064A\u0627",
+        "one": "\u0646\u064F\u0633\u062E\u062A \u062E\u0644\u064A\u0629 \u0648\u0627\u062D\u062F\u0629",
+        "two": "\u0646\u064F\u0633\u062E\u062A \u062E\u0644\u064A\u062A\u0627\u0646",
+        "few": "\u0646\u064F\u0633\u062E\u062A {n} \u062E\u0644\u0627\u064A\u0627",
+        "many": "\u0646\u064F\u0633\u062E\u062A {n} \u062E\u0644\u064A\u0629",
+        "other": "\u0646\u064F\u0633\u062E\u062A {n} \u062E\u0644\u064A\u0629"
+      },
       "empty": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0634\u064A\u0621 \u0644\u0644\u0639\u0631\u0636",
       "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062C\u062F\u0648\u0644",
       "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629",
@@ -12035,6 +12059,18 @@ var Plenix = (function(exports, React2, reactDom, client) {
       off: (name, fn) => current2.current.listeners.get(name)?.delete(fn),
       getGroups: () => current2.current.groups.map(group),
       setGroupBy: (value) => current2.current.changeGroups(value),
+      getCellRange: () => {
+        const r = current2.current.cellRange, v = r && r.enabled ? r.read() : null;
+        return v ? { rows: v.rows, fields: v.fields, text: v.text } : null;
+      },
+      clearCellRange: () => {
+        const r = current2.current.cellRange;
+        if (r && r.enabled) r.collapse();
+      },
+      copyCellRange: () => {
+        const r = current2.current.cellRange;
+        return !!(r && r.enabled && r.copy());
+      },
       copyToClipboard: () => {
         const fields = current2.current.table.getVisibleLeafColumns();
         const text2 = [fields.map((c) => c.columnDef.meta.title || c.id), ...api.getData(true).map((record) => fields.map((c) => valueAt(record, c.id)))].map((values) => values.map((value) => valueText(value).replace(/[\t\r\n]/g, " ")).join("	")).join("\n");
@@ -17622,6 +17658,135 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }, [source]);
   }
+  const quoted = (text2) => /[\t\n\r"]/.test(text2) ? '"' + text2.replace(/"/g, '""') + '"' : text2;
+  function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange }) {
+    const loc2 = useLocale();
+    const [range, setRange] = React2.useState(null);
+    const told2 = React2.useRef(false);
+    const latest = React2.useRef({});
+    const trail2 = React2.useRef(null);
+    const rowAt = React2.useMemo(() => {
+      const at2 = /* @__PURE__ */ new Map();
+      if (enabled) model.forEach((row, i) => {
+        if (row.original) at2.set(row.id, i);
+      });
+      return at2;
+    }, [enabled, model]);
+    const rect = React2.useMemo(() => {
+      if (!enabled || !range) return null;
+      const a = rowAt.get(range.anchor.key), f = rowAt.get(range.focus.key);
+      const ca = ordered2.findIndex((c) => c.id === range.anchor.field), cf = ordered2.findIndex((c) => c.id === range.focus.field);
+      if (a === void 0 || f === void 0 || ca < 0 || cf < 0) return null;
+      const r = { r0: Math.min(a, f), r1: Math.max(a, f), c0: Math.min(ca, cf), c1: Math.max(ca, cf) };
+      return r.r0 === r.r1 && r.c0 === r.c1 ? null : r;
+    }, [enabled, range, rowAt, ordered2]);
+    latest.current = { range, rect, model, ordered: ordered2, index: index2, onChange };
+    const text2 = () => {
+      const { rect: r, model: rows, ordered: cols } = latest.current;
+      if (!r) return "";
+      const lines = [];
+      for (let i = r.r0; i <= r.r1; i += 1) {
+        const row = rows[i];
+        if (!row || !row.original) continue;
+        lines.push(cols.slice(r.c0, r.c1 + 1).map((c) => quoted(valueText(valueAt(row.original, c.id)))).join("	"));
+      }
+      return lines.join("\n");
+    };
+    const count2 = () => {
+      const { rect: r, model: rows } = latest.current;
+      if (!r) return 0;
+      let rowsIn = 0;
+      for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) rowsIn += 1;
+      return rowsIn * (r.c1 - r.c0 + 1);
+    };
+    const rowsOf = () => {
+      const { rect: r, model: rows } = latest.current;
+      let n = 0;
+      if (r) {
+        for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) n += 1;
+      }
+      return n;
+    };
+    const said = (key, n) => announce(loc2.t(key, { count: n, n: formatNumber(n) }));
+    React2.useEffect(() => {
+      if (!enabled) return void 0;
+      const { onChange: tell } = latest.current;
+      if (tell) {
+        if (!rect) {
+          if (told2.current) {
+            told2.current = false;
+            tell(null);
+          }
+        } else {
+          told2.current = true;
+          tell({
+            from: { rowId: model[rect.r0].original[index2], field: ordered2[rect.c0].id },
+            to: { rowId: model[rect.r1].original[index2], field: ordered2[rect.c1].id },
+            cellCount: count2(),
+            rowCount: rowsOf(),
+            columnCount: rect.c1 - rect.c0 + 1,
+            fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id)
+          });
+        }
+      }
+      if (!rect) return void 0;
+      const timer = setTimeout(() => said("dataGrid.cellsSelected", count2()), 400);
+      return () => clearTimeout(timer);
+    }, [rect]);
+    const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, collapse: () => {
+    }, copy: () => false, read: () => null };
+    if (!enabled) return none;
+    const collapse = () => setRange((old) => old ? null : old);
+    const copy = () => {
+      const t = text2();
+      if (!t) return false;
+      try {
+        if (navigator.clipboard) navigator.clipboard.writeText(t);
+      } catch (e) {
+      }
+      said("dataGrid.cellsCopied", count2());
+      return true;
+    };
+    const extend = ({ row, c, key, rtl, focusCell }) => {
+      const here = { key: row.id, field: c.field };
+      const cont = range && trail2.current && trail2.current.has(here.key + "|" + here.field) ? range : null;
+      const from = cont ? cont.focus : here;
+      const r = rowAt.get(from.key), at2 = ordered2.findIndex((x) => x.id === from.field);
+      if (r === void 0 || at2 < 0) return false;
+      let nr = r, nc = at2;
+      if (key === "ArrowDown") nr = r + 1;
+      else if (key === "ArrowUp") nr = r - 1;
+      else if (key === "ArrowLeft") nc = at2 + (rtl ? 1 : -1);
+      else if (key === "ArrowRight") nc = at2 + (rtl ? -1 : 1);
+      else if (key === "Home") nc = 0;
+      else if (key === "End") nc = ordered2.length - 1;
+      else return false;
+      const step = nr < r ? -1 : 1;
+      while (model[nr] && !model[nr].original) nr += step;
+      nc = Math.max(0, Math.min(ordered2.length - 1, nc));
+      if (!model[nr] || !model[nr].original || nr === r && nc === at2) {
+        if (range && !cont) collapse();
+        return true;
+      }
+      const anchor = cont ? cont.anchor : here;
+      if (!cont) trail2.current = /* @__PURE__ */ new Set([here.key + "|" + here.field]);
+      trail2.current.add(model[nr].id + "|" + ordered2[nc].id);
+      setRange({ anchor, focus: { key: model[nr].id, field: ordered2[nc].id } });
+      focusCell(nr, nc, step);
+      return true;
+    };
+    const cellClasses = (rowIndex, columnIndex) => {
+      if (!rect || rowIndex < rect.r0 || rowIndex > rect.r1 || columnIndex < rect.c0 || columnIndex > rect.c1) return null;
+      return { inside: true, top: rowIndex === rect.r0, bottom: rowIndex === rect.r1, start: columnIndex === rect.c0, end: columnIndex === rect.c1 };
+    };
+    const read2 = () => {
+      if (!rect) return null;
+      const rows = [];
+      for (let i = rect.r0; i <= rect.r1; i += 1) if (model[i] && model[i].original) rows.push(model[i].original);
+      return { rows, fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id), text: text2() };
+    };
+    return { enabled: true, rect, range, rowAt, cellClasses, extend, collapse, copy, read: read2 };
+  }
   const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
   function pillFont(at2, ctx, data) {
     const doc = at2.ownerDocument, box = doc.createElement("span"), pill = doc.createElement("span"), value = doc.createElement("span");
@@ -19523,8 +19688,27 @@ var Plenix = (function(exports, React2, reactDom, client) {
       focusCell(model.indexOf(row) + step, null, step);
     }
   };
-  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell, kept }) => (event) => {
+  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell, cellRange, kept }) => (event) => {
     if (isStatic || event.target !== event.currentTarget) return;
+    if (cellRange && cellRange.enabled) {
+      const plain = !event.ctrlKey && !event.metaKey && !event.altKey;
+      if (event.shiftKey && plain && ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+        event.preventDefault();
+        cellRange.extend({ row, c, key: event.key, rtl: isRtl$2(frame.current), focusCell });
+        return;
+      }
+      if (event.key === "Escape" && cellRange.rect) {
+        event.preventDefault();
+        event.stopPropagation();
+        cellRange.collapse();
+        return;
+      }
+      if (!event.shiftKey && !event.altKey && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c" && cellRange.rect && !document.getSelection()?.toString()) {
+        event.preventDefault();
+        cellRange.copy();
+        return;
+      }
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
       if (document.getSelection()?.toString()) return;
       event.preventDefault();
@@ -19533,6 +19717,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }
     if (event.key === "Enter" && canEdit) {
       event.preventDefault();
+      if (cellRange) cellRange.collapse();
       setEditing({ key: row.id, field: c.field, value });
       return;
     }
@@ -19550,6 +19735,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }
     if (keys[event.key]) {
       event.preventDefault();
+      if (cellRange) cellRange.collapse();
       focusCell(...keys[event.key], event.key === "ArrowUp" ? -1 : 1);
     }
   };
@@ -20666,6 +20852,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     emit,
     setOwnOpen,
     focusCell,
+    cellRange,
     pickCheckbox,
     kindsOf,
     pinStart,
@@ -20890,6 +21077,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             icon: showTypes && typeOf$1(c) !== "text" ? typeIcons[typeOf$1(c)] : void 0,
             mods
           });
+          const inRange = cellRange.rect ? cellRange.cellClasses(cellRange.rowAt.get(row.id), ordered2.indexOf(column)) : null;
           const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && React2.isValidElement(shown) && shown.type === "span" && String(shown.props.className).split(" ").includes(B + "__value");
           return /* @__PURE__ */ React2.createElement(
             Width,
@@ -20906,6 +21094,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 onFocus: (e) => enterCut(e, row.id + "|" + c.field),
                 onPointerLeave: () => leaveCut(row.id + "|" + c.field)
               } : null,
+              "aria-selected": inRange ? true : void 0,
+              onMouseDown: cellRange.enabled ? cellRange.collapse : void 0,
               dir: pinned && !isStatic || kinds(c).includes("id") || isNarrow ? void 0 : "auto",
               onDoubleClick: () => {
                 if (canEdit) setEditing({ key: row.id, field: c.field, value });
@@ -20922,6 +21112,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 column,
                 frame,
                 focusCell,
+                cellRange,
                 kept: card ? tpl.keep : void 0
               }),
               "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
@@ -20941,6 +21132,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 (k.includes("data") || c.type === "bytes") && B + "__grid-cell--data",
                 [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped",
                 c.type === "bytes" && B + "__cell--data",
+                inRange && B + "__grid-cell--range",
+                inRange && inRange.top && B + "__grid-cell--range-top",
+                inRange && inRange.bottom && B + "__grid-cell--range-bottom",
+                inRange && inRange.start && B + "__grid-cell--range-start",
+                inRange && inRange.end && B + "__grid-cell--range-end",
                 c.rowHandle && B + "__cell--handle",
                 childField && c.field === (props.treeColumn || columns[0]?.field) && B + "__tree-cell",
                 pinned && "" + B + "__grid-frozen",
@@ -21800,6 +21996,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
       startResize,
       resize
     });
+    const cellRange = useCellRange({
+      enabled: !!props.cellSelection && !isStatic,
+      model,
+      ordered: ordered2,
+      index: index2,
+      onChange: props.onCellSelectionChange
+    });
+    live.current.cellRange = cellRange;
     const focusCell = makeFocusCell({ model, ordered: ordered2, virtualized, virtual, displayElements });
     const rememberRow = (row, node) => {
       const displayKey = row.displayKey || row.id, previous = displayElements.current.get(displayKey), active = document.activeElement;
@@ -21878,6 +22082,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       emit,
       setOwnOpen,
       focusCell,
+      cellRange,
       pickCheckbox,
       kindsOf,
       pinStart,
@@ -21922,7 +22127,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
         printing,
         filterField,
         groupBy2,
-        loaded
+        loaded,
+        cellRange.rect
       ]
     );
     const renderRow = (row) => row.original ? /* @__PURE__ */ React2.createElement(
