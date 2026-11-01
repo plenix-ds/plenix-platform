@@ -98,7 +98,7 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 export type ComboValue = string | number;
 export type ComboOption = { value: ComboValue; label: string; description?: string; group?: string; icon?: IconValue; [field: string]: unknown };
-// the one action offered when nothing matches ("Add a person…"): an item of the list, so the keys reach it
+// the one action offered when nothing matches ("Add a person..."): an item of the list, so the keys reach it
 export type ComboEmptyAction = { label: React.ReactNode; icon?: IconValue; onSelect?: (typed: string) => void };
 // a row of the open list: an option, the create row, or the empty action
 type ComboItem = { kind: 'option'; o: ComboOption } | { kind: 'create'; o?: undefined } | { kind: 'action'; o?: undefined };
