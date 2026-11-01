@@ -12,10 +12,14 @@
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
      mode: "single" (default; one date) | "range" (a start and an end) | "date-time" (a date and a time: one moment)
      value: "YYYY-MM-DD" (single), { start, end } of such dates (range), or "YYYY-MM-DDTHH:MM" (date-time); null when
-       empty. Controlled with onChange
+       empty. Controlled with onChange. With a time zone, a date-time value is one moment: an ISO string ending in Z or an
+       offset ("2026-03-08T07:30:00.000Z"); a value without one is read as a wall-clock time in the zone
+     timeZone: the IANA zone the value shows and saves in ("Europe/Lisbon"; issue 813); default the nearest LocaleProvider's
+       timeZone, else the computer's zone (exactly as before); null keeps the computer's zone inside a zoned region
      defaultValue: the first value of an uncontrolled field
      onChange(value): runs with the new value when a date is chosen, a preset is pressed, or typed text is read (when the
-       field is left or Enter is pressed); null when the field is emptied
+       field is left or Enter is pressed); null when the field is emptied. With a time zone, a date-time value is given as
+       the moment in UTC ("2026-03-08T07:30:00.000Z")
      presets: true (the built-in presets of the mode: Today, Tomorrow, In a week; or Last 7 days, Last 30 days, This month,
        Last month) or a list [{ label, value }] (value in the mode's form); shown beside the calendar (default none)
      months: the months the calendar shows: 1 or 2 (default 2 for a range, else 1)
@@ -23,7 +27,8 @@
      isDateDisabled(date): true for a date that cannot be chosen (Calendar's)
      weekNumbers: the calendar shows the week numbers (default false)
      defaultTime: the time a date-time value takes when only its date is chosen ("HH:MM", default "09:00")
-     timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none)
+     timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none); with a timeZone, that zone,
+       named for the value's moment (EST in winter, EDT in summer)
      invalid: the danger border and aria-invalid (a Field with an error sets it)
      disabled: turns the field and its button off
      readOnly: shows the date and does not change it: the field is read-only and the calendar button is not shown; default the nearest ReadOnly region's (useReadOnly)
@@ -57,6 +62,11 @@
        (--plx-comp-date-picker-*-width).
      The value is a calendar date (no time zone moves it); a date-time value is a local wall-clock time, and the time zone
        shown says which.
+     Time zone (issue 813): with a timeZone (its own or LocaleProvider's), today, the calendar's today mark and the presets
+       are the zone's today, and a date-time value shows its moment's date and time in the zone and saves the moment chosen
+       there. A date or a range stays a calendar date. A time the zone skips when the clocks go forward reads as the
+       time after the change (02:30 is 03:30); a time it repeats when they go back is the earlier one. Without a zone it
+       works on the computer's zone, as before.
      A date people know by heart (a birth date) is typed: give it no calendar (use Input).
      Built on Popover (manual) and Calendar; the date-time's time field is an InputGroup.
 */
@@ -71,8 +81,9 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useTimeZone } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { validZone, wallOf, isInstant, instantIso, instantOf, todayIn, zoneName } from '../../utils/zone.ts';
 
 const DASH = ' – ';
 
@@ -97,14 +108,11 @@ function readDate(text, order) {
   const iso = String(y).padStart(4, '0') + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
   return parseIsoDate(iso) ? iso : null;
 }
-const zoneOf = (locale, style) => {
-  try { const p = new Intl.DateTimeFormat(locale, { timeZoneName: style }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName'); return p ? p.value : ''; } catch (e) { return ''; }
-};
 const monthBounds = (iso, n) => { const first = addMonths(iso.slice(0, 7) + '-01', n); return { start: first, end: addDays(addMonths(first, 1), -1) }; };
 
 export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single', value, defaultValue, onChange, presets, months, min, max, width,
   isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, readOnly: readOnlyOwn, required, id,
-  'aria-describedby': describedBy, locale: localeProp, strings, className, ...rest }, ref) {
+  'aria-describedby': describedBy, locale: localeProp, timeZone: zoneProp, strings, className, ...rest }, ref) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows and nothing changes it (no calendar button)
   const t = useStrings('datePicker', strings);   // the locale's words (platform/i18n), with the strings prop on top
   const locale = numeralLocale(localeProp || formatLocale());
@@ -113,9 +121,16 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   const [own, setOwn] = React.useState(defaultValue !== undefined ? defaultValue : null);
   const current = value !== undefined ? value : own;
   const commit = (v) => { if (locked) return; if (value === undefined) setOwn(v); if (onChange) onChange(v); };
+  // the time zone (issue 813): its own, else LocaleProvider's; none (or one the browser does not know) is the computer's
+  const providerZone = useTimeZone();
+  const zone = validZone(zoneProp !== undefined ? zoneProp : providerZone);
+  // a date-time value that names a moment, shown in the zone: its wall clock there
+  const wall = dateTime && zone && current && isInstant(current) ? wallOf(Date.parse(current), zone) : null;
   // the parts of the value: the date (or range) and the time
-  const datePart = dateTime ? (current ? String(current).slice(0, 10) : null) : current;
-  const timePart = dateTime && current ? String(current).slice(11, 16) : '';
+  const datePart = dateTime ? (wall ? wall.date : current ? String(current).slice(0, 10) : null) : current;
+  const timePart = wall ? wall.time : dateTime && current ? String(current).slice(11, 16) : '';
+  // a date and a time as the value: with a zone, the moment they are there (in UTC); without, the wall clock as before
+  const moment = (date, time) => (zone ? instantIso(date, time, zone) : date + 'T' + time);
   const show = (v) => (range ? (v && v.start ? form.format(v.start) + (v.end ? DASH + form.format(v.end) : '') : '') : form.format(v));
   const [text, setText] = React.useState(show(datePart));
   const [bad, setBad] = React.useState(false);
@@ -126,7 +141,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   const root = React.useRef(null), input = React.useRef(null), day = React.useRef(null);
   React.useImperativeHandle(ref, () => input.current);
   const allowed = (iso) => !((min && iso < min) || (max && iso > max) || (isDateDisabled && isDateDisabled(iso)));
-  const withTime = (iso) => (iso ? iso + 'T' + (timePart || defaultTime) : null);
+  const withTime = (iso) => (iso ? moment(iso, timePart || defaultTime) : null);
   const setDate = (d) => commit(dateTime ? withTime(d) : d);
 
   // typed text, read when the field is left or Enter is pressed
@@ -166,19 +181,21 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
     }
     setDate(v); setText(form.format(v)); setBad(false); close(true);
   };
-  const today = todayIso();
+  const today = zone ? todayIn(zone) : todayIso();   // the zone's today: near midnight it may be another day than the computer's
   const builtIn = range
     ? [{ label: t.last7, value: { start: addDays(today, -6), end: today } }, { label: t.last30, value: { start: addDays(today, -29), end: today } },
       { label: t.thisMonth, value: monthBounds(today, 0) }, { label: t.lastMonth, value: monthBounds(today, -1) }]
     : [{ label: t.today, value: today }, { label: t.tomorrow, value: addDays(today, 1) }, { label: t.nextWeek, value: addDays(today, 7) }];
   const presetList = presets === true ? builtIn : Array.isArray(presets) ? presets : null;
   const pick = (p) => {
-    const v = dateTime && typeof p.value === 'string' ? p.value.slice(0, 10) : p.value;
+    const v = dateTime && typeof p.value === 'string' ? (zone && isInstant(p.value) ? wallOf(Date.parse(p.value), zone).date : p.value.slice(0, 10)) : p.value;
     if (range) { commit(v); setText(show(v)); } else { setDate(v); setText(form.format(v)); }
     setBad(false); close(true);
   };
 
-  const zone = dateTime && timeZoneName ? zoneOf(locale, timeZoneName) : '';
+  // the zone's name: with a zone, for the value's moment (EST or EDT); otherwise for now, as before
+  const at = zone && dateTime && datePart ? instantOf(datePart, timePart || defaultTime, zone) : NaN;
+  const zoneLabel = dateTime && timeZoneName ? zoneName(locale, timeZoneName, zone, Number.isNaN(at) ? Date.now() : at) : '';
   const shown = range ? (draft || datePart || { start: null, end: null }) : datePart;
   const firstMonth = (range ? (shown && shown.start) : shown) || undefined;
   const cut = useTruncated(input, text);   // the date (or range) is cut (issue 558): its full text goes in a Tooltip on hover and focus
@@ -199,9 +216,9 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
         {locked ? null : <Button variant="ghost" size="2xs" iconOnly icon={CalendarIcon} className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />}
       </div>
       {dateTime ? (
-        <InputGroup data suffix={zone || undefined} disabled={disabled} invalid={invalid} className="plx-date-picker__time">
+        <InputGroup data suffix={zoneLabel || undefined} disabled={disabled} invalid={invalid} className="plx-date-picker__time">
           <Input type="time" data aria-label={t.time} value={timePart} disabled={disabled} readOnly={locked || undefined}
-            onChange={(e) => { const v = e.target.value; if (datePart) commit(datePart + 'T' + (v || defaultTime)); }} />
+            onChange={(e) => { const v = e.target.value; if (datePart) commit(moment(datePart, v || defaultTime)); }} />
         </InputGroup>
       ) : null}
     </div>
@@ -217,7 +234,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
             </div>
           ) : null}
           <Calendar mode={range ? 'range' : 'single'} value={shown} onChange={choose} months={months || (range ? 2 : 1)} defaultMonth={firstMonth ? firstMonth.slice(0, 7) : undefined}
-            min={min} max={max} isDateDisabled={isDateDisabled} weekNumbers={weekNumbers} locale={locale} focusRef={day} label={t.dialog} strings={t.calendar} />
+            min={min} max={max} isDateDisabled={isDateDisabled} weekNumbers={weekNumbers} locale={locale} today={today} focusRef={day} label={t.dialog} strings={t.calendar} />
         </div>
       </Popover>
     </div>

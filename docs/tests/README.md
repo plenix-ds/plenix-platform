@@ -92,6 +92,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 
 - [arabic-catalog-427](arabic-catalog-427.md): This test makes sure every word Plenix writes on its own (buttons, labels, messages) has an Arabic translation, so Arabic pages do not show stray English.
 - [date-only](date-only.md): This test makes sure a date with no time, such as a due date of October 18, shows as October 18 for everyone, wherever they are in the world.
+- [picker-timezone-813](picker-timezone-813.md): This test makes sure the date and time pickers show and save dates and times in the app's time zone, so a team in several countries sees the same thing.
 - [formats](formats.md): This test makes sure numbers, dates, times, money, sizes, names, addresses and phone numbers are written the same correct way everywhere in Plenix, for American and German readers.
 - [ids-rtl-606](ids-rtl-606.md): This test makes sure case numbers and other computed identifiers read in the owner's chosen order, 01-20261020, on Arabic (right-to-left) pages.
 - [rtl-app-frame](rtl-app-frame.md): This test makes sure the frame around every Plenix app (header, navigation pane, side panel, tooltips, pop-up messages and command bar) is correctly mirrored on Arabic (right-to-left) pages.
