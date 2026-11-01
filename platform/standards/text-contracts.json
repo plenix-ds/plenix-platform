@@ -3805,6 +3805,12 @@
    "contract": "establishes",
    "role": "caption",
    "font": "sans"
+  },
+  "plx-combobox__option-description": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
   }
  }
 }
