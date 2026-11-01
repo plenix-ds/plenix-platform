@@ -34,7 +34,7 @@ import { arrowStep } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { stateIcon } from '../Icon/Icon.tsx';
-import { Select } from '../Input/Input.jsx';
+import { Select } from '../Input/Input.tsx';
 
 /* the room the control may take: its frame's width, plus the free space left in a flex row it sits in (the frame takes
    its content's width there, so a folded control alone could never see the room come back) */

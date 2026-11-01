@@ -39,7 +39,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
-import { Input, Textarea, Select } from '../Input/Input.jsx';
+import { Input, Textarea, Select } from '../Input/Input.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';

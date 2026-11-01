@@ -37,8 +37,8 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
-import { Select } from '../Input/Input.jsx';
-import { NumberInput } from '../NumberInput/NumberInput.jsx';
+import { Select } from '../Input/Input.tsx';
+import { NumberInput } from '../NumberInput/NumberInput.tsx';
 import { formatRange, formatDate } from '../../utils/format.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

@@ -51,9 +51,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.ts';
-import { Input } from '../Input/Input.jsx';
+import { Input } from '../Input/Input.tsx';
 import { Button } from '../Button/Button.tsx';
-import { InputGroup } from '../InputGroup/InputGroup.jsx';
+import { InputGroup } from '../InputGroup/InputGroup.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';

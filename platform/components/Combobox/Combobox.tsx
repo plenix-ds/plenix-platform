@@ -77,7 +77,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
-import { Tag } from '../Tag/Tag.jsx';
+import { Tag } from '../Tag/Tag.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Spinner } from '../Loading/Loading.tsx';
 import { announce } from '../../utils/announce.tsx';
