@@ -103,6 +103,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 ### Languages and right to left
 
 - [arabic-catalog-427](arabic-catalog-427.md): This test makes sure every word Plenix writes on its own (buttons, labels, messages) has an Arabic translation, so Arabic pages do not show stray English.
+- [entity-title-803](entity-title-803.md): This test makes sure the short title line for list rows and cards shows its parts, cuts a long title with "…", shows a loading placeholder and keeps rows on the 4px grid, in both reading directions.
 - [date-only](date-only.md): This test makes sure a date with no time, such as a due date of October 18, shows as October 18 for everyone, wherever they are in the world.
 - [formats](formats.md): This test makes sure numbers, dates, times, money, sizes, names, addresses and phone numbers are written the same correct way everywhere in Plenix, for American and German readers.
 - [ids-rtl-606](ids-rtl-606.md): This test makes sure case numbers and other computed identifiers read in the owner's chosen order, 01-20261020, on Arabic (right-to-left) pages.
