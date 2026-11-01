@@ -45,18 +45,32 @@ import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.tsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import { dataPhrase } from '../../utils/dataText.tsx';
 
 
-export function ProgressSteps({ steps = [], current = 0, orientation = 'horizontal', variant = 'default', onStepClick, label, strings, className, ...rest }) {
+export type ProgressStep = { label?: React.ReactNode; description?: React.ReactNode; status?: 'complete' | 'current' | 'upcoming' | 'error'; disabled?: boolean };
+export type ProgressStepsProps = React.HTMLAttributes<HTMLElement> & {
+  steps?: ProgressStep[];
+  /** the index of the current step */
+  current?: number;
+  orientation?: 'horizontal' | 'vertical';
+  variant?: 'default' | 'compact';
+  /** makes the complete, current and error steps buttons */
+  onStepClick?: (index: number) => void;
+  /** the accessible name (aria-label) */
+  label?: string;
+  strings?: Catalog | null;
+};
+export function ProgressSteps({ steps = [], current = 0, orientation = 'horizontal', variant = 'default', onStepClick, label, strings, className, ...rest }: ProgressStepsProps) {
   devWarn('ProgressSteps', { variant }, { variant: ['default','compact'] });
   const t = useStrings('progressSteps', strings);
-  const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
+  const statusOf = (s: ProgressStep, i: number): string => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
   if (variant === 'compact') {
     const at = Math.max(0, Math.min(current, steps.length - 1));
-    const step = steps[at] || {};
+    const step: ProgressStep = steps[at] || {};
     return (
       <div role="group" aria-label={label} className={cx('plx-progress-steps', 'plx-progress-steps--compact', className)} {...rest}>
         <p className="plx-progress-steps__count">{dataPhrase(t.step, { n: at + 1, total: steps.length })}{step.label ? <span className="plx-progress-steps__count-label">{': ' + step.label}</span> : null}</p>
@@ -76,11 +90,11 @@ export function ProgressSteps({ steps = [], current = 0, orientation = 'horizont
             {status === 'complete' ? <Icon name={CheckIcon} /> : status === 'error' ? <Icon name={AlertIcon} /> : <span className="plx-progress-steps__number">{i + 1}</span>}
           </span>
         );
-        const words = <><span className="plx-progress-steps__label">{s.label}</span><VisuallyHidden>{', ' + t[status]}</VisuallyHidden></>;
+        const words = <><span className="plx-progress-steps__label">{s.label}</span><VisuallyHidden>{', ' + (t[status] as string)}</VisuallyHidden></>;
         return (
           <li key={i} className={cx('plx-progress-steps__step', 'is-' + status)} aria-current={status === 'current' ? 'step' : undefined}>
             {canGo ? (
-              <button type="button" className="plx-progress-steps__head plx-progress-steps__button" onClick={() => onStepClick(i)}>{marker}<span className="plx-progress-steps__text">{words}</span></button>
+              <button type="button" className="plx-progress-steps__head plx-progress-steps__button" onClick={() => (onStepClick as (index: number) => void)(i)}>{marker}<span className="plx-progress-steps__text">{words}</span></button>
             ) : (
               <span className="plx-progress-steps__head">{marker}<span className="plx-progress-steps__text">{words}</span></span>
             )}

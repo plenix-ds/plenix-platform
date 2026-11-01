@@ -23,9 +23,15 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export const Heading = React.forwardRef(function Heading({ level = 2, size, id, className, children, ...rest }, ref) {
+export type HeadingProps = React.HTMLAttributes<HTMLHeadingElement> & {
+  /** the heading level, 1 to 6 (h1 to h6) */
+  level?: number | string;
+  /** the look, 1 to 4 (default: the level, at most 4) */
+  size?: number | string;
+};
+export const Heading = React.forwardRef(function Heading({ level = 2, size, id, className, children, ...rest }: HeadingProps, ref: React.ForwardedRef<HTMLHeadingElement>) {
   const lv = Math.min(6, Math.max(1, Math.round(Number(level) || 2)));
   const sz = Math.min(4, Math.max(1, Math.round(Number(size) || Math.min(lv, 4))));
-  const Tag = 'h' + lv;
+  const Tag = ('h' + lv) as React.ElementType;
   return <Tag ref={ref} id={id} className={cx('plx-heading', 'plx-heading--size-' + sz, className)} {...rest}>{children}</Tag>;
 });

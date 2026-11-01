@@ -10,7 +10,7 @@ import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { Button } from '../../components/Button/Button.tsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Comment } from '../../components/Comment/Comment.jsx';

@@ -32,7 +32,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.tsx';
-import { Link } from '../Link/Link.jsx';
+import { Link } from '../Link/Link.tsx';
 import { NavList } from '../NavList/NavList.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';

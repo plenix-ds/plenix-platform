@@ -32,10 +32,25 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconValue } from '../Icon/Icon.tsx';
 
-const kindOf = (ordered) => (ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null);
+// ordered: true or 'decimal' (numbers), 'alpha' (letters); none: bullets or icons
+type Ordered = boolean | 'decimal' | 'alpha' | null;
+const kindOf = (ordered: Ordered | undefined) => (ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null);
 
-export function List({ items, label, ordered, variant = 'icons', className, children }) {
+type Tone = 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+export type ListItemData = { icon?: IconValue | null; tone?: Tone; items?: ListItemData[]; ordered?: Ordered; variant?: ListProps['variant']; children?: React.ReactNode };
+export type ListProps = {
+  items?: ListItemData[];
+  /** the accessible name (aria-label) */
+  label?: string;
+  ordered?: Ordered;
+  variant?: 'icons' | 'steps' | 'bullets';
+  className?: string;
+  children?: React.ReactNode;
+};
+export type ListItemProps = Omit<ListItemData, 'children'> & { className?: string; children?: React.ReactNode };
+export function List({ items, label, ordered, variant = 'icons', className, children }: ListProps) {
   devWarn('List', { variant }, { variant: ['icons','steps','bullets'] });
   const kind = kindOf(ordered || (variant === 'steps' ? 'decimal' : null));
   const Tag = kind ? 'ol' : 'ul';
@@ -48,7 +63,7 @@ export function List({ items, label, ordered, variant = 'icons', className, chil
   );
 }
 
-List.Item = function ListItem({ icon, tone = 'neutral', items, ordered, variant, className, children }) {
+List.Item = function ListItem({ icon, tone = 'neutral', items, ordered, variant, className, children }: ListItemProps) {
   devWarn('List.Item', { tone }, { tone: ['info','success','warning','danger','neutral'] });
   const text = <span className="plx-list__text">{children}</span>;
   return (

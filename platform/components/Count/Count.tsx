@@ -20,7 +20,17 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 
-export function Count({ value, max, variant = 'plain', tone = 'danger', label, moreThan = 'More than {max}', className, ...rest }) {
+export type CountProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  value?: number | string | null;
+  max?: number;
+  variant?: 'plain' | 'pill';
+  tone?: 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+  /** the accessible name (aria-label) */
+  label?: string;
+  /** the name of a capped count; {max} is the cap */
+  moreThan?: string;
+};
+export function Count({ value, max, variant = 'plain', tone = 'danger', label, moreThan = 'More than {max}', className, ...rest }: CountProps) {
   devWarn('Count', { variant, tone }, { variant: ['plain','pill'], tone: ['info','success','warning','danger','neutral'] });
   if (value === null || value === undefined || value === '') return null;
   const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);

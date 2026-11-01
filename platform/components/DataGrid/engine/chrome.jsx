@@ -14,7 +14,7 @@
      element as it was inline in the engine's return, in the same place.
 */
 import { ManageColumnsDialog } from '../../../patterns/ColumnsMenu/ColumnsMenu.jsx';
-import { EmptyState } from '../../EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../EmptyState/EmptyState.tsx';
 import { Button } from '../../Button/Button.tsx';
 import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
 import { Menu, MenuItem, MenuDivider } from '../../Menu/Menu.jsx';

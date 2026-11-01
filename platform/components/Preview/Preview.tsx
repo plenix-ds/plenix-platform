@@ -31,11 +31,21 @@ import { cx } from '../../utils/cx.ts';
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
 const FITS = ['cover', 'contain'];
 
-export function Preview({ as: As = 'div', ratio, aspect = '4/3', fit, topStart, bottomEnd, className, children, ...rest }) {
+export type PreviewProps = React.HTMLAttributes<HTMLElement> & {
+  as?: React.ElementType;
+  /** a step of the aspect-ratio scale: '1-1' | '4-3' | '3-2' | '16-9' | '21-9' | '3-4' | '9-16' */
+  ratio?: string;
+  /** the same written with a slash ('16/9'), when ratio is not given */
+  aspect?: string;
+  fit?: 'cover' | 'contain';
+  topStart?: React.ReactNode;
+  bottomEnd?: React.ReactNode;
+};
+export function Preview({ as: As = 'div', ratio, aspect = '4/3', fit, topStart, bottomEnd, className, children, ...rest }: PreviewProps) {
   const r = ratio || String(aspect).replace('/', '-');
   return (
     <As type={As === 'button' ? 'button' : undefined} data-plx-ratio={RATIOS.indexOf(r) >= 0 ? r : '4-3'} {...rest}
-      className={cx('plx-preview', As === 'button' && 'plx-preview--button', FITS.indexOf(fit) >= 0 && 'plx-preview--' + fit, className)}>
+      className={cx('plx-preview', As === 'button' && 'plx-preview--button', FITS.indexOf(fit as string) >= 0 && 'plx-preview--' + fit, className)}>
       {children}
       {topStart ? <span className="plx-preview__corner plx-preview__corner--top-start">{topStart}</span> : null}
       {bottomEnd ? <span className="plx-preview__corner plx-preview__corner--bottom-end">{bottomEnd}</span> : null}

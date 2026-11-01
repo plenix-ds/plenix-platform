@@ -7,8 +7,7 @@
    Props:
      items: the row, in order: [{ id, label, icon, href, disabled, onSelect, content }]; id is unique; label is the text of its row
        button and of its menu item; onSelect(id) runs when it is chosen, in the row or in the menu; href makes it a link
-     items[].content: an element drawn in the row in place of the ghost button (a Tag, a Badge, a link); the menu lists the item by label. It
-       is drawn twice, once out of sight to measure it, so it must not carry an id
+     items[].content: an element drawn in the row in place of the ghost button (a Tag, a Badge, a link); the menu lists the item by label
      label: the accessible name of the row (a group); without it the row has no name
      size: the size of the ghost buttons and of the "…" button: "sm" | "md" (default "md")
      strings: the words it shows and announces, for other languages: { more: "More items" }
@@ -16,16 +15,19 @@
    Behavior:
      The row never wraps. Every item is shown while they all fit; when they do not, the last ones go into the menu, one at a time from the end,
        until the rest and the "…" button fit. The "…" button is the last thing in the row (at the end in both directions) and opens a menu of the
-       folded items in their order, as the Toolbar's More does. It is measured from the widths of the items, so it follows the row as the
-       window or its container is resized, when the items or their labels change, and when the page's fonts finish loading.
+       folded items in their order, as the Toolbar's More does.
+     The fit is the command bar's (utils/barFit.ts: useBarFit): it starts from every item shown whenever the row's width, the items or their labels
+       change, folds one more item at a time before the browser paints until the row fits, and starts again when the page's fonts finish loading
+       (waiting while the menu is open or focus is in the row, so the list under the person never changes). An item is drawn once; its own element (content) is wrapped in a span that does not shrink.
      Nothing changes the focus order except the folding itself: a folded item leaves the Tab order and is a menu item; the "…" button is one
-       more Tab stop. The menu is the Menu's (arrow keys, Escape, Home and End).
+       more Tab stop. When the item that has focus folds, focus moves to the "…" button, so the keyboard user is not sent to the top of the page.
+       The menu is the Menu's (arrow keys, Escape, Home and End).
    Notes:
-     The items are measured in a copy that is hidden from the page and from assistive technology (aria-hidden and inert).
      For a few items whose names are short; a long list of choices is a Select or a Menu.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { useBarFit } from '../../utils/barFit.ts';
 import { Button } from '../Button/Button.tsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
@@ -33,52 +35,33 @@ import MoreIcon from 'plenix-platform/icons/plenix/more';
 
 export function OverflowList({ items = [], label, size = 'md', strings, className, ...rest }) {
   const t = useStrings('overflowList', strings);
-  const box = React.useRef(null), meter = React.useRef(null);
-  const [shown, setShown] = React.useState(items.length);
-  const key = items.map((i) => i.id + ':' + i.label).join('|');
+  const row = React.useRef(null);
+  const focused = React.useRef(false);   // focus is on an item of the row (not on the "…" button): if that item folds, the "…" button takes it
+  const key = items.map((i) => i.id + ':' + i.label).join('|') + '|' + size;
+  const step = useBarFit(row, key, items.length, 0, ':self');
+  const shown = Math.max(0, items.length - step);
   const choose = (it) => () => { if (it.onSelect) it.onSelect(it.id); };
+  const folded = items.slice(shown);
 
-  const measure = React.useCallback(() => {
-    const row = box.current, copy = meter.current;
-    if (!row || !copy) return;
-    const widths = Array.prototype.map.call(copy.children, (k) => k.offsetWidth);
-    const more = widths.pop(), gap = parseFloat(getComputedStyle(copy).columnGap) || 0, room = row.clientWidth;
-    const all = widths.reduce((sum, w, i) => sum + w + (i ? gap : 0), 0);
-    if (all <= room) { setShown(widths.length); return; }
-    // some fold: as many as fit beside the "…" button (each item is followed by a gap, then the button)
-    let n = 0, used = more;
-    while (n < widths.length && used + widths[n] + gap <= room) { used += widths[n] + gap; n += 1; }
-    setShown(n);
-  }, []);
+  // the item that had focus folded away: focus would fall to the page; the "…" button takes it
+  React.useLayoutEffect(() => {
+    const el = row.current;
+    if (!el || !focused.current || el.contains(document.activeElement)) return;
+    const more = el.querySelector('[aria-haspopup]');
+    if (more) { focused.current = false; more.focus(); }
+  }, [shown]);
 
-  React.useLayoutEffect(() => { measure(); }, [key, size, measure]);
-  React.useEffect(() => {
-    const row = box.current, copy = meter.current;
-    if (!row || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(() => measure());
-    ro.observe(row); if (copy) ro.observe(copy);
-    const set = typeof document !== 'undefined' ? document.fonts : undefined;
-    const again = () => measure();
-    if (set && typeof set.addEventListener === 'function') set.addEventListener('loadingdone', again);
-    return () => { ro.disconnect(); if (set && typeof set.removeEventListener === 'function') set.removeEventListener('loadingdone', again); };
-  }, [measure]);
-
-  const drawn = (it, hidden) => (it.content !== undefined && it.content !== null ? <React.Fragment key={it.id}>{it.content}</React.Fragment>
-    : <Button key={it.id} variant="ghost" size={size} icon={it.icon} href={it.href} disabled={it.disabled} onClick={hidden ? undefined : choose(it)}>{it.label}</Button>);
-  const folded = items.slice(Math.min(shown, items.length));
-  const moreButton = () => <Button variant="ghost" size={size} iconOnly icon={MoreIcon} label={t.more} />;
+  const drawn = (it) => (it.content !== undefined && it.content !== null ? <span key={it.id} className="plx-overflow-list__item">{it.content}</span>
+    : <Button key={it.id} className="plx-overflow-list__item" variant="ghost" size={size} icon={it.icon} href={it.href} disabled={it.disabled} onClick={choose(it)}>{it.label}</Button>);
   return (
-    <div ref={box} role={label ? 'group' : undefined} aria-label={label || undefined} className={cx('plx-overflow-list', className)} {...rest}>
-      {items.slice(0, Math.min(shown, items.length)).map((it) => drawn(it, false))}
+    <div ref={row} role={label ? 'group' : undefined} aria-label={label || undefined} className={cx('plx-overflow-list', className)}
+      onFocus={(e) => { focused.current = !e.target.closest('[aria-haspopup]'); }} onBlur={() => { focused.current = false; }} {...rest}>
+      {items.slice(0, shown).map(drawn)}
       {folded.length ? (
-        <Menu label={t.more} placement="bottom-end" trigger={<Button variant="ghost" size={size} iconOnly icon={MoreIcon} label={t.more} />}>
+        <Menu label={t.more} placement="bottom-end" className="plx-overflow-list__item" trigger={<Button variant="ghost" size={size} iconOnly icon={MoreIcon} label={t.more} />}>
           {folded.map((it) => <MenuItem key={it.id} icon={it.icon} href={it.href} disabled={it.disabled} onSelect={choose(it)}>{it.label}</MenuItem>)}
         </Menu>
       ) : null}
-      <div ref={meter} className="plx-overflow-list__meter" aria-hidden="true" inert="">
-        {items.map((it) => drawn(it, true))}
-        {moreButton()}
-      </div>
     </div>
   );
 }
