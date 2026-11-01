@@ -51,13 +51,13 @@ import { cx } from '../../utils/cx.ts';
 import { formatLocale } from '../../utils/format.ts';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { localDigits, toLatinDigits } from '../../utils/digits.ts';
-import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { useDigits } from '../../providers/LocaleProvider.tsx';
 
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 
 const pad = (n) => String(n).padStart(2, '0');

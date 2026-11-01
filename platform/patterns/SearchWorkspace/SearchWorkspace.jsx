@@ -53,7 +53,7 @@ import { Chip } from '../../components/Tag/Tag.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
 import { useUid } from '../../utils/layer.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChecklistIcon from 'plenix-platform/icons/plenix/checklist';
 import SaveIcon from 'plenix-platform/icons/plenix/save';
 import SortIcon from 'plenix-platform/icons/plenix/sort';

@@ -76,7 +76,7 @@ import { cx } from '../../utils/cx.ts';
 import { gridPx } from '../../utils/grid.ts';
 import { isDataValue } from '../../utils/dataValue.ts';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
-import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated, useInBar } from '../../utils/overflow.ts';
@@ -100,7 +100,7 @@ const TEXT_TYPES = { text: 1, search: 1, email: 1, url: 1, tel: 1 };
 const tipWidth = (width) => (width === 'xs' || width === 'sm' || width === 'md' ? 'plx-input__tip--fixed' : width === 'lg' || width === 'fill' ? 'plx-input__tip--' + width : null);
 
 export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, onInput, ...rest }, ref) {
-  // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
+  // its own readOnly, else the nearest read-only region's (providers/ReadOnly.tsx)
   const locked = useReadOnly(readOnly);
   const own = React.useRef(null);
   const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);

@@ -34,7 +34,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { useDigits } from '../../providers/LocaleProvider.tsx';
 import { localDigits } from '../../utils/digits.ts';
 
 export function Isolate({ dir, as, kind, className, children, ...rest }) {

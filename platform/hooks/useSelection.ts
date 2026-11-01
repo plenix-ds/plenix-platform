@@ -35,39 +35,47 @@
 */
 import React from 'react';
 
-const ordered = (items, set) => items.filter((k) => set.has(k));
+export type SelectionKey = string | number;
+export type SelectionOptions = {
+  items?: SelectionKey[]; mode?: 'single' | 'multiple'; selected?: SelectionKey[]; defaultSelected?: SelectionKey[];
+  onChange?(keys: SelectionKey[]): void; disallowEmpty?: boolean; behavior?: 'toggle' | 'replace'; disabledKeys?: SelectionKey[];
+};
+// the modifier keys choose reads from a click or a key
+type ChooseEvent = { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean } | null | undefined;
 
-export function useSelection(options = {}) {
+const ordered = (items: SelectionKey[], set: Set<SelectionKey>) => items.filter((k) => set.has(k));
+
+export function useSelection(options: SelectionOptions = {}) {
   const { items = [], mode = 'multiple', selected: controlled, defaultSelected = [], onChange, disallowEmpty = false,
     behavior = 'toggle', disabledKeys = [] } = options;
-  const [own, setOwn] = React.useState(() => new Set(defaultSelected));
-  const anchor = React.useRef(null);
+  const [own, setOwn] = React.useState(() => new Set<SelectionKey>(defaultSelected));
+  const anchor = React.useRef<SelectionKey | null>(null);
   const current = controlled ? new Set(controlled) : own;
   const blocked = new Set(disabledKeys);
   const selectable = items.filter((k) => !blocked.has(k));
 
-  const commit = (next) => {
+  const commit = (next: Set<SelectionKey>) => {
     const keys = ordered(items, next);
     if (!controlled) setOwn(new Set(keys));
     if (onChange) onChange(keys);
   };
   const single = mode === 'single';
-  const isSelected = (key) => current.has(key);
-  const select = (key) => {
+  const isSelected = (key: SelectionKey) => current.has(key);
+  const select = (key: SelectionKey) => {
     if (blocked.has(key)) return;
     anchor.current = key;
     if (single) { if (!(current.size === 1 && current.has(key))) commit(new Set([key])); return; }
     if (!current.has(key)) commit(new Set(current).add(key));
   };
-  const deselect = (key) => {
+  const deselect = (key: SelectionKey) => {
     if (!current.has(key) || (single && disallowEmpty)) return;
     const next = new Set(current); next.delete(key); commit(next);
   };
-  const toggle = (key) => {
+  const toggle = (key: SelectionKey) => {
     if (blocked.has(key)) return;
     if (current.has(key)) { anchor.current = key; deselect(key); } else select(key);
   };
-  const extendTo = (key) => {
+  const extendTo = (key: SelectionKey) => {
     if (single || blocked.has(key)) return;
     const from = anchor.current != null && items.indexOf(anchor.current) >= 0 ? items.indexOf(anchor.current) : items.indexOf(key);
     const to = items.indexOf(key);
@@ -76,7 +84,7 @@ export function useSelection(options = {}) {
     items.slice(Math.min(from, to), Math.max(from, to) + 1).forEach((k) => { if (!blocked.has(k)) next.add(k); });
     commit(next);
   };
-  const choose = (key, e) => {
+  const choose = (key: SelectionKey, e?: ChooseEvent) => {
     if (single) { if (current.has(key) && !disallowEmpty && e && (e.ctrlKey || e.metaKey)) deselect(key); else select(key); return; }
     if (e && e.shiftKey) { extendTo(key); return; }
     if ((e && (e.ctrlKey || e.metaKey)) || behavior === 'toggle') { toggle(key); return; }
@@ -84,12 +92,12 @@ export function useSelection(options = {}) {
     if (!(current.size === 1 && current.has(key))) commit(new Set([key]));
   };
   const selectAll = () => { if (!single) commit(new Set(selectable)); };
-  const clear = () => { if (current.size && !(single && disallowEmpty)) commit(new Set()); };
+  const clear = () => { if (current.size && !(single && disallowEmpty)) commit(new Set<SelectionKey>()); };
   const count = ordered(items, current).length;
   const allSelected = selectable.length > 0 && selectable.every((k) => current.has(k));
   const someSelected = count > 0 && !allSelected;
   const toggleAll = () => { if (allSelected) clear(); else selectAll(); };
-  const setSelected = (keys) => commit(new Set(single ? [].concat(keys).slice(0, 1) : keys));
+  const setSelected = (keys: SelectionKey | SelectionKey[]) => commit(new Set(single ? ([] as SelectionKey[]).concat(keys).slice(0, 1) : keys as SelectionKey[]));
   return { selected: ordered(items, current), count, isSelected, select, deselect, toggle, extendTo, choose, selectAll, clear,
     toggleAll, setSelected, allSelected, someSelected, anchor: anchor.current };
 }

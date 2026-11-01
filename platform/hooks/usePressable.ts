@@ -38,23 +38,37 @@
 */
 import React from 'react';
 
+export type PointerKind = 'mouse' | 'touch' | 'pen' | 'keyboard' | 'virtual' | string;
+// the events a press reads: pointer, key, focus and click events (their fields that the press reads are optional)
+type PressEvent = React.SyntheticEvent<HTMLElement> & {
+  pointerType?: string; button?: number; buttons?: number; key?: string; repeat?: boolean; detail?: number;
+  shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean;
+};
+type Handler = (e: PressEvent) => void;
+export type PressInfo = { pointerType: PointerKind; target: HTMLElement; shiftKey: boolean; ctrlKey: boolean; metaKey: boolean; altKey: boolean; event: PressEvent };
+export type PressableOptions = {
+  onPress?(e: PressInfo): void; onPressStart?(e: { pointerType: PointerKind }): void; onPressEnd?(e: { pointerType: PointerKind }): void;
+  onPressChange?(pressed: boolean): void; disabled?: boolean; handlers?: Record<string, Handler | undefined>; native?: boolean;
+};
+export type PressProps = Record<string, Handler | undefined>;
+
 const PRIMARY = 0;
 
-export function usePressable(options = {}) {
+export function usePressable(options: PressableOptions = {}): { pressed: boolean; pressProps: PressProps } {
   const { onPress, onPressStart, onPressEnd, onPressChange, disabled = false, handlers = {}, native = false } = options;
   const [pressed, setPressedState] = React.useState(false);
   // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
-  const hold = React.useRef(null);
-  const key = React.useRef(null);
-  const lastPointer = React.useRef(null);
+  const hold = React.useRef<{ pointerType: PointerKind; left?: boolean } | null>(null);
+  const key = React.useRef<string | null>(null);
+  const lastPointer = React.useRef<PointerKind | null>(null);
   const latest = React.useRef(options);
   latest.current = options;
 
-  const setPressed = (on) => {
+  const setPressed = (on: boolean) => {
     setPressedState(on);
     if (latest.current.onPressChange) latest.current.onPressChange(on);
   };
-  const start = (pointerType) => {
+  const start = (pointerType: PointerKind) => {
     hold.current = { pointerType };
     setPressed(true);
     if (onPressStart) onPressStart({ pointerType });
@@ -65,23 +79,23 @@ export function usePressable(options = {}) {
     setPressed(false);
     if (was && onPressEnd) onPressEnd({ pointerType: was.pointerType });
   };
-  const fire = (e, pointerType) => {
+  const fire = (e: PressEvent, pointerType: PointerKind) => {
     if (onPress) onPress({ pointerType, target: e.currentTarget, shiftKey: !!e.shiftKey, ctrlKey: !!e.ctrlKey, metaKey: !!e.metaKey, altKey: !!e.altKey, event: e });
   };
   // the caller's own handler first; preventDefault in it stops the press
-  const chain = (name, own) => (e) => {
-    if (handlers[name]) handlers[name](e);
+  const chain = (name: string, own: Handler) => (e: PressEvent) => {
+    if (handlers[name]) handlers[name]!(e);
     if (disabled || e.defaultPrevented) return;
     own(e);
   };
-  const isLink = (el) => el && el.tagName === 'A' && el.hasAttribute('href');
+  const isLink = (el: HTMLElement) => el && el.tagName === 'A' && el.hasAttribute('href');
 
   React.useEffect(() => { if (disabled && hold.current) end(); });
 
   if (native) {
     // the browser's click is the press: the pointer or key before it only names the kind of input
-    const own = (name) => (e) => { if (handlers[name]) handlers[name](e); };
-    const nativeProps = {
+    const own = (name: string) => (e: PressEvent) => { if (handlers[name]) handlers[name]!(e); };
+    const nativeProps: PressProps = {
       onPointerDown: (e) => { own('onPointerDown')(e); lastPointer.current = e.pointerType || 'mouse'; },
       onPointerCancel: (e) => { own('onPointerCancel')(e); lastPointer.current = null; },
       onKeyDown: (e) => { own('onKeyDown')(e); if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard'; },
@@ -97,16 +111,16 @@ export function usePressable(options = {}) {
     return { pressed: false, pressProps: nativeProps };
   }
 
-  const pressProps = {
+  const pressProps: PressProps = {
     onPointerDown: chain('onPointerDown', (e) => {
       if (e.button !== PRIMARY) return;
       const el = e.currentTarget;
       lastPointer.current = e.pointerType || 'mouse';
       start(lastPointer.current);
       // the release may happen anywhere: it ends the press; off the element it also cancels it (no click follows)
-      const up = (u) => {
+      const up = (u: PointerEvent) => {
         window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true);
-        if (u.type === 'pointercancel' || !el.contains(u.target)) lastPointer.current = null;
+        if (u.type === 'pointercancel' || !el.contains(u.target as Node)) lastPointer.current = null;
         if (hold.current && hold.current.pointerType !== 'keyboard') end();
       };
       window.addEventListener('pointerup', up, true); window.addEventListener('pointercancel', up, true);
@@ -114,7 +128,7 @@ export function usePressable(options = {}) {
     onPointerUp: chain('onPointerUp', () => { if (hold.current && hold.current.pointerType !== 'keyboard') end(); }),
     onPointerCancel: chain('onPointerCancel', () => { if (hold.current) end(); lastPointer.current = null; }),
     onPointerLeave: chain('onPointerLeave', () => { if (hold.current && hold.current.pointerType !== 'keyboard') { hold.current.left = true; setPressed(false); } }),
-    onPointerEnter: chain('onPointerEnter', (e) => { if (hold.current && hold.current.left && e.buttons & 1) { hold.current.left = false; setPressed(true); } }),
+    onPointerEnter: chain('onPointerEnter', (e) => { if (hold.current && hold.current.left && e.buttons! & 1) { hold.current.left = false; setPressed(true); } }),
     onKeyDown: chain('onKeyDown', (e) => {
       lastPointer.current = null;
       if (e.key === 'Escape' && key.current) { key.current = null; end(); return; }

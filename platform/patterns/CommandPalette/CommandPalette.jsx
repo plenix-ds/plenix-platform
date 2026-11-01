@@ -35,7 +35,7 @@ import { cx } from '../../utils/cx.ts';
 import { useHotkey, isMac } from '../../utils/hotkey.ts';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { CommandMenu } from '../../components/CommandMenu/CommandMenu.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 
 // a one-step binding as aria-keyshortcuts writes it (Mod+K: Control+K, or Meta+K on a Mac)

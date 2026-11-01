@@ -32,7 +32,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { arrowStep } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { stateIcon } from '../Icon/Icon.jsx';
 import { Select } from '../Input/Input.jsx';
 

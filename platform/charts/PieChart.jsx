@@ -52,7 +52,7 @@ import { useChartInteraction } from './interaction.js';
 import { legendItems, finite } from './chart-kit.js';
 import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';
 import { snapToGrid } from '../utils/grid.ts';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const VARIANTS = ['pie', 'donut', 'half'];
 const HOLE = 0.6;            // the hollow center's radius, a share of the ring's radius

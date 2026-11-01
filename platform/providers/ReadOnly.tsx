@@ -41,69 +41,83 @@ import { Text } from '../components/Text/Text.jsx';
 import { Inline } from '../components/Stack/Stack.jsx';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
 
+// Icon and Text as this file draws them (Icon.jsx and Text.jsx are not typed yet: their inferred props would all be required)
+const ReasonIcon = Icon as React.ComponentType<{ name: unknown; size?: string }>;
+const ReasonText = Text as React.ComponentType<{ variant?: string; id?: string; children?: React.ReactNode }>;
+
+export type ReadOnlyProps = {
+  as?: 'div' | 'section' | 'form' | 'fieldset'; readOnly?: boolean; reason?: React.ReactNode; className?: string;
+  children?: React.ReactNode; [attribute: string]: unknown;
+};
+export type ReadOnlyProviderProps = { readOnly?: boolean; children?: React.ReactNode };
+// the props readOnlyProps reads and writes on a value control (the rest pass through)
+type ControlEvent = React.SyntheticEvent<HTMLElement> & { key?: string; ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean };
+type ControlHandler = (e: ControlEvent) => void;
+export type ControlProps = { onKeyDown?: ControlHandler; onMouseDown?: ControlHandler; onPointerDown?: ControlHandler; 'aria-readonly'?: unknown; [prop: string]: unknown };
+
 export const ReadOnlyContext = React.createContext(false);
 
-export function ReadOnlyProvider({ readOnly = true, children }) {
+export function ReadOnlyProvider({ readOnly = true, children }: ReadOnlyProviderProps) {
   return <ReadOnlyContext.Provider value={!!readOnly}>{children}</ReadOnlyContext.Provider>;
 }
 
-export function useReadOnly(own) {
+export function useReadOnly(own?: boolean | null): boolean {
   const ctx = React.useContext(ReadOnlyContext);
   return own === undefined || own === null ? ctx : !!own;
 }
 
 // what the region may lock: the controls whose value a person changes
 const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
-const NOT_VALUES = { button: 1, submit: 1, reset: 1, image: 1, hidden: 1, file: 0 };
+const NOT_VALUES: Record<string, number> = { button: 1, submit: 1, reset: 1, image: 1, hidden: 1, file: 0 };
 const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
 // roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
-const ARIA_READONLY = { checkbox: 1, switch: 1, slider: 1, spinbutton: 1, combobox: 1, listbox: 1, textbox: 1, radiogroup: 1 };
+const ARIA_READONLY: Record<string, number> = { checkbox: 1, switch: 1, slider: 1, spinbutton: 1, combobox: 1, listbox: 1, textbox: 1, radiogroup: 1 };
 // keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
 const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
 
 // a key the region (and readOnlyProps) stops on a locked control: Tab, Escape and shortcuts with Ctrl, ⌘ or Alt pass
-const stopsKey = (e) => !(e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) && CHANGE_KEYS.test(e.key);
-const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
+const stopsKey = (e: { key?: string; ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean }) => !(e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) && CHANGE_KEYS.test(e.key as string);
+const stop = (e: Event | React.SyntheticEvent) => { e.preventDefault(); e.stopPropagation(); };
 const noChange = () => {};
 // the props a component puts on a value control it locks itself (on: useReadOnly(own)): the region's stops, on the element.
 //   aria: marks it aria-readonly (a single radio does not: its group would); pointer: a press focuses without changing
 //   (a select, a slider, a combobox). Off, the props come back unchanged.
-export function readOnlyProps(on, props, { aria = true, pointer = false } = {}) {
+export function readOnlyProps(on: boolean, props: ControlProps, { aria = true, pointer = false }: { aria?: boolean; pointer?: boolean } = {}): ControlProps {
   if (!on) return props;
   const out = Object.assign({}, props, {
     onClick: stop,
     onChange: noChange,   // React reports a choice's change from the click itself, so the click stop alone does not hold it
-    onKeyDown: (e) => { if (stopsKey(e)) stop(e); else if (props.onKeyDown) props.onKeyDown(e); },
+    onKeyDown: (e: ControlEvent) => { if (stopsKey(e)) stop(e); else if (props.onKeyDown) props.onKeyDown(e); },
   });
   if (aria && props['aria-readonly'] == null) out['aria-readonly'] = true;
   if (pointer) {
-    const press = (own) => (e) => { e.preventDefault(); e.currentTarget.focus(); if (own) own(e); };
+    const press = (own?: ControlHandler) => (e: ControlEvent) => { e.preventDefault(); e.currentTarget.focus(); if (own) own(e); };
     out.onMouseDown = press(props.onMouseDown);
     out.onPointerDown = press(props.onPointerDown);
   }
   return out;
 }
-function roleOf(el) {
+function roleOf(el: Element): string {
   const r = el.getAttribute('role');
   if (r) return r;
-  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
-  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
+  if (el.tagName === 'SELECT') return (el as HTMLSelectElement).multiple ? 'listbox' : 'combobox';
+  if (el.tagName === 'INPUT') return (el as HTMLInputElement).type === 'checkbox' ? 'checkbox' : (el as HTMLInputElement).type === 'radio' ? 'radio' : (el as HTMLInputElement).type === 'range' ? 'slider' : 'textbox';
   return 'textbox';
 }
 
 // locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
-function lock(el) {
+function lock(el: HTMLElement): (() => void) | null {
   if (el.hasAttribute('data-plx-readonly-set')) return null;
   const tag = el.tagName;
-  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
+  if (tag === 'INPUT' && NOT_VALUES[(el as HTMLInputElement).type]) return null;
   if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
     el.setAttribute('contenteditable', 'false'); el.setAttribute('data-plx-readonly-set', 'editable');
     return () => { el.setAttribute('contenteditable', 'true'); el.removeAttribute('data-plx-readonly-set'); };
   }
-  if (tag === 'TEXTAREA' || (tag === 'INPUT' && TEXT_TYPES.test(el.type))) {
-    if (el.readOnly) return null;
-    el.readOnly = true; el.setAttribute('data-plx-readonly-set', 'readonly');
-    return () => { el.readOnly = false; el.removeAttribute('data-plx-readonly-set'); };
+  if (tag === 'TEXTAREA' || (tag === 'INPUT' && TEXT_TYPES.test((el as HTMLInputElement).type))) {
+    if ((el as HTMLInputElement).readOnly) return null;
+    (el as HTMLInputElement).readOnly = true; el.setAttribute('data-plx-readonly-set', 'readonly');
+    return () => { (el as HTMLInputElement).readOnly = false; el.removeAttribute('data-plx-readonly-set'); };
   }
   // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
   const role = roleOf(el);
@@ -114,26 +128,26 @@ function lock(el) {
 }
 
 // the region's behavior: locks its controls (and the ones added later), stops the events that would change them
-function useLockRegion(ref, on) {
+function useLockRegion(ref: React.RefObject<HTMLElement | null>, on: boolean) {
   React.useEffect(() => {
     const root = ref.current;
     if (!root || !on) return undefined;
-    const undo = new Map();
-    const mine = (el) => el.closest('[data-plx-readonly]') === root;
+    const undo = new Map<HTMLElement, () => void>();
+    const mine = (el: Element) => el.closest('[data-plx-readonly]') === root;
     const apply = () => {
-      root.querySelectorAll(CONTROLS).forEach((el) => { if (!undo.has(el) && mine(el)) { const u = lock(el); if (u) undo.set(el, u); } });
+      root.querySelectorAll<HTMLElement>(CONTROLS).forEach((el) => { if (!undo.has(el) && mine(el)) { const u = lock(el); if (u) undo.set(el, u); } });
     };
     apply();
     const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
     if (observer) observer.observe(root, { childList: true, subtree: true });
-    const locked = (t) => {
-      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
+    const locked = (t: EventTarget | null): HTMLElement | null => {
+      const el = t && (t as Element).closest ? (t as Element).closest<HTMLElement>('[data-plx-readonly-set="locked"]') : null;
       return el && mine(el) ? el : null;
     };
-    const onClick = (e) => { if (locked(e.target)) stop(e); };
-    const onKey = (e) => { if (stopsKey(e) && locked(e.target)) stop(e); };
-    const onPointer = (e) => { const el = locked(e.target); if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) { e.preventDefault(); el.focus(); } };
-    const onSubmit = (e) => { if (e.target === root || mine(e.target)) e.preventDefault(); };
+    const onClick = (e: Event) => { if (locked(e.target)) stop(e); };
+    const onKey = (e: KeyboardEvent) => { if (stopsKey(e) && locked(e.target)) stop(e); };
+    const onPointer = (e: Event) => { const el = locked(e.target); if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) { e.preventDefault(); el.focus(); } };
+    const onSubmit = (e: Event) => { if (e.target === root || mine(e.target as Element)) e.preventDefault(); };
     root.addEventListener('click', onClick, true);
     root.addEventListener('keydown', onKey, true);
     root.addEventListener('mousedown', onPointer, true);
@@ -151,9 +165,9 @@ function useLockRegion(ref, on) {
   }, [ref, on]);
 }
 
-export const ReadOnly = React.forwardRef(function ReadOnly({ as = 'div', readOnly = true, reason, className, children, ...rest }, ref) {
-  const own = React.useRef(null);
-  const setRef = (el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; };
+export const ReadOnly = React.forwardRef(function ReadOnly({ as = 'div', readOnly = true, reason, className, children, ...rest }: ReadOnlyProps, ref: React.ForwardedRef<HTMLElement>) {
+  const own = React.useRef<HTMLElement | null>(null);
+  const setRef = (el: HTMLElement | null) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; };
   const on = !!readOnly;
   useLockRegion(own, on);
   const reasonId = useDescriptionId('read-only');
@@ -164,8 +178,8 @@ export const ReadOnly = React.forwardRef(function ReadOnly({ as = 'div', readOnl
         aria-describedby={joinIds(rest['aria-describedby'], on && reason ? reasonId : null)}>
         {on && reason ? (
           <Inline gap="xs">
-            <Icon name={LockIcon} size="sm" />
-            <Text variant="secondary" id={reasonId}>{reason}</Text>
+            <ReasonIcon name={LockIcon} size="sm" />
+            <ReasonText variant="secondary" id={reasonId}>{reason}</ReasonText>
           </Inline>
         ) : null}
         {children}

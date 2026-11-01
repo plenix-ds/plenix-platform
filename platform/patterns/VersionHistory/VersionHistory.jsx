@@ -17,7 +17,7 @@ import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
 import { ConfirmDialog,Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 export function VersionHistory({versions=[],currentId,onPreview,onRestore,variant='list',strings,className}){

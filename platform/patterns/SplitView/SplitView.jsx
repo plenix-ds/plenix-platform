@@ -63,7 +63,7 @@ import { GridPane } from '../../components/DataGrid/room.js';
 import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.ts';
 import { Resizable } from '../../components/Resizable/Resizable.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const LIMITS = { 'side-by-side': [360, 720, 560], stacked: [200, 500, 320] };
 

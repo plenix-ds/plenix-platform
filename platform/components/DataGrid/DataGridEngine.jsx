@@ -37,7 +37,7 @@ import { opening, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 import { valueText } from './cells.jsx';
 import { recordsOf } from './records.js';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { EMPTY_ROWS, GRID, kinds, lengthName, typeOf } from './engine/helpers.jsx';
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';

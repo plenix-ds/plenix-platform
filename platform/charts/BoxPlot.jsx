@@ -37,7 +37,7 @@ import { Axis } from './parts/Axis.jsx';
 import { GridLines } from './parts/GridLines.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, labelRoom, halfRoom, AXIS_TITLE_ROOM } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const CAP = 0.5;   // a whisker's cap, a share of the box's thickness
 

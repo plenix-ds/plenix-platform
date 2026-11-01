@@ -70,7 +70,7 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useTruncated, useInBar } from '../../utils/overflow.ts';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

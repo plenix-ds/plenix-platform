@@ -24,7 +24,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.ts';
 import { AILabel } from '../AILabel/AILabel.jsx';
 import { Badge } from '../Badge/Badge.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';

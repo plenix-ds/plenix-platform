@@ -42,7 +42,7 @@ import { GridLines } from './parts/GridLines.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { ReferenceLine } from './parts/ReferenceLine.jsx';
 import { useChartHover, labelRoom, halfRoom } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const MARK = 0.4;   // a period's bar thickness, a share of its lane
 // a date-only string (2026-09-10) is that day in local time, as people read it; anything else as Date reads it

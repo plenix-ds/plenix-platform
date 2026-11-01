@@ -9,4 +9,4 @@ export { ColumnsMenu, ManageColumnsDialog } from '../patterns/ColumnsMenu/Column
 export { ViewMenu } from '../patterns/ViewMenu/ViewMenu.jsx';
 export { QuickFilter } from '../patterns/QuickFilter/QuickFilter.jsx';
 export { matchesFilter, matchesDate, compareLevels, conditionsOf } from '../utils/fields.ts';
-export { useCollectionView } from '../hooks/useCollectionView.js';
+export { useCollectionView } from '../hooks/useCollectionView.ts';
