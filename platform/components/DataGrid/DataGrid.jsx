@@ -145,7 +145,8 @@
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
+       row's menu. On a cell its column lets people edit: Enter or F2 starts editing with the value kept, and typing a character starts it with that character
+       in place of the value (not Space, which still chooses the row; not during IME composition, with Ctrl, Alt or Meta held, or in a read-only cell); Enter saves, Escape cancels. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
      Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
        on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
      Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
