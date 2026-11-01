@@ -12,7 +12,7 @@
      the function focusCell(rowIndex, columnIndex, step) that scrolls a cell into view and focuses it):
      headerKeys({ column }); resizeKeys({ resize, c, column }); groupKeys({ toggleGroup, group, model, virtual, holder, B });
      rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model });
-     cellKeys({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell });
+     cellKeys({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell, kept });
      tableKeys({ focusCell, first }).
    Notes:
      Moved out of DataGridEngine.jsx without any change to the handlers' code (issue 714, the keyboard concern): each handler
@@ -120,7 +120,7 @@ export const rowKeys =
   };
 
 export const cellKeys =
-  ({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell }) =>
+  ({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell, kept }) =>
   (event) => {
     if (isStatic || event.target !== event.currentTarget) return;
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
@@ -142,6 +142,13 @@ export const cellKeys =
         ArrowLeft: [index, at + (isRtl(frame.current) ? 1 : -1)],
         ArrowRight: [index, at + (isRtl(frame.current) ? -1 : 1)]
       };
+    if (kept && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+      // a row template's card draws only some columns (issue 839): the arrow goes to the next drawn cell, and stays on the last one at the end
+      const step = keys[event.key][1] - at;
+      let to = at + step;
+      while (ordered[to] && !kept.has(ordered[to].id)) to += step;
+      keys[event.key] = [index, ordered[to] ? to : at];
+    }
     if (keys[event.key]) {
       event.preventDefault();
       focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
