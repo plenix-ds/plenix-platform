@@ -3829,9 +3829,9 @@
       "$description": "Menu check: the check's box, 24px, so the check (check-bold) draws 13 by 10px, as Blueprint's 14 by 10px tick (#805, owner 2026-11-01); it is centered on the 16px slot."
     },
     "menu-divider-border-top-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.border-separator}",
       "$type": "color",
-      "$description": "Menu divider: border-default (gray 300 in light, 1.54:1 on white), the existing border role closest to Blueprint's line (black at 15% on white, #dbdcdc, 1.37:1); border-divider (gray 100, 1.11:1) is far lighter (#805, owner 2026-11-01)."
+      "$description": "Menu divider (Menu and MenuBar): border-separator, gray 250 in light (#dcddde, 1.36:1 on white), Blueprint's own shade (black at 15% on white, #dbdcdc, 1.37:1); gray 700 in dark, border-strong under more contrast (#805, owner 2026-11-01)."
     },
     "menu-divider-border-top-width": {
       "$value": "{plx-sys.border-width-thin}",
