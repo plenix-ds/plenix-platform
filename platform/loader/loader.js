@@ -26,7 +26,8 @@
    Until plenix.css has loaded, the page is hidden (data-plx-page-loading on <html>, loader.css), at most 3 seconds; then
    it shows anyway, with a warning. Every script is added with async = false, so they run in the order above.
    After plenix.js runs, Plenix.version must be the release picked; a difference is one console warning (plenix.js itself
-   compares its stylesheet's --plx-version). window.PlenixLoader: { mode: 'cdn' | 'local', version, base, app, ready, done }.
+   compares its stylesheet's --plx-version). window.PlenixLoader: { mode: 'cdn' | 'local', version, base, app, ready, done,
+   loadLanguage(code) }: loadLanguage('ar') adds plenix-ar.js later, once (LocaleProvider asks when a page turns Arabic).
    The ready signal: window.PlenixLoader.ready is a promise, there as soon as the loader has run, that resolves once the
      application's own script has run (and the page is shown), with window.PlenixLoader; then PlenixLoader.done is true and
      document fires the event plenix:ready. It rejects when the application's script cannot load, or when no release can
@@ -115,6 +116,14 @@
   function load(mode, version) {
     var f = filesOf(mode, version);
     state.mode = mode; state.version = mode === 'local' ? 'local' : version; state.base = f.base;
+    // a language's built-in words asked for after the start (LocaleProvider, issue 882: a switch to Arabic without a
+    // reload): on the CDN, plenix-<code>.js of the same release, once; in local mode they are built in
+    var languages = { ar: arabic };
+    state.loadLanguage = function (code) {
+      if (mode === 'local' || code !== 'ar' || languages[code]) return;
+      languages[code] = true;
+      add('script', { src: f.base + 'plenix-' + code + '.js' });
+    };
     root.setAttribute('data-plenix-source', mode === 'local' ? 'local' : version);
     add('link', { rel: 'icon', type: 'image/svg+xml', href: f.favicon });
     // the theme first, so the page never shows the other mode
