@@ -43,13 +43,20 @@ assert.ok(!/const SAFE_SRC\s*=/.test(editor), 'RichTextEditor has no SAFE_SRC of
       ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'rte' }, h(P.RichTextEditor, { label: 'Notes', toolbar: 'full', defaultValue: '<p>Text before the picture.</p>' })));
       await new Promise((r) => setTimeout(r, 2000));
     }, dir);
-    // the toolbar's Image button, or the same item in its More formatting menu when the toolbar folds; pressed through the
-    // element (a pointer click lands on the button's tooltip trigger while the tooltip is opening)
+    // Image the way a person reaches it, with real pointer clicks: the toolbar's Image button when it shows, else More
+    // formatting and its Image item (a toolbar that does not fit marks the folded buttons inert and lists them in More)
+    const shownButton = (label) => page.evaluateHandle((label) => [...document.querySelectorAll('#rte [role="toolbar"] button')]
+      .find((x) => x.getAttribute('aria-label') === label && !x.closest('[inert]') && x.getClientRects().length) || null, label);
     const openImage = async () => {
-      const shown = await page.evaluate((w) => { const b = [...document.querySelectorAll('#rte [role="toolbar"] button')].find((x) => x.getAttribute('aria-label') === w.image && x.getClientRects().length); if (b) { b.click(); return true; } return false; }, w);
-      if (!shown) {
-        await page.evaluate((w) => [...document.querySelectorAll('#rte [role="toolbar"] button')].find((x) => x.getAttribute('aria-label') === w.more).click(), w); await sleep(300);
-        await page.evaluate((w) => [...document.querySelectorAll('[role="menuitem"]')].find((m) => m.textContent.trim() === w.image).click(), w);
+      const image = (await shownButton(w.image)).asElement();
+      if (image) await image.click();
+      else {
+        const more = (await shownButton(w.more)).asElement();
+        assert.ok(more, 'the toolbar shows Image or More formatting');
+        await more.click(); await sleep(300);
+        const item = (await page.evaluateHandle((label) => [...document.querySelectorAll('[role="menuitem"]')].find((m) => m.textContent.trim() === label) || null, w.image)).asElement();
+        assert.ok(item, 'More formatting lists Image');
+        await item.click();
       }
       await page.waitForSelector('#rte input[type="url"]', { timeout: 5000 });
     };
