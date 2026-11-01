@@ -84,14 +84,19 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       });
       await check(T + 'the card shows the values the columns\' own cells show (their render), not the raw data', async () => {
         await mount(NARROW, {}, false, false, true);
-        const t = await page.evaluate(() => [...document.querySelector('[role=row][data-plx-record]').querySelectorAll('[data-plx-field="seen"], [data-plx-field="amount"]')].map((e) => e.textContent.trim()));
-        assert.deepEqual(t, ['Oct 01', '$100.00']);
+        // the page's digits: Latin in English, Arabic-Indic on the Arabic page (lang="ar"), as the grid draws every cell; Plenix's own formatNumber gives each digit
+        const t = await page.evaluate(() => { const digits = (text) => text.replace(/[0-9]/g, (d) => Plenix.formatNumber(+d));
+          return { got: [...document.querySelector('[role=row][data-plx-record]').querySelectorAll('[data-plx-field="seen"], [data-plx-field="amount"]')].map((e) => e.textContent.trim()), want: ['Oct 01', '$100.00'].map(digits) }; });
+        assert.deepEqual(t.got, t.want);
+        if (dir === 'ltr') assert.deepEqual(t.got, ['Oct 01', '$100.00']);
       });
       await check(T + 'a bar over the cards holds the select-all checkbox and the count of records; no line sits beside the checkbox', async () => {
         await mount(NARROW, {});
         const bar = await page.evaluate(() => { const h = document.querySelector('.plx-data-grid__grid-header'), r = h.getBoundingClientRect(), c = h.querySelector('.plx-data-grid__card-count'), k = h.querySelector('input[type=checkbox]'), lead = h.querySelector('.plx-data-grid__grid-row-header'), row = document.querySelector('[role=row][data-plx-record] .plx-data-grid__grid-row-header');
-          return { shown: r.height > 20, count: c && c.textContent.trim(), checkbox: !!k, headerCells: h.querySelectorAll('[role=columnheader]').length, afterBar: getComputedStyle(lead, '::after').content, afterRow: getComputedStyle(row, '::after').content }; });
-        assert.ok(bar.shown); assert.equal(bar.count, '3 records'); assert.ok(bar.checkbox); assert.equal(bar.headerCells, 1, 'only the select-all cell, no column headers');
+          // the count in the page's language, from Plenix's catalog (English "3 records", Arabic "٣ سجلات")
+          const want = Plenix.createTranslator(document.documentElement.lang).t('dataGrid.cardCount', { count: 3, n: Plenix.formatNumber(3) });
+          return { shown: r.height > 20, count: c && c.textContent.trim(), want, checkbox: !!k, headerCells: h.querySelectorAll('[role=columnheader]').length, afterBar: getComputedStyle(lead, '::after').content, afterRow: getComputedStyle(row, '::after').content }; });
+        assert.ok(bar.shown); assert.equal(bar.count, bar.want); if (dir === 'ltr') assert.equal(bar.count, '3 records'); assert.ok(bar.checkbox); assert.equal(bar.headerCells, 1, 'only the select-all cell, no column headers');
         assert.equal(bar.afterBar, 'none'); assert.equal(bar.afterRow, 'none');
       });
       await check(T + 'the row menu button is 28px with a 20px icon, and the select-all in the bar selects every record', async () => {
