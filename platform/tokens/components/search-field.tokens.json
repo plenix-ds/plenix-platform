@@ -141,11 +141,6 @@
       "$type": "dimension",
       "$description": "Search option: its description's size."
     },
-    "search-match-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
-      "$type": "fontWeight",
-      "$description": "Search option: the part of a suggestion that matches the text, in bold."
-    },
     "search-bar-width": {
       "$value": "{plx-ref.size-240px}",
       "$type": "dimension",

@@ -37,7 +37,6 @@
 .plx-search__option-text{display:flex;flex-direction:column;min-inline-size:0;}
 .plx-search__option-label{overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-search__option-description{color:var(--plx-comp-search-option-description-text);font-size:var(--plx-comp-search-option-description-font-size);overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-search__match{font-weight:var(--plx-comp-search-match-font-weight);}
 /* recent searches that can be removed one by one (owner, 2026-10-14): the combobox with grid popup; each row is the term's
    cell (the clock and the text, the whole row's width) and the remove cell (an icon-only ghost button at the end); the
    active remove cell shows the button's focus ring while the focus stays in the field */

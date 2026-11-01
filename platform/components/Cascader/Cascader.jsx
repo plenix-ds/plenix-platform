@@ -25,6 +25,9 @@
        columns: "Options" }
      className: more classes on the cascader
    Behavior:
+     The typed text is marked in each result it matches, every occurrence, in either case, by the shared helper (utils/highlight.tsx:
+       highlightMatch; matchesText decides what is listed). Arabic matches without its vowel marks, and a match of Arabic letters is
+       underlined instead of set heavier, so the joined letters stay whole. The list is read as plain text.
      The popup opens in the browser's top layer, below the field or above it near an edge: no dialog, drawer or scroll area clips it.
      The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
        first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
@@ -42,6 +45,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
 import { useDescribedBy } from '../../utils/describedBy.ts';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { Tag } from '../Tag/Tag.jsx';
@@ -102,7 +106,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   }, [open]);
 
   const q = text.trim().toLowerCase();
-  const matches = q ? leavesOf(options).filter((l) => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q) >= 0) : [];
+  const matches = q ? leavesOf(options).filter((l) => !l.item.disabled && matchesText(l.item.label, text)) : [];
   React.useEffect(() => { setActive(0); if (q) announce(typeof t.results === 'function' ? t.results(matches.length) : loc.t('cascader.results', { count: matches.length, n: formatNumber(matches.length) })); }, [q]);
 
   const pick = (item, trail) => {
@@ -151,7 +155,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
                 <li key={m.item.id} id={optId(i)} role="option" aria-selected={chosen.indexOf(m.item.id) >= 0}
                   className={cx('plx-cascader__match', i === active && 'is-active', chosen.indexOf(m.item.id) >= 0 && 'is-selected')}
                   onMouseDown={(e) => e.preventDefault()} onClick={() => pick(m.item, m.trail)} onMouseEnter={() => setActive(i)}>
-                  <span className="plx-cascader__match-label">{m.item.label}</span>
+                  <span className="plx-cascader__match-label">{highlightMatch(m.item.label, text)}</span>
                   {m.trail.length > 1 ? <span className="plx-cascader__match-path">{pathLabel(m.trail.slice(0, -1))}</span> : null}
                 </li>
               )) : <li className="plx-cascader__empty" role="presentation">{t.noMatches}</li>}
