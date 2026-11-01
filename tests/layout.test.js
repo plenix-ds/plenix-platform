@@ -117,6 +117,8 @@ child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader
 child({ units: ['components/EntityTitle', 'components/RowButton', 'components/Card'] }, 'entity-title-803.test.js');
 // control cards: ChoiceList with a radio, a checkbox or a switch in each card (issue 804)
 child({ units: ['components/Checkbox'] }, 'control-cards-804.test.js');
+// Tree and TreeSelect draw only the rows in view above 200 rows (issue 815, part 1)
+child({ units: ['components/Tree', 'components/TreeSelect', 'hooks/useVirtualizer.ts'] }, 'tree-virtual-815.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
 child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.ts'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)

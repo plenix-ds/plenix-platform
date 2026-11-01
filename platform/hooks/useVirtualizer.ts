@@ -18,7 +18,9 @@
      grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
      overscan: rows rendered beyond each edge of the view (default 4)
      sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
-     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
+     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index, { align }), range: { start, end }, columns }
+     scrollToIndex(index, { align: "nearest" }): scrolls only as far as brings the item into view (none when it is in view),
+       for keys that move an active item (issue 815); without it the item goes to the start of the view
      segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
        grid) not rendered
      itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
@@ -70,6 +72,7 @@ export function VirtualProbe({ axis = 'y' }: VirtualProbeProps) {
 export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = false, overscan = 4, sticky }: VirtualizerOptions = {}) {
   const viewportRef = React.useRef<HTMLElement>(null);
   const [view, setView] = React.useState({ offset: 0, size: 0, pitch: 0, columns: 1 });
+  const viewNow = React.useRef(view); viewNow.current = view;   // the view of the last render, read by measure
   const [focused, setFocused] = React.useState(-1);
   const sizes = React.useRef(new Map<number, number>());   // measured mode: index → size along the axis
   const shown = React.useRef({ start: 0, end: 0 });   // the rows rendered last
@@ -99,6 +102,10 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
     }
     const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
     const size = horizontal ? el.clientWidth : el.clientHeight;
+    // nothing moved: no update at all. (The layout effect measures after every render; a set state that only bails out in
+    // its updater still counts as a nested update, and in a tree whose rows re-render on focus that never settled: issue 815.)
+    const was = viewNow.current;
+    if (was.offset === offset && was.size === size && was.pitch === pitch && was.columns === columns) return;
     setView((v) => (v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : { offset, size, pitch, columns }));
   }, [horizontal, grid, mode, count, view.columns]);
 
@@ -163,10 +170,16 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
   pushGap(at, rows);
 
   const itemProps = React.useCallback((index: number) => ({ 'data-plx-virtual-index': index, 'aria-posinset': index + 1, 'aria-setsize': count }), [count]);
-  const scrollToIndex = React.useCallback((index: number) => {
+  const scrollToIndex = React.useCallback((index: number, options?: { align?: 'start' | 'nearest' }) => {
     const el = viewportRef.current;
     if (!el) return;
-    const offset = Math.floor(index / columns) * pitch;
+    let offset = Math.floor(index / columns) * pitch;
+    // align "nearest" (issue 815: the keys move the active row): scroll only as far as brings the row into view
+    if (options && options.align === 'nearest') {
+      const now = Math.abs(horizontal ? el.scrollLeft : el.scrollTop), size = horizontal ? el.clientWidth : el.clientHeight;
+      if (offset >= now && offset + pitch <= now + size) return;
+      if (offset + pitch > now + size) offset = offset + pitch - size;
+    }
     if (horizontal) el.scrollLeft = isRtl(el) ? -offset : offset; else el.scrollTop = offset;
     measure();
   }, [columns, pitch, horizontal, measure]);

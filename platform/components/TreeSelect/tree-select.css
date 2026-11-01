@@ -24,3 +24,6 @@
 .plx-tree-select.plx-tree-select--width-fill{inline-size:100%;}
 /* the width its pattern gives it (layout-modes.css), else its own */
 .plx-tree-select:where(:not(.plx-tree-select--width-xs, .plx-tree-select--width-sm, .plx-tree-select--width-md, .plx-tree-select--width-lg, .plx-tree-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));max-inline-size:min(var(--plx-comp-tree-select-max-width),var(--plx-comp-field-context-content-max-inline-size,100%),100%);min-inline-size:var(--plx-comp-field-context-content-min-inline-size,0);}
+/* virtualized (issue 815): the tree is the scrolling viewport the virtualizer reads, in the scroll area's height */
+.plx-tree-select__scroll--virtual{display:flex;flex-direction:column;overflow-y:hidden;}
+.plx-tree-select__tree--virtual{--plx-state-tree-block-size:auto;max-block-size:var(--plx-comp-tree-select-scroll-max-height);}
