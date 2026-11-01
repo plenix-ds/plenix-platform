@@ -1271,6 +1271,11 @@
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
+    "choice-disabled-opacity": {
+      "$value": "{plx-sys.opacity-mid}",
+      "$type": "number",
+      "$description": "ChoiceList: a disabled card (issue 804), as a disabled radio tile."
+    },
     "switch-gap": {
       "$value": "{plx-sys.space-inline-sm}",
       "$type": "dimension"
