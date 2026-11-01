@@ -26,3 +26,6 @@
 .plx-tree__row{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
 /* pressed (batch 238): a step darker than its hover while held (the row's state order, above) */
 .plx-tree__row:active:where(:not(.is-selected)){--plx-state-tree-row-background:var(--plx-sys-state-pressed);}
+/* a branch loading its children, or failed to (issue 814, useBranchLoader): a row at the children's level, not a target */
+.plx-tree__row.plx-tree__row--status{--plx-state-tree-row-background:transparent;--plx-state-tree-row-shadow:none;color:var(--plx-comp-tree-meta-text);cursor:default;}
+.plx-tree__status{align-items:center;column-gap:var(--plx-comp-tree-row-gap);display:inline-flex;flex-wrap:wrap;min-inline-size:0;}
