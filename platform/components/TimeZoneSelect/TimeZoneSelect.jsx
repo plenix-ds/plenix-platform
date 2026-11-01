@@ -91,7 +91,7 @@ export function timeZoneOptions({ zones, date = new Date(), locale, strings } = 
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[\u2212\u2013]/g, '-').replace(/_/g, ' ');
 const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs(o.minutes), h = Math.floor(a / 60), m = a % 60;
   return [fold(o.offset), sign + h, sign + String(h).padStart(2, '0'), sign + h + ':' + String(m).padStart(2, '0'), 'utc' + sign + h, 'gmt' + sign + h].join(' '); };
 

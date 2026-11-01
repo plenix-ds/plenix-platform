@@ -69,7 +69,7 @@ export function ToastProvider({ duration, children }) {
       announced.current.add(t.id);
       const el = texts.current.get(t.id);
       const shown = el ? el.textContent : String(t.message);
-      const text = t.action && t.action.label ? shown + (/[.!?…]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
+      const text = t.action && t.action.label ? shown + (/[.!?\u2026]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
       announce(text, { politeness: t.tone === 'danger' ? 'assertive' : 'polite', queue: true });
     });
   }, [toasts]);

@@ -25,7 +25,7 @@ export function cleanRichText(html: unknown): string {
   const copy = (node: Node, into: Node, task: boolean): void => {
     // each child is an element past the two node-type tests below
     (node.childNodes as NodeListOf<HTMLElement>).forEach((n) => {
-      if (n.nodeType === 3) { const text = n.nodeValue!.replace(/​/g, ''); if (text) into.appendChild(document.createTextNode(text)); return; }
+      if (n.nodeType === 3) { const text = n.nodeValue!.replace(/\u200B/g, ''); if (text) into.appendChild(document.createTextNode(text)); return; }
       if (n.nodeType !== 1) return;
       // inside a task item its label, checkbox and content div stay as Tiptap writes them
       const inTask = task && n.parentNode && (n.parentNode as Element).getAttribute && (n.parentNode as Element).getAttribute('data-type') === 'taskItem';

@@ -136,7 +136,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
     const s = text.trim();
     if (!s) { setBad(false); if (datePart) setDate(null); return; }
     if (range) {
-      const two = s.split(/\s*(?:–|—|\s-\s|\bto\b)\s*/);
+      const two = s.split(/\s*(?:\u2013|\u2014|\s-\s|\bto\b)\s*/);
       const a = readDate(two[0], form.order), b = two[1] ? readDate(two[1], form.order) : null;
       if (!a || (two[1] && !b) || !allowed(a) || (b && !allowed(b))) { setBad(true); return; }
       const next = b && b < a ? { start: b, end: a } : { start: a, end: b };
