@@ -27,16 +27,28 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconModule, IconValue } from '../Icon/Icon.tsx';
 import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import InfoCircleIcon from 'plenix-platform/icons/plenix/info-circle';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';
 
-const ICONS = { info: InfoCircleIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };
-export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings, className, children, ...rest }) {
+const ICONS: Record<string, IconModule> = { info: InfoCircleIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };
+export type NoticeProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  tone?: 'info' | 'success' | 'warning' | 'danger';
+  /** an icon name or an imported icon module, in place of the tone's */
+  icon?: IconValue | null;
+  title?: React.ReactNode;
+  actions?: React.ReactNode;
+  /** shows the dismiss button */
+  onDismiss?: (event: React.MouseEvent<HTMLElement>) => void;
+  strings?: Catalog | null;
+};
+export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings, className, children, ...rest }: NoticeProps) {
   devWarn('Notice', { tone }, { tone: ['info','success','warning','danger'] });
   const t = useStrings('notice', strings);
   const section = title || actions;
@@ -50,7 +62,7 @@ export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings
           {actions ? <div className="plx-notice__actions">{actions}</div> : null}
         </div>
       ) : <div className="plx-notice__text">{children}</div>}
-      {onDismiss ? <Button className="plx-notice__dismiss" variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.dismiss} onClick={onDismiss} /> : null}
+      {onDismiss ? <Button className="plx-notice__dismiss" variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.dismiss as string} onClick={onDismiss} /> : null}
     </div>
   );
 }

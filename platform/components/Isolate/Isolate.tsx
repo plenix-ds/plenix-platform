@@ -37,15 +37,20 @@ import { cx } from '../../utils/cx.ts';
 import { useDigits } from '../../providers/LocaleProvider.tsx';
 import { localDigits } from '../../utils/digits.ts';
 
-export function Isolate({ dir, as, kind, className, children, ...rest }) {
+export type IsolateProps = React.HTMLAttributes<HTMLElement> & {
+  as?: React.ElementType;
+  /** what the value is: an email or a web address keeps its Latin digits; an ID reads piece by piece */
+  kind?: 'email' | 'url' | 'id' | (string & {});
+};
+export function Isolate({ dir, as, kind, className, children, ...rest }: IsolateProps) {
   const digits = useDigits();
   // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
   const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
-  const text = (child) => localDigits(String(child), { digits: own });
+  const text = (child: string | number) => localDigits(String(child), { digits: own });
   // an ID is told apart piece by piece: each run of letters and digits keeps its own order (a left-to-right island of its own) and the runs
   // follow the direction around them, so "20261020-01" reads 01-20261020 in a right-to-left sentence and as written in a left-to-right one.
   // The text is unchanged (copy, search and screen readers get "20261020-01"); with Arabic-Indic digits a hyphen alone would do it, with Latin digits it would not
-  const pieces = (child) => {
+  const pieces = (child: string | number) => {
     const tokens = text(child).match(/[\p{L}\p{N}]+|[^\p{L}\p{N}]+/gu) || [];
     return tokens.length < 2 ? tokens : tokens.map((x, i) => (/^[\p{L}\p{N}]/u.test(x) ? <bdi key={i} dir="ltr">{x}</bdi> : x));
   };
