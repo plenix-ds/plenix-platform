@@ -224,6 +224,16 @@
         }
       }
     },
+    "content-strong": {
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "The strongest text, one step stronger than body text: menu items."
+        }
+      }
+    },
     "content-muted": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",

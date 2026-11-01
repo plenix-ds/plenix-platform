@@ -1,6 +1,10 @@
 {
   "$description": "theme-default.dark.tokens.json: the values under more contrast (@media (prefers-contrast: more)). A condition set: each token is defined in theme-default.dark.tokens.json, and this file holds only its value under the condition (#372 step 4).",
   "plx-sys": {
+    "content-strong": {
+      "$value": "var(--plx-ref-color-gray-100)",
+      "$type": "color"
+    },
     "content-muted": {
       "$value": "var(--plx-sys-content-default)",
       "$type": "color"

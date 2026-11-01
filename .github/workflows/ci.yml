@@ -167,7 +167,7 @@ jobs:
           repository: LighthouseCollection/st-john-test-site
           # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and
           # in the other workflow (ci.yml, full.yml) when the site changes, in the pull request that needs the change
-          ref: 8373261f71b01239e25ef7463a2660bbb30e01b1
+          ref: ffd272d7422d64339be63c9d8705bd5d7e5c2d22
           path: st-john-test-site
 
       - name: The site's packages and build
