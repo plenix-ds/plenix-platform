@@ -269,7 +269,7 @@ export function HomePage() {
       <DataGrid label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} onRowClick={(record) => openAsset(record.id)} {...tableProps} columns={[
         { title: 'Name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Category', field: 'cat', kind: 'center', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
-        { title: 'Type', field: 'badge', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right', sorter: bySize },
+        { title: 'Type', field: 'badge', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', align: 'right', sorter: bySize },
         { title: 'Date added', field: 'date', kind: 'data', sorter: byDate },
         { title: 'Status', field: 'status', kind: 'center', render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
     );
