@@ -76,15 +76,6 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ### Deprecated
 - SplitView `maxSize` side by side: it no longer caps the drag (a larger one is the room anyway; a smaller one is ignored, with no error). Stacked, `maxSize` is still the first panel's ceiling.
 
-### Upgrading from 0.79.0
-- Nothing to change: a ChoiceList without `control` is a radio group of cards, as before. Its radios are now named by each card's label alone (`aria-labelledby`) and described by the card's description (`aria-describedby`).
-- An app with a `timeZone` on LocaleProvider now gets moments in UTC from a date-time DatePicker: store them as they are. A picker that must keep the computer's zone inside such a region passes `timeZone={null}`. (No app in this repository sets a `timeZone` today.)
-- Nothing to change: a hierarchy without `hasChildren` and `loadChildren` works as before.
-- A Tree with over 200 visible rows now scrolls itself: give its container a height, or pass `virtualized={false}` to keep the old layout.
-
-### Upgrading from 0.81.0
-- Nothing to change. An app that passed `maxSize` to widen a split view can drop it.
-
 ## [0.81.0] - 2026-11-01
 
 **In short.** The dashboard design system study is in the design spec: the owner's specification rebuilt on Plenix, with the original kept beside it. DataGrid: drag with the mouse to select a block of cells, and F2 or typing starts editing a cell. The Manage-columns dialog loads on first use in npm apps, so the npm DataGrid is about 25 KB lighter. Rating can show half stars, Divider can show a short text, and the spec has a Suggest page. A plain right arrow joins the icons, and the site icon tool reads TypeScript apps.
