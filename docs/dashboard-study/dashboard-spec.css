@@ -153,7 +153,8 @@
 .dss-pairs__item { align-items: center; display: grid; gap: var(--plx-ref-space-4px); justify-items: center; text-align: center; }
 .dss-pairs__bar { border-start-end-radius: var(--plx-sys-radius-table-2px); border-start-start-radius: var(--plx-sys-radius-table-2px); display: block; inline-size: var(--plx-ref-size-48px); }
 .dss-pairs__target { align-items: start; block-size: var(--plx-ref-size-72px); border-block-start: var(--plx-sys-border-width-medium) dashed var(--plx-sys-content-muted); display: flex; inline-size: var(--plx-ref-size-56px); justify-content: center; }
-.dss-months { align-items: end; block-size: var(--plx-ref-size-88px); border-block-end: var(--plx-sys-border-width-thin) solid var(--plx-sys-border-strong); display: grid; gap: var(--plx-ref-space-4px); grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.dss-months { align-items: end; block-size: var(--plx-ref-size-88px); border-block-end: var(--plx-sys-border-width-thin) solid var(--plx-sys-border-strong); display: grid; gap: var(--plx-ref-space-4px); grid-template-columns: repeat(10, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+.dss-months > * { align-items: end; block-size: 100%; display: flex; }
 .dss-months__labels { display: grid; gap: var(--plx-ref-space-4px); grid-template-columns: repeat(10, minmax(0, 1fr)); text-align: center; }
 .dss-bar { border-start-end-radius: var(--plx-sys-radius-table-2px); border-start-start-radius: var(--plx-sys-radius-table-2px); display: block; inline-size: 100%; }
 .dss-bar--now { background-color: var(--plx-sys-dataviz-categorical-1); }
