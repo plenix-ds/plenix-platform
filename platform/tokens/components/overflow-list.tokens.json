@@ -1,0 +1,10 @@
+{
+  "$description": "OverflowList (platform/components/OverflowList, issue 811): a row of items that shows what fits and puts the rest behind a \"…\" button.",
+  "plx-comp": {
+    "overflow-list-gap": {
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension",
+      "$description": "OverflowList: the space between two items in the row (and before the \"…\" button)."
+    }
+  }
+}

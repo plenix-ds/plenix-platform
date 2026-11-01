@@ -570,6 +570,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "text": "There\u2019s nothing left to do here."
       }
     },
+    "overflowList": {
+      "more": "More items"
+    },
     "pagination": {
       "label": "Pages",
       "range": "{first}\u2013{last} of {total}",
@@ -740,6 +743,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "notImage": "Choose an image file",
       "picture": "{name}\u2019s photo"
     },
+    "anchor": {
+      "label": "On this page"
+    },
     "backToTop": {
       "label": "Back to top"
     },
@@ -810,6 +816,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "No items",
       "remove": "Remove {label}",
       "columns": "Options",
+      "allOf": "All of {label}",
+      "more": "+{n}",
+      "moreLabel": "{n} more",
+      "limit": "You can choose up to {n}.",
+      "loading": "Loading\u2026",
+      "error": "The matches could not be loaded",
       "results": {
         "one": "{n} match",
         "other": "{n} matches"
@@ -3198,6 +3210,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }
   };
   const arabic = {
+    "overflowList": {
+      "more": "\u0639\u0646\u0627\u0635\u0631 \u0623\u062E\u0631\u0649"
+    },
     "pagination": {
       "label": "\u0627\u0644\u0635\u0641\u062D\u0627\u062A",
       "range": "{first} \u0625\u0644\u0649 {last} \u0645\u0646 {total}",
@@ -3390,6 +3405,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "more": "+{n}",
       "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629"
     },
+    "anchor": {
+      "label": "\u0641\u064A \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629"
+    },
     "backToTop": {
       "label": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0623\u0639\u0644\u0649"
     },
@@ -3437,6 +3455,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
       "remove": "\u0625\u0632\u0627\u0644\u0629 {label}",
       "columns": "\u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
+      "allOf": "\u0643\u0644 {label}",
+      "more": "+{n}",
+      "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629",
+      "limit": "\u064A\u0645\u0643\u0646\u0643 \u0627\u062E\u062A\u064A\u0627\u0631 {n} \u0643\u062D\u062F \u0623\u0642\u0635\u0649.",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0646\u062A\u0627\u0626\u062C",
       "results": {
         "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0637\u0627\u0628\u0642\u0627\u062A",
         "one": "\u062A\u0637\u0627\u0628\u0642 \u0648\u0627\u062D\u062F",
@@ -10973,107 +10997,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     return { enabled, keys, count: keys.size, has: (record) => keys.has(keyOf2(record)), mark, open };
   }
   const GridPane = React$1.createContext(false);
-  function Scrollbars({ holder, viewportId, hideX = false }) {
-    const thumbs = React$1.useRef({});
-    const [sizes, setSizes] = React$1.useState({}), [drag, setDrag] = React$1.useState(null);
-    React$1.useLayoutEffect(() => {
-      const el = holder.current;
-      if (!el) return;
-      let frame = 0;
-      const read2 = () => {
-        frame = 0;
-        const ratio = (size, total) => total > size ? Math.max(10, Math.min(95, Math.round(size / total * 20) * 5)) : null;
-        setSizes((old) => {
-          const next = { x: ratio(el.clientWidth, el.scrollWidth), y: ratio(el.clientHeight, el.scrollHeight) };
-          return next.x === old.x && next.y === old.y ? old : next;
-        });
-      };
-      const schedule = () => {
-        if (!frame) frame = requestAnimationFrame(read2);
-      };
-      const position = () => {
-        for (const axis of ["x", "y"]) {
-          const total = axis === "y" ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth, offset = axis === "y" ? el.scrollTop : Math.abs(el.scrollLeft);
-          thumbs.current[axis]?.setAttribute("aria-valuenow", String(total ? Math.round(offset / total * 100) : 0));
-        }
-      };
-      el.addEventListener("scroll", position, { passive: true });
-      const observer2 = new ResizeObserver(schedule);
-      observer2.observe(el);
-      if (el.firstElementChild) observer2.observe(el.firstElementChild);
-      const mutation = new MutationObserver(schedule);
-      mutation.observe(el, { childList: true, subtree: true });
-      read2();
-      return () => {
-        observer2.disconnect();
-        mutation.disconnect();
-        el.removeEventListener("scroll", position);
-        if (frame) cancelAnimationFrame(frame);
-      };
-    }, [holder]);
-    const start2 = (event, axis) => {
-      if (event.button !== 0) return;
-      const el = holder.current, track2 = event.currentTarget.classList.contains("plx-data-grid__thumb") ? event.currentTarget.parentElement : event.currentTarget, box = track2.getBoundingClientRect(), vertical = axis === "y", total = vertical ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth, travel = (vertical ? box.height : box.width) * (1 - sizes[axis] / 100), at2 = vertical ? event.clientY : event.clientX, initial = vertical ? el.scrollTop : Math.abs(el.scrollLeft), pointer = event.pointerId;
-      let origin = initial;
-      if (travel <= 0 || total <= 0) return;
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.currentTarget === track2) {
-        const point = vertical ? event.clientY - box.top : isRtl$2(el) ? box.right - event.clientX : event.clientX - box.left, thumb = (vertical ? box.height : box.width) - travel;
-        origin = Math.max(0, Math.min(total, (point - thumb / 2) / travel * total));
-        if (vertical) el.scrollTop = origin;
-        else el.scrollLeft = isRtl$2(el) ? -origin : origin;
-      }
-      event.currentTarget.setPointerCapture(pointer);
-      setDrag(axis);
-      const node = event.currentTarget;
-      const move2 = (e) => {
-        const value = Math.max(
-          0,
-          Math.min(
-            total,
-            origin + ((vertical ? e.clientY : e.clientX) - at2) / travel * total * (vertical || !isRtl$2(el) ? 1 : -1)
-          )
-        );
-        if (vertical) el.scrollTop = value;
-        else el.scrollLeft = isRtl$2(el) ? -value : value;
-      };
-      const end = () => {
-        setDrag(null);
-        node.removeEventListener("pointermove", move2);
-        node.removeEventListener("pointerup", end);
-        node.removeEventListener("pointercancel", end);
-      };
-      node.addEventListener("pointermove", move2);
-      node.addEventListener("pointerup", end);
-      node.addEventListener("pointercancel", end);
-    };
-    return ["x", "y"].map((axis) => /* @__PURE__ */ React$1.createElement(
-      "div",
-      {
-        key: axis,
-        className: "plx-data-grid__scroll plx-data-grid__scroll--" + axis,
-        "aria-hidden": "true",
-        onPointerDown: (event) => start2(event, axis),
-        "data-plx-thumb": (axis === "x" && hideX ? null : sizes[axis]) || void 0,
-        "data-plx-dragging": drag === axis ? "" : void 0
-      },
-      /* @__PURE__ */ React$1.createElement(
-        "div",
-        {
-          ref: (node) => {
-            thumbs.current[axis] = node;
-          },
-          className: "plx-data-grid__thumb plx-data-grid__thumb--" + axis,
-          "data-plx-thumb": (axis === "x" && hideX ? null : sizes[axis]) || void 0,
-          "data-plx-scroll-viewport": viewportId,
-          onPointerDown: (event) => start2(event, axis)
-        }
-      )
-    ));
-  }
   const DND_STRINGS = english.dnd;
-  const reduced$2 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$3 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function moveItem(list2, from, to) {
     const next = list2.slice();
     if (from < 0 || from >= next.length) return next;
@@ -11152,7 +11077,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const a = el && offsets.get(el);
     if (!a) return;
     offsets.delete(el);
-    if (opts && opts.settle && !reduced$2() && el.animate) {
+    if (opts && opts.settle && !reduced$3() && el.animate) {
       const ms2 = tokenMs("--plx-sys-gesture-settle-duration", 0, el);
       const easing = getComputedStyle(el).getPropertyValue("--plx-sys-gesture-settle-easing").trim() || "ease";
       const from = a.effect && a.effect.getKeyframes ? a.effect.getKeyframes()[0] : null;
@@ -11340,7 +11265,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (!now || now.kind !== "sortable" || now.mode !== "keyboard" || now.list !== listId || ids.indexOf(now.id) < 0) return;
       const el = handleOf(now.id);
       if (el && document.activeElement !== el) el.focus({ preventScroll: true });
-      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$2() ? "auto" : "smooth" });
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$3() ? "auto" : "smooth" });
     }, [now, ids.join("\n")]);
     const say = (s, vars) => announce(fill(s, vars));
     const reorder = (from, to) => {
@@ -11606,7 +11531,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const next = list2[(at2 + step + list2.length) % list2.length];
       if (!next) return;
       patchSession({ over: next.id });
-      if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$2() ? "auto" : "smooth" });
+      if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$3() ? "auto" : "smooth" });
       announce(fill(t.over, { target: next.o.name }));
     };
     const pointerDown = (e) => {
@@ -11761,41 +11686,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       picked,
       moveBy
     };
-  }
-  const measured = /* @__PURE__ */ new WeakMap();
-  function tokenPixels(token, el) {
-    if (!token || typeof document === "undefined") return 0;
-    const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
-    if (!m) {
-      if (typeof token === "number" || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
-      const host = el || document.documentElement, doc = host.ownerDocument || document, win = doc.defaultView;
-      if (!win || !win.CSS.supports("inline-size", String(token)) || !win.CSSStyleSheet || !("adoptedStyleSheets" in doc)) return 0;
-      const text2 = String(token), rootFont = getComputedStyle(doc.documentElement).fontSize, ownFont = getComputedStyle(host).fontSize;
-      const key = text2 + "|" + ownFont + "|" + rootFont + "|" + win.innerWidth + "x" + win.innerHeight + (/%/.test(text2) ? "|" + host.clientWidth : "");
-      let known = measured.get(doc);
-      if (!known) {
-        known = /* @__PURE__ */ new Map();
-        measured.set(doc, known);
-      }
-      const shown = host.getClientRects().length > 0;
-      if (shown && known.has(key)) return known.get(key);
-      const sheet = new win.CSSStyleSheet(), before = doc.adoptedStyleSheets, probe = doc.createElement("span");
-      sheet.replaceSync(".plx-data-grid__length-probe{inline-size:" + text2 + ";}");
-      probe.className = "plx-data-grid__length-probe";
-      try {
-        doc.adoptedStyleSheets = before.concat(sheet);
-        host.appendChild(probe);
-        const px = probe.getBoundingClientRect().width || 0;
-        if (shown && px > 0) known.set(key, px);
-        return px;
-      } finally {
-        probe.remove();
-        doc.adoptedStyleSheets = before;
-      }
-    }
-    const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[1] || m[2]).trim();
-    if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
-    return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
   }
   const recordKey = (value) => typeof value + ":" + String(value);
   const normalizeSort = (value) => (Array.isArray(value) ? value : []).filter((x) => x && (x.field || x.column)).map((x) => ({ id: x.field || x.column, desc: x.dir === "desc" }));
@@ -14242,6 +14132,41 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       selectionAnchor.current = row.id;
     };
     return { selectionRows, selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow };
+  }
+  const measured = /* @__PURE__ */ new WeakMap();
+  function tokenPixels(token, el) {
+    if (!token || typeof document === "undefined") return 0;
+    const m = /^(--[\w-]+)$|^var\(\s*(--[\w-]+)\s*\)$/.exec(String(token).trim());
+    if (!m) {
+      if (typeof token === "number" || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
+      const host = el || document.documentElement, doc = host.ownerDocument || document, win = doc.defaultView;
+      if (!win || !win.CSS.supports("inline-size", String(token)) || !win.CSSStyleSheet || !("adoptedStyleSheets" in doc)) return 0;
+      const text2 = String(token), rootFont = getComputedStyle(doc.documentElement).fontSize, ownFont = getComputedStyle(host).fontSize;
+      const key = text2 + "|" + ownFont + "|" + rootFont + "|" + win.innerWidth + "x" + win.innerHeight + (/%/.test(text2) ? "|" + host.clientWidth : "");
+      let known = measured.get(doc);
+      if (!known) {
+        known = /* @__PURE__ */ new Map();
+        measured.set(doc, known);
+      }
+      const shown = host.getClientRects().length > 0;
+      if (shown && known.has(key)) return known.get(key);
+      const sheet = new win.CSSStyleSheet(), before = doc.adoptedStyleSheets, probe = doc.createElement("span");
+      sheet.replaceSync(".plx-data-grid__length-probe{inline-size:" + text2 + ";}");
+      probe.className = "plx-data-grid__length-probe";
+      try {
+        doc.adoptedStyleSheets = before.concat(sheet);
+        host.appendChild(probe);
+        const px = probe.getBoundingClientRect().width || 0;
+        if (shown && px > 0) known.set(key, px);
+        return px;
+      } finally {
+        probe.remove();
+        doc.adoptedStyleSheets = before;
+      }
+    }
+    const v = getComputedStyle(el || document.documentElement).getPropertyValue(m[1] || m[2]).trim();
+    if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+    return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
   }
   function useColumns({ initial, props, columns, frame, live, emit, api }) {
     const [order, setOrder] = React$1.useState(initial.order), [visibility, setVisibility] = React$1.useState(initial.visibility);
@@ -17958,1494 +17883,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       virtual.measure();
     }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
   }
-  function columnSizing({ columns, frame, source, resize, metrics, table, B }) {
-    const fit2 = (field) => {
-      const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
-      const data = kinds(c).includes("data");
-      ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size") + " " + cs.getPropertyValue(data ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family");
-      ctx.wordSpacing = data ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
-      const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
-      resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
-    };
-    const startResize = (event, column) => {
-      if (event.type === "mousedown" && event.button !== 0) return;
-      if (event.type === "mousedown") event.preventDefault();
-      event.stopPropagation();
-      const head = table.getFlatHeaders().find((h2) => h2.column.id === column.id);
-      const doc = frame.current?.ownerDocument || document, cover = doc.createElement("div");
-      cover.className = B + "__resize-cover";
-      doc.body.appendChild(cover);
-      const end = () => {
-        cover.remove();
-        doc.removeEventListener("mouseup", end);
-        doc.removeEventListener("touchend", end);
-        doc.removeEventListener("touchcancel", end);
-      };
-      doc.addEventListener("mouseup", end);
-      doc.addEventListener("touchend", end);
-      doc.addEventListener("touchcancel", end);
-      head?.getResizeHandler(doc)(event);
-    };
-    return { fit: fit2, startResize };
-  }
-  function syncLive({
-    live,
-    props,
-    frame,
-    index: index2,
-    canonical: canonical2,
-    source,
-    recordsByKey,
-    replaceData,
-    model,
-    groups,
-    groupBy: groupBy2,
-    changeGroups,
-    toggleGroup,
-    collapsed,
-    updateRecord,
-    commitEdit,
-    editing,
-    setEditing,
-    childField,
-    expanded,
-    setExpanded,
-    columns,
-    table,
-    selection,
-    sorting,
-    changeSort,
-    resize,
-    move: move2,
-    pick,
-    setPage,
-    page,
-    pageSize,
-    setPageSize,
-    virtual,
-    rowElements,
-    headerElements,
-    listeners: listeners2
-  }) {
-    live.current = {
-      props,
-      frame,
-      index: index2,
-      data: canonical2,
-      source,
-      recordsByKey,
-      replaceData,
-      model,
-      groups,
-      groupBy: groupBy2,
-      changeGroups,
-      toggleGroup,
-      collapsed,
-      updateRecord,
-      commitEdit,
-      editing,
-      setEditing,
-      childField,
-      expanded,
-      setExpanded,
-      fields: columns,
-      table,
-      selection,
-      sorting,
-      setSorting: changeSort,
-      resize,
-      move: move2,
-      pick,
-      setPage,
-      page,
-      pageSize,
-      setPageSize,
-      virtual,
-      rowElements: rowElements.current,
-      headerElements: headerElements.current,
-      listeners: listeners2.current
-    };
-  }
-  function useRemoteRows({ props, mode, page, pageSize, sorting, filters }) {
-    const fetching = React$1.useRef(false);
-    const [remoteBusy, setRemoteBusy] = React$1.useState(false);
-    const [remote, setRemote] = React$1.useState(null), [remoteError, setRemoteError] = React$1.useState(null), [retry, setRetry] = React$1.useState(0);
-    const remoteMode = typeof props.fetchRows === "function" && (mode === "pages" || mode === "load-more" || mode === "fill"), scrollFill = remoteMode && mode === "fill";
-    React$1.useEffect(() => {
-      if (!remoteMode) return;
-      fetching.current = true;
-      setRemoteBusy(true);
-      let alive = true;
-      const controller = new AbortController();
-      setRemoteError(null);
-      Promise.resolve().then(
-        () => props.fetchRows({
-          page: page + 1,
-          size: pageSize,
-          sort: sorted(sorting),
-          filters: filters.map((f) => ({ field: f.id, type: "like", value: f.value })),
-          search: props.search,
-          signal: controller.signal
-        })
-      ).then(
-        (result) => {
-          if (alive) {
-            fetching.current = false;
-            setRemoteBusy(false);
-            setRemote((old) => {
-              const append = mode === "load-more" || mode === "fill", got = result.rows || [], rows = append && page > 0 ? [...old?.rows || [], ...got] : got;
-              return { rows, total: append && got.length < pageSize ? rows.length : result.total || 0 };
-            });
-          }
-        },
-        (failure) => {
-          if (alive) {
-            fetching.current = false;
-            setRemoteBusy(false);
-            setRemoteError(failure);
-          }
-        }
-      );
-      return () => {
-        alive = false;
-        controller.abort();
-      };
-    }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
-    return { fetching, remoteBusy, remote, remoteError, setRetry, remoteMode, scrollFill };
-  }
-  function useTableModel({
-    columns,
-    sortingRef,
-    metrics,
-    floors,
-    autoSizing,
-    frame,
-    source,
-    index: index2,
-    childField,
-    setExpanded,
-    printing,
-    expanded,
-    sorting,
-    columnOrder,
-    columnVisibility,
-    sizing,
-    filters,
-    activeFilter,
-    page,
-    pageSize,
-    selection,
-    columnPinning,
-    changeSort,
-    options,
-    notifySelection,
-    live,
-    changeVisibility,
-    changeOrder,
-    resize,
-    setFilters,
-    setPage,
-    recordFilter,
-    deferredFilter,
-    remoteMode,
-    remote,
-    mode
-  }) {
-    const leafDefs = React$1.useMemo(
-      () => columns.map((c) => ({
-        id: c.field,
-        accessorFn: (r) => valueAt(r, c.field),
-        header: c.title || c.field,
-        enableSorting: c.sortable !== false,
-        filterFn: c.type === "bytes" ? byteFilter : c.filter === "list" ? listFilter : textFilter,
-        sortingFn: typeof c.sorter === "function" ? (a, b, id) => c.sorter(
-          a.getValue(id),
-          b.getValue(id),
-          a.original,
-          b.original,
-          id,
-          sortingRef.current.find((s) => s.id === id)?.desc ? "desc" : "asc"
-        ) : c.sorter === "number" || c.type === "bytes" ? "basic" : compare,
-        size: kinds(c).includes("icon") ? metrics.lead : Math.max(
-          metrics.min,
-          floors[c.field] || 0,
-          autoSizing[c.field] || tokenPixels(c.width, frame.current) || metrics.min
-        ),
-        minSize: kinds(c).includes("icon") ? metrics.lead : Math.max(floors[c.field] || 0, tokenPixels(c.minWidth, frame.current) || metrics.min),
-        maxSize: kinds(c).includes("icon") ? metrics.lead : Math.min(
-          c.maxWidth ? tokenPixels(c.maxWidth, frame.current) : SIZE_STEPS[SIZE_STEPS.length - 1],
-          Math.max(
-            Math.max(floors[c.field] || 0, tokenPixels(c.minWidth, frame.current) || metrics.min),
-            shareOf(metrics.room, frame.current)
-          )
-        ),
-        meta: c
-      })),
-      [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]
-    );
-    const table = useReactTable({
-      data: source,
-      columns: leafDefs,
-      getRowId: (r) => recordKey(r[index2]),
-      getSubRows: childField ? (r) => r[childField] : void 0,
-      onExpandedChange: setExpanded,
-      filterFromLeafRows: true,
-      state: {
-        expanded: printing ? true : expanded,
-        sorting,
-        columnOrder,
-        columnVisibility,
-        columnSizing: sizing,
-        columnFilters: filters,
-        globalFilter: activeFilter,
-        pagination: { pageIndex: page, pageSize },
-        rowSelection: selection,
-        columnPinning
-      },
-      onSortingChange: changeSort,
-      enableMultiRowSelection: options.selectableRows !== 1,
-      enableSubRowSelection: false,
-      onRowSelectionChange: (update) => notifySelection(typeof update === "function" ? update(live.current.selection || selection) : update),
-      onColumnVisibilityChange: (update) => {
-        changeVisibility(typeof update === "function" ? update(columnVisibility) : update);
-      },
-      onColumnOrderChange: (update) => {
-        changeOrder(typeof update === "function" ? update(columnOrder) : update);
-      },
-      onColumnSizingChange: (update) => {
-        const before = live.current.sizing || sizing, next = typeof update === "function" ? update(before) : update;
-        Object.keys(next).forEach((id) => {
-          if (next[id] !== before[id]) resize(id, next[id]);
-        });
-      },
-      columnResizeMode: "onChange",
-      columnResizeDirection: frame.current && isRtl$2(frame.current) ? "rtl" : "ltr",
-      onColumnFiltersChange: (update) => {
-        setFilters(update);
-        setPage(0);
-      },
-      getColumnCanGlobalFilter: () => true,
-      globalFilterFn: recordFilter,
-      globalFilter: deferredFilter,
-      manualPagination: remoteMode,
-      manualSorting: remoteMode,
-      manualFiltering: remoteMode,
-      pageCount: remoteMode ? Math.ceil((remote?.total || 0) / pageSize) : void 0,
-      getExpandedRowModel: getExpandedRowModel(),
-      getCoreRowModel: getCoreRowModel(),
-      getFilteredRowModel: getFilteredRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      getFacetedRowModel: (t) => () => {
-        const all = t.getPreFilteredRowModel();
-        return { rows: all.rows, flatRows: all.rows, rowsById: all.rowsById };
-      },
-      getFacetedUniqueValues: getFacetedUniqueValues(),
-      getPaginationRowModel: mode === "pages" ? getPaginationRowModel() : void 0,
-      autoResetPageIndex: false
-    });
-    return { table };
-  }
-  const headerKeys = ({ column }) => (e) => {
-    if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
-      e.preventDefault();
-      column.toggleSorting();
-    }
-  };
-  const resizeKeys = ({ resize, c, column }) => (e) => {
-    if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
-      e.preventDefault();
-      resize(
-        c.field,
-        e.key === "Home" ? column.columnDef.minSize : e.key === "End" ? column.columnDef.maxSize : stepSize(
-          column.getSize(),
-          e.key === "ArrowRight" ? 1 : -1,
-          column.columnDef.minSize,
-          column.columnDef.maxSize
-        )
-      );
-    }
-  };
-  const makeFocusCell = ({ model, ordered: ordered2, virtualized, virtual, displayElements }) => (rowIndex, columnIndex, step = 1) => {
-    while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
-    const record = model[rowIndex], column = ordered2[columnIndex];
-    if (!record || columnIndex !== null && !column) return;
-    if (virtualized) virtual.scrollToIndex(rowIndex, { align: "auto" });
-    requestAnimationFrame(
-      () => requestAnimationFrame(() => {
-        const node = displayElements.current.get(record.displayKey || record.id);
-        (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
-          preventScroll: true
-        });
-      })
-    );
-  };
-  const groupKeys = ({ toggleGroup, group, model, virtual, holder, B }) => (event) => {
-    if (event.target !== event.currentTarget) return;
-    if (["Enter", " ", "ArrowRight", "ArrowLeft"].includes(event.key)) {
-      event.preventDefault();
-      toggleGroup(group.id, event.key === "ArrowRight" ? true : event.key === "ArrowLeft" ? false : void 0);
-    } else if (["ArrowDown", "ArrowUp"].includes(event.key)) {
-      event.preventDefault();
-      const headers = model.filter((row) => row.__group), next = headers[headers.findIndex((row) => row.id === group.id) + (event.key === "ArrowDown" ? 1 : -1)];
-      if (next) {
-        virtual.scrollToIndex(model.indexOf(next), { align: "center" });
-        requestAnimationFrame(
-          () => requestAnimationFrame(
-            () => holder.current?.querySelector("." + B + '__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')?.focus({ preventScroll: true })
-          )
-        );
-      }
-    }
-  };
-  const rowKeys = ({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model }) => (e) => {
-    if (e.key === "Enter" && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute("role") === "gridcell")) {
-      e.preventDefault();
-      chooseRow(row, e);
-      emit("rowClick", e, rowApi);
-      props.onRowClick?.(record, e);
-      if (props.onRowClick || on.rowClick) {
-        unread.open(record);
-        setOwnOpen(row.id);
-      }
-    }
-    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && e.target === e.currentTarget) {
-      e.preventDefault();
-      const step = e.key === "ArrowDown" ? 1 : -1;
-      focusCell(model.indexOf(row) + step, null, step);
-    }
-  };
-  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell }) => (event) => {
-    if (isStatic || event.target !== event.currentTarget) return;
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
-      if (document.getSelection()?.toString()) return;
-      event.preventDefault();
-      navigator.clipboard.writeText(valueText(value));
-      return;
-    }
-    if (event.key === "Enter" && canEdit) {
-      event.preventDefault();
-      setEditing({ key: row.id, field: c.field, value });
-      return;
-    }
-    const index2 = model.indexOf(row), at2 = ordered2.indexOf(column), keys = {
-      ArrowDown: [index2 + 1, at2],
-      ArrowUp: [index2 - 1, at2],
-      ArrowLeft: [index2, at2 + (isRtl$2(frame.current) ? 1 : -1)],
-      ArrowRight: [index2, at2 + (isRtl$2(frame.current) ? -1 : 1)]
-    };
-    if (keys[event.key]) {
-      event.preventDefault();
-      focusCell(...keys[event.key], event.key === "ArrowUp" ? -1 : 1);
-    }
-  };
-  const tableKeys = ({ focusCell, first }) => (event) => {
-    if (event.target === event.currentTarget && event.key === "ArrowDown") {
-      event.preventDefault();
-      focusCell(first, 0);
-    }
-  };
-  const PRIMARY = 0;
-  function usePressable(options = {}) {
-    const { onPress, onPressStart, onPressEnd, onPressChange, disabled = false, handlers = {}, native = false } = options;
-    const [pressed, setPressedState] = React$1.useState(false);
-    const hold = React$1.useRef(null);
-    const key = React$1.useRef(null);
-    const lastPointer = React$1.useRef(null);
-    const latest = React$1.useRef(options);
-    latest.current = options;
-    const setPressed = (on) => {
-      setPressedState(on);
-      if (latest.current.onPressChange) latest.current.onPressChange(on);
-    };
-    const start2 = (pointerType) => {
-      hold.current = { pointerType };
-      setPressed(true);
-      if (onPressStart) onPressStart({ pointerType });
-    };
-    const end = () => {
-      const was = hold.current;
-      hold.current = null;
-      setPressed(false);
-      if (was && onPressEnd) onPressEnd({ pointerType: was.pointerType });
-    };
-    const fire = (e, pointerType) => {
-      if (onPress) onPress({ pointerType, target: e.currentTarget, shiftKey: !!e.shiftKey, ctrlKey: !!e.ctrlKey, metaKey: !!e.metaKey, altKey: !!e.altKey, event: e });
-    };
-    const chain = (name, own2) => (e) => {
-      if (handlers[name]) handlers[name](e);
-      if (disabled || e.defaultPrevented) return;
-      own2(e);
-    };
-    const isLink = (el) => el && el.tagName === "A" && el.hasAttribute("href");
-    React$1.useEffect(() => {
-      if (disabled && hold.current) end();
-    });
-    if (native) {
-      const own2 = (name) => (e) => {
-        if (handlers[name]) handlers[name](e);
-      };
-      const nativeProps = {
-        onPointerDown: (e) => {
-          own2("onPointerDown")(e);
-          lastPointer.current = e.pointerType || "mouse";
-        },
-        onPointerCancel: (e) => {
-          own2("onPointerCancel")(e);
-          lastPointer.current = null;
-        },
-        onKeyDown: (e) => {
-          own2("onKeyDown")(e);
-          if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") lastPointer.current = "keyboard";
-        },
-        onBlur: (e) => {
-          own2("onBlur")(e);
-          lastPointer.current = null;
-        },
-        // a pointer or key that never clicked names no later click
-        onClick: (e) => {
-          own2("onClick")(e);
-          const pointerType = lastPointer.current || (e.detail === 0 ? "virtual" : "mouse");
-          lastPointer.current = null;
-          if (!disabled) fire(e, pointerType);
-        }
-      };
-      Object.keys(handlers).forEach((name) => {
-        if (!nativeProps[name]) nativeProps[name] = handlers[name];
-      });
-      return { pressed: false, pressProps: nativeProps };
-    }
-    const pressProps = {
-      onPointerDown: chain("onPointerDown", (e) => {
-        if (e.button !== PRIMARY) return;
-        const el = e.currentTarget;
-        lastPointer.current = e.pointerType || "mouse";
-        start2(lastPointer.current);
-        const up = (u) => {
-          window.removeEventListener("pointerup", up, true);
-          window.removeEventListener("pointercancel", up, true);
-          if (u.type === "pointercancel" || !el.contains(u.target)) lastPointer.current = null;
-          if (hold.current && hold.current.pointerType !== "keyboard") end();
-        };
-        window.addEventListener("pointerup", up, true);
-        window.addEventListener("pointercancel", up, true);
-      }),
-      onPointerUp: chain("onPointerUp", () => {
-        if (hold.current && hold.current.pointerType !== "keyboard") end();
-      }),
-      onPointerCancel: chain("onPointerCancel", () => {
-        if (hold.current) end();
-        lastPointer.current = null;
-      }),
-      onPointerLeave: chain("onPointerLeave", () => {
-        if (hold.current && hold.current.pointerType !== "keyboard") {
-          hold.current.left = true;
-          setPressed(false);
-        }
-      }),
-      onPointerEnter: chain("onPointerEnter", (e) => {
-        if (hold.current && hold.current.left && e.buttons & 1) {
-          hold.current.left = false;
-          setPressed(true);
-        }
-      }),
-      onKeyDown: chain("onKeyDown", (e) => {
-        lastPointer.current = null;
-        if (e.key === "Escape" && key.current) {
-          key.current = null;
-          end();
-          return;
-        }
-        if (e.key === "Enter" && !isLink(e.currentTarget)) {
-          e.preventDefault();
-          if (e.repeat) return;
-          start2("keyboard");
-          fire(e, "keyboard");
-          end();
-        } else if (e.key === " " || e.key === "Spacebar") {
-          e.preventDefault();
-          if (e.repeat || key.current) return;
-          key.current = " ";
-          start2("keyboard");
-        }
-      }),
-      onKeyUp: chain("onKeyUp", (e) => {
-        if ((e.key === " " || e.key === "Spacebar") && key.current) {
-          e.preventDefault();
-          key.current = null;
-          fire(e, "keyboard");
-          end();
-        }
-      }),
-      onBlur: chain("onBlur", () => {
-        if (key.current) {
-          key.current = null;
-          end();
-        }
-      }),
-      onClick: chain("onClick", (e) => {
-        const pointerType = lastPointer.current;
-        lastPointer.current = null;
-        if (pointerType) {
-          if (hold.current) end();
-          fire(e, pointerType);
-          return;
-        }
-        if (e.detail === 0) fire(e, "virtual");
-      })
-    };
-    Object.keys(handlers).forEach((name) => {
-      if (!pressProps[name]) pressProps[name] = handlers[name];
-    });
-    return { pressed: !disabled && pressed, pressProps };
-  }
-  const VIRTUAL_STICKY_CLASS = "plx-virtual-sticky";
-  function gapPieces(count2) {
-    const out = [];
-    let n = Math.max(0, Math.floor(count2));
-    for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
-      out.push(p);
-      n -= p;
-    }
-    return out;
-  }
-  function VirtualGap({ count: count2, axis = "y" }) {
-    if (!count2) return null;
-    return React$1.createElement(
-      "div",
-      { className: "plx-virtual-gap", "data-plx-axis": axis, "aria-hidden": "true" },
-      gapPieces(count2).map((p, i) => React$1.createElement("div", { key: i, className: "plx-virtual-gap__piece", "data-plx-axis": axis, "data-plx-span": String(p) }))
-    );
-  }
-  function VirtualProbe({ axis = "y" }) {
-    return React$1.createElement("div", { className: "plx-virtual-probe", "data-plx-axis": axis, "data-plx-virtual-probe": "", "aria-hidden": "true" });
-  }
-  function useVirtualizer({ count: count2 = 0, mode = "fixed", axis = "y", grid = false, overscan = 4, sticky } = {}) {
-    const viewportRef = React$1.useRef(null);
-    const [view, setView] = React$1.useState({ offset: 0, size: 0, pitch: 0, columns: 1 });
-    const [focused, setFocused] = React$1.useState(-1);
-    const sizes = React$1.useRef(/* @__PURE__ */ new Map());
-    const shown = React$1.useRef({ start: 0, end: 0 });
-    const horizontal = axis === "x";
-    const measure2 = React$1.useCallback(() => {
-      const el = viewportRef.current;
-      if (!el) return;
-      const probe = el.querySelector(":scope > [data-plx-virtual-probe]");
-      const pitch2 = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
-      let columns2 = 1;
-      if (grid) {
-        const items = el.querySelectorAll(":scope > [data-plx-virtual-index]");
-        if (items.length) {
-          const top = items[0].offsetTop;
-          let n = 0;
-          while (n < items.length && items[n].offsetTop === top) n++;
-          columns2 = n === items.length && items.length < count2 ? Math.min(count2, Math.max(n, view.columns * 2)) : n;
-        }
-      }
-      if (mode === "measured") {
-        el.querySelectorAll(":scope > [data-plx-virtual-index]").forEach((it) => {
-          sizes.current.set(Number(it.getAttribute("data-plx-virtual-index")), horizontal ? it.offsetWidth : it.offsetHeight);
-        });
-      }
-      const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
-      const size = horizontal ? el.clientWidth : el.clientHeight;
-      setView((v) => v.offset === offset && v.size === size && v.pitch === pitch2 && v.columns === columns2 ? v : { offset, size, pitch: pitch2, columns: columns2 });
-    }, [horizontal, grid, mode, count2, view.columns]);
-    React$1.useLayoutEffect(() => {
-      measure2();
-    });
-    React$1.useEffect(() => {
-      const el = viewportRef.current;
-      if (!el) return void 0;
-      if (!el.hasAttribute("tabindex")) el.tabIndex = 0;
-      const onScroll = () => measure2();
-      const onFocus = (e) => {
-        const it = e.target.closest && e.target.closest("[data-plx-virtual-index]");
-        setFocused(it && el.contains(it) ? Number(it.getAttribute("data-plx-virtual-index")) : -1);
-      };
-      const onBlur = (e) => {
-        if (!el.contains(e.relatedTarget)) setFocused(-1);
-      };
-      el.addEventListener("scroll", onScroll, { passive: true });
-      el.addEventListener("focusin", onFocus);
-      el.addEventListener("focusout", onBlur);
-      const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => measure2()) : null;
-      if (ro) ro.observe(el);
-      return () => {
-        el.removeEventListener("scroll", onScroll);
-        el.removeEventListener("focusin", onFocus);
-        el.removeEventListener("focusout", onBlur);
-        if (ro) ro.disconnect();
-      };
-    }, [measure2]);
-    const columns = grid ? Math.max(1, view.columns) : 1;
-    const rows = Math.ceil(count2 / columns);
-    const pitch = view.pitch || 1;
-    let first;
-    const last = shown.current;
-    if (mode === "measured" && !grid && view.offset >= last.start * pitch) {
-      let pos = last.start * pitch, i = last.start;
-      while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
-        pos += sizes.current.get(i) || pitch;
-        i++;
-      }
-      if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
-      first = Math.min(rows, i);
-    } else first = Math.min(rows, Math.floor(view.offset / pitch));
-    let fill2 = 0, covered = 0;
-    const target = view.size || pitch * 10;
-    while (first + fill2 < rows && covered < target) {
-      covered += mode === "measured" && !grid ? sizes.current.get(first + fill2) || pitch : pitch;
-      fill2++;
-    }
-    const startRow = Math.max(0, first - overscan);
-    const endRow = Math.min(rows, first + fill2 + overscan);
-    const start2 = startRow * columns, end = Math.min(count2, endRow * columns);
-    shown.current = { start: startRow, end: endRow };
-    const pinned = [];
-    if (focused >= 0 && focused < count2) pinned.push(Math.floor(focused / columns));
-    const header = (sticky || []).filter((i) => i < start2).sort((a, b) => b - a)[0];
-    if (header !== void 0 && !grid) pinned.push(header);
-    const segments = [];
-    const rowsOut = [...new Set(pinned)].filter((r) => r < startRow || r >= endRow).sort((a, b) => a - b);
-    let at2 = 0;
-    const pushRows = (from, to) => {
-      for (let i = from * columns; i < Math.min(count2, to * columns); i++) segments.push({ key: "i" + i, index: i });
-    };
-    const pushGap = (from, to) => {
-      if (to > from) segments.push({ key: "g" + from, gap: true, count: to - from });
-    };
-    rowsOut.filter((r) => r < startRow).forEach((r) => {
-      pushGap(at2, r);
-      pushRows(r, r + 1);
-      at2 = r + 1;
-    });
-    pushGap(at2, startRow);
-    pushRows(startRow, endRow);
-    at2 = endRow;
-    rowsOut.filter((r) => r >= endRow).forEach((r) => {
-      pushGap(at2, r);
-      pushRows(r, r + 1);
-      at2 = r + 1;
-    });
-    pushGap(at2, rows);
-    const itemProps = React$1.useCallback((index2) => ({ "data-plx-virtual-index": index2, "aria-posinset": index2 + 1, "aria-setsize": count2 }), [count2]);
-    const scrollToIndex = React$1.useCallback((index2) => {
-      const el = viewportRef.current;
-      if (!el) return;
-      const offset = Math.floor(index2 / columns) * pitch;
-      if (horizontal) el.scrollLeft = isRtl$2(el) ? -offset : offset;
-      else el.scrollTop = offset;
-      measure2();
-    }, [columns, pitch, horizontal, measure2]);
-    return { viewportRef, segments, itemProps, scrollToIndex, range: { start: start2, end }, columns };
-  }
-  function Gap({ count: count2, kind = "record" }) {
-    return count2 > 0 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-data-grid__gap plx-data-grid__gap--" + kind, "aria-hidden": "true" }, gapPieces(count2).map((n, i) => /* @__PURE__ */ React$1.createElement("div", { key: i, className: "plx-virtual-gap__piece", "data-plx-span": String(n) }))) : null;
-  }
-  function RowGap({ rows }) {
-    const counts2 = rows.reduce(
-      (all, row) => {
-        all[row.__group ? row.__group.separated ? "separated" : "group" : row.__gap ? "band" : row.__add ? "add" : "record"]++;
-        return all;
-      },
-      { record: 0, group: 0, separated: 0, band: 0, add: 0 }
-    );
-    return /* @__PURE__ */ React$1.createElement("div", { "aria-hidden": "true" }, Object.entries(counts2).map(([kind, count2]) => /* @__PURE__ */ React$1.createElement(Gap, { key: kind, kind, count: count2 })));
-  }
-  function CellEditor({ column, value, onCommit, onCancel }) {
-    const S2 = useStrings("dataGrid"), [draft, setDraft] = React$1.useState(value ?? ""), done = React$1.useRef(false);
-    const finish = () => {
-      if (done.current) return;
-      done.current = true;
-      onCommit(column.editor === "number" ? draft === "" ? null : Number(draft) : draft);
-    };
-    return /* @__PURE__ */ React$1.createElement(
-      "input",
-      {
-        autoFocus: true,
-        className: "plx-data-grid__editor",
-        "aria-label": S2.editCell.replace("{title}", column.title),
-        type: column.editor === "number" ? "number" : "text",
-        value: draft,
-        onChange: (e) => setDraft(e.target.value),
-        onBlur: finish,
-        onKeyDown: (e) => {
-          e.stopPropagation();
-          if (e.key === "Escape") {
-            done.current = true;
-            onCancel();
-          } else if (e.key === "Enter") {
-            e.preventDefault();
-            finish();
-          }
-        }
-      }
-    );
-  }
-  function Check({ checked: checked2, mixed, label: label2, onChange }) {
-    const ref = React$1.useRef(null);
-    React$1.useLayoutEffect(() => {
-      if (ref.current) ref.current.indeterminate = !!mixed;
-    }, [mixed]);
-    return /* @__PURE__ */ React$1.createElement("label", { className: GRID + "__check", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React$1.createElement(
-      "input",
-      {
-        ref,
-        className: GRID + "__check-input",
-        type: "checkbox",
-        checked: !!checked2,
-        "aria-label": label2,
-        onChange,
-        onClick: (e) => e.stopPropagation()
-      }
-    ));
-  }
-  const PressTrigger = React$1.forwardRef(function PressTrigger2({ onClick, onKeyDown: onKeyDown2, children, ...rest }, ref) {
-    const { pressProps } = usePressable({
-      onPress: (p) => {
-        if (onClick) onClick(p.event);
-      },
-      handlers: { onKeyDown: onKeyDown2 }
-    });
-    return /* @__PURE__ */ React$1.createElement("span", { ref, role: "button", tabIndex: 0, ...rest, ...pressProps }, children);
-  });
-  const WidthPixels = React$1.createContext(null);
-  const Width = React$1.forwardRef(function Width2({ as: Element = "div", width, frozenOffset, children, onAttach, ...props }, forwarded) {
-    const ref = React$1.useRef(null), pixels = React$1.useContext(WidthPixels), length = (value) => pixels ? pixels(value) : gridPx(value, { el: ref.current || document.documentElement }), style = width == null ? void 0 : { width: length(width), ...frozenOffset == null ? {} : { insetInlineStart: length(frozenOffset) } };
-    return /* @__PURE__ */ React$1.createElement(
-      Element,
-      {
-        ...props,
-        style,
-        ref: (node) => {
-          ref.current = node;
-          onAttach?.(node);
-          if (typeof forwarded === "function") forwarded(node);
-          else if (forwarded) forwarded.current = node;
-        }
-      },
-      children
-    );
-  });
-  function RowMenuContent({ build, items, record, rowApi }) {
-    return build(typeof items === "function" ? items(record) : items || [], record, rowApi);
-  }
-  const ownContent = (node, block) => !React$1.isValidElement(node) ? node : node.type === React$1.Fragment ? React$1.cloneElement(
-    node,
-    {},
-    React$1.Children.map(node.props.children, (child) => ownContent(child, block))
-  ) : React$1.cloneElement(node, { className: cx(node.props.className, block + "__cell-content") });
-  const CustomCell = React$1.memo(
-    function CustomCell2({ column, record, cell, block, mods }) {
-      const content = column.render(record, cell);
-      return React$1.isValidElement(content) ? ownContent(content, block) : /* @__PURE__ */ React$1.createElement("span", { className: cx(block + "__value", mods) }, dataWhenText(content));
-    },
-    (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block && a.mods === b.mods
-  );
-  const MemoGridRow = React$1.memo(
-    function MemoGridRow2({ row, render }) {
-      return render(row);
-    },
-    (a, b) => a.row === b.row && a.version === b.version && a.selected === b.selected
-  );
-  const RowTarget = React$1.forwardRef(function RowTarget2({ onAttach, ...props }, forwarded) {
-    return /* @__PURE__ */ React$1.createElement(
-      "div",
-      {
-        ...props,
-        ref: (node) => {
-          onAttach?.(node);
-          if (typeof forwarded === "function") forwarded(node);
-          else if (forwarded) forwarded.current = node;
-        }
-      }
-    );
-  });
-  const d0$Y = "M359.79-207.39q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Z";
-  const d1$X = "M360-175.39q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Z";
-  const DragIcon = { "name": "drag", "set": "plenix", "symbol": "drag_indicator", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
-  const DragHandle = React$1.forwardRef(function DragHandle2({ label: label2, orientation = "vertical", dnd, disabled = false, className, ...rest }, ref) {
-    const props = mergeDndProps(dnd || {}, rest);
-    return /* @__PURE__ */ React$1.createElement(
-      "button",
-      {
-        ref,
-        type: "button",
-        ...props,
-        "aria-label": label2 || props["aria-label"],
-        disabled: disabled || props.disabled || void 0,
-        className: cx("plx-drag-handle", "plx-drag-handle--" + (orientation === "horizontal" ? "horizontal" : "vertical"), className)
-      },
-      /* @__PURE__ */ React$1.createElement(Icon, { name: DragIcon })
-    );
-  });
-  const d0$X = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
-  const d1$W = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
-  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
-  const d0$W = "M479.79-221.23q-21.54 0-36.66-15.34Q428-251.91 428-273.44q0-21.54 15.34-36.67 15.34-15.12 36.87-15.12 21.54 0 36.66 15.34Q532-294.56 532-273.02t-15.34 36.66q-15.34 15.13-36.87 15.13Zm0-206.77q-21.54 0-36.66-15.34Q428-458.68 428-480.21q0-21.54 15.34-36.66Q458.68-532 480.21-532q21.54 0 36.66 15.34Q532-501.32 532-479.79q0 21.54-15.34 36.66Q501.32-428 479.79-428Zm0-206.77q-21.54 0-36.66-15.34Q428-665.44 428-686.98t15.34-36.66q15.34-15.13 36.87-15.13 21.54 0 36.66 15.34Q532-708.09 532-686.56q0 21.54-15.34 36.67-15.34 15.12-36.87 15.12Z";
-  const d1$V = "M480-189.23q-24.75 0-42.37-17.63Q420-224.48 420-249.23q0-24.75 17.63-42.38 17.62-17.62 42.37-17.62 24.75 0 42.37 17.62Q540-273.98 540-249.23q0 24.75-17.63 42.37-17.62 17.63-42.37 17.63ZM480-420q-24.75 0-42.37-17.63Q420-455.25 420-480q0-24.75 17.63-42.37Q455.25-540 480-540q24.75 0 42.37 17.63Q540-504.75 540-480q0 24.75-17.63 42.37Q504.75-420 480-420Zm0-230.77q-24.75 0-42.37-17.62Q420-686.02 420-710.77q0-24.75 17.63-42.37 17.62-17.63 42.37-17.63 24.75 0 42.37 17.63Q540-735.52 540-710.77q0 24.75-17.63 42.38-17.62 17.62-42.37 17.62Z";
-  const MoreIcon = { "name": "more", "set": "plenix", "symbol": "more_vert", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
-  function bodyRows({
-    B,
-    semanticIndex,
-    S: S2,
-    collapsed,
-    toggleGroup,
-    model,
-    virtual,
-    holder,
-    ordered: ordered2,
-    widths,
-    selectable,
-    metrics,
-    isNarrow,
-    columns,
-    cutOpen,
-    setCutAt,
-    table,
-    wrapOf,
-    props,
-    api,
-    isStatic,
-    effectiveStep,
-    options,
-    recordPositions,
-    rowDnd,
-    unread,
-    index: index2,
-    rememberRow,
-    mode,
-    page,
-    pageSize,
-    selection,
-    isOpen,
-    on,
-    childField,
-    marked,
-    virtualized,
-    chooseRow,
-    emit,
-    setOwnOpen,
-    focusCell,
-    pickCheckbox,
-    kindsOf,
-    pinStart,
-    leadFrozen,
-    editing,
-    cells,
-    showTypes,
-    setEditing,
-    frame,
-    pinnedAt,
-    groupBy: groupBy2,
-    keys,
-    commitEdit,
-    canonical: canonical2,
-    cutAt,
-    rowMenu,
-    rowMenuButton,
-    menuItems
-  }) {
-    const groupNode = (group, sticky = false) => /* @__PURE__ */ React$1.createElement(
-      "div",
-      {
-        key: group.id,
-        "data-plx-group": group.id,
-        className: cx(
-          "" + B + "__grid-row " + B + "__grid-group",
-          "" + B + "__grid-group-level-" + group.depth,
-          group.separated && B + "__group--gap"
-        ),
-        role: "row",
-        tabIndex: 0,
-        "aria-rowindex": semanticIndex.get(group.id),
-        "aria-label": words(S2.groupRow, {
-          value: valueText(group.value) || S2.noValue,
-          count: group.rows.length,
-          records: group.rows.length === 1 ? S2.record : S2.records
-        }),
-        "aria-level": group.depth + 1,
-        "aria-expanded": !collapsed.has(group.id),
-        onKeyDown: groupKeys({ toggleGroup, group, model, virtual, holder, B })
-      },
-      /* @__PURE__ */ React$1.createElement(
-        "div",
-        {
-          className: cx(B + "__group-head", group.separated && !sticky && B + "__group-head--gap"),
-          role: "presentation"
-        },
-        ordered2.map((column, i) => /* @__PURE__ */ React$1.createElement(
-          Width,
-          {
-            key: column.id,
-            width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
-            className: cx(
-              B + "__group-cell",
-              i === 0 && B + "__group-cell--first",
-              column.columnDef.meta.summary && B + "__group-cell--summary",
-              isNarrow && B + "__group-cell--narrow"
-            ),
-            role: "gridcell",
-            "aria-colspan": i === 0 && selectable ? 2 : void 0
-          },
-          i === 0 ? /* @__PURE__ */ React$1.createElement(
-            "div",
-            {
-              className: cx(
-                B + "__group-label",
-                group.depth >= 1 && group.depth <= 3 && B + "__group-label--level-" + group.depth
-              )
-            },
-            /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-chevron", "aria-hidden": "true", onClick: () => toggleGroup(group.id) }, /* @__PURE__ */ React$1.createElement(Icon, { name: collapsed.has(group.id) ? ChevronRightIcon : ChevronDownIcon })),
-            /* @__PURE__ */ React$1.createElement("div", { className: B + "__group-text" }, /* @__PURE__ */ React$1.createElement("span", { dir: "auto", className: B + "__group-eyebrow" }, columns.find((c) => c.field === group.field)?.title || group.field), /* @__PURE__ */ React$1.createElement(
-              "span",
-              {
-                className: cx(
-                  B + "__group-value",
-                  kinds(columns.find((c) => c.field === group.field) || {}).includes("data") && B + "__group-value--data"
-                ),
-                "data-plx-text-follow": "size",
-                "data-plx-kind": kinds(columns.find((c) => c.field === group.field) || {}).includes("data") ? "data" : void 0
-              },
-              valueText(group.value) || S2.noValue
-            )),
-            /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-count" }, formatNumber(group.rows.length))
-          ) : column.columnDef.meta.summary ? /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-summary" }, /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-summary-name" }, { sum: S2.sum, count: S2.countOf, average: S2.average, min: S2.min, max: S2.max }[column.columnDef.meta.summary]), /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-summary-value" }, group.summary?.[column.columnDef.meta.field] == null ? null : formatNumber(group.summary[column.columnDef.meta.field]))) : null
-        ))
-      )
-    );
-    const enterCut = (event, id) => {
-      if (cutOpen.current) return;
-      const v = event.currentTarget.querySelector("." + B + "__value");
-      const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
-      setCutAt(cut ? id : null);
-    };
-    const leaveCut = (id) => {
-      if (!cutOpen.current) setCutAt((at2) => at2 === id ? null : at2);
-    };
-    const anyWrap = table.getVisibleLeafColumns().some((col) => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
-    const rowNode = (row) => {
-      if (row.__group) return groupNode(row.__group);
-      if (row.__add)
-        return /* @__PURE__ */ React$1.createElement("div", { key: row.id, className: B + "__add-row", role: "row", "aria-rowindex": semanticIndex.get(row.id) }, /* @__PURE__ */ React$1.createElement(
-          "div",
-          {
-            role: "gridcell",
-            "aria-colspan": ordered2.length + (selectable ? 1 : 0),
-            className: cx(
-              B + "__group-cell",
-              B + "__group-cell--first",
-              B + "__group-cell--add",
-              isNarrow && B + "__group-cell--narrow"
-            )
-          },
-          /* @__PURE__ */ React$1.createElement(
-            Button,
-            {
-              variant: "ghost",
-              size: "xs",
-              iconOnly: true,
-              icon: AddIcon,
-              label: words(S2.addTo, { value: valueText(row.__add.value) || S2.noValue }),
-              onClick: () => props.onAddToGroup(row.__add.value, row.__add.path)
-            }
-          )
-        ));
-      if (row.__gap)
-        return /* @__PURE__ */ React$1.createElement("div", { key: row.id, className: B + "__group--gap" }, /* @__PURE__ */ React$1.createElement("div", { className: B + "__group-band" }));
-      const rowApi = api.row(row.id), record = row.original;
-      const step = !isStatic && !isNarrow ? effectiveStep : void 0, sized = step != null, lines = sized && step !== "short", modes = cx(
-        isStatic && B + "__grid-cell--static",
-        isNarrow && B + "__grid-cell--narrow",
-        sized && B + "__grid-cell--sized",
-        lines && B + "__grid-cell--lines"
-      );
-      const node = /* @__PURE__ */ React$1.createElement(
-        RowTarget,
-        {
-          key: row.displayKey || row.id,
-          ...!(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)),
-          "data-plx-unread": unread.has(record) || void 0,
-          "aria-label": unread.has(record) ? S2.unreadRow.replace("{label}", String(valueAt(record, columns[0]?.field) ?? record[index2])) : void 0,
-          "data-plx-record": row.id,
-          onAttach: (node2) => rememberRow(row, node2),
-          role: "row",
-          "aria-rowindex": (mode === "pages" ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
-          "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : void 0,
-          "aria-current": isOpen(row.id) ? "true" : void 0,
-          tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : void 0,
-          "aria-level": childField ? row.depth + 1 : void 0,
-          "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : void 0,
-          className: cx(
-            "" + B + "__grid-row",
-            (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + "__grid-selectable",
-            childField && "" + B + "__grid-tree-level-" + Math.min(12, row.depth),
-            marked(row.id) && "" + B + "__grid-selected",
-            isStatic && B + "__grid-row--static",
-            anyWrap && !isNarrow && (isStatic || (effectiveStep || "short") !== "short") && B + "__grid-row--wrap",
-            isNarrow && B + "__grid-row--narrow",
-            virtualized && B + "__grid-row--virtual",
-            row === model[0] && B + "__grid-row--first"
-          ),
-          onClick: (e) => {
-            if (e.target.closest(interactive)) return;
-            chooseRow(row, e);
-            emit("rowClick", e, rowApi);
-            props.onRowClick?.(record, e);
-            if (props.onRowClick || on.rowClick) {
-              unread.open(record);
-              setOwnOpen(row.id);
-            }
-          },
-          onDoubleClick: (e) => {
-            if (!e.target.closest(interactive)) {
-              props.onRowDoubleClick?.(record, e);
-              emit("rowDblClick", e, rowApi);
-            }
-          },
-          onKeyDown: rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })
-        },
-        selectable ? /* @__PURE__ */ React$1.createElement(
-          "div",
-          {
-            className: cx(
-              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
-              leadFrozen && B + "__grid-frozen",
-              modes,
-              selection[row.id] && B + "__grid-cell--selected-start"
-            ),
-            role: "gridcell"
-          },
-          /* @__PURE__ */ React$1.createElement(
-            Check,
-            {
-              label: S2.selectRow + " " + record[index2],
-              checked: selection[row.id],
-              onChange: (e) => pickCheckbox(row, e)
-            }
-          )
-        ) : null,
-        ordered2.map((column) => {
-          const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
-          const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
-          const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
-          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes("icon");
-          const mods = cx(
-            isStatic && B + "__value--static",
-            k.includes("wrap") && B + "__value--wrap",
-            sized && B + "__value--sized",
-            lines && k.includes("wrap") && B + "__value--lines",
-            isNarrow && B + "__value--narrow"
-          ) || void 0, shown = CellValue({
-            block: B,
-            column: c,
-            value,
-            strings: S2,
-            record,
-            pill: cells === "pill",
-            pillField: c.field,
-            icon: showTypes && typeOf$1(c) !== "text" ? typeIcons[typeOf$1(c)] : void 0,
-            mods
-          });
-          const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && React$1.isValidElement(shown) && shown.type === "span" && String(shown.props.className).split(" ").includes(B + "__value");
-          return /* @__PURE__ */ React$1.createElement(
-            Width,
-            {
-              key: c.field,
-              width: isNarrow ? null : widths[c.field],
-              frozenOffset: pinned && !isNarrow ? sticky : void 0,
-              role: isStatic ? c.rowLabel ? "rowheader" : "cell" : "gridcell",
-              tabIndex: isStatic ? void 0 : -1,
-              "data-plx-field": c.field,
-              "data-plx-unread": unread.has(record) || void 0,
-              ...!isStatic && !c.render && !actions && !isEditing ? {
-                onPointerEnter: (e) => enterCut(e, row.id + "|" + c.field),
-                onFocus: (e) => enterCut(e, row.id + "|" + c.field),
-                onPointerLeave: () => leaveCut(row.id + "|" + c.field)
-              } : null,
-              dir: pinned && !isStatic || kinds(c).includes("id") || isNarrow ? void 0 : "auto",
-              onDoubleClick: () => {
-                if (canEdit) setEditing({ key: row.id, field: c.field, value });
-              },
-              onKeyDown: cellKeys({
-                isStatic,
-                value,
-                canEdit,
-                setEditing,
-                row,
-                c,
-                model,
-                ordered: ordered2,
-                column,
-                frame,
-                focusCell
-              }),
-              "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
-              "data-plx-label": detail ? c.title || c.field : void 0,
-              "aria-label": detail ? (c.title || c.field) + ": " + valueText(value) : void 0,
-              "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? "size family weight" : "size family",
-              className: cx(
-                "" + B + "__grid-cell",
-                modes,
-                !selectable && marked(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
-                bare && B + "__grid-cell--bare",
-                selectable && ordered2.indexOf(column) === 0 && B + "__grid-cell--after-lead",
-                ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
-                isTree && row.depth > 0 && B + "__tree-cell--level-" + Math.min(12, row.depth),
-                editing?.key === row.id && editing.field === c.field && "" + B + "__grid-editing",
-                k.map((kind) => B + "__cell--" + kind).join(" "),
-                (k.includes("data") || c.type === "bytes") && B + "__grid-cell--data",
-                [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped",
-                c.type === "bytes" && B + "__cell--data",
-                c.rowHandle && B + "__cell--handle",
-                childField && c.field === (props.treeColumn || columns[0]?.field) && B + "__tree-cell",
-                pinned && "" + B + "__grid-frozen",
-                (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + "__cell--row-label",
-                k.includes("icon") && B + "__w-lead",
-                keys.includes(c.field) && B + "__cell--key",
-                detail && B + "__cell--list-detail",
-                keys[0] === c.field && B + "__cell--key-first",
-                (c.align || c.type === "bytes") && B + "__cell--align-" + (c.align || "right")
-              )
-            },
-            childField && c.field === (props.treeColumn || columns[0]?.field) ? /* @__PURE__ */ React$1.createElement("span", { className: B + "__tree-level", "data-plx-depth": 0 }, row.getCanExpand() ? /* @__PURE__ */ React$1.createElement(
-              "button",
-              {
-                type: "button",
-                className: B + "__grid-data-tree-control",
-                "aria-expanded": row.getIsExpanded(),
-                "aria-label": row.getIsExpanded() ? "Collapse row" : "Expand row",
-                onClick: () => row.toggleExpanded()
-              },
-              /* @__PURE__ */ React$1.createElement(
-                "span",
-                {
-                  className: B + "__grid-data-tree-control-" + (row.getIsExpanded() ? "collapse" : "expand")
-                }
-              )
-            ) : null) : null,
-            editing?.key === row.id && editing.field === c.field ? cellDirection(
-              pinned && !isStatic,
-              /* @__PURE__ */ React$1.createElement(
-                CellEditor,
-                {
-                  column: c,
-                  value,
-                  onCommit: (next) => commitEdit(row.id, c.field, next),
-                  onCancel: () => setEditing(null)
-                }
-              )
-            ) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /* @__PURE__ */ React$1.createElement(
-              Menu,
-              {
-                label: S2.moveRow,
-                trigger: /* @__PURE__ */ React$1.createElement(DragHandle, { dnd: rowDnd.handleProps(recordPositions.get(record) ?? -1) })
-              },
-              /* @__PURE__ */ React$1.createElement(
-                MenuItem,
-                {
-                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, -1),
-                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) - 1)
-                },
-                S2.moveUp
-              ),
-              /* @__PURE__ */ React$1.createElement(
-                MenuItem,
-                {
-                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, 1),
-                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) + 1)
-                },
-                S2.moveDown
-              ),
-              /* @__PURE__ */ React$1.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, 0) }, S2.moveTop),
-              /* @__PURE__ */ React$1.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical2.length - 1) }, S2.moveBottom)
-            ) : c.render ? /* @__PURE__ */ React$1.createElement(
-              "span",
-              {
-                className: cx(B + "__portal", actions && B + "__portal--actions"),
-                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0,
-                "data-plx-link-target": "cell"
-              },
-              /* @__PURE__ */ React$1.createElement(
-                CustomCell,
-                {
-                  column: c,
-                  record,
-                  cell,
-                  rowId: row.id,
-                  selected: !!selection[row.id],
-                  block: B,
-                  mods
-                }
-              )
-            ) : actions ? /* @__PURE__ */ React$1.createElement(
-              "span",
-              {
-                className: B + "__portal " + B + "__portal--actions",
-                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0
-              },
-              shown
-            ) : cutAt === row.id + "|" + c.field ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown), /* @__PURE__ */ React$1.createElement("span", { className: B + "__cut" }, /* @__PURE__ */ React$1.createElement(
-              Popover,
-              {
-                label: c.title,
-                title: c.title,
-                size: "sm",
-                placement: "bottom-end",
-                onOpenChange: (open) => {
-                  cutOpen.current = open;
-                  if (!open) setCutAt(null);
-                },
-                trigger: /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: ExpandIcon, label: S2.fullText })
-              },
-              /* @__PURE__ */ React$1.createElement("div", { className: B + "__full-text" }, valueText(value))
-            ))) : cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown)
-          );
-        }),
-        props.viewMenu ? /* @__PURE__ */ React$1.createElement("div", { className: cx(`${B}__grid-cell ${B}__w-view`, modes), role: "gridcell" }) : null,
-        rowMenu && rowMenuButton ? /* @__PURE__ */ React$1.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, modes), role: "gridcell" }, /* @__PURE__ */ React$1.createElement(
-          Menu,
-          {
-            label: S2.rowActions,
-            trigger: /* @__PURE__ */ React$1.createElement(
-              Button,
-              {
-                className: B + "__row-menu",
-                variant: "ghost",
-                size: "xs",
-                iconOnly: true,
-                icon: MoreIcon,
-                label: S2.rowActions
-              }
-            )
-          },
-          /* @__PURE__ */ React$1.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })
-        )) : null
-      );
-      return rowMenu ? /* @__PURE__ */ React$1.createElement(ContextMenu, { key: row.displayKey || row.id, target: node, label: S2.rowActions }, /* @__PURE__ */ React$1.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })) : node;
-    };
-    return { groupNode, rowNode };
-  }
-  const d0$V = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
-  const d1$U = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
-  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
-  const d0$U = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
-  const d1$T = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
-  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
-  const FilterIcon = { "name": "filter", "set": "plenix", "symbol": "filter_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Zm28-286 162-198H317l163 198Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Zm60-288 198-252H282l198 252Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Z" } } } };
-  const GroupByIcon = { "name": "group-by", "set": "plenix", "symbol": "view_agenda", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm52-52h528v-144H216v144Zm-52-307.38v-248h632v248H164Zm52-52h528v-144H216v144Zm0 215.38v144-144Zm0-359.38v144-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm0-359.38v-248h632v248H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm60-60h560v-160H200v160Zm-60-315.38v-280h680v280H140Zm60-60h560v-160H200v160Zm0 215.38v160-160Zm0-375.38v160-160Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm0-375.38v-280h680v280H140Z" } } } };
-  function headerRows({
-    groupBy: groupBy2,
-    columnMenu,
-    S: S2,
-    menuItems,
-    api,
-    props,
-    setFilterField,
-    changeGroups,
-    wrapOf,
-    changeWrap,
-    wrapColumns,
-    fit: fit2,
-    table,
-    frozen,
-    setManaging,
-    orderAt,
-    filterField,
-    pinStart,
-    columnDnd,
-    ordered: ordered2,
-    headerElements,
-    widths,
-    isStatic,
-    B,
-    selectable,
-    effectiveWrap,
-    options,
-    showTypes,
-    headerMenu,
-    startResize,
-    resize
-  }) {
-    const groupedBy = (field) => [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === field);
-    const headerItems = (column) => {
-      const c = column.columnDef.meta, custom = typeof columnMenu === "function" ? columnMenu(c) : columnMenu || [];
-      const direction = typeOf$1(c) === "number" || typeOf$1(c) === "currency" || typeOf$1(c) === "bytes" ? S2.sortNumber : typeOf$1(c) === "date" ? S2.sortDate : typeOf$1(c) === "checkbox" ? S2.sortCheck : S2.sortText;
-      const grouped = groupedBy(c.field), others = [].concat(groupBy2 || []).filter((level) => (typeof level === "object" ? level.field : level) !== c.field);
-      return /* @__PURE__ */ React.createElement(React.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /* @__PURE__ */ React.createElement(MenuDivider, null) : null, /* @__PURE__ */ React.createElement(MenuItem, { icon: SortAscendingIcon, disabled: !column.getCanSort(), onSelect: () => column.toggleSorting(false) }, direction[0]), /* @__PURE__ */ React.createElement(MenuItem, { icon: SortDescendingIcon, disabled: !column.getCanSort(), onSelect: () => column.toggleSorting(true) }, direction[1]), /* @__PURE__ */ React.createElement(MenuDivider, null), /* @__PURE__ */ React.createElement(
-        MenuItem,
-        {
-          icon: FilterIcon,
-          disabled: !column.getCanFilter(),
-          onSelect: () => props.onFilterField ? props.onFilterField(c.field) : setFilterField(c.field)
-        },
-        S2.filterBy
-      ), /* @__PURE__ */ React.createElement(
-        MenuItem,
-        {
-          icon: GroupByIcon,
-          disabled: !grouped && c.groupable === false,
-          onSelect: () => changeGroups(grouped ? others.length ? others : false : c.field)
-        },
-        grouped ? S2.noGroup : S2.group
-      ), /* @__PURE__ */ React.createElement(MenuDivider, null), /* @__PURE__ */ React.createElement(
-        MenuItem,
-        {
-          checked: !!wrapOf(c),
-          onSelect: () => changeWrap({ ...props.wrapColumns || wrapColumns, [c.field]: !wrapOf(c) })
-        },
-        S2.wrapText
-      ));
-    };
-    const columnChooser = (column) => /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MenuItem, { onSelect: () => fit2(column.id) }, S2.sizeToFit), /* @__PURE__ */ React.createElement(MenuItem, { onSelect: () => table.getVisibleLeafColumns().forEach((col) => fit2(col.id)) }, S2.sizeAllToFit), (() => {
-      const cols = table.getVisibleLeafColumns().map((col) => col.columnDef.meta).filter((m) => m && m.field && !kinds(m).includes("icon")), all = cols.length > 0 && cols.every(wrapOf);
-      return /* @__PURE__ */ React.createElement(MenuItem, { checked: all, onSelect: () => changeWrap(Object.fromEntries(cols.map((m) => [m.field, !all]))) }, S2.wrapAll);
-    })(), /* @__PURE__ */ React.createElement(MenuDivider, null), chooserColumns().map((col) => /* @__PURE__ */ React.createElement(
-      MenuItem,
-      {
-        key: col.id,
-        checked: col.getIsVisible(),
-        disabled: frozen.has(col.id),
-        onSelect: () => col.toggleVisibility(!col.getIsVisible())
-      },
-      col.columnDef.meta.title || col.id
-    )), /* @__PURE__ */ React.createElement(MenuDivider, null), /* @__PURE__ */ React.createElement(MenuItem, { onSelect: () => setManaging(true) }, S2.moreColumns));
-    const chooserColumns = () => {
-      const all = table.getAllLeafColumns().filter((col) => !kinds(col.columnDef.meta).some((k) => ["icon", "actions"].includes(k)));
-      return all.slice().sort((x, y) => orderAt(x.id) - orderAt(y.id));
-    };
-    const headerCell = (column) => {
-      const c = column.columnDef.meta, pinned = column.getIsPinned() === "left";
-      column.getIsSorted();
-      const filtered = column.getIsFiltered(), icon = kinds(c).includes("icon");
-      !!(c.filter || filterField === c.field || filtered);
-      const titleFixed = icon ? "flush" : null, offset = pinned ? pinStart(column) : 0;
-      const node = /* @__PURE__ */ React.createElement(
-        Width,
-        {
-          key: c.field,
-          ...columnDnd.itemProps(ordered2.indexOf(column)),
-          onAttach: (node2) => {
-            if (node2) headerElements.current.set(c.field, node2);
-            else headerElements.current.delete(c.field);
-          },
-          width: widths[c.field],
-          frozenOffset: pinned ? offset : void 0,
-          role: "columnheader",
-          tabIndex: isStatic ? void 0 : 0,
-          "data-plx-field": c.field,
-          "aria-sort": column.getIsSorted() ? column.getIsSorted() === "desc" ? "descending" : "ascending" : void 0,
-          className: cx(
-            "" + B + "__grid-col",
-            isStatic && B + "__grid-col--static",
-            selectable && ordered2.indexOf(column) === 0 && B + "__grid-col--after-lead",
-            ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-col--after-frozen",
-            column.getCanSort() && B + "__grid-sortable",
-            column.getCanSort() && B + "__grid-col-sorter-element",
-            kinds(c).includes("icon") && B + "__cell--icon",
-            kinds(c).includes("icon") && B + "__w-lead",
-            column.getIsFiltered() && B + "__filtered",
-            pinned && "" + B + "__grid-frozen",
-            [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped"
-          ),
-          "data-plx-sticky": pinned && offset ? offset + "px" : void 0,
-          onClick: (e) => {
-            if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
-          },
-          onKeyDown: headerKeys({ column })
-        },
-        /* @__PURE__ */ React.createElement(
-          "div",
-          {
-            className: cx(
-              B + "__grid-col-content",
-              isStatic && B + "__grid-col-content--static",
-              icon && B + "__grid-col-content--icon",
-              effectiveWrap && B + "__grid-col-content--wrap"
-            )
-          },
-          /* @__PURE__ */ React.createElement("div", { className: cx(B + "__grid-col-title-holder", icon && B + "__grid-col-title-holder--flush") }, /* @__PURE__ */ React.createElement(
-            "div",
-            {
-              className: cx(
-                B + "__grid-col-title",
-                isStatic && B + "__grid-col-title--static",
-                titleFixed && B + "__grid-col-title--" + titleFixed,
-                icon && B + "__grid-col-title--icon"
-              ),
-              title: c.title
-            },
-            kinds(c).includes("icon") ? /* @__PURE__ */ React.createElement("span", { className: B + "__header-icon" }, /* @__PURE__ */ React.createElement(Icon, { name: c.icon || CircleInfoIcon, label: c.title })) : /* @__PURE__ */ React.createElement("span", { className: B + "__title" }, props.movableColumns ?? options.movableColumns ? /* @__PURE__ */ React.createElement(DragHandle, { disabled: frozen.has(column.id), dnd: columnDnd.handleProps(ordered2.indexOf(column)) }) : null, showTypes ? /* @__PURE__ */ React.createElement("span", { className: B + "__type-icon" }, /* @__PURE__ */ React.createElement(Icon, { name: typeIcons[typeOf$1(c)] || EdTextIcon })) : null, /* @__PURE__ */ React.createElement("span", { className: cx(B + "__title-text", effectiveWrap && B + "__title-text--wrap") }, c.title || c.field))
-          ), filtered || filterField === c.field ? /* @__PURE__ */ React.createElement("span", { className: cx(B + "__title-filter", filtered && B + "__title-filter--on") }, /* @__PURE__ */ React.createElement(
-            Popover,
-            {
-              open: filterField === c.field,
-              onOpenChange: (open) => setFilterField(open ? c.field : null),
-              title: S2.filter + " " + c.title,
-              size: "sm",
-              trigger: /* @__PURE__ */ React.createElement(PressTrigger, { className: B + "__title-filter-button", "aria-label": S2.filter + " " + c.title }, /* @__PURE__ */ React.createElement(Icon, { name: FilterIcon }))
-            },
-            /* @__PURE__ */ React.createElement("div", { className: B + "__filter-form" }, c.filter === "list" ? /* @__PURE__ */ React.createElement(
-              Select,
-              {
-                "aria-label": S2.filter + " " + c.title,
-                value: column.getFilterValue() || "",
-                options: [
-                  { value: "", label: S2.any },
-                  ...[
-                    ...new Set([...column.getFacetedUniqueValues().keys()].map((value) => String(value ?? "")))
-                  ].filter(Boolean).map((value) => ({ value, label: value }))
-                ],
-                onChange: (e) => column.setFilterValue(e.target.value || void 0)
-              }
-            ) : /* @__PURE__ */ React.createElement(
-              Input,
-              {
-                "aria-label": S2.filter + " " + c.title,
-                value: column.getFilterValue() || "",
-                onChange: (e) => column.setFilterValue(e.target.value)
-              }
-            ), /* @__PURE__ */ React.createElement(Button, { variant: "ghost", size: "sm", onClick: () => column.setFilterValue(void 0) }, S2.clearFilter))
-          )) : null),
-          headerMenu ? /* @__PURE__ */ React.createElement("span", { className: cx(B + "__grid-header-popup-button", B + "__grid-header-popup-button--menu") }, /* @__PURE__ */ React.createElement(
-            Menu,
-            {
-              label: S2.columnActions.replace("{title}", c.title),
-              trigger: /* @__PURE__ */ React.createElement(
-                PressTrigger,
-                {
-                  className: B + "__menu-chevron",
-                  "aria-label": S2.columnActions.replace("{title}", c.title)
-                },
-                /* @__PURE__ */ React.createElement(Icon, { name: ChevronDownIcon })
-              )
-            },
-            headerItems(column)
-          )) : null
-        ),
-        c.resizable !== false && !pinned && !kinds(c).includes("icon") ? /* @__PURE__ */ React.createElement(
-          "span",
-          {
-            className: `${B}__grid-col-resize-handle`,
-            "data-plx-target-equivalent": "",
-            role: "separator",
-            "aria-label": S2.resize + " " + c.title,
-            "aria-orientation": "vertical",
-            tabIndex: 0,
-            "aria-valuenow": column.getSize(),
-            "aria-valuemin": column.columnDef.minSize,
-            "aria-valuemax": column.columnDef.maxSize,
-            onMouseDown: (e) => startResize(e, column),
-            onTouchStart: (e) => startResize(e, column),
-            onDoubleClick: () => fit2(c.field),
-            onKeyDown: resizeKeys({ resize, c, column })
-          }
-        ) : null
-      );
-      return headerMenu ? /* @__PURE__ */ React.createElement(ContextMenu, { key: c.field, target: node, label: S2.columns }, columnChooser(column)) : node;
-    };
-    return { chooserColumns, headerCell };
-  }
   const Checkbox = React$1.forwardRef(function Checkbox2({ label: label2, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
     const locked = useReadOnly(readOnly);
     const inner = React$1.useRef(null);
@@ -19529,9 +17966,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     if (at2 < text2.length) pieces.push(text2.slice(at2));
     return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, pieces);
   }
-  const d0$T = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
-  const d1$S = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
-  const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
+  const d0$Y = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
+  const d1$X = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
+  const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
   const asItem = (kind) => (x) => typeof x === "string" ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind });
   const SearchInput = React$1.forwardRef(function SearchInput2({
     value,
@@ -19986,6 +18423,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     return out;
   };
   const menuOrder = (actions) => actions.filter((a) => !a.danger).concat(actions.filter((a) => a.danger));
+  const d0$X = "M479.79-221.23q-21.54 0-36.66-15.34Q428-251.91 428-273.44q0-21.54 15.34-36.67 15.34-15.12 36.87-15.12 21.54 0 36.66 15.34Q532-294.56 532-273.02t-15.34 36.66q-15.34 15.13-36.87 15.13Zm0-206.77q-21.54 0-36.66-15.34Q428-458.68 428-480.21q0-21.54 15.34-36.66Q458.68-532 480.21-532q21.54 0 36.66 15.34Q532-501.32 532-479.79q0 21.54-15.34 36.66Q501.32-428 479.79-428Zm0-206.77q-21.54 0-36.66-15.34Q428-665.44 428-686.98t15.34-36.66q15.34-15.13 36.87-15.13 21.54 0 36.66 15.34Q532-708.09 532-686.56q0 21.54-15.34 36.67-15.34 15.12-36.87 15.12Z";
+  const d1$W = "M480-189.23q-24.75 0-42.37-17.63Q420-224.48 420-249.23q0-24.75 17.63-42.38 17.62-17.62 42.37-17.62 24.75 0 42.37 17.62Q540-273.98 540-249.23q0 24.75-17.63 42.37-17.62 17.63-42.37 17.63ZM480-420q-24.75 0-42.37-17.63Q420-455.25 420-480q0-24.75 17.63-42.37Q455.25-540 480-540q24.75 0 42.37 17.63Q540-504.75 540-480q0 24.75-17.63 42.37Q504.75-420 480-420Zm0-230.77q-24.75 0-42.37-17.62Q420-686.02 420-710.77q0-24.75 17.63-42.37 17.62-17.63 42.37-17.63 24.75 0 42.37 17.63Q540-735.52 540-710.77q0 24.75-17.63 42.38-17.62 17.62-42.37 17.62Z";
+  const MoreIcon = { "name": "more", "set": "plenix", "symbol": "more_vert", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
   const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
   const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
   const nameOf$4 = (p) => typeof p.children === "string" ? p.children : p.iconOnly && typeof p.label === "string" ? p.label : null;
@@ -20549,6 +18989,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const name = selecting ? sel.label || fill(t.actions, { label: label2 || "" }).trim() : label2;
     return /* @__PURE__ */ React$1.createElement(BarContext$1.Provider, { value: ctx }, /* @__PURE__ */ React$1.createElement("div", { ref: root, className: cx("plx-command-bar", ctx.iconOnly && "plx-command-bar--icons", selecting && "plx-command-bar--selecting", className), "data-plx-layout": shape, "data-plx-position": sticky === true ? "sticky" : sticky === false ? "static" : "auto", onKeyDown: onKeyDown2 }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-command-bar__bar" }, /* @__PURE__ */ React$1.createElement(Toolbar, { label: name, variant: "bar", className: "plx-command-bar__row", "data-plx-bar-row": "", "data-plx-fit-shrink": step >= SEARCH + folds || void 0 }, parts)), React$1.isValidElement(selection) ? selection : null));
   }
+  const d0$W = "M359.79-207.39q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Z";
+  const d1$V = "M360-175.39q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Z";
+  const DragIcon = { "name": "drag", "set": "plenix", "symbol": "drag_indicator", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
   const toggle = (list2, v) => list2.indexOf(v) >= 0 ? list2.filter((x) => x !== v) : list2.concat(v);
   function PanelTrigger({ icon, label: label2, current: current2, count: count2 = 0, active, caret = false, size = "auto", title, footer, inline = false, placement, className, open, onOpenChange, children }) {
     const ctx = useCommandBar();
@@ -20789,8 +19232,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const CloudOffIcon = { "name": "cloud-off", "set": "plenix", "symbol": "cloud_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-72.21 0-122.11-49.89Q68-311.79 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 2.18-14.24 7.82-31.66 5.65-17.41 14.11-30.88L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15ZM240-264h382.46L305.69-580.77q-7.46 15.69-13.07 35.35Q287-525.77 283-507l-51 4q-48 4-80 37.68T120-384q0 49.71 35.14 84.86Q190.29-264 240-264Zm223.69-158.77Zm362.46 186.92L787.77-274Q810-286.38 825-309.08q15-22.7 15-50.92 0-40.32-27.84-68.16Q784.32-456 744-456h-66l-6-65q-7-74-62-124.5T479.78-696q-24.47 0-47.12 6Q410-684 389-673l-37.38-37.77q32-18.46 62.64-27.84Q444.91-748 480-748q94.64 0 164.82 63.68Q715-620.64 724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77ZM588.38-474Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-71.92 0-121.96-50.04Q68-312.08 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 1.85-14.46 7.66-31.77 5.81-17.3 14.27-30.77L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15Zm45.07-131.23L351.62-710.77q32-18.46 62.5-27.84Q444.62-748 480-748q94.54 0 164.77 63.73T724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15ZM260-240h374.46L291.69-582.77q-5.46 13.69-8.57 29.85Q280-536.77 280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41Zm202.69-171.77Zm387.46 187.92L806.77-266q16.23-14.38 24.73-32.77Q840-317.15 840-340q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-27 0-52 6.5T380-693l-43.38-43.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.64 0 184.32 75.68Q740-628.64 740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27ZM593.38-479Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15Zm45.07-153.23L336.62-736.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.54 0 184.27 75.73T740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27Z" } } } };
   const DocSearchIcon = { "name": "doc-search", "set": "plenix", "symbol": "find_in_page", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m605.85-168 52 52H212v-728h354.77L748-665.08v541.39h4.15L547.61-329q-15 10.38-32.29 14.69Q498.03-310 480-310q-51.75 0-87.87-36.13Q356-382.25 356-434q0-51.75 36.13-87.87Q428.25-558 480-558q51.75 0 87.87 36.13Q604-485.75 604-434q0 18.85-5 36.62-5 17.76-15 31.99l112 112.01V-642L546-792H264v624h341.85ZM480-362q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21Zm0-118Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M212-116v-728h354.77L748-665.08v462.93L584-365.39q10-14.23 15-31.99 5-17.77 5-36.62 0-51.75-36.13-87.87Q531.75-558 480-558q-51.75 0-87.87 36.13Q356-485.75 356-434q0 51.75 36.13 87.87Q428.25-310 480-310q18.03 0 35.32-4.31T547.61-329l204.54 204.92v8.08H212Zm267.79-246Q450-362 429-383.21t-21-51Q408-464 429.21-485t51-21Q510-506 531-484.79t21 51Q552-404 530.79-383t-51 21Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m603.85-160 60 60H180v-760h410.77L780-633.08v525.39h-9.85L554.61-322q-17 11.38-35.29 16.69Q501.03-300 480-300q-57.75 0-98.87-41.13Q340-382.25 340-440q0-57.75 41.13-98.87Q422.25-580 480-580q57.75 0 98.87 41.13Q620-497.75 620-440q0 21.85-5.5 40.12-5.5 18.26-16.5 34.49l122 124.01V-612L562-800H240v640h363.85ZM480-360q33 0 56.5-23.5T560-440q0-33-23.5-56.5T480-520q-33 0-56.5 23.5T400-440q0 33 23.5 56.5T480-360Zm0-120Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M180-100v-760h410.77L780-633.08v452.93L598-365.39q11-16.23 16.5-34.49Q620-418.15 620-440q0-57.75-41.13-98.87Q537.75-580 480-580q-57.75 0-98.87 41.13Q340-497.75 340-440q0 57.75 41.13 98.87Q422.25-300 480-300q21.03 0 39.32-5.31T554.61-322l215.54 213.92v8.08H180Zm300-260q-33 0-56.5-23.5T400-440q0-33 23.5-56.5T480-520q33 0 56.5 23.5T560-440q0 33-23.5 56.5T480-360Z" } } } };
   const SettingsMaintenanceIcon = { "name": "settings-maintenance", "set": "plenix", "symbol": "build", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Zm0-73.53 44.61-43.62-225.38-223.39q18.84-24.77 24.84-53.27 6-28.5 6-44.88 0-73.54-56.54-129.77Q446.61-761 363.84-754l118 117-158.15 157.15-120-120q-8.85 89 47.77 144.93Q308.08-399 381.69-399q17.39 0 47.58-6.81 30.19-6.8 56.96-27.42l223.39 223.39ZM476-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Zm0-85.53 36.61-36.62-266.38-266.39q16.84-20.77 24.84-47.27 8-26.5 8-53.88 0-66.54-47.54-117.77Q432.61-769 359.84-768l112 112-170.15 170.15-112-112q.15 77 51.77 122.43Q293.08-430 357.69-430q26.39 0 52.58-7.81 26.19-7.8 47.96-24.42l266.39 266.39ZM472-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Z" } } } };
-  const d0$S = "M793.08-80.62 439.39-436.31q-53.93 6.77-101.93 29.92-48 23.16-83.46 60.39l-62.46-63.69q35.46-35.46 79.96-61.39Q316-497 365.7-510L247.23-628.46q-43.31 19.46-85.54 48.23Q119.46-551.46 84-516l-61.69-63.69q35.85-35.85 76.5-65 40.65-29.16 81.96-50.23l-87.84-87.85 42.15-42.15 702.15 702.15-44.15 42.15ZM716-358l-23.04-23.04-23.04-23.04-113.61-113.61q57.54 8 112.65 35.42 55.12 27.43 99.5 71.81L716-358Zm160-158q-77-77-178.5-120.5T480-680q-21 0-41.08 1.5Q418.85-677 400-674l-76.61-76.61q35.15-9.31 73.92-13.96 38.77-4.66 82.69-4.66 135.46 0 252.69 50.5 117.23 50.5 205.77 139.04L876-516ZM480-120 360.54-240.08q23.77-23.76 54.69-36.46 30.92-12.69 64.77-12.69 33.85 0 64.77 12.69 30.92 12.7 54.69 36.46L480-120Z";
-  const WifiOffIcon = { "name": "wifi-off", "set": "plenix", "symbol": "wifi_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-20.76 56.19-32.46 30.42-11.69 62.27-11.69 32.85 0 62.77 12.19 29.92 12.2 56.69 31.96L480-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-19.76 56.19-31.96 30.42-12.19 62.27-12.19 32.85 0 62.77 12.69 29.92 12.7 56.69 31.46L480-144Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } } } };
+  const d0$V = "M793.08-80.62 439.39-436.31q-53.93 6.77-101.93 29.92-48 23.16-83.46 60.39l-62.46-63.69q35.46-35.46 79.96-61.39Q316-497 365.7-510L247.23-628.46q-43.31 19.46-85.54 48.23Q119.46-551.46 84-516l-61.69-63.69q35.85-35.85 76.5-65 40.65-29.16 81.96-50.23l-87.84-87.85 42.15-42.15 702.15 702.15-44.15 42.15ZM716-358l-23.04-23.04-23.04-23.04-113.61-113.61q57.54 8 112.65 35.42 55.12 27.43 99.5 71.81L716-358Zm160-158q-77-77-178.5-120.5T480-680q-21 0-41.08 1.5Q418.85-677 400-674l-76.61-76.61q35.15-9.31 73.92-13.96 38.77-4.66 82.69-4.66 135.46 0 252.69 50.5 117.23 50.5 205.77 139.04L876-516ZM480-120 360.54-240.08q23.77-23.76 54.69-36.46 30.92-12.69 64.77-12.69 33.85 0 64.77 12.69 30.92 12.7 54.69 36.46L480-120Z";
+  const WifiOffIcon = { "name": "wifi-off", "set": "plenix", "symbol": "wifi_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-20.76 56.19-32.46 30.42-11.69 62.27-11.69 32.85 0 62.77 12.19 29.92 12.2 56.69 31.96L480-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-19.76 56.19-31.96 30.42-12.19 62.27-12.19 32.85 0 62.77 12.69 29.92 12.7 56.69 31.46L480-144Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } } } };
   const KINDS = {
     offline: { tone: "warning", icon: WifiOffIcon },
     degraded: { tone: "warning", icon: CloudOffIcon },
@@ -20812,9 +19255,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const text2 = children !== void 0 && children !== null ? children : words2 ? words2.text : null;
     return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-empty-state", "plx-empty-state--" + size, t !== "neutral" && "plx-empty-state--" + t, className), role: ROLES$1[t], ...rest }, mark ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__icon", "aria-hidden": "true" }, asIcon(mark)) : null, head ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__title" }, head) : null, text2 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__text" }, text2) : null, action ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-empty-state__action" }, action) : null);
   }
-  const d0$R = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
-  const d1$R = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
-  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  const d0$U = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
+  const d1$U = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
+  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
   function pagesToShow(page, count2) {
     const set2 = new Set([1, count2, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count2));
     const list2 = Array.from(set2).sort((a, b) => a - b), out = [];
@@ -20999,6 +19442,1831 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       S2.loadMore
     ) : null) : null;
+  }
+  const headerKeys = ({ column }) => (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
+      e.preventDefault();
+      column.toggleSorting();
+    }
+  };
+  const resizeKeys = ({ resize, c, column }) => (e) => {
+    if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
+      e.preventDefault();
+      resize(
+        c.field,
+        e.key === "Home" ? column.columnDef.minSize : e.key === "End" ? column.columnDef.maxSize : stepSize(
+          column.getSize(),
+          e.key === "ArrowRight" ? 1 : -1,
+          column.columnDef.minSize,
+          column.columnDef.maxSize
+        )
+      );
+    }
+  };
+  const makeFocusCell = ({ model, ordered: ordered2, virtualized, virtual, displayElements }) => (rowIndex, columnIndex, step = 1) => {
+    while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
+    const record = model[rowIndex], column = ordered2[columnIndex];
+    if (!record || columnIndex !== null && !column) return;
+    if (virtualized) virtual.scrollToIndex(rowIndex, { align: "auto" });
+    requestAnimationFrame(
+      () => requestAnimationFrame(() => {
+        const node = displayElements.current.get(record.displayKey || record.id);
+        (columnIndex === null ? node : node?.querySelector('[data-plx-field="' + CSS.escape(column.id) + '"]'))?.focus({
+          preventScroll: true
+        });
+      })
+    );
+  };
+  const groupKeys = ({ toggleGroup, group, model, virtual, holder, B }) => (event) => {
+    if (event.target !== event.currentTarget) return;
+    if (["Enter", " ", "ArrowRight", "ArrowLeft"].includes(event.key)) {
+      event.preventDefault();
+      toggleGroup(group.id, event.key === "ArrowRight" ? true : event.key === "ArrowLeft" ? false : void 0);
+    } else if (["ArrowDown", "ArrowUp"].includes(event.key)) {
+      event.preventDefault();
+      const headers = model.filter((row) => row.__group), next = headers[headers.findIndex((row) => row.id === group.id) + (event.key === "ArrowDown" ? 1 : -1)];
+      if (next) {
+        virtual.scrollToIndex(model.indexOf(next), { align: "center" });
+        requestAnimationFrame(
+          () => requestAnimationFrame(
+            () => holder.current?.querySelector("." + B + '__grid-group[data-plx-group="' + CSS.escape(next.id) + '"]')?.focus({ preventScroll: true })
+          )
+        );
+      }
+    }
+  };
+  const rowKeys = ({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model }) => (e) => {
+    if (e.key === "Enter" && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute("role") === "gridcell")) {
+      e.preventDefault();
+      chooseRow(row, e);
+      emit("rowClick", e, rowApi);
+      props.onRowClick?.(record, e);
+      if (props.onRowClick || on.rowClick) {
+        unread.open(record);
+        setOwnOpen(row.id);
+      }
+    }
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && e.target === e.currentTarget) {
+      e.preventDefault();
+      const step = e.key === "ArrowDown" ? 1 : -1;
+      focusCell(model.indexOf(row) + step, null, step);
+    }
+  };
+  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell }) => (event) => {
+    if (isStatic || event.target !== event.currentTarget) return;
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
+      if (document.getSelection()?.toString()) return;
+      event.preventDefault();
+      navigator.clipboard.writeText(valueText(value));
+      return;
+    }
+    if (event.key === "Enter" && canEdit) {
+      event.preventDefault();
+      setEditing({ key: row.id, field: c.field, value });
+      return;
+    }
+    const index2 = model.indexOf(row), at2 = ordered2.indexOf(column), keys = {
+      ArrowDown: [index2 + 1, at2],
+      ArrowUp: [index2 - 1, at2],
+      ArrowLeft: [index2, at2 + (isRtl$2(frame.current) ? 1 : -1)],
+      ArrowRight: [index2, at2 + (isRtl$2(frame.current) ? -1 : 1)]
+    };
+    if (keys[event.key]) {
+      event.preventDefault();
+      focusCell(...keys[event.key], event.key === "ArrowUp" ? -1 : 1);
+    }
+  };
+  const tableKeys = ({ focusCell, first }) => (event) => {
+    if (event.target === event.currentTarget && event.key === "ArrowDown") {
+      event.preventDefault();
+      focusCell(first, 0);
+    }
+  };
+  const PRIMARY = 0;
+  function usePressable(options = {}) {
+    const { onPress, onPressStart, onPressEnd, onPressChange, disabled = false, handlers = {}, native = false } = options;
+    const [pressed, setPressedState] = React$1.useState(false);
+    const hold = React$1.useRef(null);
+    const key = React$1.useRef(null);
+    const lastPointer = React$1.useRef(null);
+    const latest = React$1.useRef(options);
+    latest.current = options;
+    const setPressed = (on) => {
+      setPressedState(on);
+      if (latest.current.onPressChange) latest.current.onPressChange(on);
+    };
+    const start2 = (pointerType) => {
+      hold.current = { pointerType };
+      setPressed(true);
+      if (onPressStart) onPressStart({ pointerType });
+    };
+    const end = () => {
+      const was = hold.current;
+      hold.current = null;
+      setPressed(false);
+      if (was && onPressEnd) onPressEnd({ pointerType: was.pointerType });
+    };
+    const fire = (e, pointerType) => {
+      if (onPress) onPress({ pointerType, target: e.currentTarget, shiftKey: !!e.shiftKey, ctrlKey: !!e.ctrlKey, metaKey: !!e.metaKey, altKey: !!e.altKey, event: e });
+    };
+    const chain = (name, own2) => (e) => {
+      if (handlers[name]) handlers[name](e);
+      if (disabled || e.defaultPrevented) return;
+      own2(e);
+    };
+    const isLink = (el) => el && el.tagName === "A" && el.hasAttribute("href");
+    React$1.useEffect(() => {
+      if (disabled && hold.current) end();
+    });
+    if (native) {
+      const own2 = (name) => (e) => {
+        if (handlers[name]) handlers[name](e);
+      };
+      const nativeProps = {
+        onPointerDown: (e) => {
+          own2("onPointerDown")(e);
+          lastPointer.current = e.pointerType || "mouse";
+        },
+        onPointerCancel: (e) => {
+          own2("onPointerCancel")(e);
+          lastPointer.current = null;
+        },
+        onKeyDown: (e) => {
+          own2("onKeyDown")(e);
+          if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") lastPointer.current = "keyboard";
+        },
+        onBlur: (e) => {
+          own2("onBlur")(e);
+          lastPointer.current = null;
+        },
+        // a pointer or key that never clicked names no later click
+        onClick: (e) => {
+          own2("onClick")(e);
+          const pointerType = lastPointer.current || (e.detail === 0 ? "virtual" : "mouse");
+          lastPointer.current = null;
+          if (!disabled) fire(e, pointerType);
+        }
+      };
+      Object.keys(handlers).forEach((name) => {
+        if (!nativeProps[name]) nativeProps[name] = handlers[name];
+      });
+      return { pressed: false, pressProps: nativeProps };
+    }
+    const pressProps = {
+      onPointerDown: chain("onPointerDown", (e) => {
+        if (e.button !== PRIMARY) return;
+        const el = e.currentTarget;
+        lastPointer.current = e.pointerType || "mouse";
+        start2(lastPointer.current);
+        const up = (u) => {
+          window.removeEventListener("pointerup", up, true);
+          window.removeEventListener("pointercancel", up, true);
+          if (u.type === "pointercancel" || !el.contains(u.target)) lastPointer.current = null;
+          if (hold.current && hold.current.pointerType !== "keyboard") end();
+        };
+        window.addEventListener("pointerup", up, true);
+        window.addEventListener("pointercancel", up, true);
+      }),
+      onPointerUp: chain("onPointerUp", () => {
+        if (hold.current && hold.current.pointerType !== "keyboard") end();
+      }),
+      onPointerCancel: chain("onPointerCancel", () => {
+        if (hold.current) end();
+        lastPointer.current = null;
+      }),
+      onPointerLeave: chain("onPointerLeave", () => {
+        if (hold.current && hold.current.pointerType !== "keyboard") {
+          hold.current.left = true;
+          setPressed(false);
+        }
+      }),
+      onPointerEnter: chain("onPointerEnter", (e) => {
+        if (hold.current && hold.current.left && e.buttons & 1) {
+          hold.current.left = false;
+          setPressed(true);
+        }
+      }),
+      onKeyDown: chain("onKeyDown", (e) => {
+        lastPointer.current = null;
+        if (e.key === "Escape" && key.current) {
+          key.current = null;
+          end();
+          return;
+        }
+        if (e.key === "Enter" && !isLink(e.currentTarget)) {
+          e.preventDefault();
+          if (e.repeat) return;
+          start2("keyboard");
+          fire(e, "keyboard");
+          end();
+        } else if (e.key === " " || e.key === "Spacebar") {
+          e.preventDefault();
+          if (e.repeat || key.current) return;
+          key.current = " ";
+          start2("keyboard");
+        }
+      }),
+      onKeyUp: chain("onKeyUp", (e) => {
+        if ((e.key === " " || e.key === "Spacebar") && key.current) {
+          e.preventDefault();
+          key.current = null;
+          fire(e, "keyboard");
+          end();
+        }
+      }),
+      onBlur: chain("onBlur", () => {
+        if (key.current) {
+          key.current = null;
+          end();
+        }
+      }),
+      onClick: chain("onClick", (e) => {
+        const pointerType = lastPointer.current;
+        lastPointer.current = null;
+        if (pointerType) {
+          if (hold.current) end();
+          fire(e, pointerType);
+          return;
+        }
+        if (e.detail === 0) fire(e, "virtual");
+      })
+    };
+    Object.keys(handlers).forEach((name) => {
+      if (!pressProps[name]) pressProps[name] = handlers[name];
+    });
+    return { pressed: !disabled && pressed, pressProps };
+  }
+  const VIRTUAL_STICKY_CLASS = "plx-virtual-sticky";
+  function gapPieces(count2) {
+    const out = [];
+    let n = Math.max(0, Math.floor(count2));
+    for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
+      out.push(p);
+      n -= p;
+    }
+    return out;
+  }
+  function VirtualGap({ count: count2, axis = "y" }) {
+    if (!count2) return null;
+    return React$1.createElement(
+      "div",
+      { className: "plx-virtual-gap", "data-plx-axis": axis, "aria-hidden": "true" },
+      gapPieces(count2).map((p, i) => React$1.createElement("div", { key: i, className: "plx-virtual-gap__piece", "data-plx-axis": axis, "data-plx-span": String(p) }))
+    );
+  }
+  function VirtualProbe({ axis = "y" }) {
+    return React$1.createElement("div", { className: "plx-virtual-probe", "data-plx-axis": axis, "data-plx-virtual-probe": "", "aria-hidden": "true" });
+  }
+  function useVirtualizer({ count: count2 = 0, mode = "fixed", axis = "y", grid = false, overscan = 4, sticky } = {}) {
+    const viewportRef = React$1.useRef(null);
+    const [view, setView] = React$1.useState({ offset: 0, size: 0, pitch: 0, columns: 1 });
+    const [focused, setFocused] = React$1.useState(-1);
+    const sizes = React$1.useRef(/* @__PURE__ */ new Map());
+    const shown = React$1.useRef({ start: 0, end: 0 });
+    const horizontal = axis === "x";
+    const measure2 = React$1.useCallback(() => {
+      const el = viewportRef.current;
+      if (!el) return;
+      const probe = el.querySelector(":scope > [data-plx-virtual-probe]");
+      const pitch2 = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
+      let columns2 = 1;
+      if (grid) {
+        const items = el.querySelectorAll(":scope > [data-plx-virtual-index]");
+        if (items.length) {
+          const top = items[0].offsetTop;
+          let n = 0;
+          while (n < items.length && items[n].offsetTop === top) n++;
+          columns2 = n === items.length && items.length < count2 ? Math.min(count2, Math.max(n, view.columns * 2)) : n;
+        }
+      }
+      if (mode === "measured") {
+        el.querySelectorAll(":scope > [data-plx-virtual-index]").forEach((it) => {
+          sizes.current.set(Number(it.getAttribute("data-plx-virtual-index")), horizontal ? it.offsetWidth : it.offsetHeight);
+        });
+      }
+      const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
+      const size = horizontal ? el.clientWidth : el.clientHeight;
+      setView((v) => v.offset === offset && v.size === size && v.pitch === pitch2 && v.columns === columns2 ? v : { offset, size, pitch: pitch2, columns: columns2 });
+    }, [horizontal, grid, mode, count2, view.columns]);
+    React$1.useLayoutEffect(() => {
+      measure2();
+    });
+    React$1.useEffect(() => {
+      const el = viewportRef.current;
+      if (!el) return void 0;
+      if (!el.hasAttribute("tabindex")) el.tabIndex = 0;
+      const onScroll = () => measure2();
+      const onFocus = (e) => {
+        const it = e.target.closest && e.target.closest("[data-plx-virtual-index]");
+        setFocused(it && el.contains(it) ? Number(it.getAttribute("data-plx-virtual-index")) : -1);
+      };
+      const onBlur = (e) => {
+        if (!el.contains(e.relatedTarget)) setFocused(-1);
+      };
+      el.addEventListener("scroll", onScroll, { passive: true });
+      el.addEventListener("focusin", onFocus);
+      el.addEventListener("focusout", onBlur);
+      const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => measure2()) : null;
+      if (ro) ro.observe(el);
+      return () => {
+        el.removeEventListener("scroll", onScroll);
+        el.removeEventListener("focusin", onFocus);
+        el.removeEventListener("focusout", onBlur);
+        if (ro) ro.disconnect();
+      };
+    }, [measure2]);
+    const columns = grid ? Math.max(1, view.columns) : 1;
+    const rows = Math.ceil(count2 / columns);
+    const pitch = view.pitch || 1;
+    let first;
+    const last = shown.current;
+    if (mode === "measured" && !grid && view.offset >= last.start * pitch) {
+      let pos = last.start * pitch, i = last.start;
+      while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
+        pos += sizes.current.get(i) || pitch;
+        i++;
+      }
+      if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
+      first = Math.min(rows, i);
+    } else first = Math.min(rows, Math.floor(view.offset / pitch));
+    let fill2 = 0, covered = 0;
+    const target = view.size || pitch * 10;
+    while (first + fill2 < rows && covered < target) {
+      covered += mode === "measured" && !grid ? sizes.current.get(first + fill2) || pitch : pitch;
+      fill2++;
+    }
+    const startRow = Math.max(0, first - overscan);
+    const endRow = Math.min(rows, first + fill2 + overscan);
+    const start2 = startRow * columns, end = Math.min(count2, endRow * columns);
+    shown.current = { start: startRow, end: endRow };
+    const pinned = [];
+    if (focused >= 0 && focused < count2) pinned.push(Math.floor(focused / columns));
+    const header = (sticky || []).filter((i) => i < start2).sort((a, b) => b - a)[0];
+    if (header !== void 0 && !grid) pinned.push(header);
+    const segments = [];
+    const rowsOut = [...new Set(pinned)].filter((r) => r < startRow || r >= endRow).sort((a, b) => a - b);
+    let at2 = 0;
+    const pushRows = (from, to) => {
+      for (let i = from * columns; i < Math.min(count2, to * columns); i++) segments.push({ key: "i" + i, index: i });
+    };
+    const pushGap = (from, to) => {
+      if (to > from) segments.push({ key: "g" + from, gap: true, count: to - from });
+    };
+    rowsOut.filter((r) => r < startRow).forEach((r) => {
+      pushGap(at2, r);
+      pushRows(r, r + 1);
+      at2 = r + 1;
+    });
+    pushGap(at2, startRow);
+    pushRows(startRow, endRow);
+    at2 = endRow;
+    rowsOut.filter((r) => r >= endRow).forEach((r) => {
+      pushGap(at2, r);
+      pushRows(r, r + 1);
+      at2 = r + 1;
+    });
+    pushGap(at2, rows);
+    const itemProps = React$1.useCallback((index2) => ({ "data-plx-virtual-index": index2, "aria-posinset": index2 + 1, "aria-setsize": count2 }), [count2]);
+    const scrollToIndex = React$1.useCallback((index2) => {
+      const el = viewportRef.current;
+      if (!el) return;
+      const offset = Math.floor(index2 / columns) * pitch;
+      if (horizontal) el.scrollLeft = isRtl$2(el) ? -offset : offset;
+      else el.scrollTop = offset;
+      measure2();
+    }, [columns, pitch, horizontal, measure2]);
+    return { viewportRef, segments, itemProps, scrollToIndex, range: { start: start2, end }, columns };
+  }
+  function Gap({ count: count2, kind = "record" }) {
+    return count2 > 0 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-data-grid__gap plx-data-grid__gap--" + kind, "aria-hidden": "true" }, gapPieces(count2).map((n, i) => /* @__PURE__ */ React$1.createElement("div", { key: i, className: "plx-virtual-gap__piece", "data-plx-span": String(n) }))) : null;
+  }
+  function RowGap({ rows }) {
+    const counts2 = rows.reduce(
+      (all, row) => {
+        all[row.__group ? row.__group.separated ? "separated" : "group" : row.__gap ? "band" : row.__add ? "add" : "record"]++;
+        return all;
+      },
+      { record: 0, group: 0, separated: 0, band: 0, add: 0 }
+    );
+    return /* @__PURE__ */ React$1.createElement("div", { "aria-hidden": "true" }, Object.entries(counts2).map(([kind, count2]) => /* @__PURE__ */ React$1.createElement(Gap, { key: kind, kind, count: count2 })));
+  }
+  function CellEditor({ column, value, onCommit, onCancel }) {
+    const S2 = useStrings("dataGrid"), [draft, setDraft] = React$1.useState(value ?? ""), done = React$1.useRef(false);
+    const finish = () => {
+      if (done.current) return;
+      done.current = true;
+      onCommit(column.editor === "number" ? draft === "" ? null : Number(draft) : draft);
+    };
+    return /* @__PURE__ */ React$1.createElement(
+      "input",
+      {
+        autoFocus: true,
+        className: "plx-data-grid__editor",
+        "aria-label": S2.editCell.replace("{title}", column.title),
+        type: column.editor === "number" ? "number" : "text",
+        value: draft,
+        onChange: (e) => setDraft(e.target.value),
+        onBlur: finish,
+        onKeyDown: (e) => {
+          e.stopPropagation();
+          if (e.key === "Escape") {
+            done.current = true;
+            onCancel();
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            finish();
+          }
+        }
+      }
+    );
+  }
+  function Check({ checked: checked2, mixed, label: label2, onChange }) {
+    const ref = React$1.useRef(null);
+    React$1.useLayoutEffect(() => {
+      if (ref.current) ref.current.indeterminate = !!mixed;
+    }, [mixed]);
+    return /* @__PURE__ */ React$1.createElement("label", { className: GRID + "__check", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React$1.createElement(
+      "input",
+      {
+        ref,
+        className: GRID + "__check-input",
+        type: "checkbox",
+        checked: !!checked2,
+        "aria-label": label2,
+        onChange,
+        onClick: (e) => e.stopPropagation()
+      }
+    ));
+  }
+  const PressTrigger = React$1.forwardRef(function PressTrigger2({ onClick, onKeyDown: onKeyDown2, children, ...rest }, ref) {
+    const { pressProps } = usePressable({
+      onPress: (p) => {
+        if (onClick) onClick(p.event);
+      },
+      handlers: { onKeyDown: onKeyDown2 }
+    });
+    return /* @__PURE__ */ React$1.createElement("span", { ref, role: "button", tabIndex: 0, ...rest, ...pressProps }, children);
+  });
+  const WidthPixels = React$1.createContext(null);
+  const Width = React$1.forwardRef(function Width2({ as: Element = "div", width, frozenOffset, children, onAttach, ...props }, forwarded) {
+    const ref = React$1.useRef(null), pixels = React$1.useContext(WidthPixels), length = (value) => pixels ? pixels(value) : gridPx(value, { el: ref.current || document.documentElement }), style = width == null ? void 0 : { width: length(width), ...frozenOffset == null ? {} : { insetInlineStart: length(frozenOffset) } };
+    return /* @__PURE__ */ React$1.createElement(
+      Element,
+      {
+        ...props,
+        style,
+        ref: (node) => {
+          ref.current = node;
+          onAttach?.(node);
+          if (typeof forwarded === "function") forwarded(node);
+          else if (forwarded) forwarded.current = node;
+        }
+      },
+      children
+    );
+  });
+  function RowMenuContent({ build, items, record, rowApi }) {
+    return build(typeof items === "function" ? items(record) : items || [], record, rowApi);
+  }
+  const ownContent = (node, block) => !React$1.isValidElement(node) ? node : node.type === React$1.Fragment ? React$1.cloneElement(
+    node,
+    {},
+    React$1.Children.map(node.props.children, (child) => ownContent(child, block))
+  ) : React$1.cloneElement(node, { className: cx(node.props.className, block + "__cell-content") });
+  const CustomCell = React$1.memo(
+    function CustomCell2({ column, record, cell, block, mods }) {
+      const content = column.render(record, cell);
+      return React$1.isValidElement(content) ? ownContent(content, block) : /* @__PURE__ */ React$1.createElement("span", { className: cx(block + "__value", mods) }, dataWhenText(content));
+    },
+    (a, b) => a.column === b.column && a.record === b.record && a.rowId === b.rowId && a.selected === b.selected && a.block === b.block && a.mods === b.mods
+  );
+  const MemoGridRow = React$1.memo(
+    function MemoGridRow2({ row, render }) {
+      return render(row);
+    },
+    (a, b) => a.row === b.row && a.version === b.version && a.selected === b.selected
+  );
+  const RowTarget = React$1.forwardRef(function RowTarget2({ onAttach, ...props }, forwarded) {
+    return /* @__PURE__ */ React$1.createElement(
+      "div",
+      {
+        ...props,
+        ref: (node) => {
+          onAttach?.(node);
+          if (typeof forwarded === "function") forwarded(node);
+          else if (forwarded) forwarded.current = node;
+        }
+      }
+    );
+  });
+  function Scrollbars({ holder, viewportId, hideX = false }) {
+    const thumbs = React$1.useRef({});
+    const [sizes, setSizes] = React$1.useState({}), [drag, setDrag] = React$1.useState(null);
+    React$1.useLayoutEffect(() => {
+      const el = holder.current;
+      if (!el) return;
+      let frame = 0;
+      const read2 = () => {
+        frame = 0;
+        const ratio = (size, total) => total > size ? Math.max(10, Math.min(95, Math.round(size / total * 20) * 5)) : null;
+        setSizes((old) => {
+          const next = { x: ratio(el.clientWidth, el.scrollWidth), y: ratio(el.clientHeight, el.scrollHeight) };
+          return next.x === old.x && next.y === old.y ? old : next;
+        });
+      };
+      const schedule = () => {
+        if (!frame) frame = requestAnimationFrame(read2);
+      };
+      const position = () => {
+        for (const axis of ["x", "y"]) {
+          const total = axis === "y" ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth, offset = axis === "y" ? el.scrollTop : Math.abs(el.scrollLeft);
+          thumbs.current[axis]?.setAttribute("aria-valuenow", String(total ? Math.round(offset / total * 100) : 0));
+        }
+      };
+      el.addEventListener("scroll", position, { passive: true });
+      const observer2 = new ResizeObserver(schedule);
+      observer2.observe(el);
+      if (el.firstElementChild) observer2.observe(el.firstElementChild);
+      const mutation = new MutationObserver(schedule);
+      mutation.observe(el, { childList: true, subtree: true });
+      read2();
+      return () => {
+        observer2.disconnect();
+        mutation.disconnect();
+        el.removeEventListener("scroll", position);
+        if (frame) cancelAnimationFrame(frame);
+      };
+    }, [holder]);
+    const start2 = (event, axis) => {
+      if (event.button !== 0) return;
+      const el = holder.current, track2 = event.currentTarget.classList.contains("plx-data-grid__thumb") ? event.currentTarget.parentElement : event.currentTarget, box = track2.getBoundingClientRect(), vertical = axis === "y", total = vertical ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth, travel = (vertical ? box.height : box.width) * (1 - sizes[axis] / 100), at2 = vertical ? event.clientY : event.clientX, initial = vertical ? el.scrollTop : Math.abs(el.scrollLeft), pointer = event.pointerId;
+      let origin = initial;
+      if (travel <= 0 || total <= 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.currentTarget === track2) {
+        const point = vertical ? event.clientY - box.top : isRtl$2(el) ? box.right - event.clientX : event.clientX - box.left, thumb = (vertical ? box.height : box.width) - travel;
+        origin = Math.max(0, Math.min(total, (point - thumb / 2) / travel * total));
+        if (vertical) el.scrollTop = origin;
+        else el.scrollLeft = isRtl$2(el) ? -origin : origin;
+      }
+      event.currentTarget.setPointerCapture(pointer);
+      setDrag(axis);
+      const node = event.currentTarget;
+      const move2 = (e) => {
+        const value = Math.max(
+          0,
+          Math.min(
+            total,
+            origin + ((vertical ? e.clientY : e.clientX) - at2) / travel * total * (vertical || !isRtl$2(el) ? 1 : -1)
+          )
+        );
+        if (vertical) el.scrollTop = value;
+        else el.scrollLeft = isRtl$2(el) ? -value : value;
+      };
+      const end = () => {
+        setDrag(null);
+        node.removeEventListener("pointermove", move2);
+        node.removeEventListener("pointerup", end);
+        node.removeEventListener("pointercancel", end);
+      };
+      node.addEventListener("pointermove", move2);
+      node.addEventListener("pointerup", end);
+      node.addEventListener("pointercancel", end);
+    };
+    return ["x", "y"].map((axis) => /* @__PURE__ */ React$1.createElement(
+      "div",
+      {
+        key: axis,
+        className: "plx-data-grid__scroll plx-data-grid__scroll--" + axis,
+        "aria-hidden": "true",
+        onPointerDown: (event) => start2(event, axis),
+        "data-plx-thumb": (axis === "x" && hideX ? null : sizes[axis]) || void 0,
+        "data-plx-dragging": drag === axis ? "" : void 0
+      },
+      /* @__PURE__ */ React$1.createElement(
+        "div",
+        {
+          ref: (node) => {
+            thumbs.current[axis] = node;
+          },
+          className: "plx-data-grid__thumb plx-data-grid__thumb--" + axis,
+          "data-plx-thumb": (axis === "x" && hideX ? null : sizes[axis]) || void 0,
+          "data-plx-scroll-viewport": viewportId,
+          onPointerDown: (event) => start2(event, axis)
+        }
+      )
+    ));
+  }
+  function gridFrame({
+    widthPixels,
+    headerMenu,
+    isStatic,
+    managing,
+    setManaging,
+    chooserColumns,
+    changeOrder,
+    changeVisibility,
+    frame,
+    B,
+    pinnedAt,
+    listed,
+    isNarrow,
+    height,
+    mode,
+    className,
+    cells,
+    gridKey,
+    density,
+    virtualized,
+    effectiveStep,
+    effectiveWrap,
+    failed,
+    S: S2,
+    onRetry,
+    remoteError,
+    setRetry,
+    groups,
+    childField,
+    label: label2,
+    remoteMode,
+    remoteBusy,
+    semanticRows,
+    remote,
+    table,
+    ordered: ordered2,
+    selectable,
+    rowMenu,
+    rowMenuButton,
+    props,
+    header,
+    columnDnd,
+    leadFrozen,
+    allVisible,
+    selectedVisible,
+    selectAll,
+    headerCell,
+    setRowHeight,
+    setWrapHeaders,
+    metrics,
+    viewportId,
+    holder,
+    focusCell,
+    first,
+    fetching,
+    source,
+    setPage,
+    setLoaded,
+    allRows,
+    pageSize,
+    rowDnd,
+    stickyGroups,
+    groupNode,
+    model,
+    shown,
+    renderRow,
+    last,
+    empty,
+    scrollFill,
+    moreFailed,
+    displayedTotal,
+    page,
+    setPageSize,
+    loadedRows
+  }) {
+    return /* @__PURE__ */ React$1.createElement(WidthPixels.Provider, { value: widthPixels }, manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }), /* @__PURE__ */ React$1.createElement(
+      "div",
+      {
+        ref: frame,
+        className: cx(
+          B,
+          isStatic && B + "--static",
+          pinnedAt >= 0 && B + "--row-header",
+          listed && B + "--list",
+          isNarrow && B + "--narrow",
+          height === "100%" && B + "--fill",
+          mode === "pages" && B + "--pages",
+          mode === "load-more" && B + "--load-more",
+          className
+        ),
+        "data-plx-engine": "next",
+        "data-plx-grid-key": cells === "pill" ? gridKey : void 0,
+        "data-plx-density": density === "page" ? void 0 : density,
+        "data-plx-render": virtualized ? "virtual" : void 0,
+        "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : void 0,
+        "data-plx-wrap-headers": effectiveWrap ? "" : void 0,
+        "data-plx-height": lengthName(height),
+        "data-plx-fit": !isStatic && !height && mode !== "pages" ? "" : void 0
+      },
+      failureState({ failed, B, S: S2, onRetry, remoteError, setRetry }),
+      /* @__PURE__ */ React$1.createElement(
+        "div",
+        {
+          className: cx(
+            B + "__table",
+            B + "__grid",
+            height === "100%" && B + "__grid--fill",
+            isStatic && B + "__grid--static"
+          ),
+          role: isStatic ? "table" : groups.length || childField ? "treegrid" : "grid",
+          "aria-label": label2,
+          "aria-busy": remoteMode && remoteBusy ? true : void 0,
+          "aria-rowcount": groups.length || childField ? semanticRows.length + 1 : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
+          "aria-colcount": ordered2.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
+          hidden: !!failed
+        },
+        /* @__PURE__ */ React$1.createElement(
+          "div",
+          {
+            className: cx(
+              B + "__grid-header",
+              isNarrow && B + "__grid-header--narrow",
+              isStatic && B + "__grid-header--static"
+            ),
+            ref: header,
+            hidden: isStatic && props.headerVisible === false
+          },
+          /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-header-contents` }, /* @__PURE__ */ React$1.createElement(
+            "div",
+            {
+              ...columnDnd.listProps,
+              className: cx(`${B}__grid-headers`, isStatic && B + "__grid-headers--static"),
+              role: "row"
+            },
+            selectable ? /* @__PURE__ */ React$1.createElement(
+              "div",
+              {
+                className: cx(
+                  `${B}__grid-col ${B}__grid-row-header ${B}__w-lead`,
+                  leadFrozen && B + "__grid-frozen"
+                ),
+                role: "columnheader"
+              },
+              /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-col-content ${B}__grid-col-content--row-header` }, /* @__PURE__ */ React$1.createElement(
+                Check,
+                {
+                  label: S2.selectAll,
+                  checked: allVisible,
+                  mixed: selectedVisible.length > 0 && !allVisible,
+                  onChange: (e) => selectAll(e.target.checked)
+                }
+              ))
+            ) : null,
+            ordered2.map(headerCell),
+            viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }),
+            rowMenu && rowMenuButton ? /* @__PURE__ */ React$1.createElement(
+              Width,
+              {
+                width: metrics.menu,
+                className: `${B}__grid-col`,
+                role: "columnheader",
+                "aria-label": S2.rowActions
+              }
+            ) : null
+          ))
+        ),
+        /* @__PURE__ */ React$1.createElement(
+          "div",
+          {
+            id: viewportId,
+            ref: holder,
+            className: cx(
+              `${B}__grid-tableholder`,
+              height === "100%" && B + "__grid-tableholder--fill",
+              isNarrow && B + "__grid-tableholder--narrow",
+              isStatic && B + "__grid-tableholder--static"
+            ),
+            "data-plx-height": lengthName(height),
+            "data-plx-fit": !isStatic && !height && mode !== "pages" ? "" : void 0,
+            role: "rowgroup",
+            tabIndex: isStatic ? void 0 : 0,
+            onKeyDown: tableKeys({ focusCell, first }),
+            onScroll: (e) => {
+              if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
+              if (mode === "load-more" && e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight < tokenPixels("--plx-ref-size-200px", frame.current)) {
+                if (remoteMode && !fetching.current && source.length < (remote?.total || 0)) {
+                  fetching.current = true;
+                  setPage((n) => n + 1);
+                } else if (!remoteMode) setLoaded((n) => Math.min(allRows.length, n + pageSize));
+              }
+            }
+          },
+          /* @__PURE__ */ React$1.createElement(
+            "div",
+            {
+              ...rowDnd.listProps,
+              className: cx(
+                `${B}__grid-table`,
+                virtualized && B + "__grid-table--virtual",
+                isNarrow && B + "__grid-table--narrow",
+                isStatic && B + "__grid-table--static"
+              ),
+              role: "presentation"
+            },
+            stickyGroups.length ? /* @__PURE__ */ React$1.createElement("div", { className: B + "__sticky-groups", "aria-hidden": "true", inert: "" }, stickyGroups.map(
+              (group) => React$1.cloneElement(groupNode(group, true), {
+                key: "sticky:" + group.id,
+                className: B + "__sticky-group " + B + "__grid-group-level-" + group.depth,
+                role: void 0,
+                tabIndex: -1,
+                "aria-expanded": void 0,
+                "aria-rowindex": void 0,
+                "aria-level": void 0,
+                onKeyDown: void 0
+              })
+            )) : null,
+            /* @__PURE__ */ React$1.createElement(RowGap, { rows: model.slice(0, first) }),
+            shown.map(renderRow),
+            /* @__PURE__ */ React$1.createElement(RowGap, { rows: model.slice(last) })
+          ),
+          emptyRow({ model, B, isStatic, ordered: ordered2, remoteMode, remoteBusy, S: S2, empty }),
+          moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered: ordered2, S: S2, setRetry })
+        )
+      ),
+      !isStatic ? /* @__PURE__ */ React$1.createElement(Scrollbars, { holder, viewportId, hideX: isNarrow }) : null,
+      pagesFooter({ mode, failed, B, S: S2, displayedTotal, page, pageSize, props, setPage, setPageSize, label: label2 }),
+      loadMoreFooter({
+        mode,
+        failed,
+        B,
+        S: S2,
+        loadedRows,
+        displayedTotal,
+        remoteMode,
+        remoteBusy,
+        fetching,
+        setPage,
+        setLoaded,
+        allRows,
+        pageSize
+      })
+    ));
+  }
+  function columnSizing({ columns, frame, source, resize, metrics, table, B }) {
+    const fit2 = (field) => {
+      const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
+      const data = kinds(c).includes("data");
+      ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size") + " " + cs.getPropertyValue(data ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family");
+      ctx.wordSpacing = data ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
+      const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
+      resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
+    };
+    const startResize = (event, column) => {
+      if (event.type === "mousedown" && event.button !== 0) return;
+      if (event.type === "mousedown") event.preventDefault();
+      event.stopPropagation();
+      const head = table.getFlatHeaders().find((h2) => h2.column.id === column.id);
+      const doc = frame.current?.ownerDocument || document, cover = doc.createElement("div");
+      cover.className = B + "__resize-cover";
+      doc.body.appendChild(cover);
+      const end = () => {
+        cover.remove();
+        doc.removeEventListener("mouseup", end);
+        doc.removeEventListener("touchend", end);
+        doc.removeEventListener("touchcancel", end);
+      };
+      doc.addEventListener("mouseup", end);
+      doc.addEventListener("touchend", end);
+      doc.addEventListener("touchcancel", end);
+      head?.getResizeHandler(doc)(event);
+    };
+    return { fit: fit2, startResize };
+  }
+  function syncLive({
+    live,
+    props,
+    frame,
+    index: index2,
+    canonical: canonical2,
+    source,
+    recordsByKey,
+    replaceData,
+    model,
+    groups,
+    groupBy: groupBy2,
+    changeGroups,
+    toggleGroup,
+    collapsed,
+    updateRecord,
+    commitEdit,
+    editing,
+    setEditing,
+    childField,
+    expanded,
+    setExpanded,
+    columns,
+    table,
+    selection,
+    sorting,
+    changeSort,
+    resize,
+    move: move2,
+    pick,
+    setPage,
+    page,
+    pageSize,
+    setPageSize,
+    virtual,
+    rowElements,
+    headerElements,
+    listeners: listeners2
+  }) {
+    live.current = {
+      props,
+      frame,
+      index: index2,
+      data: canonical2,
+      source,
+      recordsByKey,
+      replaceData,
+      model,
+      groups,
+      groupBy: groupBy2,
+      changeGroups,
+      toggleGroup,
+      collapsed,
+      updateRecord,
+      commitEdit,
+      editing,
+      setEditing,
+      childField,
+      expanded,
+      setExpanded,
+      fields: columns,
+      table,
+      selection,
+      sorting,
+      setSorting: changeSort,
+      resize,
+      move: move2,
+      pick,
+      setPage,
+      page,
+      pageSize,
+      setPageSize,
+      virtual,
+      rowElements: rowElements.current,
+      headerElements: headerElements.current,
+      listeners: listeners2.current
+    };
+  }
+  function useRemoteRows({ props, mode, page, pageSize, sorting, filters }) {
+    const fetching = React$1.useRef(false);
+    const [remoteBusy, setRemoteBusy] = React$1.useState(false);
+    const [remote, setRemote] = React$1.useState(null), [remoteError, setRemoteError] = React$1.useState(null), [retry, setRetry] = React$1.useState(0);
+    const remoteMode = typeof props.fetchRows === "function" && (mode === "pages" || mode === "load-more" || mode === "fill"), scrollFill = remoteMode && mode === "fill";
+    React$1.useEffect(() => {
+      if (!remoteMode) return;
+      fetching.current = true;
+      setRemoteBusy(true);
+      let alive = true;
+      const controller = new AbortController();
+      setRemoteError(null);
+      Promise.resolve().then(
+        () => props.fetchRows({
+          page: page + 1,
+          size: pageSize,
+          sort: sorted(sorting),
+          filters: filters.map((f) => ({ field: f.id, type: "like", value: f.value })),
+          search: props.search,
+          signal: controller.signal
+        })
+      ).then(
+        (result) => {
+          if (alive) {
+            fetching.current = false;
+            setRemoteBusy(false);
+            setRemote((old) => {
+              const append = mode === "load-more" || mode === "fill", got = result.rows || [], rows = append && page > 0 ? [...old?.rows || [], ...got] : got;
+              return { rows, total: append && got.length < pageSize ? rows.length : result.total || 0 };
+            });
+          }
+        },
+        (failure) => {
+          if (alive) {
+            fetching.current = false;
+            setRemoteBusy(false);
+            setRemoteError(failure);
+          }
+        }
+      );
+      return () => {
+        alive = false;
+        controller.abort();
+      };
+    }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
+    return { fetching, remoteBusy, remote, remoteError, setRetry, remoteMode, scrollFill };
+  }
+  function useTableModel({
+    columns,
+    sortingRef,
+    metrics,
+    floors,
+    autoSizing,
+    frame,
+    source,
+    index: index2,
+    childField,
+    setExpanded,
+    printing,
+    expanded,
+    sorting,
+    columnOrder,
+    columnVisibility,
+    sizing,
+    filters,
+    activeFilter,
+    page,
+    pageSize,
+    selection,
+    columnPinning,
+    changeSort,
+    options,
+    notifySelection,
+    live,
+    changeVisibility,
+    changeOrder,
+    resize,
+    setFilters,
+    setPage,
+    recordFilter,
+    deferredFilter,
+    remoteMode,
+    remote,
+    mode
+  }) {
+    const leafDefs = React$1.useMemo(
+      () => columns.map((c) => ({
+        id: c.field,
+        accessorFn: (r) => valueAt(r, c.field),
+        header: c.title || c.field,
+        enableSorting: c.sortable !== false,
+        filterFn: c.type === "bytes" ? byteFilter : c.filter === "list" ? listFilter : textFilter,
+        sortingFn: typeof c.sorter === "function" ? (a, b, id) => c.sorter(
+          a.getValue(id),
+          b.getValue(id),
+          a.original,
+          b.original,
+          id,
+          sortingRef.current.find((s) => s.id === id)?.desc ? "desc" : "asc"
+        ) : c.sorter === "number" || c.type === "bytes" ? "basic" : compare,
+        size: kinds(c).includes("icon") ? metrics.lead : Math.max(
+          metrics.min,
+          floors[c.field] || 0,
+          autoSizing[c.field] || tokenPixels(c.width, frame.current) || metrics.min
+        ),
+        minSize: kinds(c).includes("icon") ? metrics.lead : Math.max(floors[c.field] || 0, tokenPixels(c.minWidth, frame.current) || metrics.min),
+        maxSize: kinds(c).includes("icon") ? metrics.lead : Math.min(
+          c.maxWidth ? tokenPixels(c.maxWidth, frame.current) : SIZE_STEPS[SIZE_STEPS.length - 1],
+          Math.max(
+            Math.max(floors[c.field] || 0, tokenPixels(c.minWidth, frame.current) || metrics.min),
+            shareOf(metrics.room, frame.current)
+          )
+        ),
+        meta: c
+      })),
+      [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]
+    );
+    const table = useReactTable({
+      data: source,
+      columns: leafDefs,
+      getRowId: (r) => recordKey(r[index2]),
+      getSubRows: childField ? (r) => r[childField] : void 0,
+      onExpandedChange: setExpanded,
+      filterFromLeafRows: true,
+      state: {
+        expanded: printing ? true : expanded,
+        sorting,
+        columnOrder,
+        columnVisibility,
+        columnSizing: sizing,
+        columnFilters: filters,
+        globalFilter: activeFilter,
+        pagination: { pageIndex: page, pageSize },
+        rowSelection: selection,
+        columnPinning
+      },
+      onSortingChange: changeSort,
+      enableMultiRowSelection: options.selectableRows !== 1,
+      enableSubRowSelection: false,
+      onRowSelectionChange: (update) => notifySelection(typeof update === "function" ? update(live.current.selection || selection) : update),
+      onColumnVisibilityChange: (update) => {
+        changeVisibility(typeof update === "function" ? update(columnVisibility) : update);
+      },
+      onColumnOrderChange: (update) => {
+        changeOrder(typeof update === "function" ? update(columnOrder) : update);
+      },
+      onColumnSizingChange: (update) => {
+        const before = live.current.sizing || sizing, next = typeof update === "function" ? update(before) : update;
+        Object.keys(next).forEach((id) => {
+          if (next[id] !== before[id]) resize(id, next[id]);
+        });
+      },
+      columnResizeMode: "onChange",
+      columnResizeDirection: frame.current && isRtl$2(frame.current) ? "rtl" : "ltr",
+      onColumnFiltersChange: (update) => {
+        setFilters(update);
+        setPage(0);
+      },
+      getColumnCanGlobalFilter: () => true,
+      globalFilterFn: recordFilter,
+      globalFilter: deferredFilter,
+      manualPagination: remoteMode,
+      manualSorting: remoteMode,
+      manualFiltering: remoteMode,
+      pageCount: remoteMode ? Math.ceil((remote?.total || 0) / pageSize) : void 0,
+      getExpandedRowModel: getExpandedRowModel(),
+      getCoreRowModel: getCoreRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      getFacetedRowModel: (t) => () => {
+        const all = t.getPreFilteredRowModel();
+        return { rows: all.rows, flatRows: all.rows, rowsById: all.rowsById };
+      },
+      getFacetedUniqueValues: getFacetedUniqueValues(),
+      getPaginationRowModel: mode === "pages" ? getPaginationRowModel() : void 0,
+      autoResetPageIndex: false
+    });
+    return { table };
+  }
+  const DragHandle = React$1.forwardRef(function DragHandle2({ label: label2, orientation = "vertical", dnd, disabled = false, className, ...rest }, ref) {
+    const props = mergeDndProps(dnd || {}, rest);
+    return /* @__PURE__ */ React$1.createElement(
+      "button",
+      {
+        ref,
+        type: "button",
+        ...props,
+        "aria-label": label2 || props["aria-label"],
+        disabled: disabled || props.disabled || void 0,
+        className: cx("plx-drag-handle", "plx-drag-handle--" + (orientation === "horizontal" ? "horizontal" : "vertical"), className)
+      },
+      /* @__PURE__ */ React$1.createElement(Icon, { name: DragIcon })
+    );
+  });
+  const d0$T = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
+  const d1$T = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
+  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
+  function bodyRows({
+    B,
+    semanticIndex,
+    S: S2,
+    collapsed,
+    toggleGroup,
+    model,
+    virtual,
+    holder,
+    ordered: ordered2,
+    widths,
+    selectable,
+    metrics,
+    isNarrow,
+    columns,
+    cutOpen,
+    setCutAt,
+    table,
+    wrapOf,
+    props,
+    api,
+    isStatic,
+    effectiveStep,
+    options,
+    recordPositions,
+    rowDnd,
+    unread,
+    index: index2,
+    rememberRow,
+    mode,
+    page,
+    pageSize,
+    selection,
+    isOpen,
+    on,
+    childField,
+    marked,
+    virtualized,
+    chooseRow,
+    emit,
+    setOwnOpen,
+    focusCell,
+    pickCheckbox,
+    kindsOf,
+    pinStart,
+    leadFrozen,
+    editing,
+    cells,
+    showTypes,
+    setEditing,
+    frame,
+    pinnedAt,
+    groupBy: groupBy2,
+    keys,
+    commitEdit,
+    canonical: canonical2,
+    cutAt,
+    rowMenu,
+    rowMenuButton,
+    menuItems
+  }) {
+    const groupNode = (group, sticky = false) => /* @__PURE__ */ React$1.createElement(
+      "div",
+      {
+        key: group.id,
+        "data-plx-group": group.id,
+        className: cx(
+          "" + B + "__grid-row " + B + "__grid-group",
+          "" + B + "__grid-group-level-" + group.depth,
+          group.separated && B + "__group--gap"
+        ),
+        role: "row",
+        tabIndex: 0,
+        "aria-rowindex": semanticIndex.get(group.id),
+        "aria-label": words(S2.groupRow, {
+          value: valueText(group.value) || S2.noValue,
+          count: group.rows.length,
+          records: group.rows.length === 1 ? S2.record : S2.records
+        }),
+        "aria-level": group.depth + 1,
+        "aria-expanded": !collapsed.has(group.id),
+        onKeyDown: groupKeys({ toggleGroup, group, model, virtual, holder, B })
+      },
+      /* @__PURE__ */ React$1.createElement(
+        "div",
+        {
+          className: cx(B + "__group-head", group.separated && !sticky && B + "__group-head--gap"),
+          role: "presentation"
+        },
+        ordered2.map((column, i) => /* @__PURE__ */ React$1.createElement(
+          Width,
+          {
+            key: column.id,
+            width: widths[column.id] + (i === 0 && selectable ? metrics.lead : 0),
+            className: cx(
+              B + "__group-cell",
+              i === 0 && B + "__group-cell--first",
+              column.columnDef.meta.summary && B + "__group-cell--summary",
+              isNarrow && B + "__group-cell--narrow"
+            ),
+            role: "gridcell",
+            "aria-colspan": i === 0 && selectable ? 2 : void 0
+          },
+          i === 0 ? /* @__PURE__ */ React$1.createElement(
+            "div",
+            {
+              className: cx(
+                B + "__group-label",
+                group.depth >= 1 && group.depth <= 3 && B + "__group-label--level-" + group.depth
+              )
+            },
+            /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-chevron", "aria-hidden": "true", onClick: () => toggleGroup(group.id) }, /* @__PURE__ */ React$1.createElement(Icon, { name: collapsed.has(group.id) ? ChevronRightIcon : ChevronDownIcon })),
+            /* @__PURE__ */ React$1.createElement("div", { className: B + "__group-text" }, /* @__PURE__ */ React$1.createElement("span", { dir: "auto", className: B + "__group-eyebrow" }, columns.find((c) => c.field === group.field)?.title || group.field), /* @__PURE__ */ React$1.createElement(
+              "span",
+              {
+                className: cx(
+                  B + "__group-value",
+                  kinds(columns.find((c) => c.field === group.field) || {}).includes("data") && B + "__group-value--data"
+                ),
+                "data-plx-text-follow": "size",
+                "data-plx-kind": kinds(columns.find((c) => c.field === group.field) || {}).includes("data") ? "data" : void 0
+              },
+              valueText(group.value) || S2.noValue
+            )),
+            /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-count" }, formatNumber(group.rows.length))
+          ) : column.columnDef.meta.summary ? /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-summary" }, /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-summary-name" }, { sum: S2.sum, count: S2.countOf, average: S2.average, min: S2.min, max: S2.max }[column.columnDef.meta.summary]), /* @__PURE__ */ React$1.createElement("span", { className: B + "__group-summary-value" }, group.summary?.[column.columnDef.meta.field] == null ? null : formatNumber(group.summary[column.columnDef.meta.field]))) : null
+        ))
+      )
+    );
+    const enterCut = (event, id) => {
+      if (cutOpen.current) return;
+      const v = event.currentTarget.querySelector("." + B + "__value");
+      const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
+      setCutAt(cut ? id : null);
+    };
+    const leaveCut = (id) => {
+      if (!cutOpen.current) setCutAt((at2) => at2 === id ? null : at2);
+    };
+    const anyWrap = table.getVisibleLeafColumns().some((col) => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
+    const rowNode = (row) => {
+      if (row.__group) return groupNode(row.__group);
+      if (row.__add)
+        return /* @__PURE__ */ React$1.createElement("div", { key: row.id, className: B + "__add-row", role: "row", "aria-rowindex": semanticIndex.get(row.id) }, /* @__PURE__ */ React$1.createElement(
+          "div",
+          {
+            role: "gridcell",
+            "aria-colspan": ordered2.length + (selectable ? 1 : 0),
+            className: cx(
+              B + "__group-cell",
+              B + "__group-cell--first",
+              B + "__group-cell--add",
+              isNarrow && B + "__group-cell--narrow"
+            )
+          },
+          /* @__PURE__ */ React$1.createElement(
+            Button,
+            {
+              variant: "ghost",
+              size: "xs",
+              iconOnly: true,
+              icon: AddIcon,
+              label: words(S2.addTo, { value: valueText(row.__add.value) || S2.noValue }),
+              onClick: () => props.onAddToGroup(row.__add.value, row.__add.path)
+            }
+          )
+        ));
+      if (row.__gap)
+        return /* @__PURE__ */ React$1.createElement("div", { key: row.id, className: B + "__group--gap" }, /* @__PURE__ */ React$1.createElement("div", { className: B + "__group-band" }));
+      const rowApi = api.row(row.id), record = row.original;
+      const step = !isStatic && !isNarrow ? effectiveStep : void 0, sized = step != null, lines = sized && step !== "short", modes = cx(
+        isStatic && B + "__grid-cell--static",
+        isNarrow && B + "__grid-cell--narrow",
+        sized && B + "__grid-cell--sized",
+        lines && B + "__grid-cell--lines"
+      );
+      const node = /* @__PURE__ */ React$1.createElement(
+        RowTarget,
+        {
+          key: row.displayKey || row.id,
+          ...!(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)),
+          "data-plx-unread": unread.has(record) || void 0,
+          "aria-label": unread.has(record) ? S2.unreadRow.replace("{label}", String(valueAt(record, columns[0]?.field) ?? record[index2])) : void 0,
+          "data-plx-record": row.id,
+          onAttach: (node2) => rememberRow(row, node2),
+          role: "row",
+          "aria-rowindex": (mode === "pages" ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
+          "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : void 0,
+          "aria-current": isOpen(row.id) ? "true" : void 0,
+          tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : void 0,
+          "aria-level": childField ? row.depth + 1 : void 0,
+          "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : void 0,
+          className: cx(
+            "" + B + "__grid-row",
+            (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + "__grid-selectable",
+            childField && "" + B + "__grid-tree-level-" + Math.min(12, row.depth),
+            marked(row.id) && "" + B + "__grid-selected",
+            isStatic && B + "__grid-row--static",
+            anyWrap && !isNarrow && (isStatic || (effectiveStep || "short") !== "short") && B + "__grid-row--wrap",
+            isNarrow && B + "__grid-row--narrow",
+            virtualized && B + "__grid-row--virtual",
+            row === model[0] && B + "__grid-row--first"
+          ),
+          onClick: (e) => {
+            if (e.target.closest(interactive)) return;
+            chooseRow(row, e);
+            emit("rowClick", e, rowApi);
+            props.onRowClick?.(record, e);
+            if (props.onRowClick || on.rowClick) {
+              unread.open(record);
+              setOwnOpen(row.id);
+            }
+          },
+          onDoubleClick: (e) => {
+            if (!e.target.closest(interactive)) {
+              props.onRowDoubleClick?.(record, e);
+              emit("rowDblClick", e, rowApi);
+            }
+          },
+          onKeyDown: rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })
+        },
+        selectable ? /* @__PURE__ */ React$1.createElement(
+          "div",
+          {
+            className: cx(
+              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
+              leadFrozen && B + "__grid-frozen",
+              modes,
+              selection[row.id] && B + "__grid-cell--selected-start"
+            ),
+            role: "gridcell"
+          },
+          /* @__PURE__ */ React$1.createElement(
+            Check,
+            {
+              label: S2.selectRow + " " + record[index2],
+              checked: selection[row.id],
+              onChange: (e) => pickCheckbox(row, e)
+            }
+          )
+        ) : null,
+        ordered2.map((column) => {
+          const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
+          const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
+          const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
+          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes("icon");
+          const mods = cx(
+            isStatic && B + "__value--static",
+            k.includes("wrap") && B + "__value--wrap",
+            sized && B + "__value--sized",
+            lines && k.includes("wrap") && B + "__value--lines",
+            isNarrow && B + "__value--narrow"
+          ) || void 0, shown = CellValue({
+            block: B,
+            column: c,
+            value,
+            strings: S2,
+            record,
+            pill: cells === "pill",
+            pillField: c.field,
+            icon: showTypes && typeOf$1(c) !== "text" ? typeIcons[typeOf$1(c)] : void 0,
+            mods
+          });
+          const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && React$1.isValidElement(shown) && shown.type === "span" && String(shown.props.className).split(" ").includes(B + "__value");
+          return /* @__PURE__ */ React$1.createElement(
+            Width,
+            {
+              key: c.field,
+              width: isNarrow ? null : widths[c.field],
+              frozenOffset: pinned && !isNarrow ? sticky : void 0,
+              role: isStatic ? c.rowLabel ? "rowheader" : "cell" : "gridcell",
+              tabIndex: isStatic ? void 0 : -1,
+              "data-plx-field": c.field,
+              "data-plx-unread": unread.has(record) || void 0,
+              ...!isStatic && !c.render && !actions && !isEditing ? {
+                onPointerEnter: (e) => enterCut(e, row.id + "|" + c.field),
+                onFocus: (e) => enterCut(e, row.id + "|" + c.field),
+                onPointerLeave: () => leaveCut(row.id + "|" + c.field)
+              } : null,
+              dir: pinned && !isStatic || kinds(c).includes("id") || isNarrow ? void 0 : "auto",
+              onDoubleClick: () => {
+                if (canEdit) setEditing({ key: row.id, field: c.field, value });
+              },
+              onKeyDown: cellKeys({
+                isStatic,
+                value,
+                canEdit,
+                setEditing,
+                row,
+                c,
+                model,
+                ordered: ordered2,
+                column,
+                frame,
+                focusCell
+              }),
+              "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
+              "data-plx-label": detail ? c.title || c.field : void 0,
+              "aria-label": detail ? (c.title || c.field) + ": " + valueText(value) : void 0,
+              "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? "size family weight" : "size family",
+              className: cx(
+                "" + B + "__grid-cell",
+                modes,
+                !selectable && marked(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
+                bare && B + "__grid-cell--bare",
+                selectable && ordered2.indexOf(column) === 0 && B + "__grid-cell--after-lead",
+                ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
+                isTree && row.depth > 0 && B + "__tree-cell--level-" + Math.min(12, row.depth),
+                editing?.key === row.id && editing.field === c.field && "" + B + "__grid-editing",
+                k.map((kind) => B + "__cell--" + kind).join(" "),
+                (k.includes("data") || c.type === "bytes") && B + "__grid-cell--data",
+                [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped",
+                c.type === "bytes" && B + "__cell--data",
+                c.rowHandle && B + "__cell--handle",
+                childField && c.field === (props.treeColumn || columns[0]?.field) && B + "__tree-cell",
+                pinned && "" + B + "__grid-frozen",
+                (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + "__cell--row-label",
+                k.includes("icon") && B + "__w-lead",
+                keys.includes(c.field) && B + "__cell--key",
+                detail && B + "__cell--list-detail",
+                keys[0] === c.field && B + "__cell--key-first",
+                (c.align || c.type === "bytes") && B + "__cell--align-" + (c.align || "right")
+              )
+            },
+            childField && c.field === (props.treeColumn || columns[0]?.field) ? /* @__PURE__ */ React$1.createElement("span", { className: B + "__tree-level", "data-plx-depth": 0 }, row.getCanExpand() ? /* @__PURE__ */ React$1.createElement(
+              "button",
+              {
+                type: "button",
+                className: B + "__grid-data-tree-control",
+                "aria-expanded": row.getIsExpanded(),
+                "aria-label": row.getIsExpanded() ? "Collapse row" : "Expand row",
+                onClick: () => row.toggleExpanded()
+              },
+              /* @__PURE__ */ React$1.createElement(
+                "span",
+                {
+                  className: B + "__grid-data-tree-control-" + (row.getIsExpanded() ? "collapse" : "expand")
+                }
+              )
+            ) : null) : null,
+            editing?.key === row.id && editing.field === c.field ? cellDirection(
+              pinned && !isStatic,
+              /* @__PURE__ */ React$1.createElement(
+                CellEditor,
+                {
+                  column: c,
+                  value,
+                  onCommit: (next) => commitEdit(row.id, c.field, next),
+                  onCancel: () => setEditing(null)
+                }
+              )
+            ) : c.rowHandle && (recordPositions.get(record) ?? -1) >= 0 ? /* @__PURE__ */ React$1.createElement(
+              Menu,
+              {
+                label: S2.moveRow,
+                trigger: /* @__PURE__ */ React$1.createElement(DragHandle, { dnd: rowDnd.handleProps(recordPositions.get(record) ?? -1) })
+              },
+              /* @__PURE__ */ React$1.createElement(
+                MenuItem,
+                {
+                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, -1),
+                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) - 1)
+                },
+                S2.moveUp
+              ),
+              /* @__PURE__ */ React$1.createElement(
+                MenuItem,
+                {
+                  disabled: !rowDnd.canMove(recordPositions.get(record) ?? -1, 1),
+                  onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, (recordPositions.get(record) ?? -1) + 1)
+                },
+                S2.moveDown
+              ),
+              /* @__PURE__ */ React$1.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, 0) }, S2.moveTop),
+              /* @__PURE__ */ React$1.createElement(MenuItem, { onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical2.length - 1) }, S2.moveBottom)
+            ) : c.render ? /* @__PURE__ */ React$1.createElement(
+              "span",
+              {
+                className: cx(B + "__portal", actions && B + "__portal--actions"),
+                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0,
+                "data-plx-link-target": "cell"
+              },
+              /* @__PURE__ */ React$1.createElement(
+                CustomCell,
+                {
+                  column: c,
+                  record,
+                  cell,
+                  rowId: row.id,
+                  selected: !!selection[row.id],
+                  block: B,
+                  mods
+                }
+              )
+            ) : actions ? /* @__PURE__ */ React$1.createElement(
+              "span",
+              {
+                className: B + "__portal " + B + "__portal--actions",
+                dir: pinned && !isStatic && !kinds(c).includes("id") ? "auto" : void 0
+              },
+              shown
+            ) : cutAt === row.id + "|" + c.field ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown), /* @__PURE__ */ React$1.createElement("span", { className: B + "__cut" }, /* @__PURE__ */ React$1.createElement(
+              Popover,
+              {
+                label: c.title,
+                title: c.title,
+                size: "sm",
+                placement: "bottom-end",
+                onOpenChange: (open) => {
+                  cutOpen.current = open;
+                  if (!open) setCutAt(null);
+                },
+                trigger: /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: ExpandIcon, label: S2.fullText })
+              },
+              /* @__PURE__ */ React$1.createElement("div", { className: B + "__full-text" }, valueText(value))
+            ))) : cellDirection(pinned && !isStatic && !kinds(c).includes("id"), shown)
+          );
+        }),
+        props.viewMenu ? /* @__PURE__ */ React$1.createElement("div", { className: cx(`${B}__grid-cell ${B}__w-view`, modes), role: "gridcell" }) : null,
+        rowMenu && rowMenuButton ? /* @__PURE__ */ React$1.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, modes), role: "gridcell" }, /* @__PURE__ */ React$1.createElement(
+          Menu,
+          {
+            label: S2.rowActions,
+            trigger: /* @__PURE__ */ React$1.createElement(
+              Button,
+              {
+                className: B + "__row-menu",
+                variant: "ghost",
+                size: "xs",
+                iconOnly: true,
+                icon: MoreIcon,
+                label: S2.rowActions
+              }
+            )
+          },
+          /* @__PURE__ */ React$1.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })
+        )) : null
+      );
+      return rowMenu ? /* @__PURE__ */ React$1.createElement(ContextMenu, { key: row.displayKey || row.id, target: node, label: S2.rowActions }, /* @__PURE__ */ React$1.createElement(RowMenuContent, { build: menuItems, items: rowMenu, record, rowApi })) : node;
+    };
+    return { groupNode, rowNode };
+  }
+  const d0$S = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
+  const d1$S = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
+  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
+  const d0$R = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
+  const d1$R = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
+  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  const FilterIcon = { "name": "filter", "set": "plenix", "symbol": "filter_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Zm28-286 162-198H317l163 198Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Zm60-288 198-252H282l198 252Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Z" } } } };
+  const GroupByIcon = { "name": "group-by", "set": "plenix", "symbol": "view_agenda", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm52-52h528v-144H216v144Zm-52-307.38v-248h632v248H164Zm52-52h528v-144H216v144Zm0 215.38v144-144Zm0-359.38v144-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm0-359.38v-248h632v248H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm60-60h560v-160H200v160Zm-60-315.38v-280h680v280H140Zm60-60h560v-160H200v160Zm0 215.38v160-160Zm0-375.38v160-160Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm0-375.38v-280h680v280H140Z" } } } };
+  function headerRows({
+    groupBy: groupBy2,
+    columnMenu,
+    S: S2,
+    menuItems,
+    api,
+    props,
+    setFilterField,
+    changeGroups,
+    wrapOf,
+    changeWrap,
+    wrapColumns,
+    fit: fit2,
+    table,
+    frozen,
+    setManaging,
+    orderAt,
+    filterField,
+    pinStart,
+    columnDnd,
+    ordered: ordered2,
+    headerElements,
+    widths,
+    isStatic,
+    B,
+    selectable,
+    effectiveWrap,
+    options,
+    showTypes,
+    headerMenu,
+    startResize,
+    resize
+  }) {
+    const groupedBy = (field) => [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === field);
+    const headerItems = (column) => {
+      const c = column.columnDef.meta, custom = typeof columnMenu === "function" ? columnMenu(c) : columnMenu || [];
+      const direction = typeOf$1(c) === "number" || typeOf$1(c) === "currency" || typeOf$1(c) === "bytes" ? S2.sortNumber : typeOf$1(c) === "date" ? S2.sortDate : typeOf$1(c) === "checkbox" ? S2.sortCheck : S2.sortText;
+      const grouped = groupedBy(c.field), others = [].concat(groupBy2 || []).filter((level) => (typeof level === "object" ? level.field : level) !== c.field);
+      return /* @__PURE__ */ React.createElement(React.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /* @__PURE__ */ React.createElement(MenuDivider, null) : null, /* @__PURE__ */ React.createElement(MenuItem, { icon: SortAscendingIcon, disabled: !column.getCanSort(), onSelect: () => column.toggleSorting(false) }, direction[0]), /* @__PURE__ */ React.createElement(MenuItem, { icon: SortDescendingIcon, disabled: !column.getCanSort(), onSelect: () => column.toggleSorting(true) }, direction[1]), /* @__PURE__ */ React.createElement(MenuDivider, null), /* @__PURE__ */ React.createElement(
+        MenuItem,
+        {
+          icon: FilterIcon,
+          disabled: !column.getCanFilter(),
+          onSelect: () => props.onFilterField ? props.onFilterField(c.field) : setFilterField(c.field)
+        },
+        S2.filterBy
+      ), /* @__PURE__ */ React.createElement(
+        MenuItem,
+        {
+          icon: GroupByIcon,
+          disabled: !grouped && c.groupable === false,
+          onSelect: () => changeGroups(grouped ? others.length ? others : false : c.field)
+        },
+        grouped ? S2.noGroup : S2.group
+      ), /* @__PURE__ */ React.createElement(MenuDivider, null), /* @__PURE__ */ React.createElement(
+        MenuItem,
+        {
+          checked: !!wrapOf(c),
+          onSelect: () => changeWrap({ ...props.wrapColumns || wrapColumns, [c.field]: !wrapOf(c) })
+        },
+        S2.wrapText
+      ));
+    };
+    const columnChooser = (column) => /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MenuItem, { onSelect: () => fit2(column.id) }, S2.sizeToFit), /* @__PURE__ */ React.createElement(MenuItem, { onSelect: () => table.getVisibleLeafColumns().forEach((col) => fit2(col.id)) }, S2.sizeAllToFit), (() => {
+      const cols = table.getVisibleLeafColumns().map((col) => col.columnDef.meta).filter((m) => m && m.field && !kinds(m).includes("icon")), all = cols.length > 0 && cols.every(wrapOf);
+      return /* @__PURE__ */ React.createElement(MenuItem, { checked: all, onSelect: () => changeWrap(Object.fromEntries(cols.map((m) => [m.field, !all]))) }, S2.wrapAll);
+    })(), /* @__PURE__ */ React.createElement(MenuDivider, null), chooserColumns().map((col) => /* @__PURE__ */ React.createElement(
+      MenuItem,
+      {
+        key: col.id,
+        checked: col.getIsVisible(),
+        disabled: frozen.has(col.id),
+        onSelect: () => col.toggleVisibility(!col.getIsVisible())
+      },
+      col.columnDef.meta.title || col.id
+    )), /* @__PURE__ */ React.createElement(MenuDivider, null), /* @__PURE__ */ React.createElement(MenuItem, { onSelect: () => setManaging(true) }, S2.moreColumns));
+    const chooserColumns = () => {
+      const all = table.getAllLeafColumns().filter((col) => !kinds(col.columnDef.meta).some((k) => ["icon", "actions"].includes(k)));
+      return all.slice().sort((x, y) => orderAt(x.id) - orderAt(y.id));
+    };
+    const headerCell = (column) => {
+      const c = column.columnDef.meta, pinned = column.getIsPinned() === "left";
+      column.getIsSorted();
+      const filtered = column.getIsFiltered(), icon = kinds(c).includes("icon");
+      !!(c.filter || filterField === c.field || filtered);
+      const titleFixed = icon ? "flush" : null, offset = pinned ? pinStart(column) : 0;
+      const node = /* @__PURE__ */ React.createElement(
+        Width,
+        {
+          key: c.field,
+          ...columnDnd.itemProps(ordered2.indexOf(column)),
+          onAttach: (node2) => {
+            if (node2) headerElements.current.set(c.field, node2);
+            else headerElements.current.delete(c.field);
+          },
+          width: widths[c.field],
+          frozenOffset: pinned ? offset : void 0,
+          role: "columnheader",
+          tabIndex: isStatic ? void 0 : 0,
+          "data-plx-field": c.field,
+          "aria-sort": column.getIsSorted() ? column.getIsSorted() === "desc" ? "descending" : "ascending" : void 0,
+          className: cx(
+            "" + B + "__grid-col",
+            isStatic && B + "__grid-col--static",
+            selectable && ordered2.indexOf(column) === 0 && B + "__grid-col--after-lead",
+            ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-col--after-frozen",
+            column.getCanSort() && B + "__grid-sortable",
+            column.getCanSort() && B + "__grid-col-sorter-element",
+            kinds(c).includes("icon") && B + "__cell--icon",
+            kinds(c).includes("icon") && B + "__w-lead",
+            column.getIsFiltered() && B + "__filtered",
+            pinned && "" + B + "__grid-frozen",
+            [].concat(groupBy2 || []).some((level) => (typeof level === "object" ? level.field : level) === c.field) && B + "__cell--grouped"
+          ),
+          "data-plx-sticky": pinned && offset ? offset + "px" : void 0,
+          onClick: (e) => {
+            if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
+          },
+          onKeyDown: headerKeys({ column })
+        },
+        /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            className: cx(
+              B + "__grid-col-content",
+              isStatic && B + "__grid-col-content--static",
+              icon && B + "__grid-col-content--icon",
+              effectiveWrap && B + "__grid-col-content--wrap"
+            )
+          },
+          /* @__PURE__ */ React.createElement("div", { className: cx(B + "__grid-col-title-holder", icon && B + "__grid-col-title-holder--flush") }, /* @__PURE__ */ React.createElement(
+            "div",
+            {
+              className: cx(
+                B + "__grid-col-title",
+                isStatic && B + "__grid-col-title--static",
+                titleFixed && B + "__grid-col-title--" + titleFixed,
+                icon && B + "__grid-col-title--icon"
+              ),
+              title: c.title
+            },
+            kinds(c).includes("icon") ? /* @__PURE__ */ React.createElement("span", { className: B + "__header-icon" }, /* @__PURE__ */ React.createElement(Icon, { name: c.icon || CircleInfoIcon, label: c.title })) : /* @__PURE__ */ React.createElement("span", { className: B + "__title" }, props.movableColumns ?? options.movableColumns ? /* @__PURE__ */ React.createElement(DragHandle, { disabled: frozen.has(column.id), dnd: columnDnd.handleProps(ordered2.indexOf(column)) }) : null, showTypes ? /* @__PURE__ */ React.createElement("span", { className: B + "__type-icon" }, /* @__PURE__ */ React.createElement(Icon, { name: typeIcons[typeOf$1(c)] || EdTextIcon })) : null, /* @__PURE__ */ React.createElement("span", { className: cx(B + "__title-text", effectiveWrap && B + "__title-text--wrap") }, c.title || c.field))
+          ), filtered || filterField === c.field ? /* @__PURE__ */ React.createElement("span", { className: cx(B + "__title-filter", filtered && B + "__title-filter--on") }, /* @__PURE__ */ React.createElement(
+            Popover,
+            {
+              open: filterField === c.field,
+              onOpenChange: (open) => setFilterField(open ? c.field : null),
+              title: S2.filter + " " + c.title,
+              size: "sm",
+              trigger: /* @__PURE__ */ React.createElement(PressTrigger, { className: B + "__title-filter-button", "aria-label": S2.filter + " " + c.title }, /* @__PURE__ */ React.createElement(Icon, { name: FilterIcon }))
+            },
+            /* @__PURE__ */ React.createElement("div", { className: B + "__filter-form" }, c.filter === "list" ? /* @__PURE__ */ React.createElement(
+              Select,
+              {
+                "aria-label": S2.filter + " " + c.title,
+                value: column.getFilterValue() || "",
+                options: [
+                  { value: "", label: S2.any },
+                  ...[
+                    ...new Set([...column.getFacetedUniqueValues().keys()].map((value) => String(value ?? "")))
+                  ].filter(Boolean).map((value) => ({ value, label: value }))
+                ],
+                onChange: (e) => column.setFilterValue(e.target.value || void 0)
+              }
+            ) : /* @__PURE__ */ React.createElement(
+              Input,
+              {
+                "aria-label": S2.filter + " " + c.title,
+                value: column.getFilterValue() || "",
+                onChange: (e) => column.setFilterValue(e.target.value)
+              }
+            ), /* @__PURE__ */ React.createElement(Button, { variant: "ghost", size: "sm", onClick: () => column.setFilterValue(void 0) }, S2.clearFilter))
+          )) : null),
+          headerMenu ? /* @__PURE__ */ React.createElement("span", { className: cx(B + "__grid-header-popup-button", B + "__grid-header-popup-button--menu") }, /* @__PURE__ */ React.createElement(
+            Menu,
+            {
+              label: S2.columnActions.replace("{title}", c.title),
+              trigger: /* @__PURE__ */ React.createElement(
+                PressTrigger,
+                {
+                  className: B + "__menu-chevron",
+                  "aria-label": S2.columnActions.replace("{title}", c.title)
+                },
+                /* @__PURE__ */ React.createElement(Icon, { name: ChevronDownIcon })
+              )
+            },
+            headerItems(column)
+          )) : null
+        ),
+        c.resizable !== false && !pinned && !kinds(c).includes("icon") ? /* @__PURE__ */ React.createElement(
+          "span",
+          {
+            className: `${B}__grid-col-resize-handle`,
+            "data-plx-target-equivalent": "",
+            role: "separator",
+            "aria-label": S2.resize + " " + c.title,
+            "aria-orientation": "vertical",
+            tabIndex: 0,
+            "aria-valuenow": column.getSize(),
+            "aria-valuemin": column.columnDef.minSize,
+            "aria-valuemax": column.columnDef.maxSize,
+            onMouseDown: (e) => startResize(e, column),
+            onTouchStart: (e) => startResize(e, column),
+            onDoubleClick: () => fit2(c.field),
+            onKeyDown: resizeKeys({ resize, c, column })
+          }
+        ) : null
+      );
+      return headerMenu ? /* @__PURE__ */ React.createElement(ContextMenu, { key: c.field, target: node, label: S2.columns }, columnChooser(column)) : node;
+    };
+    return { chooserColumns, headerCell };
   }
   function NextEngine(props) {
     const inPane = React$1.useContext(GridPane);
@@ -21648,170 +21916,82 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       (group, i) => group.path.every((part, depth2) => JSON.stringify(part) === JSON.stringify(currentGroup.path[depth2])) && !priorGroups.slice(i + 1).some((next) => next.depth === group.depth)
     ) : [];
     const moreFailed = scrollFill && remoteError && model.length > 0, failed = error || (moreFailed ? null : remoteError);
-    return /* @__PURE__ */ React$1.createElement(WidthPixels.Provider, { value: widthPixels }, manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }), /* @__PURE__ */ React$1.createElement(
-      "div",
-      {
-        ref: frame,
-        className: cx(
-          B,
-          isStatic && B + "--static",
-          pinnedAt >= 0 && B + "--row-header",
-          listed && B + "--list",
-          isNarrow && B + "--narrow",
-          height === "100%" && B + "--fill",
-          mode === "pages" && B + "--pages",
-          mode === "load-more" && B + "--load-more",
-          className
-        ),
-        "data-plx-engine": "next",
-        "data-plx-grid-key": cells === "pill" ? gridKey : void 0,
-        "data-plx-density": density === "page" ? void 0 : density,
-        "data-plx-render": virtualized ? "virtual" : void 0,
-        "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : void 0,
-        "data-plx-wrap-headers": effectiveWrap ? "" : void 0,
-        "data-plx-height": lengthName(height),
-        "data-plx-fit": !isStatic && !height && mode !== "pages" ? "" : void 0
-      },
-      failureState({ failed, B, S: S2, onRetry, remoteError, setRetry }),
-      /* @__PURE__ */ React$1.createElement(
-        "div",
-        {
-          className: cx(
-            B + "__table",
-            B + "__grid",
-            height === "100%" && B + "__grid--fill",
-            isStatic && B + "__grid--static"
-          ),
-          role: isStatic ? "table" : groups.length || childField ? "treegrid" : "grid",
-          "aria-label": label2,
-          "aria-busy": remoteMode && remoteBusy ? true : void 0,
-          "aria-rowcount": groups.length || childField ? semanticRows.length + 1 : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
-          "aria-colcount": ordered2.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
-          hidden: !!failed
-        },
-        /* @__PURE__ */ React$1.createElement(
-          "div",
-          {
-            className: cx(
-              B + "__grid-header",
-              isNarrow && B + "__grid-header--narrow",
-              isStatic && B + "__grid-header--static"
-            ),
-            ref: header,
-            hidden: isStatic && props.headerVisible === false
-          },
-          /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-header-contents` }, /* @__PURE__ */ React$1.createElement(
-            "div",
-            {
-              ...columnDnd.listProps,
-              className: cx(`${B}__grid-headers`, isStatic && B + "__grid-headers--static"),
-              role: "row"
-            },
-            selectable ? /* @__PURE__ */ React$1.createElement(
-              "div",
-              {
-                className: cx(`${B}__grid-col ${B}__grid-row-header ${B}__w-lead`, leadFrozen && B + "__grid-frozen"),
-                role: "columnheader"
-              },
-              /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-col-content ${B}__grid-col-content--row-header` }, /* @__PURE__ */ React$1.createElement(
-                Check,
-                {
-                  label: S2.selectAll,
-                  checked: allVisible,
-                  mixed: selectedVisible.length > 0 && !allVisible,
-                  onChange: (e) => selectAll(e.target.checked)
-                }
-              ))
-            ) : null,
-            ordered2.map(headerCell),
-            viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }),
-            rowMenu && rowMenuButton ? /* @__PURE__ */ React$1.createElement(
-              Width,
-              {
-                width: metrics.menu,
-                className: `${B}__grid-col`,
-                role: "columnheader",
-                "aria-label": S2.rowActions
-              }
-            ) : null
-          ))
-        ),
-        /* @__PURE__ */ React$1.createElement(
-          "div",
-          {
-            id: viewportId,
-            ref: holder,
-            className: cx(
-              `${B}__grid-tableholder`,
-              height === "100%" && B + "__grid-tableholder--fill",
-              isNarrow && B + "__grid-tableholder--narrow",
-              isStatic && B + "__grid-tableholder--static"
-            ),
-            "data-plx-height": lengthName(height),
-            "data-plx-fit": !isStatic && !height && mode !== "pages" ? "" : void 0,
-            role: "rowgroup",
-            tabIndex: isStatic ? void 0 : 0,
-            onKeyDown: tableKeys({ focusCell, first }),
-            onScroll: (e) => {
-              if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
-              if (mode === "load-more" && e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight < tokenPixels("--plx-ref-size-200px", frame.current)) {
-                if (remoteMode && !fetching.current && source.length < (remote?.total || 0)) {
-                  fetching.current = true;
-                  setPage((n) => n + 1);
-                } else if (!remoteMode) setLoaded((n) => Math.min(allRows.length, n + pageSize));
-              }
-            }
-          },
-          /* @__PURE__ */ React$1.createElement(
-            "div",
-            {
-              ...rowDnd.listProps,
-              className: cx(
-                `${B}__grid-table`,
-                virtualized && B + "__grid-table--virtual",
-                isNarrow && B + "__grid-table--narrow",
-                isStatic && B + "__grid-table--static"
-              ),
-              role: "presentation"
-            },
-            stickyGroups.length ? /* @__PURE__ */ React$1.createElement("div", { className: B + "__sticky-groups", "aria-hidden": "true", inert: "" }, stickyGroups.map(
-              (group) => React$1.cloneElement(groupNode(group, true), {
-                key: "sticky:" + group.id,
-                className: B + "__sticky-group " + B + "__grid-group-level-" + group.depth,
-                role: void 0,
-                tabIndex: -1,
-                "aria-expanded": void 0,
-                "aria-rowindex": void 0,
-                "aria-level": void 0,
-                onKeyDown: void 0
-              })
-            )) : null,
-            /* @__PURE__ */ React$1.createElement(RowGap, { rows: model.slice(0, first) }),
-            shown.map(renderRow),
-            /* @__PURE__ */ React$1.createElement(RowGap, { rows: model.slice(last) })
-          ),
-          emptyRow({ model, B, isStatic, ordered: ordered2, remoteMode, remoteBusy, S: S2, empty }),
-          moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered: ordered2, S: S2, setRetry })
-        )
-      ),
-      !isStatic ? /* @__PURE__ */ React$1.createElement(Scrollbars, { holder, viewportId, hideX: isNarrow }) : null,
-      pagesFooter({ mode, failed, B, S: S2, displayedTotal, page, pageSize, props, setPage, setPageSize, label: label2 }),
-      loadMoreFooter({
-        mode,
-        failed,
-        B,
-        S: S2,
-        loadedRows,
-        displayedTotal,
-        remoteMode,
-        remoteBusy,
-        fetching,
-        setPage,
-        setLoaded,
-        allRows,
-        pageSize
-      })
-    ));
+    return gridFrame({
+      widthPixels,
+      headerMenu,
+      isStatic,
+      managing,
+      setManaging,
+      chooserColumns,
+      changeOrder,
+      changeVisibility,
+      frame,
+      B,
+      pinnedAt,
+      listed,
+      isNarrow,
+      height,
+      mode,
+      className,
+      cells,
+      gridKey,
+      density,
+      virtualized,
+      effectiveStep,
+      effectiveWrap,
+      failed,
+      S: S2,
+      onRetry,
+      remoteError,
+      setRetry,
+      groups,
+      childField,
+      label: label2,
+      remoteMode,
+      remoteBusy,
+      semanticRows,
+      remote,
+      table,
+      ordered: ordered2,
+      selectable,
+      rowMenu,
+      rowMenuButton,
+      props,
+      header,
+      columnDnd,
+      leadFrozen,
+      allVisible,
+      selectedVisible,
+      selectAll,
+      headerCell,
+      setRowHeight,
+      setWrapHeaders,
+      metrics,
+      viewportId,
+      holder,
+      focusCell,
+      first,
+      fetching,
+      source,
+      setPage,
+      setLoaded,
+      allRows,
+      pageSize,
+      rowDnd,
+      stickyGroups,
+      groupNode,
+      model,
+      shown,
+      renderRow,
+      last,
+      empty,
+      scrollFill,
+      moreFailed,
+      displayedTotal,
+      page,
+      setPageSize,
+      loadedRows
+    });
   }
   function DataGridEngine(props) {
     return /* @__PURE__ */ React$1.createElement(NextEngine, { key: props.storageKey || "", ...props });
@@ -28593,7 +28773,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       busy ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, t.downloading, percent ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__percent" }, percent) : null) : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, label2, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__meta" }, facts.join(" \xB7 ")) : null)
     );
   });
-  const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$2 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function BackToTop({ variant = "floating", scrollRef, focusRef, strings, className }) {
     devWarn("BackToTop", { variant }, { variant: ["floating", "inline"] });
     const t = useStrings("backToTop", strings);
@@ -28603,7 +28783,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = floating && !!entry && !atTop;
     const goTop = () => {
       const area = scrollRef && scrollRef.current;
-      const behavior = reduced$1() ? "auto" : "smooth";
+      const behavior = reduced$2() ? "auto" : "smooth";
       if (area) area.scrollTo({ top: 0, behavior });
       else window.scrollTo({ top: 0, behavior });
       const root = area || document;
@@ -31047,11 +31227,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }, className: "plx-miller-columns__preview", role: "region", tabIndex: 0, "aria-label": fill(t.preview, { label: preview.label }) }, renderPreview(preview)) : null);
   });
   const NARROW = [1, 1, 1, 1, 1, 1];
-  const leavesOf = (items, trail2 = []) => items.reduce((all, it) => Array.isArray(it.children) ? all.concat(leavesOf(it.children, trail2.concat([it]))) : all.concat([{ item: it, trail: trail2.concat([it]) }]), []);
-  const pathTo = (items, id) => {
-    const hit = leavesOf(items).find((l) => l.item.id === id);
-    return hit ? hit.trail : null;
-  };
+  const leavesOf = (items, trail2 = [], choosable = () => false) => items.reduce((all, it) => {
+    const here = trail2.concat([it]);
+    if (!Array.isArray(it.children)) return all.concat([{ item: it, trail: here }]);
+    return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable));
+  }, []);
+  const SELF = "__plx-self:";
+  const withSelf = (items, choosable, label2) => items.map((it) => Array.isArray(it.children) ? Object.assign({}, it, { children: (choosable(it) ? [{ id: SELF + it.id, self: it.id, label: label2(it), disabled: it.disabled }] : []).concat(withSelf(it.children, choosable, label2)) }) : it);
   const Cascader = React$1.forwardRef(function Cascader2({
     options = [],
     value,
@@ -31060,6 +31242,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     multiple = false,
     expandTrigger = "click",
     searchable = false,
+    choosableParents = false,
+    maxTags = 0,
+    maxChoices,
+    loadOptions,
+    loadDelay = 300,
+    minChars = 0,
     placeholder,
     label: label2,
     invalid,
@@ -31080,6 +31268,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const [text2, setText] = React$1.useState("");
     const [active, setActive] = React$1.useState(0);
     const [browse, setBrowse] = React$1.useState([]);
+    const [limitShown, setLimitShown] = React$1.useState(false);
+    const [loaded, setLoaded] = React$1.useState([]);
+    const [busy, setBusy] = React$1.useState(false);
+    const [failed, setFailed] = React$1.useState(false);
+    const loader = React$1.useRef(loadOptions), request = React$1.useRef(0), seen = React$1.useRef(/* @__PURE__ */ new Map());
+    loader.current = loadOptions;
+    const remote = !!loadOptions && searchable;
     const wrap = React$1.useRef(null), button = React$1.useRef(null), search = React$1.useRef(null), cols = React$1.useRef(null), popup = React$1.useRef(null);
     useFloating(wrap, popup, { open, placement: "bottom-start" });
     React$1.useLayoutEffect(() => {
@@ -31089,17 +31284,27 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     React$1.useImperativeHandle(ref, () => button.current);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const pathLabel = (trail2) => trail2.map((x) => x.label).join(t.separator);
-    const current2 = !multiple && chosen.length ? pathTo(options, chosen[0]) : null;
+    const choosable = (it) => Array.isArray(it.children) && (it.choosable !== void 0 ? !!it.choosable : choosableParents);
+    const leaves = React$1.useMemo(() => leavesOf(options, [], choosable), [options, choosableParents]);
+    const columnsItems = React$1.useMemo(() => withSelf(options, choosable, (it) => fill(t.allOf, { label: it.label })), [options, choosableParents, t.allOf]);
+    const pathFor = (v) => {
+      const hit = leaves.find((l) => l.item.id === v) || seen.current.get(v);
+      return hit ? hit.trail : null;
+    };
+    const checkedIds = chosen.map((v) => leaves.some((l) => l.item.id === v && Array.isArray(l.item.children)) ? SELF + v : v);
+    const current2 = !multiple && chosen.length ? pathFor(chosen[0]) : null;
     const locked = useReadOnly(readOnlyOwn);
     const openList = () => {
       if (disabled || locked) return;
       setBrowse(current2 ? current2.map((x) => x.id) : []);
       setText("");
+      setLimitShown(false);
       setOpen(true);
     };
     const close = (refocus) => {
       setOpen(false);
       setText("");
+      setLimitShown(false);
       if (refocus && button.current) button.current.focus();
     };
     React$1.useEffect(() => {
@@ -31116,16 +31321,60 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return () => document.removeEventListener("mousedown", off2);
     }, [open]);
     const q2 = text2.trim().toLowerCase();
-    const matches = q2 ? leavesOf(options).filter((l) => !l.item.disabled && matchesText(l.item.label, text2)) : [];
+    const said = (n) => announce(typeof t.results === "function" ? t.results(n) : loc2.t("cascader.results", { count: n, n: formatNumber(n) }));
+    const searching = !!q2 && (!remote || q2.length >= minChars);
+    const matches = !searching ? [] : remote ? loaded : leaves.filter((l) => !l.item.disabled && matchesText(l.item.label, text2));
     React$1.useEffect(() => {
       setActive(0);
-      if (q2) announce(typeof t.results === "function" ? t.results(matches.length) : loc2.t("cascader.results", { count: matches.length, n: formatNumber(matches.length) }));
+      if (searching && !remote) said(matches.length);
     }, [q2]);
+    React$1.useEffect(() => {
+      if (!remote || !open) return void 0;
+      const query = text2.trim();
+      if (query.length < Math.max(1, minChars)) {
+        request.current++;
+        setLoaded([]);
+        setBusy(false);
+        setFailed(false);
+        return void 0;
+      }
+      const n = ++request.current;
+      setBusy(true);
+      setFailed(false);
+      const timer = setTimeout(() => {
+        Promise.resolve().then(() => loader.current(query)).then((list2) => {
+          if (n !== request.current) return;
+          const got = (Array.isArray(list2) ? list2 : []).map((r) => {
+            const ups = (r.path || []).map((x) => typeof x === "string" ? { label: x } : { id: x.id, label: x.label });
+            return { item: { id: r.id, label: r.label, disabled: r.disabled }, trail: ups.concat([{ id: r.id, label: r.label }]) };
+          });
+          got.forEach((m) => seen.current.set(m.item.id, m));
+          setLoaded(got);
+          setBusy(false);
+          said(got.length);
+        }, () => {
+          if (n !== request.current) return;
+          setLoaded([]);
+          setBusy(false);
+          setFailed(true);
+          announce(t.error);
+        });
+      }, loadDelay);
+      return () => clearTimeout(timer);
+    }, [remote, open, text2, minChars, loadDelay]);
     const pick = (item, trail2) => {
       if (locked) return;
-      if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
-      else {
-        onChange(item.id, trail2.map((x) => x.id));
+      if (multiple) {
+        const on = chosen.indexOf(item.id) >= 0;
+        if (!on && maxChoices && chosen.length >= maxChoices) {
+          setLimitShown(true);
+          announce(fill(t.limit, { n: formatNumber(maxChoices) }));
+          return;
+        }
+        setLimitShown(false);
+        onChange(on ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
+      } else {
+        onChange(item.id, trail2.map((x) => x.id).filter((x) => x !== void 0));
         close(true);
       }
     };
@@ -31137,7 +31386,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     };
     const onSearchKey = (e) => {
-      if (!q2) {
+      if (!searching) {
         if (e.key === "ArrowDown") {
           e.preventDefault();
           const l = cols.current && cols.current.querySelector(".plx-miller-columns__list");
@@ -31152,7 +31401,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         e.preventDefault();
         setActive((a) => Math.max(0, a - 1));
       } else if (e.key === "Enter") {
-        if (matches[active]) {
+        if (matches[active] && !busy) {
           e.preventDefault();
           pick(matches[active].item, matches[active].trail);
         }
@@ -31160,11 +31409,32 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const optId = (i) => auto + "-m" + i;
     const shown = multiple ? null : current2 ? pathLabel(current2) : null;
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? chosen.map((v) => {
-      const trail2 = pathTo(options, v);
-      const name = trail2 ? trail2[trail2.length - 1].label : String(v);
-      return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: t.remove.replace("{label}", name) }, name);
-    }) : null, /* @__PURE__ */ React$1.createElement(
+    const nameOf2 = (v) => {
+      const trail2 = pathFor(v);
+      return trail2 ? trail2[trail2.length - 1].label : String(v);
+    };
+    const capped = maxTags > 0 ? maxTags : chosen.length, shownTags = chosen.slice(0, capped), hiddenTags = chosen.slice(capped);
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? shownTags.map((v) => /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => {
+      setLimitShown(false);
+      onChange(chosen.filter((x) => x !== v));
+    }, removeLabel: t.remove.replace("{label}", nameOf2(v)) }, nameOf2(v))) : null, multiple && hiddenTags.length ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: hiddenTags.map(nameOf2).join(", "), placement: "bottom", className: "plx-cascader__more-tip" }, /* @__PURE__ */ React$1.createElement(
+      Tag,
+      {
+        className: "plx-cascader__more",
+        tabIndex: 0,
+        role: "button",
+        "aria-label": fill(t.moreLabel, { n: formatNumber(hiddenTags.length) }),
+        onClick: openList,
+        onKeyDown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            openList();
+          }
+        }
+      },
+      dataPhrase(t.more, { n: hiddenTags.length })
+    )) : null, /* @__PURE__ */ React$1.createElement(
       "button",
       {
         ref: button,
@@ -31195,10 +31465,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         type: "search",
         className: "plx-input plx-cascader__search-input",
         role: "combobox",
-        "aria-expanded": !!q2,
+        "aria-expanded": searching,
         "aria-controls": auto + "-matches",
         "aria-autocomplete": "list",
-        "aria-activedescendant": q2 && matches[active] ? optId(active) : void 0,
+        "aria-activedescendant": searching && matches[active] ? optId(active) : void 0,
         "aria-label": t.search,
         placeholder: t.search,
         value: text2,
@@ -31206,7 +31476,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onKeyDown: onSearchKey,
         autoComplete: "off"
       }
-    )) : null, q2 ? /* @__PURE__ */ React$1.createElement("ul", { className: "plx-cascader__matches", id: auto + "-matches", role: "listbox", "aria-label": t.search, "aria-multiselectable": multiple || void 0 }, matches.length ? matches.map((m, i) => /* @__PURE__ */ React$1.createElement(
+    )) : null, searching ? /* @__PURE__ */ React$1.createElement("ul", { className: "plx-cascader__matches", id: auto + "-matches", role: "listbox", "aria-label": t.search, "aria-multiselectable": multiple || void 0 }, matches.length ? matches.map((m, i) => /* @__PURE__ */ React$1.createElement(
       "li",
       {
         key: m.item.id,
@@ -31220,22 +31490,25 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-label" }, highlightMatch(m.item.label, text2)),
       m.trail.length > 1 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-path" }, pathLabel(m.trail.slice(0, -1))) : null
-    )) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
+    )) : remote && busy ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty plx-cascader__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : remote && failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty plx-cascader__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
       MillerColumns,
       {
         className: "plx-cascader__columns",
         label: label2 || t.columns,
-        items: options,
+        items: columnsItems,
         path: browse,
         expandOnHover: expandTrigger === "hover",
-        checked: multiple ? chosen : void 0,
+        checked: multiple ? checkedIds : void 0,
         strings: { empty: t.empty },
         openOnClick: true,
         columnWidths: NARROW,
         onPathChange: (p) => setBrowse(p),
-        onOpen: (item) => pick(item, pathTo(options, item.id) || [item])
+        onOpen: (item) => {
+          const real = item.self !== void 0 ? item.self : item.id, hit = leaves.find((l) => l.item.id === real);
+          pick(hit ? hit.item : item, hit ? hit.trail : [item]);
+        }
       }
-    ))) : null);
+    )), multiple && limitShown ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__limit", "aria-hidden": "true" }, dataPhrase(t.limit, { n: maxChoices })) : null) : null);
   });
   const NAMES = { people: "people", teams: "teams", records: "records" };
   const EntityPicker = React$1.forwardRef(function EntityPicker2({
@@ -32540,10 +32813,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return out;
     }, []);
   }
-  function flatten$1(nodes, open, parent, out) {
+  function flatten$2(nodes, open, parent, out) {
     nodes.forEach((n) => {
       out.push({ node: n, parent });
-      if (kidsOf(n) && open.has(n.id)) flatten$1(n.children, open, n.id, out);
+      if (kidsOf(n) && open.has(n.id)) flatten$2(n.children, open, n.id, out);
     });
     return out;
   }
@@ -32588,7 +32861,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const shownNodes = q2 ? filterNodes(nodes, q2) : nodes;
     const openSet = q2 ? new Set(Array.from(byId.keys())) : new Set(expanded);
-    const flat = flatten$1(shownNodes, openSet, null, []);
+    const flat = flatten$2(shownNodes, openSet, null, []);
     const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.find((v) => chosen.indexOf(v.node.id) >= 0) || flat[0] || { node: {} }).node.id;
     const activeRef = React$1.useRef(active);
     activeRef.current = active;
@@ -33533,7 +33806,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       !total && !loading ? /* @__PURE__ */ React$1.createElement("p", { className: "plx-virtual-list__empty" }, t.empty) : null
     ));
   });
-  const reduced = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const clamp$1 = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   function Carousel({ label: label2, children, perView = 1, controls = "both", autoplay = false, page: pageProp, onPageChange, strings, className, ...rest }) {
     const t = useStrings("carousel", strings);
@@ -33543,7 +33816,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const pages = Math.max(1, Math.ceil(n / per));
     const [own2, setOwn] = React$1.useState(0);
     const page = clamp$1(pageProp !== void 0 ? pageProp : own2, 0, pages - 1);
-    const [playing2, setPlaying] = React$1.useState(() => !!autoplay && !reduced());
+    const [playing2, setPlaying] = React$1.useState(() => !!autoplay && !reduced$1());
     const [held, setHeld] = React$1.useState(false);
     const root = React$1.useRef(null), track2 = React$1.useRef(null);
     const setPage = (p) => {
@@ -33556,7 +33829,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const slide = el.children[clamp$1(p * per, 0, Math.max(0, n - per))];
       const a = slide.getBoundingClientRect(), b = el.getBoundingClientRect();
       const delta = isRtl$2(el) ? a.right - b.right : a.left - b.left;
-      el.scrollBy({ left: delta, behavior: reduced() ? "auto" : "smooth" });
+      el.scrollBy({ left: delta, behavior: reduced$1() ? "auto" : "smooth" });
     }, [per, n]);
     const go = (p) => {
       const q2 = clamp$1(p, 0, pages - 1);
@@ -39846,7 +40119,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     });
     const kids = (id) => items.filter((x) => keyOf(x.parent) === id);
     const nameOf2 = (id) => id === ROOT ? top.name : byId[id] ? byId[id].name : top.name;
-    const pathTo2 = (id) => {
+    const pathTo = (id) => {
       const out = [];
       let at2 = id;
       const seen = {};
@@ -39866,7 +40139,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       walk(id);
       return out;
     };
-    const path = pathTo2(current2);
+    const path = pathTo(current2);
     const go = (id) => {
       const k = keyOf(id);
       if (folder === void 0) setOwnFolder(k === ROOT ? top.id : k);
@@ -42985,7 +43258,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const INTERACTION = { hint: "Use the arrow keys to move through the tree.", hintSelect: " Enter folds or opens a branch.", selected: "{text}" };
   const ORIENTATIONS = ["left-to-right", "top-to-bottom"];
   const NONE = Object.freeze([]);
-  function flatten(root) {
+  function flatten$1(root) {
     const nodes = [], byId = /* @__PURE__ */ new Map();
     (function walk(n, parent, depth2) {
       if (!n) return;
@@ -43026,7 +43299,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }) {
     const t = useStrings("chart.treeChart", strings);
     const down = orientation === "top-to-bottom";
-    const { nodes, byId } = React$1.useMemo(() => flatten(data), [data]);
+    const { nodes, byId } = React$1.useMemo(() => flatten$1(data), [data]);
     const [own2, setOwn] = React$1.useState(() => new Set(defaultFolded));
     const folded = foldedProp ? new Set(foldedProp) : own2;
     const foldedRef = React$1.useRef(folded);
@@ -43254,6 +43527,124 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       draw
     );
   }
+  const reduced = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const flatten = (items, out = []) => {
+    items.forEach((it) => {
+      out.push(it);
+      if (it.children) flatten(it.children, out);
+    });
+    return out;
+  };
+  const HOLD = 900;
+  function Anchor({ items = [], label: label2, scrollRef, value, onChange, strings, className, ...rest }) {
+    const t = useStrings("anchor", strings);
+    const nav = React$1.useRef(null);
+    const [own2, setOwn] = React$1.useState(null);
+    const controlled = value !== void 0;
+    const current2 = controlled ? value : own2;
+    const now = React$1.useRef(current2), change = React$1.useRef(onChange), until = React$1.useRef(0), measureNow = React$1.useRef(null), mounted = React$1.useRef(false);
+    now.current = current2;
+    change.current = onChange;
+    const set2 = (id, quiet) => {
+      if (id === now.current) return;
+      now.current = id;
+      if (!controlled) setOwn(id);
+      if (change.current && !quiet) change.current(id);
+    };
+    const flat = flatten(items), ids = flat.map((i) => i.id).join("|");
+    const pageOf2 = () => nav.current && nav.current.ownerDocument || document;
+    React$1.useEffect(() => {
+      const area = scrollRef && scrollRef.current, doc = pageOf2(), view = doc.defaultView || window;
+      const scroller = area || view;
+      let frame = 0;
+      const measure2 = (quiet) => {
+        frame = 0;
+        if (performance.now() < until.current) return;
+        const top = area ? area.getBoundingClientRect().top : 0;
+        const there = flat.map((i) => ({ id: i.id, el: doc.getElementById(i.id) })).filter((x) => x.el);
+        if (!there.length) return;
+        let found = there[0].id;
+        there.forEach((x) => {
+          const margin = parseFloat(view.getComputedStyle(x.el).scrollMarginTop) || 0;
+          if (x.el.getBoundingClientRect().top <= top + margin + 1) found = x.id;
+        });
+        const atEnd = area ? area.scrollTop + area.clientHeight >= area.scrollHeight - 1 : view.innerHeight + view.scrollY >= doc.documentElement.scrollHeight - 1;
+        const scrolled = area ? area.scrollTop > 0 : view.scrollY > 0;
+        set2(atEnd && scrolled ? there[there.length - 1].id : found, quiet === true);
+      };
+      measureNow.current = () => measure2();
+      const onScroll = () => {
+        if (!frame) frame = view.requestAnimationFrame(measure2);
+      };
+      scroller.addEventListener("scroll", onScroll, { passive: true });
+      view.addEventListener("resize", onScroll);
+      if (!mounted.current) {
+        mounted.current = true;
+        measure2(true);
+      } else measure2();
+      return () => {
+        scroller.removeEventListener("scroll", onScroll);
+        view.removeEventListener("resize", onScroll);
+        if (frame) view.cancelAnimationFrame(frame);
+        measureNow.current = null;
+      };
+    }, [ids, scrollRef]);
+    const go = (e, id) => {
+      const el = pageOf2().getElementById(id);
+      e.preventDefault();
+      if (!el) return;
+      until.current = performance.now() + HOLD;
+      el.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+      if (!el.matches("a[href],button,input,select,textarea,[tabindex]")) el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+      set2(id);
+      setTimeout(() => {
+        if (measureNow.current) measureNow.current();
+      }, HOLD + 50);
+    };
+    const list2 = (rows, nested) => /* @__PURE__ */ React$1.createElement("ul", { className: cx("plx-anchor__list", nested && "plx-anchor__list--nested") }, rows.map((it) => /* @__PURE__ */ React$1.createElement("li", { key: it.id, className: "plx-anchor__item" }, /* @__PURE__ */ React$1.createElement("a", { href: "#" + it.id, className: cx("plx-anchor__link", it.id === current2 && "is-current"), "aria-current": it.id === current2 ? "location" : void 0, onClick: (e) => go(e, it.id) }, it.label), it.children && it.children.length ? list2(it.children, true) : null)));
+    return /* @__PURE__ */ React$1.createElement("nav", { ref: nav, "aria-label": label2 || t.label, className: cx("plx-anchor", className), ...rest }, list2(items, false));
+  }
+  function OverflowList({ items = [], label: label2, size = "md", strings, className, ...rest }) {
+    const t = useStrings("overflowList", strings);
+    const row = React$1.useRef(null);
+    const focused = React$1.useRef(false);
+    const key = items.map((i) => i.id + ":" + i.label).join("|") + "|" + size;
+    const step = useBarFit(row, key, items.length, 0, ":self");
+    const shown = Math.max(0, items.length - step);
+    const choose = (it) => () => {
+      if (it.onSelect) it.onSelect(it.id);
+    };
+    const folded = items.slice(shown);
+    React$1.useLayoutEffect(() => {
+      const el = row.current;
+      if (!el || !focused.current || el.contains(document.activeElement)) return;
+      const more = el.querySelector("[aria-haspopup]");
+      if (more) {
+        focused.current = false;
+        more.focus();
+      }
+    }, [shown]);
+    const drawn = (it) => it.content !== void 0 && it.content !== null ? /* @__PURE__ */ React$1.createElement("span", { key: it.id, className: "plx-overflow-list__item" }, it.content) : /* @__PURE__ */ React$1.createElement(Button, { key: it.id, className: "plx-overflow-list__item", variant: "ghost", size, icon: it.icon, href: it.href, disabled: it.disabled, onClick: choose(it) }, it.label);
+    return /* @__PURE__ */ React$1.createElement(
+      "div",
+      {
+        ref: row,
+        role: label2 ? "group" : void 0,
+        "aria-label": label2 || void 0,
+        className: cx("plx-overflow-list", className),
+        onFocus: (e) => {
+          focused.current = !e.target.closest("[aria-haspopup]");
+        },
+        onBlur: () => {
+          focused.current = false;
+        },
+        ...rest
+      },
+      items.slice(0, shown).map(drawn),
+      folded.length ? /* @__PURE__ */ React$1.createElement(Menu, { label: t.more, placement: "bottom-end", className: "plx-overflow-list__item", trigger: /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size, iconOnly: true, icon: MoreIcon, label: t.more }) }, folded.map((it) => /* @__PURE__ */ React$1.createElement(MenuItem, { key: it.id, icon: it.icon, href: it.href, disabled: it.disabled, onSelect: choose(it) }, it.label))) : null
+    );
+  }
   exports.AIButton = AIButton;
   exports.AIChat = AIChat;
   exports.AIDisclaimer = AIDisclaimer;
@@ -43265,6 +43656,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   exports.ActionBar = ActionBar;
   exports.ActivityList = ActivityList;
   exports.AnalyticsProvider = AnalyticsProvider;
+  exports.Anchor = Anchor;
   exports.Announcement = Announcement;
   exports.AppHeader = AppHeader;
   exports.AppShell = AppShell;
@@ -43494,6 +43886,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   exports.OrderStatus = OrderStatus;
   exports.OrderSummary = OrderSummary;
   exports.OtpInput = OtpInput;
+  exports.OverflowList = OverflowList;
   exports.PAGE_LAYOUTS = PAGE_LAYOUTS;
   exports.PAGE_REGIONS = PAGE_REGIONS;
   exports.PLENIX_APPS = PLENIX_APPS;

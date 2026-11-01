@@ -55,6 +55,9 @@ export default {
       "text": "There’s nothing left to do here."
     }
   },
+  "overflowList": {
+    "more": "More items"
+  },
   "pagination": {
     "label": "Pages",
     "range": "{first}–{last} of {total}",
@@ -225,6 +228,9 @@ export default {
     "notImage": "Choose an image file",
     "picture": "{name}’s photo"
   },
+  "anchor": {
+    "label": "On this page"
+  },
   "backToTop": {
     "label": "Back to top"
   },
@@ -295,6 +301,12 @@ export default {
     "empty": "No items",
     "remove": "Remove {label}",
     "columns": "Options",
+    "allOf": "All of {label}",
+    "more": "+{n}",
+    "moreLabel": "{n} more",
+    "limit": "You can choose up to {n}.",
+    "loading": "Loading…",
+    "error": "The matches could not be loaded",
     "results": {
       "one": "{n} match",
       "other": "{n} matches"

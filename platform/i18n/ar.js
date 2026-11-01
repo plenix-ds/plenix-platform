@@ -2,6 +2,9 @@
 // (Builder 02's table, ~/handoff/i18n/strings.md) for the owner's review. LocaleProvider uses them for an Arabic locale after the
 // application's own catalog and before English; a part's strings prop still wins.
 export default {
+  "overflowList": {
+    "more": "عناصر أخرى"
+  },
   "pagination": {
     "label": "الصفحات",
     "range": "{first} إلى {last} من {total}",
@@ -194,6 +197,9 @@ export default {
     "more": "+{n}",
     "moreLabel": "{n} إضافية"
   },
+  "anchor": {
+    "label": "في هذه الصفحة"
+  },
   "backToTop": {
     "label": "العودة إلى الأعلى"
   },
@@ -241,6 +247,12 @@ export default {
     "empty": "لا توجد عناصر",
     "remove": "إزالة {label}",
     "columns": "الخيارات",
+    "allOf": "كل {label}",
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية",
+    "limit": "يمكنك اختيار {n} كحد أقصى.",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
     "results": {
       "zero": "لا توجد تطابقات",
       "one": "تطابق واحد",

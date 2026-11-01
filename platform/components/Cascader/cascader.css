@@ -27,3 +27,8 @@
 .plx-cascader__match.is-selected{color:var(--plx-comp-cascader-match-selected-text);font-weight:var(--plx-comp-cascader-match-selected-font-weight);}
 .plx-cascader__match-path{color:var(--plx-comp-cascader-match-path-text);font-size:var(--plx-comp-cascader-match-path-font-size);font-weight:var(--plx-comp-cascader-match-path-font-weight);}
 .plx-cascader__empty{color:var(--plx-comp-cascader-empty-text);padding-block-end:var(--plx-comp-cascader-empty-padding-block);padding-block-start:var(--plx-comp-cascader-empty-padding-block);padding-inline-end:var(--plx-comp-cascader-empty-padding-inline);padding-inline-start:var(--plx-comp-cascader-empty-padding-inline);}
+/* the "+N" tag (maxTags) opens the list; the limit message (maxChoices) and the loading and failed rows of a server search (loadOptions) */
+.plx-cascader__more{cursor:pointer;}
+.plx-cascader__loading{align-items:center;column-gap:var(--plx-comp-cascader-loading-gap);display:flex;}
+.plx-cascader__error{color:var(--plx-comp-cascader-error-text);}
+.plx-cascader__limit{border-block-start-color:var(--plx-comp-cascader-search-border-block-end-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-cascader-search-border-block-end-width);color:var(--plx-comp-cascader-limit-text);font-size:var(--plx-comp-cascader-limit-font-size);padding-block-end:var(--plx-comp-cascader-limit-padding-block);padding-block-start:var(--plx-comp-cascader-limit-padding-block);padding-inline-end:var(--plx-comp-cascader-limit-padding-inline);padding-inline-start:var(--plx-comp-cascader-limit-padding-inline);}

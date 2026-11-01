@@ -225,6 +225,36 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension",
       "$description": "Cascader empty: padding left and right (space-inset-sm)."
+    },
+    "cascader-loading-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Cascader server search: the space between the spinner and the loading text."
+    },
+    "cascader-error-text": {
+      "$value": "{plx-comp.combobox-error-text}",
+      "$type": "color",
+      "$description": "Cascader server search: the failed-load message (the combobox's)."
+    },
+    "cascader-limit-text": {
+      "$value": "{plx-sys.feedback-warning-content}",
+      "$type": "color",
+      "$description": "Cascader past its limit of choices: the message under the list (the warning content color; it is also announced, so color is never the only cue)."
+    },
+    "cascader-limit-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Cascader limit message: its size."
+    },
+    "cascader-limit-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Cascader limit message: the space above and below."
+    },
+    "cascader-limit-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Cascader limit message: the space at the sides."
     }
   }
 }
