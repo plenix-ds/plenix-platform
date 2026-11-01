@@ -26954,7 +26954,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
   };
-  const version$1 = "0.80.0";
+  const version$1 = "0.81.0";
   function marginOf(value) {
     if (!value || typeof document === "undefined") return "0px";
     const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
