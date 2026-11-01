@@ -1,10 +1,11 @@
 /* Plenix · DataGrid engine · chrome (the parts around the rows)
-   Summary: What the grid draws besides its header cells and rows (the manage-columns dialog and the failure state are in chromeRare.jsx, loaded on first use): the view
+   Summary: What the grid draws besides its header cells and rows: the failure state with Retry, the line shown when the
+     manage-columns dialog could not load (the dialog itself is in chromeRare.jsx, loaded on first use), the view
      menu at the end of the header (row height and wrapped headers), the empty and loading row, the "more rows are coming or failed"
      row of a fill grid, and the footers of the paged and load-more modes (range, page size, pagination, Load more). Render
      functions over the engine's state, not components: one element tree, no extra React layer.
    Usage:
-     import { viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
+     import { failureState, manageFailed, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
      {viewMenu({ props, B, S, effectiveStep, effectiveWrap, setRowHeight, setWrapHeaders })}
    Props:
      Each function takes the engine's values it draws from (the block class B, the strings S, props, the table, the model, the paging
@@ -24,6 +25,46 @@ import { words } from './helpers.jsx';
 import { Text } from '../../Text/Text.tsx';
 import { Select } from '../../Input/Input.jsx';
 import { Pagination } from '../../Pagination/Pagination.jsx';
+
+export function failureState({ failed, B, S, onRetry, remoteError, setRetry }) {
+  return failed ? (
+    <EmptyState
+      className={B + '__error'}
+      tone="error"
+      title={S.failed}
+      action={
+        onRetry || remoteError ? (
+          <Button
+            size="sm"
+            onClick={() => {
+              setRetry((n) => n + 1);
+              onRetry?.();
+            }}
+          >
+            {S.retry}
+          </Button>
+        ) : null
+      }
+    >
+      {String(failed === true ? '' : failed.message || failed)}
+    </EmptyState>
+  ) : null;
+}
+
+// drawn in place of the manage-columns dialog when its file could not load (issue 807): Retry loads it again, Close ends the request
+export function manageFailed({ B, S, retry, close }) {
+  return (
+    <Inline role="alert">
+      <span className={B + '__empty'}>{S.columnsFailed}</span>
+      <Button size="sm" onClick={retry}>
+        {S.retry}
+      </Button>
+      <Button size="sm" variant="ghost" onClick={close}>
+        {S.close}
+      </Button>
+    </Inline>
+  );
+}
 
 export function viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }) {
   return props.viewMenu ? (

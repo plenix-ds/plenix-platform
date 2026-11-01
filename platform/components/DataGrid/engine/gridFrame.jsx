@@ -14,7 +14,7 @@
      engine function, in the same place. The engine is documented in DataGridEngine.jsx.
 */
 import React from 'react';
-import { viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './chrome.jsx';
+import { failureState, manageFailed, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './chrome.jsx';
 import { cx } from '../../../utils/cx.ts';
 import { lengthName } from './helpers.jsx';
 import { tableKeys } from './keys.js';
@@ -101,7 +101,13 @@ export function gridFrame({
 }) {
   return (
     <WidthPixels.Provider value={widthPixels}>
-      {headerMenu && !isStatic && managing ? <Rare part="manageDialog" args={{ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }} /> : null}
+      {headerMenu && !isStatic && managing ? (
+        <Rare
+          part="manageDialog"
+          args={{ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }}
+          fallback={(retry) => manageFailed({ B, S, retry, close: () => setManaging(false) })}
+        />
+      ) : null}
       <div
         ref={frame}
         className={cx(
@@ -124,7 +130,7 @@ export function gridFrame({
         data-plx-height={lengthName(height)}
         data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
       >
-        {failed ? <Rare part="failureState" args={{ failed, B, S, onRetry, remoteError, setRetry }} /> : null}
+        {failureState({ failed, B, S, onRetry, remoteError, setRetry })}
 
         <div
           className={cx(
