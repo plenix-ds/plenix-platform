@@ -38,7 +38,7 @@ import { Icon, asIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import { dataPhrase } from '../../utils/dataText.tsx';

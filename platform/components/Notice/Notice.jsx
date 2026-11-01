@@ -28,7 +28,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

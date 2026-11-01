@@ -22,7 +22,7 @@ import { Select } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function TrialUpgrade({ message, plans = [], attributes = [], onUpgrade, defaultOpen = false, strings, className }) {

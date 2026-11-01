@@ -30,6 +30,7 @@
      emptyText: a string: the text when nothing matches (default "No matches")
      emptyAction: { label, onSelect(text), icon }: one action below "No matches" (for example "Add new"): a row the arrow keys reach and Enter
        or a click chooses; onSelect runs with the typed text and the list closes. Only when nothing matches (not while loading or after a failed load)
+       The empty text is announced politely when the action row appears (that text is not an option, so the list alone would not say it)
      clearable: a Clear button at the end of the field, shown while there is text or a chosen value: it empties the text and the chosen values
        (onChange with '' or, with multiple, []) and returns focus to the field, as SearchField's does (default false; not in a read-only or disabled field)
      loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
@@ -44,6 +45,10 @@
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
+     The typed text is marked in each result it matches, every occurrence, in either case, by the shared helper (utils/highlight.tsx:
+       highlightMatch; matchesText decides what is listed). An option's description is searched and marked the same way, so the
+       mark says why a row is listed. Arabic matches without its vowel marks, and a match of Arabic letters is
+       underlined instead of set heavier, so the joined letters stay whole. The list is read as plain text.
      The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
        (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes. On a closed list ↓ and Alt+↓ open it on the first option, ↑ on the last;
@@ -70,13 +75,14 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { isDataValue } from '../../utils/dataValue.ts';
 import { formatNumber } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
@@ -138,7 +144,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)
   const tags = multiple && !marks;
   const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
-  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || String(o.label).toLowerCase().indexOf(q) >= 0 || (o.description && String(o.description).toLowerCase().indexOf(q) >= 0));
+  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || matchesText(o.label, text) || (o.description && matchesText(o.description, text)));
   // grouped options stay together under their group's heading (groups in the order they first appear)
   const groupOrder = []; matching.forEach((o) => { if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group); });
   const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
@@ -146,6 +152,9 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   // nothing matches: the empty text, and under it the one action the caller offers (it is an item, so the keys reach it)
   const noMatch = !isLoading && !failed && !filtered.length && !canCreate, showAction = noMatch && !!emptyAction;
   const items = filtered.map((o) => ({ kind: 'option', o })).concat(canCreate ? [{ kind: 'create' }] : []).concat(showAction ? [{ kind: 'action' }] : []);
+  // the empty text sits in a presentation row, so it is announced when the action row appears (a screen reader would hear only the action)
+  const shownAction = open && showAction;
+  React.useEffect(() => { if (shownAction && emptyText) announce(String(emptyText)); }, [shownAction]);
   React.useEffect(() => {
     if (!open) return undefined;
     const off = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
@@ -212,7 +221,8 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
                 {marks ? <input type={marks === 'radio' ? 'radio' : 'checkbox'} className="plx-check__input plx-combobox__mark" tabIndex={-1} aria-hidden="true"
                   checked={chosen.indexOf(it.o.value) >= 0} readOnly /> : null}
                 {it.o.icon ? <span className="plx-combobox__option-icon" aria-hidden="true"><Icon name={it.o.icon} /></span> : null}
-                {marks || it.o.description ? <span className="plx-combobox__option-text"><span className="plx-combobox__option-label">{it.o.label}</span>{it.o.description ? <span className="plx-combobox__option-description">{it.o.description}</span> : null}</span> : it.o.label}</li>]))
+                {it.o.description ? <span className="plx-combobox__option-text"><span className="plx-combobox__option-label">{highlightMatch(it.o.label, text)}</span><span className="plx-combobox__option-description">{highlightMatch(it.o.description, text)}</span></span>
+                  : <span className="plx-combobox__option-label">{highlightMatch(it.o.label, text)}</span>}</li>]))
             : isLoading ? <li className="plx-combobox__loading" role="presentation"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></li>
             : failed ? <li className="plx-combobox__empty plx-combobox__error" role="presentation">{t.error}</li>
             : <li className="plx-combobox__empty" role="presentation">{emptyText}</li>}

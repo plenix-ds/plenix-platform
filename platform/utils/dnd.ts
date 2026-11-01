@@ -72,8 +72,8 @@ import { announce } from './announce.tsx';
 import { snapToGrid, gridPx } from './grid.ts';
 import { arrowStep, isRtl } from './direction.ts';
 import { tokenMs } from './tokenTime.ts';
-import { gestureTokens } from '../hooks/useGesture.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { gestureTokens } from '../hooks/useGesture.ts';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 import english from '../i18n/en.js';
 import { fill } from './fill.ts';
 

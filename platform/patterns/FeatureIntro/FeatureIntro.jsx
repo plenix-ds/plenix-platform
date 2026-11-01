@@ -19,7 +19,7 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 
 export function FeatureIntro({ title, children, target, showBadge = true, initiallyOpen = false, onDismiss, strings, className }) {

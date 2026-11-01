@@ -22,9 +22,9 @@ import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function ImportWizard({ open, title, onClose, fields = [], onRead, onImport, strings, className }) {

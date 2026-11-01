@@ -24,30 +24,36 @@
 */
 import React from 'react';
 
+export type IntersectionOptions = {
+  root?: React.RefObject<Element | null> | Element | null; rootMargin?: string | string[] | null; threshold?: number | number[];
+  once?: boolean; disabled?: boolean; onChange?: ((entry: IntersectionObserverEntry) => void) | null;
+};
+export type IntersectionState = { visible: boolean; ratio: number; entry: IntersectionObserverEntry | null };
+
 // a length token as pixels for rootMargin ('--plx-ref-size-200px' -> '200px'); the tokens are written in rem
-function marginOf(value) {
+function marginOf(value: string | string[] | null): string {
   if (!value || typeof document === 'undefined') return '0px';
   const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
-  return [].concat(value).slice(0, 4).map((name) => {
+  return ([] as string[]).concat(value).slice(0, 4).map((name) => {
     const v = getComputedStyle(root).getPropertyValue(name).trim(), n = parseFloat(v) || 0;
     return Math.round(/rem$/.test(v) ? n * size : n) + 'px';
   }).join(' ');
 }
 
-export function useIntersection(ref, options = {}) {
+export function useIntersection(ref: React.RefObject<Element | null>, options: IntersectionOptions = {}): IntersectionState {
   const { root = null, rootMargin = null, threshold = 0, once = false, disabled = false, onChange = null } = options;
-  const [state, setState] = React.useState({ visible: false, ratio: 0, entry: null });
+  const [state, setState] = React.useState<IntersectionState>({ visible: false, ratio: 0, entry: null });
   const seen = React.useRef(false);
   const change = React.useRef(onChange);
   change.current = onChange;
-  const margin = [].concat(rootMargin || []).join(' '), steps = [].concat(threshold).join(' ');
+  const margin = ([] as string[]).concat(rootMargin || []).join(' '), steps = ([] as number[]).concat(threshold).join(' ');
 
   React.useEffect(() => {
     const el = ref && ref.current;
     if (!el || disabled || (once && seen.current)) return undefined;
     if (typeof IntersectionObserver === 'undefined') { seen.current = true; setState({ visible: true, ratio: 1, entry: null }); return undefined; }
-    const area = root && 'current' in root ? root.current : root;
-    const min = Math.min.apply(null, [].concat(threshold));
+    const area = root && 'current' in root ? root.current : (root as Element | null);
+    const min = Math.min.apply(null, ([] as number[]).concat(threshold));
     const io = new IntersectionObserver((entries) => {
       const entry = entries[entries.length - 1];
       const visible = entry.isIntersecting && entry.intersectionRatio >= min;

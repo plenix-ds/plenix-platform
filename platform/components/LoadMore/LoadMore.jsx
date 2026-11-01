@@ -38,10 +38,10 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
-import { useIntersection } from '../../hooks/useIntersection.js';
+import { useIntersection } from '../../hooks/useIntersection.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import { dataPhrase } from '../../utils/dataText.tsx';
 
 

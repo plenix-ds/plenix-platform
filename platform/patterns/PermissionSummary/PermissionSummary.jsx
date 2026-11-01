@@ -39,7 +39,7 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { List } from '../../components/List/List.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import LockIcon from 'plenix-platform/icons/plenix/lock';

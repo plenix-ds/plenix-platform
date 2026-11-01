@@ -9,9 +9,9 @@
      Outside one it reads <html> once.
 */
 import React from 'react';
-import { ThemeContext } from '../providers/ThemeProvider.jsx';
+import { ThemeContext } from '../providers/ThemeProvider.tsx';
 
-export function useInteraction() {
+export function useInteraction(): string {
   const ctx = React.useContext(ThemeContext);
   return ctx ? ctx.interaction : (document.documentElement.getAttribute('data-plx-interaction') || 'pointer');
 }

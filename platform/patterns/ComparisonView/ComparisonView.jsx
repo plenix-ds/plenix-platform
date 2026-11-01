@@ -53,7 +53,7 @@ import { Switch } from '../../components/Checkbox/Checkbox.jsx';
 import { Slider } from '../../components/Slider/Slider.jsx';
 import { Table } from '../../components/Table/Table.jsx';
 import { Image } from '../../components/Image/Image.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 const MODES = ['columns', 'matrix', 'slider'];

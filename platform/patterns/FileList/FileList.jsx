@@ -78,7 +78,7 @@ import { Menu, MenuItem, MenuRadioGroup, MenuSub } from '../../components/Menu/M
 import { RenameAction } from '../RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { useDraggable, useDropTarget } from '../../utils/dnd.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
 import FolderIcon from 'plenix-platform/icons/plenix/folder';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';

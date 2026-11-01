@@ -38,7 +38,7 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartPoints } from './a11y.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // the room between the active bar and its ring (SVG geometry, the 4px grid)
 const RING = 4, LINE = 12;

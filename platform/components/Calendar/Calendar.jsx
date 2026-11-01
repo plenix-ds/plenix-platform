@@ -59,7 +59,7 @@ import { formatLocale, numeralLocale } from '../../utils/format.ts';
 import { Button } from '../Button/Button.jsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 /* ---- calendar dates: "YYYY-MM-DD" strings; arithmetic on local dates at noon, so no daylight-saving change moves a day */
 const pad = (n, w) => String(n).padStart(w || 2, '0');

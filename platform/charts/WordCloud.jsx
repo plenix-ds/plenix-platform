@@ -37,7 +37,7 @@ import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const STEPS = 5;
 // the space kept around each word while placing, and the spiral's step (SVG geometry, pixels)

@@ -19,7 +19,7 @@ import { Link } from '../../components/Link/Link.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function HelpPanel({ articles = [], open = true, onOpenChange, title, strings, className }) {
   const t = useStrings('helpPanel', strings);

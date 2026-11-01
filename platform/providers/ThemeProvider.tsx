@@ -39,28 +39,45 @@ import React from 'react';
 import { THEMES, DEFAULT_THEME } from './themes.js';
 import { cx } from '../utils/cx.ts';
 
-export const ThemeContext = React.createContext(null);
+// the workspace runtime theme-boot.js puts on the page before React (only what the Platform's React code calls)
+declare global {
+  interface Window { PlenixWorkspace?: { setTheme?(name: string): void; setDensity(density: string): void } }
+}
 
-function readRoot() {
+export type ThemeMode = 'light' | 'dark';
+export type ThemeValue = {
+  theme: string; mode: ThemeMode; setTheme(name: string): void; themes: typeof THEMES;
+  density: string; interaction: string; zone: boolean; setDensity?(density: string): void;
+};
+export type ThemeProviderProps = { children?: React.ReactNode };
+type RootState = { theme: string; density: string; interaction: string; mode: ThemeMode };
+export type ThemeZoneProps = {
+  mode?: ThemeMode; theme?: string; surface?: 'canvas' | 'default' | 'none'; as?: React.ElementType; label?: string; className?: string;
+  children?: React.ReactNode; [attribute: string]: unknown;
+};
+
+export const ThemeContext = React.createContext<ThemeValue | null>(null);
+
+function readRoot(): RootState {
   const root = document.documentElement;
   return { theme: root.getAttribute('data-plx-theme') || DEFAULT_THEME, density: root.getAttribute('data-plx-density') || 'standard',
     interaction: root.getAttribute('data-plx-interaction') || 'pointer', mode: root.getAttribute('data-plx-mode') === 'dark' ? 'dark' : 'light' };
 }
 // the theme is changed through the runtime when it is there (it remembers the choice), else on <html> directly
-function changeTheme(name) {
+function changeTheme(name: string): void {
   if (!THEMES.some((t) => t.name === name)) return;
   if (window.PlenixWorkspace && window.PlenixWorkspace.setTheme) window.PlenixWorkspace.setTheme(name);
   else document.documentElement.setAttribute('data-plx-theme', name);
 }
 
-export function ThemeProvider({ children }) {
+export function ThemeProvider({ children }: ThemeProviderProps) {
   const [state, setState] = React.useState(readRoot);
   React.useEffect(() => {
     const observer = new MutationObserver(() => setState(readRoot()));
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-plx-theme', 'data-plx-density', 'data-plx-interaction', 'data-plx-mode'] });
     return () => observer.disconnect();
   }, []);
-  const value = React.useMemo(() => ({
+  const value = React.useMemo((): ThemeValue => ({
     theme: state.theme,
     mode: state.mode,
     setTheme: changeTheme,
@@ -68,30 +85,30 @@ export function ThemeProvider({ children }) {
     density: state.density,
     interaction: state.interaction,
     zone: false,
-    setDensity: (d) => { if (window.PlenixWorkspace) window.PlenixWorkspace.setDensity(d); }
+    setDensity: (d: string) => { if (window.PlenixWorkspace) window.PlenixWorkspace.setDensity(d); }
   }), [state.theme, state.mode, state.density, state.interaction]);
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
-export function useTheme() {
+export function useTheme(): { theme: string; mode: ThemeMode; setTheme(name: string): void; themes: typeof THEMES; zone: boolean } {
   const ctx = React.useContext(ThemeContext);
-  const [own, setOwn] = React.useState(() => (ctx ? null : readRoot()));
+  const [own, setOwn] = React.useState<RootState | null>(() => (ctx ? null : readRoot()));
   React.useEffect(() => {
     if (ctx) return undefined;
     const observer = new MutationObserver(() => setOwn(readRoot()));
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-plx-theme', 'data-plx-mode'] });
     return () => observer.disconnect();
   }, [ctx]);
-  return { theme: ctx ? ctx.theme : own.theme, mode: ctx ? ctx.mode : own.mode, setTheme: changeTheme, themes: THEMES, zone: ctx ? !!ctx.zone : false };
+  return { theme: ctx ? ctx.theme : own!.theme, mode: ctx ? ctx.mode : own!.mode, setTheme: changeTheme, themes: THEMES, zone: ctx ? !!ctx.zone : false };
 }
 
 const SURFACES = ['canvas', 'default', 'none'];
 
-export function ThemeZone({ mode, theme, surface = 'canvas', as = 'div', label, className, children, ...rest }) {
+export function ThemeZone({ mode, theme, surface = 'canvas', as = 'div', label, className, children, ...rest }: ThemeZoneProps) {
   const outer = React.useContext(ThemeContext);
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLElement>(null);
   const [root, setRoot] = React.useState(readRoot);
-  const [density, setDensity] = React.useState(null);
+  const [density, setDensity] = React.useState<string | null>(null);
   // the density around the zone (the nearest region that sets one, else <html>) and the page's theme and mode, followed
   React.useEffect(() => {
     const read = () => {
@@ -107,7 +124,7 @@ export function ThemeZone({ mode, theme, surface = 'canvas', as = 'div', label, 
   const base = outer || root;
   const t = theme && THEMES.some((x) => x.name === theme) ? theme : base.theme;
   const m = mode === 'light' || mode === 'dark' ? mode : base.mode;
-  const value = React.useMemo(() => Object.assign({ setTheme: changeTheme, themes: THEMES, density: density || root.density, interaction: root.interaction }, outer,
+  const value = React.useMemo((): ThemeValue => Object.assign({ setTheme: changeTheme, themes: THEMES, density: density || root.density, interaction: root.interaction }, outer,
     { theme: t, mode: m, zone: true }), [outer, t, m, density, root]);
   const Tag = as;
   return (

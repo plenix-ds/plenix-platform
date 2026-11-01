@@ -1,0 +1,15 @@
+{
+  "$description": "Highlight (platform/utils/highlight.tsx, issue 810): the typed text marked inside a result in SearchField, Combobox, Cascader and TreeSelect.",
+  "plx-comp": {
+    "highlight-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Highlight: the matching text of a result, in a heavier weight (the SearchField's former match weight)."
+    },
+    "highlight-joined-underline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "Highlight: the underline of a match in the Arabic script, which keeps the weight so the joined letter shapes stay whole."
+    }
+  }
+}

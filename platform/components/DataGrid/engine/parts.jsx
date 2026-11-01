@@ -14,10 +14,10 @@
 import React from 'react';
 import { dataWhenText } from '../../../utils/dataText.tsx';
 import { cx } from '../../../utils/cx.ts';
-import { usePressable } from '../../../hooks/usePressable.js';
+import { usePressable } from '../../../hooks/usePressable.ts';
 import { gridPx } from '../../../utils/grid.ts';
-import { gapPieces } from '../../../hooks/useVirtualizer.js';
-import { useStrings } from '../../../providers/LocaleProvider.jsx';
+import { gapPieces } from '../../../hooks/useVirtualizer.ts';
+import { useStrings } from '../../../providers/LocaleProvider.tsx';
 import { GRID } from './helpers.jsx';
 
 function Gap({ count, kind = 'record' }) {

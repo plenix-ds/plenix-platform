@@ -63,7 +63,7 @@ import { useEChartsPlot, plotGrid, NO_MARGIN } from './echarts/EChartsPlot.jsx';
 import { tickLineHeight } from './echarts/engine.js';
 import { gridRoom } from './LineChart.jsx';
 import { snapToGrid } from '../utils/grid.ts';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const LAYOUTS = ['grouped', 'stacked', 'percent'];
 // px: the least room a segment needs for its share written inside it (percent)

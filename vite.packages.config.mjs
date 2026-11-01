@@ -44,7 +44,7 @@ const OPT = path.join(ROOT, 'tools', 'npm-esm');
 const ICON_NAMES = path.join(OPT, 'icon-names.js');
 // the module each stand-in replaces, and the only file that may import it
 const STAND_INS = [
-  { file: path.join(OPT, 'ar.js'), importer: path.join(P, 'providers', 'LocaleProvider.jsx') },
+  { file: path.join(OPT, 'ar.js'), importer: path.join(P, 'providers', 'LocaleProvider.tsx') },
   { file: path.join(OPT, 'library.js'), importer: path.join(P, 'components', 'Icon', 'Icon.jsx') },
 ];
 

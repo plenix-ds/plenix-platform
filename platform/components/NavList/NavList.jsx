@@ -52,7 +52,7 @@ import { Icon, stateIcon, iconKey } from '../Icon/Icon.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';

@@ -22,7 +22,7 @@ import React from 'react';
 import { Menu, MenuItem, MenuDivider, MenuGroup, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { CommandBarButton, useCommandBar } from '../CommandBar/CommandBar.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import GridN2x2Icon from 'plenix-platform/icons/plenix/grid-2x2';
 import ListLinesIcon from 'plenix-platform/icons/plenix/list-lines';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';

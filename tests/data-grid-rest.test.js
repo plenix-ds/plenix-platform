@@ -229,30 +229,45 @@ module.exports = async function rest(page) {
     });
     await wait(250);
     ok(host.querySelector('.plx-data-grid--narrow'), 'Caller narrowAt controls actual list class');
+    // auto (issue 679): the grid is the row cards when its visible columns do not all fit its width, not only its key columns
+    const autoColumns = [{
+      title: 'Name',
+      field: 'name',
+      width: 200
+    }, {
+      title: 'Size',
+      field: 'size',
+      type: 'bytes',
+      width: 200
+    }, {
+      title: 'Person',
+      field: 'person',
+      kind: 'avatar-name'
+    }];
     await reset();
     t = await render({
       data: rows,
-      columns: [{
-        title: 'Name',
-        field: 'name',
-        width: 200
-      }, {
-        title: 'Size',
-        field: 'size',
-        type: 'bytes',
-        width: 200
-      }, {
-        title: 'Person',
-        field: 'person',
-        kind: 'avatar-name'
-      }],
+      columns: autoColumns,
       narrow: 'auto',
       keyColumns: ['name', 'size']
     });
     await wait(300);
-    ok(host.querySelector('.plx-data-grid--narrow'), 'Auto uses key column fit');
+    ok(host.querySelector('.plx-data-grid--narrow'), 'Auto: the row cards when the visible columns do not fit the grid (#679)');
+    // 420px holds the two 200px key columns but not the avatar-name column as well: the cards by every visible column (#679),
+    // where the key columns alone (before #679) would have kept the table
     await reset();
     host.className = '';
+    host.style.inlineSize = '420px';
+    t = await render({
+      data: rows,
+      columns: autoColumns,
+      narrow: 'auto',
+      keyColumns: ['name', 'size']
+    });
+    await wait(300);
+    ok(host.querySelector('.plx-data-grid--narrow'), 'Auto counts every visible column, not only the key columns (#679)');
+    host.style.removeProperty('inline-size');
+    await reset();
     let mounted = 0,
       unmounted = 0;
     function Rich(p) {
