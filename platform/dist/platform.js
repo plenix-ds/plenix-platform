@@ -1282,6 +1282,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "empty": "Nothing to show",
       "failed": "The table could not load",
       "retry": "Retry",
+      "columnsFailed": "The column list could not open",
+      "close": "Close",
       "selectAll": "Select all rows",
       "selectRow": "Select row",
       "rowActions": "Row actions",
@@ -3562,6 +3564,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "empty": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0634\u064A\u0621 \u0644\u0644\u0639\u0631\u0636",
       "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062C\u062F\u0648\u0644",
       "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629",
+      "columnsFailed": "\u062A\u0639\u0630\u0651\u0631 \u0641\u062A\u062D \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "close": "\u0625\u063A\u0644\u0627\u0642",
       "selectAll": "\u062A\u062D\u062F\u064A\u062F \u0643\u0644 \u0627\u0644\u0635\u0641\u0648\u0641",
       "selectRow": "\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0635\u0641",
       "rowActions": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0635\u0641",
@@ -10449,7 +10453,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const tenth = (n) => Math.round(n * r / 10) * 10;
     return s && s.width ? tenth(s.width) + "x" + tenth(s.height) : "unknown";
   };
-  const load$1 = () => {
+  const load$2 = () => {
     try {
       const o = JSON.parse(localStorage.getItem(STORE));
       return o && typeof o === "object" && !Array.isArray(o) ? o : {};
@@ -10484,13 +10488,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return best;
   }
   function read$1(panel, key, legacy) {
-    const mine = load$1()[panel];
+    const mine = load$2()[panel];
     if (mine && typeof mine === "object") return { value: whole(mine[nearest(mine, key)]), carried: false };
     const old = legacy ? whole(legacy()) : null;
     return { value: old, carried: !!old };
   }
   function write$1(panel, key, w) {
-    const all = load$1();
+    const all = load$2();
     all[panel] = Object.assign({}, all[panel], { [nearest(all[panel], key)]: w });
     save(all);
   }
@@ -17485,10 +17489,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }));
     return tableRef.current;
   }
-  function useRowModel({ mode, remoteMode, allRows, loaded, groupBy: groupBy2, columns, printing, collapsed, props }) {
+  function useRowModel({ mode, remoteMode, allRows, loaded: loaded2, groupBy: groupBy2, columns, printing, collapsed, props }) {
     const loadedRows = React2.useMemo(
-      () => mode === "load-more" && !remoteMode ? allRows.slice(0, loaded) : allRows,
-      [allRows, mode, remoteMode, loaded]
+      () => mode === "load-more" && !remoteMode ? allRows.slice(0, loaded2) : allRows,
+      [allRows, mode, remoteMode, loaded2]
     );
     const levels = React2.useMemo(
       () => typeof groupBy2 === "string" || typeof groupBy2 === "function" ? [groupBy2] : Array.isArray(groupBy2) ? groupBy2.filter(Boolean) : [],
@@ -17676,12 +17680,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }, [source]);
   }
-  let ops = null, loading = null;
-  const load = () => loading || (loading = Promise.resolve().then(() => cellRangeOps).then((m) => {
+  let ops = null, loading$1 = null;
+  const load$1 = () => loading$1 || (loading$1 = Promise.resolve().then(() => cellRangeOps).then((m) => {
     m.use({ cellText: (record, id) => valueText(valueAt(record, id)), announce, formatNumber });
     return ops = m;
   }));
-  const run = (fn) => ops ? fn(ops) : load().then(fn);
+  const run = (fn) => ops ? fn(ops) : load$1().then(fn);
   function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange, frame, scroller }) {
     const loc2 = useLocale();
     const [range, setRangeState] = React2.useState(null);
@@ -18085,1360 +18089,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
       virtual.measure();
     }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
   }
-  const Checkbox = React2.forwardRef(function Checkbox2({ label: label2, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
-    const locked = useReadOnly(readOnly);
-    const inner = React2.useRef(null);
-    React2.useImperativeHandle(ref, () => inner.current);
-    React2.useEffect(() => {
-      if (inner.current) inner.current.indeterminate = indeterminate;
-    }, [indeterminate]);
-    return /* @__PURE__ */ React2.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React2.createElement("input", { ref: inner, type: "checkbox", className: "plx-check__input", ...readOnlyProps(locked, rest) }), label2 || description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
-  });
-  const Radio = React2.forwardRef(function Radio2({ label: label2, description, className, readOnly, dir, lang, ...rest }, ref) {
-    const locked = useReadOnly(readOnly);
-    return /* @__PURE__ */ React2.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React2.createElement("input", { ref, type: "radio", className: "plx-check__input", ...readOnlyProps(locked, rest, { aria: false }) }), label2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
-  });
-  function RadioGroup({ label: label2, name, value, onChange, options, layout: layout2 = "column", className, readOnly, ...rest }) {
-    const auto = "plx-r" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
-    return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-radio-group", "plx-radio-group--" + layout2, className), ...rest }, label2 ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-radio-group__legend" }, label2) : null, options.map((o) => /* @__PURE__ */ React2.createElement(Radio, { key: o.value, name: name || auto, value: o.value, label: o.label, description: o.description, checked: o.value === value, onChange: () => onChange(o.value), disabled: o.disabled, readOnly })));
-  }
-  function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
-    const locked = useReadOnly(readOnly);
-    const auto = "plx-c" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
-    return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-choice-list", className), ...rest }, legend ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-choice-list__legend" }, legend) : null, options.map((o) => /* @__PURE__ */ React2.createElement("label", { key: o.value, className: cx("plx-choice", o.value === value && "is-selected"), hidden: o.hidden || void 0 }, /* @__PURE__ */ React2.createElement("input", { type: "radio", className: "plx-choice__input", ...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false }) }), /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__label" }, o.label), o.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__description" }, o.description) : null))));
-  }
-  const Switch = React2.forwardRef(function Switch2({ label: label2, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
-    const locked = useReadOnly(readOnly);
-    return /* @__PURE__ */ React2.createElement("label", { className: cx("plx-switch", className), dir, lang }, /* @__PURE__ */ React2.createElement("input", { ref, type: "checkbox", role: "switch", className: "plx-switch__input", "aria-label": labelHidden ? label2 : void 0, ...readOnlyProps(locked, rest) }), /* @__PURE__ */ React2.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" }), label2 && !labelHidden ? /* @__PURE__ */ React2.createElement("span", { className: "plx-switch__label" }, label2) : null);
-  });
-  const IGNORED = /[\u0640\u064B-\u065F\u0670]/;
-  const JOINED = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
-  function fold$1(source) {
-    let text2 = "";
-    const start2 = [];
-    const end = [];
-    let at2 = 0;
-    for (const ch of source) {
-      const next = at2 + ch.length;
-      if (!IGNORED.test(ch)) {
-        const low = ch.toLocaleLowerCase();
-        for (let i = 0; i < low.length; i += 1) {
-          start2.push(at2);
-          end.push(next);
-        }
-        text2 += low;
-      }
-      at2 = next;
-    }
-    return { text: text2, start: start2, end };
-  }
-  function ranges(label2, typed2) {
-    const query = fold$1(String(typed2 ?? "").trim()).text;
-    if (!query) return [];
-    const folded = fold$1(label2);
-    const found = [];
-    let from = folded.text.indexOf(query);
-    while (from >= 0) {
-      const last = from + query.length - 1;
-      let to = folded.end[last];
-      while (to < label2.length && IGNORED.test(label2.charAt(to))) to += 1;
-      found.push([folded.start[from], to]);
-      from = folded.text.indexOf(query, from + query.length);
-    }
-    return found;
-  }
-  function matchesText(label2, typed2) {
-    const query = fold$1(String(typed2 ?? "").trim()).text;
-    return !query || fold$1(String(label2 ?? "")).text.indexOf(query) >= 0;
-  }
-  function highlightMatch(label2, typed2) {
-    const text2 = String(label2 ?? "");
-    const found = ranges(text2, typed2);
-    if (!found.length) return text2;
-    const pieces = [];
-    let at2 = 0;
-    found.forEach(([from, to], i) => {
-      if (from > at2) pieces.push(text2.slice(at2, from));
-      const part = text2.slice(from, to);
-      pieces.push(
-        /* @__PURE__ */ React2.createElement("span", { key: "m" + i, className: JOINED.test(part) ? "plx-match plx-match--joined" : "plx-match" }, part)
-      );
-      at2 = to;
-    });
-    if (at2 < text2.length) pieces.push(text2.slice(at2));
-    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, pieces);
-  }
-  const d0$Z = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
-  const d1$Y = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
-  const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Z }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Z } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Y } } } };
-  const asItem = (kind) => (x) => typeof x === "string" ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind });
-  const SearchInput = React2.forwardRef(function SearchInput2({
-    value,
-    onChange,
-    onClear,
-    placeholder,
-    label: label2,
-    shortcut,
-    loading: loading2 = false,
-    onAccent = false,
-    suggestions,
-    recent,
-    onSelect,
-    onSubmitSearch,
-    onRemoveRecent,
-    onClearRecent,
-    strings,
-    className,
-    onKeyDown: onKeyDown2,
-    onFocus,
-    width = "auto",
-    size,
-    ...rest
-  }, ref) {
-    const t = useStrings("searchField", strings);
-    if (placeholder === void 0) placeholder = t.placeholder;
-    if (label2 === void 0) label2 = t.label;
-    const auto = "plx-sf" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
-    const listId = auto + "-list";
-    const wrap = React2.useRef(null), input = React2.useRef(null), list2 = React2.useRef(null);
-    React2.useImperativeHandle(ref, () => input.current);
-    const hasList = !!(suggestions || recent);
-    const text2 = value == null ? "" : String(value);
-    const showRecent = !text2;
-    const items = showRecent ? (recent || []).map(asItem("recent")) : (suggestions || []).map(asItem("suggestion"));
-    const [open, setOpen] = React2.useState(false);
-    const [active, setActive] = React2.useState(-1);
-    const [cell, setCell] = React2.useState(0);
-    const shown = hasList && open && items.length > 0;
-    const grid = showRecent && !!onRemoveRecent;
-    React2.useEffect(() => {
-      setActive(-1);
-      setCell(0);
-    }, [text2, showRecent]);
-    React2.useEffect(() => {
-      if (!open) return void 0;
-      const off2 = (e) => {
-        if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-      };
-      document.addEventListener("mousedown", off2);
-      return () => document.removeEventListener("mousedown", off2);
-    }, [open]);
-    React2.useEffect(() => {
-      if (shown && !showRecent) announce(t.results.replace("{n}", formatNumber(items.length)));
-    }, [shown, showRecent, items.length, t.results]);
-    React2.useEffect(() => {
-      const el = active >= 0 && list2.current ? list2.current.querySelector("#" + auto + "-r" + active + ", #" + auto + "-o" + active) : null;
-      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
-    }, [active, auto]);
-    const setText = (v) => {
-      if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current });
-    };
-    const choose = (item) => {
-      setOpen(false);
-      if (onSelect) onSelect(item);
-      else {
-        setText(item.value);
-        if (onSubmitSearch) onSubmitSearch(item.value);
-      }
-    };
-    const removeRecent = (i) => {
-      const it = items[i];
-      if (!it || !onRemoveRecent) return;
-      onRemoveRecent(it.value);
-      if (active >= 0) setActive((a) => Math.min(a, items.length - 2));
-      if (items.length <= 1) setCell(0);
-      announce(t.removed.replace("{query}", it.value));
-    };
-    const keys = (e) => {
-      if (onKeyDown2) onKeyDown2(e);
-      if (e.defaultPrevented || !hasList) {
-        if (e.key === "Enter" && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text2);
-        return;
-      }
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        if (!open) setOpen(true);
-        else if (items.length) setActive((a) => (a + 1) % items.length);
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        if (!open) setOpen(true);
-        else if (items.length) setActive((a) => a <= 0 ? items.length - 1 : a - 1);
-      } else if (grid && shown && active >= 0 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
-        const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === "rtl";
-        e.preventDefault();
-        setCell(e.key === "ArrowRight" !== rtl ? 1 : 0);
-      } else if (e.key === "Enter") {
-        if (shown && items[active] && grid && cell === 1) {
-          e.preventDefault();
-          removeRecent(active);
-        } else if (shown && items[active]) {
-          e.preventDefault();
-          choose(items[active]);
-        } else {
-          setOpen(false);
-          if (onSubmitSearch) onSubmitSearch(text2);
-        }
-      } else if (e.key === "Escape") {
-        if (shown) {
-          e.preventDefault();
-          setOpen(false);
-        }
-      } else if (e.key === "Delete" && shown && showRecent && items[active] && onRemoveRecent) {
-        e.preventDefault();
-        removeRecent(active);
-      } else if (!open && e.key.length === 1) setOpen(true);
-    };
-    const bar = useInBar(input);
-    const cut = useTruncated(input, text2, bar) && !!text2;
-    const optId = (i) => auto + "-o" + i;
-    const cellId = (i, c) => auto + "-o" + i + (c ? "-x" : "");
-    const comboProps = hasList ? {
-      role: "combobox",
-      "aria-expanded": shown,
-      "aria-controls": listId,
-      "aria-autocomplete": "list",
-      "aria-haspopup": grid ? "grid" : void 0,
-      "aria-activedescendant": shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : void 0
-    } : {};
-    return /* @__PURE__ */ React2.createElement("div", { ref: wrap, className: cx("plx-search", size === "sm" && "plx-search--size-sm", width === "bar" && "plx-search--bar", width === "fill" && "plx-search--fill", ["xs", "sm", "md", "lg"].includes(width) && "plx-search--width-" + width, onAccent && "plx-search--on-accent", shown && "is-open", className), role: "search" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__icon", "aria-hidden": "true" }, loading2 ? /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.searching }) : /* @__PURE__ */ React2.createElement(Icon, { name: SearchIcon })), /* @__PURE__ */ React2.createElement(Tooltip, { content: text2, disabled: !cut || shown, describe: false, className: "plx-search__tip" }, /* @__PURE__ */ React2.createElement(
-      "input",
-      {
-        ref: input,
-        size: size === "sm" || size === "md" ? void 0 : size,
-        type: "search",
-        inputMode: "search",
-        enterKeyHint: "search",
-        autoComplete: "off",
-        className: "plx-search__input",
-        "aria-label": label2,
-        placeholder,
-        value,
-        onChange: (e) => {
-          if (hasList) setOpen(true);
-          if (onChange) onChange(e);
-        },
-        onKeyDown: keys,
-        onFocus: (e) => {
-          if (hasList) setOpen(true);
-          if (onFocus) onFocus(e);
-        },
-        ...comboProps,
-        ...rest
-      }
-    )), onClear && value ? /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-search__clear", "aria-label": t.clear, onClick: onClear }, /* @__PURE__ */ React2.createElement(Icon, { name: CloseIcon })) : null, shortcut && !value ? /* @__PURE__ */ React2.createElement("span", { className: "plx-search__kbd" }, /* @__PURE__ */ React2.createElement(Kbd, { onAccent }, shortcut)) : null, hasList ? /* @__PURE__ */ React2.createElement("div", { className: "plx-search__popup", hidden: !shown }, showRecent ? /* @__PURE__ */ React2.createElement("div", { className: "plx-search__popup-head" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__popup-title", id: listId + "-t" }, t.recent), onClearRecent ? /* @__PURE__ */ React2.createElement(
-      Button,
-      {
-        variant: "ghost",
-        size: "2xs",
-        className: "plx-search__popup-action",
-        onMouseDown: (e) => e.preventDefault(),
-        onClick: () => {
-          onClearRecent();
-          setOpen(false);
-          if (input.current) input.current.focus();
-        }
-      },
-      t.clearRecent
-    ) : null) : null, grid ? /* @__PURE__ */ React2.createElement("div", { ref: list2, id: listId, role: "grid", className: "plx-search__list plx-search__grid", "aria-labelledby": listId + "-t" }, items.map((it, i) => /* @__PURE__ */ React2.createElement(
-      "div",
-      {
-        key: it.kind + ":" + it.value,
-        id: auto + "-r" + i,
-        role: "row",
-        className: cx("plx-search__option", "plx-search__option--recent", "plx-search__row", i === active && "is-active"),
-        onMouseDown: (e) => e.preventDefault(),
-        onMouseEnter: () => setActive(i)
-      },
-      /* @__PURE__ */ React2.createElement("span", { id: cellId(i, 0), role: "gridcell", "aria-selected": i === active && cell === 0, className: "plx-search__cell", onClick: () => choose(it) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { name: ClockIcon })), /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-label" }, it.label))),
-      /* @__PURE__ */ React2.createElement("span", { id: cellId(i, 1), role: "gridcell", "aria-selected": i === active && cell === 1, className: "plx-search__remove-cell" }, /* @__PURE__ */ React2.createElement(
-        Button,
-        {
-          variant: "ghost",
-          size: "xs",
-          iconOnly: true,
-          icon: CloseIcon,
-          tabIndex: -1,
-          label: t.remove.replace("{query}", it.value),
-          className: cx("plx-search__remove", i === active && cell === 1 && "is-focus-visible"),
-          onMouseDown: (e) => e.preventDefault(),
-          onClick: (e) => {
-            e.stopPropagation();
-            removeRecent(i);
-            if (input.current) input.current.focus();
-          }
-        }
-      ))
-    ))) : /* @__PURE__ */ React2.createElement("ul", { ref: list2, id: listId, role: "listbox", className: "plx-search__list", "aria-label": showRecent ? void 0 : t.suggestions, "aria-labelledby": showRecent ? listId + "-t" : void 0 }, items.map((it, i) => /* @__PURE__ */ React2.createElement(
-      "li",
-      {
-        key: it.kind + ":" + it.value,
-        id: optId(i),
-        role: "option",
-        "aria-selected": i === active,
-        className: cx("plx-search__option", it.kind === "recent" && "plx-search__option--recent", i === active && "is-active"),
-        onMouseDown: (e) => e.preventDefault(),
-        onClick: () => choose(it),
-        onMouseEnter: () => setActive(i)
-      },
-      /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { name: it.kind === "recent" ? ClockIcon : SearchIcon })),
-      /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-label" }, it.kind === "recent" ? it.label : highlightMatch(it.label, text2)), it.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-description" }, it.description) : null)
-    )))) : null);
-  });
-  function CollapsedSearch({ value, label: label2, onKeyDown: onKeyDown2, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
-    const tw = useStrings("searchField");
-    if (label2 === void 0) label2 = tw.label;
-    const [own2, setOwn] = React2.useState(false);
-    const open = openProp === void 0 ? own2 : openProp;
-    const setOpen = (v) => {
-      setOwn(v);
-      if (onOpenChange) onOpenChange(v);
-    };
-    const field = React2.useRef(null), button = React2.useRef(null);
-    React2.useImperativeHandle(ref, () => open ? field.current : button.current);
-    React2.useEffect(() => {
-      if (open && field.current) field.current.focus();
-    }, [open]);
-    const close = (refocus) => {
-      setOpen(false);
-      if (refocus) setTimeout(() => {
-        if (button.current) button.current.focus();
-      }, 0);
-    };
-    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Tooltip, { content: label2 }, /* @__PURE__ */ React2.createElement(
-      Button,
-      {
-        ref: button,
-        size: "sm",
-        variant: "ghost",
-        icon: SearchIcon,
-        iconOnly: true,
-        label: label2,
-        selected: !!value,
-        "aria-expanded": open,
-        className: cx("plx-search__toggle", className),
-        onClick: () => setOpen(true)
-      }
-    )), open ? /* @__PURE__ */ React2.createElement("div", { className: "plx-search__over" }, /* @__PURE__ */ React2.createElement(
-      SearchInput,
-      {
-        ref: field,
-        value,
-        label: label2,
-        width: "fill",
-        ...rest,
-        onKeyDown: (e) => {
-          if (onKeyDown2) onKeyDown2(e);
-          if (e.key === "Escape" && !e.defaultPrevented && e.currentTarget.getAttribute("aria-expanded") !== "true") {
-            e.preventDefault();
-            close(true);
-          }
-        },
-        onBlur: (e) => {
-          if (onBlur) onBlur(e);
-          if (!e.currentTarget.value) close(false);
-        }
-      }
-    )) : null);
-  }
-  const Collapsed = React2.forwardRef(CollapsedSearch);
-  const SearchField = React2.forwardRef(function SearchField2({ collapsed = false, ...props }, ref) {
-    return collapsed ? /* @__PURE__ */ React2.createElement(Collapsed, { ref, ...props }) : /* @__PURE__ */ React2.createElement(SearchInput, { ref, ...props });
-  });
-  const over = (row) => {
-    const flat = (el) => Array.prototype.reduce.call(el.children, ((out, k) => getComputedStyle(k).display === "contents" ? out.concat(flat(k)) : out.concat(k)), []);
-    const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
-    if (!kids.length) return false;
-    const box = row.getBoundingClientRect();
-    const top = Math.min.apply(null, kids.map((k) => k.offsetTop));
-    const tall = Math.max.apply(null, kids.map((k) => k.offsetHeight));
-    return kids.some((k) => {
-      const r = k.getBoundingClientRect();
-      return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
-    });
-  };
-  function useBarFit(ref, key, max2, min2 = 0, rows = "[data-plx-bar-row]", hold = false) {
-    const [step, setStep] = React2.useState(min2);
-    const [width, setWidth] = React2.useState(0);
-    const measured2 = React2.useRef(null);
-    const [fonts, setFonts] = React2.useState(0);
-    React2.useEffect(() => {
-      const set2 = typeof document !== "undefined" ? document.fonts : void 0;
-      if (!set2 || typeof set2.addEventListener !== "function") return void 0;
-      let live = true;
-      const again = () => {
-        if (live) setFonts((n) => n + 1);
-      };
-      set2.addEventListener("loadingdone", again);
-      if (set2.ready && typeof set2.ready.then === "function") set2.ready.then(again, () => {
-      });
-      return () => {
-        live = false;
-        set2.removeEventListener("loadingdone", again);
-      };
-    }, []);
-    const later = React2.useRef(null);
-    React2.useEffect(() => () => {
-      if (later.current) later.current();
-    }, []);
-    React2.useLayoutEffect(() => {
-      if (!hold) setStep(min2);
-    }, [width, key, min2, hold]);
-    React2.useLayoutEffect(() => {
-      if (!fonts || hold) return;
-      const el = ref.current;
-      if (later.current) {
-        later.current();
-        later.current = null;
-      }
-      const open = !!el && !!el.querySelector('[aria-expanded="true"]'), focused = !!el && el.contains(document.activeElement);
-      if (el && (open || focused)) {
-        const again = () => {
-          if (later.current) {
-            later.current();
-            later.current = null;
-          }
-          setFonts((n) => n + 1);
-        };
-        const out = (e) => {
-          if (!e.relatedTarget || !el.contains(e.relatedTarget)) again();
-        };
-        el.addEventListener("focusout", out);
-        const timer = open ? setTimeout(again, 1e3) : null;
-        later.current = () => {
-          el.removeEventListener("focusout", out);
-          if (timer) clearTimeout(timer);
-        };
-        return;
-      }
-      setStep(min2);
-    }, [fonts]);
-    React2.useLayoutEffect(() => {
-      const el = ref.current;
-      if (!el || typeof ResizeObserver === "undefined") return void 0;
-      const ro = new ResizeObserver(() => setWidth(el.clientWidth));
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, [ref]);
-    React2.useLayoutEffect(() => {
-      const el = ref.current;
-      if (!el || step >= max2 || hold) return;
-      const signature = [el, width, key, max2, min2, rows, step, el.textContent, fonts];
-      if (measured2.current && signature.every((value, i) => value === measured2.current[i])) return;
-      measured2.current = signature;
-      if (Array.prototype.some.call(rows === ":self" ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
-    });
-    return Math.max(min2, Math.min(step, max2));
-  }
-  function apply(items, current2) {
-    items.forEach((el) => {
-      const on = el === current2;
-      if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
-      el.setAttribute("data-plx-roving", on ? "current" : "");
-    });
-  }
-  function roveTo(ref, items, el) {
-    if (!ref.current || items.indexOf(el) < 0) return;
-    apply(items, el);
-  }
-  function useRovingFocus(ref, getItems) {
-    React2.useEffect(() => {
-      if (!ref.current) return;
-      const items = getItems();
-      if (!items.length) return;
-      const current2 = items.filter((el) => el.getAttribute("data-plx-roving") === "current")[0] || items[0];
-      apply(items, current2);
-    });
-  }
-  const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
-  function isVisibleFocus(el) {
-    try {
-      return el.matches(":focus-visible");
-    } catch (e) {
-      return true;
-    }
-  }
-  function useFocusable(options = {}) {
-    const { tabStop = "tab", disabled = false, onFocusChange, handlers = {} } = options;
-    const [state, setState] = React2.useState({ focused: false, visible: false });
-    const set2 = (focused, visible2) => {
-      setState((s) => s.focused === focused && s.visible === visible2 ? s : { focused, visible: visible2 });
-      if (onFocusChange) onFocusChange(focused, visible2);
-    };
-    const focusProps = {
-      onFocus: (e) => {
-        if (handlers.onFocus) handlers.onFocus(e);
-        if (e.target === e.currentTarget) set2(true, isVisibleFocus(e.currentTarget));
-      },
-      onBlur: (e) => {
-        if (handlers.onBlur) handlers.onBlur(e);
-        if (e.target === e.currentTarget) set2(false, false);
-      }
-    };
-    if (tabStop !== "none") focusProps.tabIndex = disabled ? void 0 : tabStop === "target" ? -1 : 0;
-    return { focused: state.focused, focusVisible: state.focused && state.visible, focusProps };
-  }
-  function useFocusGroup(ref, options = {}) {
-    const { orientation = "horizontal", loop = true, items: selector = ITEMS, onKeyDown: onKeyDown2, ignore, modifiers = false } = options;
-    const itemsOf2 = () => typeof selector === "function" ? selector() : ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el) => el.getClientRects().length > 0 && !el.closest("[hidden]")) : [];
-    useRovingFocus(ref, itemsOf2);
-    const KEYS2 = orientation === "vertical" ? ["ArrowUp", "ArrowDown"] : orientation === "both" ? ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] : ["ArrowLeft", "ArrowRight"];
-    const groupProps = {
-      onKeyDown: (e) => {
-        if (onKeyDown2) onKeyDown2(e);
-        if (e.defaultPrevented || !modifiers && (e.altKey || e.ctrlKey || e.metaKey)) return;
-        if (KEYS2.indexOf(e.key) < 0 && e.key !== "Home" && e.key !== "End") return;
-        const t = e.target;
-        if ((t.tagName === "INPUT" || t.tagName === "TEXTAREA") && (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Home" || e.key === "End")) return;
-        if (ignore && ignore(e)) return;
-        const list2 = itemsOf2();
-        const i = list2.indexOf(document.activeElement);
-        if (i < 0 || !list2.length) return;
-        let n;
-        if (e.key === "Home") n = 0;
-        else if (e.key === "End") n = list2.length - 1;
-        else {
-          const step = arrowStep(e, ref.current, { vertical: orientation !== "horizontal" });
-          if (!step) return;
-          n = i + step;
-          if (n < 0 || n >= list2.length) {
-            if (!loop) return;
-            n = (n + list2.length) % list2.length;
-          }
-        }
-        e.preventDefault();
-        list2[n].focus();
-      },
-      onFocus: (e) => {
-        roveTo(ref, itemsOf2(), e.target);
-      }
-    };
-    return { groupProps };
-  }
-  const RANKS = ["low", "normal", "high"];
-  const foldOrder = (actions) => {
-    const foldable = actions.filter((a) => !a.primary);
-    const out = [];
-    RANKS.forEach((p) => {
-      const group = foldable.filter((a) => (RANKS.indexOf(a.priority) >= 0 ? a.priority : "normal") === p);
-      out.push(...group.filter((a) => !a.danger).reverse(), ...group.filter((a) => a.danger).reverse());
-    });
-    return out;
-  };
-  const menuOrder = (actions) => actions.filter((a) => !a.danger).concat(actions.filter((a) => a.danger));
-  const d0$Y = "M479.79-221.23q-21.54 0-36.66-15.34Q428-251.91 428-273.44q0-21.54 15.34-36.67 15.34-15.12 36.87-15.12 21.54 0 36.66 15.34Q532-294.56 532-273.02t-15.34 36.66q-15.34 15.13-36.87 15.13Zm0-206.77q-21.54 0-36.66-15.34Q428-458.68 428-480.21q0-21.54 15.34-36.66Q458.68-532 480.21-532q21.54 0 36.66 15.34Q532-501.32 532-479.79q0 21.54-15.34 36.66Q501.32-428 479.79-428Zm0-206.77q-21.54 0-36.66-15.34Q428-665.44 428-686.98t15.34-36.66q15.34-15.13 36.87-15.13 21.54 0 36.66 15.34Q532-708.09 532-686.56q0 21.54-15.34 36.67-15.34 15.12-36.87 15.12Z";
-  const d1$X = "M480-189.23q-24.75 0-42.37-17.63Q420-224.48 420-249.23q0-24.75 17.63-42.38 17.62-17.62 42.37-17.62 24.75 0 42.37 17.62Q540-273.98 540-249.23q0 24.75-17.63 42.37-17.62 17.63-42.37 17.63ZM480-420q-24.75 0-42.37-17.63Q420-455.25 420-480q0-24.75 17.63-42.37Q455.25-540 480-540q24.75 0 42.37 17.63Q540-504.75 540-480q0 24.75-17.63 42.37Q504.75-420 480-420Zm0-230.77q-24.75 0-42.37-17.62Q420-686.02 420-710.77q0-24.75 17.63-42.37 17.62-17.63 42.37-17.63 24.75 0 42.37 17.63Q540-735.52 540-710.77q0 24.75-17.63 42.38-17.62 17.62-42.37 17.62Z";
-  const MoreIcon = { "name": "more", "set": "plenix", "symbol": "more_vert", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
-  const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
-  const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
-  const nameOf$4 = (p) => typeof p.children === "string" ? p.children : p.iconOnly && typeof p.label === "string" ? p.label : null;
-  const isFoldable = (el) => React2.isValidElement(el) && el.type === Button && nameOf$4(el.props) !== null && !el.props.href && !el.props.caret;
-  const isTrimmable = (el) => React2.isValidElement(el) && el.type === Menu && React2.isValidElement(el.props.trigger) && el.props.trigger.type === Button && typeof el.props.trigger.props.children === "string" && !!el.props.trigger.props.icon && !el.props.trigger.props.iconOnly;
-  const collect$1 = (nodes, out) => {
-    React2.Children.forEach(nodes, (el) => {
-      if (!React2.isValidElement(el)) return;
-      if (el.type === Toolbar.Group || el.type === React2.Fragment) collect$1(el.props.children, out);
-      else if (isFoldable(el)) out.push({ id: out.length, label: nameOf$4(el.props), iconOnly: !!el.props.iconOnly, icon: el.props.icon, primary: el.props.variant === "primary", danger: /^danger/.test(el.props.variant || "") || !!el.props.danger, priority: el.props.priority, props: el.props });
-    });
-    return out;
-  };
-  function Toolbar({ label: label2, variant = "default", className, children, onKeyDown: onKeyDown2, onFocus, ...rest }) {
-    const ref = React2.useRef(null);
-    const t = useStrings("commandBar");
-    const ladder = variant !== "bar";
-    const acts = ladder ? collect$1(children, []) : [];
-    const step = useBarFit(ref, acts.map((a) => a.label).join("|"), ladder && acts.length ? 1 + acts.length : 0, 0, ":self");
-    const iconOnly = ladder && step >= 1;
-    const folded = new Set(foldOrder(acts).slice(0, ladder ? Math.max(0, step - 1) : 0).map((a) => a.id));
-    let n = 0;
-    const walk = (nodes) => React2.Children.map(nodes, (el) => {
-      if (!React2.isValidElement(el)) return el;
-      if (el.type === Toolbar.Group) return React2.cloneElement(el, void 0, walk(el.props.children));
-      if (el.type === React2.Fragment) return /* @__PURE__ */ React2.createElement(React2.Fragment, null, walk(el.props.children));
-      if (ladder && isTrimmable(el)) return iconOnly ? React2.cloneElement(el, { trigger: React2.cloneElement(el.props.trigger, { children: void 0, "aria-label": el.props.trigger.props.children }) }) : el;
-      if (!ladder || !isFoldable(el)) return el;
-      const id = n++;
-      if (folded.has(id)) return null;
-      const a = acts[id];
-      if (!a.icon || a.primary || a.iconOnly) return el;
-      return /* @__PURE__ */ React2.createElement(Tooltip, { content: a.label, disabled: !iconOnly }, iconOnly ? React2.cloneElement(el, { iconOnly: true, label: a.label, priority: void 0 }) : React2.cloneElement(el, { priority: void 0 }));
-    });
-    const away = menuOrder(acts.filter((a) => folded.has(a.id)));
-    const more = away.length ? /* @__PURE__ */ React2.createElement(Menu, { label: t.moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { icon: MoreIcon, variant: "ghost", iconOnly: true, label: t.moreLabel, size: acts[0] && acts[0].props.size }) }, away.map((a, i) => [
-      a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React2.createElement(MenuDivider, { key: a.id + "d" }) : null,
-      /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id, icon: a.icon, danger: a.danger, disabled: a.props.disabled, onSelect: a.props.onClick }, a.label)
-    ])) : null;
-    const itemsOf2 = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === "visible" && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute("data-plx-roving"))) : [];
-    React2.useEffect(() => {
-      const root = ref.current;
-      if (!root) return;
-      const refresh = () => {
-        root.querySelectorAll("[data-plx-toolbar-layout]").forEach((el) => {
-          if (el.closest('[role="toolbar"]') === root) el.removeAttribute("data-plx-toolbar-layout");
-        });
-        const visit = (parent) => Array.from(parent.children).forEach((el) => {
-          if (el.matches(".plx-stack,.plx-inline") && getComputedStyle(el).display !== "none") {
-            el.setAttribute("data-plx-toolbar-layout", "");
-            visit(el);
-          } else if (el.classList.contains("plx-toolbar__group")) visit(el);
-        });
-        visit(root);
-        const items = itemsOf2();
-        roveTo(ref, items, items.find((el) => el.getAttribute("data-plx-roving") === "current") || items[0]);
-      };
-      refresh();
-      const observer2 = new MutationObserver(refresh);
-      observer2.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "inert", "aria-hidden", "aria-disabled", "class"] });
-      const resize = typeof ResizeObserver === "function" ? new ResizeObserver(refresh) : null;
-      if (resize) resize.observe(root);
-      window.addEventListener("resize", refresh);
-      return () => {
-        observer2.disconnect();
-        if (resize) resize.disconnect();
-        window.removeEventListener("resize", refresh);
-      };
-    }, []);
-    const { groupProps } = useFocusGroup(ref, {
-      items: itemsOf2,
-      orientation: "horizontal",
-      loop: true,
-      modifiers: true,
-      onKeyDown: onKeyDown2,
-      ignore: (e) => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP)) || e.target.closest('[role="toolbar"]') !== ref.current
-    });
-    const onFocusIn = (e) => {
-      if (onFocus) onFocus(e);
-      groupProps.onFocus(e);
-    };
-    return /* @__PURE__ */ React2.createElement("div", { ref, role: "toolbar", "aria-label": label2, className: cx("plx-toolbar", variant === "bar" && "plx-toolbar--bar", className), onKeyDown: groupProps.onKeyDown, onFocus: onFocusIn, "data-plx-fit-shrink": ladder ? (acts.length ? step >= 1 + acts.length : true) || void 0 : void 0, ...rest }, ladder ? walk(children) : children, more);
-  }
-  Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
-    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-toolbar__group", className), ...rest }, children);
-  };
-  Toolbar.Spacer = function ToolbarSpacer() {
-    return /* @__PURE__ */ React2.createElement("div", { className: "plx-toolbar__spacer", "aria-hidden": "true" });
-  };
-  function Divider$1({ orientation = "horizontal", className, children, ...rest }) {
-    if (orientation === "horizontal" && children !== void 0 && children !== null && children !== false && children !== "") {
-      return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": "horizontal", "aria-label": typeof children === "string" || typeof children === "number" ? String(children) : void 0, className: cx("plx-divider", "plx-divider--labeled", className), ...rest }, /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__text" }, children), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }));
-    }
-    return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": orientation, className: cx("plx-divider", "plx-divider--" + orientation, className), ...rest });
-  }
-  function HintTarget({ children, "aria-describedby": description }) {
-    const wrap = React2.useRef(null);
-    React2.useLayoutEffect(() => {
-      const button = wrap.current && wrap.current.querySelector("button,a[href]");
-      if (!button || !description) return void 0;
-      const before = button.getAttribute("aria-describedby");
-      const ids = [...new Set((before || "").split(" ").concat(description.split(" ")).filter(Boolean))];
-      button.setAttribute("aria-describedby", ids.join(" "));
-      return () => {
-        if (before) button.setAttribute("aria-describedby", before);
-        else button.removeAttribute("aria-describedby");
-      };
-    });
-    return /* @__PURE__ */ React2.createElement("span", { ref: wrap, className: "plx-bar-actions__hint-target" }, children);
-  }
-  function ActionHint({ content, children, className }) {
-    return /* @__PURE__ */ React2.createElement(Tooltip, { content, className }, /* @__PURE__ */ React2.createElement(HintTarget, null, children));
-  }
-  const PanelMenuTrigger = React2.forwardRef(function PanelMenuTrigger2(props, ref) {
-    const wrap = React2.useRef(null);
-    React2.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector("[data-plx-menu-item]"));
-    return /* @__PURE__ */ React2.createElement("span", { ref: wrap, className: "plx-bar-actions__panel-item" }, /* @__PURE__ */ React2.createElement(MenuItem, { ...props, keepOpen: true }));
-  });
-  function ActionPanel({ action, trigger }) {
-    const [open, setOpen] = React2.useState(false);
-    const holder = React2.useRef(null);
-    const unavailable = !!action.disabled || !!action.loading;
-    const show2 = open && !unavailable;
-    const close = () => setOpen(false);
-    React2.useEffect(() => {
-      if (!show2) return void 0;
-      const menu = holder.current && holder.current.closest('[role="menu"]');
-      const more = menu && menu.parentElement.querySelector(":scope > button");
-      return () => {
-        requestAnimationFrame(() => {
-          if (more && more.isConnected && document.activeElement === document.body) more.focus({ preventScroll: true });
-        });
-      };
-    }, [show2]);
-    React2.useEffect(() => {
-      if (unavailable) setOpen(false);
-    }, [unavailable]);
-    const contain = (e) => {
-      const dialog = e.target.closest('[role="dialog"]');
-      if (!dialog) return;
-      if (e.type === "keydown" && e.key === "Tab" && !e.shiftKey && dialog.getAttribute("aria-modal") !== "true") {
-        const controls = focusables(dialog).filter((el) => el.tabIndex >= 0);
-        const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
-        if (toolbar && e.target === controls[controls.length - 1]) {
-          const next = focusables(document.body).find((el) => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
-          if (next) {
-            e.preventDefault();
-            next.focus();
-          }
-        }
-      }
-      e.stopPropagation();
-    };
-    const leave = (e) => {
-      const next = e.relatedTarget, menu = e.currentTarget.closest('[role="menu"]');
-      if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
-      const more = menu.parentElement.querySelector(":scope > button");
-      if (more) more.click();
-    };
-    return /* @__PURE__ */ React2.createElement("span", { ref: holder, className: "plx-bar-actions__panel", onKeyDown: contain, onFocus: contain, onMouseDown: contain, onBlur: leave }, /* @__PURE__ */ React2.createElement(
-      Popover,
-      {
-        trigger,
-        title: action.label,
-        closeButton: true,
-        open: show2,
-        onOpenChange: (next) => {
-          if (!next || !unavailable) setOpen(next);
-        }
-      },
-      show2 ? action.panel({ close }) : null
-    ));
-  }
-  const itemsOf = (a, off2) => {
-    const list2 = a.items;
-    if (!Array.isArray(list2) || !list2.length || React2.isValidElement(list2[0])) return list2;
-    return list2.map((it) => /* @__PURE__ */ React2.createElement(MenuItem, { key: it.id || it.label, icon: it.icon, danger: it.danger, disabled: off2(it), onSelect: it.onSelect }, it.label));
-  };
-  function BarActions({
-    actions = [],
-    iconOnly = false,
-    fold: fold2 = 0,
-    off: off2 = (a) => !!a.disabled,
-    why = (a) => a.why,
-    moreLabel,
-    dangerClass,
-    size = "sm",
-    extra = []
-  }) {
-    const t = useStrings("commandBar");
-    moreLabel = moreLabel ?? t.moreLabel;
-    const folded = new Set(foldOrder(actions).slice(0, fold2).map((a) => a.id || a.label));
-    const kept = actions.filter((a) => !folded.has(a.id || a.label));
-    const away = menuOrder(actions.filter((a) => folded.has(a.id || a.label)));
-    const radios = (a) => /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: a.label, value: a.value, onChange: (v) => a.onChange && a.onChange(v) }, (a.choices || []).map((c) => /* @__PURE__ */ React2.createElement(MenuItem, { key: c.value, value: c.value, icon: c.icon }, c.label)));
-    const current2 = (a) => {
-      const c = (a.choices || []).find((x) => x.value === a.value);
-      return c ? c.label : "";
-    };
-    const one = (a) => {
-      const disabled = off2(a), loading2 = !!a.loading;
-      const filled = !!a.primary;
-      const only = iconOnly && !filled && !!a.icon;
-      const panel = typeof a.panel === "function";
-      const menu = !!a.items || !!a.choices;
-      const name = a.choices ? a.label + ": " + current2(a) : a.label;
-      const text2 = a.choices ? current2(a) || a.label : a.label;
-      const click = panel ? void 0 : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? void 0 : a.onSelect;
-      const button = /* @__PURE__ */ React2.createElement(
-        Button,
-        {
-          size,
-          variant: filled ? "primary" : "ghost",
-          icon: a.icon,
-          iconOnly: only,
-          label: only || a.choices ? name : void 0,
-          caret: menu && !only,
-          "aria-haspopup": panel ? "dialog" : menu ? "menu" : void 0,
-          expanded: loading2 && (panel || menu) ? false : void 0,
-          pressed: a.toggle ? !!a.pressed : void 0,
-          disabled,
-          loading: loading2,
-          className: a.danger && !filled ? dangerClass : void 0,
-          onClick: click
-        },
-        text2
-      );
-      const el = loading2 ? button : panel ? /* @__PURE__ */ React2.createElement(ActionPanel, { action: Object.assign({}, a, { disabled }), trigger: button }) : a.choices ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, radios(a)) : a.items ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, itemsOf(a, off2)) : button;
-      const tip = disabled && why(a) || a.tooltip || (only ? name : null);
-      return /* @__PURE__ */ React2.createElement(React2.Fragment, { key: a.id || a.label }, tip ? /* @__PURE__ */ React2.createElement(ActionHint, { content: tip }, el) : el);
-    };
-    const plain = kept.filter((a) => !a.danger), danger = kept.filter((a) => a.danger);
-    const allOff = away.length > 0 && !extra.length && away.every((a) => off2(a));
-    const more = away.length || extra.length ? /* @__PURE__ */ React2.createElement(Tooltip, { key: "plx-more", content: allOff ? why(away[0]) : moreLabel }, /* @__PURE__ */ React2.createElement(Menu, { label: moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { size, variant: "ghost", icon: MoreIcon, iconOnly: true, label: moreLabel, disabled: allOff }) }, away.map((a, i) => {
-      const sep = a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React2.createElement(MenuDivider, { key: (a.id || a.label) + "-sep" }) : null;
-      const busy = !!a.loading, disabled = off2(a) || busy;
-      const item = busy ? /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id || a.label, icon: /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: a.label }), danger: a.danger, checked: a.toggle ? !!a.pressed : void 0, "aria-label": a.choices ? a.label + ": " + current2(a) : a.label, "aria-busy": true, disabled: true }, a.choices ? a.label + ": " + current2(a) : a.label) : typeof a.panel === "function" ? /* @__PURE__ */ React2.createElement(
-        ActionPanel,
-        {
-          key: a.id || a.label,
-          action: Object.assign({}, a, { disabled }),
-          trigger: /* @__PURE__ */ React2.createElement(PanelMenuTrigger, { icon: a.icon, danger: a.danger, disabled }, a.label)
-        }
-      ) : a.choices ? /* @__PURE__ */ React2.createElement(MenuSub, { key: a.id || a.label, label: a.label + ": " + current2(a), icon: a.icon, disabled: off2(a) }, radios(a)) : a.toggle ? /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, checked: !!a.pressed, disabled: off2(a), onSelect: () => a.onSelect && a.onSelect(!a.pressed) }, a.label) : a.items ? /* @__PURE__ */ React2.createElement(MenuGroup, { key: a.id || a.label, label: a.label }, itemsOf(a, off2)) : /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, danger: a.danger, disabled: off2(a), onSelect: a.onSelect }, a.label);
-      const tip = off2(a) && why(a) || a.tooltip;
-      const described2 = tip ? /* @__PURE__ */ React2.createElement(ActionHint, { key: a.id || a.label, content: tip, className: "plx-bar-actions__tooltip" }, item) : item;
-      return sep ? [sep, described2] : described2;
-    }), away.length && extra.length ? /* @__PURE__ */ React2.createElement(MenuDivider, { key: "plx-extra-sep" }) : null, extra)) : null;
-    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /* @__PURE__ */ React2.createElement("span", { key: "plx-danger-divider", className: cx("plx-bar-actions__divider"), "aria-hidden": "true" }) : null, danger.map(one));
-  }
-  function singleChoice(options, value, required) {
-    const values = (options || []).map((option) => typeof option === "string" ? option : option.value);
-    const selected = (Array.isArray(value) ? value : value === void 0 || value === null ? [] : [value]).find((item) => values.includes(item));
-    return selected !== void 0 ? [selected] : required && values.length ? [values[0]] : [];
-  }
-  const TagsIcon = { "name": "tags", "set": "plenix", "symbol": "sell", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08Zm0-73.92 283.31-283.31-346.46-345.31H168v283.31L514.46-163ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm217.69 167.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08Zm0-84.92 288.31-288.31-356.46-356.31H160v288.31L516.46-155ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm221.69 171.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } } } };
-  const KIND_ICONS = { text: EdTextIcon, select: FieldSelectIcon, multi: TagsIcon, number: FieldNumberIcon, date: CalendarIcon };
-  const DIRECTIONS = english.fields.directions;
-  const OP_ORDER = {
-    text: ["contains", "ncontains", "is", "isnot", "empty", "nempty"],
-    select: ["any", "none", "empty", "nempty"],
-    multi: ["any", "none", "empty", "nempty"],
-    number: ["eq", "ne", "lt", "gt", "empty", "nempty"],
-    date: ["is", "before", "after", "within", "empty", "nempty"]
-  };
-  const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops2]) => [kind, ops2.map((op) => [op, english.fields.operators[kind][op]])]));
-  const WITHIN = [{ value: "week", label: english.fields.within.week, days: 7 }, { value: "month", label: english.fields.within.month, days: 30 }, { value: "year", label: english.fields.within.year, days: 365 }];
-  const CATEGORY_ORDER = ["blue", "green", "purple", "orange", "teal", "magenta", "yellow", "navy", "red", "cyan", "lavender", "brown", "olive", "pink", "apricot", "mint", "maroon", "lime", "beige", "grey"];
-  const fieldOf = (fields, key) => fields.find((f) => f.value === key) || fields[0];
-  const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
-  const kindOf$1 = (f) => OPERATORS[f && f.kind] ? f.kind : "text";
-  const optionsOf = (f) => (f && f.options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
-  const blank$2 = (x) => x === null || x === void 0 || x === "" || Array.isArray(x) && !x.length;
-  const iso = isoDay;
-  const daysBefore = (n, today) => {
-    const d = new Date((parseDate(today) || /* @__PURE__ */ new Date()).getTime());
-    d.setDate(d.getDate() - n);
-    return iso(d);
-  };
-  function matchesCondition(c, row, fields, today) {
-    const f = fieldOf(fields, c.field), v = valueOf(f, row), val = c.value, k = kindOf$1(f);
-    if (c.op === "empty") return blank$2(v);
-    if (c.op === "nempty") return !blank$2(v);
-    if (blank$2(val)) return true;
-    if (k === "text") {
-      const s = String(v == null ? "" : v).toLowerCase(), q2 = String(val).toLowerCase();
-      return c.op === "contains" ? s.includes(q2) : c.op === "ncontains" ? !s.includes(q2) : c.op === "is" ? s === q2 : s !== q2;
-    }
-    if (k === "select") {
-      const list2 = [].concat(val);
-      return c.op === "any" ? list2.indexOf(v) >= 0 : list2.indexOf(v) < 0;
-    }
-    if (k === "multi") {
-      const list2 = [].concat(val), hit = [].concat(v || []).some((x) => list2.indexOf(x) >= 0);
-      return c.op === "any" ? hit : !hit;
-    }
-    if (k === "number") {
-      const n = Number(v), q2 = parseFloat(val);
-      if (isNaN(q2)) return true;
-      return c.op === "eq" ? n === q2 : c.op === "ne" ? n !== q2 : c.op === "lt" ? n < q2 : n > q2;
-    }
-    const d = blank$2(v) ? "" : String(v).slice(0, 10);
-    if (c.op === "within") {
-      const w = WITHIN.find((x) => x.value === val) || WITHIN[0];
-      return d >= daysBefore(w.days, today);
-    }
-    return c.op === "is" ? d === val : c.op === "before" ? d < val : d > val;
-  }
-  function matchesFilter(node, row, fields, today) {
-    if (!node || !node.items || !node.items.length) return true;
-    const t = (x) => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
-    return node.join === "or" ? node.items.some(t) : node.items.every(t);
-  }
-  const conditionsOf = (node) => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
-  let uid = 0;
-  const nextId$2 = () => "c" + ++uid;
-  const newCondition = (f) => ({ id: nextId$2(), field: f.value, op: OPERATORS[kindOf$1(f)][0][0], value: kindOf$1(f) === "select" || kindOf$1(f) === "multi" ? [] : "" });
-  function compareLevels(fields, levels) {
-    return (a, b) => {
-      for (const l of levels || []) {
-        const f = fields.find((x2) => x2.value === l.field);
-        if (!f) continue;
-        let x = valueOf(f, a), y = valueOf(f, b);
-        if (kindOf$1(f) === "select" && f.options) {
-          const o = optionsOf(f).map((p) => p.value);
-          x = o.indexOf(x);
-          y = o.indexOf(y);
-        }
-        if (Array.isArray(x)) x = x.join(", ");
-        if (Array.isArray(y)) y = y.join(", ");
-        const c = x < y ? -1 : x > y ? 1 : 0;
-        if (c) return l.dir === "desc" ? -c : c;
-      }
-      return 0;
-    };
-  }
-  const DATE_PRESETS = [{ value: "any", label: english.fields.presets.any }, { value: "7", label: english.fields.presets["7"] }, { value: "30", label: english.fields.presets["30"] }, { value: "year", label: english.fields.presets.year }];
-  function matchesDate(range, value, today) {
-    if (!range || range.preset === "any" || !range.preset) return true;
-    const d = blank$2(value) ? "" : String(value).slice(0, 10);
-    if (!d) return false;
-    const now = today || iso(/* @__PURE__ */ new Date());
-    if (range.preset === "7" || range.preset === "30") return d >= daysBefore(Number(range.preset), now) && d <= now;
-    if (range.preset === "year") return d.slice(0, 4) === now.slice(0, 4);
-    return (!range.from || d >= range.from) && (!range.to || d <= range.to);
-  }
-  const fieldWords = {
-    operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
-    within: (fw) => WITHIN.map((w) => Object.assign({}, w, { label: (fw.within || {})[w.value] || w.label })),
-    presets: (fw) => DATE_PRESETS.map((d) => Object.assign({}, d, { label: (fw.presets || {})[d.value] || d.label })),
-    directions: (fw, kind) => (fw.directions || {})[kind] || DIRECTIONS[kind]
-  };
-  const FilterOffIcon = { "name": "filter-off", "set": "plenix", "symbol": "filter_alt_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 518-544l125-152H366l-52-52h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15ZM518-544Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 314-748h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 535-538l143-182H353l-60-60h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15ZM535-538Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 293-780h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15Z" } } } };
-  const nameOf$3 = (list2, chosen) => {
-    if (!chosen || !chosen.length) return void 0;
-    const o = list2.find((x) => x.value === chosen[0]);
-    return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? " +" + (chosen.length - 1) : "");
-  };
-  const asOptions = (options) => (options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
-  function QuickFilter({ kind = "list", label: label2, icon, noun = "value", options, value, onChange, counts: counts2, required = false, inline = false, strings }) {
-    const fw = useStrings("fields");
-    const t = Object.assign({ presets: fieldWords.presets(fw) }, useStrings("quickFilter", strings));
-    const [q2, setQ] = React2.useState("");
-    const first = (options || [])[0], firstValue = typeof first === "string" ? first : first && first.value;
-    React2.useEffect(() => {
-      if (kind === "single" && required && (!value || !value.length) && firstValue !== void 0 && onChange) onChange([firstValue]);
-    }, [kind, required, value, firstValue, onChange]);
-    const countOf2 = (o) => o.count !== void 0 ? o.count : counts2 instanceof Map ? counts2.get(o.value) || 0 : counts2 ? Object.prototype.hasOwnProperty.call(counts2, o.value) ? counts2[o.value] : 0 : void 0;
-    const counted = (o, label22) => {
-      const n = countOf2(o);
-      return n === void 0 || n === null ? label22 : /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", gap: "xs" }, label22, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(n)));
-    };
-    if (kind === "date") {
-      const d = Object.assign({ preset: "any", from: "", to: "" }, value);
-      const range = (k, v) => onChange(Object.assign({}, d, { preset: "custom", [k]: v }));
-      const on = d.preset && d.preset !== "any";
-      const body2 = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--date" }, /* @__PURE__ */ React2.createElement(
-        RadioGroup,
-        {
-          label: label2,
-          value: d.preset,
-          onChange: (v) => onChange(Object.assign({}, d, { preset: v })),
-          options: t.presets.map((x) => ({ value: x.value, label: counted(x, x.label) })).concat({ value: "custom", label: counted({ value: "custom" }, t.custom) })
-        }
-      ), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__range" }, /* @__PURE__ */ React2.createElement(Field, { label: t.from }, /* @__PURE__ */ React2.createElement(Input, { type: "date", data: true, value: d.from, onChange: (e) => range("from", e.target.value) })), /* @__PURE__ */ React2.createElement(Field, { label: t.to }, /* @__PURE__ */ React2.createElement(Input, { type: "date", data: true, value: d.to, onChange: (e) => range("to", e.target.value) }))));
-      const footer2 = /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !on, onClick: () => onChange({ preset: "any", from: "", to: "" }) }, t.clear);
-      const preset = t.presets.find((x) => x.value === d.preset);
-      const current2 = !on ? void 0 : d.preset === "custom" ? [d.from, d.to].filter(Boolean).join(" \u2013 ") || t.custom : preset ? preset.label : void 0;
-      return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: icon || CalendarIcon, label: label2, current: current2, title: label2, count: on ? 1 : 0, caret: true, size: "sm", footer: footer2, inline }, body2);
-    }
-    const list2 = asOptions(options);
-    if (kind === "single") {
-      const chosen2 = singleChoice(list2, value, required);
-      const choices2 = list2.map((o) => ({ value: o.value, label: counted(o, /* @__PURE__ */ React2.createElement(Pill, { color: o.color }, o.label)) }));
-      if (!required) choices2.unshift({ value: "", label: t.all });
-      const body2 = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel" }, /* @__PURE__ */ React2.createElement(RadioGroup, { label: label2, value: chosen2.length ? chosen2[0] : "", options: choices2, onChange: (v) => onChange(v === "" ? [] : [v]) }));
-      const footer2 = required ? null : /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen2.length, onClick: () => onChange([]) }, t.clear);
-      return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon, label: label2, current: nameOf$3(list2, chosen2), title: label2, count: chosen2.length, caret: true, size: "sm", footer: footer2, inline }, body2);
-    }
-    const chosen = value || [];
-    const shown = list2.filter((o) => String(o.label).toLowerCase().indexOf(q2.trim().toLowerCase()) >= 0);
-    const body = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--checklist" }, /* @__PURE__ */ React2.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: fill(t.find, { noun }), label: fill(t.find, { noun }) }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__checklist" }, shown.length ? shown.map((o) => /* @__PURE__ */ React2.createElement(Checkbox, { key: o.value, label: counted(o, /* @__PURE__ */ React2.createElement(Pill, { color: o.color }, o.label)), checked: chosen.indexOf(o.value) >= 0, onChange: () => onChange(toggle(chosen, o.value)) })) : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, fill(t.none, { noun }))));
-    const footer = /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen.length, onClick: () => onChange([]) }, t.clear);
-    return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon, label: label2, current: nameOf$3(list2, chosen), title: label2, count: chosen.length, caret: true, size: "sm", footer, inline }, body);
-  }
-  function SingleQuickFilterMenu({ label: label2, options = [], value, required, onChange, counts: counts2, strings }) {
-    const chosen = singleChoice(options, value, required);
-    const items = options.map((option) => typeof option === "string" ? { value: option, label: option } : option);
-    if (!required) items.unshift({ value: "", label: strings && strings.all || "All" });
-    return /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: label2, value: chosen.length ? chosen[0] : "", onChange: (v) => onChange && onChange(v === "" ? [] : [v]) }, items.map((option) => {
-      const count2 = option.count !== void 0 ? option.count : counts2 instanceof Map ? counts2.get(option.value) || 0 : counts2 ? counts2[option.value] || 0 : void 0;
-      return /* @__PURE__ */ React2.createElement(MenuItem, { key: option.value, value: option.value }, count2 === void 0 ? option.label || option.value : /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(count2))));
-    }));
-  }
-  const ICONS$2 = 1, SEARCH = 2;
-  const BarContext$1 = React2.createContext({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen: () => {
-  } });
-  const useCommandBar = () => React2.useContext(BarContext$1);
-  const CommandBarButton = React2.forwardRef(function CommandBarButton2({ icon, label: label2, count: count2 = 0, active = false, caret = false, iconOnly, className, children, ...rest }, ref) {
-    const ctx = useCommandBar();
-    const only = iconOnly === void 0 ? ctx.iconOnly : iconOnly;
-    const n = Number(count2) || 0;
-    const badge = n ? /* @__PURE__ */ React2.createElement(Badge, { size: "sm", tone: "active" }, n) : null;
-    const name = n ? label2 + ", " + n : label2;
-    return /* @__PURE__ */ React2.createElement(
-      Button,
-      {
-        ref,
-        size: "sm",
-        variant: "ghost",
-        icon,
-        caret: caret && !only,
-        selected: active || n > 0,
-        iconOnly: only && !n,
-        label: only ? name : void 0,
-        className: cx("plx-command-bar__button", className),
-        ...rest
-      },
-      only ? n ? badge : label2 : /* @__PURE__ */ React2.createElement(React2.Fragment, null, children || label2, badge ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, " ", badge) : null)
-    );
-  });
-  const CommandBarSearch = React2.forwardRef(function CommandBarSearch2(props, ref) {
-    const { collapsed, searchOpen, setSearchOpen } = useCommandBar();
-    return /* @__PURE__ */ React2.createElement(SearchField, { ref, width: "bar", collapsed, open: collapsed ? searchOpen : void 0, onOpenChange: collapsed ? setSearchOpen : void 0, ...props });
-  });
-  function CommandBar({ label: label2, actions = [], find, quickFilters = [], view, count: count2, status, end, selection, layout: layout2 = "auto", sticky = "auto", narrow = false, strings, className }) {
-    const t = useStrings("commandBar", strings);
-    const fw = useStrings("fields");
-    const root = React2.useRef(null);
-    const sel = selection && !React2.isValidElement(selection) && typeof selection === "object" ? selection : null;
-    const selCount = sel ? Number(sel.count) || 0 : 0;
-    const selecting = selCount > 0;
-    const selActs = selecting ? sel.actions || [] : [];
-    const shape = layout2 === "auto" || layout2 === "split" ? actions.length ? "one" : "view" : layout2;
-    const shown = selecting ? selActs : shape === "view" ? [] : actions;
-    const quick = quickFilters;
-    const ending = end && !React2.isValidElement(end) && !Array.isArray(end) && typeof end === "object" && ("content" in end || "fold" in end) ? end : null;
-    const endContent = ending ? ending.content : end;
-    const endFold = !selecting && ending && ending.fold;
-    const finding = !!find || quick.length > 0;
-    const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
-    const [searchOpen, setSearchOpen] = React2.useState(false);
-    const key = [shape, narrow, selecting ? "sel" : "rest", shown.map((a) => a.label + (a.disabled ? "0" : "") + (a.loading ? "busy" : "")).join("|"), quickFilters.map((q2) => q2.label + (q2.value && q2.value.length ? q2.value.length : "")).join("|"), endFold && endFold.label].join("\xA7");
-    const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ":scope > .plx-command-bar__bar > [data-plx-bar-row]", searchOpen);
-    const ctx = React2.useMemo(() => ({ iconOnly: step >= ICONS$2, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
-    const foldAll = Math.max(0, step - SEARCH);
-    const fold2 = Math.min(foldAll, foldOrder(shown).length);
-    const endAway = !!endFold && foldAll > fold2;
-    const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold2 - (endAway ? 1 : 0)));
-    const findAway = finding && foldAll > fold2 + (endAway ? 1 : 0) + quickAway;
-    const quickKept = quick.slice(0, quick.length - quickAway), quickFolded = quick.slice(quick.length - quickAway);
-    const quickMenu = quickFolded.map((q2) => {
-      const id = q2.id || q2.label;
-      const counted = (option) => {
-        const count22 = option.count !== void 0 ? option.count : q2.counts instanceof Map ? q2.counts.get(option.value) || 0 : q2.counts ? q2.counts[option.value] || 0 : void 0;
-        return count22 === void 0 ? option.label || option.value : /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(count22)));
-      };
-      if (q2.kind === "single") return /* @__PURE__ */ React2.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React2.createElement(SingleQuickFilterMenu, { ...q2 }));
-      if (q2.kind === "date") {
-        const d = Object.assign({ preset: "any", from: "", to: "" }, q2.value);
-        return /* @__PURE__ */ React2.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: q2.label, value: d.preset, onChange: (v) => q2.onChange && q2.onChange(Object.assign({}, d, { preset: v })) }, fieldWords.presets(fw).map((p) => /* @__PURE__ */ React2.createElement(MenuItem, { key: p.value, value: p.value }, counted(p)))));
-      }
-      const chosen = q2.value || [];
-      return /* @__PURE__ */ React2.createElement(MenuSub, { key: id, label: chosen.length ? q2.label + " (" + chosen.length + ")" : q2.label, icon: q2.icon }, (q2.options || []).map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => /* @__PURE__ */ React2.createElement(
-        MenuItem,
-        {
-          key: o.value,
-          checked: chosen.indexOf(o.value) >= 0,
-          keepOpen: true,
-          onSelect: () => q2.onChange && q2.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter((x) => x !== o.value) : chosen.concat(o.value))
-        },
-        counted(o)
-      )));
-    });
-    const endMenu = endAway ? /* @__PURE__ */ React2.createElement(MenuSub, { key: "plx-end", label: endFold.label, icon: endFold.icon }, Array.isArray(endFold.items) && endFold.items.length && !React2.isValidElement(endFold.items[0]) ? endFold.items.map((item) => /* @__PURE__ */ React2.createElement(MenuItem, { key: item.id || item.label, icon: item.icon, checked: item.checked, disabled: item.disabled, danger: item.danger, onSelect: item.onSelect }, item.label)) : endFold.items) : null;
-    const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
-    const was = React2.useRef(selecting);
-    React2.useEffect(() => {
-      const el = root.current;
-      if (!el || typeof window === "undefined") return void 0;
-      const scrollerOf = (node) => {
-        for (let p = node.parentElement; p; p = p.parentElement) {
-          const o = getComputedStyle(p).overflowY;
-          if (o === "auto" || o === "scroll") return p;
-        }
-        return null;
-      };
-      const check = () => {
-        const scroller = scrollerOf(el);
-        const sticky2 = getComputedStyle(el).position === "sticky";
-        const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0, scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
-        const stuck = sticky2 && scrolled && el.getBoundingClientRect().top <= top + 1;
-        if (stuck) el.setAttribute("data-plx-stuck", "");
-        else el.removeAttribute("data-plx-stuck");
-      };
-      const schedule = check;
-      document.addEventListener("scroll", schedule, { capture: true, passive: true });
-      window.addEventListener("resize", schedule);
-      check();
-      return () => {
-        document.removeEventListener("scroll", schedule, { capture: true });
-        window.removeEventListener("resize", schedule);
-      };
-    }, [sticky]);
-    React2.useEffect(() => {
-      if (was.current !== selecting) announce(selecting ? fill(t.swapped, { n: formatNumber(selCount) }) : t.cleared);
-      was.current = selecting;
-    }, [selecting]);
-    const words2 = { noun: sel && sel.noun || "item", plural: sel && sel.plural || (sel && sel.noun || "item") + "s" };
-    const off2 = (a) => !!a.disabled || !!(a.single && selCount > 1);
-    const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words2));
-    const acts = shown.length || extraMenu.length ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__actions" }, /* @__PURE__ */ React2.createElement(
-      BarActions,
-      {
-        actions: shown,
-        iconOnly: ctx.iconOnly,
-        fold: fold2,
-        moreLabel: t.more,
-        dangerClass: "plx-command-bar__danger",
-        off: selecting ? off2 : void 0,
-        why: selecting ? why : void 0,
-        extra: extraMenu
-      }
-    )) : null;
-    const quickEls = quickKept.map((q2) => /* @__PURE__ */ React2.createElement(QuickFilter, { key: q2.id || q2.label, ...q2 }));
-    const fullCtx = React2.useMemo(() => ({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen }), []);
-    const findEl = !(find || quickEls.length) ? null : findAway ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, /* @__PURE__ */ React2.createElement(Popover, { title: t.find, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(CommandBarButton, { icon: SearchIcon, label: t.find, iconOnly: true }) }, /* @__PURE__ */ React2.createElement(BarContext$1.Provider, { value: fullCtx }, /* @__PURE__ */ React2.createElement(Stack, { gap: "sm", align: "start" }, find, quickEls)))) : /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, find, quickEls);
-    const viewEl = view ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__view" }, view) : null;
-    const countEl = selecting || count2 === void 0 || count2 === null || ctx.collapsed ? null : typeof count2 === "string" || typeof count2 === "number" ? /* @__PURE__ */ React2.createElement(Text, { variant: "data", className: "plx-command-bar__count" }, count2) : count2;
-    const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, { n: formatNumber(sel.hidden) }) : "";
-    const [hiddenBefore, hiddenAfter] = String(t.hidden).split("{n}");
-    const [before, after] = String(t.selected).split("{n}");
-    const clearEl = selecting ? /* @__PURE__ */ React2.createElement(Tooltip, { content: t.clear }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: CloseIcon, className: "plx-command-bar__clear", "aria-label": fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText, onClick: () => sel.onClear && sel.onClear() }, before, /* @__PURE__ */ React2.createElement(Text, { variant: "data", className: "plx-command-bar__number" }, formatNumber(selCount)), after, hiddenText ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, hiddenBefore, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(sel.hidden)), hiddenAfter) : null)) : null;
-    const statusEl = selecting || !status || ctx.collapsed ? null : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary", className: "plx-command-bar__status" }, status);
-    const keptEnd = !selecting && !endAway ? endContent : null;
-    const tail = countEl || statusEl || keptEnd || clearEl ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__end" }, selecting && viewEl ? /* @__PURE__ */ React2.createElement(Divider$1, { orientation: "vertical" }) : null, countEl, statusEl, keptEnd, clearEl) : null;
-    const onKeyDown2 = selecting && sel.onClear ? (e) => {
-      if (e.key === "Escape" && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
-        e.preventDefault();
-        sel.onClear();
-      }
-    } : void 0;
-    const parts = /* @__PURE__ */ React2.createElement(React2.Fragment, null, acts, acts && findEl ? /* @__PURE__ */ React2.createElement(Divider$1, { orientation: "vertical" }) : null, findEl, /* @__PURE__ */ React2.createElement(Toolbar.Spacer, null), viewEl, tail);
-    const name = selecting ? sel.label || fill(t.actions, { label: label2 || "" }).trim() : label2;
-    return /* @__PURE__ */ React2.createElement(BarContext$1.Provider, { value: ctx }, /* @__PURE__ */ React2.createElement("div", { ref: root, className: cx("plx-command-bar", ctx.iconOnly && "plx-command-bar--icons", selecting && "plx-command-bar--selecting", className), "data-plx-layout": shape, "data-plx-position": sticky === true ? "sticky" : sticky === false ? "static" : "auto", onKeyDown: onKeyDown2 }, /* @__PURE__ */ React2.createElement("div", { className: "plx-command-bar__bar" }, /* @__PURE__ */ React2.createElement(Toolbar, { label: name, variant: "bar", className: "plx-command-bar__row", "data-plx-bar-row": "", "data-plx-fit-shrink": step >= SEARCH + folds || void 0 }, parts)), React2.isValidElement(selection) ? selection : null));
-  }
-  const d0$X = "M359.79-207.39q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Z";
-  const d1$W = "M360-175.39q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Z";
-  const DragIcon = { "name": "drag", "set": "plenix", "symbol": "drag_indicator", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
-  const toggle = (list2, v) => list2.indexOf(v) >= 0 ? list2.filter((x) => x !== v) : list2.concat(v);
-  function PanelTrigger({ icon, label: label2, current: current2, count: count2 = 0, active, caret = false, size = "auto", title, footer, inline = false, placement, className, open, onOpenChange, children }) {
-    const ctx = useCommandBar();
-    const box = React2.useRef(null);
-    const first = { get current() {
-      const el = box.current;
-      return el ? el.querySelector("[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input") : null;
-    } };
-    const body = /* @__PURE__ */ React2.createElement("div", { ref: box, className: cx("plx-find-panel-body", className) }, children);
-    if (inline) return /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel-frame" }, children);
-    const words2 = current2 ? label2 + ": " + current2 : label2;
-    const trigger = current2 && !ctx.iconOnly ? /* @__PURE__ */ React2.createElement(CommandBarButton, { icon, label: label2, active: true, caret, "aria-label": words2 }, words2) : /* @__PURE__ */ React2.createElement(CommandBarButton, { icon, label: label2, count: count2, active, caret });
-    const pop = /* @__PURE__ */ React2.createElement(Popover, { label: title ? void 0 : label2, title, size, trigger, footer, placement, initialFocus: first, ...open === void 0 ? null : { open }, onOpenChange }, body);
-    return ctx.iconOnly ? /* @__PURE__ */ React2.createElement(Tooltip, { content: words2 }, pop) : pop;
-  }
-  function PanelHead({ title, info, infoLabel, sub, actions }) {
-    return /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__title-row" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-find-panel__title" }, /* @__PURE__ */ React2.createElement(Text, { variant: "heading", as: "span" }, title), info ? /* @__PURE__ */ React2.createElement(Tooltip, { content: info }, /* @__PURE__ */ React2.createElement(Button, { size: "xs", variant: "ghost", icon: CircleInfoIcon, iconOnly: true, label: infoLabel || title })) : null), actions ? /* @__PURE__ */ React2.createElement("span", { className: "plx-find-panel__actions" }, actions) : null), sub ? /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, sub) : null);
-  }
-  function Pick({ label: label2, value, options, onChange, size = "field", disabled }) {
-    const cur = options.find((o) => o.value === value) || options[0] || { label: "" };
-    return /* @__PURE__ */ React2.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React2.createElement(Button, { icon: cur.icon, caret: true, truncate: true, disabled, className: cx("plx-find-pick", "plx-find-pick--" + size), title: cur.label, "aria-label": label2 + ": " + cur.label }, cur.label) }, /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: label2, value, onChange }, options.map((o) => /* @__PURE__ */ React2.createElement(MenuItem, { key: o.value, value: o.value, icon: o.icon }, o.label))));
-  }
-  const Pill = ({ color, children }) => /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pill", "data-plx-category": color || "grey" }, children);
-  function MultiPick({ label: label2, options, value, onChange, placeholder }) {
-    const chosen = value.map((v) => options.find((o) => o.value === v) || { value: v, label: v });
-    return /* @__PURE__ */ React2.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React2.createElement(Button, { caret: true, truncate: true, className: "plx-find-pick plx-find-pick--value", "aria-label": label2 + ": " + (chosen.length ? chosen.map((o) => o.label).join(", ") : placeholder) }, chosen.length ? /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pick__pills" }, chosen.map((o) => /* @__PURE__ */ React2.createElement(Pill, { key: o.value, color: o.color }, o.label))) : /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pick__placeholder" }, placeholder)) }, options.map((o) => /* @__PURE__ */ React2.createElement(MenuItem, { key: o.value, checked: value.indexOf(o.value) >= 0, keepOpen: true, onSelect: () => onChange(toggle(value, o.value)) }, /* @__PURE__ */ React2.createElement(Pill, { color: o.color }, o.label))));
-  }
-  function useReorder(items, setItems, nameOf2, t) {
-    const [msg, setMsg] = React2.useState("");
-    const drag = React2.useRef(null);
-    const box = React2.useRef(null);
-    const [dragging, setDragging] = React2.useState(-1);
-    const move2 = (i, to, focus) => {
-      if (to < 0 || to >= items.length || to === i) return;
-      const next = items.slice();
-      const [x] = next.splice(i, 1);
-      next.splice(to, 0, x);
-      setItems(next);
-      setMsg(fill(t.moved, { name: nameOf2(x), position: to + 1, total: items.length }));
-      if (focus) setTimeout(() => {
-        const el = box.current && box.current.querySelectorAll(":scope > [data-plx-row]")[to];
-        if (el) el.focus();
-      }, 0);
-    };
-    const rowProps = (i, name) => ({
-      "data-plx-row": "",
-      tabIndex: 0,
-      draggable: true,
-      "aria-label": fill(t.row, { name, position: i + 1, total: items.length }),
-      "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
-      className: cx("plx-find-panel__row", dragging === i && "is-dragging"),
-      onKeyDown: (e) => {
-        if (e.target !== e.currentTarget || !e.altKey) return;
-        if (e.key === "ArrowUp") {
-          e.preventDefault();
-          move2(i, i - 1, true);
-        }
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          move2(i, i + 1, true);
-        }
-      },
-      onDragStart: (e) => {
-        e.stopPropagation();
-        drag.current = i;
-        setDragging(i);
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", String(i));
-      },
-      onDragEnd: () => {
-        drag.current = null;
-        setDragging(-1);
-      },
-      onDragOver: (e) => e.preventDefault(),
-      onDrop: (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const from = drag.current;
-        drag.current = null;
-        setDragging(-1);
-        if (from !== null && from !== i) move2(from, i);
-      }
-    });
-    const handle = (i, name) => /* @__PURE__ */ React2.createElement(Menu, { label: fill(t.reorder, { name }), placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.reorder, { name }), className: "plx-find-panel__handle" }) }, /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(i, i - 1, true) }, t.moveUp), /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === items.length - 1, onSelect: () => move2(i, i + 1, true) }, t.moveDown));
-    const status = /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, msg);
-    return { box, rowProps, handle, status };
-  }
-  const FieldsIcon = { "name": "fields", "set": "plenix", "symbol": "list_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Z" } } } };
-  const PinFilledIcon = { "name": "pin-filled", "set": "plenix", "symbol": "push_pin", "fillOutline": true, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 0 20 20", "d": "m12.875 10.021 1.5 1.521v1.333h-3.729v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.458V4.25h-.833Zm-5.396 1.521h5l-.937-.917V4.25H8.417v6.375Zm2.5 0Z" }, "fill": { "viewBox": "0 0 20 20", "d": "m12.896 10.021 1.5 1.521v1.333h-3.75v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.479V4.25h-.833Z" } }, "24": { "outline": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1ZM8.85 14h6.3L14 12.85V5h-4v7.85ZM12 14Z" }, "fill": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1Z" } } } };
-  const VisibilityIcon = { "name": "visibility", "set": "plenix", "symbol": "visibility", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212ZM480-480Zm0 216q112 0 207-58t146-158q-51-100-146-158t-207-58q-112 0-207 58T127-480q51 100 146 158t207 58Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220ZM480-500Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220Z" } } } };
-  const moveTo = (order, f, i) => {
-    const rest = order.filter((x) => x !== f);
-    rest.splice(i, 0, f);
-    return rest;
-  };
-  const nameIn = (fields) => (f) => {
-    const x = fields.find((y) => y.value === f);
-    return x ? x.label : f;
-  };
-  function ColumnsList({ fields, value, onChange, filter = "", t }) {
-    const [msg, setMsg] = React2.useState("");
-    const [drag, setDrag] = React2.useState(null);
-    const box = React2.useRef(null);
-    const name = nameIn(fields);
-    const order = value.order, hidden = value.hidden || [];
-    const put = (o, h2, words2, focus) => {
-      onChange({ order: o, hidden: h2 });
-      setMsg(words2);
-      if (focus) setTimeout(() => {
-        const el = box.current && box.current.querySelector('[data-plx-field="' + focus + '"]');
-        if (el) el.focus();
-      }, 0);
-    };
-    const move2 = (f, to, focus) => {
-      if (to < 0 || to >= order.length) return;
-      put(
-        moveTo(order, f, to),
-        to === 0 ? hidden.filter((x) => x !== f) : hidden,
-        to === 0 ? fill(t.isFirst, { name: name(f) }) : fill(t.moved, { name: name(f), position: to + 1, total: order.length }),
-        focus ? f : null
-      );
-    };
-    const q2 = filter.trim().toLowerCase();
-    const shown = order.filter((f) => !q2 || name(f).toLowerCase().indexOf(q2) >= 0);
-    return /* @__PURE__ */ React2.createElement("div", { className: "plx-columns-list", ref: box }, shown.length ? null : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.none), shown.map((f) => {
-      const i = order.indexOf(f);
-      return /* @__PURE__ */ React2.createElement(
-        "div",
-        {
-          key: f,
-          "data-plx-field": f,
-          tabIndex: 0,
-          draggable: true,
-          "aria-label": fill(t.row, { name: name(f), first: i === 0 ? t.firstMark : "" }),
-          "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
-          className: cx("plx-columns-list__row", drag === f && "is-dragging"),
-          onKeyDown: (e) => {
-            if (e.target !== e.currentTarget || !e.altKey) return;
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              move2(f, i - 1, true);
-            }
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              move2(f, i + 1, true);
-            }
-          },
-          onDragStart: (e) => {
-            setDrag(f);
-            e.dataTransfer.effectAllowed = "move";
-            e.dataTransfer.setData("text/plain", f);
-          },
-          onDragEnd: () => setDrag(null),
-          onDragOver: (e) => e.preventDefault(),
-          onDrop: (e) => {
-            e.preventDefault();
-            const from = e.dataTransfer.getData("text/plain") || drag;
-            setDrag(null);
-            if (from && from !== f) move2(from, i);
-          }
-        },
-        /* @__PURE__ */ React2.createElement(Menu, { label: fill(t.moveMenu, { name: name(f) }), trigger: /* @__PURE__ */ React2.createElement(Button, { size: "xs", variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.moveMenu, { name: name(f) }), className: "plx-columns-list__handle" }), placement: "bottom-start" }, /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(f, i - 1, true) }, t.up), /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === order.length - 1, onSelect: () => move2(f, i + 1, true) }, t.down)),
-        /* @__PURE__ */ React2.createElement(
-          Checkbox,
-          {
-            label: name(f),
-            checked: hidden.indexOf(f) < 0,
-            disabled: i === 0,
-            onChange: () => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))
-          }
-        ),
-        i === 0 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-columns-list__first" }, /* @__PURE__ */ React2.createElement(Icon, { name: PinFilledIcon }), /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.first)) : null
-      );
-    }), /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, msg));
-  }
-  function ColumnsMenu({ fields = [], value, onChange, inline = false, strings }) {
-    const t = useStrings("columnsMenu", strings);
-    const v = value || { order: fields.map((f) => f.value), hidden: [] };
-    const name = nameIn(fields);
-    const first = /* @__PURE__ */ React2.createElement(Field, { label: t.first }, /* @__PURE__ */ React2.createElement(
-      Select,
-      {
-        value: v.order[0],
-        options: v.order.map((f) => ({ value: f, label: name(f) })),
-        onChange: (e) => onChange({ order: moveTo(v.order, e.target.value, 0), hidden: (v.hidden || []).filter((x) => x !== e.target.value) })
-      }
-    ));
-    const list2 = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--columns" }, first, /* @__PURE__ */ React2.createElement(ColumnsList, { fields, value: v, onChange, t }));
-    return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: FieldsIcon, label: t.label, title: t.label, count: (v.hidden || []).length, caret: true, size: "lg", inline }, list2);
-  }
-  function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
-    const t = useStrings("columnsMenu", strings);
-    const v = value || { order: fields.map((f) => f.value), hidden: [] };
-    const controlled = openProp !== void 0;
-    const [own2, setOwn] = React2.useState(false), open = controlled ? !!openProp : own2;
-    const setOpen = (next) => {
-      if (!controlled) setOwn(next);
-      if (onOpenChange) onOpenChange(next);
-    };
-    const [draft, setDraft] = React2.useState(v);
-    const [q2, setQ] = React2.useState("");
-    const name = nameIn(fields);
-    React2.useEffect(() => {
-      if (controlled && openProp) {
-        setDraft(v);
-        setQ("");
-      }
-    }, [controlled, openProp]);
-    const start2 = () => {
-      setDraft(v);
-      setQ("");
-      setOpen(true);
-    };
-    const button = trigger === null ? null : trigger ? React2.cloneElement(trigger, { onClick: start2 }) : /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FieldsIcon, onClick: start2 }, t.manage);
-    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, button, /* @__PURE__ */ React2.createElement(
-      Dialog,
-      {
-        open,
-        onClose: () => setOpen(false),
-        title: t.manage,
-        icon: FieldsIcon,
-        size: "md",
-        footer: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { onClick: () => setOpen(false) }, t.cancel), /* @__PURE__ */ React2.createElement(Button, { variant: "primary", onClick: () => {
-          onChange(draft);
-          setOpen(false);
-        } }, t.apply))
-      },
-      /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--dialog" }, /* @__PURE__ */ React2.createElement(Field, { label: t.first }, /* @__PURE__ */ React2.createElement(
-        Select,
-        {
-          value: draft.order[0],
-          options: draft.order.map((f) => ({ value: f, label: name(f) })),
-          onChange: (e) => setDraft({ order: moveTo(draft.order, e.target.value, 0), hidden: (draft.hidden || []).filter((x) => x !== e.target.value) })
-        }
-      )), /* @__PURE__ */ React2.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: t.find, label: t.find }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityIcon, onClick: () => setDraft({ order: draft.order, hidden: [] }) }, t.showAll), /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityOffIcon, onClick: () => setDraft({ order: draft.order, hidden: draft.order.slice(1) }) }, t.hideAll)), /* @__PURE__ */ React2.createElement(ColumnsList, { fields, value: draft, onChange: setDraft, filter: q2, t }))
-    ));
-  }
   const CloudOffIcon = { "name": "cloud-off", "set": "plenix", "symbol": "cloud_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-72.21 0-122.11-49.89Q68-311.79 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 2.18-14.24 7.82-31.66 5.65-17.41 14.11-30.88L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15ZM240-264h382.46L305.69-580.77q-7.46 15.69-13.07 35.35Q287-525.77 283-507l-51 4q-48 4-80 37.68T120-384q0 49.71 35.14 84.86Q190.29-264 240-264Zm223.69-158.77Zm362.46 186.92L787.77-274Q810-286.38 825-309.08q15-22.7 15-50.92 0-40.32-27.84-68.16Q784.32-456 744-456h-66l-6-65q-7-74-62-124.5T479.78-696q-24.47 0-47.12 6Q410-684 389-673l-37.38-37.77q32-18.46 62.64-27.84Q444.91-748 480-748q94.64 0 164.82 63.68Q715-620.64 724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77ZM588.38-474Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M781.08-104.62 675.23-212H240q-71.92 0-121.96-50.04Q68-312.08 68-384q0-74.08 52.77-124.46 52.77-50.39 123.15-48.85 1.85-14.46 7.66-31.77 5.81-17.3 14.27-30.77L119.23-766.46l37.16-37.15 661.84 661.84-37.15 37.15Zm45.07-131.23L351.62-710.77q32-18.46 62.5-27.84Q444.62-748 480-748q94.54 0 164.77 63.73T724-528v20h12.31q64.23-3.08 109.96 40.35Q892-424.23 892-360q0 37.23-17 69.38-17 32.16-48.85 54.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15ZM260-240h374.46L291.69-582.77q-5.46 13.69-8.57 29.85Q280-536.77 280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41Zm202.69-171.77Zm387.46 187.92L806.77-266q16.23-14.38 24.73-32.77Q840-317.15 840-340q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-27 0-52 6.5T380-693l-43.38-43.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.64 0 184.32 75.68Q740-628.64 740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27ZM593.38-479Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M805.08-70.62 695.23-180H260q-83.92 0-141.96-58.04Q60-296.08 60-380q0-75.08 48.27-130.46 48.27-55.39 118.65-65.85 1.85-11.46 7.16-26.27 5.31-14.8 11.77-27.27L85.23-790.46l42.16-42.15 719.84 719.84-42.15 42.15Zm45.07-153.23L336.62-736.77q35-22.46 69.5-32.84Q440.62-780 480-780q108.54 0 184.27 75.73T740-520v20h12.31q63.23 4.92 105.46 50.85Q900-403.23 900-340q0 33.23-12.5 62.88-12.5 29.66-37.35 53.27Z" } } } };
   const DocSearchIcon = { "name": "doc-search", "set": "plenix", "symbol": "find_in_page", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m605.85-168 52 52H212v-728h354.77L748-665.08v541.39h4.15L547.61-329q-15 10.38-32.29 14.69Q498.03-310 480-310q-51.75 0-87.87-36.13Q356-382.25 356-434q0-51.75 36.13-87.87Q428.25-558 480-558q51.75 0 87.87 36.13Q604-485.75 604-434q0 18.85-5 36.62-5 17.76-15 31.99l112 112.01V-642L546-792H264v624h341.85ZM480-362q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21Zm0-118Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M212-116v-728h354.77L748-665.08v462.93L584-365.39q10-14.23 15-31.99 5-17.77 5-36.62 0-51.75-36.13-87.87Q531.75-558 480-558q-51.75 0-87.87 36.13Q356-485.75 356-434q0 51.75 36.13 87.87Q428.25-310 480-310q18.03 0 35.32-4.31T547.61-329l204.54 204.92v8.08H212Zm267.79-246Q450-362 429-383.21t-21-51Q408-464 429.21-485t51-21Q510-506 531-484.79t21 51Q552-404 530.79-383t-51 21Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m603.85-160 60 60H180v-760h410.77L780-633.08v525.39h-9.85L554.61-322q-17 11.38-35.29 16.69Q501.03-300 480-300q-57.75 0-98.87-41.13Q340-382.25 340-440q0-57.75 41.13-98.87Q422.25-580 480-580q57.75 0 98.87 41.13Q620-497.75 620-440q0 21.85-5.5 40.12-5.5 18.26-16.5 34.49l122 124.01V-612L562-800H240v640h363.85ZM480-360q33 0 56.5-23.5T560-440q0-33-23.5-56.5T480-520q-33 0-56.5 23.5T400-440q0 33 23.5 56.5T480-360Zm0-120Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M180-100v-760h410.77L780-633.08v452.93L598-365.39q11-16.23 16.5-34.49Q620-418.15 620-440q0-57.75-41.13-98.87Q537.75-580 480-580q-57.75 0-98.87 41.13Q340-497.75 340-440q0 57.75 41.13 98.87Q422.25-300 480-300q21.03 0 39.32-5.31T554.61-322l215.54 213.92v8.08H180Zm300-260q-33 0-56.5-23.5T400-440q0-33 23.5-56.5T480-520q33 0 56.5 23.5T560-440q0 33-23.5 56.5T480-360Z" } } } };
   const SettingsMaintenanceIcon = { "name": "settings-maintenance", "set": "plenix", "symbol": "build", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Zm0-73.53 44.61-43.62-225.38-223.39q18.84-24.77 24.84-53.27 6-28.5 6-44.88 0-73.54-56.54-129.77Q446.61-761 363.84-754l118 117-158.15 157.15-120-120q-8.85 89 47.77 144.93Q308.08-399 381.69-399q17.39 0 47.58-6.81 30.19-6.8 56.96-27.42l223.39 223.39ZM476-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M709.62-136.31 478.08-367.08q-21.16 9.16-46 14.62-24.85 5.46-50.39 5.46-94.77 0-162.38-67.12-67.62-67.11-67.62-161.88 0-33 7.39-62.77 7.38-29.77 22.92-55.31l141.69 140.93L407.54-637 267.39-777.92q25.53-13.54 54.42-20.81 28.88-7.27 59.88-7.27 95.77 0 162.89 68.12 67.11 68.11 67.11 162.88 0 25.31-5.27 46.15-5.27 20.85-14.81 41.24l235.77 235.53-117.76 115.77Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Zm0-85.53 36.61-36.62-266.38-266.39q16.84-20.77 24.84-47.27 8-26.5 8-53.88 0-66.54-47.54-117.77Q432.61-769 359.84-768l112 112-170.15 170.15-112-112q.15 77 51.77 122.43Q293.08-430 357.69-430q26.39 0 52.58-7.81 26.19-7.8 47.96-24.42l266.39 266.39ZM472-486.46Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M724.62-110.31 447.08-389.08q-21.16 9.16-43 14.12-21.85 4.96-46.39 4.96-95.77 0-162.88-67.12-67.12-67.11-67.12-162.88 0-31 7.89-59.27 7.88-28.27 22.42-53.81l143.69 142.93L387.54-656 245.39-798.92q25.53-14.54 53.42-22.81 27.88-8.27 58.88-8.27 95.77 0 162.89 67.12 67.11 67.11 67.11 162.88 0 25.31-4.77 47.15-4.77 21.85-14.31 42.24l278.77 277.53-122.76 122.77Z" } } } };
-  const d0$W = "M793.08-80.62 439.39-436.31q-53.93 6.77-101.93 29.92-48 23.16-83.46 60.39l-62.46-63.69q35.46-35.46 79.96-61.39Q316-497 365.7-510L247.23-628.46q-43.31 19.46-85.54 48.23Q119.46-551.46 84-516l-61.69-63.69q35.85-35.85 76.5-65 40.65-29.16 81.96-50.23l-87.84-87.85 42.15-42.15 702.15 702.15-44.15 42.15ZM716-358l-23.04-23.04-23.04-23.04-113.61-113.61q57.54 8 112.65 35.42 55.12 27.43 99.5 71.81L716-358Zm160-158q-77-77-178.5-120.5T480-680q-21 0-41.08 1.5Q418.85-677 400-674l-76.61-76.61q35.15-9.31 73.92-13.96 38.77-4.66 82.69-4.66 135.46 0 252.69 50.5 117.23 50.5 205.77 139.04L876-516ZM480-120 360.54-240.08q23.77-23.76 54.69-36.46 30.92-12.69 64.77-12.69 33.85 0 64.77 12.69 30.92 12.7 54.69 36.46L480-120Z";
-  const WifiOffIcon = { "name": "wifi-off", "set": "plenix", "symbol": "wifi_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-20.76 56.19-32.46 30.42-11.69 62.27-11.69 32.85 0 62.77 12.19 29.92 12.2 56.69 31.96L480-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-19.76 56.19-31.96 30.42-12.19 62.27-12.19 32.85 0 62.77 12.69 29.92 12.7 56.69 31.46L480-144Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } } } };
+  const d0$Z = "M793.08-80.62 439.39-436.31q-53.93 6.77-101.93 29.92-48 23.16-83.46 60.39l-62.46-63.69q35.46-35.46 79.96-61.39Q316-497 365.7-510L247.23-628.46q-43.31 19.46-85.54 48.23Q119.46-551.46 84-516l-61.69-63.69q35.85-35.85 76.5-65 40.65-29.16 81.96-50.23l-87.84-87.85 42.15-42.15 702.15 702.15-44.15 42.15ZM716-358l-23.04-23.04-23.04-23.04-113.61-113.61q57.54 8 112.65 35.42 55.12 27.43 99.5 71.81L716-358Zm160-158q-77-77-178.5-120.5T480-680q-21 0-41.08 1.5Q418.85-677 400-674l-76.61-76.61q35.15-9.31 73.92-13.96 38.77-4.66 82.69-4.66 135.46 0 252.69 50.5 117.23 50.5 205.77 139.04L876-516ZM480-120 360.54-240.08q23.77-23.76 54.69-36.46 30.92-12.69 64.77-12.69 33.85 0 64.77 12.69 30.92 12.7 54.69 36.46L480-120Z";
+  const WifiOffIcon = { "name": "wifi-off", "set": "plenix", "symbol": "wifi_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-20.76 56.19-32.46 30.42-11.69 62.27-11.69 32.85 0 62.77 12.19 29.92 12.2 56.69 31.96L480-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M772.08-113.62 415.39-469.31q-50.93 6.77-96.43 28.92Q273.46-418.23 238-385l-46.46-45.69Q227-463.15 270-488.08 313-513 361.7-524L224.23-661.46q-40.31 18.46-81.04 46.23Q102.46-587.46 68-555l-45.69-45.69q33.85-32.85 74-61.5 40.15-28.66 79.46-47.73l-48.84-48.85 37.15-37.15 645.15 645.15-37.15 37.15ZM722-386q-22.54-19.54-49.54-35.04t-56.54-24.04l-87.61-87.61q64.54 1 127.15 27.42 62.62 26.43 113 72.81L722-386Zm170-169q-81-77-186.5-121T480-720q-32 0-64.08 3.5Q383.85-713 355-706l-53.61-53.61q39.15-12.31 83.42-18.96 44.27-6.66 95.19-6.66 133.46 0 250.69 49 117.23 49 207.77 135.54L892-555ZM480-144 361.54-262.08q25.77-19.76 56.19-31.96 30.42-12.19 62.27-12.19 32.85 0 62.77 12.69 29.92 12.7 56.69 31.46L480-144Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Z }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Z } } } };
   const KINDS = {
     offline: { tone: "warning", icon: WifiOffIcon },
     degraded: { tone: "warning", icon: CloudOffIcon },
@@ -19460,9 +18115,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const text2 = children !== void 0 && children !== null ? children : words2 ? words2.text : null;
     return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-empty-state", "plx-empty-state--" + size, t !== "neutral" && "plx-empty-state--" + t, className), role: ROLES$1[t], ...rest }, mark ? /* @__PURE__ */ React2.createElement("div", { className: "plx-empty-state__icon", "aria-hidden": "true" }, asIcon(mark)) : null, head ? /* @__PURE__ */ React2.createElement("div", { className: "plx-empty-state__title" }, head) : null, text2 ? /* @__PURE__ */ React2.createElement("div", { className: "plx-empty-state__text" }, text2) : null, action ? /* @__PURE__ */ React2.createElement("div", { className: "plx-empty-state__action" }, action) : null);
   }
-  const d0$V = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
-  const d1$V = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
-  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
+  const d0$Y = "M466-154v-220h52v84h288v52H518v84h-52Zm-312-84v-52h220v52H154Zm144-132v-84H154v-52h144v-84h52v220h-52Zm144-84v-52h364v52H442Zm144-132v-220h52v84h168v52H638v84h-52Zm-432-84v-52h364v52H154Z";
+  const d1$Y = "M450-130v-220h60v80h320v60H510v80h-60Zm-320-80v-60h220v60H130Zm160-160v-80H130v-60h160v-80h60v220h-60Zm160-80v-60h380v60H450Zm160-160v-220h60v80h160v60H670v80h-60Zm-480-80v-60h380v60H130Z";
+  const SettingsCustomizeIcon = { "name": "settings-customize", "set": "plenix", "symbol": "tune", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Y } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Y }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Y } } } };
   function pagesToShow(page, count2) {
     const set2 = new Set([1, count2, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count2));
     const list2 = Array.from(set2).sort((a, b) => a - b), out = [];
@@ -19480,33 +18135,6 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const first = total ? (page - 1) * (perPage || 0) + 1 : null;
     const last = total ? Math.min(total, page * (perPage || total)) : null;
     return /* @__PURE__ */ React2.createElement("nav", { className: cx("plx-pagination", className), "aria-label": label2 || t.label, ...rest }, total ? /* @__PURE__ */ React2.createElement("div", { className: "plx-pagination__info" }, dataPhrase(t.range, { first, last, total })) : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-pagination__pages" }, /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.previous, disabled: page <= 1, onClick: () => go(page - 1) }, "\u2039"), pagesToShow(page, pageCount).map((p) => typeof p === "string" ? /* @__PURE__ */ React2.createElement("span", { key: p, className: "plx-pagination__gap", "aria-hidden": "true" }, "\u2026") : /* @__PURE__ */ React2.createElement("button", { type: "button", key: p, className: "plx-pagination__page", "aria-current": p === page ? "page" : void 0, "aria-label": fill(t.page, { n: p }), onClick: () => go(p) }, p)), /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.next, disabled: page >= pageCount, onClick: () => go(page + 1) }, "\u203A")), perPageOptions && onPerPageChange ? /* @__PURE__ */ React2.createElement("label", { className: "plx-pagination__per-page" }, /* @__PURE__ */ React2.createElement("span", null, t.perPage), /* @__PURE__ */ React2.createElement("select", { className: "plx-pagination__select", value: perPage, onChange: (e) => onPerPageChange(Number(e.target.value)) }, perPageOptions.map((n) => /* @__PURE__ */ React2.createElement("option", { key: n, value: n }, n)))) : null);
-  }
-  function manageDialog({
-    headerMenu,
-    isStatic,
-    managing,
-    setManaging,
-    chooserColumns,
-    changeOrder,
-    changeVisibility
-  }) {
-    return headerMenu && !isStatic && managing ? /* @__PURE__ */ React2.createElement(
-      ManageColumnsDialog,
-      {
-        trigger: null,
-        open: managing,
-        onOpenChange: setManaging,
-        fields: chooserColumns().map((col) => ({ value: col.id, label: col.columnDef.meta.title || col.id })),
-        value: {
-          order: chooserColumns().map((col) => col.id),
-          hidden: chooserColumns().filter((col) => !col.getIsVisible()).map((col) => col.id)
-        },
-        onChange: (next) => {
-          changeOrder(next.order);
-          changeVisibility(Object.fromEntries((next.hidden || []).map((field) => [field, false])));
-        }
-      }
-    ) : null;
   }
   function failureState({ failed, B, S: S2, onRetry, remoteError, setRetry }) {
     return failed ? /* @__PURE__ */ React2.createElement(
@@ -19529,6 +18157,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
       },
       String(failed === true ? "" : failed.message || failed)
     ) : null;
+  }
+  function manageFailed({ B, S: S2, retry, close, from, frame }) {
+    const closeAndReturn = () => {
+      const back = from && from !== document.body && from.isConnected ? from : frame.current && frame.current.querySelector('[tabindex="0"]');
+      close();
+      if (back && back.focus) back.focus();
+    };
+    return /* @__PURE__ */ React2.createElement(Inline$1, { role: "alert" }, /* @__PURE__ */ React2.createElement("span", { className: B + "__empty" }, S2.columnsFailed), /* @__PURE__ */ React2.createElement(Button, { size: "sm", onClick: retry }, S2.retry), /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", onClick: closeAndReturn }, S2.close));
   }
   function viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }) {
     return props.viewMenu ? /* @__PURE__ */ React2.createElement("div", { className: `${B}__grid-col ${B}__w-view`, role: "columnheader" }, /* @__PURE__ */ React2.createElement(
@@ -19749,6 +18385,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (cellRange) cellRange.collapse();
       setEditing({ key: row.id, field: c.field, value });
       return;
+    }
+    if (canEdit && !event.ctrlKey && !event.altKey && !event.metaKey && !event.nativeEvent?.isComposing && event.keyCode !== 229) {
+      const typed2 = event.key.length === 1 && event.key !== " " && (c.editor !== "number" || /[0-9.\-]/.test(event.key));
+      if (event.key === "F2" || typed2) {
+        event.preventDefault();
+        if (cellRange) cellRange.collapse();
+        setEditing({ key: row.id, field: c.field, value: typed2 ? event.key : value });
+        return;
+      }
     }
     const index2 = model.indexOf(row), at2 = ordered2.indexOf(column), keys = {
       ArrowDown: [index2 + 1, at2],
@@ -20290,6 +18935,29 @@ var Plenix = (function(exports, React2, reactDom, client) {
       )
     ));
   }
+  let loaded = null, loading = null;
+  function load() {
+    return loading || (loading = Promise.resolve().then(() => chromeRare).then(
+      (m) => loaded = m,
+      (error) => {
+        loading = null;
+        throw error;
+      }
+    ));
+  }
+  function Rare({ part, args, fallback }) {
+    const [failed, setFailed] = React2.useState(false), [, again] = React2.useState(0), from = React2.useRef(null);
+    const attempt = React2.useCallback(() => {
+      setFailed(false);
+      load().then(() => again((n) => n + 1), () => setFailed(true));
+    }, []);
+    React2.useEffect(() => {
+      from.current = document.activeElement;
+      if (!loaded) attempt();
+    }, [attempt]);
+    if (loaded) return loaded[part](args);
+    return failed && fallback ? fallback(attempt, from.current) : null;
+  }
   function gridFrame({
     widthPixels,
     headerMenu,
@@ -20366,7 +19034,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
     setPageSize,
     loadedRows
   }) {
-    return /* @__PURE__ */ React2.createElement(WidthPixels.Provider, { value: widthPixels }, manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }), /* @__PURE__ */ React2.createElement(
+    return /* @__PURE__ */ React2.createElement(WidthPixels.Provider, { value: widthPixels }, headerMenu && !isStatic && managing ? /* @__PURE__ */ React2.createElement(
+      Rare,
+      {
+        part: "manageDialog",
+        args: { headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility },
+        fallback: (retry, from) => manageFailed({ B, S: S2, retry, close: () => setManaging(false), from, frame })
+      }
+    ) : null, /* @__PURE__ */ React2.createElement(
       "div",
       {
         ref: frame,
@@ -20822,9 +19497,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
     });
     return { table };
   }
-  const d0$U = "m535.85-480-189-189L384-706.15 610.15-480 384-253.85 346.85-291l189-189Z";
-  const d1$U = "m517.85-480-184-184L376-706.15 602.15-480 376-253.85 333.85-296l184-184Z";
-  const ChevronRightIcon = { "name": "chevron-right", "set": "plenix", "symbol": "chevron_right", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
+  const d0$X = "m535.85-480-189-189L384-706.15 610.15-480 384-253.85 346.85-291l189-189Z";
+  const d1$X = "m517.85-480-184-184L376-706.15 602.15-480 376-253.85 333.85-296l184-184Z";
+  const ChevronRightIcon = { "name": "chevron-right", "set": "plenix", "symbol": "chevron_right", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$X }, "fill": { "viewBox": "0 -960 960 960", "d": d0$X } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$X }, "fill": { "viewBox": "0 -960 960 960", "d": d1$X } } } };
+  const d0$W = "M359.79-207.39q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm-240-216q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Zm240 0q-23.44 0-39.92-16.69t-16.48-40.13q0-23.44 16.69-39.92t40.13-16.48q23.44 0 39.92 16.69t16.48 40.13q0 23.44-16.69 39.92t-40.13 16.48Z";
+  const d1$W = "M360-175.39q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm-240-240q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Zm240 0q-26.65 0-45.63-18.98-18.98-18.98-18.98-45.63 0-26.65 18.98-45.63 18.98-18.98 45.63-18.98 26.65 0 45.63 18.98 18.98 18.98 18.98 45.63 0 26.65-18.98 45.63-18.98 18.98-45.63 18.98Z";
+  const DragIcon = { "name": "drag", "set": "plenix", "symbol": "drag_indicator", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$W }, "fill": { "viewBox": "0 -960 960 960", "d": d0$W } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$W }, "fill": { "viewBox": "0 -960 960 960", "d": d1$W } } } };
   const DragHandle = React2.forwardRef(function DragHandle2({ label: label2, orientation = "vertical", dnd, disabled = false, className, ...rest }, ref) {
     const props = mergeDndProps(dnd || {}, rest);
     return /* @__PURE__ */ React2.createElement(
@@ -20840,9 +19518,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       /* @__PURE__ */ React2.createElement(Icon, { name: DragIcon })
     );
   });
-  const d0$T = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
-  const d1$T = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
-  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
+  const d0$V = "M164-164v-268h52v179.23L707.23-744H528v-52h268v268h-52v-179.23L252.77-216H432v52H164Z";
+  const d1$V = "M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z";
+  const ExpandIcon = { "name": "expand", "set": "plenix", "symbol": "open_in_full", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$V }, "fill": { "viewBox": "0 -960 960 960", "d": d0$V } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$V }, "fill": { "viewBox": "0 -960 960 960", "d": d1$V } } } };
+  const d0$U = "M479.79-221.23q-21.54 0-36.66-15.34Q428-251.91 428-273.44q0-21.54 15.34-36.67 15.34-15.12 36.87-15.12 21.54 0 36.66 15.34Q532-294.56 532-273.02t-15.34 36.66q-15.34 15.13-36.87 15.13Zm0-206.77q-21.54 0-36.66-15.34Q428-458.68 428-480.21q0-21.54 15.34-36.66Q458.68-532 480.21-532q21.54 0 36.66 15.34Q532-501.32 532-479.79q0 21.54-15.34 36.66Q501.32-428 479.79-428Zm0-206.77q-21.54 0-36.66-15.34Q428-665.44 428-686.98t15.34-36.66q15.34-15.13 36.87-15.13 21.54 0 36.66 15.34Q532-708.09 532-686.56q0 21.54-15.34 36.67-15.34 15.12-36.87 15.12Z";
+  const d1$U = "M480-189.23q-24.75 0-42.37-17.63Q420-224.48 420-249.23q0-24.75 17.63-42.38 17.62-17.62 42.37-17.62 24.75 0 42.37 17.62Q540-273.98 540-249.23q0 24.75-17.63 42.37-17.62 17.63-42.37 17.63ZM480-420q-24.75 0-42.37-17.63Q420-455.25 420-480q0-24.75 17.63-42.37Q455.25-540 480-540q24.75 0 42.37 17.63Q540-504.75 540-480q0 24.75-17.63 42.37Q504.75-420 480-420Zm0-230.77q-24.75 0-42.37-17.62Q420-686.02 420-710.77q0-24.75 17.63-42.37 17.62-17.63 42.37-17.63 24.75 0 42.37 17.63Q540-735.52 540-710.77q0 24.75-17.63 42.38-17.62 17.62-42.37 17.62Z";
+  const MoreIcon = { "name": "more", "set": "plenix", "symbol": "more_vert", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$U }, "fill": { "viewBox": "0 -960 960 960", "d": d0$U } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$U }, "fill": { "viewBox": "0 -960 960 960", "d": d1$U } } } };
   function bodyRows({
     B,
     semanticIndex,
@@ -21207,7 +19888,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 CellEditor,
                 {
                   column: c,
-                  value,
+                  value: editing.value,
                   onCommit: (next) => commitEdit(row.id, c.field, next),
                   onCancel: () => setEditing(null)
                 }
@@ -21303,12 +19984,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     return { groupNode, rowNode };
   }
-  const d0$S = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
-  const d1$S = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
-  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
-  const d0$R = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
-  const d1$R = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
-  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
+  const d0$T = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
+  const d1$T = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
+  const SortAscendingIcon = { "name": "sort-ascending", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$T }, "fill": { "viewBox": "0 -960 960 960", "d": d1$T } } } };
+  const d0$S = "M454-748v436.08L249.15-516.77 212-480l268 268 268-268-37.15-36.77L506-311.92V-748h-52Z";
+  const d1$S = "M450-780v485.08L222.15-522.77 180-480l300 300 300-300-42.15-42.77L510-294.92V-780h-60Z";
+  const SortDescendingIcon = { "name": "sort-descending", "set": "plenix", "symbol": "arrow_downward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$S }, "fill": { "viewBox": "0 -960 960 960", "d": d0$S } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
   const FilterIcon = { "name": "filter", "set": "plenix", "symbol": "filter_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Zm28-286 162-198H317l163 198Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M452-212v-237.92L205-748h550L508-449.92V-212h-56Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Zm60-288 198-252H282l198 252Zm0 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M420-180v-266.92L158-780h644L540-446.92V-180H420Z" } } } };
   const GroupByIcon = { "name": "group-by", "set": "plenix", "symbol": "view_agenda", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm52-52h528v-144H216v144Zm-52-307.38v-248h632v248H164Zm52-52h528v-144H216v144Zm0 215.38v144-144Zm0-359.38v144-144Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-176.31v-248h632v248H164Zm0-359.38v-248h632v248H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm60-60h560v-160H200v160Zm-60-315.38v-280h680v280H140Zm60-60h560v-160H200v160Zm0 215.38v160-160Zm0-375.38v160-160Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-152.31v-280h680v280H140Zm0-375.38v-280h680v280H140Z" } } } };
   function headerRows({
@@ -21590,7 +20271,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       props,
       options
     });
-    const [loaded, setLoaded] = React2.useState(props.pageSize || 50), [printing, setPrinting] = React2.useState(false);
+    const [loaded2, setLoaded] = React2.useState(props.pageSize || 50), [printing, setPrinting] = React2.useState(false);
     const childField = props.tree ? props.childrenField || "children" : null;
     const [filters, setFilters] = React2.useState([]), [page, setPage] = React2.useState(0), [pageSize, setPageSize] = React2.useState(props.pageSize || 50);
     const resetBy = [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize], [resetSeen, setResetSeen] = React2.useState(resetBy);
@@ -21756,7 +20437,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       mode,
       remoteMode,
       allRows,
-      loaded,
+      loaded: loaded2,
       groupBy: groupBy2,
       columns,
       printing,
@@ -22164,7 +20845,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         printing,
         filterField,
         groupBy2,
-        loaded,
+        loaded2,
         cellRange.rect
       ]
     );
@@ -22329,9 +21010,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       status ? /* @__PURE__ */ React2.createElement(Badge, { className: "plx-gauge__status", tone: status.tone, icon: status.icon }, status.label) : null
     ), /* @__PURE__ */ React2.createElement(Details$1, { summary: t.showData, variant: "inline", className: "plx-chart__data" }, /* @__PURE__ */ React2.createElement(Table, { label: t.table.replace("{title}", title || ""), columns: table.columns, data: table.data })));
   }
-  const d0$Q = "M481.54-212q-111.63 0-189.81-78.17-78.19-78.17-78.19-189.77 0-111.6 78.19-189.83Q369.91-748 481.54-748q66.15 0 121.27 29.69 55.11 29.7 91.65 78.54V-748h52v204.61H541.85v-51.99h121q-28.62-45.93-76.2-73.27Q539.08-696 481.54-696q-90 0-153 63t-63 153q0 90 63 153t153 63q84 0 144-55.5t69-136.5h53.23q-8.23 103.92-84.27 173.96Q587.46-212 481.54-212Z";
-  const d1$Q = "M481.54-180q-125.63 0-212.81-87.17-87.19-87.17-87.19-212.77 0-125.6 87.19-212.83Q355.91-780 481.54-780q70.15 0 132.77 31.19 62.61 31.2 104.15 88.04V-780h60v244.61H533.85v-59.99h158q-31.62-57.93-87.7-91.27Q548.08-720 481.54-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h63.23q-27.23 97.92-107.27 158.96Q583.46-180 481.54-180Z";
-  const RefreshIcon = { "name": "refresh", "set": "plenix", "symbol": "refresh", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Q }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Q } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Q }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Q } } } };
+  const d0$R = "M481.54-212q-111.63 0-189.81-78.17-78.19-78.17-78.19-189.77 0-111.6 78.19-189.83Q369.91-748 481.54-748q66.15 0 121.27 29.69 55.11 29.7 91.65 78.54V-748h52v204.61H541.85v-51.99h121q-28.62-45.93-76.2-73.27Q539.08-696 481.54-696q-90 0-153 63t-63 153q0 90 63 153t153 63q84 0 144-55.5t69-136.5h53.23q-8.23 103.92-84.27 173.96Q587.46-212 481.54-212Z";
+  const d1$R = "M481.54-180q-125.63 0-212.81-87.17-87.19-87.17-87.19-212.77 0-125.6 87.19-212.83Q355.91-780 481.54-780q70.15 0 132.77 31.19 62.61 31.2 104.15 88.04V-780h60v244.61H533.85v-59.99h158q-31.62-57.93-87.7-91.27Q548.08-720 481.54-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h63.23q-27.23 97.92-107.27 158.96Q583.46-180 481.54-180Z";
+  const RefreshIcon = { "name": "refresh", "set": "plenix", "symbol": "refresh", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$R }, "fill": { "viewBox": "0 -960 960 960", "d": d0$R } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$R }, "fill": { "viewBox": "0 -960 960 960", "d": d1$R } } } };
   const MARGIN_TOKENS = { top: "--plx-comp-chart-margin-block-start", end: "--plx-comp-chart-margin-inline-end", bottom: "--plx-comp-chart-margin-block-end", start: "--plx-comp-chart-margin-inline-start" };
   function ChartFrame({ title, description, hideCaption = false, size = "md", margin, legend, legendPosition = "bottom", table, interaction, actions, fitHeight, clip = false, strings, className, children }) {
     const t = useStrings("chart.chartFrame", strings);
@@ -22650,9 +21331,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       draw
     );
   }
-  const d0$P = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
-  const d1$P = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
-  const ArrowUpIcon = { "name": "arrow-up", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$P }, "fill": { "viewBox": "0 -960 960 960", "d": d0$P } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$P }, "fill": { "viewBox": "0 -960 960 960", "d": d1$P } } } };
+  const d0$Q = "M454-212v-436.08L249.15-443.23 212-480l268-268 268 268-37.15 36.77L506-648.08V-212h-52Z";
+  const d1$Q = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
+  const ArrowUpIcon = { "name": "arrow-up", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$Q }, "fill": { "viewBox": "0 -960 960 960", "d": d0$Q } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$Q }, "fill": { "viewBox": "0 -960 960 960", "d": d1$Q } } } };
   const TYPES = ["value", "trend", "progress", "gauge", "breakdown", "comparison", "list", "summary", "person", "week", "month", "table"];
   const LAYOUTS$4 = ["stacked", "beside", "inline", "tile", "icon-start"];
   const APPEARANCES = ["plain", "edge", "soft", "filled", "gradient"];
@@ -22893,6 +21574,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       ), o.preview ? /* @__PURE__ */ React2.createElement("span", { className: "plx-radio-tile__preview", "aria-hidden": "true" }, o.preview) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-radio-tile__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-radio-tile__label" }, o.label), o.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-radio-tile__description" }, o.description) : null), /* @__PURE__ */ React2.createElement("span", { className: "plx-radio-tile__check", "aria-hidden": "true" }, on ? /* @__PURE__ */ React2.createElement(Icon, { name: CheckIcon$1, size: "sm", filled: true }) : null));
     })));
   }
+  function Divider$1({ orientation = "horizontal", className, children, ...rest }) {
+    if (orientation === "horizontal" && children !== void 0 && children !== null && children !== false && children !== "") {
+      return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": "horizontal", "aria-label": typeof children === "string" || typeof children === "number" ? String(children) : void 0, className: cx("plx-divider", "plx-divider--labeled", className), ...rest }, /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__text" }, children), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }));
+    }
+    return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": orientation, className: cx("plx-divider", "plx-divider--" + orientation, className), ...rest });
+  }
   const DocumentIcon = { "name": "document", "set": "plenix", "symbol": "draft", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M212-116v-728h374l162 162v566H212Zm336-528v-148H264v624h432v-476H548ZM264-792v169-169 624-624Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M212-116v-728h374l162 162v566H212Zm336-528h148L548-792v148Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M180-100v-760h390l210 210v550H180Zm360-520v-180H240v640h480v-460H540ZM240-800v180-180 640-640Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M180-100v-760h390l210 210v550H180Zm360-520h180L540-800v180Z" } } } };
   function Thumbnail({ src, alt = "", icon = "document" }) {
     const glyph = icon === "document" ? DocumentIcon : icon;
@@ -22950,7 +21637,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   }
   const DATA_COLORS = ["blue", "green", "purple", "red", "brown", "gray"];
   const CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
-  const nameOf$2 = (h2) => h2.charAt(0).toUpperCase() + h2.slice(1);
+  const nameOf$4 = (h2) => h2.charAt(0).toUpperCase() + h2.slice(1);
   function ColorSwatch({ color, category, tone, size = "md", shape = "square", pressed, label: label2, showLabel = false, unavailable = false, onClick: pick, readOnly, className, ...rest }) {
     if (category === "brown") category = "orange";
     devWarn("ColorSwatch", { tone, size }, { tone: ["accent", "surface", "frost"], size: ["sm", "md"] });
@@ -22971,7 +21658,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const locked = useReadOnly(readOnly);
     const tw = useStrings("colorSwatch");
     if (label2 === void 0) label2 = tw.label;
-    const colorName = (h2) => tw.colors && tw.colors[h2] || nameOf$2(h2);
+    const colorName = (h2) => tw.colors && tw.colors[h2] || nameOf$4(h2);
     const cat = palette === "category";
     if (cat && value === "brown") value = "orange";
     const all = cat ? CATEGORY_COLORS : DATA_COLORS;
@@ -23051,10 +21738,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return /* @__PURE__ */ React2.createElement("li", { key: i, className: "plx-breadcrumbs__item" }, last ? /* @__PURE__ */ React2.createElement("span", { className: "plx-breadcrumbs__current", "aria-current": "page" }, it.label) : it.href ? /* @__PURE__ */ React2.createElement("a", { className: "plx-breadcrumbs__link", href: it.href, onClick: it.onClick }, it.label) : /* @__PURE__ */ React2.createElement("span", { className: "plx-breadcrumbs__text" }, it.label));
     })));
   }
-  const kindOf = (ordered2) => ordered2 === "alpha" ? "alpha" : ordered2 ? "decimal" : null;
+  const kindOf$1 = (ordered2) => ordered2 === "alpha" ? "alpha" : ordered2 ? "decimal" : null;
   function List({ items, label: label2, ordered: ordered2, variant = "icons", className, children }) {
     devWarn("List", { variant }, { variant: ["icons", "steps", "bullets"] });
-    const kind = kindOf(ordered2 || (variant === "steps" ? "decimal" : null));
+    const kind = kindOf$1(ordered2 || (variant === "steps" ? "decimal" : null));
     const Tag2 = kind ? "ol" : "ul";
     return /* @__PURE__ */ React2.createElement(
       Tag2,
@@ -23589,29 +22276,29 @@ var Plenix = (function(exports, React2, reactDom, client) {
       document.body
     );
   }
-  const d0$O = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM164,-190v-250h164v164h-112v86zM276,-328v-60l-60,0v60zM572,-388.08v171.53l-53.27,52.55h-130.73v-276h130.62zM440,-388v172h57.4l22.6,-22.29l0,-127.82l-22.5,-21.88zM770,-388l-86,0v60h67.29v52h-67.29v86h-52v-250h138z";
-  const d1$O = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM140,-170v-270h180v180h-120v90zM260,-320v-60l-60,0v60zM580,-382.43v184.85l-57.57,57.57h-142.43v-300h142.43zM440,-380v180h57.57l22.43,-22.43v-135.15l-22.43,-22.43zM790,-380l-90,0l0,60h70v60h-70v90h-60v-270h150z";
-  const FilePdfIcon = { "name": "file-pdf", "set": "plenix", "symbol": "file_pdf", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$O }, "fill": { "viewBox": "0 -960 960 960", "d": d0$O } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$O }, "fill": { "viewBox": "0 -960 960 960", "d": d1$O } } } };
-  const d0$N = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM328,-414.52v250.52h-164v-100.84h52l0,48.84l60,0v-198.52zM388,-190v-250h184v164h-132v86zM520,-328v-60l-80,0v60zM770,-388l-86,0v172l60,0v-60h-30.13v-52h82.13v164h-164v-276h138z";
-  const d1$N = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM320,-410v270h-180v-110h60v50l60,0v-210zM380,-170v-270h200v180h-140v90zM520,-320v-60l-80,0v60zM790,-380l-90,0v180h60v-60h-30v-60h90v180h-180v-300h150z";
-  const FileJpgIcon = { "name": "file-jpg", "set": "plenix", "symbol": "file_jpg", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$N }, "fill": { "viewBox": "0 -960 960 960", "d": d0$N } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$N }, "fill": { "viewBox": "0 -960 960 960", "d": d1$N } } } };
-  const d0$M = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM164,-190v-250h164v164h-112v86zM276,-328v-60l-60,0v60zM520,-285.52v-128.99l52,0v250.52l-40.87,0l-91.13,-154.99v128.99l-52,0l0,-250.52h40.87zM770,-388l-86,0v172l60,0v-60h-30.13v-52h82.13v164h-164v-276h138z";
-  const d1$M = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM140,-170v-270h180v180h-120v90zM260,-320v-60l-60,0v60zM520,-280.97v-129.03l60,0v270l-47.23,0l-92.77,-159.03l0,129.03l-60,0l0,-270l47.23,0zM790,-380l-90,0v180h60v-60h-30v-60h90v180h-180v-300h150z";
-  const FilePngIcon = { "name": "file-png", "set": "plenix", "symbol": "file_png", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$M }, "fill": { "viewBox": "0 -960 960 960", "d": d0$M } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$M }, "fill": { "viewBox": "0 -960 960 960", "d": d1$M } } } };
-  const d0$L = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM302.26,-388h-86.26v60h112v164h-138v-52h86v-60h-112v-164h138.26zM439.48,-421.8l40.52,138.94l40.52,-138.94l49.92,14.56l-70.94,243.24l-39,0l-70.94,-243.24zM770,-388l-86,0v172l60,0v-60h-30.13v-52h82.13v164h-164v-276h138z";
-  const d1$L = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM170,-200h90v-60h-120v-180h150v60h-90l0,60h120v180h-150zM438.8,-418.4l41.2,141.26l41.2,-141.26l57.6,16.8l-76.3,261.6l-45,0l-76.3,-261.6zM790,-380l-90,0v180h60v-60h-30v-60h90v180h-180v-300h150z";
-  const FileSvgIcon = { "name": "file-svg", "set": "plenix", "symbol": "file_svg", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$L }, "fill": { "viewBox": "0 -960 960 960", "d": d0$L } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$L }, "fill": { "viewBox": "0 -960 960 960", "d": d1$L } } } };
-  const d0$K = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM164,-190v-250h164v164h-112v86zM276,-328v-60l-60,0v60zM545.48,-388h-105.48v60h132v164h-157.48v-52l105.48,0v-60h-132v-164h157.48zM796,-387.97v171.32l-52.65,52.65h-111.35v-276h111.24zM684,-388v172h37.81l22.19,-22.19v-128.03l-22.08,-21.78z";
-  const d1$K = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM140,-170v-270h180v180h-120v90zM260,-320v-60l-60,0v60zM550,-380h-110v60h140v180h-170v-60h110v-60h-140v-180h170zM820,-382.43v184.85l-57.57,57.57h-122.43v-300h122.43zM700,-380v180h37.57l22.43,-22.43v-135.15l-22.43,-22.43z";
-  const FilePsdIcon = { "name": "file-psd", "set": "plenix", "symbol": "file_psd", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$K }, "fill": { "viewBox": "0 -960 960 960", "d": d0$K } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$K }, "fill": { "viewBox": "0 -960 960 960", "d": d1$K } } } };
-  const d0$J = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM240,-190v-250h200v250h-52l0,-86h-96v86zM388,-388l-96,0l0,60h96zM648,-414.52v224.52h-52v-224.52z";
-  const d1$J = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM220,-170v-270h220v270h-60v-90h-100v90zM380,-380l-100,0v60l100,0zM660,-410v240h-60v-240z";
-  const FileAiIcon = { "name": "file-ai", "set": "plenix", "symbol": "file_ai", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$J }, "fill": { "viewBox": "0 -960 960 960", "d": d0$J } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$J }, "fill": { "viewBox": "0 -960 960 960", "d": d1$J } } } };
+  const d0$P = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM164,-190v-250h164v164h-112v86zM276,-328v-60l-60,0v60zM572,-388.08v171.53l-53.27,52.55h-130.73v-276h130.62zM440,-388v172h57.4l22.6,-22.29l0,-127.82l-22.5,-21.88zM770,-388l-86,0v60h67.29v52h-67.29v86h-52v-250h138z";
+  const d1$P = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM140,-170v-270h180v180h-120v90zM260,-320v-60l-60,0v60zM580,-382.43v184.85l-57.57,57.57h-142.43v-300h142.43zM440,-380v180h57.57l22.43,-22.43v-135.15l-22.43,-22.43zM790,-380l-90,0l0,60h70v60h-70v90h-60v-270h150z";
+  const FilePdfIcon = { "name": "file-pdf", "set": "plenix", "symbol": "file_pdf", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$P }, "fill": { "viewBox": "0 -960 960 960", "d": d0$P } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$P }, "fill": { "viewBox": "0 -960 960 960", "d": d1$P } } } };
+  const d0$O = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM328,-414.52v250.52h-164v-100.84h52l0,48.84l60,0v-198.52zM388,-190v-250h184v164h-132v86zM520,-328v-60l-80,0v60zM770,-388l-86,0v172l60,0v-60h-30.13v-52h82.13v164h-164v-276h138z";
+  const d1$O = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM320,-410v270h-180v-110h60v50l60,0v-210zM380,-170v-270h200v180h-140v90zM520,-320v-60l-80,0v60zM790,-380l-90,0v180h60v-60h-30v-60h90v180h-180v-300h150z";
+  const FileJpgIcon = { "name": "file-jpg", "set": "plenix", "symbol": "file_jpg", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$O }, "fill": { "viewBox": "0 -960 960 960", "d": d0$O } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$O }, "fill": { "viewBox": "0 -960 960 960", "d": d1$O } } } };
+  const d0$N = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM164,-190v-250h164v164h-112v86zM276,-328v-60l-60,0v60zM520,-285.52v-128.99l52,0v250.52l-40.87,0l-91.13,-154.99v128.99l-52,0l0,-250.52h40.87zM770,-388l-86,0v172l60,0v-60h-30.13v-52h82.13v164h-164v-276h138z";
+  const d1$N = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM140,-170v-270h180v180h-120v90zM260,-320v-60l-60,0v60zM520,-280.97v-129.03l60,0v270l-47.23,0l-92.77,-159.03l0,129.03l-60,0l0,-270l47.23,0zM790,-380l-90,0v180h60v-60h-30v-60h90v180h-180v-300h150z";
+  const FilePngIcon = { "name": "file-png", "set": "plenix", "symbol": "file_png", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$N }, "fill": { "viewBox": "0 -960 960 960", "d": d0$N } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$N }, "fill": { "viewBox": "0 -960 960 960", "d": d1$N } } } };
+  const d0$M = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM302.26,-388h-86.26v60h112v164h-138v-52h86v-60h-112v-164h138.26zM439.48,-421.8l40.52,138.94l40.52,-138.94l49.92,14.56l-70.94,243.24l-39,0l-70.94,-243.24zM770,-388l-86,0v172l60,0v-60h-30.13v-52h82.13v164h-164v-276h138z";
+  const d1$M = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM170,-200h90v-60h-120v-180h150v60h-90l0,60h120v180h-150zM438.8,-418.4l41.2,141.26l41.2,-141.26l57.6,16.8l-76.3,261.6l-45,0l-76.3,-261.6zM790,-380l-90,0v180h60v-60h-30v-60h90v180h-180v-300h150z";
+  const FileSvgIcon = { "name": "file-svg", "set": "plenix", "symbol": "file_svg", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$M }, "fill": { "viewBox": "0 -960 960 960", "d": d0$M } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$M }, "fill": { "viewBox": "0 -960 960 960", "d": d1$M } } } };
+  const d0$L = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM164,-190v-250h164v164h-112v86zM276,-328v-60l-60,0v60zM545.48,-388h-105.48v60h132v164h-157.48v-52l105.48,0v-60h-132v-164h157.48zM796,-387.97v171.32l-52.65,52.65h-111.35v-276h111.24zM684,-388v172h37.81l22.19,-22.19v-128.03l-22.08,-21.78z";
+  const d1$L = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM140,-170v-270h180v180h-120v90zM260,-320v-60l-60,0v60zM550,-380h-110v60h140v180h-170v-60h110v-60h-140v-180h170zM820,-382.43v184.85l-57.57,57.57h-122.43v-300h122.43zM700,-380v180h37.57l22.43,-22.43v-135.15l-22.43,-22.43z";
+  const FilePsdIcon = { "name": "file-psd", "set": "plenix", "symbol": "file_psd", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$L }, "fill": { "viewBox": "0 -960 960 960", "d": d0$L } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$L }, "fill": { "viewBox": "0 -960 960 960", "d": d1$L } } } };
+  const d0$K = "M164,-536.13v-259.87h420.32l211.68,211.68v48.19h-52l0,-11.87h-196v-196l-332,0v207.87zM600,-600l106.78,0l-106.78,-106.78zM240,-190v-250h200v250h-52l0,-86h-96v86zM388,-388l-96,0l0,60h96zM648,-414.52v224.52h-52v-224.52z";
+  const d1$K = "M140,-540v-280h452.43l227.57,227.57v52.43h-260v-220h-360v220zM620,-600h107.57l-107.57,-107.57zM220,-170v-270h220v270h-60v-90h-100v90zM380,-380l-100,0v60l100,0zM660,-410v240h-60v-240z";
+  const FileAiIcon = { "name": "file-ai", "set": "plenix", "symbol": "file_ai", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$K }, "fill": { "viewBox": "0 -960 960 960", "d": d0$K } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$K }, "fill": { "viewBox": "0 -960 960 960", "d": d1$K } } } };
   const PlayIcon = { "name": "play-arrow", "set": "material", "symbol": "play_arrow", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M356-252.16v-455.68L707.07-480 356-252.16ZM409-481Zm-1 133 204.77-132L408-612v264Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M356-252.16v-455.68L707.07-480 356-252.16Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M340-236.16v-487.68L723.07-480 340-236.16ZM400-480Zm0 134 210.77-134L400-614v268Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M340-236.16v-487.68L723.07-480 340-236.16Z" } } } };
   const PauseIcon = { "name": "pause", "set": "material", "symbol": "pause", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M538-212v-536h210v536H538Zm-326 0v-536h210v536H212Zm378-52h106v-432H590v432Zm-326 0h106v-432H264v432Zm0-432v432-432Zm326 0v432-432Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M564-248v-464h158v464H564Zm-326 0v-464h158v464H238Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M530-220v-520h210v520H530Zm-310 0v-520h210v520H220Zm370-60h90v-400h-90v400Zm-310 0h90v-400h-90v400Zm0-400v400-400Zm310 0v400-400Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M560-220v-520h150v520H560Zm-310 0v-520h150v520H250Z" } } } };
-  const d0$I = "M480-344.46 317.23-507.23l37.16-36.38L454-444v-352h52v352l99.61-99.61 37.16 36.38L480-344.46ZM212-212v-124.77h52V-264h432v-72.77h52V-212H212Z";
-  const d1$I = "M480-328.46 309.23-499.23l42.16-43.38L450-444v-336h60v336l98.61-98.61 42.16 43.38L480-328.46ZM180-180v-180.77h60V-240h480v-120.77h60V-180H180Z";
-  const DownloadIcon = { "name": "download", "set": "material", "symbol": "download", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$I }, "fill": { "viewBox": "0 -960 960 960", "d": d0$I } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$I }, "fill": { "viewBox": "0 -960 960 960", "d": d1$I } } } };
+  const d0$J = "M480-344.46 317.23-507.23l37.16-36.38L454-444v-352h52v352l99.61-99.61 37.16 36.38L480-344.46ZM212-212v-124.77h52V-264h432v-72.77h52V-212H212Z";
+  const d1$J = "M480-328.46 309.23-499.23l42.16-43.38L450-444v-336h60v336l98.61-98.61 42.16 43.38L480-328.46ZM180-180v-180.77h60V-240h480v-120.77h60V-180H180Z";
+  const DownloadIcon = { "name": "download", "set": "material", "symbol": "download", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$J }, "fill": { "viewBox": "0 -960 960 960", "d": d0$J } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$J }, "fill": { "viewBox": "0 -960 960 960", "d": d1$J } } } };
   const BrokenImageIcon = { "name": "broken-image", "set": "material", "symbol": "broken_image", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-164v-632h632v632H164Zm100-268.77 144-144 144 144 144-144 48 48V-744H216v263.23l48 48ZM216-216h528v-238.85l-48-48-144 144-144-144-144 144-48-48V-216Zm0 0v-253.85 43V-744v528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-164v-294.85l100 100 144-144 144 144 144-144 100 100V-164H164Zm0-632h632v319.23l-100-100-144 144-144-144-144 144-100-100V-796Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-140v-680h680v680H140Zm100-302.77 160-160 160 160 160-160 40 40V-760H200v277.23l40 40ZM200-200h560v-277.85l-40-40-160 160-160-160-160 160-40-40V-200Zm0 0v-277.85 60V-760v560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-140v-317.85l100 100 160-160 160 160 160-160 100 100V-140H140Zm0-680h680v317.23l-100-100-160 160-160-160-160 160-100-100V-820Z" } } } };
   const FILE_ICONS = { pdf: FilePdfIcon, jpg: FileJpgIcon, jpeg: FileJpgIcon, png: FilePngIcon, svg: FileSvgIcon, psd: FilePsdIcon, ai: FileAiIcon };
   const fileIconOf = (name) => FILE_ICONS[String(name || "").split(".").pop().toLowerCase()] || DocumentIcon;
@@ -23815,19 +22502,19 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }, [timeout, s.copied, s.failed]);
     return { copy, copied, error, reset };
   }
-  const d0$H = "M744-230v-124q0-53.85-38.08-91.92Q667.85-484 614-484H263.92l133 133-36.77 37.15L164-510l196.15-196.15L396.92-669l-133 133H614q75.77 0 128.88 53.12Q796-429.77 796-354v124h-52Z";
-  const d1$H = "M760-220v-140q0-53.85-38.08-91.92Q683.85-490 630-490H254.92l154 154-42.77 42.15L140-520l226.15-226.15L408.92-704l-154 154H630q78.77 0 134.38 55.62Q820-438.77 820-360v140h-60Z";
-  const ReplyIcon = { "name": "reply", "set": "plenix", "symbol": "reply", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$H }, "fill": { "viewBox": "0 -960 960 960", "d": d0$H } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$H }, "fill": { "viewBox": "0 -960 960 960", "d": d1$H } } } };
+  const d0$I = "M744-230v-124q0-53.85-38.08-91.92Q667.85-484 614-484H263.92l133 133-36.77 37.15L164-510l196.15-196.15L396.92-669l-133 133H614q75.77 0 128.88 53.12Q796-429.77 796-354v124h-52Z";
+  const d1$I = "M760-220v-140q0-53.85-38.08-91.92Q683.85-490 630-490H254.92l154 154-42.77 42.15L140-520l226.15-226.15L408.92-704l-154 154H630q78.77 0 134.38 55.62Q820-438.77 820-360v140h-60Z";
+  const ReplyIcon = { "name": "reply", "set": "plenix", "symbol": "reply", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$I }, "fill": { "viewBox": "0 -960 960 960", "d": d0$I } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$I }, "fill": { "viewBox": "0 -960 960 960", "d": d1$I } } } };
   const FormatQuoteIcon = { "name": "format-quote", "set": "plenix", "symbol": "format_quote", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m270.69-301.85 75.93-132.46q-3.46 1.92-8.08 2.69t-9.23.77q-42 0-73.58-33.24-31.57-33.23-31.57-79.91 0-49 32.57-81.58 32.58-32.57 81.58-32.57 48.29 0 81.22 32.57 32.93 32.58 32.93 81.45 0 13.21-4.11 27.36-4.12 14.15-11.97 29.62l-105.77 185.3h-59.92Zm283.39 0L630-434.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-42 0-73.57-33.24-31.58-33.23-31.58-79.91 0-49.38 32.58-81.77 32.57-32.38 81.57-32.38 48.29 0 81.22 32.57 32.93 32.58 32.93 81.45 0 15.21-4.11 29.86-4.12 14.65-10.96 27.12L614-301.85h-59.92Zm-216.01-172.3q29.01 0 49.55-20.31 20.54-20.3 20.54-49.3 0-29.01-20.31-49.55-20.3-20.54-49.31-20.54-29 0-49.54 20.31-20.54 20.3-20.54 49.3 0 29.01 20.3 49.55 20.31 20.54 49.31 20.54Zm283.39 0q29 0 49.54-20.31 20.54-20.3 20.54-49.3 0-29.01-20.3-49.55-20.31-20.54-49.31-20.54-29.01 0-49.55 20.31-20.54 20.3-20.54 49.3 0 29.01 20.31 49.55 20.3 20.54 49.31 20.54Zm.23-69.85Zm-283.38 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m270.69-301.85 75.93-132.46q-3.46 1.92-8.08 2.69t-9.23.77q-42 0-73.58-33.46-31.57-33.46-31.57-79.69 0-49 32.57-81.58 32.58-32.57 81.58-32.57 48.23 0 81.19 32.57Q452.46-593 452.46-544q0 15.08-4.61 29.73-4.62 14.65-11.47 27.12l-105.77 185.3h-59.92Zm283.39 0L630-434.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-42 0-73.57-33.46-31.58-33.46-31.58-79.69 0-49.38 32.58-81.77 32.57-32.38 81.57-32.38 48.23 0 81.19 32.57Q735.84-593 735.84-544q0 15.08-4.11 29.73-4.12 14.65-10.96 27.12L614-301.85h-59.92Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m245.69-253.85 93.93-163.46q-3.46 1.92-8.08 2.69t-9.23.77q-61 0-103.58-42.93-42.57-42.93-42.57-103.22 0-61 42.57-103.58 42.58-42.57 103.58-42.57 60.29 0 103.22 42.57 42.93 42.58 42.93 103.45 0 21.21-5.11 39.36-5.12 18.15-14.97 34.62l-133.77 232.3h-68.92Zm355.39 0L695-417.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-61 0-103.57-42.93-42.58-42.93-42.58-103.22 0-61.38 42.58-103.77 42.57-42.38 103.57-42.38 60.29 0 103.22 42.57 42.93 42.58 42.93 103.45 0 21.21-5.11 39.36-5.12 18.15-14.96 34.62L670-253.85h-68.92Zm-278.77-232.3q30.77 0 52.31-21.54 21.54-21.54 21.54-52.31 0-30.77-21.54-52.31-21.54-21.54-52.31-21.54-30.77 0-52.31 21.54-21.54 21.54-21.54 52.31 0 30.77 21.54 52.31 21.54 21.54 52.31 21.54Zm355.38 0q30.77 0 52.31-21.54 21.54-21.54 21.54-52.31 0-30.77-21.54-52.31-21.54-21.54-52.31-21.54-30.77 0-52.31 21.54-21.54 21.54-21.54 52.31 0 30.77 21.54 52.31 21.54 21.54 52.31 21.54Zm0-73.85Zm-355.38 0Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m245.69-253.85 93.93-163.46q-3.46 1.92-8.08 2.69t-9.23.77q-61 0-103.58-42.96-42.57-42.96-42.57-103.19 0-61 42.57-103.58 42.58-42.57 103.58-42.57 60.23 0 103.19 42.57Q468.46-621 468.46-560q0 21.08-5.11 39.23-5.12 18.15-14.97 34.62l-133.77 232.3h-68.92Zm355.39 0L695-417.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-61 0-103.57-42.96-42.58-42.96-42.58-103.19 0-61.38 42.58-103.77 42.57-42.38 103.57-42.38 60.23 0 103.19 42.57Q823.84-621 823.84-560q0 21.08-5.11 39.23-5.12 18.15-14.96 34.62L670-253.85h-68.92Z" } } } };
   const EdCopyIcon = { "name": "ed-copy", "set": "plenix", "symbol": "content_copy", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M298-260v-584h488v584H298Zm52-52h384v-480H350v480ZM174-136v-571.69h52V-188h423.69v52H174Zm176-176v-480 480Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M298-260v-584h488v584H298ZM174-136v-571.69h52V-188h423.69v52H174Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M290-260v-600h480v600H290Zm60-60h360v-480H350v480ZM150-120v-587.69h60V-180h407.69v60H150Zm200-200v-480 480Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M290-260v-600h480v600H290ZM150-120v-587.69h60V-180h407.69v60H150Z" } } } };
-  const d0$G = "M647.85-313.85 611.08-351l159-159-159-159 36.77-37.15L844-510 647.85-313.85ZM164-230v-124q0-75.77 53.12-128.88Q270.23-536 346-536h223.77l-133-133 36.77-37.15L669.69-510 473.54-313.85 436.77-351l133-133H346q-53.85 0-91.92 38.08Q216-407.85 216-354v124h-52Z";
-  const d1$G = "M633.85-293.85 591.08-336l184-184-184-184 42.77-42.15L860-520 633.85-293.85ZM100-220v-140q0-78.77 55.62-134.38Q211.23-550 290-550h272.77l-154-154 42.77-42.15L677.69-520 451.54-293.85 408.77-336l154-154H290q-53.85 0-91.92 38.08Q160-413.85 160-360v140h-60Z";
-  const ForwardIcon = { "name": "forward", "set": "plenix", "symbol": "forward", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$G }, "fill": { "viewBox": "0 -960 960 960", "d": d0$G } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$G }, "fill": { "viewBox": "0 -960 960 960", "d": d1$G } } } };
+  const d0$H = "M647.85-313.85 611.08-351l159-159-159-159 36.77-37.15L844-510 647.85-313.85ZM164-230v-124q0-75.77 53.12-128.88Q270.23-536 346-536h223.77l-133-133 36.77-37.15L669.69-510 473.54-313.85 436.77-351l133-133H346q-53.85 0-91.92 38.08Q216-407.85 216-354v124h-52Z";
+  const d1$H = "M633.85-293.85 591.08-336l184-184-184-184 42.77-42.15L860-520 633.85-293.85ZM100-220v-140q0-78.77 55.62-134.38Q211.23-550 290-550h272.77l-154-154 42.77-42.15L677.69-520 451.54-293.85 408.77-336l154-154H290q-53.85 0-91.92 38.08Q160-413.85 160-360v140h-60Z";
+  const ForwardIcon = { "name": "forward", "set": "plenix", "symbol": "forward", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$H }, "fill": { "viewBox": "0 -960 960 960", "d": d0$H } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$H }, "fill": { "viewBox": "0 -960 960 960", "d": d1$H } } } };
   const PencilIcon = { "name": "pencil", "set": "plenix", "symbol": "edit", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M216-216h44.46l393.46-393.46-44.46-44.46L216-260.46V-216Zm-52 52v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm580-534.77L698.77-744 744-698.77ZM631.3-631.3l-21.84-22.62 44.46 44.46-22.62-21.84Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-164v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm527.08-482.23L744-698.77 698.77-744l-52.54 52.92 44.85 44.85Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M200-200h50.46l409.46-409.46-50.46-50.46L200-250.46V-200Zm-60 60v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm620-569.77L709.77-760 760-709.77Zm-125.75 75.52-24.79-25.67 50.46 50.46-25.67-24.79Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-140v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm562.08-512.23L760-709.77 709.77-760l-57.54 57.92 49.85 49.85Z" } } } };
   const TrashIcon = { "name": "trash", "set": "plenix", "symbol": "delete", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Zm52-52h336v-480H312v480Zm88.16-72h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM312-696v480-480Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M400.16-288h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Zm60-60h400v-520H280v520Zm96.16-80h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Z" } } } };
   const AddReactionIcon = { "name": "add-reaction", "set": "material", "symbol": "add_reaction", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480-480Zm.34 364q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.43-141.25 28.42-65.87 78.22-115.68t115.96-78.25Q404.77-844 480-844q35.46 0 70.81 6.31 35.34 6.31 67.8 20.5v57.11q-33.23-15.84-67.73-23.88Q516.38-792 480-792q-129.67 0-220.84 91.23-91.16 91.23-91.16 221Q168-350 259.23-259t221 91Q610-168 701-259.16q91-91.17 91-220.84 0-36.72-8.23-71.25-8.23-34.52-24.46-67.36h58.46q13.61 33.46 19.92 68.21Q844-515.65 844-480q0 75.23-28.42 141.39-28.42 66.16-78.21 115.96-49.79 49.8-115.85 78.22Q555.45-116 480.34-116ZM778-706v-72h-72v-52h72v-72h52v72h72v52h-72v72h-52ZM608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q55.18 0 101.74-27.54 46.57-27.54 75.18-75.15H303.08q28.61 47.61 75.18 75.15 46.56 27.54 101.74 27.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M778-706v-72h-72v-52h72v-72h52v72h72v52h-72v72h-52ZM608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q55.18 0 101.74-27.54 46.57-27.54 75.18-75.15H303.08q28.61 47.61 75.18 75.15 46.56 27.54 101.74 27.54Zm.34 184.31q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.43-141.25 28.42-65.87 78.22-115.68t115.96-78.25Q404.77-844 480-844q35.46 0 70.81 6.31 35.34 6.31 67.8 19.86V-706h87.01v87.39h112.15q13.61 33.46 19.92 68.21Q844-515.65 844-480q0 75.23-28.42 141.39-28.42 66.16-78.21 115.96-49.79 49.8-115.85 78.22Q555.45-116 480.34-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480-480Zm.07 380q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.93-148.21 29.92-69.37 81.22-120.68t120.65-81.25Q401.15-860 480-860q41.46 0 80.31 8.31 38.84 8.31 74.3 24.31v67.3q-34.23-18.84-73.23-29.38Q522.38-800 480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-30.46-5.73-59.12-5.73-28.65-15.96-55.49h64.46q8.61 27.46 12.92 55.71Q860-510.65 860-480q0 78.85-29.92 148.2t-81.21 120.65q-51.29 51.3-120.63 81.22Q558.9-100 480.07-100ZM810-690v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q63.18 0 114.74-35.04 51.57-35.04 76.18-92.65H289.08q24.61 57.61 76.18 92.65 51.56 35.04 114.74 35.04Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M810-690v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q63.18 0 114.74-35.04 51.57-35.04 76.18-92.65H289.08q24.61 57.61 76.18 92.65 51.56 35.04 114.74 35.04Zm.07 172.31q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.93-148.21 29.92-69.37 81.22-120.68t120.65-81.25Q401.15-860 480-860q41.46 0 80.31 8.31 38.84 8.31 74.3 24.31V-690h95.01v95.39h113.15q8.61 27.46 12.92 55.71Q860-510.65 860-480q0 78.85-29.92 148.2t-81.21 120.65q-51.29 51.3-120.63 81.22Q558.9-100 480.07-100Z" } } } };
   const QUICK_REACTIONS = [["\u{1F44D}", "thumbsUp"], ["\u2764\uFE0F", "heart"], ["\u{1F602}", "laugh"], ["\u{1F62E}", "wow"], ["\u{1F622}", "sad"], ["\u{1F64F}", "thanks"]];
-  const nameOf$1 = (emoji, t) => {
+  const nameOf$3 = (emoji, t) => {
     const q2 = QUICK_REACTIONS.find((r) => r[0] === emoji);
     return q2 ? t[q2[1]] : emoji;
   };
@@ -23847,7 +22534,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         type: "button",
         className: cx("plx-chat__reaction", r.mine && "plx-chat__reaction--mine"),
         "aria-pressed": !!r.mine,
-        "aria-label": fill(t.reactionCount, { name: r.label || nameOf$1(r.emoji, t), count: r.count }),
+        "aria-label": fill(t.reactionCount, { name: r.label || nameOf$3(r.emoji, t), count: r.count }),
         onClick: onReact ? () => onReact(r.emoji) : void 0,
         disabled: !onReact
       },
@@ -23862,20 +22549,20 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return /* @__PURE__ */ React2.createElement("div", { className: "plx-chat__replying" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-chat__replying-icon" }, /* @__PURE__ */ React2.createElement(Icon, { name: ReplyIcon, size: "sm" })), /* @__PURE__ */ React2.createElement("span", { className: "plx-chat__quote plx-chat__quote--replying" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-chat__quote-author" }, fill(t.replyingTo, { name: author })), /* @__PURE__ */ React2.createElement("span", { className: "plx-chat__quote-text" }, text2)), onCancel ? /* @__PURE__ */ React2.createElement(Button, { variant: "secondary", size: "sm", iconOnly: true, icon: CloseIcon, label: t.cancelReply, onClick: onCancel }) : null);
   }
   const SparkleIcon = { "name": "sparkle", "set": "plenix", "symbol": "auto_awesome", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 0 20 20", "d": "m15.375 7.333-.917-2.021-1.979-.895 1.979-.917.917-2 .917 2 1.979.917-1.979.895Zm0 11.167-.917-1.979-1.979-.917 1.979-.896.917-2.02.917 2.02 1.979.896-1.979.917Zm-7.854-2.667-1.771-4-4-1.833 4-1.812 1.771-4 1.812 4L13.312 10l-3.979 1.833Zm0-3.271.812-1.729L10.042 10l-1.709-.812-.812-1.73-.792 1.73L5 10l1.729.833Zm0-2.562Z" }, "fill": { "viewBox": "0 0 20 20", "d": "m15.375 7.333-.917-2.021-1.979-.895 1.979-.917.917-2 .917 2 1.979.917-1.979.895Zm0 11.167-.917-1.979-1.979-.917 1.979-.896.917-2.02.917 2.02 1.979.896-1.979.917Zm-7.854-2.667-1.771-4-4-1.833 4-1.812 1.771-4 1.812 4L13.312 10l-3.979 1.833Z" } }, "24": { "outline": { "viewBox": "0 0 24 24", "d": "m18.5 8.6-1.05-2.35L15.1 5.2l2.35-1.075L18.5 1.8l1.05 2.325L21.9 5.2l-2.35 1.05Zm0 13.6-1.05-2.325L15.1 18.8l2.35-1.05 1.05-2.35 1.05 2.35 2.35 1.05-2.35 1.075Zm-9.625-3.4-2.1-4.675L2.1 12l4.675-2.125 2.1-4.675L11 9.875 15.675 12 11 14.125Zm0-3.65 1-2.15 2.15-1-2.15-1-1-2.15-1 2.15-2.15 1 2.15 1Zm0-3.15Z" }, "fill": { "viewBox": "0 0 24 24", "d": "m18.5 8.6-1.05-2.35L15.1 5.2l2.35-1.075L18.5 1.8l1.05 2.325L21.9 5.2l-2.35 1.05Zm0 13.6-1.05-2.325L15.1 18.8l2.35-1.05 1.05-2.35 1.05 2.35 2.35 1.05-2.35 1.075Zm-9.625-3.4-2.1-4.675L2.1 12l4.675-2.125 2.1-4.675L11 9.875 15.675 12 11 14.125Z" } } } };
-  const d0$F = "M389-280.85 209.62-459.23 246.38-497 389-354.38 713.62-678l36.76 36.77L389-280.85Z";
-  const d1$F = "M382-253.85 168.62-467.23 211.38-510 382-339.38 748.62-706l42.76 42.77L382-253.85Z";
-  const DoneIcon = { "name": "done", "set": "material", "symbol": "done", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$F }, "fill": { "viewBox": "0 -960 960 960", "d": d0$F } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$F }, "fill": { "viewBox": "0 -960 960 960", "d": d1$F } } } };
-  const d0$E = "M293-301.85 113.85-482l35.77-36.15 143 142L306.46-390l37.16 37.15-50.62 51Zm204 0L316.85-482 354-518.77l143 143 324-324L858.15-663 497-301.85ZM483.15-491l-36.77-37.15 172-172L655.15-663l-172 172Z";
-  const d1$E = "M268-253.85 55.85-466l42.77-42.15 170 170L282.46-352l42.16 42.15-56.62 56Zm226 0L281.85-466 324-508.77l170 170 368-368L904.15-664 494-253.85ZM480.15-466l-42.77-42.15 198-198L678.15-664l-198 198Z";
-  const DoneAllIcon = { "name": "done-all", "set": "material", "symbol": "done_all", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$E }, "fill": { "viewBox": "0 -960 960 960", "d": d0$E } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$E }, "fill": { "viewBox": "0 -960 960 960", "d": d1$E } } } };
+  const d0$G = "M389-280.85 209.62-459.23 246.38-497 389-354.38 713.62-678l36.76 36.77L389-280.85Z";
+  const d1$G = "M382-253.85 168.62-467.23 211.38-510 382-339.38 748.62-706l42.76 42.77L382-253.85Z";
+  const DoneIcon = { "name": "done", "set": "material", "symbol": "done", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$G }, "fill": { "viewBox": "0 -960 960 960", "d": d0$G } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$G }, "fill": { "viewBox": "0 -960 960 960", "d": d1$G } } } };
+  const d0$F = "M293-301.85 113.85-482l35.77-36.15 143 142L306.46-390l37.16 37.15-50.62 51Zm204 0L316.85-482 354-518.77l143 143 324-324L858.15-663 497-301.85ZM483.15-491l-36.77-37.15 172-172L655.15-663l-172 172Z";
+  const d1$F = "M268-253.85 55.85-466l42.77-42.15 170 170L282.46-352l42.16 42.15-56.62 56Zm226 0L281.85-466 324-508.77l170 170 368-368L904.15-664 494-253.85ZM480.15-466l-42.77-42.15 198-198L678.15-664l-198 198Z";
+  const DoneAllIcon = { "name": "done-all", "set": "material", "symbol": "done_all", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$F }, "fill": { "viewBox": "0 -960 960 960", "d": d0$F } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$F }, "fill": { "viewBox": "0 -960 960 960", "d": d1$F } } } };
   const EdImageIcon = { "name": "ed-image", "set": "plenix", "symbol": "image", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294-298h375.07L543.54-465.38 443.23-335.23l-62-78.31L294-298ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M270-290h423.07L561.54-465.38 449.23-319.23l-80-102.31L270-290ZM140-140v-680h680v680H140Z" } } } };
   const MicIcon = { "name": "mic", "set": "plenix", "symbol": "mic", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480-404q-41.92 0-70.96-29.04Q380-462.08 380-504v-240q0-41.92 29.04-70.96Q438.08-844 480-844q41.92 0 70.96 29.04Q580-785.92 580-744v240q0 41.92-29.04 70.96Q521.92-404 480-404Zm0-220Zm-26 470v-107.85q-93.8-10.41-155.9-78.97Q236-409.39 236-504h52q0 79.68 56.23 135.84 56.22 56.16 136 56.16Q560-312 616-368.16q56-56.16 56-135.84h52q0 94.61-62.1 163.18-62.1 68.56-155.9 78.97V-154h-52Zm26-302q20.4 0 34.2-13.8Q528-483.6 528-504v-240q0-20.4-13.8-34.2Q500.4-792 480-792q-20.4 0-34.2 13.8Q432-764.4 432-744v240q0 20.4 13.8 34.2Q459.6-456 480-456Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480-404q-41.92 0-70.96-29.04Q380-462.08 380-504v-240q0-41.92 29.04-70.96Q438.08-844 480-844q41.92 0 70.96 29.04Q580-785.92 580-744v240q0 41.92-29.04 70.96Q521.92-404 480-404Zm-26 250v-107.85q-93.8-10.41-155.9-78.97Q236-409.39 236-504h52q0 79.68 56.23 135.84 56.22 56.16 136 56.16Q560-312 616-368.16q56-56.16 56-135.84h52q0 94.61-62.1 163.18-62.1 68.56-155.9 78.97V-154h-52Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480-420q-41.92 0-70.96-29.04Q380-478.08 380-520v-240q0-41.92 29.04-70.96Q438.08-860 480-860q41.92 0 70.96 29.04Q580-801.92 580-760v240q0 41.92-29.04 70.96Q521.92-420 480-420Zm0-220Zm-30 510v-131.85q-99-11.31-164.5-84.92Q220-420.39 220-520h60q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h60q0 99.61-65.5 173.23Q609-273.16 510-261.85V-130h-60Zm30-350q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480-420q-41.92 0-70.96-29.04Q380-478.08 380-520v-240q0-41.92 29.04-70.96Q438.08-860 480-860q41.92 0 70.96 29.04Q580-801.92 580-760v240q0 41.92-29.04 70.96Q521.92-420 480-420Zm-30 290v-131.85q-99-11.31-164.5-84.92Q220-420.39 220-520h60q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h60q0 99.61-65.5 173.23Q609-273.16 510-261.85V-130h-60Z" } } } };
   const StopIcon = { "name": "stop", "set": "plenix", "symbol": "stop", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M336-624v288-288Zm-52 340v-392h392v392H284Zm52-52h288v-288H336v288Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M284-284v-392h392v392H284Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M320-640v320-320Zm-60 380v-440h440v440H260Zm60-60h320v-320H320v320Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M260-260v-440h440v440H260Z" } } } };
   const MoodIcon = { "name": "mood", "set": "material", "symbol": "mood", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q54.61 0 101.46-27.54 46.85-27.54 75.46-75.15H303.08q28.61 47.61 75.46 75.15 46.85 27.54 101.46 27.54Zm.34 184.31q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116ZM480-480Zm0 312q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q56.61 0 105.46-25.54 48.85-25.54 71.46-77.15H303.08q22.61 51.61 71.46 77.15 48.85 25.54 105.46 25.54Zm.34 184.31q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q62.61 0 114.46-35.04 51.85-35.04 76.46-92.65H289.08q24.61 57.61 76.46 92.65 51.85 35.04 114.46 35.04Zm.07 172.31q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100ZM480-480Zm0 320q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q62.61 0 114.46-35.04 51.85-35.04 76.46-92.65H289.08q24.61 57.61 76.46 92.65 51.85 35.04 114.46 35.04Zm.07 172.31q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z" } } } };
   const SendIcon = { "name": "send", "set": "material", "symbol": "send", "fillOutline": false, "mirrored": true, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-222v-516l648.46 258L164-222Zm52-77 454-181-454-181v116.69L408.92-480 216-415.69V-299Zm0 0v-362 362Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-222v-175.08L408.92-480 164-562.92V-738l648.46 258L164-222Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-190v-580l688.46 290L140-190Zm60-90 474-200-474-200v147.69L416.92-480 200-427.69V-280Zm0 0v-400 400Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-190v-223.08L416.92-480 140-546.92V-770l688.46 290L140-190Z" } } } };
-  const d0$D = "M309-257.69v-444.62h52v444.62h-52ZM454-116v-728h52v728h-52ZM164-397.85v-164.3h52v164.3h-52Zm435 140.16v-444.62h52v444.62h-52Zm145-140.16v-164.3h52v164.3h-52Z";
-  const d1$D = "M295-257.69v-444.62h60v444.62h-60ZM450-100v-760h60v760h-60ZM140-413.85v-132.3h60v132.3h-60Zm465 156.16v-444.62h60v444.62h-60Zm155-156.16v-132.3h60v132.3h-60Z";
-  const GraphicEqIcon = { "name": "graphic-eq", "set": "material", "symbol": "graphic_eq", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$D }, "fill": { "viewBox": "0 -960 960 960", "d": d0$D } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$D }, "fill": { "viewBox": "0 -960 960 960", "d": d1$D } } } };
+  const d0$E = "M309-257.69v-444.62h52v444.62h-52ZM454-116v-728h52v728h-52ZM164-397.85v-164.3h52v164.3h-52Zm435 140.16v-444.62h52v444.62h-52Zm145-140.16v-164.3h52v164.3h-52Z";
+  const d1$E = "M295-257.69v-444.62h60v444.62h-60ZM450-100v-760h60v760h-60ZM140-413.85v-132.3h60v132.3h-60Zm465 156.16v-444.62h60v444.62h-60Zm155-156.16v-132.3h60v132.3h-60Z";
+  const GraphicEqIcon = { "name": "graphic-eq", "set": "material", "symbol": "graphic_eq", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$E }, "fill": { "viewBox": "0 -960 960 960", "d": d0$E } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$E }, "fill": { "viewBox": "0 -960 960 960", "d": d1$E } } } };
   function Typing({ label: label2, variant = "typing", steps = [], current: current2 = 0, strings, className, ...rest }) {
     devWarn("Chat.Typing", { variant }, { variant: ["typing", "thinking", "steps"] });
     const t = useStrings("chat", strings);
@@ -24370,6 +23057,89 @@ var Plenix = (function(exports, React2, reactDom, client) {
     )));
     return fold2 === "never" ? segments : /* @__PURE__ */ React2.createElement("div", { ref: frame, className: "plx-segmented-fit" }, segments);
   }
+  const Checkbox = React2.forwardRef(function Checkbox2({ label: label2, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
+    const locked = useReadOnly(readOnly);
+    const inner = React2.useRef(null);
+    React2.useImperativeHandle(ref, () => inner.current);
+    React2.useEffect(() => {
+      if (inner.current) inner.current.indeterminate = indeterminate;
+    }, [indeterminate]);
+    return /* @__PURE__ */ React2.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React2.createElement("input", { ref: inner, type: "checkbox", className: "plx-check__input", ...readOnlyProps(locked, rest) }), label2 || description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
+  });
+  const Radio = React2.forwardRef(function Radio2({ label: label2, description, className, readOnly, dir, lang, ...rest }, ref) {
+    const locked = useReadOnly(readOnly);
+    return /* @__PURE__ */ React2.createElement("label", { className: cx("plx-check", className), dir, lang }, /* @__PURE__ */ React2.createElement("input", { ref, type: "radio", className: "plx-check__input", ...readOnlyProps(locked, rest, { aria: false }) }), label2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-check__label" }, label2), description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-check__description" }, dataWhenText(description)) : null) : null);
+  });
+  function RadioGroup({ label: label2, name, value, onChange, options, layout: layout2 = "column", className, readOnly, ...rest }) {
+    const auto = "plx-r" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
+    return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-radio-group", "plx-radio-group--" + layout2, className), ...rest }, label2 ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-radio-group__legend" }, label2) : null, options.map((o) => /* @__PURE__ */ React2.createElement(Radio, { key: o.value, name: name || auto, value: o.value, label: o.label, description: o.description, checked: o.value === value, onChange: () => onChange(o.value), disabled: o.disabled, readOnly })));
+  }
+  function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
+    const locked = useReadOnly(readOnly);
+    const auto = "plx-c" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
+    return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-choice-list", className), ...rest }, legend ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-choice-list__legend" }, legend) : null, options.map((o) => /* @__PURE__ */ React2.createElement("label", { key: o.value, className: cx("plx-choice", o.value === value && "is-selected"), hidden: o.hidden || void 0 }, /* @__PURE__ */ React2.createElement("input", { type: "radio", className: "plx-choice__input", ...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false }) }), /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__label" }, o.label), o.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__description" }, o.description) : null))));
+  }
+  const Switch = React2.forwardRef(function Switch2({ label: label2, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
+    const locked = useReadOnly(readOnly);
+    return /* @__PURE__ */ React2.createElement("label", { className: cx("plx-switch", className), dir, lang }, /* @__PURE__ */ React2.createElement("input", { ref, type: "checkbox", role: "switch", className: "plx-switch__input", "aria-label": labelHidden ? label2 : void 0, ...readOnlyProps(locked, rest) }), /* @__PURE__ */ React2.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" }), label2 && !labelHidden ? /* @__PURE__ */ React2.createElement("span", { className: "plx-switch__label" }, label2) : null);
+  });
+  const IGNORED = /[\u0640\u064B-\u065F\u0670]/;
+  const JOINED = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  function fold$1(source) {
+    let text2 = "";
+    const start2 = [];
+    const end = [];
+    let at2 = 0;
+    for (const ch of source) {
+      const next = at2 + ch.length;
+      if (!IGNORED.test(ch)) {
+        const low = ch.toLocaleLowerCase();
+        for (let i = 0; i < low.length; i += 1) {
+          start2.push(at2);
+          end.push(next);
+        }
+        text2 += low;
+      }
+      at2 = next;
+    }
+    return { text: text2, start: start2, end };
+  }
+  function ranges(label2, typed2) {
+    const query = fold$1(String(typed2 ?? "").trim()).text;
+    if (!query) return [];
+    const folded = fold$1(label2);
+    const found = [];
+    let from = folded.text.indexOf(query);
+    while (from >= 0) {
+      const last = from + query.length - 1;
+      let to = folded.end[last];
+      while (to < label2.length && IGNORED.test(label2.charAt(to))) to += 1;
+      found.push([folded.start[from], to]);
+      from = folded.text.indexOf(query, from + query.length);
+    }
+    return found;
+  }
+  function matchesText(label2, typed2) {
+    const query = fold$1(String(typed2 ?? "").trim()).text;
+    return !query || fold$1(String(label2 ?? "")).text.indexOf(query) >= 0;
+  }
+  function highlightMatch(label2, typed2) {
+    const text2 = String(label2 ?? "");
+    const found = ranges(text2, typed2);
+    if (!found.length) return text2;
+    const pieces = [];
+    let at2 = 0;
+    found.forEach(([from, to], i) => {
+      if (from > at2) pieces.push(text2.slice(at2, from));
+      const part = text2.slice(from, to);
+      pieces.push(
+        /* @__PURE__ */ React2.createElement("span", { key: "m" + i, className: JOINED.test(part) ? "plx-match plx-match--joined" : "plx-match" }, part)
+      );
+      at2 = to;
+    });
+    if (at2 < text2.length) pieces.push(text2.slice(at2));
+    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, pieces);
+  }
   const Combobox = React2.forwardRef(function Combobox2({
     options = [],
     value,
@@ -24416,7 +23186,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (open && TOP_LAYER$1 && el && el.showPopover && !el.matches(":popover-open")) el.showPopover();
     }, [open]);
     React2.useImperativeHandle(ref, () => input.current);
-    const [loaded, setLoaded] = React2.useState([]);
+    const [loaded2, setLoaded] = React2.useState([]);
     const [busy, setBusy] = React2.useState(false);
     const [failed, setFailed] = React2.useState(false);
     const loader = React2.useRef(loadOptions), request = React2.useRef(0), seen = React2.useRef(/* @__PURE__ */ new Map());
@@ -24453,20 +23223,20 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return () => clearTimeout(timer);
     }, [async, open, text2, minChars, loadDelay]);
     const isLoading = !!loading2 || async && busy;
-    const optionOf = (v) => options.find((x) => x.value === v) || (async ? loaded.find((x) => x.value === v) || seen.current.get(v) : void 0);
+    const optionOf = (v) => options.find((x) => x.value === v) || (async ? loaded2.find((x) => x.value === v) || seen.current.get(v) : void 0);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const current2 = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
     const asData = data === void 0 ? isDataValue(text2.trim() ? text2 : current2 ? String(current2.label) : "") : !!data;
     const q2 = text2.trim().toLowerCase();
     const tags = multiple && !marks2;
-    const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
+    const offered = (async ? loaded2 : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
     const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || matchesText(o.label, text2) || o.description && matchesText(o.description, text2));
     const groupOrder = [];
     matching.forEach((o) => {
       if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
     });
     const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
-    const canCreate = creatable && q2 && !isLoading && !(async ? loaded : options).some((o) => String(o.label).toLowerCase() === q2);
+    const canCreate = creatable && q2 && !isLoading && !(async ? loaded2 : options).some((o) => String(o.label).toLowerCase() === q2);
     const noMatch = !isLoading && !failed && !filtered.length && !canCreate, showAction = noMatch && !!emptyAction;
     const items = filtered.map((o) => ({ kind: "option", o })).concat(canCreate ? [{ kind: "create" }] : []).concat(showAction ? [{ kind: "action" }] : []);
     const shownAction = open && showAction;
@@ -24650,9 +23420,555 @@ var Plenix = (function(exports, React2, reactDom, client) {
       )
     ])) : isLoading ? /* @__PURE__ */ React2.createElement("li", { className: "plx-combobox__loading", role: "presentation" }, /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, t.loading)) : failed ? /* @__PURE__ */ React2.createElement("li", { className: "plx-combobox__empty plx-combobox__error", role: "presentation" }, t.error) : /* @__PURE__ */ React2.createElement("li", { className: "plx-combobox__empty", role: "presentation" }, emptyText)) : null);
   });
+  const d0$D = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
+  const d1$D = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
+  const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$D }, "fill": { "viewBox": "0 -960 960 960", "d": d0$D } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$D }, "fill": { "viewBox": "0 -960 960 960", "d": d1$D } } } };
+  const asItem = (kind) => (x) => typeof x === "string" ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind });
+  const SearchInput = React2.forwardRef(function SearchInput2({
+    value,
+    onChange,
+    onClear,
+    placeholder,
+    label: label2,
+    shortcut,
+    loading: loading2 = false,
+    onAccent = false,
+    suggestions,
+    recent,
+    onSelect,
+    onSubmitSearch,
+    onRemoveRecent,
+    onClearRecent,
+    strings,
+    className,
+    onKeyDown: onKeyDown2,
+    onFocus,
+    width = "auto",
+    size,
+    ...rest
+  }, ref) {
+    const t = useStrings("searchField", strings);
+    if (placeholder === void 0) placeholder = t.placeholder;
+    if (label2 === void 0) label2 = t.label;
+    const auto = "plx-sf" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
+    const listId = auto + "-list";
+    const wrap = React2.useRef(null), input = React2.useRef(null), list2 = React2.useRef(null);
+    React2.useImperativeHandle(ref, () => input.current);
+    const hasList = !!(suggestions || recent);
+    const text2 = value == null ? "" : String(value);
+    const showRecent = !text2;
+    const items = showRecent ? (recent || []).map(asItem("recent")) : (suggestions || []).map(asItem("suggestion"));
+    const [open, setOpen] = React2.useState(false);
+    const [active, setActive] = React2.useState(-1);
+    const [cell, setCell] = React2.useState(0);
+    const shown = hasList && open && items.length > 0;
+    const grid = showRecent && !!onRemoveRecent;
+    React2.useEffect(() => {
+      setActive(-1);
+      setCell(0);
+    }, [text2, showRecent]);
+    React2.useEffect(() => {
+      if (!open) return void 0;
+      const off2 = (e) => {
+        if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+      };
+      document.addEventListener("mousedown", off2);
+      return () => document.removeEventListener("mousedown", off2);
+    }, [open]);
+    React2.useEffect(() => {
+      if (shown && !showRecent) announce(t.results.replace("{n}", formatNumber(items.length)));
+    }, [shown, showRecent, items.length, t.results]);
+    React2.useEffect(() => {
+      const el = active >= 0 && list2.current ? list2.current.querySelector("#" + auto + "-r" + active + ", #" + auto + "-o" + active) : null;
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
+    }, [active, auto]);
+    const setText = (v) => {
+      if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current });
+    };
+    const choose = (item) => {
+      setOpen(false);
+      if (onSelect) onSelect(item);
+      else {
+        setText(item.value);
+        if (onSubmitSearch) onSubmitSearch(item.value);
+      }
+    };
+    const removeRecent = (i) => {
+      const it = items[i];
+      if (!it || !onRemoveRecent) return;
+      onRemoveRecent(it.value);
+      if (active >= 0) setActive((a) => Math.min(a, items.length - 2));
+      if (items.length <= 1) setCell(0);
+      announce(t.removed.replace("{query}", it.value));
+    };
+    const keys = (e) => {
+      if (onKeyDown2) onKeyDown2(e);
+      if (e.defaultPrevented || !hasList) {
+        if (e.key === "Enter" && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text2);
+        return;
+      }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!open) setOpen(true);
+        else if (items.length) setActive((a) => (a + 1) % items.length);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!open) setOpen(true);
+        else if (items.length) setActive((a) => a <= 0 ? items.length - 1 : a - 1);
+      } else if (grid && shown && active >= 0 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+        const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === "rtl";
+        e.preventDefault();
+        setCell(e.key === "ArrowRight" !== rtl ? 1 : 0);
+      } else if (e.key === "Enter") {
+        if (shown && items[active] && grid && cell === 1) {
+          e.preventDefault();
+          removeRecent(active);
+        } else if (shown && items[active]) {
+          e.preventDefault();
+          choose(items[active]);
+        } else {
+          setOpen(false);
+          if (onSubmitSearch) onSubmitSearch(text2);
+        }
+      } else if (e.key === "Escape") {
+        if (shown) {
+          e.preventDefault();
+          setOpen(false);
+        }
+      } else if (e.key === "Delete" && shown && showRecent && items[active] && onRemoveRecent) {
+        e.preventDefault();
+        removeRecent(active);
+      } else if (!open && e.key.length === 1) setOpen(true);
+    };
+    const bar = useInBar(input);
+    const cut = useTruncated(input, text2, bar) && !!text2;
+    const optId = (i) => auto + "-o" + i;
+    const cellId = (i, c) => auto + "-o" + i + (c ? "-x" : "");
+    const comboProps = hasList ? {
+      role: "combobox",
+      "aria-expanded": shown,
+      "aria-controls": listId,
+      "aria-autocomplete": "list",
+      "aria-haspopup": grid ? "grid" : void 0,
+      "aria-activedescendant": shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : void 0
+    } : {};
+    return /* @__PURE__ */ React2.createElement("div", { ref: wrap, className: cx("plx-search", size === "sm" && "plx-search--size-sm", width === "bar" && "plx-search--bar", width === "fill" && "plx-search--fill", ["xs", "sm", "md", "lg"].includes(width) && "plx-search--width-" + width, onAccent && "plx-search--on-accent", shown && "is-open", className), role: "search" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__icon", "aria-hidden": "true" }, loading2 ? /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.searching }) : /* @__PURE__ */ React2.createElement(Icon, { name: SearchIcon })), /* @__PURE__ */ React2.createElement(Tooltip, { content: text2, disabled: !cut || shown, describe: false, className: "plx-search__tip" }, /* @__PURE__ */ React2.createElement(
+      "input",
+      {
+        ref: input,
+        size: size === "sm" || size === "md" ? void 0 : size,
+        type: "search",
+        inputMode: "search",
+        enterKeyHint: "search",
+        autoComplete: "off",
+        className: "plx-search__input",
+        "aria-label": label2,
+        placeholder,
+        value,
+        onChange: (e) => {
+          if (hasList) setOpen(true);
+          if (onChange) onChange(e);
+        },
+        onKeyDown: keys,
+        onFocus: (e) => {
+          if (hasList) setOpen(true);
+          if (onFocus) onFocus(e);
+        },
+        ...comboProps,
+        ...rest
+      }
+    )), onClear && value ? /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-search__clear", "aria-label": t.clear, onClick: onClear }, /* @__PURE__ */ React2.createElement(Icon, { name: CloseIcon })) : null, shortcut && !value ? /* @__PURE__ */ React2.createElement("span", { className: "plx-search__kbd" }, /* @__PURE__ */ React2.createElement(Kbd, { onAccent }, shortcut)) : null, hasList ? /* @__PURE__ */ React2.createElement("div", { className: "plx-search__popup", hidden: !shown }, showRecent ? /* @__PURE__ */ React2.createElement("div", { className: "plx-search__popup-head" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__popup-title", id: listId + "-t" }, t.recent), onClearRecent ? /* @__PURE__ */ React2.createElement(
+      Button,
+      {
+        variant: "ghost",
+        size: "2xs",
+        className: "plx-search__popup-action",
+        onMouseDown: (e) => e.preventDefault(),
+        onClick: () => {
+          onClearRecent();
+          setOpen(false);
+          if (input.current) input.current.focus();
+        }
+      },
+      t.clearRecent
+    ) : null) : null, grid ? /* @__PURE__ */ React2.createElement("div", { ref: list2, id: listId, role: "grid", className: "plx-search__list plx-search__grid", "aria-labelledby": listId + "-t" }, items.map((it, i) => /* @__PURE__ */ React2.createElement(
+      "div",
+      {
+        key: it.kind + ":" + it.value,
+        id: auto + "-r" + i,
+        role: "row",
+        className: cx("plx-search__option", "plx-search__option--recent", "plx-search__row", i === active && "is-active"),
+        onMouseDown: (e) => e.preventDefault(),
+        onMouseEnter: () => setActive(i)
+      },
+      /* @__PURE__ */ React2.createElement("span", { id: cellId(i, 0), role: "gridcell", "aria-selected": i === active && cell === 0, className: "plx-search__cell", onClick: () => choose(it) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { name: ClockIcon })), /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-label" }, it.label))),
+      /* @__PURE__ */ React2.createElement("span", { id: cellId(i, 1), role: "gridcell", "aria-selected": i === active && cell === 1, className: "plx-search__remove-cell" }, /* @__PURE__ */ React2.createElement(
+        Button,
+        {
+          variant: "ghost",
+          size: "xs",
+          iconOnly: true,
+          icon: CloseIcon,
+          tabIndex: -1,
+          label: t.remove.replace("{query}", it.value),
+          className: cx("plx-search__remove", i === active && cell === 1 && "is-focus-visible"),
+          onMouseDown: (e) => e.preventDefault(),
+          onClick: (e) => {
+            e.stopPropagation();
+            removeRecent(i);
+            if (input.current) input.current.focus();
+          }
+        }
+      ))
+    ))) : /* @__PURE__ */ React2.createElement("ul", { ref: list2, id: listId, role: "listbox", className: "plx-search__list", "aria-label": showRecent ? void 0 : t.suggestions, "aria-labelledby": showRecent ? listId + "-t" : void 0 }, items.map((it, i) => /* @__PURE__ */ React2.createElement(
+      "li",
+      {
+        key: it.kind + ":" + it.value,
+        id: optId(i),
+        role: "option",
+        "aria-selected": i === active,
+        className: cx("plx-search__option", it.kind === "recent" && "plx-search__option--recent", i === active && "is-active"),
+        onMouseDown: (e) => e.preventDefault(),
+        onClick: () => choose(it),
+        onMouseEnter: () => setActive(i)
+      },
+      /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { name: it.kind === "recent" ? ClockIcon : SearchIcon })),
+      /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-label" }, it.kind === "recent" ? it.label : highlightMatch(it.label, text2)), it.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-search__option-description" }, it.description) : null)
+    )))) : null);
+  });
+  function CollapsedSearch({ value, label: label2, onKeyDown: onKeyDown2, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
+    const tw = useStrings("searchField");
+    if (label2 === void 0) label2 = tw.label;
+    const [own2, setOwn] = React2.useState(false);
+    const open = openProp === void 0 ? own2 : openProp;
+    const setOpen = (v) => {
+      setOwn(v);
+      if (onOpenChange) onOpenChange(v);
+    };
+    const field = React2.useRef(null), button = React2.useRef(null);
+    React2.useImperativeHandle(ref, () => open ? field.current : button.current);
+    React2.useEffect(() => {
+      if (open && field.current) field.current.focus();
+    }, [open]);
+    const close = (refocus) => {
+      setOpen(false);
+      if (refocus) setTimeout(() => {
+        if (button.current) button.current.focus();
+      }, 0);
+    };
+    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Tooltip, { content: label2 }, /* @__PURE__ */ React2.createElement(
+      Button,
+      {
+        ref: button,
+        size: "sm",
+        variant: "ghost",
+        icon: SearchIcon,
+        iconOnly: true,
+        label: label2,
+        selected: !!value,
+        "aria-expanded": open,
+        className: cx("plx-search__toggle", className),
+        onClick: () => setOpen(true)
+      }
+    )), open ? /* @__PURE__ */ React2.createElement("div", { className: "plx-search__over" }, /* @__PURE__ */ React2.createElement(
+      SearchInput,
+      {
+        ref: field,
+        value,
+        label: label2,
+        width: "fill",
+        ...rest,
+        onKeyDown: (e) => {
+          if (onKeyDown2) onKeyDown2(e);
+          if (e.key === "Escape" && !e.defaultPrevented && e.currentTarget.getAttribute("aria-expanded") !== "true") {
+            e.preventDefault();
+            close(true);
+          }
+        },
+        onBlur: (e) => {
+          if (onBlur) onBlur(e);
+          if (!e.currentTarget.value) close(false);
+        }
+      }
+    )) : null);
+  }
+  const Collapsed = React2.forwardRef(CollapsedSearch);
+  const SearchField = React2.forwardRef(function SearchField2({ collapsed = false, ...props }, ref) {
+    return collapsed ? /* @__PURE__ */ React2.createElement(Collapsed, { ref, ...props }) : /* @__PURE__ */ React2.createElement(SearchInput, { ref, ...props });
+  });
+  function apply(items, current2) {
+    items.forEach((el) => {
+      const on = el === current2;
+      if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
+      el.setAttribute("data-plx-roving", on ? "current" : "");
+    });
+  }
+  function roveTo(ref, items, el) {
+    if (!ref.current || items.indexOf(el) < 0) return;
+    apply(items, el);
+  }
+  function useRovingFocus(ref, getItems) {
+    React2.useEffect(() => {
+      if (!ref.current) return;
+      const items = getItems();
+      if (!items.length) return;
+      const current2 = items.filter((el) => el.getAttribute("data-plx-roving") === "current")[0] || items[0];
+      apply(items, current2);
+    });
+  }
+  const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
+  function isVisibleFocus(el) {
+    try {
+      return el.matches(":focus-visible");
+    } catch (e) {
+      return true;
+    }
+  }
+  function useFocusable(options = {}) {
+    const { tabStop = "tab", disabled = false, onFocusChange, handlers = {} } = options;
+    const [state, setState] = React2.useState({ focused: false, visible: false });
+    const set2 = (focused, visible2) => {
+      setState((s) => s.focused === focused && s.visible === visible2 ? s : { focused, visible: visible2 });
+      if (onFocusChange) onFocusChange(focused, visible2);
+    };
+    const focusProps = {
+      onFocus: (e) => {
+        if (handlers.onFocus) handlers.onFocus(e);
+        if (e.target === e.currentTarget) set2(true, isVisibleFocus(e.currentTarget));
+      },
+      onBlur: (e) => {
+        if (handlers.onBlur) handlers.onBlur(e);
+        if (e.target === e.currentTarget) set2(false, false);
+      }
+    };
+    if (tabStop !== "none") focusProps.tabIndex = disabled ? void 0 : tabStop === "target" ? -1 : 0;
+    return { focused: state.focused, focusVisible: state.focused && state.visible, focusProps };
+  }
+  function useFocusGroup(ref, options = {}) {
+    const { orientation = "horizontal", loop = true, items: selector = ITEMS, onKeyDown: onKeyDown2, ignore, modifiers = false } = options;
+    const itemsOf2 = () => typeof selector === "function" ? selector() : ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el) => el.getClientRects().length > 0 && !el.closest("[hidden]")) : [];
+    useRovingFocus(ref, itemsOf2);
+    const KEYS2 = orientation === "vertical" ? ["ArrowUp", "ArrowDown"] : orientation === "both" ? ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] : ["ArrowLeft", "ArrowRight"];
+    const groupProps = {
+      onKeyDown: (e) => {
+        if (onKeyDown2) onKeyDown2(e);
+        if (e.defaultPrevented || !modifiers && (e.altKey || e.ctrlKey || e.metaKey)) return;
+        if (KEYS2.indexOf(e.key) < 0 && e.key !== "Home" && e.key !== "End") return;
+        const t = e.target;
+        if ((t.tagName === "INPUT" || t.tagName === "TEXTAREA") && (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Home" || e.key === "End")) return;
+        if (ignore && ignore(e)) return;
+        const list2 = itemsOf2();
+        const i = list2.indexOf(document.activeElement);
+        if (i < 0 || !list2.length) return;
+        let n;
+        if (e.key === "Home") n = 0;
+        else if (e.key === "End") n = list2.length - 1;
+        else {
+          const step = arrowStep(e, ref.current, { vertical: orientation !== "horizontal" });
+          if (!step) return;
+          n = i + step;
+          if (n < 0 || n >= list2.length) {
+            if (!loop) return;
+            n = (n + list2.length) % list2.length;
+          }
+        }
+        e.preventDefault();
+        list2[n].focus();
+      },
+      onFocus: (e) => {
+        roveTo(ref, itemsOf2(), e.target);
+      }
+    };
+    return { groupProps };
+  }
+  const over = (row) => {
+    const flat = (el) => Array.prototype.reduce.call(el.children, ((out, k) => getComputedStyle(k).display === "contents" ? out.concat(flat(k)) : out.concat(k)), []);
+    const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
+    if (!kids.length) return false;
+    const box = row.getBoundingClientRect();
+    const top = Math.min.apply(null, kids.map((k) => k.offsetTop));
+    const tall = Math.max.apply(null, kids.map((k) => k.offsetHeight));
+    return kids.some((k) => {
+      const r = k.getBoundingClientRect();
+      return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
+    });
+  };
+  function useBarFit(ref, key, max2, min2 = 0, rows = "[data-plx-bar-row]", hold = false) {
+    const [step, setStep] = React2.useState(min2);
+    const [width, setWidth] = React2.useState(0);
+    const measured2 = React2.useRef(null);
+    const [fonts, setFonts] = React2.useState(0);
+    React2.useEffect(() => {
+      const set2 = typeof document !== "undefined" ? document.fonts : void 0;
+      if (!set2 || typeof set2.addEventListener !== "function") return void 0;
+      let live = true;
+      const again = () => {
+        if (live) setFonts((n) => n + 1);
+      };
+      set2.addEventListener("loadingdone", again);
+      if (set2.ready && typeof set2.ready.then === "function") set2.ready.then(again, () => {
+      });
+      return () => {
+        live = false;
+        set2.removeEventListener("loadingdone", again);
+      };
+    }, []);
+    const later = React2.useRef(null);
+    React2.useEffect(() => () => {
+      if (later.current) later.current();
+    }, []);
+    React2.useLayoutEffect(() => {
+      if (!hold) setStep(min2);
+    }, [width, key, min2, hold]);
+    React2.useLayoutEffect(() => {
+      if (!fonts || hold) return;
+      const el = ref.current;
+      if (later.current) {
+        later.current();
+        later.current = null;
+      }
+      const open = !!el && !!el.querySelector('[aria-expanded="true"]'), focused = !!el && el.contains(document.activeElement);
+      if (el && (open || focused)) {
+        const again = () => {
+          if (later.current) {
+            later.current();
+            later.current = null;
+          }
+          setFonts((n) => n + 1);
+        };
+        const out = (e) => {
+          if (!e.relatedTarget || !el.contains(e.relatedTarget)) again();
+        };
+        el.addEventListener("focusout", out);
+        const timer = open ? setTimeout(again, 1e3) : null;
+        later.current = () => {
+          el.removeEventListener("focusout", out);
+          if (timer) clearTimeout(timer);
+        };
+        return;
+      }
+      setStep(min2);
+    }, [fonts]);
+    React2.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el || typeof ResizeObserver === "undefined") return void 0;
+      const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, [ref]);
+    React2.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el || step >= max2 || hold) return;
+      const signature = [el, width, key, max2, min2, rows, step, el.textContent, fonts];
+      if (measured2.current && signature.every((value, i) => value === measured2.current[i])) return;
+      measured2.current = signature;
+      if (Array.prototype.some.call(rows === ":self" ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
+    });
+    return Math.max(min2, Math.min(step, max2));
+  }
+  const RANKS = ["low", "normal", "high"];
+  const foldOrder = (actions) => {
+    const foldable = actions.filter((a) => !a.primary);
+    const out = [];
+    RANKS.forEach((p) => {
+      const group = foldable.filter((a) => (RANKS.indexOf(a.priority) >= 0 ? a.priority : "normal") === p);
+      out.push(...group.filter((a) => !a.danger).reverse(), ...group.filter((a) => a.danger).reverse());
+    });
+    return out;
+  };
+  const menuOrder = (actions) => actions.filter((a) => !a.danger).concat(actions.filter((a) => a.danger));
+  const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
+  const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
+  const nameOf$2 = (p) => typeof p.children === "string" ? p.children : p.iconOnly && typeof p.label === "string" ? p.label : null;
+  const isFoldable = (el) => React2.isValidElement(el) && el.type === Button && nameOf$2(el.props) !== null && !el.props.href && !el.props.caret;
+  const isTrimmable = (el) => React2.isValidElement(el) && el.type === Menu && React2.isValidElement(el.props.trigger) && el.props.trigger.type === Button && typeof el.props.trigger.props.children === "string" && !!el.props.trigger.props.icon && !el.props.trigger.props.iconOnly;
+  const collect$1 = (nodes, out) => {
+    React2.Children.forEach(nodes, (el) => {
+      if (!React2.isValidElement(el)) return;
+      if (el.type === Toolbar.Group || el.type === React2.Fragment) collect$1(el.props.children, out);
+      else if (isFoldable(el)) out.push({ id: out.length, label: nameOf$2(el.props), iconOnly: !!el.props.iconOnly, icon: el.props.icon, primary: el.props.variant === "primary", danger: /^danger/.test(el.props.variant || "") || !!el.props.danger, priority: el.props.priority, props: el.props });
+    });
+    return out;
+  };
+  function Toolbar({ label: label2, variant = "default", className, children, onKeyDown: onKeyDown2, onFocus, ...rest }) {
+    const ref = React2.useRef(null);
+    const t = useStrings("commandBar");
+    const ladder = variant !== "bar";
+    const acts = ladder ? collect$1(children, []) : [];
+    const step = useBarFit(ref, acts.map((a) => a.label).join("|"), ladder && acts.length ? 1 + acts.length : 0, 0, ":self");
+    const iconOnly = ladder && step >= 1;
+    const folded = new Set(foldOrder(acts).slice(0, ladder ? Math.max(0, step - 1) : 0).map((a) => a.id));
+    let n = 0;
+    const walk = (nodes) => React2.Children.map(nodes, (el) => {
+      if (!React2.isValidElement(el)) return el;
+      if (el.type === Toolbar.Group) return React2.cloneElement(el, void 0, walk(el.props.children));
+      if (el.type === React2.Fragment) return /* @__PURE__ */ React2.createElement(React2.Fragment, null, walk(el.props.children));
+      if (ladder && isTrimmable(el)) return iconOnly ? React2.cloneElement(el, { trigger: React2.cloneElement(el.props.trigger, { children: void 0, "aria-label": el.props.trigger.props.children }) }) : el;
+      if (!ladder || !isFoldable(el)) return el;
+      const id = n++;
+      if (folded.has(id)) return null;
+      const a = acts[id];
+      if (!a.icon || a.primary || a.iconOnly) return el;
+      return /* @__PURE__ */ React2.createElement(Tooltip, { content: a.label, disabled: !iconOnly }, iconOnly ? React2.cloneElement(el, { iconOnly: true, label: a.label, priority: void 0 }) : React2.cloneElement(el, { priority: void 0 }));
+    });
+    const away = menuOrder(acts.filter((a) => folded.has(a.id)));
+    const more = away.length ? /* @__PURE__ */ React2.createElement(Menu, { label: t.moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { icon: MoreIcon, variant: "ghost", iconOnly: true, label: t.moreLabel, size: acts[0] && acts[0].props.size }) }, away.map((a, i) => [
+      a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React2.createElement(MenuDivider, { key: a.id + "d" }) : null,
+      /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id, icon: a.icon, danger: a.danger, disabled: a.props.disabled, onSelect: a.props.onClick }, a.label)
+    ])) : null;
+    const itemsOf2 = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === "visible" && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute("data-plx-roving"))) : [];
+    React2.useEffect(() => {
+      const root = ref.current;
+      if (!root) return;
+      const refresh = () => {
+        root.querySelectorAll("[data-plx-toolbar-layout]").forEach((el) => {
+          if (el.closest('[role="toolbar"]') === root) el.removeAttribute("data-plx-toolbar-layout");
+        });
+        const visit = (parent) => Array.from(parent.children).forEach((el) => {
+          if (el.matches(".plx-stack,.plx-inline") && getComputedStyle(el).display !== "none") {
+            el.setAttribute("data-plx-toolbar-layout", "");
+            visit(el);
+          } else if (el.classList.contains("plx-toolbar__group")) visit(el);
+        });
+        visit(root);
+        const items = itemsOf2();
+        roveTo(ref, items, items.find((el) => el.getAttribute("data-plx-roving") === "current") || items[0]);
+      };
+      refresh();
+      const observer2 = new MutationObserver(refresh);
+      observer2.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "inert", "aria-hidden", "aria-disabled", "class"] });
+      const resize = typeof ResizeObserver === "function" ? new ResizeObserver(refresh) : null;
+      if (resize) resize.observe(root);
+      window.addEventListener("resize", refresh);
+      return () => {
+        observer2.disconnect();
+        if (resize) resize.disconnect();
+        window.removeEventListener("resize", refresh);
+      };
+    }, []);
+    const { groupProps } = useFocusGroup(ref, {
+      items: itemsOf2,
+      orientation: "horizontal",
+      loop: true,
+      modifiers: true,
+      onKeyDown: onKeyDown2,
+      ignore: (e) => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP)) || e.target.closest('[role="toolbar"]') !== ref.current
+    });
+    const onFocusIn = (e) => {
+      if (onFocus) onFocus(e);
+      groupProps.onFocus(e);
+    };
+    return /* @__PURE__ */ React2.createElement("div", { ref, role: "toolbar", "aria-label": label2, className: cx("plx-toolbar", variant === "bar" && "plx-toolbar--bar", className), onKeyDown: groupProps.onKeyDown, onFocus: onFocusIn, "data-plx-fit-shrink": ladder ? (acts.length ? step >= 1 + acts.length : true) || void 0 : void 0, ...rest }, ladder ? walk(children) : children, more);
+  }
+  Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-toolbar__group", className), ...rest }, children);
+  };
+  Toolbar.Spacer = function ToolbarSpacer() {
+    return /* @__PURE__ */ React2.createElement("div", { className: "plx-toolbar__spacer", "aria-hidden": "true" });
+  };
   const ToastContext = React2.createContext(null);
   const TONE_ICON = { info: CircleInfoIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };
-  let nextId$1 = 1;
+  let nextId$2 = 1;
   function ToastProvider({ duration, children }) {
     const words2 = useStrings("toast");
     const [toasts, setToasts] = React2.useState([]);
@@ -24694,7 +24010,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (t) clearTimeout(t.timer);
     }, []);
     const show2 = React2.useCallback((message, { tone = "info", duration: ms2, action, onClose } = {}) => {
-      const id = nextId$1++;
+      const id = nextId$2++;
       const wait = ms2 !== void 0 ? ms2 : tone === "danger" ? 0 : duration !== void 0 ? duration : tokenMs("--plx-comp-toast-duration");
       timers.current.set(id, { wait, timer: null, onClose });
       setToasts((all) => all.concat({ id, message, tone, action, leaving: false }));
@@ -25069,6 +24385,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   }
   const FolderOpenIcon = { "name": "folder-open", "set": "plenix", "symbol": "folder_open", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M116-212v-536h259.92l96 96h369.62v52H451.38l-96-96H168v431.23l75.31-255.54h680L831.77-212H116Zm105.84-52h569.93l62.46-204.31H282.31L221.84-264Zm0 0 60.47-204.31L221.84-264ZM168-600v-96 96Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M116-212v-536h259.92l96 96h369.62v52H168v335.23l75.31-255.54h680L831.77-212H116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M100-180v-600h291.92l80 80h384.62v60H447.38l-80-80H160v479.23l93.31-311.54h674L815.77-180H100Zm122.84-60h547.93l75.46-252.31H298.31L222.84-240Zm0 0 75.47-252.31L222.84-240ZM160-640v-80 80Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M100-180v-600h291.92l80 80h384.62v60H160v399.23l93.31-311.54h674L815.77-180H100Z" } } } };
   const PinIcon = { "name": "pin", "set": "plenix", "symbol": "push_pin", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 0 20 20", "d": "m12.875 10.021 1.5 1.521v1.333h-3.729v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.458V4.25h-.833Zm-5.396 1.521h5l-.937-.917V4.25H8.417v6.375Zm2.5 0Z" }, "fill": { "viewBox": "0 0 20 20", "d": "m12.896 10.021 1.5 1.521v1.333h-3.75v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.479V4.25h-.833Z" } }, "24": { "outline": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1ZM8.85 14h6.3L14 12.85V5h-4v7.85ZM12 14Z" }, "fill": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1Z" } } } };
+  const PinFilledIcon = { "name": "pin-filled", "set": "plenix", "symbol": "push_pin", "fillOutline": true, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 0 20 20", "d": "m12.875 10.021 1.5 1.521v1.333h-3.729v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.458V4.25h-.833Zm-5.396 1.521h5l-.937-.917V4.25H8.417v6.375Zm2.5 0Z" }, "fill": { "viewBox": "0 0 20 20", "d": "m12.896 10.021 1.5 1.521v1.333h-3.75v4.583l-.667.667-.667-.667v-4.583H5.583v-1.333l1.5-1.521V4.25H6.25V2.917h7.479V4.25h-.833Z" } }, "24": { "outline": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1ZM8.85 14h6.3L14 12.85V5h-4v7.85ZM12 14Z" }, "fill": { "viewBox": "0 0 24 24", "d": "m15.5 12.2 1.8 1.8v1.5h-4.55V21l-.75.75-.75-.75v-5.5H6.7V14l1.8-1.8V5h-1V3.5h9V5h-1Z" } } } };
   const OPEN_ICONS$2 = { folder: FolderOpenIcon };
   const iconOf$2 = (icon, on) => on && OPEN_ICONS$2[iconKey(icon)] || icon;
   const holds = (item, current2) => !!item.children && item.children.some((c) => c.id === current2 || holds(c, current2));
@@ -25742,6 +25059,564 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const hidden = filters.slice(fit2);
     const anySet = filters.some(isSet);
     return /* @__PURE__ */ React2.createElement("div", { role: "group", "aria-label": label2 || t.label, className: cx("plx-filter-bar", className) }, /* @__PURE__ */ React2.createElement("div", { ref: list2, className: "plx-filter-bar__filters" }, splitAt(filters.map((f) => /* @__PURE__ */ React2.createElement("span", { key: f.id, "data-plx-overflow-item": "", className: "plx-filter-bar__slot" }, /* @__PURE__ */ React2.createElement(Menu, { label: f.label, trigger: /* @__PURE__ */ React2.createElement(Button, { size: "sm", caret: true, selected: isSet(f) }, summary(f, t)) }, choices(f, onChange)))), fit2, hidden.length ? /* @__PURE__ */ React2.createElement("span", { key: "plx-more", "data-plx-overflow-more": "", className: "plx-filter-bar__slot" }, /* @__PURE__ */ React2.createElement(Menu, { label: t.more, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { size: "sm", caret: true, selected: hidden.some(isSet) }, t.more) }, hidden.map((f, i) => /* @__PURE__ */ React2.createElement(React2.Fragment, { key: f.id }, i ? /* @__PURE__ */ React2.createElement(MenuDivider, null) : null, /* @__PURE__ */ React2.createElement(MenuGroup, { label: f.label }, choices({ ...f, multiple: true, value: f.multiple ? f.value : isSet(f) ? [f.value] : [] }, (id, v) => onChange(id, f.multiple ? v : v.filter((x) => x !== f.value)[0] || null))))))) : null)), anySet && onClearAll ? /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", onClick: onClearAll }, t.clearAll) : null, actions ? /* @__PURE__ */ React2.createElement("div", { className: "plx-filter-bar__actions" }, actions) : null);
+  }
+  function HintTarget({ children, "aria-describedby": description }) {
+    const wrap = React2.useRef(null);
+    React2.useLayoutEffect(() => {
+      const button = wrap.current && wrap.current.querySelector("button,a[href]");
+      if (!button || !description) return void 0;
+      const before = button.getAttribute("aria-describedby");
+      const ids = [...new Set((before || "").split(" ").concat(description.split(" ")).filter(Boolean))];
+      button.setAttribute("aria-describedby", ids.join(" "));
+      return () => {
+        if (before) button.setAttribute("aria-describedby", before);
+        else button.removeAttribute("aria-describedby");
+      };
+    });
+    return /* @__PURE__ */ React2.createElement("span", { ref: wrap, className: "plx-bar-actions__hint-target" }, children);
+  }
+  function ActionHint({ content, children, className }) {
+    return /* @__PURE__ */ React2.createElement(Tooltip, { content, className }, /* @__PURE__ */ React2.createElement(HintTarget, null, children));
+  }
+  const PanelMenuTrigger = React2.forwardRef(function PanelMenuTrigger2(props, ref) {
+    const wrap = React2.useRef(null);
+    React2.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector("[data-plx-menu-item]"));
+    return /* @__PURE__ */ React2.createElement("span", { ref: wrap, className: "plx-bar-actions__panel-item" }, /* @__PURE__ */ React2.createElement(MenuItem, { ...props, keepOpen: true }));
+  });
+  function ActionPanel({ action, trigger }) {
+    const [open, setOpen] = React2.useState(false);
+    const holder = React2.useRef(null);
+    const unavailable = !!action.disabled || !!action.loading;
+    const show2 = open && !unavailable;
+    const close = () => setOpen(false);
+    React2.useEffect(() => {
+      if (!show2) return void 0;
+      const menu = holder.current && holder.current.closest('[role="menu"]');
+      const more = menu && menu.parentElement.querySelector(":scope > button");
+      return () => {
+        requestAnimationFrame(() => {
+          if (more && more.isConnected && document.activeElement === document.body) more.focus({ preventScroll: true });
+        });
+      };
+    }, [show2]);
+    React2.useEffect(() => {
+      if (unavailable) setOpen(false);
+    }, [unavailable]);
+    const contain = (e) => {
+      const dialog = e.target.closest('[role="dialog"]');
+      if (!dialog) return;
+      if (e.type === "keydown" && e.key === "Tab" && !e.shiftKey && dialog.getAttribute("aria-modal") !== "true") {
+        const controls = focusables(dialog).filter((el) => el.tabIndex >= 0);
+        const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
+        if (toolbar && e.target === controls[controls.length - 1]) {
+          const next = focusables(document.body).find((el) => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+          if (next) {
+            e.preventDefault();
+            next.focus();
+          }
+        }
+      }
+      e.stopPropagation();
+    };
+    const leave = (e) => {
+      const next = e.relatedTarget, menu = e.currentTarget.closest('[role="menu"]');
+      if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
+      const more = menu.parentElement.querySelector(":scope > button");
+      if (more) more.click();
+    };
+    return /* @__PURE__ */ React2.createElement("span", { ref: holder, className: "plx-bar-actions__panel", onKeyDown: contain, onFocus: contain, onMouseDown: contain, onBlur: leave }, /* @__PURE__ */ React2.createElement(
+      Popover,
+      {
+        trigger,
+        title: action.label,
+        closeButton: true,
+        open: show2,
+        onOpenChange: (next) => {
+          if (!next || !unavailable) setOpen(next);
+        }
+      },
+      show2 ? action.panel({ close }) : null
+    ));
+  }
+  const itemsOf = (a, off2) => {
+    const list2 = a.items;
+    if (!Array.isArray(list2) || !list2.length || React2.isValidElement(list2[0])) return list2;
+    return list2.map((it) => /* @__PURE__ */ React2.createElement(MenuItem, { key: it.id || it.label, icon: it.icon, danger: it.danger, disabled: off2(it), onSelect: it.onSelect }, it.label));
+  };
+  function BarActions({
+    actions = [],
+    iconOnly = false,
+    fold: fold2 = 0,
+    off: off2 = (a) => !!a.disabled,
+    why = (a) => a.why,
+    moreLabel,
+    dangerClass,
+    size = "sm",
+    extra = []
+  }) {
+    const t = useStrings("commandBar");
+    moreLabel = moreLabel ?? t.moreLabel;
+    const folded = new Set(foldOrder(actions).slice(0, fold2).map((a) => a.id || a.label));
+    const kept = actions.filter((a) => !folded.has(a.id || a.label));
+    const away = menuOrder(actions.filter((a) => folded.has(a.id || a.label)));
+    const radios = (a) => /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: a.label, value: a.value, onChange: (v) => a.onChange && a.onChange(v) }, (a.choices || []).map((c) => /* @__PURE__ */ React2.createElement(MenuItem, { key: c.value, value: c.value, icon: c.icon }, c.label)));
+    const current2 = (a) => {
+      const c = (a.choices || []).find((x) => x.value === a.value);
+      return c ? c.label : "";
+    };
+    const one = (a) => {
+      const disabled = off2(a), loading2 = !!a.loading;
+      const filled = !!a.primary;
+      const only = iconOnly && !filled && !!a.icon;
+      const panel = typeof a.panel === "function";
+      const menu = !!a.items || !!a.choices;
+      const name = a.choices ? a.label + ": " + current2(a) : a.label;
+      const text2 = a.choices ? current2(a) || a.label : a.label;
+      const click = panel ? void 0 : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? void 0 : a.onSelect;
+      const button = /* @__PURE__ */ React2.createElement(
+        Button,
+        {
+          size,
+          variant: filled ? "primary" : "ghost",
+          icon: a.icon,
+          iconOnly: only,
+          label: only || a.choices ? name : void 0,
+          caret: menu && !only,
+          "aria-haspopup": panel ? "dialog" : menu ? "menu" : void 0,
+          expanded: loading2 && (panel || menu) ? false : void 0,
+          pressed: a.toggle ? !!a.pressed : void 0,
+          disabled,
+          loading: loading2,
+          className: a.danger && !filled ? dangerClass : void 0,
+          onClick: click
+        },
+        text2
+      );
+      const el = loading2 ? button : panel ? /* @__PURE__ */ React2.createElement(ActionPanel, { action: Object.assign({}, a, { disabled }), trigger: button }) : a.choices ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, radios(a)) : a.items ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, itemsOf(a, off2)) : button;
+      const tip = disabled && why(a) || a.tooltip || (only ? name : null);
+      return /* @__PURE__ */ React2.createElement(React2.Fragment, { key: a.id || a.label }, tip ? /* @__PURE__ */ React2.createElement(ActionHint, { content: tip }, el) : el);
+    };
+    const plain = kept.filter((a) => !a.danger), danger = kept.filter((a) => a.danger);
+    const allOff = away.length > 0 && !extra.length && away.every((a) => off2(a));
+    const more = away.length || extra.length ? /* @__PURE__ */ React2.createElement(Tooltip, { key: "plx-more", content: allOff ? why(away[0]) : moreLabel }, /* @__PURE__ */ React2.createElement(Menu, { label: moreLabel, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { size, variant: "ghost", icon: MoreIcon, iconOnly: true, label: moreLabel, disabled: allOff }) }, away.map((a, i) => {
+      const sep = a.danger && i > 0 && !away[i - 1].danger ? /* @__PURE__ */ React2.createElement(MenuDivider, { key: (a.id || a.label) + "-sep" }) : null;
+      const busy = !!a.loading, disabled = off2(a) || busy;
+      const item = busy ? /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id || a.label, icon: /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: a.label }), danger: a.danger, checked: a.toggle ? !!a.pressed : void 0, "aria-label": a.choices ? a.label + ": " + current2(a) : a.label, "aria-busy": true, disabled: true }, a.choices ? a.label + ": " + current2(a) : a.label) : typeof a.panel === "function" ? /* @__PURE__ */ React2.createElement(
+        ActionPanel,
+        {
+          key: a.id || a.label,
+          action: Object.assign({}, a, { disabled }),
+          trigger: /* @__PURE__ */ React2.createElement(PanelMenuTrigger, { icon: a.icon, danger: a.danger, disabled }, a.label)
+        }
+      ) : a.choices ? /* @__PURE__ */ React2.createElement(MenuSub, { key: a.id || a.label, label: a.label + ": " + current2(a), icon: a.icon, disabled: off2(a) }, radios(a)) : a.toggle ? /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, checked: !!a.pressed, disabled: off2(a), onSelect: () => a.onSelect && a.onSelect(!a.pressed) }, a.label) : a.items ? /* @__PURE__ */ React2.createElement(MenuGroup, { key: a.id || a.label, label: a.label }, itemsOf(a, off2)) : /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id || a.label, icon: a.icon, danger: a.danger, disabled: off2(a), onSelect: a.onSelect }, a.label);
+      const tip = off2(a) && why(a) || a.tooltip;
+      const described2 = tip ? /* @__PURE__ */ React2.createElement(ActionHint, { key: a.id || a.label, content: tip, className: "plx-bar-actions__tooltip" }, item) : item;
+      return sep ? [sep, described2] : described2;
+    }), away.length && extra.length ? /* @__PURE__ */ React2.createElement(MenuDivider, { key: "plx-extra-sep" }) : null, extra)) : null;
+    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /* @__PURE__ */ React2.createElement("span", { key: "plx-danger-divider", className: cx("plx-bar-actions__divider"), "aria-hidden": "true" }) : null, danger.map(one));
+  }
+  function singleChoice(options, value, required) {
+    const values = (options || []).map((option) => typeof option === "string" ? option : option.value);
+    const selected = (Array.isArray(value) ? value : value === void 0 || value === null ? [] : [value]).find((item) => values.includes(item));
+    return selected !== void 0 ? [selected] : required && values.length ? [values[0]] : [];
+  }
+  const toggle = (list2, v) => list2.indexOf(v) >= 0 ? list2.filter((x) => x !== v) : list2.concat(v);
+  function PanelTrigger({ icon, label: label2, current: current2, count: count2 = 0, active, caret = false, size = "auto", title, footer, inline = false, placement, className, open, onOpenChange, children }) {
+    const ctx = useCommandBar();
+    const box = React2.useRef(null);
+    const first = { get current() {
+      const el = box.current;
+      return el ? el.querySelector("[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input") : null;
+    } };
+    const body = /* @__PURE__ */ React2.createElement("div", { ref: box, className: cx("plx-find-panel-body", className) }, children);
+    if (inline) return /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel-frame" }, children);
+    const words2 = current2 ? label2 + ": " + current2 : label2;
+    const trigger = current2 && !ctx.iconOnly ? /* @__PURE__ */ React2.createElement(CommandBarButton, { icon, label: label2, active: true, caret, "aria-label": words2 }, words2) : /* @__PURE__ */ React2.createElement(CommandBarButton, { icon, label: label2, count: count2, active, caret });
+    const pop = /* @__PURE__ */ React2.createElement(Popover, { label: title ? void 0 : label2, title, size, trigger, footer, placement, initialFocus: first, ...open === void 0 ? null : { open }, onOpenChange }, body);
+    return ctx.iconOnly ? /* @__PURE__ */ React2.createElement(Tooltip, { content: words2 }, pop) : pop;
+  }
+  function PanelHead({ title, info, infoLabel, sub, actions }) {
+    return /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__title-row" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-find-panel__title" }, /* @__PURE__ */ React2.createElement(Text, { variant: "heading", as: "span" }, title), info ? /* @__PURE__ */ React2.createElement(Tooltip, { content: info }, /* @__PURE__ */ React2.createElement(Button, { size: "xs", variant: "ghost", icon: CircleInfoIcon, iconOnly: true, label: infoLabel || title })) : null), actions ? /* @__PURE__ */ React2.createElement("span", { className: "plx-find-panel__actions" }, actions) : null), sub ? /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, sub) : null);
+  }
+  function Pick({ label: label2, value, options, onChange, size = "field", disabled }) {
+    const cur = options.find((o) => o.value === value) || options[0] || { label: "" };
+    return /* @__PURE__ */ React2.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React2.createElement(Button, { icon: cur.icon, caret: true, truncate: true, disabled, className: cx("plx-find-pick", "plx-find-pick--" + size), title: cur.label, "aria-label": label2 + ": " + cur.label }, cur.label) }, /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: label2, value, onChange }, options.map((o) => /* @__PURE__ */ React2.createElement(MenuItem, { key: o.value, value: o.value, icon: o.icon }, o.label))));
+  }
+  const Pill = ({ color, children }) => /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pill", "data-plx-category": color || "grey" }, children);
+  function MultiPick({ label: label2, options, value, onChange, placeholder }) {
+    const chosen = value.map((v) => options.find((o) => o.value === v) || { value: v, label: v });
+    return /* @__PURE__ */ React2.createElement(Menu, { label: label2, trigger: /* @__PURE__ */ React2.createElement(Button, { caret: true, truncate: true, className: "plx-find-pick plx-find-pick--value", "aria-label": label2 + ": " + (chosen.length ? chosen.map((o) => o.label).join(", ") : placeholder) }, chosen.length ? /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pick__pills" }, chosen.map((o) => /* @__PURE__ */ React2.createElement(Pill, { key: o.value, color: o.color }, o.label))) : /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pick__placeholder" }, placeholder)) }, options.map((o) => /* @__PURE__ */ React2.createElement(MenuItem, { key: o.value, checked: value.indexOf(o.value) >= 0, keepOpen: true, onSelect: () => onChange(toggle(value, o.value)) }, /* @__PURE__ */ React2.createElement(Pill, { color: o.color }, o.label))));
+  }
+  function useReorder(items, setItems, nameOf2, t) {
+    const [msg, setMsg] = React2.useState("");
+    const drag = React2.useRef(null);
+    const box = React2.useRef(null);
+    const [dragging, setDragging] = React2.useState(-1);
+    const move2 = (i, to, focus) => {
+      if (to < 0 || to >= items.length || to === i) return;
+      const next = items.slice();
+      const [x] = next.splice(i, 1);
+      next.splice(to, 0, x);
+      setItems(next);
+      setMsg(fill(t.moved, { name: nameOf2(x), position: to + 1, total: items.length }));
+      if (focus) setTimeout(() => {
+        const el = box.current && box.current.querySelectorAll(":scope > [data-plx-row]")[to];
+        if (el) el.focus();
+      }, 0);
+    };
+    const rowProps = (i, name) => ({
+      "data-plx-row": "",
+      tabIndex: 0,
+      draggable: true,
+      "aria-label": fill(t.row, { name, position: i + 1, total: items.length }),
+      "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
+      className: cx("plx-find-panel__row", dragging === i && "is-dragging"),
+      onKeyDown: (e) => {
+        if (e.target !== e.currentTarget || !e.altKey) return;
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          move2(i, i - 1, true);
+        }
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          move2(i, i + 1, true);
+        }
+      },
+      onDragStart: (e) => {
+        e.stopPropagation();
+        drag.current = i;
+        setDragging(i);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(i));
+      },
+      onDragEnd: () => {
+        drag.current = null;
+        setDragging(-1);
+      },
+      onDragOver: (e) => e.preventDefault(),
+      onDrop: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const from = drag.current;
+        drag.current = null;
+        setDragging(-1);
+        if (from !== null && from !== i) move2(from, i);
+      }
+    });
+    const handle = (i, name) => /* @__PURE__ */ React2.createElement(Menu, { label: fill(t.reorder, { name }), placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.reorder, { name }), className: "plx-find-panel__handle" }) }, /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(i, i - 1, true) }, t.moveUp), /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === items.length - 1, onSelect: () => move2(i, i + 1, true) }, t.moveDown));
+    const status = /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, msg);
+    return { box, rowProps, handle, status };
+  }
+  const TagsIcon = { "name": "tags", "set": "plenix", "symbol": "sell", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08Zm0-73.92 283.31-283.31-346.46-345.31H168v283.31L514.46-163ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm217.69 167.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M514.46-89.08 116-486.96V-844h357.02l397.67 397.08L514.46-89.08ZM265-644.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08Zm0-84.92 288.31-288.31-356.46-356.31H160v288.31L516.46-155ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Zm221.69 171.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M516.46-70.08 100-486.15V-860h373.85l415.84 417.08L516.46-70.08ZM261-648.85q20.92 0 35.54-14.58 14.61-14.58 14.61-35.42 0-20.99-14.58-35.68-14.58-14.7-35.42-14.7-20.99 0-35.68 14.65-14.7 14.65-14.7 35.58 0 20.92 14.65 35.54 14.65 14.61 35.58 14.61Z" } } } };
+  const KIND_ICONS = { text: EdTextIcon, select: FieldSelectIcon, multi: TagsIcon, number: FieldNumberIcon, date: CalendarIcon };
+  const DIRECTIONS = english.fields.directions;
+  const OP_ORDER = {
+    text: ["contains", "ncontains", "is", "isnot", "empty", "nempty"],
+    select: ["any", "none", "empty", "nempty"],
+    multi: ["any", "none", "empty", "nempty"],
+    number: ["eq", "ne", "lt", "gt", "empty", "nempty"],
+    date: ["is", "before", "after", "within", "empty", "nempty"]
+  };
+  const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops2]) => [kind, ops2.map((op) => [op, english.fields.operators[kind][op]])]));
+  const WITHIN = [{ value: "week", label: english.fields.within.week, days: 7 }, { value: "month", label: english.fields.within.month, days: 30 }, { value: "year", label: english.fields.within.year, days: 365 }];
+  const CATEGORY_ORDER = ["blue", "green", "purple", "orange", "teal", "magenta", "yellow", "navy", "red", "cyan", "lavender", "brown", "olive", "pink", "apricot", "mint", "maroon", "lime", "beige", "grey"];
+  const fieldOf = (fields, key) => fields.find((f) => f.value === key) || fields[0];
+  const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
+  const kindOf = (f) => OPERATORS[f && f.kind] ? f.kind : "text";
+  const optionsOf = (f) => (f && f.options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
+  const blank$2 = (x) => x === null || x === void 0 || x === "" || Array.isArray(x) && !x.length;
+  const iso = isoDay;
+  const daysBefore = (n, today) => {
+    const d = new Date((parseDate(today) || /* @__PURE__ */ new Date()).getTime());
+    d.setDate(d.getDate() - n);
+    return iso(d);
+  };
+  function matchesCondition(c, row, fields, today) {
+    const f = fieldOf(fields, c.field), v = valueOf(f, row), val = c.value, k = kindOf(f);
+    if (c.op === "empty") return blank$2(v);
+    if (c.op === "nempty") return !blank$2(v);
+    if (blank$2(val)) return true;
+    if (k === "text") {
+      const s = String(v == null ? "" : v).toLowerCase(), q2 = String(val).toLowerCase();
+      return c.op === "contains" ? s.includes(q2) : c.op === "ncontains" ? !s.includes(q2) : c.op === "is" ? s === q2 : s !== q2;
+    }
+    if (k === "select") {
+      const list2 = [].concat(val);
+      return c.op === "any" ? list2.indexOf(v) >= 0 : list2.indexOf(v) < 0;
+    }
+    if (k === "multi") {
+      const list2 = [].concat(val), hit = [].concat(v || []).some((x) => list2.indexOf(x) >= 0);
+      return c.op === "any" ? hit : !hit;
+    }
+    if (k === "number") {
+      const n = Number(v), q2 = parseFloat(val);
+      if (isNaN(q2)) return true;
+      return c.op === "eq" ? n === q2 : c.op === "ne" ? n !== q2 : c.op === "lt" ? n < q2 : n > q2;
+    }
+    const d = blank$2(v) ? "" : String(v).slice(0, 10);
+    if (c.op === "within") {
+      const w = WITHIN.find((x) => x.value === val) || WITHIN[0];
+      return d >= daysBefore(w.days, today);
+    }
+    return c.op === "is" ? d === val : c.op === "before" ? d < val : d > val;
+  }
+  function matchesFilter(node, row, fields, today) {
+    if (!node || !node.items || !node.items.length) return true;
+    const t = (x) => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
+    return node.join === "or" ? node.items.some(t) : node.items.every(t);
+  }
+  const conditionsOf = (node) => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
+  let uid = 0;
+  const nextId$1 = () => "c" + ++uid;
+  const newCondition = (f) => ({ id: nextId$1(), field: f.value, op: OPERATORS[kindOf(f)][0][0], value: kindOf(f) === "select" || kindOf(f) === "multi" ? [] : "" });
+  function compareLevels(fields, levels) {
+    return (a, b) => {
+      for (const l of levels || []) {
+        const f = fields.find((x2) => x2.value === l.field);
+        if (!f) continue;
+        let x = valueOf(f, a), y = valueOf(f, b);
+        if (kindOf(f) === "select" && f.options) {
+          const o = optionsOf(f).map((p) => p.value);
+          x = o.indexOf(x);
+          y = o.indexOf(y);
+        }
+        if (Array.isArray(x)) x = x.join(", ");
+        if (Array.isArray(y)) y = y.join(", ");
+        const c = x < y ? -1 : x > y ? 1 : 0;
+        if (c) return l.dir === "desc" ? -c : c;
+      }
+      return 0;
+    };
+  }
+  const DATE_PRESETS = [{ value: "any", label: english.fields.presets.any }, { value: "7", label: english.fields.presets["7"] }, { value: "30", label: english.fields.presets["30"] }, { value: "year", label: english.fields.presets.year }];
+  function matchesDate(range, value, today) {
+    if (!range || range.preset === "any" || !range.preset) return true;
+    const d = blank$2(value) ? "" : String(value).slice(0, 10);
+    if (!d) return false;
+    const now = today || iso(/* @__PURE__ */ new Date());
+    if (range.preset === "7" || range.preset === "30") return d >= daysBefore(Number(range.preset), now) && d <= now;
+    if (range.preset === "year") return d.slice(0, 4) === now.slice(0, 4);
+    return (!range.from || d >= range.from) && (!range.to || d <= range.to);
+  }
+  const fieldWords = {
+    operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
+    within: (fw) => WITHIN.map((w) => Object.assign({}, w, { label: (fw.within || {})[w.value] || w.label })),
+    presets: (fw) => DATE_PRESETS.map((d) => Object.assign({}, d, { label: (fw.presets || {})[d.value] || d.label })),
+    directions: (fw, kind) => (fw.directions || {})[kind] || DIRECTIONS[kind]
+  };
+  const FilterOffIcon = { "name": "filter-off", "set": "plenix", "symbol": "filter_alt_off", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 518-544l125-152H366l-52-52h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15ZM518-544Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M554.77-506.23 314-748h441L554.77-506.23Zm214.38 389.3L508-378.08V-212h-56v-222.08L116.93-769.15l37.15-36.77 651.84 651.84-36.77 37.15Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 535-538l143-182H353l-60-60h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15ZM535-538Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M577.77-495.23 293-780h509L577.77-495.23Zm214.38 412.3L540-335.08V-180H420v-275.08L82.93-792.15l42.15-42.77 709.84 709.84-42.77 42.15Z" } } } };
+  const nameOf$1 = (list2, chosen) => {
+    if (!chosen || !chosen.length) return void 0;
+    const o = list2.find((x) => x.value === chosen[0]);
+    return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? " +" + (chosen.length - 1) : "");
+  };
+  const asOptions = (options) => (options || []).map((o, i) => typeof o === "string" ? { value: o } : o).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
+  function QuickFilter({ kind = "list", label: label2, icon, noun = "value", options, value, onChange, counts: counts2, required = false, inline = false, strings }) {
+    const fw = useStrings("fields");
+    const t = Object.assign({ presets: fieldWords.presets(fw) }, useStrings("quickFilter", strings));
+    const [q2, setQ] = React2.useState("");
+    const first = (options || [])[0], firstValue = typeof first === "string" ? first : first && first.value;
+    React2.useEffect(() => {
+      if (kind === "single" && required && (!value || !value.length) && firstValue !== void 0 && onChange) onChange([firstValue]);
+    }, [kind, required, value, firstValue, onChange]);
+    const countOf2 = (o) => o.count !== void 0 ? o.count : counts2 instanceof Map ? counts2.get(o.value) || 0 : counts2 ? Object.prototype.hasOwnProperty.call(counts2, o.value) ? counts2[o.value] : 0 : void 0;
+    const counted = (o, label22) => {
+      const n = countOf2(o);
+      return n === void 0 || n === null ? label22 : /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", gap: "xs" }, label22, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(n)));
+    };
+    if (kind === "date") {
+      const d = Object.assign({ preset: "any", from: "", to: "" }, value);
+      const range = (k, v) => onChange(Object.assign({}, d, { preset: "custom", [k]: v }));
+      const on = d.preset && d.preset !== "any";
+      const body2 = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--date" }, /* @__PURE__ */ React2.createElement(
+        RadioGroup,
+        {
+          label: label2,
+          value: d.preset,
+          onChange: (v) => onChange(Object.assign({}, d, { preset: v })),
+          options: t.presets.map((x) => ({ value: x.value, label: counted(x, x.label) })).concat({ value: "custom", label: counted({ value: "custom" }, t.custom) })
+        }
+      ), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__range" }, /* @__PURE__ */ React2.createElement(Field, { label: t.from }, /* @__PURE__ */ React2.createElement(Input, { type: "date", data: true, value: d.from, onChange: (e) => range("from", e.target.value) })), /* @__PURE__ */ React2.createElement(Field, { label: t.to }, /* @__PURE__ */ React2.createElement(Input, { type: "date", data: true, value: d.to, onChange: (e) => range("to", e.target.value) }))));
+      const footer2 = /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !on, onClick: () => onChange({ preset: "any", from: "", to: "" }) }, t.clear);
+      const preset = t.presets.find((x) => x.value === d.preset);
+      const current2 = !on ? void 0 : d.preset === "custom" ? [d.from, d.to].filter(Boolean).join(" \u2013 ") || t.custom : preset ? preset.label : void 0;
+      return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: icon || CalendarIcon, label: label2, current: current2, title: label2, count: on ? 1 : 0, caret: true, size: "sm", footer: footer2, inline }, body2);
+    }
+    const list2 = asOptions(options);
+    if (kind === "single") {
+      const chosen2 = singleChoice(list2, value, required);
+      const choices2 = list2.map((o) => ({ value: o.value, label: counted(o, /* @__PURE__ */ React2.createElement(Pill, { color: o.color }, o.label)) }));
+      if (!required) choices2.unshift({ value: "", label: t.all });
+      const body2 = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel" }, /* @__PURE__ */ React2.createElement(RadioGroup, { label: label2, value: chosen2.length ? chosen2[0] : "", options: choices2, onChange: (v) => onChange(v === "" ? [] : [v]) }));
+      const footer2 = required ? null : /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen2.length, onClick: () => onChange([]) }, t.clear);
+      return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon, label: label2, current: nameOf$1(list2, chosen2), title: label2, count: chosen2.length, caret: true, size: "sm", footer: footer2, inline }, body2);
+    }
+    const chosen = value || [];
+    const shown = list2.filter((o) => String(o.label).toLowerCase().indexOf(q2.trim().toLowerCase()) >= 0);
+    const body = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--checklist" }, /* @__PURE__ */ React2.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: fill(t.find, { noun }), label: fill(t.find, { noun }) }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__checklist" }, shown.length ? shown.map((o) => /* @__PURE__ */ React2.createElement(Checkbox, { key: o.value, label: counted(o, /* @__PURE__ */ React2.createElement(Pill, { color: o.color }, o.label)), checked: chosen.indexOf(o.value) >= 0, onChange: () => onChange(toggle(chosen, o.value)) })) : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, fill(t.none, { noun }))));
+    const footer = /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !chosen.length, onClick: () => onChange([]) }, t.clear);
+    return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon, label: label2, current: nameOf$1(list2, chosen), title: label2, count: chosen.length, caret: true, size: "sm", footer, inline }, body);
+  }
+  function SingleQuickFilterMenu({ label: label2, options = [], value, required, onChange, counts: counts2, strings }) {
+    const chosen = singleChoice(options, value, required);
+    const items = options.map((option) => typeof option === "string" ? { value: option, label: option } : option);
+    if (!required) items.unshift({ value: "", label: strings && strings.all || "All" });
+    return /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: label2, value: chosen.length ? chosen[0] : "", onChange: (v) => onChange && onChange(v === "" ? [] : [v]) }, items.map((option) => {
+      const count2 = option.count !== void 0 ? option.count : counts2 instanceof Map ? counts2.get(option.value) || 0 : counts2 ? counts2[option.value] || 0 : void 0;
+      return /* @__PURE__ */ React2.createElement(MenuItem, { key: option.value, value: option.value }, count2 === void 0 ? option.label || option.value : /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(count2))));
+    }));
+  }
+  const ICONS$2 = 1, SEARCH = 2;
+  const BarContext$1 = React2.createContext({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen: () => {
+  } });
+  const useCommandBar = () => React2.useContext(BarContext$1);
+  const CommandBarButton = React2.forwardRef(function CommandBarButton2({ icon, label: label2, count: count2 = 0, active = false, caret = false, iconOnly, className, children, ...rest }, ref) {
+    const ctx = useCommandBar();
+    const only = iconOnly === void 0 ? ctx.iconOnly : iconOnly;
+    const n = Number(count2) || 0;
+    const badge = n ? /* @__PURE__ */ React2.createElement(Badge, { size: "sm", tone: "active" }, n) : null;
+    const name = n ? label2 + ", " + n : label2;
+    return /* @__PURE__ */ React2.createElement(
+      Button,
+      {
+        ref,
+        size: "sm",
+        variant: "ghost",
+        icon,
+        caret: caret && !only,
+        selected: active || n > 0,
+        iconOnly: only && !n,
+        label: only ? name : void 0,
+        className: cx("plx-command-bar__button", className),
+        ...rest
+      },
+      only ? n ? badge : label2 : /* @__PURE__ */ React2.createElement(React2.Fragment, null, children || label2, badge ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, " ", badge) : null)
+    );
+  });
+  const CommandBarSearch = React2.forwardRef(function CommandBarSearch2(props, ref) {
+    const { collapsed, searchOpen, setSearchOpen } = useCommandBar();
+    return /* @__PURE__ */ React2.createElement(SearchField, { ref, width: "bar", collapsed, open: collapsed ? searchOpen : void 0, onOpenChange: collapsed ? setSearchOpen : void 0, ...props });
+  });
+  function CommandBar({ label: label2, actions = [], find, quickFilters = [], view, count: count2, status, end, selection, layout: layout2 = "auto", sticky = "auto", narrow = false, strings, className }) {
+    const t = useStrings("commandBar", strings);
+    const fw = useStrings("fields");
+    const root = React2.useRef(null);
+    const sel = selection && !React2.isValidElement(selection) && typeof selection === "object" ? selection : null;
+    const selCount = sel ? Number(sel.count) || 0 : 0;
+    const selecting = selCount > 0;
+    const selActs = selecting ? sel.actions || [] : [];
+    const shape = layout2 === "auto" || layout2 === "split" ? actions.length ? "one" : "view" : layout2;
+    const shown = selecting ? selActs : shape === "view" ? [] : actions;
+    const quick = quickFilters;
+    const ending = end && !React2.isValidElement(end) && !Array.isArray(end) && typeof end === "object" && ("content" in end || "fold" in end) ? end : null;
+    const endContent = ending ? ending.content : end;
+    const endFold = !selecting && ending && ending.fold;
+    const finding = !!find || quick.length > 0;
+    const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
+    const [searchOpen, setSearchOpen] = React2.useState(false);
+    const key = [shape, narrow, selecting ? "sel" : "rest", shown.map((a) => a.label + (a.disabled ? "0" : "") + (a.loading ? "busy" : "")).join("|"), quickFilters.map((q2) => q2.label + (q2.value && q2.value.length ? q2.value.length : "")).join("|"), endFold && endFold.label].join("\xA7");
+    const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ":scope > .plx-command-bar__bar > [data-plx-bar-row]", searchOpen);
+    const ctx = React2.useMemo(() => ({ iconOnly: step >= ICONS$2, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
+    const foldAll = Math.max(0, step - SEARCH);
+    const fold2 = Math.min(foldAll, foldOrder(shown).length);
+    const endAway = !!endFold && foldAll > fold2;
+    const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold2 - (endAway ? 1 : 0)));
+    const findAway = finding && foldAll > fold2 + (endAway ? 1 : 0) + quickAway;
+    const quickKept = quick.slice(0, quick.length - quickAway), quickFolded = quick.slice(quick.length - quickAway);
+    const quickMenu = quickFolded.map((q2) => {
+      const id = q2.id || q2.label;
+      const counted = (option) => {
+        const count22 = option.count !== void 0 ? option.count : q2.counts instanceof Map ? q2.counts.get(option.value) || 0 : q2.counts ? q2.counts[option.value] || 0 : void 0;
+        return count22 === void 0 ? option.label || option.value : /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", gap: "xs" }, option.label || option.value, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(count22)));
+      };
+      if (q2.kind === "single") return /* @__PURE__ */ React2.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React2.createElement(SingleQuickFilterMenu, { ...q2 }));
+      if (q2.kind === "date") {
+        const d = Object.assign({ preset: "any", from: "", to: "" }, q2.value);
+        return /* @__PURE__ */ React2.createElement(MenuSub, { key: id, label: q2.label, icon: q2.icon }, /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: q2.label, value: d.preset, onChange: (v) => q2.onChange && q2.onChange(Object.assign({}, d, { preset: v })) }, fieldWords.presets(fw).map((p) => /* @__PURE__ */ React2.createElement(MenuItem, { key: p.value, value: p.value }, counted(p)))));
+      }
+      const chosen = q2.value || [];
+      return /* @__PURE__ */ React2.createElement(MenuSub, { key: id, label: chosen.length ? q2.label + " (" + chosen.length + ")" : q2.label, icon: q2.icon }, (q2.options || []).map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => /* @__PURE__ */ React2.createElement(
+        MenuItem,
+        {
+          key: o.value,
+          checked: chosen.indexOf(o.value) >= 0,
+          keepOpen: true,
+          onSelect: () => q2.onChange && q2.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter((x) => x !== o.value) : chosen.concat(o.value))
+        },
+        counted(o)
+      )));
+    });
+    const endMenu = endAway ? /* @__PURE__ */ React2.createElement(MenuSub, { key: "plx-end", label: endFold.label, icon: endFold.icon }, Array.isArray(endFold.items) && endFold.items.length && !React2.isValidElement(endFold.items[0]) ? endFold.items.map((item) => /* @__PURE__ */ React2.createElement(MenuItem, { key: item.id || item.label, icon: item.icon, checked: item.checked, disabled: item.disabled, danger: item.danger, onSelect: item.onSelect }, item.label)) : endFold.items) : null;
+    const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
+    const was = React2.useRef(selecting);
+    React2.useEffect(() => {
+      const el = root.current;
+      if (!el || typeof window === "undefined") return void 0;
+      const scrollerOf = (node) => {
+        for (let p = node.parentElement; p; p = p.parentElement) {
+          const o = getComputedStyle(p).overflowY;
+          if (o === "auto" || o === "scroll") return p;
+        }
+        return null;
+      };
+      const check = () => {
+        const scroller = scrollerOf(el);
+        const sticky2 = getComputedStyle(el).position === "sticky";
+        const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0, scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
+        const stuck = sticky2 && scrolled && el.getBoundingClientRect().top <= top + 1;
+        if (stuck) el.setAttribute("data-plx-stuck", "");
+        else el.removeAttribute("data-plx-stuck");
+      };
+      const schedule = check;
+      document.addEventListener("scroll", schedule, { capture: true, passive: true });
+      window.addEventListener("resize", schedule);
+      check();
+      return () => {
+        document.removeEventListener("scroll", schedule, { capture: true });
+        window.removeEventListener("resize", schedule);
+      };
+    }, [sticky]);
+    React2.useEffect(() => {
+      if (was.current !== selecting) announce(selecting ? fill(t.swapped, { n: formatNumber(selCount) }) : t.cleared);
+      was.current = selecting;
+    }, [selecting]);
+    const words2 = { noun: sel && sel.noun || "item", plural: sel && sel.plural || (sel && sel.noun || "item") + "s" };
+    const off2 = (a) => !!a.disabled || !!(a.single && selCount > 1);
+    const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words2));
+    const acts = shown.length || extraMenu.length ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__actions" }, /* @__PURE__ */ React2.createElement(
+      BarActions,
+      {
+        actions: shown,
+        iconOnly: ctx.iconOnly,
+        fold: fold2,
+        moreLabel: t.more,
+        dangerClass: "plx-command-bar__danger",
+        off: selecting ? off2 : void 0,
+        why: selecting ? why : void 0,
+        extra: extraMenu
+      }
+    )) : null;
+    const quickEls = quickKept.map((q2) => /* @__PURE__ */ React2.createElement(QuickFilter, { key: q2.id || q2.label, ...q2 }));
+    const fullCtx = React2.useMemo(() => ({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen }), []);
+    const findEl = !(find || quickEls.length) ? null : findAway ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, /* @__PURE__ */ React2.createElement(Popover, { title: t.find, placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(CommandBarButton, { icon: SearchIcon, label: t.find, iconOnly: true }) }, /* @__PURE__ */ React2.createElement(BarContext$1.Provider, { value: fullCtx }, /* @__PURE__ */ React2.createElement(Stack, { gap: "sm", align: "start" }, find, quickEls)))) : /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__find" }, find, quickEls);
+    const viewEl = view ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__view" }, view) : null;
+    const countEl = selecting || count2 === void 0 || count2 === null || ctx.collapsed ? null : typeof count2 === "string" || typeof count2 === "number" ? /* @__PURE__ */ React2.createElement(Text, { variant: "data", className: "plx-command-bar__count" }, count2) : count2;
+    const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, { n: formatNumber(sel.hidden) }) : "";
+    const [hiddenBefore, hiddenAfter] = String(t.hidden).split("{n}");
+    const [before, after] = String(t.selected).split("{n}");
+    const clearEl = selecting ? /* @__PURE__ */ React2.createElement(Tooltip, { content: t.clear }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: CloseIcon, className: "plx-command-bar__clear", "aria-label": fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText, onClick: () => sel.onClear && sel.onClear() }, before, /* @__PURE__ */ React2.createElement(Text, { variant: "data", className: "plx-command-bar__number" }, formatNumber(selCount)), after, hiddenText ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, hiddenBefore, /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatNumber(sel.hidden)), hiddenAfter) : null)) : null;
+    const statusEl = selecting || !status || ctx.collapsed ? null : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary", className: "plx-command-bar__status" }, status);
+    const keptEnd = !selecting && !endAway ? endContent : null;
+    const tail = countEl || statusEl || keptEnd || clearEl ? /* @__PURE__ */ React2.createElement(Toolbar.Group, { className: "plx-command-bar__end" }, selecting && viewEl ? /* @__PURE__ */ React2.createElement(Divider$1, { orientation: "vertical" }) : null, countEl, statusEl, keptEnd, clearEl) : null;
+    const onKeyDown2 = selecting && sel.onClear ? (e) => {
+      if (e.key === "Escape" && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
+        e.preventDefault();
+        sel.onClear();
+      }
+    } : void 0;
+    const parts = /* @__PURE__ */ React2.createElement(React2.Fragment, null, acts, acts && findEl ? /* @__PURE__ */ React2.createElement(Divider$1, { orientation: "vertical" }) : null, findEl, /* @__PURE__ */ React2.createElement(Toolbar.Spacer, null), viewEl, tail);
+    const name = selecting ? sel.label || fill(t.actions, { label: label2 || "" }).trim() : label2;
+    return /* @__PURE__ */ React2.createElement(BarContext$1.Provider, { value: ctx }, /* @__PURE__ */ React2.createElement("div", { ref: root, className: cx("plx-command-bar", ctx.iconOnly && "plx-command-bar--icons", selecting && "plx-command-bar--selecting", className), "data-plx-layout": shape, "data-plx-position": sticky === true ? "sticky" : sticky === false ? "static" : "auto", onKeyDown: onKeyDown2 }, /* @__PURE__ */ React2.createElement("div", { className: "plx-command-bar__bar" }, /* @__PURE__ */ React2.createElement(Toolbar, { label: name, variant: "bar", className: "plx-command-bar__row", "data-plx-bar-row": "", "data-plx-fit-shrink": step >= SEARCH + folds || void 0 }, parts)), React2.isValidElement(selection) ? selection : null));
   }
   const d0$v = "M237.77-237.92 116-359.69l36.77-36.77 84 85 170-170 37.77 36.77-206.77 206.77Zm0-296.62L116-656.31l36.77-36.77 85 85 169-170 37.77 36.77-206.77 206.77Zm290.61 228.85v-52h316v52h-316Zm0-296.62v-52h316v52h-316Z";
   const d1$v = "M227.77-221.92 100-349.69l41.77-41.77 85 85 170-170 41.77 42.77-210.77 211.77Zm0-304.62L100-654.31l41.77-41.77 85 85 170-170 41.77 42.77-210.77 211.77Zm292.61 228.85v-60h340v60h-340Zm0-304.62v-60h340v60h-340Z";
@@ -31454,7 +31329,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const [active, setActive] = React2.useState(0);
     const [browse, setBrowse] = React2.useState([]);
     const [limitShown, setLimitShown] = React2.useState(false);
-    const [loaded, setLoaded] = React2.useState([]);
+    const [loaded2, setLoaded] = React2.useState([]);
     const [busy, setBusy] = React2.useState(false);
     const [failed, setFailed] = React2.useState(false);
     const loader = React2.useRef(loadOptions), request = React2.useRef(0), seen = React2.useRef(/* @__PURE__ */ new Map());
@@ -31508,7 +31383,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const said2 = (n) => announce(typeof t.results === "function" ? t.results(n) : loc2.t("cascader.results", { count: n, n: formatNumber(n) }));
     const searching = !!q2 && (!remote || q2.length >= minChars);
-    const matches = !searching ? [] : remote ? loaded : leaves.filter((l) => !l.item.disabled && matchesText(l.item.label, text2));
+    const matches = !searching ? [] : remote ? loaded2 : leaves.filter((l) => !l.item.disabled && matchesText(l.item.label, text2));
     React2.useEffect(() => {
       setActive(0);
       if (searching && !remote) said2(matches.length);
@@ -31728,7 +31603,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const [active, setActive] = React2.useState(0);
     const wrap = React2.useRef(null), input = React2.useRef(null), list2 = React2.useRef(null);
     React2.useImperativeHandle(ref, () => input.current);
-    const [loaded, setLoaded] = React2.useState([]);
+    const [loaded2, setLoaded] = React2.useState([]);
     const [busy, setBusy] = React2.useState(false);
     const [failed, setFailed] = React2.useState(false);
     const loader = React2.useRef(loadOptions), request = React2.useRef(0), seen = React2.useRef(/* @__PURE__ */ new Map());
@@ -31764,12 +31639,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }, loadDelay);
       return () => clearTimeout(timer);
     }, [async, open, query, minChars, loadDelay]);
-    const optionOf = (v) => options.find((x) => x.value === v) || loaded.find((x) => x.value === v) || seen.current.get(v);
+    const optionOf = (v) => options.find((x) => x.value === v) || loaded2.find((x) => x.value === v) || seen.current.get(v);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const current2 = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
     const q2 = query.toLowerCase();
     const hit = (o) => [o.label, o.description, o.meta].some((x) => x !== void 0 && x !== null && String(x).toLowerCase().indexOf(q2) >= 0);
-    const results = busy || failed ? [] : async ? loaded : options.filter((o) => !q2 || hit(o));
+    const results = busy || failed ? [] : async ? loaded2 : options.filter((o) => !q2 || hit(o));
     const items = results.map((o) => ({ kind: "option", o })).concat(onBrowse && !busy ? [{ kind: "browse" }] : []);
     React2.useEffect(() => {
       if (async || !open || !q2) return void 0;
@@ -33467,10 +33342,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       body
     );
   }
-  const fieldOption$2 = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf$1(f)] });
+  const fieldOption$2 = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
   function ConditionValue({ c, f, set: set2, t }) {
     const fw = useStrings("fields");
-    const k = kindOf$1(f);
+    const k = kindOf(f);
     if (c.op === "empty" || c.op === "nempty") return /* @__PURE__ */ React2.createElement("span", { className: "plx-find-pick--value" });
     if (k === "select" || k === "multi") return /* @__PURE__ */ React2.createElement(MultiPick, { label: f.label, options: optionsOf(f), value: [].concat(c.value || []), onChange: (v) => set2({ value: v }), placeholder: t.choose });
     if (k === "date" && c.op === "within") return /* @__PURE__ */ React2.createElement(Pick, { label: f.label, size: "value", value: c.value || WITHIN[0].value, options: fieldWords.within(fw), onChange: (v) => set2({ value: v }) });
@@ -33498,7 +33373,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           label: t.operator,
           size: "op",
           value: x.op,
-          options: fieldWords.operators(fw, kindOf$1(f)).map(([value, label2]) => ({ value, label: label2 })),
+          options: fieldWords.operators(fw, kindOf(f)).map(([value, label2]) => ({ value, label: label2 })),
           onChange: (v) => put(i, { op: v, value: v === "within" ? WITHIN[0].value : x.op === "within" ? "" : x.value })
         }
       ), /* @__PURE__ */ React2.createElement(ConditionValue, { c: x, f, set: (ch) => put(i, ch), t }), remove(i, t.condition), ro.handle(i, f.label));
@@ -33516,10 +33391,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const f = fields.find((x) => x.value === request.field);
       if (f && !conditionsOf(node).some((c) => c.field === f.value)) add2(newCondition(f));
     }, [request]);
-    const body = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--filter" }, /* @__PURE__ */ React2.createElement(PanelHead, { title: t.label, info: t.info, sub: t.sub }), /* @__PURE__ */ React2.createElement(ConditionRows, { fields, node, setNode: onChange, t }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: PlusIcon, disabled: !fields.length, onClick: () => add2(newCondition(fields[0])) }, t.addCondition), /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: PlusIcon, disabled: !fields.length, onClick: () => add2({ id: nextId$2(), group: true, join: "and", items: [newCondition(fields[0])] }) }, t.addGroup)));
+    const body = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--filter" }, /* @__PURE__ */ React2.createElement(PanelHead, { title: t.label, info: t.info, sub: t.sub }), /* @__PURE__ */ React2.createElement(ConditionRows, { fields, node, setNode: onChange, t }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: PlusIcon, disabled: !fields.length, onClick: () => add2(newCondition(fields[0])) }, t.addCondition), /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: PlusIcon, disabled: !fields.length, onClick: () => add2({ id: nextId$1(), group: true, join: "and", items: [newCondition(fields[0])] }) }, t.addGroup)));
     return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: FilterIcon, label: t.label, count: n, inline, open, onOpenChange }, body);
   }
-  const fieldOption$1 = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf$1(f)] });
+  const fieldOption$1 = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
   function SortPanel({ fields = [], value = [], onChange, grouped = false, inline = false, strings }) {
     const t = useStrings("sortPanel", strings);
     const fw = useStrings("fields");
@@ -33528,13 +33403,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
     const free = fields.filter((f) => !levels.some((l) => l.field === f.value));
     const body = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--sort" }, /* @__PURE__ */ React2.createElement(PanelHead, { title: grouped ? t.within : t.title, info: t.info }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__rows", ref: ro.box }, levels.length ? null : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.empty), levels.map((l, i) => {
-      const f = fieldOf(fields, l.field), words2 = fieldWords.directions(fw, kindOf$1(f));
+      const f = fieldOf(fields, l.field), words2 = fieldWords.directions(fw, kindOf(f));
       return /* @__PURE__ */ React2.createElement("div", { key: l.field, ...ro.rowProps(i, f.label) }, /* @__PURE__ */ React2.createElement(Pick, { label: t.field, value: l.field, options: fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption$1), onChange: (v) => put(i, { field: v }) }), /* @__PURE__ */ React2.createElement(Pick, { label: t.direction, size: "dir", value: l.dir, options: [{ value: "asc", label: words2[0] }, { value: "desc", label: words2[1] }], onChange: (v) => put(i, { dir: v }) }), /* @__PURE__ */ React2.createElement(Tooltip, { content: t.removeTip }, /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", icon: CloseIcon, iconOnly: true, label: fill(t.remove, { name: f.label }), onClick: () => onChange(levels.filter((_, j) => j !== i)) })), ro.handle(i, f.label));
     }), ro.status), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: PlusIcon, disabled: !free.length, onClick: () => onChange(levels.concat({ field: free[0].value, dir: "asc" })) }, levels.length ? t.addAnother : t.add)));
     const current2 = levels.length ? fieldOf(fields, levels[0].field).label + (levels.length > 1 ? " +" + (levels.length - 1) : "") : void 0;
     return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: SortIcon, label: t.label, current: current2, count: levels.length, inline }, body);
   }
-  const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf$1(f)] });
+  const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
   const eachGroup = (t, fn) => {
     const table = t && t.current !== void 0 && !t.getGroups ? t.current : t;
     if (!table || !table.getGroups) return;
@@ -33554,10 +33429,159 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const free = fields.filter((f) => !levels.some((l) => l.field === f.value));
     const off2 = !levels.length || !table;
     const body = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--group" }, /* @__PURE__ */ React2.createElement(PanelHead, { title: t.title, info: t.info, actions: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", disabled: off2, onClick: () => eachGroup(table, (g) => g.hide()) }, t.collapseAll), /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", disabled: off2, onClick: () => eachGroup(table, (g) => g.show()) }, t.expandAll)) }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__rows", ref: ro.box }, levels.length ? null : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.empty), levels.map((l, i) => {
-      const f = fieldOf(fields, l.field), words2 = fieldWords.directions(fw, kindOf$1(f));
+      const f = fieldOf(fields, l.field), words2 = fieldWords.directions(fw, kindOf(f));
       return /* @__PURE__ */ React2.createElement("div", { key: l.field, ...ro.rowProps(i, f.label) }, /* @__PURE__ */ React2.createElement(Pick, { label: t.field, value: l.field, options: fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption), onChange: (v) => put(i, { field: v, interval: fields.find((f2) => f2.value === v)?.kind === "date" ? "day" : void 0, range: void 0 }) }), /* @__PURE__ */ React2.createElement(Pick, { label: t.order, size: "dir", value: l.dir || "asc", options: [{ value: "asc", label: words2[0] }, { value: "desc", label: words2[1] }], onChange: (v) => put(i, { dir: v }) }), /* @__PURE__ */ React2.createElement(Menu, { label: fill(t.more, { name: f.label }), placement: "bottom-end", trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", icon: MoreIcon, iconOnly: true, label: fill(t.more, { name: f.label }) }) }, f.kind === "date" ? ["day", "week", "month", "year"].map((interval) => /* @__PURE__ */ React2.createElement(MenuItem, { key: interval, checked: (l.interval || "day") === interval, keepOpen: true, onSelect: () => put(i, { interval }) }, interval[0].toUpperCase() + interval.slice(1))) : null, /* @__PURE__ */ React2.createElement(MenuItem, { checked: !!l.hideEmpty, keepOpen: true, onSelect: () => put(i, { hideEmpty: !l.hideEmpty }) }, t.hideEmpty)), /* @__PURE__ */ React2.createElement(Tooltip, { content: t.removeTip }, /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", icon: TrashIcon, iconOnly: true, label: fill(t.remove, { name: f.label }), onClick: () => onChange(levels.filter((_, j) => j !== i)) })), ro.handle(i, f.label));
     }), ro.status), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: PlusIcon, disabled: !free.length, onClick: () => onChange(levels.concat({ field: free[0].value, dir: "asc", interval: free[0].kind === "date" ? "day" : void 0, range: free[0].groupRange })) }, levels.length ? t.addSub : t.add)));
     return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: GroupByIcon, label: t.label, count: levels.length, inline }, body);
+  }
+  const FieldsIcon = { "name": "fields", "set": "plenix", "symbol": "list_alt", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M294.92-297.23h62.77V-360h-62.77v62.77Zm0-151.39h62.77v-62.76h-62.77v62.76Zm0-151.38h62.77v-62.77h-62.77V-600Zm140.93 297.38h227.69v-51.99H435.85v51.99Zm0-151.38h227.69v-52H435.85v52Zm0-151.39h227.69v-51.99H435.85v51.99ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M286.92-289.23h70.77V-360h-70.77v70.77Zm0-155.39h70.77v-70.76h-70.77v70.76Zm0-155.38h70.77v-70.77h-70.77V-600Zm156.93 305.38h227.69v-59.99H443.85v59.99Zm0-155.38h227.69v-60H443.85v60Zm0-155.39h227.69v-59.99H443.85v59.99ZM140-140v-680h680v680H140Z" } } } };
+  const VisibilityIcon = { "name": "visibility", "set": "plenix", "symbol": "visibility", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212ZM480-480Zm0 216q112 0 207-58t146-158q-51-100-146-158t-207-58q-112 0-207 58T127-480q51 100 146 158t207 58Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-328.92q62.99 0 106.99-44.09 44-44.09 44-107.08 0-62.99-44.09-106.99-44.09-44-107.08-44-62.99 0-106.99 44.09-44 44.09-44 107.08 0 62.99 44.09 106.99 44.09 44 107.08 44ZM480-384q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm.05 172q-134.57 0-245.23-73.12Q124.16-358.23 69.54-480q54.62-121.77 165.22-194.88Q345.37-748 479.95-748q134.57 0 245.23 73.12Q835.84-601.77 890.46-480q-54.62 121.77-165.22 194.88Q614.63-212 480.05-212Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220ZM480-500Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm.05 172q-137.97 0-251.43-76.12Q115.16-372.23 61.54-500q53.62-127.77 167.02-203.88Q341.97-780 479.95-780q137.97 0 251.43 76.12Q844.84-627.77 898.46-500q-53.62 127.77-167.02 203.88Q618.03-220 480.05-220Z" } } } };
+  const moveTo = (order, f, i) => {
+    const rest = order.filter((x) => x !== f);
+    rest.splice(i, 0, f);
+    return rest;
+  };
+  const nameIn = (fields) => (f) => {
+    const x = fields.find((y) => y.value === f);
+    return x ? x.label : f;
+  };
+  function ColumnsList({ fields, value, onChange, filter = "", t }) {
+    const [msg, setMsg] = React2.useState("");
+    const [drag, setDrag] = React2.useState(null);
+    const box = React2.useRef(null);
+    const name = nameIn(fields);
+    const order = value.order, hidden = value.hidden || [];
+    const put = (o, h2, words2, focus) => {
+      onChange({ order: o, hidden: h2 });
+      setMsg(words2);
+      if (focus) setTimeout(() => {
+        const el = box.current && box.current.querySelector('[data-plx-field="' + focus + '"]');
+        if (el) el.focus();
+      }, 0);
+    };
+    const move2 = (f, to, focus) => {
+      if (to < 0 || to >= order.length) return;
+      put(
+        moveTo(order, f, to),
+        to === 0 ? hidden.filter((x) => x !== f) : hidden,
+        to === 0 ? fill(t.isFirst, { name: name(f) }) : fill(t.moved, { name: name(f), position: to + 1, total: order.length }),
+        focus ? f : null
+      );
+    };
+    const q2 = filter.trim().toLowerCase();
+    const shown = order.filter((f) => !q2 || name(f).toLowerCase().indexOf(q2) >= 0);
+    return /* @__PURE__ */ React2.createElement("div", { className: "plx-columns-list", ref: box }, shown.length ? null : /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.none), shown.map((f) => {
+      const i = order.indexOf(f);
+      return /* @__PURE__ */ React2.createElement(
+        "div",
+        {
+          key: f,
+          "data-plx-field": f,
+          tabIndex: 0,
+          draggable: true,
+          "aria-label": fill(t.row, { name: name(f), first: i === 0 ? t.firstMark : "" }),
+          "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
+          className: cx("plx-columns-list__row", drag === f && "is-dragging"),
+          onKeyDown: (e) => {
+            if (e.target !== e.currentTarget || !e.altKey) return;
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              move2(f, i - 1, true);
+            }
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              move2(f, i + 1, true);
+            }
+          },
+          onDragStart: (e) => {
+            setDrag(f);
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", f);
+          },
+          onDragEnd: () => setDrag(null),
+          onDragOver: (e) => e.preventDefault(),
+          onDrop: (e) => {
+            e.preventDefault();
+            const from = e.dataTransfer.getData("text/plain") || drag;
+            setDrag(null);
+            if (from && from !== f) move2(from, i);
+          }
+        },
+        /* @__PURE__ */ React2.createElement(Menu, { label: fill(t.moveMenu, { name: name(f) }), trigger: /* @__PURE__ */ React2.createElement(Button, { size: "xs", variant: "ghost", icon: DragIcon, iconOnly: true, label: fill(t.moveMenu, { name: name(f) }), className: "plx-columns-list__handle" }), placement: "bottom-start" }, /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronUpIcon, disabled: i === 0, onSelect: () => move2(f, i - 1, true) }, t.up), /* @__PURE__ */ React2.createElement(MenuItem, { icon: ChevronDownIcon, disabled: i === order.length - 1, onSelect: () => move2(f, i + 1, true) }, t.down)),
+        /* @__PURE__ */ React2.createElement(
+          Checkbox,
+          {
+            label: name(f),
+            checked: hidden.indexOf(f) < 0,
+            disabled: i === 0,
+            onChange: () => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))
+          }
+        ),
+        i === 0 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-columns-list__first" }, /* @__PURE__ */ React2.createElement(Icon, { name: PinFilledIcon }), /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.first)) : null
+      );
+    }), /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, msg));
+  }
+  function ColumnsMenu({ fields = [], value, onChange, inline = false, strings }) {
+    const t = useStrings("columnsMenu", strings);
+    const v = value || { order: fields.map((f) => f.value), hidden: [] };
+    const name = nameIn(fields);
+    const first = /* @__PURE__ */ React2.createElement(Field, { label: t.first }, /* @__PURE__ */ React2.createElement(
+      Select,
+      {
+        value: v.order[0],
+        options: v.order.map((f) => ({ value: f, label: name(f) })),
+        onChange: (e) => onChange({ order: moveTo(v.order, e.target.value, 0), hidden: (v.hidden || []).filter((x) => x !== e.target.value) })
+      }
+    ));
+    const list2 = /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--columns" }, first, /* @__PURE__ */ React2.createElement(ColumnsList, { fields, value: v, onChange, t }));
+    return /* @__PURE__ */ React2.createElement(PanelTrigger, { icon: FieldsIcon, label: t.label, title: t.label, count: (v.hidden || []).length, caret: true, size: "lg", inline }, list2);
+  }
+  function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
+    const t = useStrings("columnsMenu", strings);
+    const v = value || { order: fields.map((f) => f.value), hidden: [] };
+    const controlled = openProp !== void 0;
+    const [own2, setOwn] = React2.useState(false), open = controlled ? !!openProp : own2;
+    const setOpen = (next) => {
+      if (!controlled) setOwn(next);
+      if (onOpenChange) onOpenChange(next);
+    };
+    const [draft, setDraft] = React2.useState(v);
+    const [q2, setQ] = React2.useState("");
+    const name = nameIn(fields);
+    React2.useEffect(() => {
+      if (controlled && openProp) {
+        setDraft(v);
+        setQ("");
+      }
+    }, [controlled, openProp]);
+    const start2 = () => {
+      setDraft(v);
+      setQ("");
+      setOpen(true);
+    };
+    const button = trigger === null ? null : trigger ? React2.cloneElement(trigger, { onClick: start2 }) : /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: FieldsIcon, onClick: start2 }, t.manage);
+    return /* @__PURE__ */ React2.createElement(React2.Fragment, null, button, /* @__PURE__ */ React2.createElement(
+      Dialog,
+      {
+        open,
+        onClose: () => setOpen(false),
+        title: t.manage,
+        icon: FieldsIcon,
+        size: "md",
+        footer: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { onClick: () => setOpen(false) }, t.cancel), /* @__PURE__ */ React2.createElement(Button, { variant: "primary", onClick: () => {
+          onChange(draft);
+          setOpen(false);
+        } }, t.apply))
+      },
+      /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel plx-find-panel--dialog" }, /* @__PURE__ */ React2.createElement(Field, { label: t.first }, /* @__PURE__ */ React2.createElement(
+        Select,
+        {
+          value: draft.order[0],
+          options: draft.order.map((f) => ({ value: f, label: name(f) })),
+          onChange: (e) => setDraft({ order: moveTo(draft.order, e.target.value, 0), hidden: (draft.hidden || []).filter((x) => x !== e.target.value) })
+        }
+      )), /* @__PURE__ */ React2.createElement(SearchField, { width: "fill", value: q2, onChange: (e) => setQ(e.target.value), onClear: () => setQ(""), placeholder: t.find, label: t.find }), /* @__PURE__ */ React2.createElement("div", { className: "plx-find-panel__add" }, /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityIcon, onClick: () => setDraft({ order: draft.order, hidden: [] }) }, t.showAll), /* @__PURE__ */ React2.createElement(Button, { size: "sm", variant: "ghost", icon: VisibilityOffIcon, onClick: () => setDraft({ order: draft.order, hidden: draft.order.slice(1) }) }, t.hideAll)), /* @__PURE__ */ React2.createElement(ColumnsList, { fields, value: draft, onChange: setDraft, filter: q2, t }))
+    ));
   }
   const GridN2x2Icon = { "name": "grid-2x2", "set": "plenix", "symbol": "grid_view", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M164-528v-268h268v268H164Zm0 364v-268h268v268H164Zm364-364v-268h268v268H528Zm0 364v-268h268v268H528ZM216-580h164v-164H216v164Zm364 0h164v-164H580v164Zm0 364h164v-164H580v164Zm-364 0h164v-164H216v164Zm364-364Zm0 200Zm-200 0Zm0-200Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-528v-268h268v268H164Zm0 364v-268h268v268H164Zm364-364v-268h268v268H528Zm0 364v-268h268v268H528Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M140-520v-300h300v300H140Zm0 380v-300h300v300H140Zm380-380v-300h300v300H520Zm0 380v-300h300v300H520ZM200-580h180v-180H200v180Zm380 0h180v-180H580v180Zm0 380h180v-180H580v180Zm-380 0h180v-180H200v180Zm380-380Zm0 200Zm-200 0Zm0-200Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-520v-300h300v300H140Zm0 380v-300h300v300H140Zm380-380v-300h300v300H520Zm0 380v-300h300v300H520Z" } } } };
   const d0$5 = "M301.08-597.69v-52H796v52H301.08Zm0 143.69v-52H796v52H301.08Zm0 143.69v-52H796v52H301.08ZM192.31-595.38q-10.73 0-19.52-8.9t-8.79-20.3q0-11.06 8.79-19.24 8.79-8.18 20.02-8.18t19.52 8.03q8.29 8.03 8.29 19.89 0 10.9-8.14 19.8t-20.17 8.9Zm0 143.3q-10.73 0-19.52-8.68-8.79-8.67-8.79-19.74 0-11.81 8.79-20t20.02-8.19q11.23 0 19.52 8.04t8.29 20.65q0 10.57-8.14 19.24-8.14 8.68-20.17 8.68Zm0 144.08q-10.73 0-19.52-8.9T164-337.19q0-11.07 8.79-19.25t20.02-8.18q11.23 0 19.52 8.03t8.29 19.9q0 10.89-8.14 19.79-8.14 8.9-20.17 8.9Z";
@@ -34123,13 +34147,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function formatQuery(node, fields = [], strings) {
     const t = Object.assign({}, createTranslator(formatLocale()).section("queryBuilder"), strings);
     const fw = createTranslator(formatLocale()).section("fields");
-    const words2 = (f, op) => (fieldWords.operators(fw, kindOf$1(f)).find((o) => o[0] === op) || [op, op])[1];
+    const words2 = (f, op) => (fieldWords.operators(fw, kindOf(f)).find((o) => o[0] === op) || [op, op])[1];
     const rule = (c) => {
       const f = fieldOf(fields, c.field);
       if (!f) return null;
       if (NO_VALUE[c.op]) return f.label + " " + words2(f, c.op);
       if (blank(c.value)) return null;
-      const k = kindOf$1(f);
+      const k = kindOf(f);
       let v;
       if (k === "select" || k === "multi") {
         const o = optionsOf(f);
@@ -34154,7 +34178,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const Labeled = ({ id, text: text2, children }) => /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(VisuallyHidden, { as: "label", htmlFor: id }, text2), children);
   function RuleValue({ c, f, set: set2, id, label: label2 }) {
     const fw = useStrings("fields");
-    const k = kindOf$1(f);
+    const k = kindOf(f);
     if (NO_VALUE[c.op]) return /* @__PURE__ */ React2.createElement("span", { className: "plx-query-builder__value plx-query-builder__value--none" });
     let control;
     if (k === "select" || k === "multi") {
@@ -34200,7 +34224,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         id: base2 + "-o",
         className: "plx-query-builder__operator",
         value: c.op,
-        options: fieldWords.operators(fw, kindOf$1(f)).map(([value, label2]) => ({ value, label: label2 })),
+        options: fieldWords.operators(fw, kindOf(f)).map(([value, label2]) => ({ value, label: label2 })),
         onChange: (e) => {
           const op = e.target.value;
           put({ op, value: op === "within" ? WITHIN[0].value : c.op === "within" || NO_VALUE[op] ? "" : c.value });
@@ -34220,7 +34244,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const addGroup = () => {
       const c = newCondition(fields[0]);
-      setItems(items.concat({ id: nextId$2(), group: true, join: "and", items: [c] }));
+      setItems(items.concat({ id: nextId$1(), group: true, join: "and", items: [c] }));
       focus.current = { rule: c.id };
       announce(t.groupAdded);
     };
@@ -39976,7 +40000,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function ImportWizard({ open, title, onClose, fields = [], onRead, onImport, strings, className }) {
     const t = useStrings("importWizard", strings);
     const [data, setData] = React2.useState(null), [source, setSource] = React2.useState(null), [mapping, setMapping] = React2.useState({}), [complete, setComplete] = React2.useState(false);
-    const epoch = React2.useRef(0), lock2 = React2.useRef(false), loaded = React2.useRef(false);
+    const epoch = React2.useRef(0), lock2 = React2.useRef(false), loaded2 = React2.useRef(false);
     const [busy, setBusy] = React2.useState(false);
     React2.useEffect(() => {
       epoch.current++;
@@ -39985,7 +40009,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setMapping({});
       setComplete(false);
       setBusy(false);
-      loaded.current = false;
+      loaded2.current = false;
       lock2.current = false;
       return () => {
         epoch.current++;
@@ -39999,7 +40023,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const at2 = epoch.current, parsed = await onRead(input);
       if (at2 !== epoch.current) return;
       if (!parsed || !Array.isArray(parsed.columns) || !parsed.columns.length || !Array.isArray(parsed.rows)) throw new Error(t.invalid);
-      loaded.current = true;
+      loaded2.current = true;
       setSource(input);
       setData(parsed);
       setMapping({});
@@ -40022,7 +40046,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     };
     if (!data) return /* @__PURE__ */ React2.createElement(ImportDialog, { open, title: title || t.title, onImport: read2, strings, onClose: () => {
-      if (!loaded.current && onClose) onClose();
+      if (!loaded2.current && onClose) onClose();
     } });
     return /* @__PURE__ */ React2.createElement(Dialog, { open, title: title || t.title, onClose: close, dismissible: !busy }, /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-import-wizard", className) }, complete ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Badge, { tone: "success", icon: CheckIcon$1, role: "status" }, t.imported), /* @__PURE__ */ React2.createElement(Text, { as: "h3", variant: "heading" }, t.results), /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, mapped.length), /* @__PURE__ */ React2.createElement(Button, { variant: "primary", onClick: onClose }, t.done)) : /* @__PURE__ */ React2.createElement(Wizard, { label: title || t.title, strings, onCancel: close, onComplete: finish, steps: [
       { id: "mapping", label: t.mapping, validate, content: /* @__PURE__ */ React2.createElement(Stack, null, fields.map((f) => /* @__PURE__ */ React2.createElement(Field, { key: f.id, label: f.label, required: f.required }, /* @__PURE__ */ React2.createElement(
@@ -44216,6 +44240,37 @@ var Plenix = (function(exports, React2, reactDom, client) {
     said,
     textOf,
     use
+  }, Symbol.toStringTag, { value: "Module" }));
+  function manageDialog({
+    headerMenu,
+    isStatic,
+    managing,
+    setManaging,
+    chooserColumns,
+    changeOrder,
+    changeVisibility
+  }) {
+    return headerMenu && !isStatic && managing ? /* @__PURE__ */ React2.createElement(
+      ManageColumnsDialog,
+      {
+        trigger: null,
+        open: managing,
+        onOpenChange: setManaging,
+        fields: chooserColumns().map((col) => ({ value: col.id, label: col.columnDef.meta.title || col.id })),
+        value: {
+          order: chooserColumns().map((col) => col.id),
+          hidden: chooserColumns().filter((col) => !col.getIsVisible()).map((col) => col.id)
+        },
+        onChange: (next) => {
+          changeOrder(next.order);
+          changeVisibility(Object.fromEntries((next.hidden || []).map((field) => [field, false])));
+        }
+      }
+    ) : null;
+  }
+  const chromeRare = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    manageDialog
   }, Symbol.toStringTag, { value: "Module" }));
   exports.AIButton = AIButton;
   exports.AIChat = AIChat;

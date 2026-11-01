@@ -152,6 +152,18 @@ export const cellKeys =
       setEditing({ key: row.id, field: c.field, value });
       return;
     }
+    // F2 starts editing with the value kept; a printable character starts it with that character in place of the value (issue 737, the APG grid pattern).
+    // Neither in a cell that cannot be edited, nor during IME composition, nor with Ctrl, Alt or Meta held (a shortcut). Space keeps choosing the row;
+    // a number column takes only a character a number has.
+    if (canEdit && !event.ctrlKey && !event.altKey && !event.metaKey && !event.nativeEvent?.isComposing && event.keyCode !== 229) {
+      const typed = event.key.length === 1 && event.key !== ' ' && (c.editor !== 'number' || /[0-9.\-]/.test(event.key));
+      if (event.key === 'F2' || typed) {
+        event.preventDefault();
+        if (cellRange) cellRange.collapse();
+        setEditing({ key: row.id, field: c.field, value: typed ? event.key : value });
+        return;
+      }
+    }
     const index = model.indexOf(row),
       at = ordered.indexOf(column),
       keys = {
