@@ -55,6 +55,9 @@ export default {
       "text": "There’s nothing left to do here."
     }
   },
+  "menuBar": {
+    "more": "More menus"
+  },
   "overflowList": {
     "more": "More items"
   },

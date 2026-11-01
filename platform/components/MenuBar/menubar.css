@@ -1,0 +1,23 @@
+/* Plenix · MenuBar (platform/components/MenuBar, issue 805). A bordered row of menu buttons that never wraps; the buttons keep their width
+   (they never shrink), so the fit (utils/barFit.ts) sees when one lies past the bar's edge and folds it into More. */
+.plx-menubar {
+  align-items: center;
+  background-color: var(--plx-comp-menubar-background);
+  border-color: var(--plx-comp-menubar-border-color);
+  border-radius: var(--plx-comp-menubar-radius);
+  border-style: solid;
+  border-width: var(--plx-comp-menubar-border-width);
+  box-sizing: border-box;
+  column-gap: var(--plx-comp-menubar-gap);
+  display: inline-flex;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--plx-comp-menubar-padding);
+}
+.plx-menubar__menu {
+  flex-shrink: 0;
+}
+/* the menu button of the open menu keeps the fill of a pressed ghost button while its list is open */
+.plx-menubar__item[aria-expanded="true"] {
+  background-color: var(--plx-sys-state-pressed);
+}

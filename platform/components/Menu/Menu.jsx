@@ -19,6 +19,8 @@
      Menu.trigger: the button that opens the menu (one element)
      Menu.label: the accessible name of the menu
      Menu.placement: "bottom-start" (default) | "bottom-end" | "top-start" | "top-end"
+     Menu.open: true or false: who is open is the caller's (a MenuBar keeps one of its menus open at a time); leave it out and the menu keeps its own state
+     Menu.openStart: "first" | "last": the item that takes focus when the caller opens it; Menu.onOpenChange(open, { start }): runs when it opens or closes, from the trigger or by a key
      Menu.className: more classes on the anchor around the trigger and menu
      Context hook: a container sets --plx-comp-menu-context-anchor-width on its own element (100% for a full-width trigger)
      Menu.children: the items: MenuItem, MenuGroup, MenuDivider
@@ -114,12 +116,19 @@ function moveIn(list, e) {
   return true;
 }
 
-export function Menu({ trigger, label, placement = 'bottom-start', className, children }) {
+export function Menu({ trigger, label, placement = 'bottom-start', open: openProp, openStart, onOpenChange, className, children }) {
   const id = useUid('plx-menu');
-  const [open, setOpen] = React.useState(false);
-  const [start, setStart] = React.useState('first');
+  // who is open (issue 805): the menu keeps its own open state; a MenuBar passes open and onOpenChange so one of its menus is open at a time
+  const [own, setOwn] = React.useState(false);
+  const controlled = openProp !== undefined;
+  const open = controlled ? !!openProp : own;
+  const [first, setStart] = React.useState('first');
+  const start = openStart || first;
   const wrap = React.useRef(null), list = React.useRef(null), button = React.useRef(null);
-  const close = React.useCallback((refocus) => { setOpen(false); if (refocus && button.current) button.current.focus(); }, []);
+  const tell = React.useRef(onOpenChange);
+  tell.current = onOpenChange;
+  const setOpen = React.useCallback((next, where) => { if (!controlled) setOwn(next); if (tell.current) tell.current(next, { start: where || 'first' }); }, [controlled]);
+  const close = React.useCallback((refocus) => { setOpen(false); if (refocus && button.current) button.current.focus(); }, [setOpen]);
   useLayer(list, open, { onEscape: () => close(true) });
   // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
   useFloating(wrap, list, { open: open && TOP_LAYER, placement });
@@ -133,7 +142,7 @@ export function Menu({ trigger, label, placement = 'bottom-start', className, ch
     document.addEventListener('mousedown', outside);
     return () => document.removeEventListener('mousedown', outside);
   }, [open]);
-  const openAt = (where) => { setStart(where); setOpen(true); };
+  const openAt = (where) => { setStart(where); setOpen(true, where); };
   const child = React.Children.only(trigger);
   const triggerEl = React.cloneElement(child, {
     ref: button, 'aria-haspopup': 'menu', 'aria-expanded': open, 'aria-controls': open ? id : undefined, expanded: undefined,
