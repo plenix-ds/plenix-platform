@@ -40,10 +40,11 @@ let ops = null, loading = null;
 const load = () => loading || (loading = import('./cellRangeOps.js').then((m) => { m.use({ cellText: (record, id) => valueText(valueAt(record, id)), announce, formatNumber }); return (ops = m); }));
 const run = (fn) => (ops ? fn(ops) : load().then(fn));   // in order: presses before the load finishes are applied one after another
 
-export function useCellRange({ enabled, model, ordered, index, onChange }) {
+export function useCellRange({ enabled, model, ordered, index, onChange, frame, scroller }) {
   const loc = useLocale();
   const [range, setRangeState] = React.useState(null);
   const told = React.useRef(false);   // onChange has been given a range: it is told when the range ends too
+  const down = React.useRef(false);   // the primary mouse button is down on a cell
   const latest = React.useRef({}), rangeRef = React.useRef(null), trail = React.useRef(null);   // trail: the cells the block's focus end has been on ('rowId|field'), anchor included
   const setRange = (next) => { rangeRef.current = typeof next === 'function' ? next(rangeRef.current) : next; setRangeState(rangeRef.current); };
 
@@ -74,7 +75,7 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
     return () => clearTimeout(timer);
   }, [rect]);   // eslint-disable-line react-hooks/exhaustive-deps
 
-  const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, collapse: () => {}, copy: () => false, read: () => null };
+  const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, press: () => {}, collapse: () => {}, copy: () => false, read: () => null };
   if (!enabled) return none;
 
   const collapse = () => setRange((old) => (old ? null : old));
@@ -99,6 +100,38 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
     });
     return true;
   };
+  // a press on a cell (the option cellSelection): Shift with a click makes the block from where it began (or the cell that has focus) to this cell; a plain
+  // press ends the block and, as the pointer moves over other cells with the button down, starts a new one from this cell (the rules are in cellRangeOps.js)
+  const press = ({ e, row, c, focusCell }) => {
+    if (e.button !== 0) return;
+    const cell = { key: row.id, field: c.field };
+    const reach = (range, to, from) => {
+      const now = latest.current;
+      if (from || !trail.current) trail.current = new Set([range.anchor.key + '|' + range.anchor.field]);   // a new block starts its trail at its anchor
+      trail.current.add(to.key + '|' + to.field);
+      setRange(range);
+      return [now.rowAt.get(to.key), now.ordered.findIndex((x) => x.id === to.field)];
+    };
+    if (e.shiftKey) {
+      e.preventDefault();   // Shift with a click would select text
+      run((o) => {
+        const anchor = (rangeRef.current && rangeRef.current.anchor) || o.focusedCell(frame && frame.current) || cell;
+        const [r, k] = reach({ anchor, focus: cell }, cell, true);
+        if (r !== undefined && k >= 0) focusCell(r, k);
+      });
+      return;
+    }
+    collapse();
+    down.current = true;
+    const release = () => { down.current = false; window.removeEventListener('mouseup', release, true); };
+    window.addEventListener('mouseup', release, true);
+    let began = false;
+    run((o) => o.beginDrag({
+      anchor: cell, frame: frame && frame.current, scroller: scroller && scroller.current, rowAt: latest.current.rowAt, ordered: latest.current.ordered, isDown: () => down.current,
+      onMove: (range, to) => { reach(range, to, !began); began = true; },
+      onEnd: (last, moved) => { if (!moved) return; const now = latest.current, r = now.rowAt.get(last.key), k = now.ordered.findIndex((x) => x.id === last.field); if (r !== undefined && k >= 0) focusCell(r, k); },
+    }));
+  };
   const cellClasses = (rowIndex, columnIndex) => {
     if (!rect || rowIndex < rect.r0 || rowIndex > rect.r1 || columnIndex < rect.c0 || columnIndex > rect.c1) return null;
     return { inside: true, top: rowIndex === rect.r0, bottom: rowIndex === rect.r1, start: columnIndex === rect.c0, end: columnIndex === rect.c1 };
@@ -110,5 +143,5 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
     for (let i = rect.r0; i <= rect.r1; i += 1) if (model[i] && model[i].original) rows.push(model[i].original);
     return { rows, fields: ordered.slice(rect.c0, rect.c1 + 1).map((c) => c.id), text: text() };
   };
-  return { enabled: true, rect, range, rowAt, cellClasses, extend, collapse, copy, read };
+  return { enabled: true, rect, range, rowAt, cellClasses, extend, press, collapse, copy, read };
 }
