@@ -15,6 +15,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 . tools/publish-config.sh
 
+# a release is one commit (#842): nothing uncommitted or untracked (ignored files apart), so every published file comes
+# from the commit that /version.json names
+if [ -n "$(git status --porcelain)" ]; then echo "STOPPED: the working tree has uncommitted or untracked files. Commit or clean them, then deploy again."; git status --short | head -20; exit 1; fi
 (node build-app.js >/dev/null 2>&1 && node build-usage.js >/dev/null) || { echo "BUILD FAILED: run node build-app.js"; exit 1; }
 node check-system.js >/dev/null 2>&1 || { echo "check-system failed: fix it before publishing"; exit 1; }
 node build-packages.js >/dev/null || { echo "build-packages failed: run node build-packages.js"; exit 1; }
@@ -54,16 +57,18 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
   sudo find /srv/plenix/www.new -type d -exec chmod 755 {} +
   sudo find /srv/plenix/www.new -type f -exec chmod 644 {} +
   sudo rm -rf /srv/plenix/www.old /srv/plenix/www.bad
-  # the API is replaced; a CDN version is added once and never overwritten
-  sudo rm -rf /srv/plenix/api.new && sudo mv /srv/plenix/www.new/Plenix/release/api /srv/plenix/api.new
-  sudo rm -rf /srv/plenix/api && sudo mv /srv/plenix/api.new /srv/plenix/api
-  sudo mkdir -p /srv/plenix/cdn
-  if [ ! -d /srv/plenix/cdn/material/$MATERIAL ]; then sudo mkdir -p /srv/plenix/cdn/material && sudo cp -r /srv/plenix/www.new/Plenix/platform/icons/library /srv/plenix/cdn/material/$MATERIAL && echo 'Material library published at /cdn/material/$MATERIAL/'; fi
-  if [ -d /srv/plenix/cdn/$VERSION ]; then echo 'CDN $VERSION is already published: kept as it was (raise the version to publish changes)'
-    # unreleased Platform changes: this build's release files differ from the published ones
-    for x in plenix.js plenix.css; do cmp -s /srv/plenix/www.new/Plenix/release/cdn/$VERSION/\$x /srv/plenix/cdn/$VERSION/\$x || echo \"NOTE: \$x has changes that are not released; the apps keep using release $VERSION. Raise the version in package.json to release them.\"; done
-  else sudo mv /srv/plenix/www.new/Plenix/release/cdn/$VERSION /srv/plenix/cdn/$VERSION; echo 'CDN $VERSION published'; fi
-  sudo rm -rf /srv/plenix/www.new/Plenix/release
+  # a CDN version is added once and never overwritten (#842): when this version is already published, every file of this
+  # build's release folder must equal the published one; any difference stops the deploy before anything changes, because
+  # the apps would mix the published release with newer files of their own
+  if [ -d /srv/plenix/cdn/$VERSION ]; then
+    if ! diff -rq /srv/plenix/www.new/Plenix/release/cdn/$VERSION /srv/plenix/cdn/$VERSION >/tmp/plenix-cdn-diff.txt 2>&1; then
+      echo 'STOPPED: CDN $VERSION is already published and this build differs from it:'
+      head -20 /tmp/plenix-cdn-diff.txt; rm -f /tmp/plenix-cdn-diff.txt
+      echo 'Raise the version in package.json to release these changes, then deploy again. Nothing was changed on the site.'
+      sudo rm -rf /srv/plenix/www.new; exit 1
+    fi
+    rm -f /tmp/plenix-cdn-diff.txt
+  fi
   # the apps load the released Platform (the same four files other projects use) instead of the source
   CDN=https://design-system.lighthouseway.org/cdn/$VERSION
   for f in /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html; do
@@ -87,8 +92,25 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
     sudo sed -i \"s|href=\\\"../../platform/platform.css\\\"|href=\\\"../../platform/dist/platform.bundle.css?v=\$B\\\"|\" \"\$f\"
   done
   grep -l platform.bundle.css /srv/plenix/www.new/Plenix/docs/*/*.html | wc -l | xargs -I{} echo 'Study pages on one stylesheet: {}'
-  pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | wc -l)
-  echo \"Apps on release $VERSION: \$pinned pages\"
+  # every app page points at the release (#842): a page left on the source copy would mix versions
+  pages=\$(ls /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | sort -u)
+  total=\$(echo \"\$pages\" | wc -l)
+  pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" \$pages | wc -l)
+  if [ \"\$pinned\" != \"\$total\" ]; then
+    echo \"STOPPED: \$pinned of \$total app pages point at release $VERSION. These do not:\"; grep -L \"cdn/$VERSION/plenix.js\" \$pages
+    echo 'Fix the page so it loads the Platform exactly as the other app pages do (the four rewrites above), then deploy again. Nothing was changed on the site.'
+    sudo rm -rf /srv/plenix/www.new; exit 1
+  fi
+  echo \"Apps on release $VERSION: \$pinned of \$total pages\"
+  # every check passed: the API, the Material library and the CDN version go live, then the site is swapped
+  # the API is replaced; a CDN version is added once and never overwritten
+  sudo rm -rf /srv/plenix/api.new && sudo mv /srv/plenix/www.new/Plenix/release/api /srv/plenix/api.new
+  sudo rm -rf /srv/plenix/api && sudo mv /srv/plenix/api.new /srv/plenix/api
+  sudo mkdir -p /srv/plenix/cdn
+  if [ ! -d /srv/plenix/cdn/material/$MATERIAL ]; then sudo mkdir -p /srv/plenix/cdn/material && sudo cp -r /srv/plenix/www.new/Plenix/platform/icons/library /srv/plenix/cdn/material/$MATERIAL && echo 'Material library published at /cdn/material/$MATERIAL/'; fi
+  if [ -d /srv/plenix/cdn/$VERSION ]; then echo 'CDN $VERSION is already published, and this build is identical to it: kept as it was'
+  else sudo mv /srv/plenix/www.new/Plenix/release/cdn/$VERSION /srv/plenix/cdn/$VERSION; echo 'CDN $VERSION published'; fi
+  sudo rm -rf /srv/plenix/www.new/Plenix/release
   ls /srv/plenix/cdn | grep -E '^[0-9]+[.][0-9]+[.][0-9]+' | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null
   # /version.json on each site (owner, version-json-33): name, version, commit and time only. Each name serves its own
   # folder (the header above): plenix.lighthouseway.org is Plenix/dashboard/, design-system.lighthouseway.org is Plenix/platform/design-system/
