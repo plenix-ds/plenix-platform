@@ -38,11 +38,11 @@ child({ units: ['components/Toolbar', 'components/Button', 'patterns/ActionBar',
 // field sizing in bars (issues 558 and 554): when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
 child({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.ts', 'utils/overflow.ts', 'system/layout-modes.css'] }, 'field-sizing.test.js');
 // controls follow read-only (issue 262, PR 1): when one of them or the ReadOnly provider changed
-child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'components/TimePicker', 'components/Cascader', 'components/RelativeDateInput', 'providers/ReadOnly.jsx'] }, 'readonly-adoption.test.js');   // the last three added in issue 762: the test checks them too
+child({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'components/TimePicker', 'components/Cascader', 'components/RelativeDateInput', 'providers/ReadOnly.tsx'] }, 'readonly-adoption.test.js');   // the last three added in issue 762: the test checks them too
 // descriptions through useDescribedBy (issue 262, PR 3): when one of those controls or the helper changed
 child({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.ts'] }, 'describedby-adoption.test.js');
 // pressing through usePressable (issue 262, PR 4): when the DataGrid or the hook changed
-child({ units: ['components/DataGrid', 'hooks/usePressable.js', 'components/Menu', 'components/Popover'] }, 'pressing-adoption.test.js');
+child({ units: ['components/DataGrid', 'hooks/usePressable.ts', 'components/Menu', 'components/Popover'] }, 'pressing-adoption.test.js');
 // hand-made live regions through LiveRegion (issue 262, PR 7): when one of those units or the helper changed
 child({ units: ['components/CodeBlock', 'components/Resizable', 'patterns/WidgetGrid', 'patterns/ColumnsMenu', 'patterns/CommandBar', 'utils/announce.tsx'] }, 'announce-adoption.test.js');
 // every suite page has one level-1 heading (issue 603): when a suite page or the hidden-text component changed
@@ -90,6 +90,7 @@ child({ units: ['components/Menu', 'components/SplitButton', 'components/Combobo
 // the last parts without a keyboard test, and the APG gaps (issue 706)
 child({ units: ['components/CommandMenu', 'components/EntityPicker', 'components/MillerColumns', 'components/RowButton', 'patterns/AssignControl', 'patterns/ImageUpload', 'patterns/RenameAction', 'components/InlineEdit', 'patterns/SessionTimeout', 'patterns/DeleteFlow', 'patterns/DraftState', 'patterns/QueryBuilder', 'patterns/FilterBar', 'patterns/SearchWorkspace', 'components/ProductOptions', 'components/RadioTiles', 'components/ColorSwatch', 'components/Combobox', 'components/Menu'] }, 'keyboard-706.test.js');
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
+child({ units: ['utils/highlight.tsx', 'system/highlight.css', 'components/SearchField', 'components/Combobox', 'components/Cascader', 'components/TreeSelect'] }, 'highlight-810.test.js');   // the typed text marked in the four search lists (issue 810)
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 child({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.ts'] }, 'section-headings-502.test.js');
 // Joined in issue 756 (each was started by hand only). A change under platform/charts/, platform/templates/ or
@@ -99,7 +100,7 @@ child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }
 // DatePicker and TimePicker follow LocaleProvider's time zone (issue 813)
 child({ units: ['components/DatePicker', 'components/TimePicker', 'components/Calendar', 'utils/zone.ts'] }, 'picker-timezone-813.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
-child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.js'] }, 'focus-group-6a.test.js');
+child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.ts'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)
 child({ units: ['utils/format.ts'] }, 'line-ticks-593.test.js');
 // a Select or Combobox holding a number or a date shows it in the data font (issue 252)

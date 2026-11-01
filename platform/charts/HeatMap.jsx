@@ -43,7 +43,7 @@ import { scalePosition } from './parts/position.js';
 import { Axis } from './parts/Axis.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const DAY = 24 * 60 * 60 * 1000;
 // the gap between cells, as a fraction of a cell (band padding: geometry)

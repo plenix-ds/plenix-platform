@@ -14,7 +14,7 @@ import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Link } from '../Link/Link.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AIDisclaimer({variant='footer',children,href,strings,className,...rest}){
   devWarn('AIDisclaimer', { variant }, { variant: ['footer','inline'] });

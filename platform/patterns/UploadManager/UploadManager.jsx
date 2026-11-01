@@ -80,7 +80,7 @@ import { ProgressBar } from '../../components/ProgressBar/ProgressBar.jsx';
 import { DropZone } from '../../components/DropZone/DropZone.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';

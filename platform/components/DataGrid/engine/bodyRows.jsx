@@ -78,6 +78,7 @@ export function bodyRows({
   pickCheckbox,
   kindsOf,
   pinStart,
+  leadFrozen,
   editing,
   cells,
   showTypes,
@@ -290,7 +291,8 @@ export function bodyRows({
         {selectable ? (
           <div
             className={cx(
-              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
+              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
+              leadFrozen && B + '__grid-frozen',
               modes,
               selection[row.id] && B + '__grid-cell--selected-start'
             )}
@@ -315,12 +317,15 @@ export function bodyRows({
             isEditing = editing?.key === row.id && editing.field === c.field,
             handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
             actions = k.includes('actions');
+          // in the row card (narrow, #679) every visible field that is not a key value shows as a labeled detail
+          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes('icon');
           const mods =
               cx(
                 isStatic && B + '__value--static',
                 k.includes('wrap') && B + '__value--wrap',
                 sized && B + '__value--sized',
-                lines && k.includes('wrap') && B + '__value--lines'
+                lines && k.includes('wrap') && B + '__value--lines',
+                isNarrow && B + '__value--narrow'
               ) || undefined,
             shown = CellValue({
               block: B,
@@ -360,7 +365,9 @@ export function bodyRows({
                     onPointerLeave: () => leaveCut(row.id + '|' + c.field),
                   }
                 : null)}
-              dir={(pinned && !isStatic) || kinds(c).includes('id') ? undefined : 'auto'}
+              // a card's lines line up at the card's start edge in both directions (#679), so a card cell takes the grid's
+              // direction; a table cell keeps its value's own direction (dir="auto")
+              dir={(pinned && !isStatic) || kinds(c).includes('id') || isNarrow ? undefined : 'auto'}
               onDoubleClick={() => {
                 if (canEdit) setEditing({ key: row.id, field: c.field, value });
               }}
@@ -378,6 +385,8 @@ export function bodyRows({
                 focusCell,
               })}
               data-plx-sticky={pinned && sticky ? sticky + 'px' : undefined}
+              data-plx-label={detail ? c.title || c.field : undefined}
+              aria-label={detail ? (c.title || c.field) + ': ' + valueText(value) : undefined}
               data-plx-text-follow={c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family'}
               className={cx(
                 '' + B + '__grid-cell',
@@ -404,6 +413,7 @@ export function bodyRows({
                 (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label',
                 k.includes('icon') && B + '__w-lead',
                 keys.includes(c.field) && B + '__cell--key',
+                detail && B + '__cell--list-detail',
                 keys[0] === c.field && B + '__cell--key-first',
                 (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right')
               )}

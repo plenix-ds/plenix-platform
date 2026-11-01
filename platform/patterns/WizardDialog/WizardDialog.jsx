@@ -15,8 +15,8 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Wizard } from '../Wizard/Wizard.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function WizardDialog({ open, title, size = 'md', dirty = false, onClose, strings, ...props }) {
   devWarn('WizardDialog', { size }, { size: ['md','lg','full'] });

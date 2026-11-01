@@ -41,7 +41,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ImageAN2Icon from 'plenix-platform/icons/plenix/image-a-2';
 
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];

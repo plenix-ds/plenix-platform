@@ -13,7 +13,7 @@ import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function RelatedAssets({ items = [], variant = 'strip', label, onOpen, strings, className }) {
   devWarn('RelatedAssets', { variant }, { variant: ['strip','grid'] });

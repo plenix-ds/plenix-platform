@@ -34,7 +34,7 @@ module.exports = async function regressions(page) {
     await mount(h(P.DataGrid, { label: 'Row commands', data: rows, columns, rowMenu: menus, onReady: ready }));
     const button = host.querySelector('button[aria-label="Row actions"]');
     check(button && button.tabIndex === 0 && button.getAttribute('aria-haspopup') === 'menu', 'DT-2: row menu button is a named Tab stop');
-    check(getComputedStyle(button.closest('.plx-data-grid__cell--row-menu')).position==='sticky', 'DT-2: last row command column is pinned');
+    check(getComputedStyle(button.closest('.plx-data-grid__cell--row-menu')).position!=='sticky', 'DT-2: the row command column is not pinned by default (issue 679)');
     button.focus(); button.click(); await wait();
     const item = [...document.querySelectorAll('[role=menuitem]')].find((e) => e.textContent.includes('Open record'));
     check(item, 'DT-2: row action button opens the shared menu');

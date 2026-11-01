@@ -39,7 +39,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { useClipboard } from '../../utils/clipboard.ts';
 import { Button } from '../Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import EdCopyIcon from 'plenix-platform/icons/plenix/ed-copy';
 

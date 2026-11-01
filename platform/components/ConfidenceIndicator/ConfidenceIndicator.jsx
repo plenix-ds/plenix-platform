@@ -14,7 +14,7 @@ import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatPercent } from '../../utils/format.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function ConfidenceIndicator({level,variant='qualitative',value,locale,strings,className,...rest}){
   devWarn('ConfidenceIndicator', { variant }, { variant: ['qualitative','numeric'] });

@@ -66,7 +66,7 @@ import { useFloating, PLACEMENTS, TOP_LAYER } from '../../utils/floating.ts';
 import { Button } from '../Button/Button.jsx';
 import { Sheet } from '../Sheet/Sheet.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const SIZES = ['sm', 'md', 'lg', 'auto'];

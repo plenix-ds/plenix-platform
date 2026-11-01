@@ -26,9 +26,9 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Tabs } from '../../components/Tabs/Tabs.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const ROLES = [{ value: 'viewer', label: 'Viewer' }, { value: 'editor', label: 'Editor' }];
 export function ShareDialog({ open, title, onClose, people = [], grants = [], roles = ROLES, defaultRole = 'viewer', url = '', linkAccess = 'restricted', onSave, initialTab = 'people', webShare = true, strings, className }) {

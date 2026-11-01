@@ -81,8 +81,8 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
-import { useStrings, useTimeZone } from '../../providers/LocaleProvider.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings, useTimeZone } from '../../providers/LocaleProvider.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { validZone, wallOf, isInstant, instantIso, instantOf, todayIn, zoneName } from '../../utils/zone.ts';
 
 const DASH = ' – ';

@@ -39,7 +39,7 @@ import { useDescribedBy } from '../../utils/describedBy.ts';
 import { Select } from '../Input/Input.jsx';
 import { NumberInput } from '../NumberInput/NumberInput.jsx';
 import { formatRange, formatDate } from '../../utils/format.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 // presets: [id, direction, amount, unit, offset] (offset: whole units before or after today, for yesterday and tomorrow)
 export const RELATIVE_PRESETS = {

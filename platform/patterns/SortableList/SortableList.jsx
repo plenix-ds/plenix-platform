@@ -49,7 +49,7 @@ import { useSortable } from '../../utils/dnd.ts';
 import { DragHandle } from '../../components/DragHandle/DragHandle.jsx';
 import { Menu, MenuItem, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import { fill } from '../../utils/fill.ts';

@@ -33,16 +33,16 @@
      In a radio group, only the checked option is a stop.
    Notes:
      Every control in it takes the toolbar control height.
-     Its one Tab stop and its arrow keys are the shared focus group (useFocusGroup, hooks/useFocusable.js).
+     Its one Tab stop and its arrow keys are the shared focus group (useFocusGroup, hooks/useFocusable.ts).
      Other props reach the toolbar or group element.
 */
 import React from 'react';
 import { roveTo } from '../../utils/roving.ts';
-import { useFocusGroup } from '../../hooks/useFocusable.js';
+import { useFocusGroup } from '../../hooks/useFocusable.ts';
 import { cx } from '../../utils/cx.ts';
 import { useBarFit } from '../../utils/barFit.ts';
 import { foldOrder, menuOrder } from '../../utils/foldOrder.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { Button } from '../Button/Button.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
@@ -122,7 +122,7 @@ export function Toolbar({ label, variant = 'default', className, children, onKey
     window.addEventListener('resize', refresh);
     return () => { observer.disconnect(); if (resize) resize.disconnect(); window.removeEventListener('resize', refresh); };
   }, []);
-  // one Tab stop and the arrow keys: the shared focus group (hooks/useFocusable.js), with the toolbar's own item rules. The
+  // one Tab stop and the arrow keys: the shared focus group (hooks/useFocusable.ts), with the toolbar's own item rules. The
   // keys stay a text field's, a select's, an editable region's, a popup's and a nested toolbar's own (ignore).
   const { groupProps } = useFocusGroup(ref, {
     items: itemsOf, orientation: 'horizontal', loop: true, modifiers: true, onKeyDown,

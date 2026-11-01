@@ -18,7 +18,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { SaveStatus } from '../Autosave/Autosave.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 export function DraftState({ version, saveState, onResume, onDiscard, strings, className }) {

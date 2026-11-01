@@ -61,11 +61,11 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
-import { SurfaceContext } from '../../providers/Surface.jsx';
+import { SurfaceContext } from '../../providers/Surface.tsx';
 import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 const TONES = ['success', 'danger', 'neutral'];

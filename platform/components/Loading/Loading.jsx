@@ -23,7 +23,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 // a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
 const sizeName = (v) => (v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined);

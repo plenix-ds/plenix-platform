@@ -51,7 +51,7 @@ import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { dataPhrase } from '../../utils/dataText.tsx';
 
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,

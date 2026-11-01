@@ -24,7 +24,7 @@ import { cx } from '../../utils/cx.ts';
 import { useOverflow, splitAt } from '../../utils/overflow.ts';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 const isSet = (f) => (f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '');

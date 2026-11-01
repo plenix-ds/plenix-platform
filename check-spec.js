@@ -215,7 +215,7 @@ recs.forEach((r) => {
 for (const dir of ['components', 'patterns', 'providers', 'hooks']) {
   const base = path.join(PLATFORM, dir);
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((f) => f.isDirectory() ? walk(path.join(d, f.name)) : [path.join(d, f.name)]);
-  for (const f of walk(base).filter((x) => /\.(jsx|js|tsx|ts)$/.test(x) && !/\.d\.ts$/.test(x) && !/apps\.js$/.test(x))) {
+  for (const f of walk(base).filter((x) => /\.(jsx|js|tsx|ts)$/.test(x) && !/\.d\.ts$/.test(x) && !/providers[\\/]apps\.ts$/.test(x))) {
     const c = (read(f).match(/^\s*\/\*([\s\S]*?)\*\//) || [])[1] || '';
     const rel = path.relative(PLATFORM, f).split(path.sep).join('/');
     if (!/^ Plenix · [^\n:]+\r?\n/.test(c)) add('api', rel + ': the first line is not "/* Plenix · Name"');

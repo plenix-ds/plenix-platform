@@ -92,6 +92,13 @@ function loadZone() {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, v);
       el.dispatchEvent(new Event('input', { bubbles: true }));
     }, selector, v);
+    // replace a time field's text: focus it, select its text with el.select() (a triple-click does not select in headless Chrome), then type
+    const typeTime = async (id, text) => {
+      const f = await page.$(id + ' .plx-time-picker__input');
+      await f.click();
+      await f.evaluate((x) => x.select());
+      await page.keyboard.type(text);
+    };
     const lastLog = async (id) => { const r = await read(id); return r.log[r.log.length - 1]; };
 
     // 1. Tokyo on a Los Angeles computer
@@ -128,8 +135,7 @@ function loadZone() {
     // TimePicker, list: a moment shows its Tokyo time and saves the moment on the same Tokyo day
     r = await read('tp');
     assert.equal(r.tp, '05:30', 'the time picker shows the moment\'s time in Tokyo; got ' + r.tp);
-    await page.click('#tp .plx-time-picker__input', { clickCount: 3 });
-    await page.keyboard.type('06:15');
+    await typeTime('#tp', '06:15');
     await page.keyboard.press('Enter');
     assert.equal(await lastLog('tp'), '2026-07-01T21:15:00.000Z', 'a typed time saves the moment on July 2 in Tokyo');
     // the list's keys work as before: Arrow Down opens on the nearest time, Arrow Down moves, Enter chooses (06:30 in Tokyo)
@@ -146,12 +152,10 @@ function loadZone() {
     // an "HH:MM" value is a time of day: no zone moves it
     r = await read('tpDay');
     assert.equal(r.tp, '14:30', 'an HH:MM value shows as written under a zone');
-    await page.click('#tpDay .plx-time-picker__input', { clickCount: 3 });
-    await page.keyboard.type('15:00');
+    await typeTime('#tpDay', '15:00');
     await page.keyboard.press('Enter');
     assert.equal(await lastLog('tpDay'), '15:00', 'and saves HH:MM');
-    await page.click('#tpPlain .plx-time-picker__input', { clickCount: 3 });
-    await page.keyboard.type('16:45');
+    await typeTime('#tpPlain', '16:45');
     await page.keyboard.press('Enter');
     assert.equal(await lastLog('tpPlain'), '16:45', 'without a zone the time picker gives HH:MM, as before');
 

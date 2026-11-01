@@ -20,7 +20,7 @@ import { Text } from '../../components/Text/Text.jsx';
 import { WizardDialog } from '../WizardDialog/WizardDialog.jsx';
 import { ExportDialog } from '../ExportDialog/ExportDialog.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Offboarding({ open, onClose, accountName, action = 'cancel', onConfirm, onExport, formats = [], children, strings, className }) {
   const words = useStrings('offboarding', strings);

@@ -45,7 +45,7 @@ import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import LockIcon from 'plenix-platform/icons/plenix/lock';

@@ -18,7 +18,7 @@
      loading: shows a spinner in place of the search icon; default false
      onAccent: the look for the blue header; default false
      suggestions: an array: what to offer while there is text, already matched to it by the caller: strings, or
-       [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
+       [{ value, label, description }] (label defaults to value); every part of each label that matches the text is marked (utils/highlight.tsx)
      recent: an array of strings: the person's recent searches (newest first: useSearchHistory), offered while the field is empty
      onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
        'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
@@ -64,26 +64,19 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
+import { highlightMatch } from '../../utils/highlight.tsx';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useTruncated, useInBar } from '../../utils/overflow.ts';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 
 const asItem = (kind) => (x) => (typeof x === 'string' ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind }));
-
-// the label with the part that matches the text in bold (the first match, ignoring case)
-function marked(label, text) {
-  const s = String(label), q = String(text || '').trim();
-  const at = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1;
-  if (at < 0) return s;
-  return [s.slice(0, at), <strong key="m" className="plx-search__match">{s.slice(at, at + q.length)}</strong>, s.slice(at + q.length)];
-}
 
 // the field itself (width "auto", "bar" or "fill")
 const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onClear, placeholder, label, shortcut, loading = false,
@@ -205,7 +198,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
                 <span className="plx-search__option-icon" aria-hidden="true"><Icon name={it.kind === 'recent' ? ClockIcon : SearchIcon} /></span>
                 <span className="plx-search__option-text">
-                  <span className="plx-search__option-label">{it.kind === 'recent' ? it.label : marked(it.label, text)}</span>
+                  <span className="plx-search__option-label">{it.kind === 'recent' ? it.label : highlightMatch(it.label, text)}</span>
                   {it.description ? <span className="plx-search__option-description">{it.description}</span> : null}
                 </span>
               </li>
