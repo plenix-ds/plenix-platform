@@ -65,8 +65,8 @@ import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { Spinner } from '../Loading/Loading.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import { Spinner } from '../Loading/Loading.tsx';
 import { fill } from '../../utils/fill.ts';
 import { dataPhrase } from '../../utils/dataText.tsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
