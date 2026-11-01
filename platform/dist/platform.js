@@ -1278,6 +1278,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "all": "All"
     },
     "dataGrid": {
+      "cardCount": {
+        "one": "{n} record",
+        "other": "{n} records"
+      },
       "cellsSelected": {
         "one": "{n} cell selected",
         "other": "{n} cells selected"
@@ -3559,6 +3563,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "all": "\u0627\u0644\u0643\u0644"
     },
     "dataGrid": {
+      "cardCount": {
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0633\u062C\u0644\u0627\u062A",
+        "one": "\u0633\u062C\u0644 \u0648\u0627\u062D\u062F",
+        "two": "\u0633\u062C\u0644\u0627\u0646",
+        "few": "{n} \u0633\u062C\u0644\u0627\u062A",
+        "many": "{n} \u0633\u062C\u0644\u064B\u0627",
+        "other": "{n} \u0633\u062C\u0644"
+      },
       "cellsSelected": {
         "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062E\u0644\u0627\u064A\u0627 \u0645\u062D\u062F\u062F\u0629",
         "one": "\u062E\u0644\u064A\u0629 \u0648\u0627\u062D\u062F\u0629 \u0645\u062D\u062F\u062F\u0629",
@@ -18771,7 +18783,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     );
   }
-  function Check({ checked: checked2, mixed, label: label2, onChange }) {
+  function Check({ checked: checked2, mixed, label: label2, onChange, card }) {
     const ref = React2.useRef(null);
     React2.useLayoutEffect(() => {
       if (ref.current) ref.current.indeterminate = !!mixed;
@@ -18780,7 +18792,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "input",
       {
         ref,
-        className: GRID + "__check-input",
+        className: GRID + "__check-input" + (card ? " " + GRID + "__check-input--card" : ""),
         type: "checkbox",
         checked: !!checked2,
         "aria-label": label2,
@@ -18973,6 +18985,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return failed && fallback ? fallback(attempt, from.current) : null;
   }
   function gridFrame({
+    cardBar,
     widthPixels,
     headerMenu,
     isStatic,
@@ -19102,7 +19115,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           {
             className: cx(
               B + "__grid-header",
-              isNarrow && B + "__grid-header--narrow",
+              cardBar != null ? B + "__grid-header--card" : isNarrow && B + "__grid-header--narrow",
               isStatic && B + "__grid-header--static"
             ),
             ref: header,
@@ -19112,7 +19125,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             "div",
             {
               ...columnDnd.listProps,
-              className: cx(`${B}__grid-headers`, isStatic && B + "__grid-headers--static"),
+              className: cx(`${B}__grid-headers`, isStatic && B + "__grid-headers--static", cardBar != null && B + "__grid-headers--card"),
               role: "row"
             },
             selectable ? /* @__PURE__ */ React2.createElement(
@@ -19120,23 +19133,26 @@ var Plenix = (function(exports, React2, reactDom, client) {
               {
                 className: cx(
                   `${B}__grid-col ${B}__grid-row-header ${B}__w-lead`,
+                  cardBar != null && B + "__grid-col--card",
                   leadFrozen && B + "__grid-frozen"
                 ),
                 role: "columnheader"
               },
-              /* @__PURE__ */ React2.createElement("div", { className: `${B}__grid-col-content ${B}__grid-col-content--row-header` }, /* @__PURE__ */ React2.createElement(
+              /* @__PURE__ */ React2.createElement("div", { className: cx(`${B}__grid-col-content ${B}__grid-col-content--row-header`, cardBar != null && B + "__grid-col-content--card") }, /* @__PURE__ */ React2.createElement(
                 Check,
                 {
                   label: S2.selectAll,
+                  card: cardBar != null,
                   checked: allVisible,
                   mixed: selectedVisible.length > 0 && !allVisible,
                   onChange: (e) => selectAll(e.target.checked)
                 }
               ))
             ) : null,
-            ordered2.map(headerCell),
-            viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }),
-            rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(
+            cardBar != null ? /* @__PURE__ */ React2.createElement("span", { className: B + "__card-count" }, cardBar) : null,
+            cardBar != null ? null : ordered2.map(headerCell),
+            cardBar != null ? null : viewMenu({ props, B, S: S2, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }),
+            cardBar == null && rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(
               Width,
               {
                 width: metrics.menu,
@@ -19767,7 +19783,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           {
             className: cx(
               `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
-              card && B + "__grid-cell--template-check",
+              card && B + "__grid-cell--template-check " + B + "__grid-cell--card",
               leadFrozen && B + "__grid-frozen",
               modes,
               selection[row.id] && B + "__grid-cell--selected-start"
@@ -19778,6 +19794,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             Check,
             {
               label: S2.selectRow + " " + record[index2],
+              card,
               checked: selection[row.id],
               onChange: (e) => pickCheckbox(row, e)
             }
@@ -19787,7 +19804,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
           const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
           const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
-          const detail = isNarrow && !tpl && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes("icon");
+          const detail = isNarrow && (tpl ? card && tpl.implicit && !tpl.slotOf[c.field] : !keys.includes(c.field)) && !actions && !c.rowHandle && !k.includes("icon");
           const mods = cx(
             isStatic && B + "__value--static",
             k.includes("wrap") && B + "__value--wrap",
@@ -19874,9 +19891,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 k.includes("icon") && B + "__w-lead",
                 slotted && tpl.slotOf[c.field] && B + "__cell--slot " + B + "__cell--slot-" + tpl.slotOf[c.field],
                 card && tpl.slotOf[c.field] && B + "__cell--place-" + tpl.layout.toLowerCase() + "-" + tpl.slotOf[c.field],
-                keys.includes(c.field) && B + "__cell--key",
+                card && B + "__grid-cell--card",
+                !card && keys.includes(c.field) && B + "__cell--key",
                 detail && B + "__cell--list-detail",
-                keys[0] === c.field && B + "__cell--key-first",
+                detail && card && B + "__cell--detail-line",
+                !card && keys[0] === c.field && B + "__cell--key-first",
                 (c.align || c.type === "bytes") && B + "__cell--align-" + (c.align || "right")
               )
             },
@@ -19975,7 +19994,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           );
         }),
         props.viewMenu ? /* @__PURE__ */ React2.createElement("div", { className: cx(`${B}__grid-cell ${B}__w-view`, modes), role: "gridcell" }) : null,
-        rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + "__grid-cell--template-menu", modes), role: "gridcell" }, /* @__PURE__ */ React2.createElement(
+        rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(Width, { width: card ? null : metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + "__grid-cell--template-menu " + B + "__grid-cell--card", modes), role: "gridcell" }, /* @__PURE__ */ React2.createElement(
           Menu,
           {
             label: S2.rowActions,
@@ -20255,6 +20274,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const showTypes = typeIconsProp ?? !isStatic;
     const narrow = requestedNarrow === void 0 ? isStatic ? "list" : "auto" : requestedNarrow;
     const B = isStatic ? "plx-table" : GRID;
+    const loc2 = useLocale();
     const S2 = useStrings("dataGrid", props.strings), initial = React2.useMemo(() => opening(props), [storageKey]);
     const frame = React2.useRef(null), holder = React2.useRef(null), header = React2.useRef(null), live = React2.useRef({}), ready = React2.useRef(false);
     const warnedActions = React2.useRef(/* @__PURE__ */ new Set()), viewportId = React2.useId(), displayElements = React2.useRef(/* @__PURE__ */ new Map()), parkedFocus = React2.useRef(null), printView = React2.useRef(null);
@@ -20477,7 +20497,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const leadFrozen = frozen.size > 0 && !isNarrow;
     const widths = Object.fromEntries(ordered2.map((column) => [column.id, column.getSize()]));
     const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ["icon", "actions"].includes(kind));
-    const keys = props.rowTemplate ? [] : keyColumns?.length ? keyColumns : columns.filter((c) => !kinds(c).some((k) => ["icon", "actions"].includes(k)) && !c.rowHandle).slice(0, 3).map((c) => c.field);
+    const keys = keyColumns?.length ? keyColumns : columns.filter((c) => !kinds(c).some((k) => ["icon", "actions"].includes(k)) && !c.rowHandle).slice(0, 3).map((c) => c.field);
     const listed = props.rowTemplate ? narrow !== "table" && columns.some(listable) : narrow === "auto" ? columns.some(listable) : narrow === "list" && columns.some((column) => listable(column) && !keys.includes(column.field));
     const columnDnd = useSortable({
       items: ordered2,
@@ -20878,7 +20898,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       (group, i) => group.path.every((part, depth2) => JSON.stringify(part) === JSON.stringify(currentGroup.path[depth2])) && !priorGroups.slice(i + 1).some((next) => next.depth === group.depth)
     ) : [];
     const moreFailed = scrollFill && remoteError && model.length > 0, failed = error || (moreFailed ? null : remoteError);
+    const cardBar = isNarrow && props.rowTemplate && props.rowTemplate.layout !== "wide" ? (() => {
+      const n = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+      return loc2.t("dataGrid.cardCount", { count: n, n: formatNumber(n) });
+    })() : null;
     return gridFrame({
+      cardBar,
       widthPixels,
       headerMenu,
       isStatic,
@@ -23088,10 +23113,36 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const auto = "plx-r" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
     return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-radio-group", "plx-radio-group--" + layout2, className), ...rest }, label2 ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-radio-group__legend" }, label2) : null, options.map((o) => /* @__PURE__ */ React2.createElement(Radio, { key: o.value, name: name || auto, value: o.value, label: o.label, description: o.description, checked: o.value === value, onChange: () => onChange(o.value), disabled: o.disabled, readOnly })));
   }
-  function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
+  function ChoiceList({ legend, name, value, values, onChange, options, control = "radio", className, readOnly, ...rest }) {
     const locked = useReadOnly(readOnly);
     const auto = "plx-c" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
-    return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-choice-list", className), ...rest }, legend ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-choice-list__legend" }, legend) : null, options.map((o) => /* @__PURE__ */ React2.createElement("label", { key: o.value, className: cx("plx-choice", o.value === value && "is-selected"), hidden: o.hidden || void 0 }, /* @__PURE__ */ React2.createElement("input", { type: "radio", className: "plx-choice__input", ...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false }) }), /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__label" }, o.label), o.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__description" }, o.description) : null))));
+    const kind = control === "checkbox" || control === "switch" ? control : "radio";
+    const several = kind !== "radio";
+    const list2 = Array.isArray(values) ? values : [];
+    const on = (o) => several ? list2.indexOf(o.value) >= 0 : o.value === value;
+    const change = (o) => {
+      if (!onChange) return;
+      if (!several) {
+        onChange(o.value);
+        return;
+      }
+      onChange(on(o) ? list2.filter((v) => v !== o.value) : list2.concat([o.value]));
+    };
+    return /* @__PURE__ */ React2.createElement("fieldset", { className: cx("plx-choice-list", several && "plx-choice-list--" + kind, className), ...rest }, legend ? /* @__PURE__ */ React2.createElement("legend", { className: "plx-choice-list__legend" }, legend) : null, options.map((o) => {
+      const key = String(o.value).replace(/[^a-zA-Z0-9_-]/g, "_");
+      const labelId = auto + "-l-" + key;
+      const descId = o.description ? auto + "-d-" + key : void 0;
+      const input = readOnlyProps(
+        locked,
+        { name: name || auto, value: o.value, checked: on(o), disabled: o.disabled || void 0, onChange: () => change(o), "aria-labelledby": labelId, "aria-describedby": descId },
+        { aria: kind !== "radio" }
+      );
+      const text2 = /* @__PURE__ */ React2.createElement("span", { className: "plx-choice__text" }, /* @__PURE__ */ React2.createElement("span", { id: labelId, className: "plx-choice__label" }, o.label), o.description ? /* @__PURE__ */ React2.createElement("span", { id: descId, className: "plx-choice__description" }, o.description) : null);
+      return /* @__PURE__ */ React2.createElement("label", { key: o.value, className: cx("plx-choice", "plx-choice--" + kind, on(o) && "is-selected", o.disabled && "is-disabled"), hidden: o.hidden || void 0 }, kind === "switch" ? (
+        // the text first, the switch at the card's end (a settings row); the label's first control is the switch
+        /* @__PURE__ */ React2.createElement(React2.Fragment, null, text2, /* @__PURE__ */ React2.createElement("span", { className: "plx-switch plx-choice__switch" }, /* @__PURE__ */ React2.createElement("input", { type: "checkbox", role: "switch", className: "plx-switch__input plx-choice__input", ...input }), /* @__PURE__ */ React2.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" })))
+      ) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("input", { type: kind, className: "plx-choice__input", ...input }), text2));
+    }));
   }
   const Switch = React2.forwardRef(function Switch2({ label: label2, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
     const locked = useReadOnly(readOnly);
@@ -24203,16 +24254,20 @@ var Plenix = (function(exports, React2, reactDom, client) {
       t.value === current2 ? t.content : null
     )) : null);
   }
+  const DEFAULT_LAYOUT = "A";
   const SLOTS = ["title", "subtitle", "date", "primary", "secondary", "tertiary"];
   const FILL = ["title", "subtitle", "primary", "secondary", "tertiary", "date"];
   const LAYOUTS$3 = { A: "A", B: "B", WIDE: "wide" };
   const DATES = ["date", "datetime"], NUMBERS = ["number", "currency", "percent"];
   const showable = (c) => !c.rowHandle && !kinds(c).some((k) => k === "icon" || k === "actions");
   const typed = (c) => c.type || (c.sorter === "number" ? "number" : c.sorter === "date" ? "date" : "text");
-  function resolveRowTemplate({ columns, layout: layout2, template }) {
-    if (layout2 === void 0 && !template) return null;
-    const kind = LAYOUTS$3[String(layout2 === void 0 ? "A" : layout2).toUpperCase()];
+  function resolveRowTemplate({ columns, layout: layout2, template, keyColumns, narrow }) {
+    if (layout2 === "plain") return null;
+    const implicit = layout2 === void 0 && !template;
+    if (implicit && narrow !== void 0 && narrow !== "auto" && narrow !== "list") return null;
+    const kind = LAYOUTS$3[String(layout2 === void 0 ? DEFAULT_LAYOUT : layout2).toUpperCase()];
     if (!kind) return null;
+    if (implicit && keyColumns && keyColumns.length) template = { title: keyColumns[0], subtitle: keyColumns[1], primary: keyColumns[2] };
     const list2 = columns.filter(showable), known = new Set(list2.map((c) => c.field));
     const slots = {}, used = /* @__PURE__ */ new Set();
     for (const slot of SLOTS) {
@@ -24235,21 +24290,21 @@ var Plenix = (function(exports, React2, reactDom, client) {
     for (const slot of FILL) take2(slot, () => true);
     const slotOf = {};
     for (const slot of SLOTS) if (slots[slot] !== void 0) slotOf[slots[slot]] = slot;
-    const keep2 = new Set(columns.filter((c) => !showable(c) || slotOf[c.field]).map((c) => c.field));
-    return { layout: kind, slots, slotOf, keep: keep2 };
+    const keep2 = new Set(columns.filter((c) => implicit || !showable(c) || slotOf[c.field]).map((c) => c.field));
+    return { layout: kind, slots, slotOf, keep: keep2, implicit };
   }
   const wideColumns = (columns, resolved) => {
     const first = columns.filter((c) => !showable(c) && !kinds(c).includes("actions")), last = columns.filter((c) => kinds(c).includes("actions")), byField = new Map(columns.map((c) => [c.field, c]));
     return first.concat(SLOTS.filter((s) => resolved.slots[s] !== void 0).map((s) => byField.get(resolved.slots[s])), last);
   };
   function useRowTemplate(props) {
-    const { columns, layout: layout2, template, narrow } = props;
+    const { columns, layout: layout2, template, narrow, keyColumns } = props;
     const signal = JSON.stringify(template || null);
     return React2.useMemo(() => {
-      const resolved = resolveRowTemplate({ columns, layout: layout2, template });
+      const resolved = resolveRowTemplate({ columns, layout: layout2, template, keyColumns, narrow });
       if (!resolved) return props;
       return Object.assign({}, props, { rowTemplate: resolved }, resolved.layout === "wide" ? { columns: wideColumns(columns, resolved), narrow: "table" } : null);
-    }, [props, columns, layout2, signal, narrow]);
+    }, [props, columns, layout2, signal, narrow, keyColumns]);
   }
   function useDataGridActions(actions, selection, strings) {
     const undoable = useUndo(), toast = useToast(), pending2 = React2.useRef(/* @__PURE__ */ new Set()), t = {
@@ -43647,7 +43702,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function useAnalytics() {
     return React2.useContext(Context);
   }
-  const LIMITS = { "side-by-side": [360, 720, 560], stacked: [200, 500, 320] };
+  const LIMITS = { "side-by-side": [360, Infinity, 560], stacked: [200, 500, 320] };
   function SplitView({
     orientation = "side-by-side",
     first,
@@ -43664,6 +43719,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ...rest
   }) {
     const tw = useStrings("splitView");
+    const digits2 = useDigits();
+    const otherNeeds = (n) => tw.maxWidth.replace("{n}", localDigits(String(n), { digits: digits2 }));
     if (firstLabel === void 0) firstLabel = tw.firstLabel;
     const shell = useAppLayout();
     const claim = shell && shell.claimPage;
@@ -43689,7 +43746,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
         const gap = parseFloat(horizontal ? panelsStyle.columnGap : panelsStyle.rowGap) || 0;
         const floor = horizontal || !side ? minSize ?? lo : LIMITS.stacked[0];
         const max2 = Math.max(floor, (horizontal ? box2.width : box2.height) - gap - minimum);
-        setAvailable((previous) => previous && previous.max === max2 && previous.minimum === minimum && previous.horizontal === horizontal ? previous : { max: max2, minimum, horizontal });
+        const share2 = shareOf(win.innerWidth, element);
+        setAvailable((previous) => previous && previous.max === max2 && previous.minimum === minimum && previous.horizontal === horizontal && previous.share === share2 ? previous : { max: max2, minimum, horizontal, share: share2 });
       };
       measure2();
       const observer2 = win.ResizeObserver ? new win.ResizeObserver(measure2) : null;
@@ -43707,15 +43765,18 @@ var Plenix = (function(exports, React2, reactDom, client) {
         win.removeEventListener("pointercancel", settle, true);
       };
     }, [side, minSize, lo]);
-    const requestedMax = maxSize ?? hi;
     const sideRoom = side && available && available.horizontal ? available : null;
-    const constrained = !!sideRoom && sideRoom.max < requestedMax;
-    const widthMax = constrained ? sideRoom.max : requestedMax;
+    const windowShare = available ? available.share : typeof window === "undefined" ? Infinity : shareOf(window.innerWidth);
+    const sideMax = sideRoom ? Math.min(sideRoom.max, windowShare) : windowShare;
+    const requestedMax = side ? sideMax : maxSize ?? hi;
+    const constrained = !!sideRoom && sideRoom.max <= windowShare;
+    const widthMax = sideMax;
+    const widthMin = Math.min(minSize || lo, sideMax);
     const stackRoom = available && !available.horizontal ? available : null;
     const heightMax = (wanted) => stackRoom && stackRoom.max < wanted ? stackRoom.max : wanted;
-    const heightWords = (wanted) => stackRoom && stackRoom.max < wanted ? { maxHeight: tw.maxWidth.replace("{n}", stackRoom.minimum) } : void 0;
+    const heightWords = (wanted) => stackRoom && stackRoom.max < wanted ? { maxHeight: otherNeeds(stackRoom.minimum) } : void 0;
     const [, , stackedStart] = LIMITS.stacked;
-    const box = side && roomStacked ? { axis: "vertical", defaultWidth: defaultSize != null ? defaultSize : start2, minWidth: minSize || lo, maxWidth: requestedMax, defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: heightMax(LIMITS.stacked[1]), strings: heightWords(LIMITS.stacked[1]) } : side ? { axis: "horizontal", defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: LIMITS.stacked[1], defaultWidth: defaultSize != null ? defaultSize : start2, width: size, minWidth: minSize || lo, maxWidth: widthMax, strings: constrained ? { maxWidth: tw.maxWidth.replace("{n}", available.minimum) } : void 0, onResize: onSizeChange ? (s) => onSizeChange(s.width) : void 0 } : { axis: "vertical", defaultHeight: defaultSize != null ? defaultSize : start2, height: size, minHeight: minSize || lo, maxHeight: heightMax(maxSize || hi), strings: heightWords(maxSize || hi), onResize: onSizeChange ? (s) => onSizeChange(s.height) : void 0 };
+    const box = side && roomStacked ? { axis: "vertical", defaultWidth: defaultSize != null ? defaultSize : start2, minWidth: widthMin, maxWidth: requestedMax, defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: heightMax(LIMITS.stacked[1]), strings: heightWords(LIMITS.stacked[1]) } : side ? { axis: "horizontal", defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: LIMITS.stacked[1], defaultWidth: defaultSize != null ? defaultSize : start2, width: size, minWidth: widthMin, maxWidth: widthMax, strings: constrained ? { maxWidth: otherNeeds(available.minimum) } : void 0, onResize: onSizeChange ? (s) => onSizeChange(s.width) : void 0 } : { axis: "vertical", defaultHeight: defaultSize != null ? defaultSize : start2, height: size, minHeight: minSize || lo, maxHeight: heightMax(maxSize || hi), strings: heightWords(maxSize || hi), onResize: onSizeChange ? (s) => onSizeChange(s.height) : void 0 };
     return /* @__PURE__ */ React2.createElement(GridPane.Provider, { value: true }, /* @__PURE__ */ React2.createElement("div", { ref: container, role: "group", "aria-label": label2, className: cx("plx-split-view", "plx-split-view--" + (side ? "side-by-side" : "stacked"), className), ...rest }, /* @__PURE__ */ React2.createElement("div", { className: "plx-split-view__panels" }, /* @__PURE__ */ React2.createElement(Resizable, { label: firstLabel, steps, variant: "divider", fill: true, className: cx("plx-split-view__first", "plx-split-view__first--" + (side ? "side-by-side" : "stacked")), ...box }, first), /* @__PURE__ */ React2.createElement("div", { className: cx("plx-split-view__second", "plx-split-view__second--" + (side ? "side-by-side" : "stacked")) }, second))));
   }
   function ReadingPane({ label: label2, actions, empty, className, children }) {
