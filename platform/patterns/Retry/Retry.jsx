@@ -46,7 +46,7 @@ import { cx } from '../../utils/cx.ts';
 import { tokenMs } from '../../utils/tokenTime.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatDuration } from '../../utils/format.ts';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';

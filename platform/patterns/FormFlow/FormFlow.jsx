@@ -18,7 +18,7 @@ import React from 'react';
 import { Form, FormActions } from '../Form/Form.jsx';
 import { Dialog, Drawer } from '../../components/Dialog/Dialog.jsx';
 import { Button } from '../../components/Button/Button.tsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { Fieldset } from '../../components/Fieldset/Fieldset.jsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { useToast } from '../../components/Toast/Toast.jsx';

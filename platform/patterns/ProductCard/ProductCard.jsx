@@ -60,7 +60,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { formatCurrency, formatNumber } from '../../utils/format.ts';
 import { Image } from '../../components/Image/Image.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Rating } from '../../components/Rating/Rating.jsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Text } from '../../components/Text/Text.tsx';

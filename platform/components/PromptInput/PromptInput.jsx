@@ -24,7 +24,7 @@ import { Button } from '../Button/Button.tsx';
 import { FileInput } from '../FileInput/FileInput.jsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Menu, MenuItem, MenuRadioGroup } from '../Menu/Menu.jsx';
-import { Notice } from '../Notice/Notice.jsx';
+import { Notice } from '../Notice/Notice.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 import StopIcon from 'plenix-platform/icons/plenix/stop';

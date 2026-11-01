@@ -1,4 +1,4 @@
-/* Plenix · Count (platform/components/Count). Anatomy and API: Count.jsx. The pill is soft, as every pill (owner, 2026-10-14):
+/* Plenix · Count (platform/components/Count). Anatomy and API: Count.tsx. The pill is soft, as every pill (owner, 2026-10-14):
    its tones point to the status pill roles (--plx-sys-status-pill-*), the same as Badge. */
 .plx-count{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .plx-count--plain{color:var(--plx-comp-count-plain-text);font-size:var(--plx-comp-count-plain-font-size);}

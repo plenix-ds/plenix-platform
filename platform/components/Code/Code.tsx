@@ -22,7 +22,8 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export const Code = React.forwardRef(function Code({ onAccent = false, truncate = false, className, children, ...rest }, ref) {
+export type CodeProps = React.HTMLAttributes<HTMLElement> & { onAccent?: boolean; truncate?: boolean };
+export const Code = React.forwardRef(function Code({ onAccent = false, truncate = false, className, children, ...rest }: CodeProps, ref: React.ForwardedRef<HTMLElement>) {
   const title = truncate && typeof children === 'string' ? children : undefined;
   return (
     <code ref={ref} title={title} dir="ltr" {...rest}

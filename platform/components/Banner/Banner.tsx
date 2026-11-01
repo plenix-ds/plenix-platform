@@ -29,14 +29,27 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon, StatusIcon } from '../Icon/Icon.tsx';
+import type { IconValue, StatusIconProps } from '../Icon/Icon.tsx';
 import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
 
-export function Banner({ tone = 'info', title, children, actions, onDismiss, placement = 'page', icon, strings, className, ...rest }) {
+export type BannerProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  tone?: 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+  title?: React.ReactNode;
+  actions?: React.ReactNode;
+  /** shows the dismiss button */
+  onDismiss?: (event: React.MouseEvent<HTMLElement>) => void;
+  placement?: 'page' | 'pane';
+  /** an icon name or an imported icon module, in place of the tone's */
+  icon?: IconValue | null;
+  strings?: Catalog | null;
+};
+export function Banner({ tone = 'info', title, children, actions, onDismiss, placement = 'page', icon, strings, className, ...rest }: BannerProps) {
   devWarn('Banner', { tone }, { tone: ['info','success','warning','danger','neutral'] });
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const words = useStrings('banner', strings);
@@ -45,14 +58,14 @@ export function Banner({ tone = 'info', title, children, actions, onDismiss, pla
       role={t === 'danger' ? 'alert' : 'status'} {...rest}>
       <span className="plx-banner__icon">
         {icon ? <span className={cx('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--md')}><span className="plx-status-icon__glyph"><Icon name={icon} size="md" /></span></span>
-          : <StatusIcon tone={t} strings={strings} />}
+          : <StatusIcon tone={t as StatusIconProps['tone']} strings={strings} />}
       </span>
       <div className="plx-banner__body">
         {title ? <strong className="plx-banner__title">{title}</strong> : null}
         {children ? <span className="plx-banner__text">{dataWhenText(children)}</span> : null}
       </div>
       {actions ? <div className="plx-banner__actions">{actions}</div> : null}
-      {onDismiss ? <Button variant="ghost" size="sm" iconOnly icon={CloseIcon} label={words.dismiss} className="plx-banner__dismiss" onClick={onDismiss} /> : null}
+      {onDismiss ? <Button variant="ghost" size="sm" iconOnly icon={CloseIcon} label={words.dismiss as string} className="plx-banner__dismiss" onClick={onDismiss} /> : null}
     </div>
   );
 }

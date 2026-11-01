@@ -4,4 +4,4 @@
 export { Calendar } from '../components/Calendar/Calendar.jsx';
 export { DatePicker } from '../components/DatePicker/DatePicker.jsx';
 export { CountrySelect } from '../components/CountrySelect/CountrySelect.jsx';
-export { ProgressSteps } from '../components/ProgressSteps/ProgressSteps.jsx';
+export { ProgressSteps } from '../components/ProgressSteps/ProgressSteps.tsx';

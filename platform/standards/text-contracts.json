@@ -1402,6 +1402,12 @@
     "line-height"
    ]
   },
+  "plx-field__warning": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
   "plx-fieldset__legend": {
    "contract": "adjusts",
    "props": [

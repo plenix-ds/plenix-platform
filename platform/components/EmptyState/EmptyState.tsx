@@ -37,7 +37,9 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.tsx';
+import type { IconModule, IconValue } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CloudOffIcon from 'plenix-platform/icons/plenix/cloud-off';
 import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
@@ -47,7 +49,7 @@ import WarningIcon from 'plenix-platform/icons/plenix/warning';
 import WifiOffIcon from 'plenix-platform/icons/plenix/wifi-off';
 
 // the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
-const KINDS = {
+const KINDS: Record<string, { tone: string; icon: IconModule }> = {
   offline: { tone: 'warning', icon: WifiOffIcon },
   degraded: { tone: 'warning', icon: CloudOffIcon },
   'permission-denied': { tone: 'neutral', icon: LockIcon },
@@ -55,14 +57,27 @@ const KINDS = {
   maintenance: { tone: 'neutral', icon: SettingsMaintenanceIcon },
   completion: { tone: 'success', icon: CircleCheckIcon }
 };
-const TONE_ICONS = { error: WarningIcon, warning: WarningIcon, success: CircleCheckIcon };
-const ROLES = { error: 'alert', warning: 'status', success: 'status' };
+const TONE_ICONS: Record<string, IconModule> = { error: WarningIcon, warning: WarningIcon, success: CircleCheckIcon };
+const ROLES: Record<string, string> = { error: 'alert', warning: 'status', success: 'status' };
 
-export function EmptyState({ size = 'inline', tone, kind, icon, title, action, strings, className, children, ...rest }) {
+// a system state's words (strings.emptyState.<kind>)
+type KindWords = { title?: React.ReactNode; text?: React.ReactNode };
+export type EmptyStateProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  size?: 'inline' | 'page';
+  tone?: 'neutral' | 'error' | 'warning' | 'success';
+  /** a system state, with its tone, icon and words */
+  kind?: 'offline' | 'degraded' | 'permission-denied' | 'not-found' | 'maintenance' | 'completion';
+  /** an icon name, an imported module or an element; null: none */
+  icon?: IconValue | React.ReactNode;
+  title?: React.ReactNode;
+  action?: React.ReactNode;
+  strings?: Catalog | null;
+};
+export function EmptyState({ size = 'inline', tone, kind, icon, title, action, strings, className, children, ...rest }: EmptyStateProps) {
   devWarn('EmptyState', { size, tone }, { size: ['inline','page'], tone: ['neutral','error','warning','success'] });
-  const preset = KINDS[kind];
+  const preset = KINDS[kind as string];
   const all = useStrings('emptyState', strings);   // every system state's words, the strings prop on top
-  const words = preset ? all[kind] : null;
+  const words = preset ? (all[kind as string] as KindWords) : null;
   const t = tone || (preset ? preset.tone : 'neutral');
   const mark = icon !== undefined ? icon : preset ? preset.icon : TONE_ICONS[t];
   const head = title !== undefined ? title : words ? words.title : null;

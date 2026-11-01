@@ -13,7 +13,7 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Badge } from '../Badge/Badge.jsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { Inline } from '../Stack/Stack.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Text } from '../Text/Text.tsx';

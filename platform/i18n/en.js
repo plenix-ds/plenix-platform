@@ -2254,7 +2254,8 @@ export default {
       "left": "{n} characters left",
       "over": "{n} characters too many"
     },
-    "about": "About {label}"
+    "about": "About {label}",
+    "warning": "Warning"
   },
   "icon": {
     "status": {

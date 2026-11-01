@@ -75,6 +75,11 @@
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
       "$description": "OtpInput box: the character's color when disabled."
+    },
+    "otp-input-cell-warning-border-color": {
+      "$value": "{plx-comp.input-warning-border-color}",
+      "$type": "color",
+      "$description": "OtpInput box: the border when the code has a warning, kept while focused."
     }
   }
 }

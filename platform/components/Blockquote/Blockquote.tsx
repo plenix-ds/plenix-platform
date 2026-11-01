@@ -25,7 +25,8 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 
-export function Blockquote({ variant = 'default', citation, cite, className, children, ...rest }) {
+export type BlockquoteProps = React.HTMLAttributes<HTMLElement> & { variant?: 'default' | 'pull'; citation?: React.ReactNode; cite?: string };
+export function Blockquote({ variant = 'default', citation, cite, className, children, ...rest }: BlockquoteProps) {
   devWarn('Blockquote', { variant }, { variant: ['default','pull'] });
   return (
     <figure className={cx('plx-blockquote', variant === 'pull' && 'plx-blockquote--pull', className)} {...rest}>

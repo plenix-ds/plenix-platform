@@ -19,6 +19,7 @@
      label: the accessible name when there is no Field (also the popover's name)
      defaultExpanded: the ids of the items open when the tree first shows (default: the items above the chosen ones)
      invalid: shows the invalid state (a Field sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not open the tree, so nothing changes; default the nearest ReadOnly region's (useReadOnly)
      required: a choice is required (a Field sets it)
@@ -90,7 +91,7 @@ function flatten(nodes, open, parent, out) {
 }
 
 export function TreeSelect({ nodes = [], value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
-  invalid, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
+  invalid, warning, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the choice shows and the tree does not open
   const t = useStrings('treeSelect', strings);
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -172,7 +173,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   const summary = names.length > 2 ? t.more.replace('{list}', names.slice(0, 2).join(', ')).replace('{n}', names.length - 2) : names.join(', ');
   const name = label || t.choose;
   const trigger = (
-    <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} aria-required={required || undefined} aria-readonly={locked || undefined} disabled={disabled}
+    <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} aria-required={required || undefined} aria-readonly={locked || undefined} disabled={disabled}
       className={cx('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')} {...rest}>
       <Tooltip content={names.length ? summary : ''} disabled={!cut || open || !names.length} className="plx-tree-select__tip"><span ref={valueRef} className={names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'}>{names.length ? summary : (placeholder || t.placeholder)}</span></Tooltip>
       <span className="plx-tree-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>

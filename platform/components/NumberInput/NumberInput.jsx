@@ -27,6 +27,7 @@
        short centered count: carts, copies, seats)
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
      invalid: the danger border and aria-invalid (a Field with an error sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the field and its buttons off
      readOnly: the value can be read and copied, not changed; the buttons turn off; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the field (a Field sets it)
@@ -93,7 +94,7 @@ function affix(format, currency, display, locale) {
 }
 
 export const NumberInput = React.forwardRef(function NumberInput({ value, defaultValue = null, onChange, min, max, step = 1, bigStep = 10, decimals,
-  format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, disabled, readOnly: readOnlyOwn, required, id,
+  format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, warning, disabled, readOnly: readOnlyOwn, required, id,
   'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }, ref) {
   const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the step buttons and the keys follow either
   const t = useStrings('numberInput', strings);
@@ -155,7 +156,7 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
     <InputGroup className={cx('plx-number-input', stepper !== 'none' && 'plx-number-input--' + stepper, className)} width={quantity ? undefined : width} compact={quantity} data
       prefix={aff && aff.before ? aff.text : undefined} suffix={aff && !aff.before ? aff.text : unit || undefined}
       start={quantity ? minus : undefined} end={quantity ? plus : stepper === 'buttons' ? [minus, plus] : undefined}
-      invalid={invalid} disabled={disabled} readOnly={readOnly} required={required} id={id} aria-describedby={describedBy}>
+      invalid={invalid} warning={warning} disabled={disabled} readOnly={readOnly} required={required} id={id} aria-describedby={describedBy}>
       <Input ref={ref} data role="spinbutton" inputMode={places === 0 || (decimalsOf(step) === 0 && places === undefined && format !== 'currency') ? 'numeric' : 'decimal'}
         autoComplete="off" value={text} onChange={typed} onKeyDown={keys} onFocus={focused} onBlur={left}
         aria-valuenow={num == null ? undefined : num} aria-valuemin={min} aria-valuemax={max} aria-valuetext={full} {...rest} />

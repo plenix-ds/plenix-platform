@@ -13,7 +13,7 @@
 */
 import React from 'react';
 import { Inline } from '../../components/Stack/Stack.tsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Text } from '../../components/Text/Text.tsx';
