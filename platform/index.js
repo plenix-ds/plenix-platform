@@ -191,6 +191,7 @@ export { CountrySelect } from './components/CountrySelect/CountrySelect.jsx';
 export { ProgressSteps } from './components/ProgressSteps/ProgressSteps.tsx';
 export { MillerColumns } from './components/MillerColumns/MillerColumns.jsx';
 export { Cascader } from './components/Cascader/Cascader.jsx';
+export { useBranchLoader, BranchStatus } from './hooks/useBranchLoader.ts';
 export { EntityPicker } from './components/EntityPicker/EntityPicker.jsx';
 export { TimePicker } from './components/TimePicker/TimePicker.jsx';
 export { parseTime } from './components/TimePicker/TimePicker.jsx';

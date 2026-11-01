@@ -10,6 +10,9 @@
      options: the hierarchy: [{ id, label, children, disabled, choosable }] (MillerColumns' items); only leaves can be chosen, unless a parent is choosable
      choosableParents: every parent can be the answer too ("Europe", not only "Paris"), default false; options[].choosable true or false decides one parent. A
        choosable parent lists "All of Europe" first in its column (an ordinary row: click, Enter, a checkbox with multiple), and a search lists the parent too
+     options[].hasChildren: true marks a parent whose children load when it is first opened (with loadChildren)
+     loadChildren(option): returns the parent's children (an array or a promise of one) the first time it opens (issue 814,
+       useBranchLoader, shared with its columns): its column shows a spinner and "Loading…", a failure Try again
      value: the chosen leaf's id, for a single choice; onChange(id, path) runs with it and its path of ids
      values: the chosen leaves' ids, with multiple; onChange(ids) runs with the new array
      multiple: several leaves, each a checkbox in the columns; the field shows them as tags (default false)
@@ -52,6 +55,9 @@
        the number of matches is announced politely, and a failed load says so in the list and is announced.
      The path in the field and in each match uses strings.separator; a path too long for the field ends in an ellipsis; the
        whole path is read as the field’s description.
+     A parent to load (hasChildren) is opened like any other (click, hover, Arrow Right); search lists the leaves loaded so far and
+       never loads a parent by itself; the field shows a chosen leaf's path once its parents are loaded (pass the chosen path's
+       options loaded).
    Notes:
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
      The list is a menu surface (the menu's corner, --plx-comp-cascader-popup-radius, and the menu elevation); its columns take the narrowest width step (160px).
@@ -63,6 +69,7 @@ import { useDescribedBy } from '../../utils/describedBy.ts';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
+import { useBranchLoader } from '../../hooks/useBranchLoader.ts';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
@@ -80,19 +87,24 @@ import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 // the columns of the list take the narrowest width step (160px), so three levels fit under a form field
 const NARROW = [1, 1, 1, 1, 1, 1];
 // every choosable item of the hierarchy with its path of items: the leaves, and the parents that are choosable (a parent is listed before its children)
-const leavesOf = (items, trail = [], choosable = () => false) => items.reduce((all, it) => {
+// (a parent still to load, pending: issue 814, is neither: it has no leaves yet and is never chosen itself until it loads)
+const leavesOf = (items, trail = [], choosable = () => false, pending = () => false) => items.reduce((all, it) => {
   const here = trail.concat([it]);
-  if (!Array.isArray(it.children)) return all.concat([{ item: it, trail: here }]);
-  return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable));
+  if (!Array.isArray(it.children)) return pending(it) ? all : all.concat([{ item: it, trail: here }]);
+  return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable, pending));
 }, []);
 // a choosable parent lists "All of …" first among its children: an ordinary row for the columns (its id is the parent's, marked)
 const SELF = '__plx-self:';
 const withSelf = (items, choosable, label) => items.map((it) => (Array.isArray(it.children)
   ? Object.assign({}, it, { children: (choosable(it) ? [{ id: SELF + it.id, self: it.id, label: label(it), disabled: it.disabled }] : []).concat(withSelf(it.children, choosable, label)) }) : it));
 
-export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
+const EMPTY = [];
+
+export const Cascader = React.forwardRef(function Cascader({ options: given = EMPTY, loadChildren, value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
   choosableParents = false, maxTags = 0, maxChoices, loadOptions, loadDelay = 300, minChars = 0, placeholder, label, invalid, warning, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('cascader', strings);
+  const branches = useBranchLoader(loadChildren);   // a parent with hasChildren loads its children when first opened (issue 814), shared with the columns
+  const options = branches.merge(given);
   const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const describedAt = useDescribedBy(auto + '-value', describedBy);   // the chosen value first, then what its owner (a Field) described
@@ -117,7 +129,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   const pathLabel = (trail) => trail.map((x) => x.label).join(t.separator);
   // which parents can be the answer, the choosable items and the columns' items ("All of …" first in a choosable parent)
   const choosable = (it) => Array.isArray(it.children) && (it.choosable !== undefined ? !!it.choosable : choosableParents);
-  const leaves = React.useMemo(() => leavesOf(options, [], choosable), [options, choosableParents]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const leaves = React.useMemo(() => leavesOf(options, [], choosable, branches.needs), [options, choosableParents, !!loadChildren]);   // eslint-disable-line react-hooks/exhaustive-deps
   const columnsItems = React.useMemo(() => withSelf(options, choosable, (it) => fill(t.allOf, { label: it.label })), [options, choosableParents, t.allOf]);   // eslint-disable-line react-hooks/exhaustive-deps
   const pathFor = (v) => { const hit = leaves.find((l) => l.item.id === v) || seen.current.get(v); return hit ? hit.trail : null; };
   const checkedIds = chosen.map((v) => (leaves.some((l) => l.item.id === v && Array.isArray(l.item.children)) ? SELF + v : v));
@@ -237,7 +249,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
             </ul>
           ) : (
             <div ref={cols}>
-              <MillerColumns className="plx-cascader__columns" label={label || t.columns} items={columnsItems} path={browse} expandOnHover={expandTrigger === 'hover'}
+              <MillerColumns className="plx-cascader__columns" label={label || t.columns} items={columnsItems} loader={branches} path={browse} expandOnHover={expandTrigger === 'hover'}
                 checked={multiple ? checkedIds : undefined} strings={{ empty: t.empty }}
                 openOnClick columnWidths={NARROW} onPathChange={(p) => setBrowse(p)} onOpen={(item) => { const real = item.self !== undefined ? item.self : item.id, hit = leaves.find((l) => l.item.id === real); pick(hit ? hit.item : item, hit ? hit.trail : [item]); }} />
             </div>
