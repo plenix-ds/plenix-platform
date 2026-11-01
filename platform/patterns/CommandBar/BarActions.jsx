@@ -32,14 +32,14 @@
      and keeps its label. */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../../components/Menu/Menu.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
-import { Spinner } from '../../components/Loading/Loading.jsx';
+import { Spinner } from '../../components/Loading/Loading.tsx';
 import { focusables } from '../../utils/layer.ts';
 import { foldOrder, menuOrder } from '../../utils/foldOrder.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 
 

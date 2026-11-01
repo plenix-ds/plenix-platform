@@ -1,7 +1,7 @@
 /* Plenix · CodeBlock
    Summary: Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button.
    Usage:
-     <CodeBlock title="platform/components/Button/Button.jsx" maxHeight="tall">{text}</CodeBlock>
+     <CodeBlock title="platform/components/Button/Button.tsx" maxHeight="tall">{text}</CodeBlock>
    Props:
      title: a file name or caption shown above the code (in the data font)
      maxHeight: "none" (default) | "tall" (a box that scrolls, for whole files)
@@ -27,9 +27,9 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { LiveRegion } from '../../utils/announce.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';

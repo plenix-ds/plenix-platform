@@ -13,11 +13,11 @@
      Tour progress storage belongs to the caller; never force a completed tour to restart.
 */
 import React from 'react';
-import { Inline } from '../../components/Stack/Stack.jsx';
+import { Inline } from '../../components/Stack/Stack.tsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Tour({ steps = [], open = false, onOpenChange, step, defaultStep = 0, onStepChange, onFinish, spotlight = true, strings, className }) {
   const t = useStrings('tour', strings);

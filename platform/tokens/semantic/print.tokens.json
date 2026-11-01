@@ -1,5 +1,5 @@
 {
-  "$description": "Print (system/print.css, hooks/usePrint.js, library wave 5, lane B): how a page prints.",
+  "$description": "Print (system/print.css, hooks/usePrint.ts, library wave 5, lane B): how a page prints.",
   "plx-sys": {
     "print-page-margin": {
       "$value": "{plx-sys.space-layout-md}",

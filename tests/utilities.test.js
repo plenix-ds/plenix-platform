@@ -10,7 +10,7 @@ const { serve, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
 
 const PORT = Number(process.env.UTILITIES_PORT || process.env.TEST_PORT || 8831);
-if (!changed.wants({ ids: ['virtualization', 'hotkey', 'live-regions', 'clipboard'], units: ['hooks/useVirtualizer.js', 'utils/hotkey.ts', 'utils/announce.tsx', 'utils/clipboard.ts', 'components/RichTextEditor', 'components/RichText'] })) changed.none('UTILITIES_OK (0 checks)');
+if (!changed.wants({ ids: ['virtualization', 'hotkey', 'live-regions', 'clipboard'], units: ['hooks/useVirtualizer.ts', 'utils/hotkey.ts', 'utils/announce.tsx', 'utils/clipboard.ts', 'components/RichTextEditor', 'components/RichText'] })) changed.none('UTILITIES_OK (0 checks)');
 changed.report('every utility');
 const BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const site = require('./site.js');

@@ -23,23 +23,20 @@ import React from 'react';
 import { useUnread } from './unread.js';
 import { GridPane } from './room.js';
 import { flushSync } from 'react-dom';
-import { Scrollbars } from './scrollbars.jsx';
+
 import { useSortable } from '../../utils/dnd.ts';
 
-import { cx } from '../../utils/cx.ts';
-import { gridPx, snapToGrid, gridStep } from '../../utils/grid.ts';
-
-import { tokenPixels } from './environment.js';
+import { gridPx } from '../../utils/grid.ts';
 
 import { MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 
 import { opening, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
-import { valueText } from './cells.jsx';
+
 import { recordsOf } from './records.js';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { EMPTY_ROWS, GRID, kinds, lengthName, typeOf } from './engine/helpers.jsx';
-import { pillFont, pillSheet } from './engine/pill.js';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { EMPTY_ROWS, GRID, kinds } from './engine/helpers.jsx';
+
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
 import { useColumns } from './engine/useColumns.js';
@@ -50,15 +47,19 @@ import { useGrouping } from './engine/useGrouping.js';
 import { groupActions } from './engine/groupActions.js';
 import { useRowModel } from './engine/useRowModel.js';
 import { useViewSync } from './engine/useViewSync.js';
+import { useCellRange } from './engine/useCellRange.js';
+import { usePillWidths } from './engine/usePillWidths.js';
+import { useGridMetrics } from './engine/useGridMetrics.js';
+import { gridFrame } from './engine/gridFrame.jsx';
 import { columnSizing } from './engine/columnSizing.js';
 import { syncLive } from './engine/liveState.js';
 import { useRemoteRows } from './engine/useRemoteRows.js';
 import { useTableModel } from './engine/useTableModel.js';
 import { bodyRows } from './engine/bodyRows.jsx';
 import { headerRows } from './engine/headerRows.jsx';
-import { manageDialog, failureState, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
-import { makeFocusCell, tableKeys } from './engine/keys.js';
-import { Check, MemoGridRow, RowGap, Width, WidthPixels } from './engine/parts.jsx';
+
+import { makeFocusCell } from './engine/keys.js';
+import { MemoGridRow } from './engine/parts.jsx';
 
 function NextEngine(props) {
   const inPane = React.useContext(GridPane);
@@ -95,7 +96,10 @@ function NextEngine(props) {
     onRetry
   } = props;
   const showTypes = typeIconsProp ?? !isStatic; // the column type icons: a DataGrid's sort and filter cue, not a static Table's
-  const narrow = requestedNarrow === undefined ? (inPane && !isStatic ? 'table' : 'list') : requestedNarrow;
+  // a DataGrid is a table while its visible columns fit its measured width, else the row card list, in a SplitView too
+  // (issue 679, owner priority 1; it replaces #168's table-in-a-pane default); narrow="table" keeps a fixed table, and a
+  // static Table keeps its list below narrowAt
+  const narrow = requestedNarrow === undefined ? (isStatic ? 'list' : 'auto') : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
   const S = useStrings('dataGrid', props.strings),
     initial = React.useMemo(() => opening(props), [storageKey]);
@@ -332,82 +336,8 @@ function NextEngine(props) {
     mode
   });
   const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
-  // uniform pill widths (CTM, 2026-10-22; always on, owner uniform-pills-always-35): every standard pill of a column as wide as the
-  // column's widest pill in the current view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling
-  // a long list never changes it. The uniformPillWidths prop is accepted and ignored (deprecated).
-  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid, the text centered in it so the leftover splits between the two sides (#649).
-  const gridKey = React.useId(),
-    [fontsReady, setFontsReady] = React.useState(0);
-  React.useEffect(() => {
-    const fonts = frame.current?.ownerDocument.fonts;
-    if (fonts && fonts.ready) fonts.ready.then(() => setFontsReady((n) => n + 1));
-  }, []);
-  React.useLayoutEffect(() => {
-    const at = frame.current;
-    if (!at || typeof CSSStyleSheet === 'undefined' || !at.ownerDocument.defaultView) return undefined; // a closed document (its frame removed): nothing to measure
-    const store = pillSheet(at.ownerDocument);
-    if (cells !== 'pill' || !metrics.row) {
-      if (store.rules.delete(gridKey)) store.flush();
-      return undefined;
-    }
-    const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
-      faces = { data: pillFont(at, ctx, true), text: pillFont(at, ctx, false) },
-      px = (name) => tokenPixels(name, at),
-      step = gridStep(at);
-    const sides =
-        px('--plx-comp-data-pill-md-padding-inline-start') +
-        px('--plx-comp-data-pill-md-padding-inline-end') +
-        2 * px('--plx-comp-data-pill-border-width'),
-      glyph = px('--plx-comp-data-pill-icon-size') + px('--plx-comp-data-pill-gap');
-    const key = CSS.escape(gridKey),
-      rules = [];
-    columns.forEach((c) => {
-      const k = kinds(c);
-      if (
-        c.render ||
-        c.pill === false ||
-        k.includes('tags') ||
-        k.includes('badge') ||
-        k.includes('deleted') ||
-        k.includes('icon')
-      )
-        return;
-      const data = k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type);
-      const face = faces[data ? 'data' : 'text'],
-        scale = face.scale;
-      ctx.font = face.font;
-      ctx.wordSpacing = face.wordSpacing;
-      let widest = 0;
-      allRows.forEach((r) => {
-        if (!r.original) return;
-        const v = valueAt(r.original, c.field);
-        if (v == null || v === '') return;
-        widest = Math.max(widest, ctx.measureText(valueText(v)).width * scale);
-      });
-      if (!widest) return;
-      const icon = c.type === 'person' || k.includes('avatar-name') || (showTypes && typeOf(c) !== 'text');
-      rules.push(
-        '[data-plx-grid-key="' +
-          key +
-          '"] .plx-data-pill[data-plx-pill-field="' +
-          CSS.escape(c.field) +
-          '"]{inline-size:' +
-          snapToGrid(widest + sides + (icon ? glyph : 0), { round: 'up', step }) +
-          'px;justify-content:center;}'
-      );
-    });
-    store.rules.set(gridKey, rules.join('\n'));
-    store.flush();
-    return undefined;
-  }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
-  React.useEffect(
-    () => () => {
-      const doc = frame.current?.ownerDocument || (typeof document !== 'undefined' ? document : null);
-      if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
-    },
-    []
-  );
 
+  const { gridKey } = usePillWidths({ frame, cells, metrics, columns, allRows, showTypes });
   const virtualized = !isStatic && mode !== 'pages' && !isNarrow && !printing;
   const { loadedRows, groups, model } = useRowModel({
     mode,
@@ -449,16 +379,21 @@ function NextEngine(props) {
   const frozen = new Set(columnPinning.left),
     ordered = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
   const pinStart = (column) => (selectable ? metrics.lead : 0) + column.getStart('left');
+  // the selection column pins only beside an explicit frozen column (issue 679): nothing is pinned by default
+  const leadFrozen = frozen.size > 0 && !isNarrow;
   const widths = Object.fromEntries(ordered.map((column) => [column.id, column.getSize()]));
   const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ['icon', 'actions'].includes(kind));
-  const keys = keyColumns?.length
+  const keys = props.rowTemplate
+    ? []
+    : keyColumns?.length
     ? keyColumns
     : columns
         .filter((c) => !kinds(c).some((k) => ['icon', 'actions'].includes(k)) && !c.rowHandle)
         .slice(0, 3)
         .map((c) => c.field);
-  const listed =
-    narrow === 'auto'
+  const listed = props.rowTemplate
+    ? narrow !== 'table' && columns.some(listable)
+    : narrow === 'auto'
       ? columns.some(listable)
       : narrow === 'list' && columns.some((column) => listable(column) && !keys.includes(column.field));
   const columnDnd = useSortable({
@@ -529,213 +464,42 @@ function NextEngine(props) {
     headerElements,
     listeners
   });
-  React.useLayoutEffect(() => {
-    const at = frame.current;
-    if (!at || !metrics.min) return;
-    const ctx = at.ownerDocument.createElement('canvas').getContext('2d'),
-      widths = {},
-      free = [],
-      floor = {};
-    // the probe pills are the only writes: measured first, so the reads below find the styles already computed
-    const scales = cells === 'pill' ? { data: pillFont(at, ctx, true), text: pillFont(at, ctx, false) } : null,
-      cs = getComputedStyle(at),
-      step = gridStep(at);
-    const known = new Map(),
-      tokenPx = (name) => {
-        if (!known.has(name)) known.set(name, tokenPixels(name, at));
-        return known.get(name);
-      },
-      snapUp = (px) => snapToGrid(px, { round: 'up', step });
-    columns.forEach((c) => {
-      if (kinds(c).includes('icon')) {
-        widths[c.field] = metrics.lead;
-        return;
-      }
-      // the header: its title in the header's own font, after the type icon and its gap (owner, 2026-10-22: a column that
-      // gets no share of the room left must still show its whole title)
-      ctx.font =
-        (cs.getPropertyValue('--plx-comp-data-grid-header-font-weight').trim() || '600') +
-        ' ' +
-        cs.getPropertyValue('--plx-comp-data-grid-header-font-size').trim() +
-        ' ' +
-        (cs.getPropertyValue('--plx-comp-data-grid-font-family').trim() || cs.fontFamily);
-      ctx.wordSpacing = '0px';
-      // at rest the title follows the type icon; hovered, the icon steps aside and the menu button takes its room at the end:
-      // the header needs the larger of the two (owner, 2026-10-22). Wrapped headers need their longest word on a line.
-      const title = String(c.title || c.field),
-        words = title.split(/\s+/);
-      // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
-      let text = ctx.measureText(title).width;
-      if (effectiveWrap)
-        for (let i = 1; i < words.length; i += 1)
-          text = Math.min(
-            text,
-            Math.max(
-              ctx.measureText(words.slice(0, i).join(' ')).width,
-              ctx.measureText(words.slice(i).join(' ')).width
-            )
-          );
-      // hovered, a header shows its type icon, its title and the options button at the edge: the floor holds them (owner, 2026-10-23: no sort arrow; a click on the title sorts, aria-sort tells assistive technology)
-      const gap = tokenPx('--plx-comp-data-grid-header-type-icon-gap'),
-        arrow = 0;
-      const head =
-        text +
-        (showTypes ? tokenPx('--plx-comp-data-grid-header-type-icon-size') + gap : 0) +
-        arrow +
-        (!isStatic && headerMenu ? tokenPx('--plx-comp-data-grid-title-reserve') : 0);
-      floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
-      const explicit = tokenPx(c.width);
-      if (explicit) {
-        widths[c.field] = Math.max(explicit, floor[c.field]);
-        return;
-      }
-      const family =
-        cs
-          .getPropertyValue(
-            kinds(c).includes('data') ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family'
-          )
-          .trim() || cs.fontFamily;
-      ctx.font = cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() + ' ' + family;
-      // a data column measures with the data font's word spacing (Reddit Mono fitted to DM Sans; normal for DM Sans)
-      ctx.wordSpacing = kinds(c).includes('data')
-        ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px'
-        : '0px';
-      let width = head;
-      const k = kinds(c),
-        pill =
-          cells === 'pill' && c.pill !== false && !k.includes('tags') && !k.includes('badge') && !k.includes('deleted');
-      const face = pill
-          ? scales[k.includes('data') || ['number', 'currency', 'date', 'bytes'].includes(c.type) ? 'data' : 'text']
-          : null,
-        scale = face ? face.scale : 1; // a pill: its own font, as drawn
-      if (face) {
-        ctx.font = face.font;
-        ctx.wordSpacing = face.wordSpacing;
-      }
-      const chrome = pill
-        ? tokenPx('--plx-comp-data-pill-md-padding-inline-start') +
-          tokenPx('--plx-comp-data-pill-md-padding-inline-end') +
-          2 * tokenPx('--plx-comp-data-pill-border-width') +
-          (c.type === 'person' || k.includes('avatar-name') || (showTypes && typeOf(c) !== 'text')
-            ? tokenPx('--plx-comp-data-pill-icon-size') + tokenPx('--plx-comp-data-pill-gap')
-            : 0)
-        : 0; // the icon only where the pill has one
-      source.forEach((record) => {
-        const value = valueAt(record, c.field);
-        width = Math.max(width, ctx.measureText(valueText(value)).width * scale + chrome);
-      });
-      widths[c.field] = snapUp(
-        Math.max(
-          metrics.min,
-          Math.min(width + metrics.space * 2, tokenPx('--plx-comp-data-grid-auto-max-width') || Infinity)
-        )
-      );
-      free.push(c.field);
-    });
-    const available =
-        metrics.room -
-        (selectable ? metrics.lead : 0) -
-        (rowMenu && rowMenuButton ? metrics.menu : 0) -
-        (props.viewMenu ? metrics.lead : 0),
-      used = Object.values(widths).reduce((sum, width) => sum + width, 0);
-    // the room that is left goes to the last column that sizes itself: it fills the grid (owner, 2026-10-22)
-    const units = Math.max(0, Math.floor((available - used) / step));
-    if (free.length) widths[free[free.length - 1]] += units * step;
-    setAutoSizing((old) => (JSON.stringify(old) === JSON.stringify(widths) ? old : widths));
-    setFloors((old) => (JSON.stringify(old) === JSON.stringify(floor) ? old : floor));
-  }, [
-    columns,
-    source,
-    metrics.room,
-    metrics.min,
-    metrics.space,
-    metrics.row,
-    selectable,
-    isStatic,
-    showTypes,
-    headerMenu,
+
+  useGridMetrics({
+    frame,
+    metrics,
     cells,
-    effectiveWrap
-  ]);
-
-  // the room under the table that the page keeps (#451): the grid's own part below it (its border, a footer) and the end
-  // margin, padding and border of each container up to the page, so a table that fills the window ends at the page's
-  // padding and only the table scrolls; content placed after the grid is not counted
-  const trailing = (at, hold) => {
-    let sum = Math.max(0, at.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
-    for (let el = at; el; el = el.parentElement) {
-      const cs = getComputedStyle(el);
-      sum += parseFloat(cs.marginBlockEnd) || 0;
-      if (el !== at) sum += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
-    }
-    return sum;
-  };
-  React.useLayoutEffect(() => {
-    const at = frame.current;
-    if (!at) return;
-    const doc = at.ownerDocument;
-    let raf = 0;
-    const measure = () => {
-      raf = 0;
-      if (!doc.defaultView) return;
-      const next = {
-        step: gridStep(at),
-        row: tokenPixels('--plx-comp-data-grid-record-height', at),
-        line: tokenPixels('--plx-comp-data-grid-line-width', at),
-        lead: tokenPixels('--plx-comp-data-grid-lead-column-width', at),
-        menu: tokenPixels('--plx-comp-data-grid-row-menu-width', at),
-        min: tokenPixels('--plx-ref-size-80px', at),
-        space: tokenPixels('--plx-comp-data-grid-cell-padding-inline', at),
-        room: at.clientWidth,
-        add: tokenPixels('--plx-sys-data-grid-row-height', at),
-        group: tokenPixels('--plx-comp-data-grid-group-header-height', at),
-        groupGap: tokenPixels('--plx-comp-data-grid-group-gap', at)
-      };
-      setMetrics((old) => (Object.keys(next).every((k) => next[k] === old[k]) ? old : next));
-      const threshold =
-          narrow === 'auto'
-            ? keys.reduce(
-                (sum, field) => sum + (live.current.table?.getColumn(field)?.getSize() || next.min),
-                selectable ? next.lead : 0
-              )
-            : tokenPixels(narrowAt, at),
-        want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
-      setNarrow(want);
-      if (!isStatic && !height && mode !== 'pages' && holder.current) {
-        const top = holder.current.getBoundingClientRect().top,
-          room = at.getBoundingClientRect().bottom - top;
-        holder.current.style.maxBlockSize = gridPx(
-          inPane
-            ? Math.max(0, room)
-            : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at, holder.current)),
-          { round: 'down', el: at }
-        );
-      }
-    };
-    const schedule = () => {
-      if (!raf) raf = requestAnimationFrame(measure);
-    };
-    measure();
-    const ro = new ResizeObserver(schedule);
-    ro.observe(at);
-    const mo = new MutationObserver(schedule);
-    mo.observe(doc.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction', 'data-plx-mode']
-    });
-    const region = at.closest('[data-plx-density]');
-    if (region && region !== doc.documentElement)
-      mo.observe(region, { attributes: true, attributeFilter: ['data-plx-density'] });
-    return () => {
-      ro.disconnect();
-      mo.disconnect();
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
-  React.useLayoutEffect(() => {
-    virtual.measure();
-  }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
-
+    columns,
+    effectiveWrap,
+    showTypes,
+    isStatic,
+    headerMenu,
+    source,
+    selectable,
+    rowMenu,
+    rowMenuButton,
+    props,
+    setAutoSizing,
+    setFloors,
+    setMetrics,
+    live,
+    narrow,
+    narrowAt,
+    listed,
+    setNarrow,
+    height,
+    mode,
+    holder,
+    inPane,
+    effectiveStep,
+    keys,
+    autoSizing,
+    sizing,
+    columnVisibility,
+    virtual,
+    model,
+    collapsed
+  });
   useViewSync({
     metrics,
     autoSizing,
@@ -900,6 +664,17 @@ function NextEngine(props) {
     startResize,
     resize
   });
+  // cell range selection (the option cellSelection, off by default): the block of cells Shift and the arrows select, and its copy
+  const cellRange = useCellRange({
+    enabled: !!props.cellSelection && !isStatic,
+    model,
+    ordered,
+    index,
+    onChange: props.onCellSelectionChange,
+    frame,
+    scroller: holder,
+  });
+  live.current.cellRange = cellRange;
   const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
 
   const rememberRow = (row, node) => {
@@ -984,9 +759,11 @@ function NextEngine(props) {
     emit,
     setOwnOpen,
     focusCell,
+    cellRange,
     pickCheckbox,
     kindsOf,
     pinStart,
+    leadFrozen,
     editing,
     cells,
     showTypes,
@@ -1027,7 +804,8 @@ function NextEngine(props) {
       printing,
       filterField,
       groupBy,
-      loaded
+      loaded,
+      cellRange.rect
     ]
   );
   const renderRow = (row) =>
@@ -1057,177 +835,82 @@ function NextEngine(props) {
   // a fill grid that already shows rows says a failed next page in its last row (with Retry), not over the table
   const moreFailed = scrollFill && remoteError && model.length > 0,
     failed = error || (moreFailed ? null : remoteError);
-  return (
-    <WidthPixels.Provider value={widthPixels}>
-      {manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility })}
-      <div
-        ref={frame}
-        className={cx(
-          B,
-          isStatic && B + '--static',
-          pinnedAt >= 0 && B + '--row-header',
-          listed && B + '--list',
-          isNarrow && B + '--narrow',
-          height === '100%' && B + '--fill',
-          mode === 'pages' && B + '--pages',
-          mode === 'load-more' && B + '--load-more',
-          className
-        )}
-        data-plx-engine="next"
-        data-plx-grid-key={cells === 'pill' ? gridKey : undefined}
-        data-plx-density={density === 'page' ? undefined : density}
-        data-plx-render={virtualized ? 'virtual' : undefined}
-        data-plx-row-height={!isStatic && !isNarrow ? effectiveStep : undefined}
-        data-plx-wrap-headers={effectiveWrap ? '' : undefined}
-        data-plx-height={lengthName(height)}
-        data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
-      >
-        {failureState({ failed, B, S, onRetry, remoteError, setRetry })}
-
-        <div
-          className={cx(
-            B + '__table',
-            B + '__grid',
-            height === '100%' && B + '__grid--fill',
-            isStatic && B + '__grid--static'
-          )}
-          role={isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid'}
-          aria-label={label}
-          aria-busy={remoteMode && remoteBusy ? true : undefined}
-          aria-rowcount={
-            groups.length || childField
-              ? semanticRows.length + 1
-              : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1
-          }
-          aria-colcount={
-            ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0)
-          }
-          hidden={!!failed}
-        >
-          <div
-            className={cx(
-              B + '__grid-header',
-              isNarrow && B + '__grid-header--narrow',
-              isStatic && B + '__grid-header--static'
-            )}
-            ref={header}
-            hidden={isStatic && props.headerVisible === false}
-          >
-            <div className={`${B}__grid-header-contents`}>
-              <div
-                {...columnDnd.listProps}
-                className={cx(`${B}__grid-headers`, isStatic && B + '__grid-headers--static')}
-                role="row"
-              >
-                {selectable ? (
-                  <div
-                    className={`${B}__grid-col ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`}
-                    role="columnheader"
-                  >
-                    <div className={`${B}__grid-col-content ${B}__grid-col-content--row-header`}>
-                      <Check
-                        label={S.selectAll}
-                        checked={allVisible}
-                        mixed={selectedVisible.length > 0 && !allVisible}
-                        onChange={(e) => selectAll(e.target.checked)}
-                      />
-                    </div>
-                  </div>
-                ) : null}
-                {ordered.map(headerCell)}
-                {viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders })}
-                {rowMenu && rowMenuButton ? (
-                  <Width
-                    width={metrics.menu}
-                    className={`${B}__grid-col`}
-                    role="columnheader"
-                    aria-label={S.rowActions}
-                  />
-                ) : null}
-              </div>
-            </div>
-          </div>
-          <div
-            id={viewportId}
-            ref={holder}
-            className={cx(
-              `${B}__grid-tableholder`,
-              height === '100%' && B + '__grid-tableholder--fill',
-              isStatic && B + '__grid-tableholder--static'
-            )}
-            data-plx-height={lengthName(height)}
-            data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
-            role="rowgroup"
-            tabIndex={isStatic ? undefined : 0}
-            onKeyDown={tableKeys({ focusCell, first })}
-            onScroll={(e) => {
-              if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
-              if (
-                mode === 'load-more' &&
-                e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight <
-                  tokenPixels('--plx-ref-size-200px', frame.current)
-              ) {
-                if (remoteMode && !fetching.current && source.length < (remote?.total || 0)) {
-                  fetching.current = true;
-                  setPage((n) => n + 1);
-                } else if (!remoteMode) setLoaded((n) => Math.min(allRows.length, n + pageSize));
-              }
-            }}
-          >
-            <div
-              {...rowDnd.listProps}
-              className={cx(
-                `${B}__grid-table`,
-                virtualized && B + '__grid-table--virtual',
-                isNarrow && B + '__grid-table--narrow',
-                isStatic && B + '__grid-table--static'
-              )}
-              role="presentation"
-            >
-              {stickyGroups.length ? (
-                <div className={B + '__sticky-groups'} aria-hidden="true" inert="">
-                  {stickyGroups.map((group) =>
-                    React.cloneElement(groupNode(group, true), {
-                      key: 'sticky:' + group.id,
-                      className: B + '__sticky-group ' + B + '__grid-group-level-' + group.depth,
-                      role: undefined,
-                      tabIndex: -1,
-                      'aria-expanded': undefined,
-                      'aria-rowindex': undefined,
-                      'aria-level': undefined,
-                      onKeyDown: undefined
-                    })
-                  )}
-                </div>
-              ) : null}
-              <RowGap rows={model.slice(0, first)} />
-              {shown.map(renderRow)}
-              <RowGap rows={model.slice(last)} />
-            </div>
-            {emptyRow({ model, B, isStatic, ordered, remoteMode, remoteBusy, S, empty })}
-            {moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered, S, setRetry })}
-          </div>
-        </div>
-        {!isStatic ? <Scrollbars holder={holder} viewportId={viewportId} /> : null}
-        {pagesFooter({ mode, failed, B, S, displayedTotal, page, pageSize, props, setPage, setPageSize, label })}
-        {loadMoreFooter({
-          mode,
-          failed,
-          B,
-          S,
-          loadedRows,
-          displayedTotal,
-          remoteMode,
-          remoteBusy,
-          fetching,
-          setPage,
-          setLoaded,
-          allRows,
-          pageSize
-        })}
-      </div>
-    </WidthPixels.Provider>
-  );
+  return gridFrame({
+    widthPixels,
+    headerMenu,
+    isStatic,
+    managing,
+    setManaging,
+    chooserColumns,
+    changeOrder,
+    changeVisibility,
+    frame,
+    B,
+    pinnedAt,
+    listed,
+    isNarrow,
+    height,
+    mode,
+    className,
+    cells,
+    gridKey,
+    density,
+    virtualized,
+    effectiveStep,
+    effectiveWrap,
+    failed,
+    S,
+    onRetry,
+    remoteError,
+    setRetry,
+    groups,
+    childField,
+    label,
+    remoteMode,
+    remoteBusy,
+    semanticRows,
+    remote,
+    table,
+    ordered,
+    selectable,
+    rowMenu,
+    rowMenuButton,
+    props,
+    header,
+    columnDnd,
+    leadFrozen,
+    allVisible,
+    selectedVisible,
+    selectAll,
+    headerCell,
+    setRowHeight,
+    setWrapHeaders,
+    metrics,
+    viewportId,
+    holder,
+    focusCell,
+    first,
+    fetching,
+    source,
+    setPage,
+    setLoaded,
+    allRows,
+    pageSize,
+    rowDnd,
+    stickyGroups,
+    groupNode,
+    model,
+    shown,
+    renderRow,
+    last,
+    empty,
+    scrollFill,
+    moreFailed,
+    displayedTotal,
+    page,
+    setPageSize,
+    loadedRows
+  });
 }
 
 export function DataGridEngine(props) {

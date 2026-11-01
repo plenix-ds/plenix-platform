@@ -30,7 +30,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { encodeBarcode, BARCODE_QUIET_ZONE } from '../../utils/barcode.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 // the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox

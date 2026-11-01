@@ -1,0 +1,12 @@
+/* Plenix · OverflowList (platform/components/OverflowList). One row of items that never wraps: the ones that fit, then the "…" button.
+   Its items keep their width (they never shrink), so the fit (utils/barFit.ts) sees when one lies past the row's edge. */
+.plx-overflow-list {
+  align-items: center;
+  column-gap: var(--plx-comp-overflow-list-gap);
+  display: flex;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+.plx-overflow-list__item {
+  flex-shrink: 0;
+}

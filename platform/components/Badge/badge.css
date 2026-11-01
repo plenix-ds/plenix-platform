@@ -1,4 +1,4 @@
-/* Plenix · Badge (platform/components/Badge/badge.css). Anatomy and API: Badge.jsx.
+/* Plenix · Badge (platform/components/Badge/badge.css). Anatomy and API: Badge.tsx.
    The pill rule (owner, 2026-10-14, docs/pills-and-colors.md): every pill is soft. Background shade 100, a 1px border in
    shade 300, text in a dark shade of the same family (700, or 800 for red), 4px corners (--plx-sys-radius-pill-4px).
    .plx-badge                       a 20px label: bold 10px text, 8px inline padding, centered
@@ -7,7 +7,7 @@
                                     neutral (gray), success (green), active (blue), waiting (yellow),
                                     action-required (orange), negative (red); every text passes AA in both themes
    the icon (icon prop)             a status icon before the text, in the text color; the badge sets its size (--plx-comp-badge-icon-size)
-   Badge.jsx maps the old tones (info, warning, danger) to active, waiting and negative. */
+   Badge.tsx maps the old tones (info, warning, danger) to active, waiting and negative. */
 .plx-badge{--plx-comp-icon-size:var(--plx-comp-badge-icon-size);align-items:center;column-gap:var(--plx-comp-badge-gap);border-bottom-style:solid;border-bottom-width:var(--plx-comp-badge-border-width);border-left-style:solid;border-left-width:var(--plx-comp-badge-border-width);border-right-style:solid;border-right-width:var(--plx-comp-badge-border-width);border-top-style:solid;border-top-width:var(--plx-comp-badge-border-width);border-bottom-left-radius:var(--plx-comp-badge-radius);border-bottom-right-radius:var(--plx-comp-badge-radius);border-top-left-radius:var(--plx-comp-badge-radius);border-top-right-radius:var(--plx-comp-badge-radius);display:inline-flex;font-size:var(--plx-comp-badge-font-size);font-weight:var(--plx-comp-badge-font-weight);line-height:var(--plx-comp-badge-line-height);min-height:var(--plx-comp-badge-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-badge-padding-inline);padding-inline-start:var(--plx-comp-badge-padding-inline);white-space:nowrap;}
 .plx-badge--sm{font-size:var(--plx-comp-badge-sm-font-size);min-height:var(--plx-comp-badge-sm-min-height);padding-inline-end:var(--plx-comp-badge-sm-padding-inline);padding-inline-start:var(--plx-comp-badge-sm-padding-inline);}
 .plx-badge--neutral{background-color:var(--plx-comp-badge-neutral-background);border-bottom-color:var(--plx-comp-badge-neutral-border);border-left-color:var(--plx-comp-badge-neutral-border);border-right-color:var(--plx-comp-badge-neutral-border);border-top-color:var(--plx-comp-badge-neutral-border);color:var(--plx-comp-badge-neutral-text);}

@@ -63,10 +63,10 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { focusables, useLayer, useUid } from '../../utils/layer.ts';
 import { useFloating, PLACEMENTS, TOP_LAYER } from '../../utils/floating.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Sheet } from '../Sheet/Sheet.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const SIZES = ['sm', 'md', 'lg', 'auto'];

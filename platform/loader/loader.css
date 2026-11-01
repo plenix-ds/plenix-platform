@@ -1,0 +1,6 @@
+/* Plenix · page loader's one rule (platform/loader/loader.css, issue 842): the page stays hidden while the loader
+   (platform/loader/loader.js) waits for plenix.css, at most 3 seconds, so it never shows unstyled. A page links it before the
+   loader; it is not part of platform.css, because it has to apply before the Platform's stylesheet arrives. */
+[data-plx-page-loading] {
+  visibility: hidden;
+}

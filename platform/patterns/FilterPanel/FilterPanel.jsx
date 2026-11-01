@@ -35,14 +35,14 @@
      The panel holds the conditions; the page applies them (DataGrid filter, or matchesFilter on its rows). */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Input } from '../../components/Input/Input.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
 import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import FilterIcon from 'plenix-platform/icons/plenix/filter';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';

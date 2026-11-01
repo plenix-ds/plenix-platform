@@ -24,13 +24,13 @@
    Notes:
      The panel holds the levels; the page applies them (DataGrid sort, or compareLevels on its rows). */
 import React from 'react';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
 import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import SortIcon from 'plenix-platform/icons/plenix/sort';

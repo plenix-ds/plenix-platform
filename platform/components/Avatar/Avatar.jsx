@@ -48,9 +48,9 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { StatusDot } from '../StatusDot/StatusDot.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { StatusDot } from '../StatusDot/StatusDot.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PersonFemaleIcon from 'plenix-platform/icons/plenix/person-female';
 import PersonMaleIcon from 'plenix-platform/icons/plenix/person-male';
 import AnthropicLogo from 'plenix-platform/icons/plenix/ai-anthropic';

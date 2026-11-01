@@ -3,7 +3,7 @@
 export { AvatarGroup } from '../components/AvatarGroup/AvatarGroup.jsx';
 export { Persona } from '../components/Persona/Persona.jsx';
 export { EntityTitle } from '../components/EntityTitle/EntityTitle.jsx';
-export { ProgressCircle } from '../components/ProgressCircle/ProgressCircle.jsx';
+export { ProgressCircle } from '../components/ProgressCircle/ProgressCircle.tsx';
 export { QRCode } from '../components/QRCode/QRCode.jsx';
 export { qrEncode } from '../utils/qr.ts';
 export { VersionLabel } from '../components/VersionLabel/VersionLabel.jsx';

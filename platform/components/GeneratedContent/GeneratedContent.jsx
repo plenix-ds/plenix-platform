@@ -17,14 +17,14 @@
    Notes: Render trusted React content, never raw model HTML. Feedback belongs to the selected version.
 */
 import React from 'react';
-import { Stack,Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Stack,Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
 import { AILabel } from '../AILabel/AILabel.jsx';
-import { Badge } from '../Badge/Badge.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Badge } from '../Badge/Badge.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';

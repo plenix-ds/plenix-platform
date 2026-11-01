@@ -9,11 +9,11 @@
    Props:
      title: the item's name (required; any node, a string is best): one line, cut with "…" when it does not fit
      icon: an icon name (platform/icons/map.json), an icon module or an Icon element, before the text; plain, never in a box
-     subtitle: one line under the title, in the muted color (a type, a date, a place): cut with "…" too
+     subtitle: an element or text: one line under the title, in the muted color (a type, a date, a place), cut with "…" too
      tag: after the title: a string is a Tag (a category, neutral); { label, tone, icon, category } is a status Badge with
        its icon (tone and icon as Badge takes them; the icon is required by the status rule) or, with category, a Tag of
        that category color; an element is drawn as given
-     level: 1 to 6 makes the title a heading of that level (a card's title); default none (a span, for list rows)
+     level: a number, 1 to 6: makes the title a heading of that level (a card's title); default none (a span, for list rows)
      loading: a placeholder in place of the text (two bars, the icon's place kept); the item is aria-busy
      className: more classes on the wrapper
    Behavior:
@@ -30,11 +30,11 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useTruncated } from '../../utils/overflow.ts';
-import { asIcon } from '../Icon/Icon.jsx';
-import { Badge } from '../Badge/Badge.jsx';
+import { asIcon } from '../Icon/Icon.tsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { Tag } from '../Tag/Tag.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { Skeleton } from '../Loading/Loading.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import { Skeleton } from '../Loading/Loading.tsx';
 
 // one line that ends in "…" when cut; its whole text in a tooltip only while it is cut
 function Line({ as: As = 'span', className, children }) {

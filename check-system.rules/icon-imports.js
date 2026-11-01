@@ -11,7 +11,7 @@
 // Slots: icon, iconStart, iconEnd, glyph and any <name>Icon or <name>Icons; name on <Icon> and <StatusIcon>.
 // Not slots, because in the Platform they carry no icon name: leading (it takes an element: an <Icon name="…"> inside
 // it is judged as an Icon), mark (a drag-and-drop insertion mark, or a mark-as-read function; EmptyState's mark is a
-// local that holds its icon prop), symbol (ECharts' marker shape in charts, the resolver's own field in Icon.jsx).
+// local that holds its icon prop), symbol (ECharts' marker shape in charts, the resolver's own field in Icon.tsx).
 // What it knowingly misses:
 //   - a name that arrives from outside the file: a prop (<Button icon={icon}>), {...rest}, or another file's constant
 //     (an imported table is judged in its own file only when its name ends in Icon or Icons, or when it sits in a slot there)
@@ -37,14 +37,14 @@ const EXCEPTIONS = [
     reason: 'the documented default of the icon prop (the spec reads defaults from the signature); the component draws its module' },
   { file: 'platform/patterns/PermissionSummary/PermissionSummary.jsx', param: 'lock',
     reason: 'the documented default of the icon prop (the spec reads defaults from the signature); the component draws its module' },
-  { file: 'platform/providers/apps.js', inside: ['PLENIX_APPS'],
+  { file: 'platform/providers/apps.ts', inside: ['PLENIX_APPS'],
     reason: 'PLENIX_APPS is public and its icons are names (an application may print or compare them); the header, the switcher and the brand mark draw appIcon(app), the same icon imported' },
 ];
 
 // the source ranges of a file's named functions and constants
 function ranges(file, names) {
   const Babel = require('@babel/standalone');
-  const ast = Babel.transform(fs.readFileSync(path.join(ROOT, file), 'utf8'), { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: ['jsx'] } }).ast;
+  const ast = Babel.transform(fs.readFileSync(path.join(ROOT, file), 'utf8'), { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: /\.ts$/.test(file) ? ['typescript'] : /\.tsx$/.test(file) ? ['jsx', 'typescript'] : ['jsx'] } }).ast;
   const out = [];
   for (let n of ast.program.body) {
     if (n.type === 'ExportNamedDeclaration' && n.declaration) n = n.declaration;

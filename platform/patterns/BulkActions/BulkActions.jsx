@@ -49,12 +49,12 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useBarFit } from '../../utils/barFit.ts';
 import { formatNumber } from '../../utils/format.ts';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { Toolbar } from '../../components/Toolbar/Toolbar.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { BarActions, foldOrder } from '../CommandBar/BarActions.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);

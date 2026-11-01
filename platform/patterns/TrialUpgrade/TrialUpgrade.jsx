@@ -12,17 +12,17 @@
      The pattern owns no payment processing or subscription authorization.
 */
 import React from 'react';
-import { Stack } from '../../components/Stack/Stack.jsx';
-import { Banner } from '../../components/Banner/Banner.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
+import { Banner } from '../../components/Banner/Banner.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function TrialUpgrade({ message, plans = [], attributes = [], onUpgrade, defaultOpen = false, strings, className }) {

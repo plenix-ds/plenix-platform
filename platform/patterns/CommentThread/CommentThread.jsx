@@ -7,14 +7,14 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Comment } from '../../components/Comment/Comment.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 export function CommentThread({comments=[],title,resolved=false,onReply,onResolve,onEdit,onReact,strings,className,...rest}) {
  const t=useStrings('commentThread', strings);

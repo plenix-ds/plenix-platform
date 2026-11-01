@@ -13,13 +13,13 @@
      Keep onboarding optional. Never require educational steps to access the product.
 */
 import React from 'react';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Checklist } from '../../components/Checklist/Checklist.jsx';
 import { Tour } from '../Tour/Tour.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Onboarding({ title, children, welcome = true, tasks = [], completed = [], onChange, steps = [], onDismiss, onWelcomeDismiss, onTourStep, onTourFinish, strings, className }) {
   const t = useStrings('onboarding', strings);

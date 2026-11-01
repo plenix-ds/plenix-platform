@@ -425,21 +425,25 @@
 }
 @media not (prefers-contrast: more) {
   :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"] {
+    --plx-sys-content-strong: var(--plx-ref-color-gray-950);
     --plx-sys-content-muted: var(--plx-ref-color-gray-700);
     --plx-sys-content-subtle: var(--plx-ref-color-gray-700);
     --plx-sys-border-default: var(--plx-ref-color-gray-300);
     --plx-sys-border-subtle: var(--plx-ref-color-gray-200);
     --plx-sys-border-divider: var(--plx-ref-color-gray-100);
+    --plx-sys-border-separator: var(--plx-ref-color-gray-250);
     --plx-sys-control-border: var(--plx-ref-color-gray-500);
   }
 }
 @media (prefers-contrast: more) {
   :root:not([data-plx-mode="dark"], [data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="light"] {
+    --plx-sys-content-strong: var(--plx-ref-color-gray-950);
     --plx-sys-content-muted: var(--plx-sys-content-default);
     --plx-sys-content-subtle: var(--plx-sys-content-default);
     --plx-sys-border-default: var(--plx-sys-border-strong);
     --plx-sys-border-subtle: var(--plx-sys-border-strong);
     --plx-sys-border-divider: var(--plx-sys-border-strong);
+    --plx-sys-border-separator: var(--plx-sys-border-strong);
     --plx-sys-control-border: var(--plx-sys-border-strong);
   }
 }
@@ -813,21 +817,25 @@
 }
 @media not (prefers-contrast: more) {
   :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"] {
+    --plx-sys-content-strong: var(--plx-ref-color-gray-100);
     --plx-sys-content-muted: var(--plx-ref-color-gray-300);
     --plx-sys-content-subtle: var(--plx-ref-color-gray-500);
     --plx-sys-border-default: var(--plx-ref-color-gray-700);
     --plx-sys-border-subtle: var(--plx-ref-color-gray-700);
     --plx-sys-border-divider: var(--plx-ref-color-gray-700);
+    --plx-sys-border-separator: var(--plx-ref-color-gray-700);
     --plx-sys-control-border: var(--plx-ref-color-gray-400);
   }
 }
 @media (prefers-contrast: more) {
   :root[data-plx-mode="dark"]:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"][data-plx-mode="dark"] {
+    --plx-sys-content-strong: var(--plx-ref-color-gray-100);
     --plx-sys-content-muted: var(--plx-sys-content-default);
     --plx-sys-content-subtle: var(--plx-sys-content-default);
     --plx-sys-border-default: var(--plx-sys-border-strong);
     --plx-sys-border-subtle: var(--plx-sys-border-strong);
     --plx-sys-border-divider: var(--plx-sys-border-strong);
+    --plx-sys-border-separator: var(--plx-sys-border-strong);
     --plx-sys-control-border: var(--plx-sys-border-strong);
   }
 }

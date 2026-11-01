@@ -46,10 +46,10 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { FieldLayoutContext } from '../../components/Field/Field.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { ActionBar } from '../ActionBar/ActionBar.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const LAYOUTS = ['one-column', 'two-column'];
 

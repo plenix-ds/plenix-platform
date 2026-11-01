@@ -29,8 +29,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permissions';

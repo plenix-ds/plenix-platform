@@ -18,6 +18,7 @@
      label: names the group and each box ("Verification code, character 2 of 6"); without it, inside a Field, the Field's
        label names the first box
      invalid: the invalid state (every box's border in the danger color); a Field with an error sets it
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: none of the boxes can be used
      required: the code is required (a Field sets it)
      autoFocus: the first box takes focus when it appears
@@ -39,12 +40,12 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const KEEP = { numeric: /[^0-9]/g, alphanumeric: /[^0-9a-zA-Z]/g };
 
 export const OtpInput = React.forwardRef(function OtpInput({ length = 6, value, defaultValue = '', onChange, onComplete, kind = 'numeric', masked = false, label,
-  invalid, disabled, required, autoFocus, name, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
+  invalid, warning, disabled, required, autoFocus, name, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('otpInput', strings);
   const n = Math.max(1, Number(length) || 6);
   const clean = (s) => String(s == null ? '' : s).replace(KEEP[kind] || KEEP.numeric, '').toUpperCase();
@@ -100,7 +101,7 @@ export const OtpInput = React.forwardRef(function OtpInput({ length = 6, value, 
         <input key={i} ref={(el) => { boxes.current[i] = el; }} id={i === 0 ? id : undefined} className="plx-otp-input__cell"
           type={masked ? 'password' : 'text'} inputMode={kind === 'numeric' ? 'numeric' : 'text'} autoComplete={i === 0 ? 'one-time-code' : 'off'}
           autoCapitalize={kind === 'alphanumeric' ? 'characters' : 'off'} spellCheck={false} enterKeyHint={i === n - 1 ? 'done' : 'next'}
-          aria-label={boxName(i)} aria-invalid={invalid || undefined} required={required} disabled={disabled} autoFocus={autoFocus && i === 0}
+          aria-label={boxName(i)} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} required={required} disabled={disabled} autoFocus={autoFocus && i === 0}
           value={c} onChange={onBoxChange(i)} onKeyDown={onKeyDown(i)} onPaste={onPaste(i)} onFocus={(e) => e.target.select()} />
       ))}
       {name ? <input type="hidden" name={name} value={code} /> : null}

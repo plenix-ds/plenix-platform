@@ -221,9 +221,9 @@
   --plx-comp-select-option-selected-text: var(--plx-sys-content-link);
   --plx-comp-select-option-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-select-option-disabled-text: var(--plx-comp-menu-item-disabled-text);
-  --plx-comp-select-group-text: var(--plx-comp-menu-group-label-text);
-  --plx-comp-select-group-font-size: var(--plx-comp-menu-group-label-font-size);
-  --plx-comp-select-group-font-weight: var(--plx-comp-menu-group-label-font-weight);
+  --plx-comp-select-group-text: var(--plx-sys-content-muted);
+  --plx-comp-select-group-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-select-group-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-select-group-padding-block: var(--plx-comp-menu-group-label-padding-block);
   --plx-comp-select-group-padding-inline: var(--plx-comp-menu-group-label-padding-inline);
   --plx-comp-input-width-xs-width: var(--plx-sys-field-width-xs);
@@ -836,15 +836,19 @@
   --plx-comp-menu-max-width: var(--plx-ref-size-320px);
   --plx-comp-menu-min-width: var(--plx-ref-size-220px);
   --plx-comp-menu-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-menu-font-family: var(--plx-sys-font-body);
   --plx-comp-menu-padding-inline: var(--plx-sys-space-inset-xs);
   --plx-comp-menu-z-index: var(--plx-sys-layer-menu);
   --plx-comp-menu-fallback-bottom-start-inset-block-start: calc(100% + var(--plx-sys-space-inset-xs));
   --plx-comp-menu-fallback-bottom-end-inset-block-start: calc(100% + var(--plx-sys-space-inset-xs));
   --plx-comp-menu-fallback-top-start-inset-block-end: calc(100% + var(--plx-sys-space-inset-xs));
   --plx-comp-menu-fallback-top-end-inset-block-end: calc(100% + var(--plx-sys-space-inset-xs));
-  --plx-comp-menu-item-text: var(--plx-sys-content-default);
+  --plx-comp-menu-item-text: var(--plx-sys-content-strong);
   --plx-comp-menu-item-gap: var(--plx-sys-space-inline-sm);
-  --plx-comp-menu-item-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-menu-item-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-menu-item-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-menu-item-line-height: var(--plx-ref-size-24px);
+  --plx-comp-menu-item-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-menu-item-min-height: var(--plx-sys-control-height-standard);
   --plx-comp-menu-item-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-menu-item-hover-background: var(--plx-sys-state-hover);
@@ -854,14 +858,17 @@
   --plx-comp-menu-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-menu-item-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-menu-item-danger-text: var(--plx-sys-feedback-danger-solid);
-  --plx-comp-menu-check-height: var(--plx-ref-size-16px);
+  --plx-comp-menu-check-height: var(--plx-ref-size-24px);
   --plx-comp-menu-check-width: var(--plx-ref-size-16px);
-  --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-divider);
+  --plx-comp-menu-check-icon-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-separator);
   --plx-comp-menu-divider-border-top-width: var(--plx-sys-border-width-thin);
   --plx-comp-menu-divider-margin-block: var(--plx-sys-space-stack-xs);
-  --plx-comp-menu-group-label-text: var(--plx-sys-content-muted);
-  --plx-comp-menu-group-label-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-menu-group-label-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-menu-divider-margin-inline: calc(var(--plx-comp-menu-padding-inline) * -1);
+  --plx-comp-menu-group-label-text: var(--plx-sys-content-strong);
+  --plx-comp-menu-group-label-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-menu-group-label-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-menu-group-label-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-menu-group-label-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-menu-group-label-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-app-header-accent-brand: var(--plx-sys-accent-content);
@@ -2553,6 +2560,23 @@
   --plx-comp-ai-search-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-anchor-row-gap: var(--plx-comp-nav-list-items-row-gap);
+  --plx-comp-anchor-nested-indent: var(--plx-sys-space-inline-lg);
+  --plx-comp-anchor-radius: var(--plx-comp-nav-list-item-radius);
+  --plx-comp-anchor-text: var(--plx-comp-nav-list-item-text);
+  --plx-comp-anchor-font-size: var(--plx-comp-nav-list-item-font-size);
+  --plx-comp-anchor-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-anchor-min-height: var(--plx-comp-nav-list-item-min-height);
+  --plx-comp-anchor-padding-inline: var(--plx-comp-nav-list-item-padding-inline);
+  --plx-comp-anchor-hover-background: var(--plx-comp-nav-list-item-hover-background);
+  --plx-comp-anchor-hover-shadow: var(--plx-comp-nav-list-item-hover-shadow);
+  --plx-comp-anchor-hover-text: var(--plx-comp-nav-list-item-text);
+  --plx-comp-anchor-current-background: var(--plx-comp-nav-list-item-current-background);
+  --plx-comp-anchor-current-shadow: var(--plx-comp-nav-list-item-current-shadow);
+  --plx-comp-anchor-current-text: var(--plx-comp-nav-list-item-current-text);
+  --plx-comp-anchor-current-font-weight: var(--plx-comp-nav-list-item-current-font-weight);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-announcement-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
@@ -2967,6 +2991,12 @@
   --plx-comp-cascader-empty-text: var(--plx-sys-content-muted);
   --plx-comp-cascader-empty-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-cascader-empty-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-cascader-loading-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-cascader-error-text: var(--plx-comp-combobox-error-text);
+  --plx-comp-cascader-limit-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-cascader-limit-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-cascader-limit-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-cascader-limit-padding-inline: var(--plx-sys-space-inset-sm);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -3163,6 +3193,7 @@
   --plx-comp-code-editor-gutter-border-color: var(--plx-sys-border-divider);
   --plx-comp-code-editor-gutter-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-code-editor-gutter-layer: var(--plx-sys-layer-raised);
+  --plx-comp-code-editor-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -3202,6 +3233,10 @@
   --plx-comp-combobox-loading-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-combobox-loading-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-combobox-error-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-combobox-option-icon-gap: var(--plx-comp-combobox-option-mark-gap);
+  --plx-comp-combobox-option-icon-text: var(--plx-sys-content-muted);
+  --plx-comp-combobox-option-description-text: var(--plx-sys-content-muted);
+  --plx-comp-combobox-option-description-font-size: var(--plx-ref-font-size-12);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-command-bar-gap: var(--plx-sys-space-stack-sm);
@@ -3489,6 +3524,9 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-grid-cell-rich-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-data-grid-cell-deleted-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-range-background: var(--plx-sys-state-selected);
+  --plx-comp-data-grid-range-border-color: var(--plx-sys-selected-content);
+  --plx-comp-data-grid-range-border-width: var(--plx-sys-border-width-medium);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-grid-row-menu-width: var(--plx-comp-data-grid-lead-column-width);
@@ -3498,6 +3536,17 @@
   --plx-comp-data-grid-scroll-thumb-color: var(--plx-sys-scrollbar-thumb);
   --plx-comp-data-grid-scroll-thumb-radius: var(--plx-sys-shape-pill);
   --plx-comp-data-grid-scroll-layer: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-grid-template-line-height: var(--plx-ref-size-24px);
+  --plx-comp-data-grid-template-gap: var(--plx-ref-space-8px);
+  --plx-comp-data-grid-template-end-width: var(--plx-ref-size-100px);
+  --plx-comp-data-grid-template-b-end-width: var(--plx-ref-size-96px);
+  --plx-comp-data-grid-template-b-mid-width: var(--plx-ref-size-112px);
+  --plx-comp-data-grid-template-divider-color: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-template-muted-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-template-subtle-text: var(--plx-sys-content-subtle);
+  --plx-comp-data-grid-template-title-weight: var(--plx-sys-font-weight-semibold);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-pill-min-height: var(--plx-sys-control-height-inline);
@@ -3599,6 +3648,10 @@
   --plx-comp-diagram-group-label-text: var(--plx-sys-content-muted);
   --plx-comp-diagram-active-border-color: var(--plx-sys-content-default);
   --plx-comp-diagram-active-border-width: var(--plx-sys-border-width-medium);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-divider-text-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-divider-text-color: var(--plx-sys-content-muted);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-document-viewer-gap: var(--plx-sys-space-stack-md);
@@ -3914,6 +3967,8 @@
   --plx-comp-field-counter-font-family: var(--plx-sys-font-data);
   --plx-comp-field-counter-font-size: var(--plx-ref-font-size-11);
   --plx-comp-field-counter-over-text: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-field-warning-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-field-warning-font-size: var(--plx-ref-font-size-11);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-input-small-min-height: var(--plx-sys-control-height-toolbar);
@@ -4244,6 +4299,10 @@
   --plx-comp-help-panel-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-highlight-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-highlight-joined-underline-width: var(--plx-sys-border-width-medium);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-icon-tile-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-icon-tile-border-color: var(--plx-sys-border-default);
   --plx-comp-icon-tile-sm-size: var(--plx-ref-size-32px);
@@ -4397,6 +4456,9 @@
   --plx-comp-input-invalid-background: var(--plx-sys-feedback-danger-soft);
   --plx-comp-input-invalid-inner-width: var(--plx-sys-border-width-thin);
   --plx-comp-textarea-auto-grow-max-height: calc(10lh + var(--plx-sys-space-inset-sm) * 2 + var(--plx-sys-border-width-thin) * 2);
+  --plx-comp-input-warning-border-color: var(--plx-sys-feedback-warning-content);
+  --plx-comp-input-warning-background: var(--plx-sys-feedback-warning-soft);
+  --plx-comp-input-warning-inner-width: var(--plx-sys-border-width-thin);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-input-group-max-width: var(--plx-comp-input-max-width);
@@ -4423,6 +4485,7 @@
   --plx-comp-input-group-affix-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-input-group-icon-color: var(--plx-sys-content-muted);
   --plx-comp-input-group-icon-size: var(--plx-sys-control-icon-standard);
+  --plx-comp-input-group-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -4560,11 +4623,19 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-menu-sub-open-background: var(--plx-sys-state-hover);
-  --plx-comp-menu-sub-arrow-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-menu-sub-arrow-size: var(--plx-sys-icon-size-lg);
   --plx-comp-menu-sub-arrow-color: var(--plx-sys-content-muted);
   --plx-comp-menu-sub-offset: calc(var(--plx-sys-space-inset-xs) + var(--plx-sys-border-width-thin));
   --plx-comp-menu-sub-fallback-inset-block-start: 0;
   --plx-comp-menu-sub-fallback-inset-inline-start: 100%;
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-menubar-background: var(--plx-comp-menu-background);
+  --plx-comp-menubar-border-color: var(--plx-sys-border-subtle);
+  --plx-comp-menubar-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-menubar-radius: var(--plx-comp-menu-radius);
+  --plx-comp-menubar-padding: var(--plx-sys-space-inset-xs);
+  --plx-comp-menubar-gap: var(--plx-sys-space-inline-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-metadata-editor-gap: var(--plx-sys-space-stack-md);
@@ -4755,6 +4826,7 @@
   --plx-comp-otp-input-cell-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-otp-input-cell-invalid-border-color: var(--plx-sys-feedback-danger-solid);
   --plx-comp-otp-input-cell-disabled-background: var(--plx-sys-fill-neutral);
+  --plx-comp-otp-input-cell-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -4766,6 +4838,9 @@
   :root,[data-plx-density],[data-plx-interaction] {
     --plx-comp-otp-input-cell-disabled-text: GrayText;
   }
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-overflow-list-gap: var(--plx-sys-space-cluster-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-people-group-gap: var(--plx-sys-space-inline-md);
@@ -5342,6 +5417,7 @@
   --plx-comp-rich-text-editor-hex-width: var(--plx-ref-size-120px);
   --plx-comp-rich-text-editor-picker-width: var(--plx-sys-control-height-toolbar);
   --plx-comp-rich-text-editor-selected-node-outline-width: var(--plx-comp-link-focus-outline-width);
+  --plx-comp-rich-text-editor-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -5461,7 +5537,6 @@
   --plx-comp-search-option-icon-text: var(--plx-sys-content-muted);
   --plx-comp-search-option-description-text: var(--plx-sys-content-subtle);
   --plx-comp-search-option-description-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-search-match-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-search-bar-width: var(--plx-ref-size-240px);
   --plx-comp-search-over-background: var(--plx-sys-surface-default);
   --plx-comp-search-over-radius: var(--plx-sys-radius-control-6px);

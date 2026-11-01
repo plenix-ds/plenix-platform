@@ -10,6 +10,21 @@
       "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color",
       "$description": "Muted text for a deleted value; italic is also used."
+    },
+    "data-grid-range-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "DataGrid cell selection (the option cellSelection): the fill of a cell inside the selected block (the selected state's, as a navigation row's current fill)."
+    },
+    "data-grid-range-border-color": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "DataGrid cell selection: the border around the selected block (on its outer edges only), in the selected content color so it reads against the selected fill."
+    },
+    "data-grid-range-border-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "DataGrid cell selection: the width of the block's border (2px)."
     }
   }
 }

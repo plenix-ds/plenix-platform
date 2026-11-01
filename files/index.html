@@ -3,25 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<link rel="icon" type="image/svg+xml" href="../platform/brand/favicon.svg">
+<link rel="stylesheet" href="../platform/loader/loader.css">
+<script src="../platform/loader/loader.js" data-plenix-app="files"></script>
 <title>Files · Plenix</title>
 <!-- Plenix · Files: one application of the Plenix suite (files/). It is drawn only from the Platform: its tokens, classes and
-     components (../platform/). The page script is compiled from main.jsx by build-app.js. -->
-<script src="../platform/providers/theme-boot.js"></script>
-<link rel="preload" href="../platform/fonts/dm-sans-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../platform/system/fonts.css">
-<link rel="stylesheet" href="../platform/platform.css">
-<script src="../platform/vendor/react-loader.js"></script>
-<script src="../platform/dist/platform.js"></script>
-<script src="plenix-icons-files.js"></script>
-<script src="../platform/engines/plenix-engines.js"></script>
+     components (../platform/). The page script is compiled from main.jsx by build-app.js; the page loader
+     (../platform/loader/loader.js) loads Plenix and this script from one place: the source copy, or one release on the CDN. -->
 </head>
 <body>
 <div id="root"></div>
-<script src="../suite/plenix-app-data.js"></script>
-<script src="app.js"></script>
-<!-- the radius audit (development): idle until PlenixRadius.audit() or ?radius-audit (see platform/system/radius.css) -->
-<script src="../platform/dev/radius-audit.js"></script>
-<script src="../platform/dev/style-audit.js"></script>
 </body>
 </html>

@@ -12,15 +12,15 @@
      Only the server can approve access; a submitted request never grants permissions.
 */
 import React from 'react';
-import { Stack } from '../../components/Stack/Stack.jsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';

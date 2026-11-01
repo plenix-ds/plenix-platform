@@ -19,6 +19,8 @@
      Menu.trigger: the button that opens the menu (one element)
      Menu.label: the accessible name of the menu
      Menu.placement: "bottom-start" (default) | "bottom-end" | "top-start" | "top-end"
+     Menu.open: true or false: who is open is the caller's (a MenuBar keeps one of its menus open at a time); leave it out and the menu keeps its own state
+     Menu.openStart: "first" | "last": the item that takes focus when the caller opens it; Menu.onOpenChange(open, { start }): runs when it opens or closes, from the trigger or by a key
      Menu.className: more classes on the anchor around the trigger and menu
      Context hook: a container sets --plx-comp-menu-context-anchor-width on its own element (100% for a full-width trigger)
      Menu.children: the items: MenuItem, MenuGroup, MenuDivider
@@ -59,7 +61,9 @@
      Choosing an item closes the menu and returns focus to the trigger, unless keepOpen.
      A radio item checks itself and unchecks the others of its group (onChange); the menu shows the current choice
        when it opens.
-     A submenu item shows an end-pointing chevron; Arrow Right (Arrow Left in right-to-left), Enter, Space or a click
+     A checked checkbox or radio item shows a check (check-bold, 13 by 10px, as large as Blueprint's tick) in the item's
+       start slot.
+     A submenu item shows an end-pointing caret (triangle-right, as Blueprint's caret-right; mirrored in right to left); Arrow Right (Arrow Left in right-to-left), Enter, Space or a click
        opens the submenu beside it on its first item, and pointer hover opens it too; Arrow Left (Arrow Right in
        right-to-left) or Escape closes it and returns to its item. It sits at the item's end edge and flips to the
        other side when there is no room. Choosing an item in it closes every level.
@@ -78,12 +82,12 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useLayer, useUid } from '../../utils/layer.ts';
-import { Icon, asIcon } from '../Icon/Icon.jsx';
+import { Icon, asIcon } from '../Icon/Icon.tsx';
 import { Portal } from '../../utils/portal.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
-import { useGesture } from '../../hooks/useGesture.js';
-import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import CheckIcon from 'plenix-platform/icons/plenix/check';
+import { useGesture } from '../../hooks/useGesture.ts';
+import TriangleRightIcon from 'plenix-platform/icons/plenix/triangle-right';
+import CheckIcon from 'plenix-platform/icons/plenix/check-bold';
 
 const MenuContext = React.createContext(null);
 const RadioContext = React.createContext(null);
@@ -114,12 +118,19 @@ function moveIn(list, e) {
   return true;
 }
 
-export function Menu({ trigger, label, placement = 'bottom-start', className, children }) {
+export function Menu({ trigger, label, placement = 'bottom-start', open: openProp, openStart, onOpenChange, className, children }) {
   const id = useUid('plx-menu');
-  const [open, setOpen] = React.useState(false);
-  const [start, setStart] = React.useState('first');
+  // who is open (issue 805): the menu keeps its own open state; a MenuBar passes open and onOpenChange so one of its menus is open at a time
+  const [own, setOwn] = React.useState(false);
+  const controlled = openProp !== undefined;
+  const open = controlled ? !!openProp : own;
+  const [first, setStart] = React.useState('first');
+  const start = openStart || first;
   const wrap = React.useRef(null), list = React.useRef(null), button = React.useRef(null);
-  const close = React.useCallback((refocus) => { setOpen(false); if (refocus && button.current) button.current.focus(); }, []);
+  const tell = React.useRef(onOpenChange);
+  tell.current = onOpenChange;
+  const setOpen = React.useCallback((next, where) => { if (!controlled) setOwn(next); if (tell.current) tell.current(next, { start: where || 'first' }); }, [controlled]);
+  const close = React.useCallback((refocus) => { setOpen(false); if (refocus && button.current) button.current.focus(); }, [setOpen]);
   useLayer(list, open, { onEscape: () => close(true) });
   // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
   useFloating(wrap, list, { open: open && TOP_LAYER, placement });
@@ -133,7 +144,7 @@ export function Menu({ trigger, label, placement = 'bottom-start', className, ch
     document.addEventListener('mousedown', outside);
     return () => document.removeEventListener('mousedown', outside);
   }, [open]);
-  const openAt = (where) => { setStart(where); setOpen(true); };
+  const openAt = (where) => { setStart(where); setOpen(true, where); };
   const child = React.Children.only(trigger);
   const triggerEl = React.cloneElement(child, {
     ref: button, 'aria-haspopup': 'menu', 'aria-expanded': open, 'aria-controls': open ? id : undefined, expanded: undefined,
@@ -252,7 +263,7 @@ export function MenuSub({ label, icon, disabled = false, className, children }) 
         onPointerEnter={(e) => { if (e.pointerType === 'mouse' && !open) openIt(false); }}>
         {icon ? <span className="plx-menu__icon">{asIcon(icon)}</span> : null}
         <span className="plx-menu__label">{label}</span>
-        <span className="plx-menu-sub__arrow" aria-hidden="true"><Icon name={ChevronRightIcon} /></span>
+        <span className="plx-menu-sub__arrow" aria-hidden="true"><Icon name={TriangleRightIcon} /></span>
       </button>
       {open ? (
         <div ref={list} id={id} role="menu" aria-label={typeof label === 'string' ? label : undefined} popover={TOP_LAYER ? 'manual' : undefined}

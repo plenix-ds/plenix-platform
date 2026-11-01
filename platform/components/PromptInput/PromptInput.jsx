@@ -18,14 +18,14 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Input, Textarea } from '../Input/Input.jsx';
-import { Stack, Inline } from '../Stack/Stack.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Field } from '../Field/Field.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { FileInput } from '../FileInput/FileInput.jsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Menu, MenuItem, MenuRadioGroup } from '../Menu/Menu.jsx';
-import { Notice } from '../Notice/Notice.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 import StopIcon from 'plenix-platform/icons/plenix/stop';
 export const PromptInput = React.forwardRef(function PromptInput({value,defaultValue='',onChange,onSend,multiline=false,streaming=false,onStop,disabled=false,attachments=false,accept,onAttachmentsChange,models=[],model,onModelChange,strings,readOnly,className},ref){

@@ -10,15 +10,15 @@
      The caller owns storage and content. Draft is always an icon Badge.
 */
 import React from 'react';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { SaveStatus } from '../Autosave/Autosave.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 export function DraftState({ version, saveState, onResume, onDiscard, strings, className }) {

@@ -43,11 +43,11 @@
 import React from 'react';
 import { useUnread } from '../DataGrid/unread.js';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { Spinner } from '../Loading/Loading.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Spinner } from '../Loading/Loading.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS } from '../../hooks/useVirtualizer.js';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS } from '../../hooks/useVirtualizer.ts';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 
 const HEIGHTS = ['sm', 'md', 'lg', 'fill'];
 

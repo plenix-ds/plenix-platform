@@ -1,0 +1,2 @@
+### Changed
+- The canonical full-room grid pattern is complete (#522): the integration guide names `ListingPage` as the starter for a full-page list (the CDN README says so too) and adds the migration line for a grid that paginates by habit (drop `mode: "pages", pageSize: 25`, give the container the bounded chain or use `ListingPage`; `fetchRows` loads as the person scrolls). Documentation only; no code or behavior changes.

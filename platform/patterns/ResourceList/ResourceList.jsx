@@ -55,14 +55,14 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
-import { useSelection } from '../../hooks/useSelection.js';
+import { useSelection } from '../../hooks/useSelection.ts';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Thumbnail } from '../../components/Thumbnail/Thumbnail.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
-import { SectionHeading } from '../../components/SectionHeading/SectionHeading.jsx';
-import { Count } from '../../components/Count/Count.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { SectionHeading } from '../../components/SectionHeading/SectionHeading.tsx';
+import { Count } from '../../components/Count/Count.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 // a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]

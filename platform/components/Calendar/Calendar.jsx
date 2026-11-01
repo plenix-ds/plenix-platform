@@ -56,10 +56,10 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { arrowStep } from '../../utils/direction.ts';
 import { formatLocale, numeralLocale } from '../../utils/format.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 /* ---- calendar dates: "YYYY-MM-DD" strings; arithmetic on local dates at noon, so no daylight-saving change moves a day */
 const pad = (n, w) => String(n).padStart(w || 2, '0');

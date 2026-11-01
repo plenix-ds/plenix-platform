@@ -12,15 +12,15 @@
 */
 import React from 'react';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Kbd } from '../../components/Kbd/Kbd.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Kbd } from '../../components/Kbd/Kbd.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { useHotkeyList, hotkeyLabel } from '../../utils/hotkey.ts';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function ShortcutsDialog({ open, onClose, searchable = true, strings, className }) {
   const t = useStrings('shortcutsDialog', strings);

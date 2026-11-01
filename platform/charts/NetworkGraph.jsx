@@ -41,13 +41,13 @@
 import React from 'react';
 import { cx } from '../utils/cx.ts';
 import { formatList } from '../utils/format.ts';
-import { Button } from '../components/Button/Button.jsx';
+import { Button } from '../components/Button/Button.tsx';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 import EdRecenterIcon from 'plenix-platform/icons/plenix/ed-recenter';
 import EdZoomInIcon from 'plenix-platform/icons/plenix/ed-zoom-in';
 import EdZoomOutIcon from 'plenix-platform/icons/plenix/ed-zoom-out';

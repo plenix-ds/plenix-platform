@@ -7,15 +7,15 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 export function PresenceBar({people=[],mode='viewers',max=4,onPerson,strings,className,...rest}) {
  const t=useStrings('presenceBar', strings);const m=['viewers','editors','cursors'].includes(mode)?mode:'viewers';const list=people.filter(p=>m==='editors'?p.role==='editor':m==='cursors'?!!p.cursor:true);

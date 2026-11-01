@@ -8,16 +8,16 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { cx } from '../../utils/cx.ts';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';
 import { Tag, TagList } from '../../components/Tag/Tag.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 export function AttachmentPicker({value=[],onChange,variant='inline',accept='',multiple=true,maxFiles,maxSize,disabled=false,strings,className}){
   devWarn('AttachmentPicker', { variant }, { variant: ['inline','chips'] });
  const t=useStrings('attachmentPicker',strings),[error,setError]=React.useState(''),[inputKey,setInputKey]=React.useState(0);

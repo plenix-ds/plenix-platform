@@ -8,16 +8,16 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { cx } from '../../utils/cx.ts';
-import { Timeline } from '../../components/Timeline/Timeline.jsx';
+import { Timeline } from '../../components/Timeline/Timeline.tsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
 import { ConfirmDialog,Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 export function VersionHistory({versions=[],currentId,onPreview,onRestore,variant='list',strings,className}){

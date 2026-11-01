@@ -45,13 +45,13 @@ import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { hotkeyLabel } from '../../utils/hotkey.ts';
 import { LiveRegion } from '../../utils/announce.tsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Kbd } from '../Kbd/Kbd.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Kbd } from '../Kbd/Kbd.tsx';
+import { Button } from '../Button/Button.tsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { dataPhrase } from '../../utils/dataText.tsx';
 
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,

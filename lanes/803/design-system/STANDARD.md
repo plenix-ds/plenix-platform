@@ -499,7 +499,9 @@ An item belongs here when its primary purpose is to **cause an action**.
 │   ├── Menu item
 │   ├── Checkbox menu item
 │   ├── Radio menu item
-│   └── Menu group
+│   ├── Menu group
+│   ├── Menu bar
+│   └── Menu, menu bar and command bar: which one
 │
 ├── Triggers
 │   ├── Dialog trigger
@@ -584,6 +586,7 @@ All controls used to capture, edit, validate, or submit user-supplied data belon
 │   ├── Multi-select
 │   ├── Combobox
 │   ├── Autocomplete
+│   ├── Suggest
 │   ├── Searchable select
 │   ├── Async select
 │   ├── Creatable select

@@ -13,17 +13,17 @@
      Permissions are UI data, never authorization. Validate grants and locked roles on the server.
 */
 import React from 'react';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permissions';
 

@@ -13,14 +13,14 @@
      Completion and dismissal persistence belong to the caller. Technical counts use Reddit Mono.
 */
 import React from 'react';
-import { Stack, Inline } from '../Stack/Stack.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Checkbox } from '../Checkbox/Checkbox.jsx';
-import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
+import { ProgressBar } from '../ProgressBar/ProgressBar.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Text } from '../Text/Text.tsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Checklist({ title, items = [], completed = [], onChange, progress = true, collapsible = false, onDismiss, strings, className }) {
   const t = useStrings('checklist', strings);

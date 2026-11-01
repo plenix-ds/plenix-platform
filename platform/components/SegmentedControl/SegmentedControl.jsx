@@ -32,8 +32,8 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { arrowStep } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
-import { stateIcon } from '../Icon/Icon.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
+import { stateIcon } from '../Icon/Icon.tsx';
 import { Select } from '../Input/Input.jsx';
 
 /* the room the control may take: its frame's width, plus the free space left in a flex row it sits in (the frame takes

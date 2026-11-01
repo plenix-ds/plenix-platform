@@ -10,14 +10,14 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Banner } from '../Banner/Banner.jsx';
+import { Banner } from '../Banner/Banner.tsx';
 import { Card } from '../Card/Card.jsx';
 import { Dialog } from '../Dialog/Dialog.jsx';
-import { Stack } from '../Stack/Stack.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Notice } from '../Notice/Notice.jsx';
+import { Stack } from '../Stack/Stack.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Notice } from '../Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Announcement({ id, variant = 'banner', open = true, title, children, actions, dismissible = true, onDismiss, tone = 'info', strings, className }) {
   devWarn('Announcement', { variant, tone }, { variant: ['banner','card','dialog'], tone: ['info','success','warning','danger','neutral'] });

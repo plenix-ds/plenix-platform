@@ -7,15 +7,15 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Persona } from '../Persona/Persona.jsx';
 import { Time } from '../Time/Time.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 export function Comment({author={},body='',time,own=false,edited=false,resolved=false,reactions=[],onEdit,onResolve,onReact,strings,className,...rest}) {

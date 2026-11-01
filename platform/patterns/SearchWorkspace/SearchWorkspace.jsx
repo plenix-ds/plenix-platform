@@ -45,15 +45,15 @@
 import React from 'react';
 import { numeralLocale } from '../../utils/format.ts';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { CommandBar, CommandBarButton } from '../CommandBar/CommandBar.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Chip } from '../../components/Tag/Tag.jsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
 import { useUid } from '../../utils/layer.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChecklistIcon from 'plenix-platform/icons/plenix/checklist';
 import SaveIcon from 'plenix-platform/icons/plenix/save';
 import SortIcon from 'plenix-platform/icons/plenix/sort';

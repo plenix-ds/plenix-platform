@@ -30,9 +30,9 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useBarFit } from '../../utils/barFit.ts';
 import { foldOrder, menuOrder } from '../../utils/foldOrder.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useMedia, below } from '../AppShell/AppShell.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Menu, MenuItem, MenuDivider } from '../../components/Menu/Menu.jsx';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 

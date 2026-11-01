@@ -56,11 +56,11 @@ import React from 'react';
 import { cx } from '../utils/cx.ts';
 import { dataWhenText } from '../utils/dataText.tsx';
 import { isRtl } from '../utils/direction.ts';
-import { Details } from '../components/Details/Details.jsx';
+import { Details } from '../components/Details/Details.tsx';
 import { Table } from '../components/Table/Table.jsx';
-import { Button } from '../components/Button/Button.jsx';
+import { Button } from '../components/Button/Button.tsx';
 import { snapToGrid } from '../utils/grid.ts';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
 const MARGIN_TOKENS = { top: '--plx-comp-chart-margin-block-start', end: '--plx-comp-chart-margin-inline-end', bottom: '--plx-comp-chart-margin-block-end', start: '--plx-comp-chart-margin-inline-start' };

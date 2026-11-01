@@ -8,7 +8,7 @@
    Every component reads the print tokens (system tokens print-hidden, print-shown, print-block-size, print-overflow,
    print-position, print-keep, print-url-before, print-url-after): set only on paper, so no rule here or in a component
    is written for print (zero overlap, Styling Standard 3.5).
-   The light theme on paper is usePrint's (hooks/usePrint.js): it sets data-plx-mode="light" on <html> before printing
+   The light theme on paper is usePrint's (hooks/usePrint.ts): it sets data-plx-mode="light" on <html> before printing
    and puts the mode back after, so the tokens are the light theme's (black text on white). */
 @page{margin:var(--plx-sys-print-page-margin);}
 .plx-print-urls{--plx-comp-link-context-url-after:var(--plx-sys-print-url-after);--plx-comp-link-context-url-before:var(--plx-sys-print-url-before);}

@@ -16,7 +16,7 @@ DSParts.records.push(function (H) {
 
   /* ── 08 Feedback › Status › Availability indicator: StatusDot's presence tones ── */
   var availability = { id: 'availability-indicator', lab: true, icon: 'person', sec: 'feedback', sub: 'Status', leaf: 'Availability indicator', title: 'Availability indicator',
-    plenix: 'StatusDot', src: 'components/StatusDot/StatusDot.jsx', blocks: ['plx-status-dot'],
+    plenix: 'StatusDot', src: 'components/StatusDot/StatusDot.tsx', blocks: ['plx-status-dot'],
     variantClasses: ['plx-status-dot--online', 'plx-status-dot--away', 'plx-status-dot--busy', 'plx-status-dot--dnd', 'plx-status-dot--offline', 'plx-status-dot--md', 'plx-status-dot--lg', 'plx-status-dot--glyph'],
     level: 'Component', interaction: 'Feedback', aliases: ['Presence badge', 'Availability', 'Presence dot', 'Status light', 'Presence indicator'],
     text: 'Whether a person is available, as a StatusDot in the presence roles of the Status colors: online, away, busy, do not disturb and offline. The larger dots carry the availability’s shape cut out in the surface color (a check, a clock, a minus for do not disturb, a cross; busy is the solid dot), so it never rests on color alone: busy and do not disturb share a color and differ by shape. Avatar’s presence prop puts one at the avatar’s corner.',
@@ -44,7 +44,7 @@ DSParts.records.push(function (H) {
 
   /* ── 03 Content › Identity › Presence: Avatar's presence prop ── */
   var presence = { id: 'presence', lab: true, icon: 'person', sec: 'content', sub: 'Identity', leaf: 'Presence', title: 'Presence',
-    plenix: 'Avatar, StatusDot', src: 'components/Avatar/Avatar.jsx', also: ['components/StatusDot/StatusDot.jsx'], blocks: ['plx-avatar'], variantClasses: ['plx-avatar--presence'],
+    plenix: 'Avatar, StatusDot', src: 'components/Avatar/Avatar.jsx', also: ['components/StatusDot/StatusDot.tsx'], blocks: ['plx-avatar'], variantClasses: ['plx-avatar--presence'],
     level: 'Component', interaction: 'Static', aliases: ['Presence badge', 'Online indicator', 'Avatar status'],
     text: 'A person’s availability on their avatar: Avatar’s presence prop puts an availability dot at the bottom end corner, ringed in the surface color. The dot grows with the avatar and from 40px carries the availability’s shape.',
     use: ['presence on the avatars of people who can be contacted now: chat, members, assignees', 'label on the avatar when no name is next to it, so the state is read with the name', 'The same five states everywhere: online, away, busy, do not disturb, offline'],
@@ -67,7 +67,7 @@ DSParts.records.push(function (H) {
 
   /* ── 03 Content › Identity › Online status: the duplicate of Presence, as words ── */
   var onlineStatus = { id: 'content-online-status', icon: 'person', sec: 'content', sub: 'Identity', leaf: 'Online status', title: 'Online status',
-    plenix: 'StatusDot', src: 'components/StatusDot/StatusDot.jsx', level: 'Component', interaction: 'Static', variantClasses: [], docsFrom: 'presence',
+    plenix: 'StatusDot', src: 'components/StatusDot/StatusDot.tsx', level: 'Component', interaction: 'Static', variantClasses: [], docsFrom: 'presence',
     aliases: ['Availability text', 'Last seen'],
     text: 'A person’s availability in words, with the matching dot before it: the same five states as presence (Online, Away, Busy, Do not disturb, Offline), in the same order. The words carry the state, so the dot is decorative; a short note may follow (“In a meeting until 3:00 PM”).',
     use: ['Where an avatar dot is too small or there is no avatar: a profile header, a member row', 'The state names of presence, in sentence case'],
@@ -147,7 +147,7 @@ DSParts.records.push(function (H) {
 
   var TONES = [['info', 'Info (default)'], ['success', 'Success'], ['warning', 'Warning'], ['danger', 'Danger'], ['neutral', 'Neutral']];
   var circularProgress = { id: 'circular-progress', lab: true, icon: 'refresh', sec: 'feedback', sub: 'Loading and progress', leaf: 'Circular progress', title: 'Circular progress',
-    plenix: 'ProgressCircle', src: 'components/ProgressCircle/ProgressCircle.jsx', level: 'Component', interaction: 'Feedback', aliases: ['Progress ring', 'Circular progress indicator', 'Progress circle', 'Donut progress'],
+    plenix: 'ProgressCircle', src: 'components/ProgressCircle/ProgressCircle.tsx', level: 'Component', interaction: 'Feedback', aliases: ['Progress ring', 'Circular progress indicator', 'Progress circle', 'Donut progress'],
     text: 'How far a task has come, as a ring: a faint track and an arc in a tone that fills clockwise from the top, or turns while the amount is unknown. Three sizes (16, 24 and 48px); the largest can show the percent in its center, in the data font.',
     use: ['Short waits in tight places: inside a card, beside a file name, in a tile', 'value as soon as the amount is known; label that says what loads', 'size="lg" with showValue where the percent matters'],
     avoid: ['A long task with room for a bar: use Progress bar', 'An unknown wait inside a button: use Spinner', 'Several rings for one task'],

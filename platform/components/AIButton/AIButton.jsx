@@ -7,12 +7,12 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../Stack/Stack.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Notice } from '../Notice/Notice.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Text } from '../Text/Text.tsx';
+import { Notice } from '../Notice/Notice.tsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 const Trigger=React.forwardRef(function Trigger({externalRef,...props},menuRef){return <Button {...props} ref={node=>{if(typeof menuRef==='function')menuRef(node);else if(menuRef)menuRef.current=node;if(typeof externalRef==='function')externalRef(node);else if(externalRef)externalRef.current=node;}}/>;});
 export const AIButton=React.forwardRef(function AIButton({label,mode='trigger',actions=[],onAction,disabled=false,strings,className},ref){

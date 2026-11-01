@@ -53,7 +53,7 @@ window.DSTaxonomy = [
     subs: [
       ['Buttons', 'Primary button|Secondary button|Tertiary button|Ghost button|Destructive button|Icon button|Loading button|Split button|Floating action button|Button group'],
       ['Action collections', 'Action group|Action list|Action bar|Toolbar|Formatting toolbar|Selection toolbar|Bulk action bar|Overflow action|Action panel'],
-      ['Menus and commands', 'Action menu|Dropdown menu|Context menu|Overflow menu|Command menu|Command palette|Menu item|Checkbox menu item|Radio menu item|Menu group'],
+      ['Menus and commands', 'Action menu|Dropdown menu|Context menu|Overflow menu|Command menu|Command palette|Menu item|Checkbox menu item|Radio menu item|Menu group|Menu bar|Menu, menu bar and command bar: which one'],
       ['Triggers', 'Dialog trigger|Modal trigger|Drawer trigger|Popover trigger|Tooltip trigger|Disclosure trigger'],
       ['Common actions', 'Copy|Download|Export|Import|Print|Share|Duplicate|Rename|Delete|Back to top']
     ] },
@@ -64,7 +64,7 @@ window.DSTaxonomy = [
       ['Form foundations', 'Form|Form section|Field|Field group|Fieldset|Legend|Label|Help text|Required indicator|Validation message|Error summary|Input group|Form actions|Character counter|Read-only field|Field style variants'],
       ['Text input', 'Text field|Password field|Email field|URL field|Telephone field|Search input|Text area|Autogrowing text area|Rich-text editor|Code editor|Inline editable text|PIN / OTP input'],
       ['Choice input', 'Checkbox|Checkbox group|Radio|Radio group|Switch|Toggle|Toggle button|Toggle button group|Segmented control|Choice card|Rating'],
-      ['Select and lookup', 'Select|Native select|Multi-select|Combobox|Autocomplete|Searchable select|Async select|Creatable select|Checkbox select|Radio select|Cascader|Tree select|People picker|Entity picker|Country / locale select'],
+      ['Select and lookup', 'Select|Native select|Multi-select|Combobox|Autocomplete|Suggest|Searchable select|Async select|Creatable select|Checkbox select|Radio select|Cascader|Tree select|People picker|Entity picker|Country / locale select'],
       ['Date, time, and color', 'Calendar|Date picker|Date range picker|Time picker|Date-time picker|Relative date input|Time-zone selector|Color picker|Swatch picker'],
       ['Numeric and range input', 'Number input|Stepper|Currency input|Percentage input|Quantity selector|Slider|Range slider'],
       ['File and media input', 'File input|File upload|Drop zone|Drag-and-drop upload|Image upload|Avatar upload|Attachment picker|Media picker']

@@ -19,6 +19,7 @@
      placeholder: the hint in the empty field (default "Choose a time zone")
      label: the accessible name when there is no Field
      invalid: shows the invalid state
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      readOnly: shows the chosen zone and does not open the list or change it; default the nearest ReadOnly region's (useReadOnly)
      disabled: the field cannot be used
      locale: the language of the zone names (default the page's language)
@@ -43,14 +44,14 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, formatNumber } from '../../utils/format.ts';
 import { localDigits, toLatinDigits } from '../../utils/digits.ts';
-import { useDigits } from '../../providers/LocaleProvider.jsx';
-import { Isolate } from '../Isolate/Isolate.jsx';
+import { useDigits } from '../../providers/LocaleProvider.tsx';
+import { Isolate } from '../Isolate/Isolate.tsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
-import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.jsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.tsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // a few zones for browsers without Intl.supportedValuesOf
@@ -91,12 +92,12 @@ export function timeZoneOptions({ zones, date = new Date(), locale, strings } = 
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[\u2212\u2013]/g, '-').replace(/_/g, ' ');
 const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs(o.minutes), h = Math.floor(a / 60), m = a % 60;
   return [fold(o.offset), sign + h, sign + String(h).padStart(2, '0'), sign + h + ':' + String(m).padStart(2, '0'), 'utc' + sign + h, 'gmt' + sign + h].join(' '); };
 
 export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, onChange, grouped = true, showOffset = true, zones, date, placeholder,
-  label, invalid, disabled, readOnly, locale, strings, id, className, ...rest }, ref) {
+  label, invalid, warning, disabled, readOnly, locale, strings, id, className, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
   const t = useStrings('timeZoneSelect', strings);
   const loc = useLocale();
@@ -163,7 +164,7 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
   };
   return (
     <div ref={wrap} className={cx('plx-combobox', 'plx-time-zone-select', open && 'is-open', disabled && 'is-disabled', className)}>
-      <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined}>
+      <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}>
         <input ref={input} id={id} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
           aria-activedescendant={open && shown[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
           aria-description={current && showOffset ? localDigits(current.offset, { digits }) : undefined}

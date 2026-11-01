@@ -16,19 +16,19 @@
 */
 import React from 'react';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { EntityPicker } from '../../components/EntityPicker/EntityPicker.jsx';
 import { RoleLabel } from '../../components/RoleLabel/RoleLabel.jsx';
 import { CopyButton } from '../../components/CopyButton/CopyButton.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Tabs } from '../../components/Tabs/Tabs.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const ROLES = [{ value: 'viewer', label: 'Viewer' }, { value: 'editor', label: 'Editor' }];
 export function ShareDialog({ open, title, onClose, people = [], grants = [], roles = ROLES, defaultRole = 'viewer', url = '', linkAccess = 'restricted', onSave, initialTab = 'people', webShare = true, strings, className }) {

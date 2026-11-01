@@ -45,13 +45,13 @@ import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatDateTime } from '../../utils/format.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { ConfirmDialog, Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { DatePicker } from '../../components/DatePicker/DatePicker.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { WorkflowStatus, useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import { fill } from '../../utils/fill.ts';
 

@@ -8,13 +8,13 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../Stack/Stack.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Notice } from '../Notice/Notice.jsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Link } from '../Link/Link.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Text } from '../Text/Text.tsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Link } from '../Link/Link.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AIDisclaimer({variant='footer',children,href,strings,className,...rest}){
   devWarn('AIDisclaimer', { variant }, { variant: ['footer','inline'] });

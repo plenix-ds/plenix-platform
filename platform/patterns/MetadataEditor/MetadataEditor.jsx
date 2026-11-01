@@ -11,16 +11,16 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { InlineEdit } from '../../components/InlineEdit/InlineEdit.jsx';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input, Textarea, Select } from '../../components/Input/Input.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function MetadataEditor({ fields = [], values = {}, onSave, variant = 'inline', disabled = false, strings, className }) {

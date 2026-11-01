@@ -34,7 +34,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon, asIcon } from '../Icon/Icon.jsx';
+import { Icon, asIcon } from '../Icon/Icon.tsx';
 
 const SIZES = ['sm', 'md', 'lg'];
 

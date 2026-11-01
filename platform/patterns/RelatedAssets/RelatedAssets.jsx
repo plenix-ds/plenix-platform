@@ -9,11 +9,11 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { Carousel } from '../../components/Carousel/Carousel.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function RelatedAssets({ items = [], variant = 'strip', label, onOpen, strings, className }) {
   devWarn('RelatedAssets', { variant }, { variant: ['strip','grid'] });

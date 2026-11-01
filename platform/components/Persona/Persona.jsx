@@ -29,10 +29,10 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { Badge } from '../Badge/Badge.jsx';
-import { Link } from '../Link/Link.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Badge } from '../Badge/Badge.tsx';
+import { Link } from '../Link/Link.tsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];

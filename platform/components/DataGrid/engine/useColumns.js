@@ -96,7 +96,9 @@ export function useColumns({ initial, props, columns, frame, live, emit, api }) 
   // pinned (frozen) columns are TanStack's left pinning, listed in the columns' current order (columnOrder first, then
   // the rest as defined, as TanStack orders them), so a pinned column's offset is its getStart('left')
   const pinnedAt = columns.findIndex((c) => c.rowLabel),
-    pinnedIds = columns.filter((c, i) => c.frozen || (pinnedAt >= 0 && i <= pinnedAt)).map((c) => c.field);
+    // a DataGrid pins only an explicit frozen column (issue 679): a row label keeps its emphasis and row-header role,
+    // unpinned. A static Table keeps its row labels pinned, as before
+    pinnedIds = columns.filter((c, i) => c.frozen || (props.isStatic && pinnedAt >= 0 && i <= pinnedAt)).map((c) => c.field);
   const orderAt = (id) => {
     const i = (columnOrder || []).indexOf(id);
     return i < 0 ? (columnOrder || []).length + columns.findIndex((c) => c.field === id) : i;

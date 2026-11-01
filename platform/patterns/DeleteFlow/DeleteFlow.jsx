@@ -52,13 +52,13 @@ import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import { dataPhrase } from '../../utils/dataText.tsx';
 import { fill } from '../../utils/fill.ts';
 

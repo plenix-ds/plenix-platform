@@ -19,6 +19,7 @@
      label: the accessible name when there is no Field (also the popover's name)
      defaultExpanded: the ids of the items open when the tree first shows (default: the items above the chosen ones)
      invalid: shows the invalid state (a Field sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not open the tree, so nothing changes; default the nearest ReadOnly region's (useReadOnly)
      required: a choice is required (a Field sets it)
@@ -28,6 +29,9 @@
      className: more classes on the field
      Other props pass through to the trigger <button> (aria-describedby).
    Behavior:
+     The typed text is marked in each result it matches, every occurrence, in either case, by the shared helper (utils/highlight.tsx:
+       highlightMatch; matchesText decides what is listed). Arabic matches without its vowel marks, and a match of Arabic letters is
+       underlined instead of set heavier, so the joined letters stay whole. The list is read as plain text.
      The trigger is a select-only combobox (a button with role combobox): Enter, Space or a click opens the popover;
        Escape, a click outside and Tab out close it, and focus returns to the trigger. At the Narrow window class the
        popover is a bottom Sheet (Popover's sheetOnNarrow).
@@ -43,14 +47,15 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
 import { isRtl } from '../../utils/direction.ts';
-import { Icon, asIcon, iconKey } from '../Icon/Icon.jsx';
+import { Icon, asIcon, iconKey } from '../Icon/Icon.tsx';
 import { Popover } from '../Popover/Popover.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { SearchField } from '../SearchField/SearchField.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
@@ -74,7 +79,7 @@ const ancestors = (byId, id) => { const out = []; let at = byId.get(id); while (
 // the nodes that match the text, with the nodes above them (only their matching branches)
 function filterNodes(nodes, q) {
   return nodes.reduce((out, n) => {
-    const own = String(n.label).toLowerCase().indexOf(q) >= 0;
+    const own = matchesText(n.label, q);
     const kids = kidsOf(n) ? filterNodes(n.children, q) : [];
     if (own || kids.length) out.push(Object.assign({}, n, { children: own && !kids.length ? n.children : kids }));
     return out;
@@ -86,7 +91,7 @@ function flatten(nodes, open, parent, out) {
 }
 
 export function TreeSelect({ nodes = [], value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
-  invalid, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
+  invalid, warning, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the choice shows and the tree does not open
   const t = useStrings('treeSelect', strings);
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -156,7 +161,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
           {multiple ? <input type="checkbox" className="plx-check__input plx-tree-select__mark" tabIndex={-1} aria-hidden="true" inert="" readOnly checked={state === 'true'}
             ref={(el) => { if (el) el.indeterminate = state === 'mixed'; }} /> : null}
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || state === 'true'))}</span> : null}
-          <span className="plx-tree__label">{n.label}</span>
+          <span className="plx-tree__label">{q ? highlightMatch(n.label, q) : n.label}</span>
         </div>
         {isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
       </li>
@@ -168,7 +173,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   const summary = names.length > 2 ? t.more.replace('{list}', names.slice(0, 2).join(', ')).replace('{n}', names.length - 2) : names.join(', ');
   const name = label || t.choose;
   const trigger = (
-    <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} aria-required={required || undefined} aria-readonly={locked || undefined} disabled={disabled}
+    <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} aria-required={required || undefined} aria-readonly={locked || undefined} disabled={disabled}
       className={cx('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')} {...rest}>
       <Tooltip content={names.length ? summary : ''} disabled={!cut || open || !names.length} className="plx-tree-select__tip"><span ref={valueRef} className={names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'}>{names.length ? summary : (placeholder || t.placeholder)}</span></Tooltip>
       <span className="plx-tree-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>

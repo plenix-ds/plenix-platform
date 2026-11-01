@@ -15,11 +15,11 @@ import { Form, FormActions } from '../Form/Form.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { TreeSelect } from '../../components/TreeSelect/TreeSelect.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function SaveAs({ locations = [], initialName = '', initialLocation = '', initialFormat = '', formats = [], onSave, onCancel, strings, className }) {
   const t = useStrings('saveAs', strings);

@@ -4,4 +4,4 @@ export { dataText, dataPhrase, dataNumber } from '../utils/dataText.tsx';
 export { LiveRegion, announce } from '../utils/announce.tsx';
 export { copyText, copyRich, copyImage, useClipboard } from '../utils/clipboard.ts';
 export { useHotkey, registerHotkey, parseHotkey, hotkeyKeys, hotkeyLabel, hotkeyList, useHotkeyList, subscribeHotkeys, setSingleKeyHotkeys, singleKeyHotkeys, isMac } from '../utils/hotkey.ts';
-export { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS, gapPieces } from '../hooks/useVirtualizer.js';
+export { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS, gapPieces } from '../hooks/useVirtualizer.ts';

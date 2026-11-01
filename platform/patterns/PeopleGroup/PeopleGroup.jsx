@@ -34,11 +34,11 @@ import { cx } from '../../utils/cx.ts';
 import { formatNumber } from '../../utils/format.ts';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
-import { IconTile } from '../../components/IconTile/IconTile.jsx';
-import { Link } from '../../components/Link/Link.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { IconTile } from '../../components/IconTile/IconTile.tsx';
+import { Link } from '../../components/Link/Link.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
 import { fill } from '../../utils/fill.ts';
 

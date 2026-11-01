@@ -79,11 +79,11 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
 import { focusables, useLayer, useUid } from '../../utils/layer.ts';
-import { Icon, asIcon } from '../Icon/Icon.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Icon, asIcon } from '../Icon/Icon.tsx';
+import { Button } from '../Button/Button.tsx';
 import { Field } from '../Field/Field.jsx';
 import { Input } from '../Input/Input.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 

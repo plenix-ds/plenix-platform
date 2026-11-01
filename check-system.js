@@ -17,7 +17,8 @@
 //               ds-sample-parts.css) and the library block of index.js and platform.css match their part files; the
 //               compatibility icon file (platform/dist/plenix-icons-plenix.js, #553) matches the icon set; each page's
 //               icon file (<app>/plenix-icons-<app>.js, dam/plenix-icons-dam.js, #557) matches its page's source
-//   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
+//   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time (an
+//               application page through the page loader, platform/loader/loader.js, which loads it from the source copy)
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
 //   tables      every table is a DataGrid (the React renderer in the Plenix table style): no <table>, no table element made in code, no
@@ -79,7 +80,7 @@ for (const { file } of files) {
 // not come from the design system
 for (const { file } of files) {
   if (!/\.html$/.test(file) || /[\/]platform[\/]dev[\/]/.test(file)) continue;
-  if (!/platform\/dev\/style-audit\.js|\.\.\/dev\/style-audit\.js/.test(fs.readFileSync(file, 'utf8'))) add('audit', file, 0, 'the page does not load platform/dev/style-audit.js');
+  if (!/platform\/dev\/style-audit\.js|\.\.\/dev\/style-audit\.js|platform\/loader\/loader\.js/.test(fs.readFileSync(file, 'utf8'))) add('audit', file, 0, 'the page does not load platform/dev/style-audit.js');
 }
 // imports: every component and pattern stylesheet is in platform.css
 const platformCss = fs.readFileSync(path.join(ROOT, 'platform', 'platform.css'), 'utf8');

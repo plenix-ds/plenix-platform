@@ -36,9 +36,9 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { appById, appIcon } from '../../providers/apps.js';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { appById, appIcon } from '../../providers/apps.ts';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import HomeIcon from 'plenix-platform/icons/plenix/home';
 
 

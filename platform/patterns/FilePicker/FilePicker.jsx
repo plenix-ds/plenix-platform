@@ -8,16 +8,16 @@
    Notes: Uses Tree and FileRow directly; no dependency on FileBrowser or implicit device access.
 */
 import React from 'react';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { cx } from '../../utils/cx.ts';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Tree } from '../../components/Tree/Tree.jsx';
 import { FileRow,FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 export function FilePicker({open=false,onClose,items=[],folders=[],mode='files',multiple=false,initialSelected=[],onPick,strings,className}){
  const t=useStrings('filePicker',strings),[selected,setSelected]=React.useState(initialSelected),[folder,setFolder]=React.useState(null),[query,setQuery]=React.useState(''),[busy,setBusy]=React.useState(false),[error,setError]=React.useState('');
  const lock=React.useRef(false),epoch=React.useRef(0);

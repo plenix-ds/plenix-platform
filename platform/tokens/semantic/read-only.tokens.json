@@ -1,5 +1,5 @@
 {
-  "$description": "Read-only state (library plan wave 2, foundation read-only-context): the roles of a value that can be read, selected and copied but not changed. system/read-only.css draws the controls inside a read-only region (data-plx-readonly, providers/ReadOnly.jsx) from them.",
+  "$description": "Read-only state (library plan wave 2, foundation read-only-context): the roles of a value that can be read, selected and copied but not changed. system/read-only.css draws the controls inside a read-only region (data-plx-readonly, providers/ReadOnly.tsx) from them.",
   "plx-sys": {
     "read-only-background": {
       "$value": "{plx-sys.surface-sunken}",

@@ -31,7 +31,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { mergeDndProps } from '../../utils/dnd.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import DragIcon from 'plenix-platform/icons/plenix/drag';
 
 export const DragHandle = React.forwardRef(function DragHandle({ label, orientation = 'vertical', dnd, disabled = false, className, ...rest }, ref) {

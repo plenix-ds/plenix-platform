@@ -7,10 +7,10 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { useReposition } from '../../utils/dnd.ts';
@@ -18,7 +18,7 @@ import { snapToGrid } from '../../utils/grid.ts';
 import { Image } from '../../components/Image/Image.jsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { CommentThread } from '../CommentThread/CommentThread.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 function AnnotationMark({ annotation, index, active, onSelect, strings }) {
   const position = { x: snapToGrid(Number(annotation.x) || 0), y: snapToGrid(Number(annotation.y) || 0) };
   const move = useReposition({ name: annotation.label || annotation.location, position, disabled: true });

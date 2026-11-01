@@ -39,8 +39,8 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, numeralLocale, dateTimeAttr, parseDate } from '../../utils/format.ts';
 import { tokenMs } from '../../utils/tokenTime.ts';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
 // the shared parser: a date-only value is that calendar day where the reader is, never midnight UTC (issue 342)

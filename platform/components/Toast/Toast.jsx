@@ -40,11 +40,11 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Button } from '../Button/Button.tsx';
 import { tokenMs } from '../../utils/tokenTime.ts';
 import { announce } from '../../utils/announce.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
@@ -69,7 +69,7 @@ export function ToastProvider({ duration, children }) {
       announced.current.add(t.id);
       const el = texts.current.get(t.id);
       const shown = el ? el.textContent : String(t.message);
-      const text = t.action && t.action.label ? shown + (/[.!?…]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
+      const text = t.action && t.action.label ? shown + (/[.!?\u2026]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
       announce(text, { politeness: t.tone === 'danger' ? 'assertive' : 'polite', queue: true });
     });
   }, [toasts]);

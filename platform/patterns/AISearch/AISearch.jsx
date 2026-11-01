@@ -13,18 +13,18 @@
    Notes: This is a UI adapter, not a model or search service; caller content must be trusted React nodes.
 */
 import React from 'react';
-import { Stack,Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Stack,Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { cx } from '../../utils/cx.ts';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Switch } from '../../components/Checkbox/Checkbox.jsx';
-import { Link } from '../../components/Link/Link.jsx';
+import { Link } from '../../components/Link/Link.tsx';
 import { GeneratedContent } from '../../components/GeneratedContent/GeneratedContent.jsx';
 import { Citation } from '../../components/Citation/Citation.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AISearch({onSearch,defaultQuery='',defaultSemantic=false,semanticToggle=true,strings,className}){
  const t=useStrings('aiSearch', strings),[query,setQuery]=React.useState(defaultQuery),[semantic,setSemantic]=React.useState(defaultSemantic),[data,setData]=React.useState(null),[busy,setBusy]=React.useState(false),[error,setError]=React.useState(''),epoch=React.useRef(0),controller=React.useRef(null),pending=React.useRef(null);

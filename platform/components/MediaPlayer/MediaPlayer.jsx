@@ -21,17 +21,17 @@
 */
 import React from 'react';
 import { useSeparateAudio } from './useSeparateAudio.js';
-import { Stack, Inline } from '../Stack/Stack.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Field } from '../Field/Field.jsx';
 import { Select } from '../Input/Input.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Slider } from '../Slider/Slider.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Notice } from '../Notice/Notice.jsx';
-import { Link } from '../Link/Link.jsx';
+import { Text } from '../Text/Text.tsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { Link } from '../Link/Link.tsx';
 import { useUid } from '../../utils/layer.ts';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const clock = (seconds) => { const n = Math.max(0, Math.floor(Number(seconds) || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
 export const MediaPlayer = React.forwardRef(function MediaPlayer({ src, audio, kind = 'video', label, poster, crossOrigin, tracks = [], transcript = [], showTranscript = false,

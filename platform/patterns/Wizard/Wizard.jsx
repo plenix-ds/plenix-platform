@@ -17,13 +17,13 @@
 import React from 'react';
 import { Form, FormActions } from '../Form/Form.jsx';
 import { Tabs } from '../../components/Tabs/Tabs.jsx';
-import { ProgressSteps } from '../../components/ProgressSteps/ProgressSteps.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { ProgressSteps } from '../../components/ProgressSteps/ProgressSteps.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Wizard({ steps = [], label, defaultStep = 0, navigation = 'linear', summary, onComplete, onCancel, strings, className }) {
   const t = useStrings('wizard', strings);

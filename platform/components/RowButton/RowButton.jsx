@@ -22,7 +22,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { usePressable } from '../../hooks/usePressable.js';
+import { usePressable } from '../../hooks/usePressable.ts';
 
 export const RowButton = React.forwardRef(function RowButton({ selected = false, current, pressed, expanded, hover = true,
   className, children, onClick, onPointerDown, onPointerCancel, onKeyDown, onBlur, ...rest }, ref) {
