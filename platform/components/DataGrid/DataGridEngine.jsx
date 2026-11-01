@@ -95,7 +95,10 @@ function NextEngine(props) {
     onRetry
   } = props;
   const showTypes = typeIconsProp ?? !isStatic; // the column type icons: a DataGrid's sort and filter cue, not a static Table's
-  const narrow = requestedNarrow === undefined ? (inPane && !isStatic ? 'table' : 'list') : requestedNarrow;
+  // a DataGrid is a table while its visible columns fit its measured width, else the row card list, in a SplitView too
+  // (issue 679, owner priority 1; it replaces #168's table-in-a-pane default); narrow="table" keeps a fixed table, and a
+  // static Table keeps its list below narrowAt
+  const narrow = requestedNarrow === undefined ? (isStatic ? 'list' : 'auto') : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
   const S = useStrings('dataGrid', props.strings),
     initial = React.useMemo(() => opening(props), [storageKey]);
@@ -449,6 +452,8 @@ function NextEngine(props) {
   const frozen = new Set(columnPinning.left),
     ordered = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
   const pinStart = (column) => (selectable ? metrics.lead : 0) + column.getStart('left');
+  // the selection column pins only beside an explicit frozen column (issue 679): nothing is pinned by default
+  const leadFrozen = frozen.size > 0 && !isNarrow;
   const widths = Object.fromEntries(ordered.map((column) => [column.id, column.getSize()]));
   const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ['icon', 'actions'].includes(kind));
   const keys = keyColumns?.length
@@ -692,13 +697,16 @@ function NextEngine(props) {
         groupGap: tokenPixels('--plx-comp-data-grid-group-gap', at)
       };
       setMetrics((old) => (Object.keys(next).every((k) => next[k] === old[k]) ? old : next));
+      // auto (#679): the table needs every visible column at its width, plus the selection, row menu and view columns; when
+      // the grid's own width is smaller, it draws the row cards instead of scrolling sideways
+      const visible = live.current.table?.getVisibleLeafColumns() || [];
+      const required =
+        visible.reduce((sum, column) => sum + (column.getSize() || next.min), 0) +
+        (selectable ? next.lead : 0) +
+        (rowMenu && rowMenuButton ? next.menu : 0) +
+        (props.viewMenu ? next.lead : 0);
       const threshold =
-          narrow === 'auto'
-            ? keys.reduce(
-                (sum, field) => sum + (live.current.table?.getColumn(field)?.getSize() || next.min),
-                selectable ? next.lead : 0
-              )
-            : tokenPixels(narrowAt, at),
+          narrow === 'auto' ? required : tokenPixels(narrowAt, at),
         want = listed && at.clientWidth > 0 && at.clientWidth < threshold;
       setNarrow(want);
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
@@ -731,7 +739,7 @@ function NextEngine(props) {
       mo.disconnect();
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|')]);
+  }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join('|'), JSON.stringify(autoSizing), JSON.stringify(sizing), JSON.stringify(columnVisibility), selectable, !!rowMenu, rowMenuButton, props.viewMenu]);
   React.useLayoutEffect(() => {
     virtual.measure();
   }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
@@ -987,6 +995,7 @@ function NextEngine(props) {
     pickCheckbox,
     kindsOf,
     pinStart,
+    leadFrozen,
     editing,
     cells,
     showTypes,
@@ -1121,7 +1130,7 @@ function NextEngine(props) {
               >
                 {selectable ? (
                   <div
-                    className={`${B}__grid-col ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`}
+                    className={cx(`${B}__grid-col ${B}__grid-row-header ${B}__w-lead`, leadFrozen && B + '__grid-frozen')}
                     role="columnheader"
                   >
                     <div className={`${B}__grid-col-content ${B}__grid-col-content--row-header`}>
@@ -1153,6 +1162,7 @@ function NextEngine(props) {
             className={cx(
               `${B}__grid-tableholder`,
               height === '100%' && B + '__grid-tableholder--fill',
+              isNarrow && B + '__grid-tableholder--narrow',
               isStatic && B + '__grid-tableholder--static'
             )}
             data-plx-height={lengthName(height)}
@@ -1208,7 +1218,7 @@ function NextEngine(props) {
             {moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered, S, setRetry })}
           </div>
         </div>
-        {!isStatic ? <Scrollbars holder={holder} viewportId={viewportId} /> : null}
+        {!isStatic ? <Scrollbars holder={holder} viewportId={viewportId} hideX={isNarrow} /> : null}
         {pagesFooter({ mode, failed, B, S, displayedTotal, page, pageSize, props, setPage, setPageSize, label })}
         {loadMoreFooter({
           mode,

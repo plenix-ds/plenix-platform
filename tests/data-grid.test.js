@@ -84,7 +84,9 @@ if (!ONLY) {
 // the test's own file start it); the independent renderer keeps every capability and runs with no old grid code
 if (!ONLY) {
   for (const regression of ['cut-popover.test.js', 'filter-by-field-269.test.js', 'header-labels-start-326.test.js', 'empty-table-a11y-313.test.js', 'row-line-559.test.js',
-    'remote-fill-522.test.js', 'remote-fill-614.test.js', 'listing-page-522.test.js', 'data-grid-next-capabilities.test.js', 'data-grid-next-independent.test.js'].filter((r) => runs(r, GRIDS))) {
+    'remote-fill-522.test.js', 'remote-fill-614.test.js', 'listing-page-522.test.js', 'data-grid-next-capabilities.test.js', 'data-grid-next-independent.test.js',
+    // the responsive grid (issue 679): a table while it fits, the row cards when it does not, in a SplitView too
+    'data-grid-responsive-679.test.js'].filter((r) => runs(r, GRIDS))) {
     const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
     if (result.status !== 0) process.exit(result.status || 1);
   }

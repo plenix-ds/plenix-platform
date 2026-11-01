@@ -955,6 +955,11 @@
     "line-height"
    ]
   },
+  "plx-data-grid__grid-cell--narrow": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
+  },
   "plx-data-grid__grid-cell--data": {
    "contract": "establishes",
    "role": "body",
@@ -2977,6 +2982,11 @@
     "font-weight",
     "line-height"
    ]
+  },
+  "plx-table__grid-cell--narrow": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
   },
   "plx-table__grid-col-content--icon": {
    "contract": "adjusts",
