@@ -740,6 +740,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "notImage": "Choose an image file",
       "picture": "{name}\u2019s photo"
     },
+    "anchor": {
+      "label": "On this page"
+    },
     "backToTop": {
       "label": "Back to top"
     },
@@ -810,6 +813,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "No items",
       "remove": "Remove {label}",
       "columns": "Options",
+      "allOf": "All of {label}",
+      "more": "+{n}",
+      "moreLabel": "{n} more",
+      "limit": "You can choose up to {n}.",
+      "loading": "Loading\u2026",
+      "error": "The matches could not be loaded",
       "results": {
         "one": "{n} match",
         "other": "{n} matches"
@@ -1124,6 +1133,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "error": "The options could not be loaded",
       "emptyText": "No matches",
       "removeItem": "Remove {label}",
+      "clear": "Clear",
       "results": {
         "one": "{n} option",
         "other": "{n} options"
@@ -3389,6 +3399,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "more": "+{n}",
       "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629"
     },
+    "anchor": {
+      "label": "\u0641\u064A \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629"
+    },
     "backToTop": {
       "label": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0623\u0639\u0644\u0649"
     },
@@ -3436,6 +3449,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
       "remove": "\u0625\u0632\u0627\u0644\u0629 {label}",
       "columns": "\u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
+      "allOf": "\u0643\u0644 {label}",
+      "more": "+{n}",
+      "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629",
+      "limit": "\u064A\u0645\u0643\u0646\u0643 \u0627\u062E\u062A\u064A\u0627\u0631 {n} \u0643\u062D\u062F \u0623\u0642\u0635\u0649.",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0646\u062A\u0627\u0626\u062C",
       "results": {
         "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0637\u0627\u0628\u0642\u0627\u062A",
         "one": "\u062A\u0637\u0627\u0628\u0642 \u0648\u0627\u062D\u062F",
@@ -3459,6 +3478,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
       "emptyText": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629",
       "removeItem": "\u0625\u0632\u0627\u0644\u0629 {label}",
+      "clear": "\u0645\u0633\u062D",
       "results": {
         "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062E\u064A\u0627\u0631\u0627\u062A",
         "one": "\u062E\u064A\u0627\u0631 \u0648\u0627\u062D\u062F",
@@ -11071,7 +11091,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     ));
   }
   const DND_STRINGS = english.dnd;
-  const reduced$2 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$3 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function moveItem(list2, from, to) {
     const next = list2.slice();
     if (from < 0 || from >= next.length) return next;
@@ -11150,7 +11170,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const a = el && offsets.get(el);
     if (!a) return;
     offsets.delete(el);
-    if (opts && opts.settle && !reduced$2() && el.animate) {
+    if (opts && opts.settle && !reduced$3() && el.animate) {
       const ms2 = tokenMs("--plx-sys-gesture-settle-duration", 0, el);
       const easing = getComputedStyle(el).getPropertyValue("--plx-sys-gesture-settle-easing").trim() || "ease";
       const from = a.effect && a.effect.getKeyframes ? a.effect.getKeyframes()[0] : null;
@@ -11338,7 +11358,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (!now || now.kind !== "sortable" || now.mode !== "keyboard" || now.list !== listId || ids.indexOf(now.id) < 0) return;
       const el = handleOf(now.id);
       if (el && document.activeElement !== el) el.focus({ preventScroll: true });
-      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$2() ? "auto" : "smooth" });
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$3() ? "auto" : "smooth" });
     }, [now, ids.join("\n")]);
     const say = (s, vars) => announce(fill(s, vars));
     const reorder = (from, to) => {
@@ -11604,7 +11624,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const next = list2[(at2 + step + list2.length) % list2.length];
       if (!next) return;
       patchSession({ over: next.id });
-      if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$2() ? "auto" : "smooth" });
+      if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$3() ? "auto" : "smooth" });
       announce(fill(t.over, { target: next.o.name }));
     };
     const pointerDown = (e) => {
@@ -12279,29 +12299,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     if (x == null || y == null) return x == null ? y == null ? 0 : -1 : 1;
     return sortCollator.compare(valueText(x), valueText(y));
   };
-  const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
-  function pillFont(at2, ctx, data) {
-    const doc = at2.ownerDocument, box = doc.createElement("span"), pill = doc.createElement("span"), value = doc.createElement("span");
-    box.className = "plx-visually-hidden";
-    pill.className = "plx-data-pill plx-data-pill--md" + (data ? " plx-data-pill--data" : "");
-    value.className = "plx-data-pill__value";
-    value.textContent = PROBE;
-    pill.appendChild(value);
-    box.appendChild(pill);
-    (at2.querySelector(".plx-data-grid__grid-row .plx-data-grid__grid-cell") || at2).appendChild(box);
-    const cs = getComputedStyle(value), page = value.scrollWidth;
-    ctx.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
-    ctx.wordSpacing = cs.wordSpacing || "0px";
-    const canvas2 = ctx.measureText(PROBE).width;
-    box.remove();
-    return { scale: canvas2 ? page / canvas2 : 1, font: ctx.font, wordSpacing: ctx.wordSpacing };
-  }
-  function pillSheet(doc) {
-    if (doc.__plxPillWidths) return doc.__plxPillWidths;
-    const sheet = new doc.defaultView.CSSStyleSheet(), rules = /* @__PURE__ */ new Map();
-    doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
-    return doc.__plxPillWidths = { rules, flush: () => sheet.replaceSync([...rules.values()].join("\n")) };
-  }
   function getMeasurementKey(item) {
     return typeof item === "object" ? item.key : item;
   }
@@ -17707,6 +17704,278 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     }, [source]);
   }
+  const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
+  function pillFont(at2, ctx, data) {
+    const doc = at2.ownerDocument, box = doc.createElement("span"), pill = doc.createElement("span"), value = doc.createElement("span");
+    box.className = "plx-visually-hidden";
+    pill.className = "plx-data-pill plx-data-pill--md" + (data ? " plx-data-pill--data" : "");
+    value.className = "plx-data-pill__value";
+    value.textContent = PROBE;
+    pill.appendChild(value);
+    box.appendChild(pill);
+    (at2.querySelector(".plx-data-grid__grid-row .plx-data-grid__grid-cell") || at2).appendChild(box);
+    const cs = getComputedStyle(value), page = value.scrollWidth;
+    ctx.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+    ctx.wordSpacing = cs.wordSpacing || "0px";
+    const canvas2 = ctx.measureText(PROBE).width;
+    box.remove();
+    return { scale: canvas2 ? page / canvas2 : 1, font: ctx.font, wordSpacing: ctx.wordSpacing };
+  }
+  function pillSheet(doc) {
+    if (doc.__plxPillWidths) return doc.__plxPillWidths;
+    const sheet = new doc.defaultView.CSSStyleSheet(), rules = /* @__PURE__ */ new Map();
+    doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
+    return doc.__plxPillWidths = { rules, flush: () => sheet.replaceSync([...rules.values()].join("\n")) };
+  }
+  function usePillWidths({ frame, cells, metrics, columns, allRows, showTypes }) {
+    const gridKey = React$1.useId(), [fontsReady, setFontsReady] = React$1.useState(0);
+    React$1.useEffect(() => {
+      const fonts = frame.current?.ownerDocument.fonts;
+      if (fonts && fonts.ready) fonts.ready.then(() => setFontsReady((n) => n + 1));
+    }, []);
+    React$1.useLayoutEffect(() => {
+      const at2 = frame.current;
+      if (!at2 || typeof CSSStyleSheet === "undefined" || !at2.ownerDocument.defaultView) return void 0;
+      const store = pillSheet(at2.ownerDocument);
+      if (cells !== "pill" || !metrics.row) {
+        if (store.rules.delete(gridKey)) store.flush();
+        return void 0;
+      }
+      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), faces = { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) }, px = (name) => tokenPixels(name, at2), step = gridStep(at2);
+      const sides = px("--plx-comp-data-pill-md-padding-inline-start") + px("--plx-comp-data-pill-md-padding-inline-end") + 2 * px("--plx-comp-data-pill-border-width"), glyph = px("--plx-comp-data-pill-icon-size") + px("--plx-comp-data-pill-gap");
+      const key = CSS.escape(gridKey), rules = [];
+      columns.forEach((c) => {
+        const k = kinds(c);
+        if (c.render || c.pill === false || k.includes("tags") || k.includes("badge") || k.includes("deleted") || k.includes("icon"))
+          return;
+        const data = k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type);
+        const face = faces[data ? "data" : "text"], scale = face.scale;
+        ctx.font = face.font;
+        ctx.wordSpacing = face.wordSpacing;
+        let widest = 0;
+        allRows.forEach((r) => {
+          if (!r.original) return;
+          const v = valueAt(r.original, c.field);
+          if (v == null || v === "") return;
+          widest = Math.max(widest, ctx.measureText(valueText(v)).width * scale);
+        });
+        if (!widest) return;
+        const icon = c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text";
+        rules.push(
+          '[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + snapToGrid(widest + sides + (icon ? glyph : 0), { round: "up", step }) + "px;justify-content:center;}"
+        );
+      });
+      store.rules.set(gridKey, rules.join("\n"));
+      store.flush();
+      return void 0;
+    }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
+    React$1.useEffect(
+      () => () => {
+        const doc = frame.current?.ownerDocument || (typeof document !== "undefined" ? document : null);
+        if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
+      },
+      []
+    );
+    return { gridKey };
+  }
+  function useGridMetrics({
+    frame,
+    metrics,
+    cells,
+    columns,
+    effectiveWrap,
+    showTypes,
+    isStatic,
+    headerMenu,
+    source,
+    selectable,
+    rowMenu,
+    rowMenuButton,
+    props,
+    setAutoSizing,
+    setFloors,
+    setMetrics,
+    live,
+    narrow,
+    narrowAt,
+    listed,
+    setNarrow,
+    height,
+    mode,
+    holder,
+    inPane,
+    effectiveStep,
+    keys,
+    autoSizing,
+    sizing,
+    columnVisibility,
+    virtual,
+    model,
+    collapsed
+  }) {
+    React$1.useLayoutEffect(() => {
+      const at2 = frame.current;
+      if (!at2 || !metrics.min) return;
+      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), widths = {}, free = [], floor = {};
+      const scales = cells === "pill" ? { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) } : null, cs = getComputedStyle(at2), step = gridStep(at2);
+      const known = /* @__PURE__ */ new Map(), tokenPx2 = (name) => {
+        if (!known.has(name)) known.set(name, tokenPixels(name, at2));
+        return known.get(name);
+      }, snapUp = (px) => snapToGrid(px, { round: "up", step });
+      columns.forEach((c) => {
+        if (kinds(c).includes("icon")) {
+          widths[c.field] = metrics.lead;
+          return;
+        }
+        ctx.font = (cs.getPropertyValue("--plx-comp-data-grid-header-font-weight").trim() || "600") + " " + cs.getPropertyValue("--plx-comp-data-grid-header-font-size").trim() + " " + (cs.getPropertyValue("--plx-comp-data-grid-font-family").trim() || cs.fontFamily);
+        ctx.wordSpacing = "0px";
+        const title = String(c.title || c.field), words2 = title.split(/\s+/);
+        let text2 = ctx.measureText(title).width;
+        if (effectiveWrap)
+          for (let i = 1; i < words2.length; i += 1)
+            text2 = Math.min(
+              text2,
+              Math.max(
+                ctx.measureText(words2.slice(0, i).join(" ")).width,
+                ctx.measureText(words2.slice(i).join(" ")).width
+              )
+            );
+        const gap = tokenPx2("--plx-comp-data-grid-header-type-icon-gap"), arrow = 0;
+        const head = text2 + (showTypes ? tokenPx2("--plx-comp-data-grid-header-type-icon-size") + gap : 0) + arrow + (!isStatic && headerMenu ? tokenPx2("--plx-comp-data-grid-title-reserve") : 0);
+        floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
+        const explicit = tokenPx2(c.width);
+        if (explicit) {
+          widths[c.field] = Math.max(explicit, floor[c.field]);
+          return;
+        }
+        const family = cs.getPropertyValue(
+          kinds(c).includes("data") ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family"
+        ).trim() || cs.fontFamily;
+        ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size").trim() + " " + family;
+        ctx.wordSpacing = kinds(c).includes("data") ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
+        let width = head;
+        const k = kinds(c), pill = cells === "pill" && c.pill !== false && !k.includes("tags") && !k.includes("badge") && !k.includes("deleted");
+        const face = pill ? scales[k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type) ? "data" : "text"] : null, scale = face ? face.scale : 1;
+        if (face) {
+          ctx.font = face.font;
+          ctx.wordSpacing = face.wordSpacing;
+        }
+        const chrome = pill ? tokenPx2("--plx-comp-data-pill-md-padding-inline-start") + tokenPx2("--plx-comp-data-pill-md-padding-inline-end") + 2 * tokenPx2("--plx-comp-data-pill-border-width") + (c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text" ? tokenPx2("--plx-comp-data-pill-icon-size") + tokenPx2("--plx-comp-data-pill-gap") : 0) : 0;
+        source.forEach((record) => {
+          const value = valueAt(record, c.field);
+          width = Math.max(width, ctx.measureText(valueText(value)).width * scale + chrome);
+        });
+        widths[c.field] = snapUp(
+          Math.max(
+            metrics.min,
+            Math.min(width + metrics.space * 2, tokenPx2("--plx-comp-data-grid-auto-max-width") || Infinity)
+          )
+        );
+        free.push(c.field);
+      });
+      const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0), used = Object.values(widths).reduce((sum2, width) => sum2 + width, 0);
+      const units = Math.max(0, Math.floor((available - used) / step));
+      if (free.length) widths[free[free.length - 1]] += units * step;
+      setAutoSizing((old) => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
+      setFloors((old) => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
+    }, [
+      columns,
+      source,
+      metrics.room,
+      metrics.min,
+      metrics.space,
+      metrics.row,
+      selectable,
+      isStatic,
+      showTypes,
+      headerMenu,
+      cells,
+      effectiveWrap
+    ]);
+    const trailing = (at2, hold) => {
+      let sum2 = Math.max(0, at2.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+      for (let el = at2; el; el = el.parentElement) {
+        const cs = getComputedStyle(el);
+        sum2 += parseFloat(cs.marginBlockEnd) || 0;
+        if (el !== at2) sum2 += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+      }
+      return sum2;
+    };
+    React$1.useLayoutEffect(() => {
+      const at2 = frame.current;
+      if (!at2) return;
+      const doc = at2.ownerDocument;
+      let raf = 0;
+      const measure2 = () => {
+        raf = 0;
+        if (!doc.defaultView) return;
+        const next = {
+          step: gridStep(at2),
+          row: tokenPixels("--plx-comp-data-grid-record-height", at2),
+          line: tokenPixels("--plx-comp-data-grid-line-width", at2),
+          lead: tokenPixels("--plx-comp-data-grid-lead-column-width", at2),
+          menu: tokenPixels("--plx-comp-data-grid-row-menu-width", at2),
+          min: tokenPixels("--plx-ref-size-80px", at2),
+          space: tokenPixels("--plx-comp-data-grid-cell-padding-inline", at2),
+          room: at2.clientWidth,
+          add: tokenPixels("--plx-sys-data-grid-row-height", at2),
+          group: tokenPixels("--plx-comp-data-grid-group-header-height", at2),
+          groupGap: tokenPixels("--plx-comp-data-grid-group-gap", at2)
+        };
+        setMetrics((old) => Object.keys(next).every((k) => next[k] === old[k]) ? old : next);
+        const visible2 = live.current.table?.getVisibleLeafColumns() || [];
+        const required = visible2.reduce((sum2, column) => sum2 + (column.getSize() || next.min), 0) + (selectable ? next.lead : 0) + (rowMenu && rowMenuButton ? next.menu : 0) + (props.viewMenu ? next.lead : 0);
+        const threshold = narrow === "auto" ? required : tokenPixels(narrowAt, at2), want = listed && at2.clientWidth > 0 && at2.clientWidth < threshold;
+        setNarrow(want);
+        if (!isStatic && !height && mode !== "pages" && holder.current) {
+          const top = holder.current.getBoundingClientRect().top, room = at2.getBoundingClientRect().bottom - top;
+          holder.current.style.maxBlockSize = gridPx(
+            inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at2, holder.current)),
+            { round: "down", el: at2 }
+          );
+        }
+      };
+      const schedule = () => {
+        if (!raf) raf = requestAnimationFrame(measure2);
+      };
+      measure2();
+      const ro = new ResizeObserver(schedule);
+      ro.observe(at2);
+      const mo = new MutationObserver(schedule);
+      mo.observe(doc.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-plx-density", "data-plx-density-policy", "data-plx-interaction", "data-plx-mode"]
+      });
+      const region2 = at2.closest("[data-plx-density]");
+      if (region2 && region2 !== doc.documentElement)
+        mo.observe(region2, { attributes: true, attributeFilter: ["data-plx-density"] });
+      return () => {
+        ro.disconnect();
+        mo.disconnect();
+        if (raf) cancelAnimationFrame(raf);
+      };
+    }, [
+      inPane,
+      effectiveStep,
+      effectiveWrap,
+      height,
+      narrow,
+      narrowAt,
+      mode,
+      columns,
+      keys.join("|"),
+      JSON.stringify(autoSizing),
+      JSON.stringify(sizing),
+      JSON.stringify(columnVisibility),
+      selectable,
+      !!rowMenu,
+      rowMenuButton,
+      props.viewMenu
+    ]);
+    React$1.useLayoutEffect(() => {
+      virtual.measure();
+    }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
+  }
   function columnSizing({ columns, frame, source, resize, metrics, table, B }) {
     const fit2 = (field) => {
       const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
@@ -20976,54 +21245,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       mode
     });
     const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
-    const gridKey = React$1.useId(), [fontsReady, setFontsReady] = React$1.useState(0);
-    React$1.useEffect(() => {
-      const fonts = frame.current?.ownerDocument.fonts;
-      if (fonts && fonts.ready) fonts.ready.then(() => setFontsReady((n) => n + 1));
-    }, []);
-    React$1.useLayoutEffect(() => {
-      const at2 = frame.current;
-      if (!at2 || typeof CSSStyleSheet === "undefined" || !at2.ownerDocument.defaultView) return void 0;
-      const store = pillSheet(at2.ownerDocument);
-      if (cells !== "pill" || !metrics.row) {
-        if (store.rules.delete(gridKey)) store.flush();
-        return void 0;
-      }
-      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), faces = { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) }, px = (name) => tokenPixels(name, at2), step = gridStep(at2);
-      const sides = px("--plx-comp-data-pill-md-padding-inline-start") + px("--plx-comp-data-pill-md-padding-inline-end") + 2 * px("--plx-comp-data-pill-border-width"), glyph = px("--plx-comp-data-pill-icon-size") + px("--plx-comp-data-pill-gap");
-      const key = CSS.escape(gridKey), rules = [];
-      columns.forEach((c) => {
-        const k = kinds(c);
-        if (c.render || c.pill === false || k.includes("tags") || k.includes("badge") || k.includes("deleted") || k.includes("icon"))
-          return;
-        const data2 = k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type);
-        const face = faces[data2 ? "data" : "text"], scale = face.scale;
-        ctx.font = face.font;
-        ctx.wordSpacing = face.wordSpacing;
-        let widest = 0;
-        allRows.forEach((r) => {
-          if (!r.original) return;
-          const v = valueAt(r.original, c.field);
-          if (v == null || v === "") return;
-          widest = Math.max(widest, ctx.measureText(valueText(v)).width * scale);
-        });
-        if (!widest) return;
-        const icon = c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text";
-        rules.push(
-          '[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + snapToGrid(widest + sides + (icon ? glyph : 0), { round: "up", step }) + "px;justify-content:center;}"
-        );
-      });
-      store.rules.set(gridKey, rules.join("\n"));
-      store.flush();
-      return void 0;
-    }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
-    React$1.useEffect(
-      () => () => {
-        const doc = frame.current?.ownerDocument || (typeof document !== "undefined" ? document : null);
-        if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
-      },
-      []
-    );
+    const { gridKey } = usePillWidths({ frame, cells, metrics, columns, allRows, showTypes });
     const virtualized = !isStatic && mode !== "pages" && !isNarrow && !printing;
     const { loadedRows, groups, model } = useRowModel({
       mode,
@@ -21124,151 +21346,41 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       headerElements,
       listeners: listeners2
     });
-    React$1.useLayoutEffect(() => {
-      const at2 = frame.current;
-      if (!at2 || !metrics.min) return;
-      const ctx = at2.ownerDocument.createElement("canvas").getContext("2d"), widths2 = {}, free = [], floor = {};
-      const scales = cells === "pill" ? { data: pillFont(at2, ctx, true), text: pillFont(at2, ctx, false) } : null, cs = getComputedStyle(at2), step = gridStep(at2);
-      const known = /* @__PURE__ */ new Map(), tokenPx2 = (name) => {
-        if (!known.has(name)) known.set(name, tokenPixels(name, at2));
-        return known.get(name);
-      }, snapUp = (px) => snapToGrid(px, { round: "up", step });
-      columns.forEach((c) => {
-        if (kinds(c).includes("icon")) {
-          widths2[c.field] = metrics.lead;
-          return;
-        }
-        ctx.font = (cs.getPropertyValue("--plx-comp-data-grid-header-font-weight").trim() || "600") + " " + cs.getPropertyValue("--plx-comp-data-grid-header-font-size").trim() + " " + (cs.getPropertyValue("--plx-comp-data-grid-font-family").trim() || cs.fontFamily);
-        ctx.wordSpacing = "0px";
-        const title = String(c.title || c.field), words2 = title.split(/\s+/);
-        let text2 = ctx.measureText(title).width;
-        if (effectiveWrap)
-          for (let i = 1; i < words2.length; i += 1)
-            text2 = Math.min(
-              text2,
-              Math.max(
-                ctx.measureText(words2.slice(0, i).join(" ")).width,
-                ctx.measureText(words2.slice(i).join(" ")).width
-              )
-            );
-        const gap = tokenPx2("--plx-comp-data-grid-header-type-icon-gap"), arrow = 0;
-        const head = text2 + (showTypes ? tokenPx2("--plx-comp-data-grid-header-type-icon-size") + gap : 0) + arrow + (!isStatic && headerMenu ? tokenPx2("--plx-comp-data-grid-title-reserve") : 0);
-        floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
-        const explicit = tokenPx2(c.width);
-        if (explicit) {
-          widths2[c.field] = Math.max(explicit, floor[c.field]);
-          return;
-        }
-        const family = cs.getPropertyValue(
-          kinds(c).includes("data") ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family"
-        ).trim() || cs.fontFamily;
-        ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size").trim() + " " + family;
-        ctx.wordSpacing = kinds(c).includes("data") ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
-        let width = head;
-        const k = kinds(c), pill = cells === "pill" && c.pill !== false && !k.includes("tags") && !k.includes("badge") && !k.includes("deleted");
-        const face = pill ? scales[k.includes("data") || ["number", "currency", "date", "bytes"].includes(c.type) ? "data" : "text"] : null, scale = face ? face.scale : 1;
-        if (face) {
-          ctx.font = face.font;
-          ctx.wordSpacing = face.wordSpacing;
-        }
-        const chrome = pill ? tokenPx2("--plx-comp-data-pill-md-padding-inline-start") + tokenPx2("--plx-comp-data-pill-md-padding-inline-end") + 2 * tokenPx2("--plx-comp-data-pill-border-width") + (c.type === "person" || k.includes("avatar-name") || showTypes && typeOf$1(c) !== "text" ? tokenPx2("--plx-comp-data-pill-icon-size") + tokenPx2("--plx-comp-data-pill-gap") : 0) : 0;
-        source.forEach((record) => {
-          const value = valueAt(record, c.field);
-          width = Math.max(width, ctx.measureText(valueText(value)).width * scale + chrome);
-        });
-        widths2[c.field] = snapUp(
-          Math.max(
-            metrics.min,
-            Math.min(width + metrics.space * 2, tokenPx2("--plx-comp-data-grid-auto-max-width") || Infinity)
-          )
-        );
-        free.push(c.field);
-      });
-      const available = metrics.room - (selectable ? metrics.lead : 0) - (rowMenu && rowMenuButton ? metrics.menu : 0) - (props.viewMenu ? metrics.lead : 0), used = Object.values(widths2).reduce((sum2, width) => sum2 + width, 0);
-      const units = Math.max(0, Math.floor((available - used) / step));
-      if (free.length) widths2[free[free.length - 1]] += units * step;
-      setAutoSizing((old) => JSON.stringify(old) === JSON.stringify(widths2) ? old : widths2);
-      setFloors((old) => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
-    }, [
-      columns,
-      source,
-      metrics.room,
-      metrics.min,
-      metrics.space,
-      metrics.row,
-      selectable,
-      isStatic,
-      showTypes,
-      headerMenu,
+    useGridMetrics({
+      frame,
+      metrics,
       cells,
-      effectiveWrap
-    ]);
-    const trailing = (at2, hold) => {
-      let sum2 = Math.max(0, at2.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
-      for (let el = at2; el; el = el.parentElement) {
-        const cs = getComputedStyle(el);
-        sum2 += parseFloat(cs.marginBlockEnd) || 0;
-        if (el !== at2) sum2 += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
-      }
-      return sum2;
-    };
-    React$1.useLayoutEffect(() => {
-      const at2 = frame.current;
-      if (!at2) return;
-      const doc = at2.ownerDocument;
-      let raf = 0;
-      const measure2 = () => {
-        raf = 0;
-        if (!doc.defaultView) return;
-        const next = {
-          step: gridStep(at2),
-          row: tokenPixels("--plx-comp-data-grid-record-height", at2),
-          line: tokenPixels("--plx-comp-data-grid-line-width", at2),
-          lead: tokenPixels("--plx-comp-data-grid-lead-column-width", at2),
-          menu: tokenPixels("--plx-comp-data-grid-row-menu-width", at2),
-          min: tokenPixels("--plx-ref-size-80px", at2),
-          space: tokenPixels("--plx-comp-data-grid-cell-padding-inline", at2),
-          room: at2.clientWidth,
-          add: tokenPixels("--plx-sys-data-grid-row-height", at2),
-          group: tokenPixels("--plx-comp-data-grid-group-header-height", at2),
-          groupGap: tokenPixels("--plx-comp-data-grid-group-gap", at2)
-        };
-        setMetrics((old) => Object.keys(next).every((k) => next[k] === old[k]) ? old : next);
-        const visible2 = live.current.table?.getVisibleLeafColumns() || [];
-        const required = visible2.reduce((sum2, column) => sum2 + (column.getSize() || next.min), 0) + (selectable ? next.lead : 0) + (rowMenu && rowMenuButton ? next.menu : 0) + (props.viewMenu ? next.lead : 0);
-        const threshold = narrow === "auto" ? required : tokenPixels(narrowAt, at2), want = listed && at2.clientWidth > 0 && at2.clientWidth < threshold;
-        setNarrow(want);
-        if (!isStatic && !height && mode !== "pages" && holder.current) {
-          const top = holder.current.getBoundingClientRect().top, room = at2.getBoundingClientRect().bottom - top;
-          holder.current.style.maxBlockSize = gridPx(
-            inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at2, holder.current)),
-            { round: "down", el: at2 }
-          );
-        }
-      };
-      const schedule = () => {
-        if (!raf) raf = requestAnimationFrame(measure2);
-      };
-      measure2();
-      const ro = new ResizeObserver(schedule);
-      ro.observe(at2);
-      const mo = new MutationObserver(schedule);
-      mo.observe(doc.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-plx-density", "data-plx-density-policy", "data-plx-interaction", "data-plx-mode"]
-      });
-      const region2 = at2.closest("[data-plx-density]");
-      if (region2 && region2 !== doc.documentElement)
-        mo.observe(region2, { attributes: true, attributeFilter: ["data-plx-density"] });
-      return () => {
-        ro.disconnect();
-        mo.disconnect();
-        if (raf) cancelAnimationFrame(raf);
-      };
-    }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join("|"), JSON.stringify(autoSizing), JSON.stringify(sizing), JSON.stringify(columnVisibility), selectable, !!rowMenu, rowMenuButton, props.viewMenu]);
-    React$1.useLayoutEffect(() => {
-      virtual.measure();
-    }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
+      columns,
+      effectiveWrap,
+      showTypes,
+      isStatic,
+      headerMenu,
+      source,
+      selectable,
+      rowMenu,
+      rowMenuButton,
+      props,
+      setAutoSizing,
+      setFloors,
+      setMetrics,
+      live,
+      narrow,
+      narrowAt,
+      listed,
+      setNarrow,
+      height,
+      mode,
+      holder,
+      inPane,
+      effectiveStep,
+      keys,
+      autoSizing,
+      sizing,
+      columnVisibility,
+      virtual,
+      model,
+      collapsed
+    });
     useViewSync({
       metrics,
       autoSizing,
@@ -23835,6 +23947,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     disabled,
     readOnly: readOnlyOwn,
     emptyText,
+    emptyAction,
+    clearable = false,
     loadOptions,
     loadDelay = 300,
     minChars = 0,
@@ -23907,14 +24021,19 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const tags = multiple && !marks2;
     const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
-    const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || matchesText(o.label, text2));
+    const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || matchesText(o.label, text2) || o.description && matchesText(o.description, text2));
     const groupOrder = [];
     matching.forEach((o) => {
       if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
     });
     const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
     const canCreate = creatable && q2 && !isLoading && !(async ? loaded : options).some((o) => String(o.label).toLowerCase() === q2);
-    const items = filtered.map((o) => ({ kind: "option", o })).concat(canCreate ? [{ kind: "create" }] : []);
+    const noMatch = !isLoading && !failed && !filtered.length && !canCreate, showAction = noMatch && !!emptyAction;
+    const items = filtered.map((o) => ({ kind: "option", o })).concat(canCreate ? [{ kind: "create" }] : []).concat(showAction ? [{ kind: "action" }] : []);
+    const shownAction = open && showAction;
+    React$1.useEffect(() => {
+      if (shownAction && emptyText) announce(String(emptyText));
+    }, [shownAction]);
     React$1.useEffect(() => {
       if (!open) return void 0;
       const off2 = (e) => {
@@ -23933,6 +24052,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (item.kind === "create") {
         if (onCreate) onCreate(text2.trim());
         setText("");
+        return;
+      }
+      if (item.kind === "action") {
+        const typed = text2.trim();
+        setText("");
+        setOpen(false);
+        if (emptyAction.onSelect) emptyAction.onSelect(typed);
         return;
       }
       const v = item.o.value;
@@ -23977,6 +24103,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onChange(chosen.slice(0, -1));
       }
     };
+    const clear = () => {
+      if (locked || disabled) return;
+      setText("");
+      onChange(multiple ? [] : "");
+      if (input.current) input.current.focus();
+    };
+    const canClear = clearable && !locked && !disabled && (chosen.length > 0 || !!text2);
     const optId = (i) => auto + "-o" + i;
     const label1 = !multiple && current2 ? String(current2.label) : "";
     const cutNow = useTruncated(input, open ? "open" : label1, !multiple), cutShut = React$1.useRef(false);
@@ -24019,7 +24152,21 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const o = optionOf(v);
       const t2 = o ? o.label : v;
       return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: locked ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: words2.removeItem.replace("{label}", t2) }, t2);
-    }) : null, multiple ? field : /* @__PURE__ */ React$1.createElement(Tooltip, { content: label1, disabled: !cut, describe: false, placement: open ? "top" : "bottom", className: "plx-combobox__tip" }, field), /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: SelectChevronIcon, filled: false }))), open ? /* @__PURE__ */ React$1.createElement("ul", { ref: list2, className: "plx-combobox__list", id: listId, role: "listbox", popover: TOP_LAYER$1 ? "manual" : void 0, onMouseDown: (e) => e.preventDefault(), "aria-multiselectable": multiple || void 0, "aria-busy": isLoading || void 0 }, items.length ? items.map((it, i) => it.kind === "create" ? /* @__PURE__ */ React$1.createElement(
+    }) : null, multiple ? field : /* @__PURE__ */ React$1.createElement(Tooltip, { content: label1, disabled: !cut, describe: false, placement: open ? "top" : "bottom", className: "plx-combobox__tip" }, field), canClear ? /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: CloseIcon, label: t.clear, className: "plx-combobox__clear", onMouseDown: (e) => e.preventDefault(), onClick: clear }) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: SelectChevronIcon, filled: false }))), open ? /* @__PURE__ */ React$1.createElement("ul", { ref: list2, className: "plx-combobox__list", id: listId, role: "listbox", popover: TOP_LAYER$1 ? "manual" : void 0, onMouseDown: (e) => e.preventDefault(), "aria-multiselectable": multiple || void 0, "aria-busy": isLoading || void 0 }, items.length ? [showAction ? /* @__PURE__ */ React$1.createElement("li", { key: "empty", className: "plx-combobox__empty", role: "presentation" }, emptyText) : null].concat(items.map((it, i) => it.kind === "action" ? /* @__PURE__ */ React$1.createElement(
+      "li",
+      {
+        key: "action",
+        id: optId(i),
+        role: "option",
+        "aria-selected": false,
+        className: cx("plx-combobox__option", "plx-combobox__action", i === active && "is-active"),
+        onMouseDown: (e) => e.preventDefault(),
+        onClick: () => choose(it),
+        onMouseEnter: () => setActive(i)
+      },
+      emptyAction.icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: emptyAction.icon })) : null,
+      emptyAction.label
+    ) : it.kind === "create" ? /* @__PURE__ */ React$1.createElement(
       "li",
       {
         key: "create",
@@ -24059,9 +24206,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             readOnly: true
           }
         ) : null,
-        /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2))
+        it.o.icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: it.o.icon })) : null,
+        it.o.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2)), /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-description" }, highlightMatch(it.o.description, text2))) : /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2))
       )
-    ]) : isLoading ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty plx-combobox__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty", role: "presentation" }, emptyText)) : null);
+    ])) : isLoading ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty plx-combobox__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty", role: "presentation" }, emptyText)) : null);
   });
   const ToastContext = React$1.createContext(null);
   const TONE_ICON = { info: CircleInfoIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };
@@ -28463,7 +28611,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       busy ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, t.downloading, percent ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__percent" }, percent) : null) : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, label2, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__meta" }, facts.join(" \xB7 ")) : null)
     );
   });
-  const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$2 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function BackToTop({ variant = "floating", scrollRef, focusRef, strings, className }) {
     devWarn("BackToTop", { variant }, { variant: ["floating", "inline"] });
     const t = useStrings("backToTop", strings);
@@ -28473,7 +28621,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = floating && !!entry && !atTop;
     const goTop = () => {
       const area = scrollRef && scrollRef.current;
-      const behavior = reduced$1() ? "auto" : "smooth";
+      const behavior = reduced$2() ? "auto" : "smooth";
       if (area) area.scrollTo({ top: 0, behavior });
       else window.scrollTo({ top: 0, behavior });
       const root = area || document;
@@ -30917,11 +31065,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }, className: "plx-miller-columns__preview", role: "region", tabIndex: 0, "aria-label": fill(t.preview, { label: preview.label }) }, renderPreview(preview)) : null);
   });
   const NARROW = [1, 1, 1, 1, 1, 1];
-  const leavesOf = (items, trail2 = []) => items.reduce((all, it) => Array.isArray(it.children) ? all.concat(leavesOf(it.children, trail2.concat([it]))) : all.concat([{ item: it, trail: trail2.concat([it]) }]), []);
-  const pathTo = (items, id) => {
-    const hit = leavesOf(items).find((l) => l.item.id === id);
-    return hit ? hit.trail : null;
-  };
+  const leavesOf = (items, trail2 = [], choosable = () => false) => items.reduce((all, it) => {
+    const here = trail2.concat([it]);
+    if (!Array.isArray(it.children)) return all.concat([{ item: it, trail: here }]);
+    return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable));
+  }, []);
+  const SELF = "__plx-self:";
+  const withSelf = (items, choosable, label2) => items.map((it) => Array.isArray(it.children) ? Object.assign({}, it, { children: (choosable(it) ? [{ id: SELF + it.id, self: it.id, label: label2(it), disabled: it.disabled }] : []).concat(withSelf(it.children, choosable, label2)) }) : it);
   const Cascader = React$1.forwardRef(function Cascader2({
     options = [],
     value,
@@ -30930,6 +31080,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     multiple = false,
     expandTrigger = "click",
     searchable = false,
+    choosableParents = false,
+    maxTags = 0,
+    maxChoices,
+    loadOptions,
+    loadDelay = 300,
+    minChars = 0,
     placeholder,
     label: label2,
     invalid,
@@ -30950,6 +31106,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const [text2, setText] = React$1.useState("");
     const [active, setActive] = React$1.useState(0);
     const [browse, setBrowse] = React$1.useState([]);
+    const [limitShown, setLimitShown] = React$1.useState(false);
+    const [loaded, setLoaded] = React$1.useState([]);
+    const [busy, setBusy] = React$1.useState(false);
+    const [failed, setFailed] = React$1.useState(false);
+    const loader = React$1.useRef(loadOptions), request = React$1.useRef(0), seen = React$1.useRef(/* @__PURE__ */ new Map());
+    loader.current = loadOptions;
+    const remote = !!loadOptions && searchable;
     const wrap = React$1.useRef(null), button = React$1.useRef(null), search = React$1.useRef(null), cols = React$1.useRef(null), popup = React$1.useRef(null);
     useFloating(wrap, popup, { open, placement: "bottom-start" });
     React$1.useLayoutEffect(() => {
@@ -30959,17 +31122,27 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     React$1.useImperativeHandle(ref, () => button.current);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const pathLabel = (trail2) => trail2.map((x) => x.label).join(t.separator);
-    const current2 = !multiple && chosen.length ? pathTo(options, chosen[0]) : null;
+    const choosable = (it) => Array.isArray(it.children) && (it.choosable !== void 0 ? !!it.choosable : choosableParents);
+    const leaves = React$1.useMemo(() => leavesOf(options, [], choosable), [options, choosableParents]);
+    const columnsItems = React$1.useMemo(() => withSelf(options, choosable, (it) => fill(t.allOf, { label: it.label })), [options, choosableParents, t.allOf]);
+    const pathFor = (v) => {
+      const hit = leaves.find((l) => l.item.id === v) || seen.current.get(v);
+      return hit ? hit.trail : null;
+    };
+    const checkedIds = chosen.map((v) => leaves.some((l) => l.item.id === v && Array.isArray(l.item.children)) ? SELF + v : v);
+    const current2 = !multiple && chosen.length ? pathFor(chosen[0]) : null;
     const locked = useReadOnly(readOnlyOwn);
     const openList = () => {
       if (disabled || locked) return;
       setBrowse(current2 ? current2.map((x) => x.id) : []);
       setText("");
+      setLimitShown(false);
       setOpen(true);
     };
     const close = (refocus) => {
       setOpen(false);
       setText("");
+      setLimitShown(false);
       if (refocus && button.current) button.current.focus();
     };
     React$1.useEffect(() => {
@@ -30986,16 +31159,60 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return () => document.removeEventListener("mousedown", off2);
     }, [open]);
     const q2 = text2.trim().toLowerCase();
-    const matches = q2 ? leavesOf(options).filter((l) => !l.item.disabled && matchesText(l.item.label, text2)) : [];
+    const said = (n) => announce(typeof t.results === "function" ? t.results(n) : loc2.t("cascader.results", { count: n, n: formatNumber(n) }));
+    const searching = !!q2 && (!remote || q2.length >= minChars);
+    const matches = !searching ? [] : remote ? loaded : leaves.filter((l) => !l.item.disabled && matchesText(l.item.label, text2));
     React$1.useEffect(() => {
       setActive(0);
-      if (q2) announce(typeof t.results === "function" ? t.results(matches.length) : loc2.t("cascader.results", { count: matches.length, n: formatNumber(matches.length) }));
+      if (searching && !remote) said(matches.length);
     }, [q2]);
+    React$1.useEffect(() => {
+      if (!remote || !open) return void 0;
+      const query = text2.trim();
+      if (query.length < Math.max(1, minChars)) {
+        request.current++;
+        setLoaded([]);
+        setBusy(false);
+        setFailed(false);
+        return void 0;
+      }
+      const n = ++request.current;
+      setBusy(true);
+      setFailed(false);
+      const timer = setTimeout(() => {
+        Promise.resolve().then(() => loader.current(query)).then((list2) => {
+          if (n !== request.current) return;
+          const got = (Array.isArray(list2) ? list2 : []).map((r) => {
+            const ups = (r.path || []).map((x) => typeof x === "string" ? { label: x } : { id: x.id, label: x.label });
+            return { item: { id: r.id, label: r.label, disabled: r.disabled }, trail: ups.concat([{ id: r.id, label: r.label }]) };
+          });
+          got.forEach((m) => seen.current.set(m.item.id, m));
+          setLoaded(got);
+          setBusy(false);
+          said(got.length);
+        }, () => {
+          if (n !== request.current) return;
+          setLoaded([]);
+          setBusy(false);
+          setFailed(true);
+          announce(t.error);
+        });
+      }, loadDelay);
+      return () => clearTimeout(timer);
+    }, [remote, open, text2, minChars, loadDelay]);
     const pick = (item, trail2) => {
       if (locked) return;
-      if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
-      else {
-        onChange(item.id, trail2.map((x) => x.id));
+      if (multiple) {
+        const on = chosen.indexOf(item.id) >= 0;
+        if (!on && maxChoices && chosen.length >= maxChoices) {
+          setLimitShown(true);
+          announce(fill(t.limit, { n: formatNumber(maxChoices) }));
+          return;
+        }
+        setLimitShown(false);
+        onChange(on ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
+      } else {
+        onChange(item.id, trail2.map((x) => x.id).filter((x) => x !== void 0));
         close(true);
       }
     };
@@ -31007,7 +31224,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     };
     const onSearchKey = (e) => {
-      if (!q2) {
+      if (!searching) {
         if (e.key === "ArrowDown") {
           e.preventDefault();
           const l = cols.current && cols.current.querySelector(".plx-miller-columns__list");
@@ -31022,7 +31239,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         e.preventDefault();
         setActive((a) => Math.max(0, a - 1));
       } else if (e.key === "Enter") {
-        if (matches[active]) {
+        if (matches[active] && !busy) {
           e.preventDefault();
           pick(matches[active].item, matches[active].trail);
         }
@@ -31030,11 +31247,32 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const optId = (i) => auto + "-m" + i;
     const shown = multiple ? null : current2 ? pathLabel(current2) : null;
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? chosen.map((v) => {
-      const trail2 = pathTo(options, v);
-      const name = trail2 ? trail2[trail2.length - 1].label : String(v);
-      return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: t.remove.replace("{label}", name) }, name);
-    }) : null, /* @__PURE__ */ React$1.createElement(
+    const nameOf2 = (v) => {
+      const trail2 = pathFor(v);
+      return trail2 ? trail2[trail2.length - 1].label : String(v);
+    };
+    const capped = maxTags > 0 ? maxTags : chosen.length, shownTags = chosen.slice(0, capped), hiddenTags = chosen.slice(capped);
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? shownTags.map((v) => /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => {
+      setLimitShown(false);
+      onChange(chosen.filter((x) => x !== v));
+    }, removeLabel: t.remove.replace("{label}", nameOf2(v)) }, nameOf2(v))) : null, multiple && hiddenTags.length ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: hiddenTags.map(nameOf2).join(", "), placement: "bottom", className: "plx-cascader__more-tip" }, /* @__PURE__ */ React$1.createElement(
+      Tag,
+      {
+        className: "plx-cascader__more",
+        tabIndex: 0,
+        role: "button",
+        "aria-label": fill(t.moreLabel, { n: formatNumber(hiddenTags.length) }),
+        onClick: openList,
+        onKeyDown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            openList();
+          }
+        }
+      },
+      dataPhrase(t.more, { n: hiddenTags.length })
+    )) : null, /* @__PURE__ */ React$1.createElement(
       "button",
       {
         ref: button,
@@ -31065,10 +31303,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         type: "search",
         className: "plx-input plx-cascader__search-input",
         role: "combobox",
-        "aria-expanded": !!q2,
+        "aria-expanded": searching,
         "aria-controls": auto + "-matches",
         "aria-autocomplete": "list",
-        "aria-activedescendant": q2 && matches[active] ? optId(active) : void 0,
+        "aria-activedescendant": searching && matches[active] ? optId(active) : void 0,
         "aria-label": t.search,
         placeholder: t.search,
         value: text2,
@@ -31076,7 +31314,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onKeyDown: onSearchKey,
         autoComplete: "off"
       }
-    )) : null, q2 ? /* @__PURE__ */ React$1.createElement("ul", { className: "plx-cascader__matches", id: auto + "-matches", role: "listbox", "aria-label": t.search, "aria-multiselectable": multiple || void 0 }, matches.length ? matches.map((m, i) => /* @__PURE__ */ React$1.createElement(
+    )) : null, searching ? /* @__PURE__ */ React$1.createElement("ul", { className: "plx-cascader__matches", id: auto + "-matches", role: "listbox", "aria-label": t.search, "aria-multiselectable": multiple || void 0 }, matches.length ? matches.map((m, i) => /* @__PURE__ */ React$1.createElement(
       "li",
       {
         key: m.item.id,
@@ -31090,22 +31328,25 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-label" }, highlightMatch(m.item.label, text2)),
       m.trail.length > 1 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-path" }, pathLabel(m.trail.slice(0, -1))) : null
-    )) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
+    )) : remote && busy ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty plx-cascader__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : remote && failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty plx-cascader__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
       MillerColumns,
       {
         className: "plx-cascader__columns",
         label: label2 || t.columns,
-        items: options,
+        items: columnsItems,
         path: browse,
         expandOnHover: expandTrigger === "hover",
-        checked: multiple ? chosen : void 0,
+        checked: multiple ? checkedIds : void 0,
         strings: { empty: t.empty },
         openOnClick: true,
         columnWidths: NARROW,
         onPathChange: (p) => setBrowse(p),
-        onOpen: (item) => pick(item, pathTo(options, item.id) || [item])
+        onOpen: (item) => {
+          const real = item.self !== void 0 ? item.self : item.id, hit = leaves.find((l) => l.item.id === real);
+          pick(hit ? hit.item : item, hit ? hit.trail : [item]);
+        }
       }
-    ))) : null);
+    )), multiple && limitShown ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__limit", "aria-hidden": "true" }, dataPhrase(t.limit, { n: maxChoices })) : null) : null);
   });
   const NAMES = { people: "people", teams: "teams", records: "records" };
   const EntityPicker = React$1.forwardRef(function EntityPicker2({
@@ -32410,10 +32651,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return out;
     }, []);
   }
-  function flatten$1(nodes, open, parent, out) {
+  function flatten$2(nodes, open, parent, out) {
     nodes.forEach((n) => {
       out.push({ node: n, parent });
-      if (kidsOf(n) && open.has(n.id)) flatten$1(n.children, open, n.id, out);
+      if (kidsOf(n) && open.has(n.id)) flatten$2(n.children, open, n.id, out);
     });
     return out;
   }
@@ -32458,7 +32699,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const shownNodes = q2 ? filterNodes(nodes, q2) : nodes;
     const openSet = q2 ? new Set(Array.from(byId.keys())) : new Set(expanded);
-    const flat = flatten$1(shownNodes, openSet, null, []);
+    const flat = flatten$2(shownNodes, openSet, null, []);
     const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.find((v) => chosen.indexOf(v.node.id) >= 0) || flat[0] || { node: {} }).node.id;
     const activeRef = React$1.useRef(active);
     activeRef.current = active;
@@ -33403,7 +33644,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       !total && !loading ? /* @__PURE__ */ React$1.createElement("p", { className: "plx-virtual-list__empty" }, t.empty) : null
     ));
   });
-  const reduced = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const clamp$1 = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   function Carousel({ label: label2, children, perView = 1, controls = "both", autoplay = false, page: pageProp, onPageChange, strings, className, ...rest }) {
     const t = useStrings("carousel", strings);
@@ -33413,7 +33654,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const pages = Math.max(1, Math.ceil(n / per));
     const [own2, setOwn] = React$1.useState(0);
     const page = clamp$1(pageProp !== void 0 ? pageProp : own2, 0, pages - 1);
-    const [playing2, setPlaying] = React$1.useState(() => !!autoplay && !reduced());
+    const [playing2, setPlaying] = React$1.useState(() => !!autoplay && !reduced$1());
     const [held, setHeld] = React$1.useState(false);
     const root = React$1.useRef(null), track2 = React$1.useRef(null);
     const setPage = (p) => {
@@ -33426,7 +33667,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const slide = el.children[clamp$1(p * per, 0, Math.max(0, n - per))];
       const a = slide.getBoundingClientRect(), b = el.getBoundingClientRect();
       const delta = isRtl$2(el) ? a.right - b.right : a.left - b.left;
-      el.scrollBy({ left: delta, behavior: reduced() ? "auto" : "smooth" });
+      el.scrollBy({ left: delta, behavior: reduced$1() ? "auto" : "smooth" });
     }, [per, n]);
     const go = (p) => {
       const q2 = clamp$1(p, 0, pages - 1);
@@ -39716,7 +39957,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     });
     const kids = (id) => items.filter((x) => keyOf(x.parent) === id);
     const nameOf2 = (id) => id === ROOT ? top.name : byId[id] ? byId[id].name : top.name;
-    const pathTo2 = (id) => {
+    const pathTo = (id) => {
       const out = [];
       let at2 = id;
       const seen = {};
@@ -39736,7 +39977,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       walk(id);
       return out;
     };
-    const path = pathTo2(current2);
+    const path = pathTo(current2);
     const go = (id) => {
       const k = keyOf(id);
       if (folder === void 0) setOwnFolder(k === ROOT ? top.id : k);
@@ -42855,7 +43096,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const INTERACTION = { hint: "Use the arrow keys to move through the tree.", hintSelect: " Enter folds or opens a branch.", selected: "{text}" };
   const ORIENTATIONS = ["left-to-right", "top-to-bottom"];
   const NONE = Object.freeze([]);
-  function flatten(root) {
+  function flatten$1(root) {
     const nodes = [], byId = /* @__PURE__ */ new Map();
     (function walk(n, parent, depth2) {
       if (!n) return;
@@ -42896,7 +43137,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }) {
     const t = useStrings("chart.treeChart", strings);
     const down = orientation === "top-to-bottom";
-    const { nodes, byId } = React$1.useMemo(() => flatten(data), [data]);
+    const { nodes, byId } = React$1.useMemo(() => flatten$1(data), [data]);
     const [own2, setOwn] = React$1.useState(() => new Set(defaultFolded));
     const folded = foldedProp ? new Set(foldedProp) : own2;
     const foldedRef = React$1.useRef(folded);
@@ -43124,6 +43365,84 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       draw
     );
   }
+  const reduced = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const flatten = (items, out = []) => {
+    items.forEach((it) => {
+      out.push(it);
+      if (it.children) flatten(it.children, out);
+    });
+    return out;
+  };
+  const HOLD = 900;
+  function Anchor({ items = [], label: label2, scrollRef, value, onChange, strings, className, ...rest }) {
+    const t = useStrings("anchor", strings);
+    const nav = React$1.useRef(null);
+    const [own2, setOwn] = React$1.useState(null);
+    const controlled = value !== void 0;
+    const current2 = controlled ? value : own2;
+    const now = React$1.useRef(current2), change = React$1.useRef(onChange), until = React$1.useRef(0), measureNow = React$1.useRef(null), mounted = React$1.useRef(false);
+    now.current = current2;
+    change.current = onChange;
+    const set2 = (id, quiet) => {
+      if (id === now.current) return;
+      now.current = id;
+      if (!controlled) setOwn(id);
+      if (change.current && !quiet) change.current(id);
+    };
+    const flat = flatten(items), ids = flat.map((i) => i.id).join("|");
+    const pageOf2 = () => nav.current && nav.current.ownerDocument || document;
+    React$1.useEffect(() => {
+      const area = scrollRef && scrollRef.current, doc = pageOf2(), view = doc.defaultView || window;
+      const scroller = area || view;
+      let frame = 0;
+      const measure2 = (quiet) => {
+        frame = 0;
+        if (performance.now() < until.current) return;
+        const top = area ? area.getBoundingClientRect().top : 0;
+        const there = flat.map((i) => ({ id: i.id, el: doc.getElementById(i.id) })).filter((x) => x.el);
+        if (!there.length) return;
+        let found = there[0].id;
+        there.forEach((x) => {
+          const margin = parseFloat(view.getComputedStyle(x.el).scrollMarginTop) || 0;
+          if (x.el.getBoundingClientRect().top <= top + margin + 1) found = x.id;
+        });
+        const atEnd = area ? area.scrollTop + area.clientHeight >= area.scrollHeight - 1 : view.innerHeight + view.scrollY >= doc.documentElement.scrollHeight - 1;
+        const scrolled = area ? area.scrollTop > 0 : view.scrollY > 0;
+        set2(atEnd && scrolled ? there[there.length - 1].id : found, quiet === true);
+      };
+      measureNow.current = () => measure2();
+      const onScroll = () => {
+        if (!frame) frame = view.requestAnimationFrame(measure2);
+      };
+      scroller.addEventListener("scroll", onScroll, { passive: true });
+      view.addEventListener("resize", onScroll);
+      if (!mounted.current) {
+        mounted.current = true;
+        measure2(true);
+      } else measure2();
+      return () => {
+        scroller.removeEventListener("scroll", onScroll);
+        view.removeEventListener("resize", onScroll);
+        if (frame) view.cancelAnimationFrame(frame);
+        measureNow.current = null;
+      };
+    }, [ids, scrollRef]);
+    const go = (e, id) => {
+      const el = pageOf2().getElementById(id);
+      e.preventDefault();
+      if (!el) return;
+      until.current = performance.now() + HOLD;
+      el.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+      if (!el.matches("a[href],button,input,select,textarea,[tabindex]")) el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+      set2(id);
+      setTimeout(() => {
+        if (measureNow.current) measureNow.current();
+      }, HOLD + 50);
+    };
+    const list2 = (rows, nested) => /* @__PURE__ */ React$1.createElement("ul", { className: cx("plx-anchor__list", nested && "plx-anchor__list--nested") }, rows.map((it) => /* @__PURE__ */ React$1.createElement("li", { key: it.id, className: "plx-anchor__item" }, /* @__PURE__ */ React$1.createElement("a", { href: "#" + it.id, className: cx("plx-anchor__link", it.id === current2 && "is-current"), "aria-current": it.id === current2 ? "location" : void 0, onClick: (e) => go(e, it.id) }, it.label), it.children && it.children.length ? list2(it.children, true) : null)));
+    return /* @__PURE__ */ React$1.createElement("nav", { ref: nav, "aria-label": label2 || t.label, className: cx("plx-anchor", className), ...rest }, list2(items, false));
+  }
   exports.AIButton = AIButton;
   exports.AIChat = AIChat;
   exports.AIDisclaimer = AIDisclaimer;
@@ -43135,6 +43454,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   exports.ActionBar = ActionBar;
   exports.ActivityList = ActivityList;
   exports.AnalyticsProvider = AnalyticsProvider;
+  exports.Anchor = Anchor;
   exports.Announcement = Announcement;
   exports.AppHeader = AppHeader;
   exports.AppShell = AppShell;

@@ -197,6 +197,9 @@ export default {
     "more": "+{n}",
     "moreLabel": "{n} إضافية"
   },
+  "anchor": {
+    "label": "في هذه الصفحة"
+  },
   "backToTop": {
     "label": "العودة إلى الأعلى"
   },
@@ -244,6 +247,12 @@ export default {
     "empty": "لا توجد عناصر",
     "remove": "إزالة {label}",
     "columns": "الخيارات",
+    "allOf": "كل {label}",
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية",
+    "limit": "يمكنك اختيار {n} كحد أقصى.",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
     "results": {
       "zero": "لا توجد تطابقات",
       "one": "تطابق واحد",
@@ -267,6 +276,7 @@ export default {
     "error": "تعذّر تحميل الخيارات",
     "emptyText": "لا توجد نتائج مطابقة",
     "removeItem": "إزالة {label}",
+    "clear": "مسح",
     "results": {
       "zero": "لا توجد خيارات",
       "one": "خيار واحد",

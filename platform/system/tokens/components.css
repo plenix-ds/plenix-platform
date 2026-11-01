@@ -2553,6 +2553,23 @@
   --plx-comp-ai-search-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-anchor-row-gap: var(--plx-comp-nav-list-items-row-gap);
+  --plx-comp-anchor-nested-indent: var(--plx-sys-space-inline-lg);
+  --plx-comp-anchor-radius: var(--plx-comp-nav-list-item-radius);
+  --plx-comp-anchor-text: var(--plx-comp-nav-list-item-text);
+  --plx-comp-anchor-font-size: var(--plx-comp-nav-list-item-font-size);
+  --plx-comp-anchor-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-anchor-min-height: var(--plx-comp-nav-list-item-min-height);
+  --plx-comp-anchor-padding-inline: var(--plx-comp-nav-list-item-padding-inline);
+  --plx-comp-anchor-hover-background: var(--plx-comp-nav-list-item-hover-background);
+  --plx-comp-anchor-hover-shadow: var(--plx-comp-nav-list-item-hover-shadow);
+  --plx-comp-anchor-hover-text: var(--plx-comp-nav-list-item-text);
+  --plx-comp-anchor-current-background: var(--plx-comp-nav-list-item-current-background);
+  --plx-comp-anchor-current-shadow: var(--plx-comp-nav-list-item-current-shadow);
+  --plx-comp-anchor-current-text: var(--plx-comp-nav-list-item-current-text);
+  --plx-comp-anchor-current-font-weight: var(--plx-comp-nav-list-item-current-font-weight);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-announcement-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
@@ -2967,6 +2984,12 @@
   --plx-comp-cascader-empty-text: var(--plx-sys-content-muted);
   --plx-comp-cascader-empty-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-cascader-empty-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-cascader-loading-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-cascader-error-text: var(--plx-comp-combobox-error-text);
+  --plx-comp-cascader-limit-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-cascader-limit-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-cascader-limit-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-cascader-limit-padding-inline: var(--plx-sys-space-inset-sm);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -3203,6 +3226,10 @@
   --plx-comp-combobox-loading-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-combobox-loading-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-combobox-error-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-combobox-option-icon-gap: var(--plx-comp-combobox-option-mark-gap);
+  --plx-comp-combobox-option-icon-text: var(--plx-sys-content-muted);
+  --plx-comp-combobox-option-description-text: var(--plx-sys-content-muted);
+  --plx-comp-combobox-option-description-font-size: var(--plx-ref-font-size-12);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-command-bar-gap: var(--plx-sys-space-stack-sm);
