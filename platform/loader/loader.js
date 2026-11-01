@@ -20,6 +20,9 @@
    A release holds every file the page needs: <cdn><version>/plenix.css, plenix.js, … and apps/<app>/ (app.js and
    plenix-icons-<app>.js; apps/suite/plenix-app-data.js; apps/dam/assets.js), written by build-packages.js. So a pinned
    application runs its own script of that release, never a newer one.
+   Arabic (issue 882): on the CDN, plenix.js leaves Plenix's built-in Arabic words out; on an Arabic page (<html lang="ar…">,
+   or data-plenix-languages="ar" on the loader tag for a page that may switch to Arabic) the loader adds plenix-ar.js right
+   after plenix.js. This checkout's platform.js keeps them built in.
    Until plenix.css has loaded, the page is hidden (data-plx-page-loading on <html>, loader.css), at most 3 seconds; then
    it shows anyway, with a warning. Every script is added with async = false, so they run in the order above.
    After plenix.js runs, Plenix.version must be the release picked; a difference is one console warning (plenix.js itself
@@ -42,6 +45,8 @@
   var cdn = me.getAttribute('data-plenix-cdn') || '';
   var pinned = me.getAttribute('data-plenix-version') || '';
   var fallback = me.getAttribute('data-plenix-fallback') || '';
+  // an Arabic page: <html lang="ar…">, or a page that may switch to Arabic and says so (data-plenix-languages="ar")
+  var arabic = /^ar(-|$)/i.test(document.documentElement.getAttribute('lang') || '') || /(^|\s)ar(\s|$)/.test(me.getAttribute('data-plenix-languages') || '');
   var pick = (/[?&]plenix=([\w.-]+)/.exec(location.search) || [])[1] || '';
   var RELEASE = /^\d+\.\d+\.\d+$/;
   var checkout = new URL('../', me.src).href;   // this checkout's platform/ folder
@@ -86,7 +91,9 @@
       favicon: r + 'source/platform/brand/favicon.svg',
       font: r + 'fonts/dm-sans-variable-latin.woff2',
       css: [r + 'fonts.css', r + 'plenix.css'],
-      scripts: [r + 'vendor/react.production.min.js', r + 'vendor/react-dom.production.min.js', r + 'plenix.js', a + 'plenix-icons-' + app + '.js', r + 'plenix-engines.js'],
+      // an Arabic page also gets plenix-ar.js right after plenix.js: the CDN's plenix.js leaves Plenix's built-in Arabic
+      // words out (issue 882); this checkout's platform.js keeps them, so local mode needs nothing
+      scripts: [r + 'vendor/react.production.min.js', r + 'vendor/react-dom.production.min.js', r + 'plenix.js'].concat(arabic ? [r + 'plenix-ar.js'] : [], [a + 'plenix-icons-' + app + '.js', r + 'plenix-engines.js']),
       themeBoot: r + 'theme-boot.js',
       late: (dam ? [] : [r + 'apps/suite/plenix-app-data.js']).concat([a + (dam ? 'assets.js' : 'app.js')]),
       audits: []
