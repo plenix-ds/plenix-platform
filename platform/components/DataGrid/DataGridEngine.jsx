@@ -50,6 +50,7 @@ import { useGrouping } from './engine/useGrouping.js';
 import { groupActions } from './engine/groupActions.js';
 import { useRowModel } from './engine/useRowModel.js';
 import { useViewSync } from './engine/useViewSync.js';
+import { useCellRange } from './engine/useCellRange.js';
 import { usePillWidths } from './engine/usePillWidths.js';
 import { useGridMetrics } from './engine/useGridMetrics.js';
 import { columnSizing } from './engine/columnSizing.js';
@@ -662,6 +663,15 @@ function NextEngine(props) {
     startResize,
     resize
   });
+  // cell range selection (the option cellSelection, off by default): the block of cells Shift and the arrows select, and its copy
+  const cellRange = useCellRange({
+    enabled: !!props.cellSelection && !isStatic,
+    model,
+    ordered,
+    index,
+    onChange: props.onCellSelectionChange,
+  });
+  live.current.cellRange = cellRange;
   const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
 
   const rememberRow = (row, node) => {
@@ -746,6 +756,7 @@ function NextEngine(props) {
     emit,
     setOwnOpen,
     focusCell,
+    cellRange,
     pickCheckbox,
     kindsOf,
     pinStart,
@@ -790,7 +801,8 @@ function NextEngine(props) {
       printing,
       filterField,
       groupBy,
-      loaded
+      loaded,
+      cellRange.rect
     ]
   );
   const renderRow = (row) =>

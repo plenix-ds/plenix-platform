@@ -75,6 +75,7 @@ export function bodyRows({
   emit,
   setOwnOpen,
   focusCell,
+  cellRange,
   pickCheckbox,
   kindsOf,
   pinStart,
@@ -338,6 +339,8 @@ export function bodyRows({
               icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
               mods,
             }); // a pill carries a type icon only when it says something (a date, a number)
+          // a cell inside the selected block (the option cellSelection): its place in the block, null outside it or without the option
+          const inRange = cellRange.rect ? cellRange.cellClasses(cellRange.rowAt.get(row.id), ordered.indexOf(column)) : null;
           const bare =
             !isEditing &&
             !handled &&
@@ -365,6 +368,8 @@ export function bodyRows({
                     onPointerLeave: () => leaveCut(row.id + '|' + c.field),
                   }
                 : null)}
+              aria-selected={inRange ? true : undefined}
+              onMouseDown={cellRange.enabled ? cellRange.collapse : undefined}
               // a card's lines line up at the card's start edge in both directions (#679), so a card cell takes the grid's
               // direction; a table cell keeps its value's own direction (dir="auto")
               dir={(pinned && !isStatic) || kinds(c).includes('id') || isNarrow ? undefined : 'auto'}
@@ -383,6 +388,7 @@ export function bodyRows({
                 column,
                 frame,
                 focusCell,
+                cellRange,
               })}
               data-plx-sticky={pinned && sticky ? sticky + 'px' : undefined}
               data-plx-label={detail ? c.title || c.field : undefined}
@@ -407,6 +413,11 @@ export function bodyRows({
                   .some((level) => (typeof level === 'object' ? level.field : level) === c.field) &&
                   B + '__cell--grouped',
                 c.type === 'bytes' && B + '__cell--data',
+                inRange && B + '__grid-cell--range',
+                inRange && inRange.top && B + '__grid-cell--range-top',
+                inRange && inRange.bottom && B + '__grid-cell--range-bottom',
+                inRange && inRange.start && B + '__grid-cell--range-start',
+                inRange && inRange.end && B + '__grid-cell--range-end',
                 c.rowHandle && B + '__cell--handle',
                 childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell',
                 pinned && '' + B + '__grid-frozen',

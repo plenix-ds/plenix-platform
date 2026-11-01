@@ -44,6 +44,13 @@
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
+     cellSelection: an option, off by default (a grid without it behaves exactly as before): cells can be selected as a block. Shift with an arrow,
+       Home or End extends the block from the cell that has focus (the focus cell stays in view); a plain arrow, a click or Escape collapses it; Ctrl or
+       Command with C copies it as tab-separated text that a spreadsheet pastes as rows and columns (group rows skipped). The block has the selected
+       fill and a 2px border on its outer edges, its cells carry aria-selected, and the count is announced politely once the keys pause.
+       onCellSelectionChange({ from, to, cellCount, rowCount, columnCount, fields }) runs when the block changes (null when it ends; from and to are
+       { rowId, field }). api.getCellRange() returns { rows, fields, text } or null, api.clearCellRange() and api.copyCellRange() act on it.
+       It is independent of row selection and of editing (Enter edits the active cell and collapses the block). Not for the static Table.
      unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
      markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
      unreadOnly with onUnreadOnlyChange controls the unread filter. Nothing is drawn above the headers (Fluent): the app
