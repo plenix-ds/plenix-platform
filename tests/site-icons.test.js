@@ -9,6 +9,8 @@ const shared = require('./check.js');   // the shared check helper: parts (TEST_
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const url = require('url');
+const vm = require('vm');
 const assert = require('assert');
 const { execFileSync } = require('child_process');
 const Babel = require('@babel/standalone');
@@ -82,13 +84,50 @@ check('Compatibility file: it loads nothing (no fetch, no import, no URL) #553',
   assert.deepStrictEqual(found, [], 'the file reaches outside itself: ' + found.join(', '));
 });
 
+// The scripts the page loader (platform/loader/loader.js, #842) adds for a page opened from this checkout, as file paths,
+// or null when the page has no loader tag. loader.js itself is run against a stand-in document, so the paths are the ones
+// it builds (data-plenix-app picks the application), never a copy of its rule. Only the scripts it adds at once: the
+// suite's data file and the application's script wait for the stylesheet, which never loads here.
+function loaderScripts(page, html) {
+  const tag = /<script\b([^>]*\bsrc="([^"]*platform\/loader\/loader\.js)"[^>]*)>/.exec(html);
+  if (!tag) return null;
+  const attrs = {};
+  for (const m of tag[1].matchAll(/\b(data-[\w-]+)="([^"]*)"/g)) attrs[m[1]] = m[2];
+  const pageUrl = url.pathToFileURL(path.join(ROOT, page)).href;
+  const added = [];
+  const element = (tagName) => ({ tagName, addEventListener() {} });
+  const sandbox = {
+    document: {
+      currentScript: { src: new URL(tag[2], pageUrl).href, getAttribute: (n) => (n in attrs ? attrs[n] : null) },
+      documentElement: { setAttribute() {}, removeAttribute() {} },
+      head: { appendChild: (el) => { added.push(el); return el; } },
+      createElement: element, readyState: 'complete', addEventListener() {}, dispatchEvent() {},
+    },
+    location: { search: '', href: pageUrl },
+    localStorage: { getItem: () => null },
+    URL, Promise, CustomEvent: function CustomEvent() {}, setTimeout: () => 0, console,
+    fetch: () => Promise.reject(new Error('no network here')),
+  };
+  sandbox.window = sandbox;
+  vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'platform', 'loader', 'loader.js'), 'utf8'), sandbox, { filename: 'loader.js' });
+  return added.filter((el) => el.tagName === 'script' && el.src).map((el) => url.fileURLToPath(el.src));
+}
 check('Page icon files: each application, the Asset Manager and the login service are up to date #557', () => {
   assert.deepStrictEqual(sites.buildPages(ROOT, { check: true }).stale, [], 'run node build-app.js');
   for (const p of sites.PAGES) {
     const text = fs.readFileSync(path.join(ROOT, p.out), 'utf8');
     allDrawingsSafe(run(text).registered);
-    const page = p.site === 'dam' ? 'dam/index.html' : p.site + '/index.html';
-    assert.ok(fs.readFileSync(path.join(ROOT, page), 'utf8').includes('<script src="' + path.basename(p.out) + '"></script>'), page + ' does not load ' + p.out);
+    // every page of the application loads its icon file: the suite application's index.html, each Asset Manager page
+    const pages = p.site === 'dam' ? p.inputs.filter((i) => i.endsWith('.html')) : [p.site + '/index.html'];
+    for (const page of pages) {
+      const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
+      const loaded = loaderScripts(page, html);
+      if (!loaded) assert.ok(html.includes('<script src="' + path.basename(p.out) + '"></script>'), page + ' does not load ' + p.out);
+      else {
+        assert.ok(loaded.includes(path.join(ROOT, p.out)), page + ': the page loader does not load ' + p.out + ' (it loads ' + loaded.map((f) => path.relative(ROOT, f)).join(', ') + ')');
+        assert.ok(fs.existsSync(path.join(ROOT, p.out)), page + ': the page loader loads ' + p.out + ', which does not exist');
+      }
+    }
   }
   const login = require(path.join(ROOT, sites.LOGIN.out));
   for (const n of sites.LOGIN.names) assert.ok(/^<span class="plx-icon plx-icon--[a-z-]+ plx-icon--inline[^"]*" aria-hidden="true"><svg [^<]*><path [^>]*><\/path>/.test(login[n]), n + ': ' + String(login[n]).slice(0, 120));
