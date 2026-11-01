@@ -115,10 +115,14 @@
        control it from outside; the saved view keeps it (owner, 2026-10-24)
      narrow: "auto" (default, a SplitView's grid too; issue 679): a table while its visible columns fit the grid's measured width (their widths
        plus the selection, row menu and view columns), else the row cards | "table" (a fixed table that may scroll sideways: the
-       escape hatch for a dense specialized grid) | "list" (the row cards under narrowAt, 600px). Row cards: the keyColumns (default the
-       first three text columns) first, as the primary and secondary lines, then every other visible field as a labeled detail; the
-       selection checkbox, the row actions and the row menu stay on the card; nothing scrolls sideways
-     layout: "A" | "B" | "wide" (issue 839; the row template, an option: unset, and without template, the grid is exactly as before). A and B are the narrow
+       escape hatch for a dense specialized grid) | "list" (the row cards under narrowAt, 600px). Row cards (issue 679, owner 2026-11-01: every
+       grid, by default): the row template, layout "A" unless the grid names another (see layout): a bar over the cards with the select-all checkbox and the
+       count of records, then each record as three aligned lines (the title and the date, the subtitle and the primary value, the secondary and the tertiary)
+       with the values the columns' own cells show (their render or formatter), the fields no slot takes as "Label: value" lines under the third, the selection
+       checkbox at the start and the row menu at the end; nothing scrolls sideways. keyColumns, if the app gives them, are the title, the subtitle and
+       the primary value. layout="plain" is the card of before (the key values, then every other field as a labeled detail). A right-to-left phone
+       number (Arabic) needs a left-to-right mark before each space in its column's render (phone.replace(/ /g, '\u200E ')), as the sample does, or its groups read in the wrong order
+     layout: "A" | "B" | "wide" | "plain" (issues 839 and 679; the row template). Unset, and without template, a grid draws "A" in its narrow card (the default of every grid; "plain" draws the old plain card; narrow="table" keeps a table). A and B are the narrow
        view's card (the table while the columns fit, else every record as a card; the switch is #679's, measured): A is three aligned lines
        (title | date, subtitle | primary, secondary | tertiary) with one vertical line down the list, for records with many fields that must line up and
        scan down; B has the primary value beside the title, the subtitle on its own line and the three small facts (secondary | tertiary | date) on the
@@ -127,8 +131,8 @@
      template: { title, subtitle, date, primary, secondary, tertiary }: the row template's slots, each a column's field, every slot optional. Slots left
        out are filled by one fixed rule (engine/rowTemplate.js): the first date column is the date, the first number column the primary value, then
        title, subtitle, primary, secondary, tertiary and date take the next columns in the order of `columns`. A column that fills no slot is not drawn
-       in a card: map every field a person needs while scanning; the rest shows when the row is opened. Selection, the open row, the keyboard and the
-       row menu work in every layout
+       in a card that names its layout or template: map every field a person needs while scanning; the rest shows when the row is opened (the default card
+       keeps such fields as "Label: value" lines under its last line). Selection, the open row, the keyboard and the row menu work in every layout
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:

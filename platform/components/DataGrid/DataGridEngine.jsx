@@ -34,7 +34,8 @@ import { opening, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 
 import { recordsOf } from './records.js';
-import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
+import { formatNumber } from '../../utils/format.ts';
 import { EMPTY_ROWS, GRID, kinds } from './engine/helpers.jsx';
 
 import { useVirtualizer } from './engine/useVirtualizer.js';
@@ -101,6 +102,7 @@ function NextEngine(props) {
   // static Table keeps its list below narrowAt
   const narrow = requestedNarrow === undefined ? (isStatic ? 'list' : 'auto') : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
+  const loc = useLocale();
   const S = useStrings('dataGrid', props.strings),
     initial = React.useMemo(() => opening(props), [storageKey]);
   const frame = React.useRef(null),
@@ -383,9 +385,7 @@ function NextEngine(props) {
   const leadFrozen = frozen.size > 0 && !isNarrow;
   const widths = Object.fromEntries(ordered.map((column) => [column.id, column.getSize()]));
   const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ['icon', 'actions'].includes(kind));
-  const keys = props.rowTemplate
-    ? []
-    : keyColumns?.length
+  const keys = keyColumns?.length
     ? keyColumns
     : columns
         .filter((c) => !kinds(c).some((k) => ['icon', 'actions'].includes(k)) && !c.rowHandle)
@@ -835,7 +835,16 @@ function NextEngine(props) {
   // a fill grid that already shows rows says a failed next page in its last row (with Retry), not over the table
   const moreFailed = scrollFill && remoteError && model.length > 0,
     failed = error || (moreFailed ? null : remoteError);
+  // the bar over the template cards (issue 679): the select-all checkbox and the count of records
+  const cardBar =
+    isNarrow && props.rowTemplate && props.rowTemplate.layout !== 'wide'
+      ? (() => {
+          const n = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+          return loc.t('dataGrid.cardCount', { count: n, n: formatNumber(n) });
+        })()
+      : null;
   return gridFrame({
+    cardBar,
     widthPixels,
     headerMenu,
     isStatic,

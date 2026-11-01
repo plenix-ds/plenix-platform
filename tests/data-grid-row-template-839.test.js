@@ -1,6 +1,7 @@
 // Plenix · tests/data-grid-row-template-839.test.js: the DataGrid row template (issue 839, owner 2026-11-01: A, B and wide as options). Opens a headless browser: run by the owner's test run, never by an agent.
 //   node tests/data-grid-row-template-839.test.js   → DATA_GRID_ROW_TEMPLATE_839_OK
-// Cases, in left to right and right to left: with neither layout nor template the grid draws no template class (nothing changes for an existing grid); layout A in a narrow
+// Cases, in left to right and right to left: with neither layout nor template a narrow grid draws the default A card (issue 679, owner 2026-11-01), the slots from the column
+//   order and the field no slot takes as a "Label: value" line; layout="plain" draws no template class (the plain card of before); layout A in a narrow
 //   grid: three lines (title | date, subtitle | primary, secondary | tertiary), the vertical line on the cells of the second column, the checkbox and row menu on the first line,
 //   a column that fills no slot is not drawn; layout B: the primary value on the title's line, the subtitle alone, secondary | tertiary | date on the third line, lines only there;
 //   wide: a table at a narrow width too, its columns the slots in order title, subtitle, date, primary, secondary, tertiary; the defaults from the column order (the first date
@@ -46,8 +47,15 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       });
       const hasLine = (cls) => page.evaluate((cls) => { const el = document.querySelector('[role=row][data-plx-record] .' + cls); return !!el && getComputedStyle(el, '::before').content !== 'none'; }, cls);
 
-      await check(T + 'without layout or template no template class is drawn', async () => {
+      await check(T + 'without layout or template a narrow grid draws the default A card', async () => {
         await mount(460, { narrow: 'list' }); const l = await layoutOf();
+        assert.ok(/template-a/.test(l.cls), 'the A card: ' + l.cls);
+        assert.deepEqual(Object.keys(l.slot).filter((k) => !k.startsWith('none:')).sort(), ['date', 'primary', 'secondary', 'subtitle', 'tertiary', 'title']);
+        assert.ok('none:phone' in l.slot, 'the field no slot takes is still drawn: ' + JSON.stringify(Object.keys(l.slot)));
+        assert.ok(await page.evaluate(() => { const el = document.querySelector('[role=row][data-plx-record] [data-plx-field=phone]'); return !!el && el.classList.contains('plx-data-grid__cell--detail-line') && el.getAttribute('data-plx-label') === 'Phone'; }), 'as a "Label: value" line');
+      });
+      await check(T + 'layout="plain" draws no template class', async () => {
+        await mount(460, { narrow: 'list', layout: 'plain' }); const l = await layoutOf();
         assert.ok(!/template/.test(l.cls)); assert.equal(Object.keys(l.slot).filter((k) => !k.startsWith('none:')).length, 0);
       });
       await check(T + 'layout A: three lines, title | date, subtitle | primary, secondary | tertiary', async () => {
