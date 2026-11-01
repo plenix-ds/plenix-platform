@@ -264,6 +264,7 @@ export default {
     "error": "تعذّر تحميل الخيارات",
     "emptyText": "لا توجد نتائج مطابقة",
     "removeItem": "إزالة {label}",
+    "clear": "مسح",
     "results": {
       "zero": "لا توجد خيارات",
       "one": "خيار واحد",

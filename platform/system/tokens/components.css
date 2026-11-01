@@ -3203,6 +3203,10 @@
   --plx-comp-combobox-loading-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-combobox-loading-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-combobox-error-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-combobox-option-icon-gap: var(--plx-comp-combobox-option-mark-gap);
+  --plx-comp-combobox-option-icon-text: var(--plx-sys-content-muted);
+  --plx-comp-combobox-option-description-text: var(--plx-sys-content-muted);
+  --plx-comp-combobox-option-description-font-size: var(--plx-ref-font-size-12);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-command-bar-gap: var(--plx-sys-space-stack-sm);
