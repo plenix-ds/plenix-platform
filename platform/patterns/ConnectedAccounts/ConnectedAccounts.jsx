@@ -52,6 +52,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { around } from '../../utils/fillNodes.tsx';
 import { announce } from '../../utils/announce.tsx';
 import { formatDate, dateTimeAttr } from '../../utils/format.ts';
 import { Badge } from '../../components/Badge/Badge.tsx';
@@ -65,7 +66,6 @@ import { fill } from '../../utils/fill.ts';
 
 const STATUS = { connected: ['success', 'check'], disconnected: ['neutral', 'link'], error: ['negative', 'alert'] };
 // a sentence with a node in place of {key}: the words around it stay in the UI font
-const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const H = ({ level, ...props }) => React.createElement('h' + Math.min(6, Math.max(2, level || 3)), props);
 
 export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect, confirm = true, headingLevel = 3, strings, as = 'div', className, ...rest }) {

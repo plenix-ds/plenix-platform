@@ -41,13 +41,12 @@ import { Text } from '../../components/Text/Text.tsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
-import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
+import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords, fieldOption } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import FilterIcon from 'plenix-platform/icons/plenix/filter';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
-const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
 function ConditionValue({ c, f, set, t }) {
   const fw = useStrings('fields');

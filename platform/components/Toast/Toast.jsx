@@ -126,6 +126,11 @@ export function useToast() {
   return api;
 }
 
+// a toast when the page has a ToastProvider; nothing otherwise (DataGrid, ReviewFlow and the flows built on it; one copy, #882)
+export function useOptionalToast() {
+  try { return useToast(); } catch (e) { return null; }
+}
+
 // the undo pattern: the action is already done; the toast offers Undo for as long as it shows, then the change is final
 export function useUndo() {
   const toast = useToast();

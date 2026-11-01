@@ -31,14 +31,13 @@ import { Text } from '../../components/Text/Text.tsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
-import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';
+import { DIRECTIONS, fieldOf, kindOf, fieldWords, fieldOption } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import GroupByIcon from 'plenix-platform/icons/plenix/group-by';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
-const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 // every group of the table, its subgroups too
 const eachGroup = (t, fn) => {
   const table = t && t.current !== undefined && !t.getGroups ? t.current : t;

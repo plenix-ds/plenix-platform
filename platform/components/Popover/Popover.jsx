@@ -61,6 +61,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
+import { elementMs as ms } from '../../utils/tokenTime.ts';
 import { focusables, useLayer, useUid } from '../../utils/layer.ts';
 import { useFloating, PLACEMENTS, TOP_LAYER } from '../../utils/floating.ts';
 import { Button } from '../Button/Button.tsx';
@@ -72,12 +73,6 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 const SIZES = ['sm', 'md', 'lg', 'auto'];
 
 
-// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
 
 export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultOpen = false, onOpenChange, title, label, footer, closeButton = false,
   placement = 'bottom-start', size = 'md', arrow = false, role = 'dialog', initialFocus, focusOnOpen, sheetOnNarrow = true, strings, className, anchorClassName, children, ...rest }) {
