@@ -1,5 +1,5 @@
 {
-  "$description": "Virtualization (hooks/useVirtualizer.js, system/virtual.css): the size of one item of a virtualized collection, which the gaps standing in for unrendered items are measured in. A container sets both on itself in its own stylesheet to the size and gap its items have.",
+  "$description": "Virtualization (hooks/useVirtualizer.ts, system/virtual.css): the size of one item of a virtualized collection, which the gaps standing in for unrendered items are measured in. A container sets both on itself in its own stylesheet to the size and gap its items have.",
   "plx-sys": {
     "virtual-item-size": {
       "$value": "{plx-ref.size-32px}",

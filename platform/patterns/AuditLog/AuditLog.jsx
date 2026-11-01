@@ -17,7 +17,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const display = (v) => v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
 export function AuditLog({ entries = [], variant = 'table', label, strings, className }) {

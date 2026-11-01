@@ -43,7 +43,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ImageCrop } from '../ImageUpload/ImageUpload.jsx';
 import { formatBytes } from '../../utils/format.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 

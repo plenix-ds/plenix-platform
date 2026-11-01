@@ -109,7 +109,7 @@ import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatNumber } from '../../utils/format.ts';
 import { development } from '../../utils/devWarn.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 

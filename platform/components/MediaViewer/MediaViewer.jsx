@@ -34,10 +34,10 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
 import { useLayer, useUid } from '../../utils/layer.ts';
 import { MediaPlayer } from '../MediaPlayer/MediaPlayer.jsx';
-import { useGesture } from '../../hooks/useGesture.js';
+import { useGesture } from '../../hooks/useGesture.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { arrowStep } from '../../utils/direction.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 

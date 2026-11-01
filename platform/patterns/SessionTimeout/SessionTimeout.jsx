@@ -49,7 +49,7 @@ import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 const clock = (sec) => { const s = Math.max(0, Math.ceil(sec)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };

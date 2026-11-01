@@ -24,7 +24,7 @@ import { Switch } from '../../components/Checkbox/Checkbox.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { GeneratedContent } from '../../components/GeneratedContent/GeneratedContent.jsx';
 import { Citation } from '../../components/Citation/Citation.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AISearch({onSearch,defaultQuery='',defaultSemantic=false,semanticToggle=true,strings,className}){
  const t=useStrings('aiSearch', strings),[query,setQuery]=React.useState(defaultQuery),[semantic,setSemantic]=React.useState(defaultSemantic),[data,setData]=React.useState(null),[busy,setBusy]=React.useState(false),[error,setError]=React.useState(''),epoch=React.useRef(0),controller=React.useRef(null),pending=React.useRef(null);

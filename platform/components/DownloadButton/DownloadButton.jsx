@@ -41,7 +41,7 @@ import { Button } from '../Button/Button.jsx';
 import { ProgressCircle } from '../ProgressCircle/ProgressCircle.jsx';
 import { formatBytes, formatPercent } from '../../utils/format.ts';
 import { announce } from '../../utils/announce.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import DownloadArrowIcon from 'plenix-platform/icons/plenix/download-arrow';
 
 

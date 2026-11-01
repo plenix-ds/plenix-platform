@@ -22,9 +22,9 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Fieldset } from '../../components/Fieldset/Fieldset.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function FormFlow({ mode = 'create', surface = 'page', open = true, title, initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel, children, strings, className }) {
   const t = useStrings('formFlow', strings);

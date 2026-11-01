@@ -25,5 +25,5 @@ The owner's standard for every Arabic word Plenix shows (2026-10-29, issue 427).
 ## Where things are
 
 - **The catalogs:** `platform/i18n/en.json` (the source), `en.js` (its browser mirror) and `ar.js`.
-- **The lookup:** `LocaleProvider` and `useStrings(section, strings)` (`platform/providers/LocaleProvider.jsx`). For an Arabic locale it uses the app's catalog, then `ar.js`, then English.
+- **The lookup:** `LocaleProvider` and `useStrings(section, strings)` (`platform/providers/LocaleProvider.tsx`). For an Arabic locale it uses the app's catalog, then `ar.js`, then English.
 - **Right-to-left layout and mixed-direction blocks:** `docs/integration/mixed-direction.md` and #413.

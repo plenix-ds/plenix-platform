@@ -88,7 +88,7 @@ import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 // One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
 // inline SVG in the text color (inline paths paint about 200 times faster than masks).

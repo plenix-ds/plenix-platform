@@ -101,7 +101,7 @@ import { SingleQuickFilterMenu } from '../QuickFilter/single-menu.jsx';
 import { Inline, Stack } from '../../components/Stack/Stack.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { fieldWords } from '../../utils/fields.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 import { fill } from '../../utils/fill.ts';

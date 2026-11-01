@@ -51,9 +51,9 @@ import { focusables, useLayer, useUid } from '../../utils/layer.ts';
 import { Icon, asIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Dialog, Drawer } from '../Dialog/Dialog.jsx';
-import { useGesture } from '../../hooks/useGesture.js';
+import { useGesture } from '../../hooks/useGesture.ts';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 

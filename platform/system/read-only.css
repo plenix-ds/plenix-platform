@@ -1,5 +1,5 @@
 /* Plenix · Read-only state (platform/system/read-only.css; library plan wave 2, foundation read-only-context): the
-   controls inside a read-only region (data-plx-readonly="true", set by <ReadOnly>, providers/ReadOnly.jsx) look like
+   controls inside a read-only region (data-plx-readonly="true", set by <ReadOnly>, providers/ReadOnly.tsx) look like
    values that can be read, selected and copied but not changed. The colors are the read-only roles
    (tokens/semantic/read-only.tokens.json); the value keeps full content contrast (never the disabled color). */
 /* The region publishes the read-only look as context values; the components read them (no rule here reaches a control):

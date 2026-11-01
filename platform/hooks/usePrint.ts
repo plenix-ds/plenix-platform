@@ -22,10 +22,12 @@
 */
 import React from 'react';
 
-export function usePrint(options = {}) {
+export type PrintOptions = { light?: boolean; onBeforePrint?(): void; onAfterPrint?(): void };
+
+export function usePrint(options: PrintOptions = {}): { print(opts?: unknown): void; printing: boolean } {
   const { light = true, onBeforePrint, onAfterPrint } = options;
   const [printing, setPrinting] = React.useState(false);
-  const saved = React.useRef(null);
+  const saved = React.useRef<{ mode: string | null } | null>(null);
   const calls = React.useRef({ onBeforePrint, onAfterPrint });
   calls.current = { onBeforePrint, onAfterPrint };
 
@@ -50,9 +52,9 @@ export function usePrint(options = {}) {
     return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after); };
   }, [light]);
 
-  const print = React.useCallback((opts) => {
+  const print = React.useCallback((opts?: unknown) => {   // { title }, or the click event when print is the handler itself
     if (typeof window === 'undefined' || !window.print) return;
-    const title = opts && typeof opts === 'object' && typeof opts.title === 'string' ? opts.title : null;
+    const title = opts && typeof opts === 'object' && typeof (opts as { title?: unknown }).title === 'string' ? (opts as { title: string }).title : null;
     const was = document.title;
     if (title) document.title = title;
     try { window.print(); } finally { if (title) document.title = was; }

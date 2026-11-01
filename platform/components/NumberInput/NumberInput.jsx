@@ -53,8 +53,8 @@ import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../..
 import { Input } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 

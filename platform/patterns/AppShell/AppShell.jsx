@@ -84,7 +84,7 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
 import { pageLayout } from '../../providers/pageLayouts.js';
 import { PanelSplitter } from '../../components/Resizable/Resizable.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useMonitorWidth } from '../../utils/monitorWidths.ts';
 
 // the five layout modes (the Layout foundation; app-shell.css draws them)

@@ -48,7 +48,7 @@ import { announce } from '../../utils/announce.tsx';
 import { formatDuration } from '../../utils/format.ts';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import { fill } from '../../utils/fill.ts';
 import { fillNodes } from '../../utils/fillNodes.tsx';

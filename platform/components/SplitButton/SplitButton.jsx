@@ -37,7 +37,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { Menu } from '../Menu/Menu.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const PLACES = ['bottom-start', 'bottom-end', 'top-start', 'top-end'];
 

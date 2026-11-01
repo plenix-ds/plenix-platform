@@ -1,5 +1,5 @@
 /* Plenix · Gesture (platform/system/gesture.css; library plan wave 2, foundation gesture): what an element that takes
-   gestures (hooks/useGesture.js) tells the browser, and the settle when a gesture ends. The distances and rates are
+   gestures (hooks/useGesture.ts) tells the browser, and the settle when a gesture ends. The distances and rates are
    the gesture motion tokens (tokens/semantic/motion-gesture.tokens.json). */
 /* the element tracks every movement itself: no browser scroll, zoom or text selection while a finger is on it */
 .plx-gesture{touch-action:none;user-select:none;-webkit-user-select:none;}

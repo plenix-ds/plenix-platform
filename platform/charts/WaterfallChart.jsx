@@ -40,7 +40,7 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const COLORS = { up: 'status-positive', down: 'status-negative', total: seriesColor(0) };
 

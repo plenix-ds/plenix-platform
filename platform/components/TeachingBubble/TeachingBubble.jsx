@@ -47,8 +47,8 @@ import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Spotlight } from '../Spotlight/Spotlight.jsx';
-import { SurfaceContext } from '../../providers/Surface.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { SurfaceContext } from '../../providers/Surface.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import { fillNodes } from '../../utils/fillNodes.tsx';
 

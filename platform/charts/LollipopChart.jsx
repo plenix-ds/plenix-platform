@@ -41,7 +41,7 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartPoints } from './a11y.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // the ring around the active dot (SVG geometry, the 4px grid): its radius
 const RING = 8;

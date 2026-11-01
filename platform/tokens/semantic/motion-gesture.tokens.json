@@ -1,5 +1,5 @@
 {
-  "$description": "Gesture motion (library plan wave 2, foundation gesture): the distances, times and rates that turn pointer and touch movement into gestures, and the motion an element makes when a gesture ends. hooks/useGesture.js reads them; system/gesture.css draws the settle.",
+  "$description": "Gesture motion (library plan wave 2, foundation gesture): the distances, times and rates that turn pointer and touch movement into gestures, and the motion an element makes when a gesture ends. hooks/useGesture.ts reads them; system/gesture.css draws the settle.",
   "plx-sys": {
     "gesture-slop": {
       "$value": "{plx-ref.size-8px}",

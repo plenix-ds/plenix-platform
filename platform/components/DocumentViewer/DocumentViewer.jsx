@@ -31,7 +31,7 @@ import { Image } from '../Image/Image.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { cx } from '../../utils/cx.ts';
 import { engine } from '../../utils/engines.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 const ZOOMS=[50,75,100,125,150,200];
 const pdfEngine=()=>engine('pdf');
 // why a PDF failed, from PDF.js's error names: the engine, the document's address (missing, denied, blocked) or its content

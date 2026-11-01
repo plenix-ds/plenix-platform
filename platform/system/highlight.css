@@ -1,0 +1,6 @@
+/* Plenix · Highlight (platform/system/highlight.css; platform/utils/highlight.tsx, issue 810): the typed text marked inside a
+   result of SearchField, Combobox, Cascader and TreeSelect. plx-match is the match, in the highlight weight; a match of Arabic
+   letters (plx-match--joined) keeps the surrounding weight and is underlined instead, because a change of weight inside a word
+   breaks the joined letter shapes. The tokens are in tokens/components/highlight.tokens.json. */
+.plx-match:not(.plx-match--joined){font-weight:var(--plx-comp-highlight-font-weight);}
+.plx-match--joined{text-decoration-line:underline;text-decoration-thickness:var(--plx-comp-highlight-joined-underline-width);}

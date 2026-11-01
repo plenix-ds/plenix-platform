@@ -29,7 +29,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Button } from '../Button/Button.jsx';
 import { LiveRegion } from '../../utils/announce.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';

@@ -59,7 +59,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import LinkIcon from 'plenix-platform/icons/plenix/link';
 import { fill } from '../../utils/fill.ts';
 

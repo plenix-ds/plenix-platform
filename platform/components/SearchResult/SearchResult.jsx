@@ -63,7 +63,7 @@ import { SectionHeading } from '../SectionHeading/SectionHeading.jsx';
 import { Count } from '../Count/Count.jsx';
 import { Link } from '../Link/Link.jsx';
 import { Button } from '../Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';

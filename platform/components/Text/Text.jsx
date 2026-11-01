@@ -52,7 +52,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.jsx';
-import { useStrings, useDigits } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useDigits } from '../../providers/LocaleProvider.tsx';
 import { localDigits } from '../../utils/digits.ts';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';

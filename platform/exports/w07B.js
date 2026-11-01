@@ -3,7 +3,7 @@
 // that loads when first opened, shared by Tree, TreeSelect and Cascader (issue 814).
 export { MillerColumns } from '../components/MillerColumns/MillerColumns.jsx';
 export { Cascader } from '../components/Cascader/Cascader.jsx';
-export { useBranchLoader, BranchStatus } from '../hooks/useBranchLoader.js';
+export { useBranchLoader, BranchStatus } from '../hooks/useBranchLoader.ts';
 export { EntityPicker } from '../components/EntityPicker/EntityPicker.jsx';
 export { TimePicker } from '../components/TimePicker/TimePicker.jsx';
 export { parseTime } from '../components/TimePicker/TimePicker.jsx';

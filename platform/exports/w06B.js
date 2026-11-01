@@ -5,4 +5,4 @@ export { FormSection } from '../patterns/Form/Form.jsx';
 export { FormActions } from '../patterns/Form/Form.jsx';
 export { OtpInput } from '../components/OtpInput/OtpInput.jsx';
 export { FieldLayoutContext } from '../components/Field/Field.jsx';
-export { useSearchHistory } from '../hooks/useSearchHistory.js';
+export { useSearchHistory } from '../hooks/useSearchHistory.ts';

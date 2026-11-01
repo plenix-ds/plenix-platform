@@ -45,7 +45,7 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
