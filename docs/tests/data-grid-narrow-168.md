@@ -19,7 +19,7 @@ A table switches between a full table and row cards by whether its columns fit i
 - Opens the Dashboard page in headless Chrome only to get the Platform, draws a 12-row grid in four set-ups (in a pane or alone, with and without a layout choice) and reads whether the grid has its narrow-list class.
 
 ## What a failure means
-- A list beside a detail pane could suddenly lose its columns and become a one-column list, even though the app asked for a table.
+- A grid could scroll sideways when its columns do not fit, or turn into cards when they do fit, in a split view or on its own.
 
 ## When it runs
 - A child of `data-grid` (AUTOMATIC in `tests/run.js`): data-grid starts it as a separate process before its own checks.
