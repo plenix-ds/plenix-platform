@@ -3650,6 +3650,10 @@
   --plx-comp-diagram-active-border-width: var(--plx-sys-border-width-medium);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-divider-text-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-divider-text-color: var(--plx-sys-content-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-document-viewer-gap: var(--plx-sys-space-stack-md);
   --plx-comp-document-viewer-height: var(--plx-ref-size-560px);
   --plx-comp-document-viewer-font: var(--plx-sys-font-data);
