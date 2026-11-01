@@ -1,0 +1,26 @@
+{
+  "source": [
+    "platform/tokens/theme-default.light.tokens.json"
+  ],
+  "log": {
+    "warnings": "disabled",
+    "verbosity": "silent",
+    "errors": {
+      "brokenReferences": "console"
+    }
+  },
+  "platforms": {
+    "json": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/index/",
+      "files": [
+        {
+          "destination": "theme-default.light.json",
+          "format": "json"
+        }
+      ]
+    }
+  }
+}

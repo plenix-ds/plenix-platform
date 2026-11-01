@@ -27912,6 +27912,24 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const words2 = useStrings("persona", strings);
     return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-persona", "plx-persona--" + s, className), ...rest }, /* @__PURE__ */ React2.createElement(Avatar, { name, src, color, presence: p || void 0, size: s, className: "plx-persona__avatar" }), /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__text" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__primary" }, href ? /* @__PURE__ */ React2.createElement(Link, { href, variant: "standalone", className: "plx-persona__name", title: name }, name) : /* @__PURE__ */ React2.createElement("span", { className: "plx-persona__name", title: name }, name), p ? /* @__PURE__ */ React2.createElement(VisuallyHidden, null, ", " + words2[p]) : null, role ? /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", size: "sm", className: "plx-persona__role" }, role) : null), secondary ? /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__secondary", title: typeof secondary === "string" ? secondary : void 0 }, secondary) : null));
   }
+  function Line$1({ as: As = "span", className, children }) {
+    const ref = React2.useRef(null);
+    const text2 = typeof children === "string" || typeof children === "number" ? String(children) : "";
+    const cut = useTruncated(ref, text2);
+    return /* @__PURE__ */ React2.createElement(Tooltip, { content: text2, disabled: !cut || !text2, describe: false, className: "plx-entity-title__tip" }, /* @__PURE__ */ React2.createElement(As, { ref, className }, children));
+  }
+  const tagOf = (tag2) => {
+    if (tag2 === void 0 || tag2 === null || tag2 === false || tag2 === "") return null;
+    if (React2.isValidElement(tag2)) return tag2;
+    if (typeof tag2 === "string" || typeof tag2 === "number") return /* @__PURE__ */ React2.createElement(Tag, null, tag2);
+    if (tag2.category) return /* @__PURE__ */ React2.createElement(Tag, { category: tag2.category }, tag2.label);
+    return /* @__PURE__ */ React2.createElement(Badge, { tone: tag2.tone, icon: tag2.icon }, tag2.label);
+  };
+  function EntityTitle({ title, icon, subtitle, tag: tag2, level, loading: loading2 = false, className, ...rest }) {
+    const heading = level >= 1 && level <= 6 ? "h" + Math.round(level) : "span";
+    const badge = loading2 ? null : tagOf(tag2);
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-entity-title", subtitle && "plx-entity-title--subtitle", loading2 && "is-loading", className), "aria-busy": loading2 || void 0, ...rest }, icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__icon", "aria-hidden": "true" }, asIcon(icon)) : null, loading2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__placeholder" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__bar-line" }, /* @__PURE__ */ React2.createElement(Skeleton, { width: "160px", height: "12px", className: "plx-entity-title__bar" })), subtitle ? /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__bar-line plx-entity-title__bar-line--subtitle" }, /* @__PURE__ */ React2.createElement(Skeleton, { width: "96px", height: "8px", className: "plx-entity-title__bar" })) : null) : /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__line" }, /* @__PURE__ */ React2.createElement(Line$1, { as: heading, className: "plx-entity-title__title" }, title), badge ? /* @__PURE__ */ React2.createElement("span", { className: "plx-entity-title__tag" }, badge) : null), subtitle ? /* @__PURE__ */ React2.createElement(Line$1, { className: "plx-entity-title__subtitle" }, subtitle) : null));
+  }
   const SIZES$4 = ["sm", "md", "lg"];
   const TONES$1 = ["info", "success", "warning", "danger", "neutral"];
   const C = 24, R = 21;
@@ -44598,6 +44616,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   exports.EmptyState = EmptyState;
   exports.EntityHeader = EntityHeader;
   exports.EntityPicker = EntityPicker;
+  exports.EntityTitle = EntityTitle;
   exports.ErrorPage = ErrorPage;
   exports.ErrorSummary = ErrorSummary;
   exports.EventChip = EventChip;

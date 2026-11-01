@@ -53,6 +53,8 @@ const BY_NAME = { className: 'string', id: 'string', href: 'string', src: 'strin
   joined: '{ start?: "square" | "seam"; end?: "square" | "seam" }',
   // the one action under a Combobox's "No matches" (issue 811)
   emptyAction: '{ label: string; onSelect: (text: string) => void; icon?: string }',
+  // EntityTitle's tag (issue 803): a Tag's text, an element, or a status Badge ({ label, tone, icon }) or a category Tag ({ label, category })
+  entityTag: 'React.ReactNode | { label: React.ReactNode; tone?: string; icon?: string; category?: string }',
   // the DataGrid row template's slots, each a column's field (issue 839)
   rowTemplate: '{ title?: string; subtitle?: string; date?: string; primary?: string; secondary?: string; tertiary?: string }' };
 const BOOLEAN = /^(disabled|readOnly|required|invalid|expanded|open|checked|pressed|selected|loading|hidden|multiple|defaultOpen|defaultChecked|block|tree|selectable|focusOnOpen|uniformPillWidths)$/;
@@ -100,6 +102,7 @@ function typeOf(name, text, def, called) {
   const same = /^as (\w+)\.(\w+)\b/.exec(text.trim());
   if (same) return AS + same[1] + '.' + same[2] + AS;
   if (name === 'joined' || name === 'emptyAction') return BY_NAME[name];
+  if (name === 'tag' && /\{ label, tone, icon, category \}/.test(text)) return BY_NAME.entityTag;
   if (name === 'template' && /^\{\s*title,\s*subtitle/.test(text.trim())) return BY_NAME.rowTemplate;
   // the text starts with what it is (a pinned header): "a string: …", "a ref to …"
   if (/^(a )?(string or a number|number or a string)\b/i.test(text.trim())) return 'number | string';
