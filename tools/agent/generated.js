@@ -4,7 +4,7 @@
 // node tools/agent/generated.js --list               prints the patterns
 // The files a task branch never commits. Since #692 the build's outputs are not in git at all (.gitignore; npm ci builds
 // them through package.json's prepare script), so this list keeps only what the integrator writes into tracked files: the
-// release's CHANGELOG.md and package.json "version" (release.sh), the spec submodule's pointer and its own generated files,
+// release's CHANGELOG.md and package.json "version" (release.sh), the spec submodule's pointer,
 // and the library block of platform/index.js and platform.css (build-exports.js). Owner, 2026-10-15 (the Claude + Codex
 // pilot); narrowed by #692.
 // package.json is the one partly generated file: release.sh writes only its "version" field. --check fails on package.json
@@ -17,8 +17,7 @@ const GENERATED = [
   /^packages\//, /^release\//,                            // the packages and the release (ignored; never committed)
   /^CHANGELOG\.md$/, /^package\.json$/,                    // written by release.sh
   /^platform\/design-system$/, /^node_modules$/,           // the submodule pointer and the dependency junction
-  // inside platform/design-system (its own repo)
-  /^spec-parts\.js$/, /^spec-index\.js$/, /^spec-chunks\//, /^ds-sample-parts\.css$/, /^native-guidance\.js$/, /^usage\.js$/,
+  // the design system's own generated files are ignored in its repository (#692), and lanes carry sources only (check-system)
 ];
 const PARTIAL = ['platform/index.js', 'platform/platform.css'];
 const BLOCK = /\/\* BEGIN library parts[^]*?\/\* END library parts \*\//;
