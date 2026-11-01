@@ -178,7 +178,7 @@ export function gridFrame({
                     )}
                     role="columnheader"
                   >
-                    <div className={`${B}__grid-col-content ${B}__grid-col-content--row-header`}>
+                    <div className={cx(`${B}__grid-col-content ${B}__grid-col-content--row-header`, cardBar != null && B + '__grid-col-content--card')}>
                       <Check
                         label={S.selectAll}
                         checked={allVisible}

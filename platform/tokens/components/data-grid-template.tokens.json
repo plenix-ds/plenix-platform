@@ -80,6 +80,16 @@
       "$value": "{plx-ref.size-20px}",
       "$type": "dimension",
       "$description": "A card: the icon in the row menu button."
+    },
+    "data-grid-template-bar-background": {
+      "$value": "{plx-sys.data-grid-header-background}",
+      "$type": "color",
+      "$description": "The bar over the cards: a flat fill (the header role without its gradient)."
+    },
+    "data-grid-template-bar-line": {
+      "$value": "{plx-sys.data-grid-header-bottom}",
+      "$type": "color",
+      "$description": "The bar over the cards: the thin line below it."
     }
   }
 }
