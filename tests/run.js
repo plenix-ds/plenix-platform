@@ -9,6 +9,8 @@
 //                                          test's parts. TEST_RESULTS=<file> collects every counted check (tools/file-failures.js)
 //   node tests/run.js --on-demand          the on-demand tests only (npm run test:on-demand; add --full for every page)
 //   node tests/run.js --release            the tests of the release build only (after node build-packages.js)
+//   node tests/run.js "zero-overlap --record"   a test with its own flags (issue 764): the flags follow the name, in the same
+//                                          argument or in the ones right after it; only the flags in FLAGS pass, any other stops
 // Where (owner, 2026-10-25: "make the test site ... no longer using the design spec for testing"): the browser tests open the
 // St. John the Beloved test site (test-site/, tests/site.js) and the suite applications, never the design spec.
 // On demand (owner, 2026-10-25: "Reserve only for as on demand test by owner and take out from the tests"):
@@ -31,16 +33,37 @@ const RELEASE = ['perf', 'w15c-packages', 'icons-package-282', 'cdn-devx'];
 // (platform/design-system), which loads Plenix from the CDN; the automatic runs never open the spec (owner, 2026-10-25)
 const SPEC_ONLY = ['labs'];
 const ALL = AUTOMATIC.concat(ON_DEMAND, SPEC_ONLY, RELEASE);
-const args = process.argv.slice(2);
+// the flags a test reads itself (owner, issue 764: his test runs refresh a baseline). Only these pass to the test; any other
+// flag after a name stops the run, so a typo never records a baseline silently
+const FLAGS = {
+  'visual': ['--update'], 'typography': ['--update'], 'component-tokens': ['--update'], 'reflow': ['--update'],
+  'focus-order': ['--update'], 'zero-overlap': ['--record'],
+};
+const RUN_FLAGS = ['--full', '--on-demand', '--release'];
+// one argument may hold a name and its flags ("zero-overlap --record", as the owner's runner passes a whole line)
+const args = process.argv.slice(2).reduce((a, x) => a.concat(String(x).trim().split(/\s+/).filter(Boolean)), []);
 const full = args.includes('--full');
 const onDemand = args.includes('--on-demand');
 const release = args.includes('--release');
 // a name may carry its parts: keyboard:Toolbar,Tabs (the parts are passed to that test only, as TEST_ONLY)
-const parts = {};
-const names = args.filter((a) => !/^--/.test(a)).map((a) => {
-  const i = a.indexOf(':'); if (i < 0) return a;
-  const n = a.slice(0, i); parts[n] = a.slice(i + 1).split(',').map((x) => x.trim()).filter(Boolean); return n;
-});
+const parts = {}, flags = {}, names = [];
+let last = null;
+for (const a of args) {
+  if (RUN_FLAGS.includes(a)) continue;
+  if (/^--/.test(a)) {
+    if (!last) { console.error('Flag ' + a + ' has no test name before it (for example: zero-overlap --record)'); process.exit(2); }
+    if (ALL.indexOf(last) < 0) continue; // the unknown name stops the run below, as "No such test"
+    const ok = FLAGS[last] || [];
+    if (!ok.includes(a)) { console.error('Flag ' + a + ' is not allowed for ' + last + (ok.length ? ' (allowed: ' + ok.join(', ') + ')' : ' (it takes no flags)')); process.exit(2); }
+    if (!flags[last].includes(a)) flags[last].push(a);
+    continue;
+  }
+  const i = a.indexOf(':');
+  const n = i < 0 ? a : a.slice(0, i);
+  if (i >= 0) parts[n] = a.slice(i + 1).split(',').map((x) => x.trim()).filter(Boolean);
+  if (ALL.indexOf(n) >= 0) flags[n] = flags[n] || [];
+  names.push(n); last = n;
+}
 const bad = names.filter((n) => ALL.indexOf(n) < 0);
 if (bad.length) { console.error('No such test: ' + bad.join(', ') + ' (tests: ' + ALL.join(', ') + ')'); process.exit(2); }
 const env = Object.assign({}, process.env, full ? { TEST_SCOPE: 'full' } : {});
@@ -52,7 +75,9 @@ for (const n of list) {
   console.log('\n── ' + n + (full ? ' (full)' : ''));
   const only = parts[n] && parts[n].length ? parts[n].join(',') : '';
   if (only) console.log('   parts: ' + only);
-  const r = spawnSync(process.execPath, [path.join(__dirname, n + '.test.js')], { stdio: 'inherit', env: Object.assign({}, env, { TEST_ONLY: only }) });
+  const own = flags[n] || [];
+  if (own.length) console.log('   flags: ' + own.join(' '));
+  const r = spawnSync(process.execPath, [path.join(__dirname, n + '.test.js')].concat(own), { stdio: 'inherit', env: Object.assign({}, env, { TEST_ONLY: only }) });
   const s = ((Date.now() - t) / 1000).toFixed(1);
   times.push(n + ' ' + s + 's');
   if (r.status !== 0) failed.push(n);
