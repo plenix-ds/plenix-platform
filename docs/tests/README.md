@@ -108,8 +108,10 @@ Each line links to the test's page. A test that a group test starts is listed un
 - [entity-title-803](entity-title-803.md): This test makes sure the short title line for list rows and cards shows its parts, cuts a long title with "…", shows a loading placeholder and keeps rows on the 4px grid, in both reading directions.
 - [splitview-resize-873](splitview-resize-873.md): This test makes sure any split view can be resized as far as its room allows, within 90% of the window, instead of stopping at 720 pixels.
 - [control-cards-804](control-cards-804.md): This test makes sure the choice cards work with a radio, a checkbox or a switch: a click anywhere on a card changes it, with one control named by the card, in both reading directions.
+- [tree-virtual-815](tree-virtual-815.md): This test makes sure a folder tree with thousands of items stays fast, drawing only the rows on screen, while the keys, the screen reader positions and right to left still work.
 - [data-grid-card-chunks-809](data-grid-card-chunks-809.md): This test makes sure a data table with thousands of rows stays fast on a phone: its card form draws the first 100 cards, and more as the person scrolls.
 - [date-only](date-only.md): This test makes sure a date with no time, such as a due date of October 18, shows as October 18 for everyone, wherever they are in the world.
+- [picker-timezone-813](picker-timezone-813.md): This test makes sure the date and time pickers show and save dates and times in the app's time zone, so a team in several countries sees the same thing.
 - [formats](formats.md): This test makes sure numbers, dates, times, money, sizes, names, addresses and phone numbers are written the same correct way everywhere in Plenix, for American and German readers.
 - [ids-rtl-606](ids-rtl-606.md): This test makes sure case numbers and other computed identifiers read in the owner's chosen order, 01-20261020, on Arabic (right-to-left) pages.
 - [rtl-app-frame](rtl-app-frame.md): This test makes sure the frame around every Plenix app (header, navigation pane, side panel, tooltips, pop-up messages and command bar) is correctly mirrored on Arabic (right-to-left) pages.

@@ -6137,7 +6137,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const language = canonical(locale || formatLocale());
     const value = React2.useMemo(() => {
       const sources = Object.assign({}, catalogs, messages2 ? { [language]: messages2 } : {});
-      return Object.assign(createTranslator(language, sources, fallbackLocale), { dir: dir || directionOf(language), digits: digitsOf(numeralLocale(language, digits2 === "auto" ? void 0 : digits2)), format: bind(language, timeZone, digits2 === "auto" ? void 0 : digits2) });
+      return Object.assign(createTranslator(language, sources, fallbackLocale), { timeZone: timeZone || void 0, dir: dir || directionOf(language), digits: digitsOf(numeralLocale(language, digits2 === "auto" ? void 0 : digits2)), format: bind(language, timeZone, digits2 === "auto" ? void 0 : digits2) });
     }, [language, catalogs, messages2, fallbackLocale, timeZone, dir, digits2]);
     return /* @__PURE__ */ React2.createElement(LocaleContext.Provider, { value }, /* @__PURE__ */ React2.createElement(DirectionProvider, { locale: language, dir: value.dir, root }, children));
   }
@@ -6163,6 +6163,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function useDigits() {
     const value = React2.useContext(LocaleContext);
     return value ? value.digits : digitsOf(formatLocale());
+  }
+  function useTimeZone() {
+    const value = React2.useContext(LocaleContext);
+    return value ? value.timeZone : void 0;
   }
   const LARGE = { lg: true, xl: true };
   const VARIANT = ["", "-fill", "-24", "-24-fill"];
@@ -18623,6 +18627,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function useVirtualizer({ count: count2 = 0, mode = "fixed", axis = "y", grid = false, overscan = 4, sticky } = {}) {
     const viewportRef = React2.useRef(null);
     const [view, setView] = React2.useState({ offset: 0, size: 0, pitch: 0, columns: 1 });
+    const viewNow = React2.useRef(view);
+    viewNow.current = view;
     const [focused, setFocused] = React2.useState(-1);
     const sizes = React2.useRef(/* @__PURE__ */ new Map());
     const shown = React2.useRef({ start: 0, end: 0 });
@@ -18649,6 +18655,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
       const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
       const size = horizontal ? el.clientWidth : el.clientHeight;
+      const was = viewNow.current;
+      if (was.offset === offset && was.size === size && was.pitch === pitch2 && was.columns === columns2) return;
       setView((v) => v.offset === offset && v.size === size && v.pitch === pitch2 && v.columns === columns2 ? v : { offset, size, pitch: pitch2, columns: columns2 });
     }, [horizontal, grid, mode, count2, view.columns]);
     React2.useLayoutEffect(() => {
@@ -18730,10 +18738,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
     });
     pushGap(at2, rows);
     const itemProps = React2.useCallback((index2) => ({ "data-plx-virtual-index": index2, "aria-posinset": index2 + 1, "aria-setsize": count2 }), [count2]);
-    const scrollToIndex = React2.useCallback((index2) => {
+    const scrollToIndex = React2.useCallback((index2, options) => {
       const el = viewportRef.current;
       if (!el) return;
-      const offset = Math.floor(index2 / columns) * pitch;
+      let offset = Math.floor(index2 / columns) * pitch;
+      if (options && options.align === "nearest") {
+        const now = Math.abs(horizontal ? el.scrollLeft : el.scrollTop), size = horizontal ? el.clientWidth : el.clientHeight;
+        if (offset >= now && offset + pitch <= now + size) return;
+        if (offset + pitch > now + size) offset = offset + pitch - size;
+      }
       if (horizontal) el.scrollLeft = isRtl$2(el) ? -offset : offset;
       else el.scrollTop = offset;
       measure2();
@@ -24639,7 +24652,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const treeIcon = (i, filled) => typeof i === "string" || isIconModule(i) ? asIcon(i, { filled }) : React2.isValidElement(i) && i.type === Icon ? React2.cloneElement(i, { filled: filled || i.props.filled }) : i;
   const OPEN_ICONS$1 = { folder: FolderOpenIcon };
   const iconOf$1 = (n, isOpen) => isOpen ? n.openIcon || OPEN_ICONS$1[iconKey(n.icon)] || n.icon : n.icon;
-  function TreeItem({ n, level, tree }) {
+  function TreeItem({ n, level, tree, flat, pos, setsize, vprops }) {
     const { base: base2, selected, active, open, refs, moveTo: moveTo2, toggle: toggle2, onSelect, setFocusId, loader } = tree;
     const { focusVisible, focusProps } = useFocusable({ tabStop: "none", handlers: { onFocus: (e) => {
       if (e.target === e.currentTarget) setFocusId(n.id);
@@ -24661,9 +24674,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
         "aria-selected": n.id === selected,
         tabIndex: n.id === active ? 0 : -1,
         className: cx("plx-tree__item", n.id === selected && "is-selected"),
-        ...focusProps
+        ...focusProps,
+        ...flat ? Object.assign({}, vprops, { "aria-posinset": pos, "aria-setsize": setsize }) : null
       },
-      /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree__row", n.id === selected && "is-selected", focusVisible && "is-focus-visible"), "data-plx-level": Math.min(level, 12), onClick: () => {
+      /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree__row", flat && "plx-tree__row--fixed", n.id === selected && "is-selected", focusVisible && "is-focus-visible"), "data-plx-level": Math.min(level, 12), onClick: () => {
         moveTo2(n.id);
         if (onSelect) onSelect(n.id);
       } }, /* @__PURE__ */ React2.createElement(
@@ -24679,8 +24693,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
         },
         kids ? /* @__PURE__ */ React2.createElement(Icon, { icon: isOpen ? SquareMinusIcon : SquarePlusIcon, filled: false }) : null
       ), n.icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__icon" }, treeIcon(iconOf$1(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__label" }, n.label), n.meta !== void 0 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__meta" }, n.meta) : null),
-      isOpen && pending2 ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, /* @__PURE__ */ React2.createElement("li", { role: "none", className: "plx-tree__item" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-tree__row plx-tree__row--status", "data-plx-level": Math.min(level + 1, 12) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__toggle is-leaf", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node: n, className: "plx-tree__status" })))) : isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, n.children.map((c) => /* @__PURE__ */ React2.createElement(TreeItem, { key: c.id, n: c, level: level + 1, tree }))) : null
+      flat ? null : isOpen && pending2 ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, /* @__PURE__ */ React2.createElement("li", { role: "none", className: "plx-tree__item" }, /* @__PURE__ */ React2.createElement(StatusRow, { loader, node: n, level: level + 1 }))) : isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, n.children.map((c) => /* @__PURE__ */ React2.createElement(TreeItem, { key: c.id, n: c, level: level + 1, tree }))) : null
     );
+  }
+  function StatusRow({ loader, node, level, fixed }) {
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree__row", "plx-tree__row--status", fixed && "plx-tree__row--fixed"), "data-plx-level": Math.min(level, 12) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__toggle is-leaf", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node, className: "plx-tree__status" }));
   }
   function visible(nodes, open, parent, out) {
     nodes.forEach((n) => {
@@ -24689,7 +24706,17 @@ var Plenix = (function(exports, React2, reactDom, client) {
     });
     return out;
   }
-  function Tree({ label: label2, nodes: given, loadChildren, selected, onSelect, expanded, defaultExpanded = [], onExpandedChange, className }) {
+  function rowsOf(nodes, open, loader, level, out) {
+    nodes.forEach((n, i) => {
+      out.push({ node: n, level, pos: i + 1, setsize: nodes.length });
+      if (!open.has(n.id)) return;
+      if (loader.needs(n)) out.push({ status: n, level: level + 1 });
+      else if (n.children && n.children.length) rowsOf(n.children, open, loader, level + 1, out);
+    });
+    return out;
+  }
+  const TREE_AUTO_VIRTUAL = 200;
+  function Tree({ label: label2, nodes: given, loadChildren, virtualized, selected, onSelect, expanded, defaultExpanded = [], onExpandedChange, className }) {
     const base2 = useUid("plx-tree");
     const loader = useBranchLoader(loadChildren);
     const nodes = loader.merge(given);
@@ -24702,14 +24729,30 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const flat = visible(nodes, open, null, []);
     React2.useEffect(() => {
-      loader.ensure(flat.filter((v) => open.has(v.node.id)).map((v) => v.node));
+      loader.ensure(flat.filter((v2) => open.has(v2.node.id)).map((v2) => v2.node));
     });
     const [focusId, setFocusId] = React2.useState(null);
-    const active = flat.some((v) => v.node.id === focusId) ? focusId : flat.some((v) => v.node.id === selected) ? selected : flat[0] && flat[0].node.id;
+    const active = flat.some((v2) => v2.node.id === focusId) ? focusId : flat.some((v2) => v2.node.id === selected) ? selected : flat[0] && flat[0].node.id;
     const refs = React2.useRef({});
+    const rows = rowsOf(nodes, open, loader, 1, []);
+    const virtual = virtualized !== void 0 ? !!virtualized : rows.length > TREE_AUTO_VIRTUAL;
+    const v = useVirtualizer({ count: virtual ? rows.length : 0 });
+    const focusNext = React2.useRef(null);
+    React2.useEffect(() => {
+      const id = focusNext.current;
+      if (id !== null && refs.current[id]) {
+        focusNext.current = null;
+        refs.current[id].focus();
+      }
+    });
     const moveTo2 = (id) => {
       setFocusId(id);
-      if (refs.current[id]) refs.current[id].focus();
+      if (virtual) {
+        const i = rows.findIndex((r) => r.node && r.node.id === id);
+        if (i >= 0) v.scrollToIndex(i, { align: "nearest" });
+      }
+      if (refs.current[id] && refs.current[id].isConnected) refs.current[id].focus();
+      else focusNext.current = id;
     };
     const toggle2 = (id) => {
       const next = new Set(open);
@@ -24718,7 +24761,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setOpen(next);
     };
     const onKeyDown2 = (e) => {
-      const at2 = flat.findIndex((v) => v.node.id === active);
+      const at2 = flat.findIndex((v2) => v2.node.id === active);
       const cur = flat[at2];
       if (!cur) return;
       const pending2 = loader.needs(cur.node);
@@ -24743,6 +24786,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
       e.preventDefault();
     };
     const tree = { base: base2, selected, active, open, refs, moveTo: moveTo2, toggle: toggle2, onSelect, setFocusId, loader };
+    if (virtual) {
+      return /* @__PURE__ */ React2.createElement("ul", { ref: v.viewportRef, role: "tree", "aria-label": label2, className: cx("plx-tree", "plx-tree--virtual", className), onKeyDown: onKeyDown2 }, /* @__PURE__ */ React2.createElement(VirtualProbe, null), v.segments.map((s) => {
+        if (s.gap) return /* @__PURE__ */ React2.createElement(VirtualGap, { key: s.key, count: s.count });
+        const r = rows[s.index];
+        return r.status ? /* @__PURE__ */ React2.createElement("li", { key: "status-" + r.status.id, role: "none", className: "plx-tree__item", ...v.itemProps(s.index), "aria-posinset": void 0, "aria-setsize": void 0 }, /* @__PURE__ */ React2.createElement(StatusRow, { loader, node: r.status, level: r.level, fixed: true })) : /* @__PURE__ */ React2.createElement(TreeItem, { key: r.node.id, n: r.node, level: r.level, tree, flat: true, pos: r.pos, setsize: r.setsize, vprops: v.itemProps(s.index) });
+      }));
+    }
     return /* @__PURE__ */ React2.createElement("ul", { role: "tree", "aria-label": label2, className: cx("plx-tree", className), onKeyDown: onKeyDown2 }, nodes.map((n) => /* @__PURE__ */ React2.createElement(TreeItem, { key: n.id, n, level: 1, tree })));
   }
   const DEMO_SESSION = {
@@ -28355,8 +28405,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const FORMATS = ["datetime", "relative", "label", "date", "time"];
   const toDate$1 = (v) => v === void 0 || v === null || v === "" ? null : parseDate(v);
   const dayStart$1 = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const pad$2 = (n) => (n < 10 ? "0" : "") + n;
-  const calendarDay = (d) => d.getFullYear() + "-" + pad$2(d.getMonth() + 1) + "-" + pad$2(d.getDate());
+  const pad$3 = (n) => (n < 10 ? "0" : "") + n;
+  const calendarDay = (d) => d.getFullYear() + "-" + pad$3(d.getMonth() + 1) + "-" + pad$3(d.getDate());
   function dayLabel(d, now, o) {
     const days = Math.round((dayStart$1(d) - dayStart$1(now)) / 864e5);
     if (Math.abs(days) > 1) return formatDate(d, { dateStyle: "short", timeZone: o.timeZone, locale: o.locale });
@@ -30188,7 +30238,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const area = React2.useRef(null), list2 = React2.useRef(null), firstField = React2.useRef(null), groupsRef = React2.useRef(null), picker = React2.useRef(null);
     const editorRef = React2.useRef(null), saved = React2.useRef(null), pasting = React2.useRef(false), escaped = React2.useRef(false);
     const [ready, setReady] = React2.useState(false);
-    const [formats, setFormats] = React2.useState({});
+    const [formats2, setFormats] = React2.useState({});
     const [empty, setEmpty] = React2.useState(() => !String(defaultValue || "").replace(/<[^>]*>/g, "").trim());
     const [bar, setBar] = React2.useState(null);
     const [values, setValues] = React2.useState({});
@@ -30497,9 +30547,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }, [mentionOpen]);
     const usable = editable && ready;
     const PLAIN = ["undo", "redo", "clear", "rule", "image", "color"];
-    const pressedOf = (name) => PLAIN.indexOf(name) >= 0 ? void 0 : name === "highlight" ? !!formats.highlight : !!formats[name];
+    const pressedOf = (name) => PLAIN.indexOf(name) >= 0 ? void 0 : name === "highlight" ? !!formats2.highlight : !!formats2[name];
     const toolButton = (name) => {
-      const keys = keysOf(name), off2 = !usable || name === "undo" && !formats.undo || name === "redo" && !formats.redo;
+      const keys = keysOf(name), off2 = !usable || name === "undo" && !formats2.undo || name === "redo" && !formats2.redo;
       return /* @__PURE__ */ React2.createElement(Tooltip, { key: name, content: keys ? tipText(t[name], hotkeyLabel(keys)) : t[name], disabled: off2 }, /* @__PURE__ */ React2.createElement(
         Button,
         {
@@ -30522,10 +30572,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const hit = RICH_TEXT_FONTS.find((x) => x[1] === f);
       return f ? hit ? hit[0] : f.replace(/["']/g, "").split(",")[0] : t.font;
     };
-    const blockItems = () => /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: t.textStyle, value: formats.block || "paragraph", onChange: (v) => fromMenu(() => apply2(v === "paragraph" ? "paragraph" : v))() }, ["paragraph", "h1", "h2", "h3", "h4", "h5", "h6"].map((b) => /* @__PURE__ */ React2.createElement(MenuItem, { key: b, value: b, "aria-keyshortcuts": keysAria(keysOf(b)) }, blockName(b))));
+    const blockItems = () => /* @__PURE__ */ React2.createElement(MenuRadioGroup, { label: t.textStyle, value: formats2.block || "paragraph", onChange: (v) => fromMenu(() => apply2(v === "paragraph" ? "paragraph" : v))() }, ["paragraph", "h1", "h2", "h3", "h4", "h5", "h6"].map((b) => /* @__PURE__ */ React2.createElement(MenuItem, { key: b, value: b, "aria-keyshortcuts": keysAria(keysOf(b)) }, blockName(b))));
     const fontItems = () => [
-      /* @__PURE__ */ React2.createElement(MenuItem, { key: "d", checked: !formats.font, onSelect: fromMenu(() => apply2("defaultFont")) }, t.defaultFont),
-      ...RICH_TEXT_FONTS.map((f) => /* @__PURE__ */ React2.createElement(MenuItem, { key: f[0], checked: formats.font === f[1], onSelect: fromMenu(() => {
+      /* @__PURE__ */ React2.createElement(MenuItem, { key: "d", checked: !formats2.font, onSelect: fromMenu(() => apply2("defaultFont")) }, t.defaultFont),
+      ...RICH_TEXT_FONTS.map((f) => /* @__PURE__ */ React2.createElement(MenuItem, { key: f[0], checked: formats2.font === f[1], onSelect: fromMenu(() => {
         const ed = editorRef.current;
         if (ed) ed.chain().focus().setFontFamily(f[1]).run();
       }) }, f[0])),
@@ -30533,8 +30583,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       /* @__PURE__ */ React2.createElement(MenuItem, { key: "c", onSelect: () => setTimeout(() => apply2("customFont"), 0) }, t.custom)
     ];
     const sizeItems = () => [
-      /* @__PURE__ */ React2.createElement(MenuItem, { key: "d", checked: !formats.size, onSelect: fromMenu(() => apply2("defaultSize")) }, t.defaultSize),
-      ...RICH_TEXT_SIZES.map((s) => /* @__PURE__ */ React2.createElement(MenuItem, { key: s, checked: formats.size === s, onSelect: fromMenu(() => {
+      /* @__PURE__ */ React2.createElement(MenuItem, { key: "d", checked: !formats2.size, onSelect: fromMenu(() => apply2("defaultSize")) }, t.defaultSize),
+      ...RICH_TEXT_SIZES.map((s) => /* @__PURE__ */ React2.createElement(MenuItem, { key: s, checked: formats2.size === s, onSelect: fromMenu(() => {
         const ed = editorRef.current;
         if (ed) ed.chain().focus().setFontSize(s).run();
       }) }, s)),
@@ -30542,17 +30592,17 @@ var Plenix = (function(exports, React2, reactDom, client) {
       /* @__PURE__ */ React2.createElement(MenuItem, { key: "c", onSelect: () => setTimeout(() => apply2("customSize"), 0) }, t.custom)
     ];
     const tableItems = () => [
-      /* @__PURE__ */ React2.createElement(MenuItem, { key: "i", icon: ICONS$1.table, disabled: !usable || formats.table, onSelect: fromMenu(() => apply2("insertTable")) }, t.insertTable),
+      /* @__PURE__ */ React2.createElement(MenuItem, { key: "i", icon: ICONS$1.table, disabled: !usable || formats2.table, onSelect: fromMenu(() => apply2("insertTable")) }, t.insertTable),
       /* @__PURE__ */ React2.createElement(MenuDivider, { key: "d1" }),
-      ...["rowBefore", "rowAfter", "columnBefore", "columnAfter", "deleteRow", "deleteColumn"].map((n) => /* @__PURE__ */ React2.createElement(MenuItem, { key: n, icon: ICONS$1[n], disabled: !usable || !formats.table, onSelect: fromMenu(() => apply2(n)) }, t[n])),
-      /* @__PURE__ */ React2.createElement(MenuItem, { key: "h", checked: !!formats.headerRow, disabled: !usable || !formats.table, onSelect: fromMenu(() => apply2("headerRow")) }, t.headerRow),
+      ...["rowBefore", "rowAfter", "columnBefore", "columnAfter", "deleteRow", "deleteColumn"].map((n) => /* @__PURE__ */ React2.createElement(MenuItem, { key: n, icon: ICONS$1[n], disabled: !usable || !formats2.table, onSelect: fromMenu(() => apply2(n)) }, t[n])),
+      /* @__PURE__ */ React2.createElement(MenuItem, { key: "h", checked: !!formats2.headerRow, disabled: !usable || !formats2.table, onSelect: fromMenu(() => apply2("headerRow")) }, t.headerRow),
       /* @__PURE__ */ React2.createElement(MenuDivider, { key: "d2" }),
-      /* @__PURE__ */ React2.createElement(MenuItem, { key: "x", icon: ICONS$1.deleteTable, danger: true, disabled: !usable || !formats.table, onSelect: fromMenu(() => apply2("deleteTable")) }, t.deleteTable)
+      /* @__PURE__ */ React2.createElement(MenuItem, { key: "x", icon: ICONS$1.deleteTable, danger: true, disabled: !usable || !formats2.table, onSelect: fromMenu(() => apply2("deleteTable")) }, t.deleteTable)
     ];
     const menuButton = (name, text2, items, icon) => /* @__PURE__ */ React2.createElement(Menu, { key: name, label: t[name], trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", size: "sm", caret: true, icon, iconOnly: !!icon, label: icon ? t[name] : t[name] + ": " + text2, disabled: !usable, onMouseDown: (e) => e.preventDefault() }, text2) }, items());
     const GROUPS = toolbar === "full" ? [
-      { id: "block", label: t.textStyle, menus: [["textStyle", () => blockName(formats.block), blockItems]] },
-      { id: "font", label: t.font, menus: [["font", () => fontName(formats.font), fontItems], ["size", () => formats.size || t.size, sizeItems]] },
+      { id: "block", label: t.textStyle, menus: [["textStyle", () => blockName(formats2.block), blockItems]] },
+      { id: "font", label: t.font, menus: [["font", () => fontName(formats2.font), fontItems], ["size", () => formats2.size || t.size, sizeItems]] },
       { id: "marks", label: t.groupMarks, buttons: ["bold", "italic", "underline", "strike", "code", "subscript", "superscript"] },
       { id: "color", label: t.groupColor, buttons: ["color", "highlight"] },
       { id: "align", label: t.groupAlign, buttons: ["alignLeft", "alignCenter", "alignRight", "alignJustify"] },
@@ -30560,7 +30610,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       { id: "insert", label: t.groupInsert, buttons: ["link", "image"], menus: [["table", null, tableItems, ICONS$1.table]], after: ["codeBlock", "quote", "rule"] },
       { id: "history", label: t.groupHistory, buttons: ["undo", "redo", "clear"] }
     ] : [{ id: "marks", label: t.groupMarks, buttons: ["bold", "italic", "link"] }, { id: "lists", label: t.groupLists, buttons: ["bulleted", "numbered"] }];
-    const fit2 = useOverflow(groupsRef, GROUPS.length, toolbar + JSON.stringify([formats.block, formats.font, formats.size]));
+    const fit2 = useOverflow(groupsRef, GROUPS.length, toolbar + JSON.stringify([formats2.block, formats2.font, formats2.size]));
     const groupEl = (g) => /* @__PURE__ */ React2.createElement("span", { key: g.id, "data-plx-overflow-item": "", className: "plx-rich-text-editor__slot" }, /* @__PURE__ */ React2.createElement(Toolbar.Group, null, (g.buttons || []).map(toolButton), (g.menus || []).map((m) => menuButton(m[0], m[1] ? m[1]() : t[m[0]], m[2], m[3])), (g.after || []).map(toolButton)));
     const menuEntry = (name) => /* @__PURE__ */ React2.createElement(
       MenuItem,
@@ -30568,7 +30618,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         key: name,
         icon: ICONS$1[name],
         checked: pressedOf(name),
-        disabled: !usable || name === "undo" && !formats.undo || name === "redo" && !formats.redo,
+        disabled: !usable || name === "undo" && !formats2.undo || name === "redo" && !formats2.redo,
         "aria-keyshortcuts": keysOf(name) ? keysAria(keysOf(name)) : void 0,
         onSelect: ["image", "color", "highlight", "link"].indexOf(name) >= 0 ? () => setTimeout(() => apply2(name), 0) : fromMenu(() => apply2(name))
       },
@@ -30649,7 +30699,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     loadTiptap().catch(() => {
     });
   };
-  const pad$1 = (n, w) => String(n).padStart(2, "0");
+  const pad$2 = (n, w) => String(n).padStart(2, "0");
   function parseIsoDate(s) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ""));
     if (!m) return null;
@@ -30657,7 +30707,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return d.getMonth() === +m[2] - 1 ? d : null;
   }
   function isoDate(d) {
-    return d ? d.getFullYear() + "-" + pad$1(d.getMonth() + 1) + "-" + pad$1(d.getDate()) : "";
+    return d ? d.getFullYear() + "-" + pad$2(d.getMonth() + 1) + "-" + pad$2(d.getDate()) : "";
   }
   function addDays(iso2, n) {
     const d = parseIsoDate(iso2);
@@ -30905,6 +30955,69 @@ var Plenix = (function(exports, React2, reactDom, client) {
       /* @__PURE__ */ React2.createElement("div", { className: "plx-calendar__months" }, Array.from({ length: count2 }, (_, i) => monthGrid(shiftMonth(shown, i), i)))
     );
   });
+  const formats = /* @__PURE__ */ new Map();
+  const formatFor = (zone) => {
+    let f = formats.get(zone);
+    if (!f) {
+      f = new Intl.DateTimeFormat("en-US", { timeZone: zone, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      formats.set(zone, f);
+    }
+    return f;
+  };
+  const pad$1 = (n, size = 2) => String(n).padStart(size, "0");
+  function validZone(zone) {
+    if (!zone) return void 0;
+    try {
+      formatFor(zone);
+      return zone;
+    } catch (e) {
+      return void 0;
+    }
+  }
+  function wallOf(ms2, zone) {
+    const at2 = {};
+    formatFor(zone).formatToParts(new Date(ms2)).forEach((p) => {
+      if (p.type !== "literal") at2[p.type] = +p.value;
+    });
+    const hour = at2.hour % 24;
+    return {
+      date: pad$1(at2.year, 4) + "-" + pad$1(at2.month) + "-" + pad$1(at2.day),
+      time: pad$1(hour) + ":" + pad$1(at2.minute),
+      wall: Date.UTC(at2.year, at2.month - 1, at2.day, hour, at2.minute, at2.second)
+    };
+  }
+  function zoneOffset(ms2, zone) {
+    const whole2 = Math.floor(ms2 / 1e3) * 1e3;
+    return wallOf(whole2, zone).wall - whole2;
+  }
+  function instantOf(date, time, zone) {
+    const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date || ""), t = /^(\d{2}):(\d{2})$/.exec(time || "");
+    if (!d || !t) return NaN;
+    const wall = Date.UTC(+d[1], +d[2] - 1, +d[3], +t[1], +t[2]);
+    const day2 = 864e5;
+    const before = zoneOffset(wall - day2, zone), after = zoneOffset(wall + day2, zone);
+    const fits = [wall - before, wall - after].filter((ms2) => zoneOffset(ms2, zone) === wall - ms2);
+    if (fits.length) return Math.min(...fits);
+    return wall - before;
+  }
+  function isInstant(value) {
+    return typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})$/i.test(value) && !Number.isNaN(Date.parse(value));
+  }
+  function instantIso(date, time, zone) {
+    const ms2 = instantOf(date, time, zone);
+    return Number.isNaN(ms2) ? null : new Date(ms2).toISOString();
+  }
+  function todayIn(zone, now = Date.now()) {
+    return wallOf(now, zone).date;
+  }
+  function zoneName(locale, style, zone, ms2 = Date.now()) {
+    try {
+      const p = new Intl.DateTimeFormat(locale, { timeZoneName: style, timeZone: zone }).formatToParts(new Date(ms2)).find((x) => x.type === "timeZoneName");
+      return p ? p.value : "";
+    } catch (e) {
+      return "";
+    }
+  }
   const DASH$1 = " \u2013 ";
   function numericForm(locale) {
     const f = new Intl.DateTimeFormat(locale, { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -30939,14 +31052,6 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const iso2 = String(y).padStart(4, "0") + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
     return parseIsoDate(iso2) ? iso2 : null;
   }
-  const zoneOf = (locale, style) => {
-    try {
-      const p = new Intl.DateTimeFormat(locale, { timeZoneName: style }).formatToParts(/* @__PURE__ */ new Date()).find((x) => x.type === "timeZoneName");
-      return p ? p.value : "";
-    } catch (e) {
-      return "";
-    }
-  };
   const monthBounds = (iso2, n) => {
     const first = addMonths(iso2.slice(0, 7) + "-01", n);
     return { start: first, end: addDays(addMonths(first, 1), -1) };
@@ -30973,6 +31078,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     id,
     "aria-describedby": describedBy,
     locale: localeProp,
+    timeZone: zoneProp,
     strings,
     className,
     ...rest
@@ -30989,8 +31095,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (value === void 0) setOwn(v);
       if (onChange) onChange(v);
     };
-    const datePart = dateTime ? current2 ? String(current2).slice(0, 10) : null : current2;
-    const timePart = dateTime && current2 ? String(current2).slice(11, 16) : "";
+    const providerZone = useTimeZone();
+    const zone = validZone(zoneProp !== void 0 ? zoneProp : providerZone);
+    const wall = dateTime && zone && current2 && isInstant(current2) ? wallOf(Date.parse(current2), zone) : null;
+    const datePart = dateTime ? wall ? wall.date : current2 ? String(current2).slice(0, 10) : null : current2;
+    const timePart = wall ? wall.time : dateTime && current2 ? String(current2).slice(11, 16) : "";
+    const moment = (date, time) => zone ? instantIso(date, time, zone) : date + "T" + time;
     const show2 = (v) => range ? v && v.start ? form.format(v.start) + (v.end ? DASH$1 + form.format(v.end) : "") : "" : form.format(v);
     const [text2, setText] = React2.useState(show2(datePart));
     const [bad, setBad] = React2.useState(false);
@@ -31006,7 +31116,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const root = React2.useRef(null), input = React2.useRef(null), day2 = React2.useRef(null);
     React2.useImperativeHandle(ref, () => input.current);
     const allowed = (iso2) => !(min2 && iso2 < min2 || max2 && iso2 > max2 || isDateDisabled && isDateDisabled(iso2));
-    const withTime = (iso2) => iso2 ? iso2 + "T" + (timePart || defaultTime) : null;
+    const withTime = (iso2) => iso2 ? moment(iso2, timePart || defaultTime) : null;
     const setDate = (d) => commit(dateTime ? withTime(d) : d);
     const read2 = () => {
       typing.current = false;
@@ -31078,7 +31188,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setBad(false);
       close(true);
     };
-    const today = todayIso();
+    const today = zone ? todayIn(zone) : todayIso();
     const builtIn = range ? [
       { label: t.last7, value: { start: addDays(today, -6), end: today } },
       { label: t.last30, value: { start: addDays(today, -29), end: today } },
@@ -31087,7 +31197,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ] : [{ label: t.today, value: today }, { label: t.tomorrow, value: addDays(today, 1) }, { label: t.nextWeek, value: addDays(today, 7) }];
     const presetList = presets === true ? builtIn : Array.isArray(presets) ? presets : null;
     const pick = (p) => {
-      const v = dateTime && typeof p.value === "string" ? p.value.slice(0, 10) : p.value;
+      const v = dateTime && typeof p.value === "string" ? zone && isInstant(p.value) ? wallOf(Date.parse(p.value), zone).date : p.value.slice(0, 10) : p.value;
       if (range) {
         commit(v);
         setText(show2(v));
@@ -31098,7 +31208,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setBad(false);
       close(true);
     };
-    const zone = dateTime && timeZoneName ? zoneOf(locale, timeZoneName) : "";
+    const at2 = zone && dateTime && datePart ? instantOf(datePart, timePart || defaultTime, zone) : NaN;
+    const zoneLabel = dateTime && timeZoneName ? zoneName(locale, timeZoneName, zone, Number.isNaN(at2) ? Date.now() : at2) : "";
     const shown = range ? draft || datePart || { start: null, end: null } : datePart;
     const firstMonth = (range ? shown && shown.start : shown) || void 0;
     const cut = useTruncated(input, text2);
@@ -31148,7 +31259,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         }
       )),
       locked ? null : /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", size: "2xs", iconOnly: true, icon: CalendarIcon, className: "plx-date-picker__button", label: t.open, expanded: open, "aria-haspopup": "dialog", disabled, onClick: toggle2 })
-    ), dateTime ? /* @__PURE__ */ React2.createElement(InputGroup, { data: true, suffix: zone || void 0, disabled, invalid, warning, className: "plx-date-picker__time" }, /* @__PURE__ */ React2.createElement(
+    ), dateTime ? /* @__PURE__ */ React2.createElement(InputGroup, { data: true, suffix: zoneLabel || void 0, disabled, invalid, warning, className: "plx-date-picker__time" }, /* @__PURE__ */ React2.createElement(
       Input,
       {
         type: "time",
@@ -31159,7 +31270,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         readOnly: locked || void 0,
         onChange: (e) => {
           const v = e.target.value;
-          if (datePart) commit(datePart + "T" + (v || defaultTime));
+          if (datePart) commit(moment(datePart, v || defaultTime));
         }
       }
     )) : null);
@@ -31193,6 +31304,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           isDateDisabled,
           weekNumbers,
           locale,
+          today,
           focusRef: day2,
           label: t.dialog,
           strings: t.calendar
@@ -32069,6 +32181,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     readOnly: readOnlyOwn,
     id,
     name,
+    timeZone: zoneProp,
     strings,
     className,
     ...rest
@@ -32078,18 +32191,23 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const cycle = hourCycle ? String(hourCycle) : localeCycle();
     const locked = useReadOnly(readOnlyOwn);
     const [own2, setOwn] = React2.useState(defaultValue);
-    const current2 = value !== void 0 ? value : own2;
+    const value0 = value !== void 0 ? value : own2;
+    const providerZone = useTimeZone();
+    const zone = validZone(zoneProp !== void 0 ? zoneProp : providerZone);
+    const wall = zone && isInstant(value0) ? wallOf(Date.parse(value0), zone) : null;
+    const current2 = wall ? wall.time : value0;
     const lo = toMin(min2) !== null ? toMin(min2) : 0, hi = toMin(max2) !== null ? toMin(max2) : 24 * 60 - 1;
     const clamp2 = (n) => Math.min(hi, Math.max(lo, n));
     const commit = (mins) => {
       if (locked) return;
       const v = mins === null ? "" : fromMin(clamp2(mins));
-      if (value === void 0) setOwn(v);
-      if (onChange && v !== current2) onChange(v);
+      const out = wall && v ? instantIso(wall.date, v, zone) : v;
+      if (value === void 0) setOwn(out);
+      if (onChange && v !== current2) onChange(out);
     };
     useDigits();
     const cls = cx("plx-time-picker", "plx-time-picker--" + variant, width && "plx-time-picker--width-" + width, disabled && "is-disabled", className);
-    const hidden = name ? /* @__PURE__ */ React2.createElement("input", { type: "hidden", name, value: current2 || "" }) : null;
+    const hidden = name ? /* @__PURE__ */ React2.createElement("input", { type: "hidden", name, value: value0 || "" }) : null;
     if (variant === "segments") return /* @__PURE__ */ React2.createElement(Segments, { ref, ...{ t, cycle, step: step || 1, current: current2, commit, lo, hi, label: label2, invalid, warning, disabled, locked, id, cls, hidden, rest } });
     return /* @__PURE__ */ React2.createElement(ListPicker, { ref, ...{ t, cycle, step: step || 15, current: current2, commit, lo, hi, label: label2, invalid, warning, disabled, locked, id, cls, hidden, rest } });
   });
@@ -33123,6 +33241,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function TreeSelect({
     nodes: given = EMPTY,
     loadChildren,
+    virtualized,
     value,
     values,
     onChange,
@@ -33168,9 +33287,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const openSet = q2 ? new Set(Array.from(byId.keys())) : new Set(expanded);
     const flat = flatten$2(shownNodes, openSet, null, []);
     React2.useEffect(() => {
-      if (open && !q2) loader.ensure(flat.filter((v) => openSet.has(v.node.id)).map((v) => v.node));
+      if (open && !q2) loader.ensure(flat.filter((v2) => openSet.has(v2.node.id)).map((v2) => v2.node));
     });
-    const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.find((v) => chosen.indexOf(v.node.id) >= 0) || flat[0] || { node: {} }).node.id;
+    const active = flat.some((v2) => v2.node.id === focusId) ? focusId : (flat.find((v2) => chosen.indexOf(v2.node.id) >= 0) || flat[0] || { node: {} }).node.id;
     const activeRef = React2.useRef(active);
     activeRef.current = active;
     if (!firstRef.current) firstRef.current = { get current() {
@@ -33188,9 +33307,22 @@ var Plenix = (function(exports, React2, reactDom, client) {
       else next.add(nid);
       setExpanded(Array.from(next));
     };
+    const focusNext = React2.useRef(null);
+    React2.useEffect(() => {
+      const nid = focusNext.current;
+      if (nid !== null && refs.current[nid]) {
+        focusNext.current = null;
+        refs.current[nid].focus();
+      }
+    });
     const moveTo2 = (nid) => {
       setFocusId(nid);
-      if (refs.current[nid]) refs.current[nid].focus();
+      if (virtual) {
+        const i = rows.findIndex((r) => r.node && r.node.id === nid);
+        if (i >= 0) v.scrollToIndex(i, { align: "nearest" });
+      }
+      if (refs.current[nid] && refs.current[nid].isConnected) refs.current[nid].focus();
+      else focusNext.current = nid;
     };
     const choose = (n) => {
       if (!onChange) return;
@@ -33212,7 +33344,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       onChange(all ? chosen.filter((c) => ls.indexOf(c) < 0) : chosen.concat(ls.filter((l) => chosen.indexOf(l) < 0)));
     };
     const onKeyDown2 = (e) => {
-      const at2 = flat.findIndex((v) => v.node.id === active), cur = flat[at2];
+      const at2 = flat.findIndex((v2) => v2.node.id === active), cur = flat[at2];
       if (!cur) return;
       const pending2 = !q2 && loader.needs(cur.node), kids = !!kidsOf(cur.node) || pending2, isOpen = kids && openSet.has(cur.node.id);
       const rtl = isRtl$2(e.currentTarget);
@@ -33235,7 +33367,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       else return;
       e.preventDefault();
     };
-    const renderNodes = (list2, level) => list2.map((n) => {
+    const renderNode = (n, level, flatRow) => {
       const pending2 = !q2 && loader.needs(n), kids = !!kidsOf(n) || pending2, isOpen = kids && openSet.has(n.id), state = stateOf(n);
       return /* @__PURE__ */ React2.createElement(
         "li",
@@ -33247,6 +33379,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           id: base2 + "-" + n.id,
           role: "treeitem",
           "aria-level": level,
+          ...flatRow ? Object.assign({}, flatRow.vprops, { "aria-posinset": flatRow.pos, "aria-setsize": flatRow.setsize }) : null,
           "aria-busy": pending2 && isOpen && loader.statusOf(n) === "loading" ? true : void 0,
           "aria-expanded": kids ? !!isOpen : void 0,
           "aria-selected": multiple ? void 0 : state === "true",
@@ -33268,7 +33401,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             choose(n);
           }
         },
-        /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree__row", !multiple && state === "true" && "is-selected", n.id === ringId && "is-focus-visible"), "data-plx-level": Math.min(level, 12) }, /* @__PURE__ */ React2.createElement(
+        /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree__row", flatRow && "plx-tree__row--fixed", !multiple && state === "true" && "is-selected", n.id === ringId && "is-focus-visible"), "data-plx-level": Math.min(level, 12) }, /* @__PURE__ */ React2.createElement(
           "span",
           {
             className: cx("plx-tree__toggle", isOpen && "is-open", !kids && "is-leaf"),
@@ -33295,9 +33428,21 @@ var Plenix = (function(exports, React2, reactDom, client) {
             }
           }
         ) : null, n.icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__icon" }, asIcon(iconOf(n, isOpen || state === "true"))) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__label" }, q2 ? highlightMatch(n.label, q2) : n.label)),
-        isOpen && pending2 ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, /* @__PURE__ */ React2.createElement("li", { role: "none", className: "plx-tree__item" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-tree__row plx-tree__row--status", "data-plx-level": Math.min(level + 1, 12) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__toggle is-leaf", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node: n, className: "plx-tree__status" })))) : isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, renderNodes(n.children, level + 1)) : null
+        flatRow ? null : isOpen && pending2 ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, /* @__PURE__ */ React2.createElement("li", { role: "none", className: "plx-tree__item" }, statusRow(n, level + 1))) : isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, renderNodes(n.children, level + 1)) : null
       );
+    };
+    const renderNodes = (list2, level) => list2.map((n) => renderNode(n, level));
+    const statusRow = (n, level, fixed) => /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree__row", "plx-tree__row--status", fixed && "plx-tree__row--fixed"), "data-plx-level": Math.min(level, 12) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__toggle is-leaf", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node: n, className: "plx-tree__status" }));
+    const rows = [];
+    const addRows = (list2, level) => list2.forEach((n, i) => {
+      rows.push({ node: n, level, pos: i + 1, setsize: list2.length });
+      if (!openSet.has(n.id)) return;
+      if (!q2 && loader.needs(n)) rows.push({ status: n, level: level + 1 });
+      else if (kidsOf(n)) addRows(n.children, level + 1);
     });
+    addRows(shownNodes, 1);
+    const virtual = virtualized !== void 0 ? !!virtualized : rows.length > TREE_AUTO_VIRTUAL;
+    const v = useVirtualizer({ count: virtual ? rows.length : 0 });
     const names2 = chosen.map((c) => byId.get(c) ? byId.get(c).node.label : c);
     const summary2 = names2.length > 2 ? t.more.replace("{list}", names2.slice(0, 2).join(", ")).replace("{n}", names2.length - 2) : names2.join(", ");
     const name = label2 || t.choose;
@@ -33351,7 +33496,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
             }
           }
         }
-      ) : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-tree-select__scroll" }, flat.length ? /* @__PURE__ */ React2.createElement("ul", { role: "tree", "aria-label": name, "aria-multiselectable": multiple || void 0, className: "plx-tree plx-tree-select__tree", onKeyDown: onKeyDown2 }, renderNodes(shownNodes, 1)) : /* @__PURE__ */ React2.createElement("p", { className: "plx-tree-select__empty", role: "status" }, t.empty)))
+      ) : null, /* @__PURE__ */ React2.createElement("div", { className: cx("plx-tree-select__scroll", virtual && flat.length && "plx-tree-select__scroll--virtual") }, !flat.length ? /* @__PURE__ */ React2.createElement("p", { className: "plx-tree-select__empty", role: "status" }, t.empty) : virtual ? /* @__PURE__ */ React2.createElement("ul", { ref: v.viewportRef, role: "tree", "aria-label": name, "aria-multiselectable": multiple || void 0, className: "plx-tree plx-tree--virtual plx-tree-select__tree plx-tree-select__tree--virtual", onKeyDown: onKeyDown2 }, /* @__PURE__ */ React2.createElement(VirtualProbe, null), v.segments.map((s) => {
+        if (s.gap) return /* @__PURE__ */ React2.createElement(VirtualGap, { key: s.key, count: s.count });
+        const r = rows[s.index];
+        return r.status ? /* @__PURE__ */ React2.createElement("li", { key: "status-" + r.status.id, role: "none", className: "plx-tree__item", ...v.itemProps(s.index), "aria-posinset": void 0, "aria-setsize": void 0 }, statusRow(r.status, r.level, true)) : renderNode(r.node, r.level, { pos: r.pos, setsize: r.setsize, vprops: v.itemProps(s.index) });
+      })) : /* @__PURE__ */ React2.createElement("ul", { role: "tree", "aria-label": name, "aria-multiselectable": multiple || void 0, className: "plx-tree plx-tree-select__tree", onKeyDown: onKeyDown2 }, renderNodes(shownNodes, 1))))
     ));
   }
   const AUTO_VIRTUAL = 500;
@@ -38781,13 +38930,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
       error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null
     ));
   }
-  function SaveAs({ locations = [], initialName = "", initialLocation = "", initialFormat = "", formats = [], onSave, onCancel, strings, className }) {
+  function SaveAs({ locations = [], initialName = "", initialLocation = "", initialFormat = "", formats: formats2 = [], onSave, onCancel, strings, className }) {
     const t = useStrings("saveAs", strings);
     const [name, setName] = React2.useState(initialName), [location2, setLocation] = React2.useState(initialLocation);
-    const [format, setFormat] = React2.useState(initialFormat || formats[0]?.value || "");
+    const [format, setFormat] = React2.useState(initialFormat || formats2[0]?.value || "");
     const [busy, setBusy] = React2.useState(false), [error, setError] = React2.useState(""), [saved, setSaved] = React2.useState(false);
     const lock2 = React2.useRef(false);
-    const guard = useUnsavedGuard(!saved && (name !== initialName || location2 !== initialLocation || format !== (initialFormat || formats[0]?.value || "")), t.unsaved);
+    const guard = useUnsavedGuard(!saved && (name !== initialName || location2 !== initialLocation || format !== (initialFormat || formats2[0]?.value || "")), t.unsaved);
     const submit = async (e) => {
       e.preventDefault();
       if (lock2.current) return;
@@ -38814,7 +38963,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }, disabled: busy })), /* @__PURE__ */ React2.createElement(Field, { label: t.location, required: true }, /* @__PURE__ */ React2.createElement(TreeSelect, { nodes: locations, value: location2, onChange: (v) => {
       setLocation(v);
       setSaved(false);
-    }, disabled: busy, label: t.location })), formats.length ? /* @__PURE__ */ React2.createElement(Field, { label: t.format }, /* @__PURE__ */ React2.createElement(Select, { options: formats, value: format, onChange: (e) => {
+    }, disabled: busy, label: t.location })), formats2.length ? /* @__PURE__ */ React2.createElement(Field, { label: t.format }, /* @__PURE__ */ React2.createElement(Select, { options: formats2, value: format, onChange: (e) => {
       setFormat(e.target.value);
       setSaved(false);
     }, disabled: busy })) : null, error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, /* @__PURE__ */ React2.createElement(FormActions, { sticky: false }, onCancel ? /* @__PURE__ */ React2.createElement(Button, { onClick: guard(onCancel), disabled: busy }, t.cancel) : null, /* @__PURE__ */ React2.createElement(Button, { type: "submit", variant: "primary", disabled: busy }, t.save)));
@@ -40328,12 +40477,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       ) }
     ] })));
   }
-  function ExportDialog({ open, title, onClose, formats = [], selectedCount = 0, onExport, allowBackground = true, initialBackground = false, strings, className }) {
+  function ExportDialog({ open, title, onClose, formats: formats2 = [], selectedCount = 0, onExport, allowBackground = true, initialBackground = false, strings, className }) {
     const t = useStrings("exportDialog", strings);
-    const [format, setFormat] = React2.useState(formats[0]?.value || ""), [scope, setScope] = React2.useState("all"), [background, setBackground] = React2.useState(initialBackground);
+    const [format, setFormat] = React2.useState(formats2[0]?.value || ""), [scope, setScope] = React2.useState("all"), [background, setBackground] = React2.useState(initialBackground);
     const [busy, setBusy] = React2.useState(false), [result, setResult] = React2.useState(null), [finished, setFinished] = React2.useState(false), [error, setError] = React2.useState("");
     const lock2 = React2.useRef(false), epoch = React2.useRef(0), initial = React2.useRef(null);
-    initial.current = { format: formats[0]?.value || "", background: initialBackground };
+    initial.current = { format: formats2[0]?.value || "", background: initialBackground };
     React2.useEffect(() => {
       epoch.current++;
       lock2.current = false;
@@ -40350,7 +40499,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }, [open]);
     const start2 = async () => {
       if (lock2.current) return;
-      if (!formats.some((f) => f.value === format) || scope === "selection" && selectedCount < 1) {
+      if (!formats2.some((f) => f.value === format) || scope === "selection" && selectedCount < 1) {
         setError(t.invalid);
         return;
       }
@@ -40384,7 +40533,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         dismissible: !busy,
         footer: finished ? /* @__PURE__ */ React2.createElement(Button, { onClick: onClose }, t.done) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { disabled: busy, onClick: onClose }, t.cancel), /* @__PURE__ */ React2.createElement(Button, { variant: "primary", disabled: busy || !onExport, onClick: start2 }, t.export))
       },
-      /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-export-dialog", className), "aria-busy": busy }, finished ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Badge, { icon: background && allowBackground ? RefreshIcon : CheckIcon$1, tone: background && allowBackground ? "active" : "success", role: "status" }, background && allowBackground ? t.queued : t.ready), result?.href ? /* @__PURE__ */ React2.createElement(Link, { href: result.href }, result.label || t.download) : null) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Field, { label: t.format }, /* @__PURE__ */ React2.createElement(Select, { disabled: busy, value: format, onChange: (e) => setFormat(e.target.value), options: formats })), /* @__PURE__ */ React2.createElement(Field, { label: t.scope }, /* @__PURE__ */ React2.createElement(
+      /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-export-dialog", className), "aria-busy": busy }, finished ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Badge, { icon: background && allowBackground ? RefreshIcon : CheckIcon$1, tone: background && allowBackground ? "active" : "success", role: "status" }, background && allowBackground ? t.queued : t.ready), result?.href ? /* @__PURE__ */ React2.createElement(Link, { href: result.href }, result.label || t.download) : null) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Field, { label: t.format }, /* @__PURE__ */ React2.createElement(Select, { disabled: busy, value: format, onChange: (e) => setFormat(e.target.value), options: formats2 })), /* @__PURE__ */ React2.createElement(Field, { label: t.scope }, /* @__PURE__ */ React2.createElement(
         Select,
         {
           disabled: busy,
@@ -40457,7 +40606,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null
     ));
   }
-  function Offboarding({ open, onClose, accountName, action = "cancel", onConfirm, onExport, formats = [], children, strings, className }) {
+  function Offboarding({ open, onClose, accountName, action = "cancel", onConfirm, onExport, formats: formats2 = [], children, strings, className }) {
     const words2 = useStrings("offboarding", strings);
     const named2 = action === "delete" ? words2.deleteAccount : words2.cancelSubscription;
     const t = Object.assign({}, words2, { title: strings && strings.title || named2, complete: strings && strings.complete || named2 });
@@ -40492,7 +40641,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           }
         ]
       }
-    ), onExport ? /* @__PURE__ */ React2.createElement(ExportDialog, { open: exporting && open, onClose: () => setExporting(false), formats, onExport, strings }) : null);
+    ), onExport ? /* @__PURE__ */ React2.createElement(ExportDialog, { open: exporting && open, onClose: () => setExporting(false), formats: formats2, onExport, strings }) : null);
   }
   function ShortcutsDialog({ open, onClose, searchable = true, strings, className }) {
     const t = useStrings("shortcutsDialog", strings);
@@ -45128,6 +45277,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   exports.useSortable = useSortable;
   exports.useStrings = useStrings;
   exports.useTheme = useTheme;
+  exports.useTimeZone = useTimeZone;
   exports.useToast = useToast;
   exports.useUndo = useUndo;
   exports.useUnsavedGuard = useUnsavedGuard;

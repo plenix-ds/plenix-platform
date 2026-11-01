@@ -9,9 +9,15 @@
    Props:
      width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
-     value: the time as "HH:MM" on a 24-hour clock ("14:30"), or "" for none; the same whatever clock is shown
+     value: the time as "HH:MM" on a 24-hour clock ("14:30"), or "" for none; the same whatever clock is shown. With a time
+       zone it may also be one moment, an ISO string ending in Z or an offset ("2026-03-08T14:30:00.000Z"): the picker shows
+       its time in the zone
      defaultValue: the time it starts with, uncontrolled
-     onChange(value): runs with the new "HH:MM" (or "" when cleared)
+     onChange(value): runs with the new "HH:MM" (or "" when cleared); for a moment value, the moment of the time chosen on
+       the same day in the zone, in UTC ("2026-03-08T15:00:00.000Z")
+     timeZone: the IANA zone a moment value shows and saves in ("Europe/Lisbon"; issue 813); default the nearest
+       LocaleProvider's timeZone, else the computer's zone (exactly as before); null keeps the computer's zone. An "HH:MM"
+       value is a time of day: no zone moves it
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
@@ -45,6 +51,8 @@
    Notes:
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
+     A moment value keeps its day in the zone: a time the zone skips when the clocks go forward reads as the time after the
+       change (02:30 is 03:30), and a time it repeats when they go back is the earlier one.
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
@@ -52,7 +60,8 @@ import { cx } from '../../utils/cx.ts';
 import { formatLocale } from '../../utils/format.ts';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { localDigits, toLatinDigits } from '../../utils/digits.ts';
-import { useDigits } from '../../providers/LocaleProvider.tsx';
+import { useDigits, useTimeZone } from '../../providers/LocaleProvider.tsx';
+import { validZone, wallOf, isInstant, instantIso } from '../../utils/zone.ts';
 
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { Icon } from '../Icon/Icon.tsx';
@@ -88,24 +97,30 @@ const show = (mins, cycle, t, digits) => {
 };
 
 export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label, width,
-  invalid, warning, disabled, readOnly: readOnlyOwn, id, name, strings, className, ...rest }, ref) {
+  invalid, warning, disabled, readOnly: readOnlyOwn, id, name, timeZone: zoneProp, strings, className, ...rest }, ref) {
   devWarn('TimePicker', { variant }, { variant: ['list','segments'] });
   const t = useStrings('timePicker', strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the time shows and nothing changes it (the list does not open)
   const [own, setOwn] = React.useState(defaultValue);
-  const current = value !== undefined ? value : own;
+  const value0 = value !== undefined ? value : own;
+  // the time zone (issue 813): its own, else LocaleProvider's; a moment value shows its time in the zone, on its day there
+  const providerZone = useTimeZone();
+  const zone = validZone(zoneProp !== undefined ? zoneProp : providerZone);
+  const wall = zone && isInstant(value0) ? wallOf(Date.parse(value0), zone) : null;
+  const current = wall ? wall.time : value0;   // the "HH:MM" shown
   const lo = toMin(min) !== null ? toMin(min) : 0, hi = toMin(max) !== null ? toMin(max) : 24 * 60 - 1;
   const clamp = (n) => Math.min(hi, Math.max(lo, n));
   const commit = (mins) => {
     if (locked) return;
     const v = mins === null ? '' : fromMin(clamp(mins));
-    if (value === undefined) setOwn(v);
-    if (onChange && v !== current) onChange(v);
+    const out = wall && v ? instantIso(wall.date, v, zone) : v;   // a moment value stays a moment, on the same day in the zone
+    if (value === undefined) setOwn(out);
+    if (onChange && v !== current) onChange(out);
   };
   const digits = useDigits();
   const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
-  const hidden = name ? <input type="hidden" name={name} value={current || ''} /> : null;
+  const hidden = name ? <input type="hidden" name={name} value={value0 || ''} /> : null;
   if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }} />;
   return <ListPicker ref={ref} {...{ t, cycle, step: step || 15, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }} />;
 });
