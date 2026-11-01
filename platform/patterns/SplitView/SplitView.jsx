@@ -20,7 +20,11 @@
        "First panel"), its name is "{firstLabel} width" or "… height"
      defaultSize: the first panel's starting width (side by side) or height (stacked), in pixels; size /
        onSizeChange(px): the parent keeps it (keep it in the view to remember it per person)
-     minSize, maxSize: its limits in pixels (defaults: 360–720 side by side, 200–500 stacked)
+     minSize: a number: the first panel's floor in pixels (default 360 side by side, 200 stacked); never above the ceiling, so both
+       panels stay usable
+     maxSize: a number: stacked, the first panel's ceiling in pixels (default 500). Side by side it is deprecated and no longer caps
+       the drag (issue 873): the ceiling is the room, as below; a larger maxSize is the room anyway, a smaller one is ignored
+       (no error)
      steps: settled sizes allowed; the divider follows the pointer within its limits and snaps to these on release.
        Without steps it settles on the 4px grid. Side by side, the other pane retains its token minimum width;
        stacked, its token minimum height.
@@ -35,7 +39,14 @@
        lines and grip take the focus color while focused or dragged. Stacked, the same turned a quarter.
      Dragging: the divider moves one grid line (4px) at a time within the limits and stays on the grid when let go, or
        settles on the nearest of the steps when there are steps. Sizes are honoured up to 1600px (Resizable's
-       GRID_BOX_MAX): a larger size or maxSize lands on 1600px.
+       GRID_BOX_MAX): a larger size lands on 1600px.
+     Side by side, how far (issue 873, the owner: "I need to be able to resize any split view screen"): the first panel
+       drags as far as the split view's room allows while the second keeps its token minimum width
+       (--plx-comp-split-view-second-min-width), and never past the window's share (--plx-sys-shell-pane-window-share, 90%,
+       read as Resizable's side panels read it). There is no fixed 720px ceiling. defaultSize stays the starting width; a
+       remembered size (size, onSizeChange) comes back up to that ceiling. At the room's limit the words say the other pane
+       needs its minimum; at the window's share, "Largest width for … (Npx)" names the width. The keyboard's End and the
+       separator's aria-valuemax follow the same ceiling, and a smaller window lowers it at once.
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
@@ -63,13 +74,20 @@ import { GridPane } from '../../components/DataGrid/room.js';
 import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.ts';
 import { Resizable } from '../../components/Resizable/Resizable.jsx';
-import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { useStrings, useDigits } from '../../providers/LocaleProvider.tsx';
+import { localDigits } from '../../utils/digits.ts';
+import { shareOf } from '../../utils/paneLimit.ts';
 
-const LIMITS = { 'side-by-side': [360, 720, 560], stacked: [200, 500, 320] };
+// side by side: the floor and the starting width (the ceiling is the room, never more than the window's share: issue 873);
+// stacked: the floor, the ceiling and the starting height
+const LIMITS = { 'side-by-side': [360, Infinity, 560], stacked: [200, 500, 320] };
 
 export function SplitView({ orientation = 'side-by-side', first, second, label, firstLabel, defaultSize, size, onSizeChange,
   minSize, maxSize, steps, className, ...rest }) {
   const tw = useStrings('splitView');
+  const digits = useDigits();
+  // the other pane's minimum in the words at the limit, in the page's digits (Arabic-Indic in Arabic)
+  const otherNeeds = (n) => tw.maxWidth.replace('{n}', localDigits(String(n), { digits }));
   if (firstLabel === undefined) firstLabel = tw.firstLabel;
   const shell = useAppLayout();
   const claim = shell && shell.claimPage;
@@ -98,7 +116,9 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
       const gap = parseFloat(horizontal ? panelsStyle.columnGap : panelsStyle.rowGap) || 0;
       const floor = horizontal || !side ? (minSize ?? lo) : LIMITS.stacked[0];
       const max = Math.max(floor, (horizontal ? box.width : box.height) - gap - minimum);
-      setAvailable(previous => previous && previous.max === max && previous.minimum === minimum && previous.horizontal === horizontal ? previous : { max, minimum, horizontal });
+      // the window's share (--plx-sys-shell-pane-window-share, 90%, on the 4px grid), as Resizable's side panels read it (issue 873)
+      const share = shareOf(win.innerWidth, element);
+      setAvailable(previous => previous && previous.max === max && previous.minimum === minimum && previous.horizontal === horizontal && previous.share === share ? previous : { max, minimum, horizontal, share });
     };
     measure();
     const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
@@ -109,21 +129,29 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
     win.addEventListener('pointerup', settle, true); win.addEventListener('pointercancel', settle, true);
     return () => { if (observer) observer.disconnect(); win.removeEventListener('resize', measure); win.removeEventListener('pointerup', settle, true); win.removeEventListener('pointercancel', settle, true); };
   }, [side, minSize, lo]);
-  const requestedMax = maxSize ?? hi;
+  // side by side (issue 873, the owner: "I need to be able to resize any split view screen"): the first panel drags as far as the
+  // room allows while the second keeps its token minimum, and never past the window's share (90%). maxSize no longer caps it:
+  // a larger one is the room anyway, a smaller one is ignored (deprecated). Before the first measure: the window's share.
   const sideRoom = side && available && available.horizontal ? available : null;
-  const constrained = !!sideRoom && sideRoom.max < requestedMax;
-  const widthMax = constrained ? sideRoom.max : requestedMax;
+  const windowShare = available ? available.share : (typeof window === 'undefined' ? Infinity : shareOf(window.innerWidth));
+  const sideMax = sideRoom ? Math.min(sideRoom.max, windowShare) : windowShare;
+  const requestedMax = side ? sideMax : (maxSize ?? hi);
+  // at the room's limit the words say why (the other pane's minimum); at the window's share, Resizable's own words with the width
+  const constrained = !!sideRoom && sideRoom.max <= windowShare;
+  const widthMax = sideMax;
+  // minSize stays a floor, never above the ceiling, so both panels stay usable
+  const widthMin = Math.min(minSize || lo, sideMax);
   // stacked (by its orientation or its room): the divider stops where the second panel would get shorter than its token
   // minimum (issue 560), and says so at that limit
   const stackRoom = available && !available.horizontal ? available : null;
   const heightMax = (wanted) => (stackRoom && stackRoom.max < wanted ? stackRoom.max : wanted);
-  const heightWords = (wanted) => (stackRoom && stackRoom.max < wanted ? { maxHeight: tw.maxWidth.replace('{n}', stackRoom.minimum) } : undefined);
+  const heightWords = (wanted) => (stackRoom && stackRoom.max < wanted ? { maxHeight: otherNeeds(stackRoom.minimum) } : undefined);
   const [, , stackedStart] = LIMITS.stacked;
   const box = side && roomStacked
     // stacked by its room: the stacked divider, its height limits and start, a horizontal separator that Up and Down move
-    ? { axis: 'vertical', defaultWidth: defaultSize != null ? defaultSize : start, minWidth: minSize || lo, maxWidth: requestedMax, defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: heightMax(LIMITS.stacked[1]), strings: heightWords(LIMITS.stacked[1]) }
+    ? { axis: 'vertical', defaultWidth: defaultSize != null ? defaultSize : start, minWidth: widthMin, maxWidth: requestedMax, defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: heightMax(LIMITS.stacked[1]), strings: heightWords(LIMITS.stacked[1]) }
     : side
-    ? { axis: 'horizontal', defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: LIMITS.stacked[1], defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: minSize || lo, maxWidth: widthMax, strings: constrained ? { maxWidth: tw.maxWidth.replace('{n}', available.minimum) } : undefined, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
+    ? { axis: 'horizontal', defaultHeight: stackedStart, minHeight: LIMITS.stacked[0], maxHeight: LIMITS.stacked[1], defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: widthMin, maxWidth: widthMax, strings: constrained ? { maxWidth: otherNeeds(available.minimum) } : undefined, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
     : { axis: 'vertical', defaultHeight: defaultSize != null ? defaultSize : start, height: size, minHeight: minSize || lo, maxHeight: heightMax(maxSize || hi), strings: heightWords(maxSize || hi), onResize: onSizeChange ? (s) => onSizeChange(s.height) : undefined };
   return (
     <GridPane.Provider value={true}><div ref={container} role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>

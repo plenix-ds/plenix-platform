@@ -63,7 +63,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     for (const dir of ['ltr', 'rtl']) {
       const d = dir + ': ';
       // wide: the columns (5 x 160 + 120 + the selection and row menu columns, about 1,000px) fit a 1100px panel. SplitView limits
-      // its first panel to 360-720px side by side unless maxSize says more, so the fixture passes maxSize 1200; the 1600px
+      // its first panel as far as its room (issue 873; maxSize no longer caps it); the fixture still passes maxSize 1200; the 1600px
       // viewport leaves room for it (the panels, less the 8px gap and the second panel's 320px minimum, about 1240px)
       await draw({ dir, size: 1100 });
       let s = await state();
@@ -96,7 +96,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       await page.evaluate(() => { window.__log = []; const r = document.querySelectorAll('.plx-data-grid__grid-row')[2]; r.focus(); });
       await press('Enter');
       assert.ok((await log()).some((l) => l.startsWith('open ')), d + 'Enter on a card opens the row');
-      // back across the threshold (End: maxSize, 1200px, above the columns' 1,000px)
+      // back across the threshold (End: the room, above the columns' 1,000px)
       await page.focus(divider); await press('End');
       s = await state();
       assert.equal(s.cards, false, d + 'the divider dragged back: the table again');

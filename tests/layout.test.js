@@ -29,6 +29,8 @@ child({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell
 // a pane or a table column is never dragged wider than 90% of the window (of the table): when Resizable, SplitView, a pane
 // of the shell or the DataGrid changed (issue 463, option C, step 1)
 child({ units: ['components/Resizable', 'components/DataGrid', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-limit.test.js');
+// a split view resizes as far as its room allows, within 90% of the window; maxSize no longer caps it (issue 873)
+child({ units: ['patterns/SplitView', 'components/Resizable', 'utils/paneLimit.ts'] }, 'splitview-resize-873.test.js');
 // the panes start wider on larger windows (issue 463, option C, step 2): when AppShell or a pane of the shell changed
 child({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-defaults.test.js');
 // the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): when AppShell or the side panel changed
