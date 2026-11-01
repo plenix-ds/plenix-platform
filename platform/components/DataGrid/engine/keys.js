@@ -12,7 +12,7 @@
      the function focusCell(rowIndex, columnIndex, step) that scrolls a cell into view and focuses it):
      headerKeys({ column }); resizeKeys({ resize, c, column }); groupKeys({ toggleGroup, group, model, virtual, holder, B });
      rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model });
-     cellKeys({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell, kept });
+     cellKeys({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell, cellRange, kept });
      tableKeys({ focusCell, first }).
    Notes:
      Moved out of DataGridEngine.jsx without any change to the handlers' code (issue 714, the keyboard concern): each handler
@@ -120,9 +120,26 @@ export const rowKeys =
   };
 
 export const cellKeys =
-  ({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell, kept }) =>
+  ({ isStatic, value, canEdit, setEditing, row, c, model, ordered, column, frame, focusCell, cellRange, kept }) =>
   (event) => {
     if (isStatic || event.target !== event.currentTarget) return;
+    // cell range selection (the option cellSelection, issue 465): Shift with an arrow, Home or End extends the block from the cell that has
+    // focus; Escape collapses it; Ctrl or Command with C copies it. Home and End are not used by the grid's cells otherwise (the resize edge
+    // keeps its own), so Shift with them is free. Without the option cellRange does nothing and the keys below are as they were.
+    if (cellRange && cellRange.enabled) {
+      const plain = !event.ctrlKey && !event.metaKey && !event.altKey;
+      if (event.shiftKey && plain && ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault();
+        cellRange.extend({ row, c, key: event.key, rtl: isRtl(frame.current), focusCell });
+        return;
+      }
+      if (event.key === 'Escape' && cellRange.rect) { event.preventDefault(); event.stopPropagation(); cellRange.collapse(); return; }
+      if (!event.shiftKey && !event.altKey && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c' && cellRange.rect && !document.getSelection()?.toString()) {
+        event.preventDefault();
+        cellRange.copy();
+        return;
+      }
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
       if (document.getSelection()?.toString()) return;
       event.preventDefault();
@@ -131,6 +148,7 @@ export const cellKeys =
     }
     if (event.key === 'Enter' && canEdit) {
       event.preventDefault();
+      if (cellRange) cellRange.collapse();
       setEditing({ key: row.id, field: c.field, value });
       return;
     }
@@ -151,6 +169,7 @@ export const cellKeys =
     }
     if (keys[event.key]) {
       event.preventDefault();
+      if (cellRange) cellRange.collapse();   // a plain arrow moves cell by cell and ends the block
       focusCell(...keys[event.key], event.key === 'ArrowUp' ? -1 : 1);
     }
   };

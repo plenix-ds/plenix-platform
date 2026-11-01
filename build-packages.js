@@ -313,6 +313,18 @@ copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefac
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
 copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'plenix-engines.js'), path.join(CDN, 'plenix-engines.js'));
+// the applications' own files (issue 842): a release holds every file an application page loads, so the page loader
+// (platform/loader/loader.js) takes all of them from one release, and an application pinned to a release runs that
+// release's own script. apps/<app>/app.js and plenix-icons-<app>.js for each suite application (a folder with main.jsx and
+// index.html), apps/suite/plenix-app-data.js, and the Asset Manager's apps/dam/assets.js and plenix-icons-dam.js
+{
+  const APPS = path.join(CDN, 'apps');
+  const suite = fs.readdirSync(ROOT, { withFileTypes: true }).filter((d) => d.isDirectory() && fs.existsSync(path.join(ROOT, d.name, 'main.jsx')) && fs.existsSync(path.join(ROOT, d.name, 'index.html'))).map((d) => d.name).sort();
+  for (const app of suite) for (const f of ['app.js', 'plenix-icons-' + app + '.js']) copy(path.join(ROOT, app, f), path.join(APPS, app, f));
+  copy(path.join(ROOT, 'suite', 'plenix-app-data.js'), path.join(APPS, 'suite', 'plenix-app-data.js'));
+  copy(path.join(ROOT, 'dam', 'app', 'assets.js'), path.join(APPS, 'dam', 'assets.js'));
+  copy(path.join(ROOT, 'dam', 'plenix-icons-dam.js'), path.join(APPS, 'dam', 'plenix-icons-dam.js'));
+}
 // the compatibility icon file (#553): every Plenix icon registered with registerIcons, loaded after plenix.js by a site
 // without its own icon file (tools/icons/site-icons.js writes a site's own); brought up to date first, then copied
 require('./tools/icons/site-icons.js').buildCompat(ROOT);

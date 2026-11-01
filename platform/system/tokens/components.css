@@ -3517,6 +3517,9 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-grid-cell-rich-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-data-grid-cell-deleted-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-range-background: var(--plx-sys-state-selected);
+  --plx-comp-data-grid-range-border-color: var(--plx-sys-selected-content);
+  --plx-comp-data-grid-range-border-width: var(--plx-sys-border-width-medium);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-grid-row-menu-width: var(--plx-comp-data-grid-lead-column-width);
