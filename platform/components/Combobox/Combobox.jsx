@@ -38,6 +38,9 @@
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
+     The typed text is marked in each result it matches, every occurrence, in either case, by the shared helper (utils/highlight.tsx:
+       highlightMatch; matchesText decides what is listed). Arabic matches without its vowel marks, and a match of Arabic letters is
+       underlined instead of set heavier, so the joined letters stay whole. The list is read as plain text.
      The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
        (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes. On a closed list ↓ and Alt+↓ open it on the first option, ↑ on the last;
@@ -64,6 +67,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.tsx';
@@ -130,7 +134,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)
   const tags = multiple && !marks;
   const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
-  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
+  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || matchesText(o.label, text));
   // grouped options stay together under their group's heading (groups in the order they first appear)
   const groupOrder = []; matching.forEach((o) => { if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group); });
   const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
@@ -193,7 +197,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
                 {marks ? <input type={marks === 'radio' ? 'radio' : 'checkbox'} className="plx-check__input plx-combobox__mark" tabIndex={-1} aria-hidden="true"
                   checked={chosen.indexOf(it.o.value) >= 0} readOnly /> : null}
-                {marks ? <span className="plx-combobox__option-label">{it.o.label}</span> : it.o.label}</li>])
+                <span className="plx-combobox__option-label">{highlightMatch(it.o.label, text)}</span></li>])
             : isLoading ? <li className="plx-combobox__loading" role="presentation"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></li>
             : failed ? <li className="plx-combobox__empty plx-combobox__error" role="presentation">{t.error}</li>
             : <li className="plx-combobox__empty" role="presentation">{emptyText}</li>}

@@ -1789,6 +1789,12 @@
     "line-height"
    ]
   },
+  "plx-match": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
   "plx-media-card__meta": {
    "contract": "establishes",
    "role": "caption",
@@ -2712,12 +2718,6 @@
    "font": "sans",
    "adjusts": [
     "font-size"
-   ]
-  },
-  "plx-search__match": {
-   "contract": "adjusts",
-   "props": [
-    "font-weight"
    ]
   },
   "plx-search__option": {
