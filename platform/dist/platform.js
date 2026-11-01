@@ -7059,7 +7059,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     pressed,
     selected = false,
     tone,
-    loading = false,
+    loading: loading2 = false,
     disabled = false,
     href,
     type = "button",
@@ -7087,7 +7087,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       caret && "plx-button--caret",
       TONES$4.includes(tone) && "plx-button--tone-" + tone,
       (selected || pressed || expanded) && "is-selected",
-      loading && "is-loading",
+      loading2 && "is-loading",
       truncate && "plx-button--truncate",
       stackedLabel && "plx-button--stacked-label",
       labelRow && "plx-button--label-row",
@@ -7100,27 +7100,27 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const v = variant === "quiet" ? "ghost" : variant;
     const on = !!(selected || pressed || expanded);
     const labelClass = cx("plx-button__label", truncate && "plx-button__label--truncate", !truncate && stackedLabel && "plx-button__label--stacked", !truncate && !stackedLabel && labelRow && "plx-button__label--row");
-    const caretClass = cx("plx-button__caret", (v === "primary" || v === "danger" || disabled || loading) && "plx-button__caret--current", expanded && "plx-button__caret--open");
+    const caretClass = cx("plx-button__caret", (v === "primary" || v === "danger" || disabled || loading2) && "plx-button__caret--current", expanded && "plx-button__caret--open");
     const hasLabel = !iconOnly && children !== void 0 && children !== null;
-    const over2 = loading && !icon && hasLabel;
+    const over2 = loading2 && !icon && hasLabel;
     const spinner = (cls) => /* @__PURE__ */ React2.createElement("span", { className: cls, "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.working }));
-    const content = /* @__PURE__ */ React2.createElement(React2.Fragment, null, loading && !over2 ? spinner("plx-button__icon") : icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-button__icon" }, stateIcon(icon, on)) : null, over2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-button__stack" }, /* @__PURE__ */ React2.createElement("span", { className: cx(labelClass, "plx-button__label--waiting") }, children), spinner("plx-button__icon plx-button__icon--over")) : hasLabel ? /* @__PURE__ */ React2.createElement("span", { className: labelClass }, children) : null, iconEnd ? /* @__PURE__ */ React2.createElement("span", { className: "plx-button__icon" }, stateIcon(iconEnd, on)) : null, caret ? /* @__PURE__ */ React2.createElement("span", { className: caretClass, "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { icon: ChevronDownIcon, filled: false })) : null);
+    const content = /* @__PURE__ */ React2.createElement(React2.Fragment, null, loading2 && !over2 ? spinner("plx-button__icon") : icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-button__icon" }, stateIcon(icon, on)) : null, over2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-button__stack" }, /* @__PURE__ */ React2.createElement("span", { className: cx(labelClass, "plx-button__label--waiting") }, children), spinner("plx-button__icon plx-button__icon--over")) : hasLabel ? /* @__PURE__ */ React2.createElement("span", { className: labelClass }, children) : null, iconEnd ? /* @__PURE__ */ React2.createElement("span", { className: "plx-button__icon" }, stateIcon(iconEnd, on)) : null, caret ? /* @__PURE__ */ React2.createElement("span", { className: caretClass, "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { icon: ChevronDownIcon, filled: false })) : null);
     const a11y = {
       "aria-label": iconOnly ? label2 || (typeof children === "string" ? children : void 0) : label2,
       "aria-expanded": expanded,
       "aria-pressed": pressed,
-      "aria-disabled": disabled || loading ? true : void 0,
-      "aria-busy": loading || void 0,
+      "aria-disabled": disabled || loading2 ? true : void 0,
+      "aria-busy": loading2 || void 0,
       "aria-keyshortcuts": shortcut ? ariaShortcut(shortcut) : void 0
     };
     const handle = (e) => {
-      if (disabled || loading) {
+      if (disabled || loading2) {
         e.preventDefault();
         return;
       }
       if (onClick) onClick(e);
     };
-    const el = href ? /* @__PURE__ */ React2.createElement("a", { ref, href: disabled ? void 0 : href, className: classes, ...a11y, onClick: handle, ...rest }, content) : /* @__PURE__ */ React2.createElement("button", { ref, type, className: classes, disabled: disabled && !loading ? true : void 0, ...a11y, onClick: handle, ...rest }, content);
+    const el = href ? /* @__PURE__ */ React2.createElement("a", { ref, href: disabled ? void 0 : href, className: classes, ...a11y, onClick: handle, ...rest }, content) : /* @__PURE__ */ React2.createElement("button", { ref, type, className: classes, disabled: disabled && !loading2 ? true : void 0, ...a11y, onClick: handle, ...rest }, content);
     const inTooltip = React2.useContext(InTooltip);
     const tip = tooltip === false ? null : tooltip !== void 0 ? tooltip : iconOnly ? a11y["aria-label"] : null;
     if (!tip || inTooltip) return el;
@@ -7282,7 +7282,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const fill = (text2, values) => String(text2).replace(/\{(\w+)\}/g, (match, key) => values[key] != null ? values[key] : match);
   const OPTIONS = [["approve", "check", "success"], ["deny", "close", "danger"], ["abstain", "remove", "neutral"]];
   const RESULT_TONE = { open: "neutral", passing: "active", failing: "action-required", passed: "success", failed: "negative", tied: "waiting", "no-quorum": "waiting" };
-  function countOf(members) {
+  function countOf$1(members) {
     const c = { approve: 0, deny: 0, abstain: 0, notVoted: 0, turnedOff: 0 };
     members.forEach((m) => {
       if (m.disabledReason) c.turnedOff += 1;
@@ -7295,7 +7295,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const base2 = useStrings("voteTally", strings);
     const t = Object.assign({}, base2, settings.labels || {});
     const words2 = base2.result || {};
-    const o = outcome || countOf(members);
+    const o = outcome || countOf$1(members);
     const locked = readOnly || status === "closed" || connection === "reconnecting" || typeof onVote !== "function";
     const hiddenText = settings.liveVisibility === "totals" ? t.totalsOnly : t.hiddenUntilClosed;
     const choose = (m, option) => {
@@ -9135,14 +9135,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const warnWord = useStrings("field").warning;
     const countId = max2 ? controlId + "-c" : void 0;
     const near = max2 > 0 && max2 - length <= Math.ceil(max2 / 10);
-    const said = React2.useRef(null);
+    const said2 = React2.useRef(null);
     React2.useEffect(() => {
-      if (!max2 || !near || said.current === null) {
-        said.current = length;
+      if (!max2 || !near || said2.current === null) {
+        said2.current = length;
         return;
       }
-      if (said.current !== length) {
-        said.current = length;
+      if (said2.current !== length) {
+        said2.current = length;
         announce(over2 ? countText(t.over, length - max2) : countText(t.left, max2 - length));
       }
     }, [length, max2, near, over2, t.over, t.left]);
@@ -10431,7 +10431,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const tenth = (n) => Math.round(n * r / 10) * 10;
     return s && s.width ? tenth(s.width) + "x" + tenth(s.height) : "unknown";
   };
-  const load = () => {
+  const load$1 = () => {
     try {
       const o = JSON.parse(localStorage.getItem(STORE));
       return o && typeof o === "object" && !Array.isArray(o) ? o : {};
@@ -10466,13 +10466,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return best;
   }
   function read$1(panel, key, legacy) {
-    const mine = load()[panel];
+    const mine = load$1()[panel];
     if (mine && typeof mine === "object") return { value: whole(mine[nearest(mine, key)]), carried: false };
     const old = legacy ? whole(legacy()) : null;
     return { value: old, carried: !!old };
   }
   function write$1(panel, key, w) {
-    const all = load();
+    const all = load$1();
     all[panel] = Object.assign({}, all[panel], { [nearest(all[panel], key)]: w });
     save(all);
   }
@@ -12546,10 +12546,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }
     const frames = createFrameQueue(targetWindow);
     const observer2 = new targetWindow.ResizeObserver(() => {
-      const run = () => {
+      const run2 = () => {
         handler(getRect(element));
       };
-      instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+      instance.options.useAnimationFrameWithResizeObserver ? frames.schedule(run2) : run2();
     });
     observer2.observe(element, { box: "content-box" });
     return () => {
@@ -12734,7 +12734,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           }
           const frames = _frames = createFrameQueue(targetWindow);
           return _ro = new targetWindow.ResizeObserver((entries2) => {
-            const run = () => {
+            const run2 = () => {
               const batch = { sync: false };
               this._resizeBatch = batch;
               try {
@@ -12749,7 +12749,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 }
               }
             };
-            this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run) : run();
+            this.options.useAnimationFrameWithResizeObserver ? frames.schedule(run2) : run2();
           });
         };
         const measureEntry = (entry) => {
@@ -17658,13 +17658,21 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }, [source]);
   }
-  const quoted = (text2) => /[\t\n\r"]/.test(text2) ? '"' + text2.replace(/"/g, '""') + '"' : text2;
+  let ops = null, loading = null;
+  const load = () => loading || (loading = Promise.resolve().then(() => cellRangeOps).then((m) => {
+    m.use({ cellText: (record, id) => valueText(valueAt(record, id)), announce, formatNumber });
+    return ops = m;
+  }));
+  const run = (fn) => ops ? fn(ops) : load().then(fn);
   function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange }) {
     const loc2 = useLocale();
-    const [range, setRange] = React2.useState(null);
+    const [range, setRangeState] = React2.useState(null);
     const told2 = React2.useRef(false);
-    const latest = React2.useRef({});
-    const trail2 = React2.useRef(null);
+    const latest = React2.useRef({}), rangeRef = React2.useRef(null), trail2 = React2.useRef(null);
+    const setRange = (next) => {
+      rangeRef.current = typeof next === "function" ? next(rangeRef.current) : next;
+      setRangeState(rangeRef.current);
+    };
     const rowAt = React2.useMemo(() => {
       const at2 = /* @__PURE__ */ new Map();
       if (enabled) model.forEach((row, i) => {
@@ -17680,63 +17688,30 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const r = { r0: Math.min(a, f), r1: Math.max(a, f), c0: Math.min(ca, cf), c1: Math.max(ca, cf) };
       return r.r0 === r.r1 && r.c0 === r.c1 ? null : r;
     }, [enabled, range, rowAt, ordered2]);
-    latest.current = { range, rect, model, ordered: ordered2, index: index2, onChange };
-    const text2 = () => {
-      const { rect: r, model: rows, ordered: cols } = latest.current;
-      if (!r) return "";
-      const lines = [];
-      for (let i = r.r0; i <= r.r1; i += 1) {
-        const row = rows[i];
-        if (!row || !row.original) continue;
-        lines.push(cols.slice(r.c0, r.c1 + 1).map((c) => quoted(valueText(valueAt(row.original, c.id)))).join("	"));
-      }
-      return lines.join("\n");
-    };
-    const count2 = () => {
-      const { rect: r, model: rows } = latest.current;
-      if (!r) return 0;
-      let rowsIn = 0;
-      for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) rowsIn += 1;
-      return rowsIn * (r.c1 - r.c0 + 1);
-    };
-    const rowsOf = () => {
-      const { rect: r, model: rows } = latest.current;
-      let n = 0;
-      if (r) {
-        for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) n += 1;
-      }
-      return n;
-    };
-    const said = (key, n) => announce(loc2.t(key, { count: n, n: formatNumber(n) }));
+    latest.current = { range, rect, model, ordered: ordered2, index: index2, onChange, rowAt };
     React2.useEffect(() => {
       if (!enabled) return void 0;
       const { onChange: tell } = latest.current;
-      if (tell) {
-        if (!rect) {
-          if (told2.current) {
-            told2.current = false;
-            tell(null);
-          }
-        } else {
-          told2.current = true;
-          tell({
-            from: { rowId: model[rect.r0].original[index2], field: ordered2[rect.c0].id },
-            to: { rowId: model[rect.r1].original[index2], field: ordered2[rect.c1].id },
-            cellCount: count2(),
-            rowCount: rowsOf(),
-            columnCount: rect.c1 - rect.c0 + 1,
-            fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id)
-          });
+      if (!rect) {
+        if (told2.current) {
+          told2.current = false;
+          if (tell) tell(null);
         }
+        return void 0;
       }
-      if (!rect) return void 0;
-      const timer = setTimeout(() => said("dataGrid.cellsSelected", count2()), 400);
+      if (!ops) return void 0;
+      if (tell) {
+        told2.current = true;
+        tell(ops.detailsOf({ rect, model, ordered: ordered2, index: index2 }));
+      }
+      const timer = setTimeout(() => ops.said(loc2, "dataGrid.cellsSelected", ops.countOf(rect, model)), 400);
       return () => clearTimeout(timer);
     }, [rect]);
     const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, collapse: () => {
     }, copy: () => false, read: () => null };
     if (!enabled) return none;
     const collapse = () => setRange((old) => old ? null : old);
+    const text2 = () => ops && rect ? ops.textOf(rect, model, ordered2) : "";
     const copy = () => {
       const t = text2();
       if (!t) return false;
@@ -17744,35 +17719,21 @@ var Plenix = (function(exports, React2, reactDom, client) {
         if (navigator.clipboard) navigator.clipboard.writeText(t);
       } catch (e) {
       }
-      said("dataGrid.cellsCopied", count2());
+      ops.said(loc2, "dataGrid.cellsCopied", ops.countOf(rect, model));
       return true;
     };
     const extend = ({ row, c, key, rtl, focusCell }) => {
-      const here = { key: row.id, field: c.field };
-      const cont = range && trail2.current && trail2.current.has(here.key + "|" + here.field) ? range : null;
-      const from = cont ? cont.focus : here;
-      const r = rowAt.get(from.key), at2 = ordered2.findIndex((x) => x.id === from.field);
-      if (r === void 0 || at2 < 0) return false;
-      let nr = r, nc = at2;
-      if (key === "ArrowDown") nr = r + 1;
-      else if (key === "ArrowUp") nr = r - 1;
-      else if (key === "ArrowLeft") nc = at2 + (rtl ? 1 : -1);
-      else if (key === "ArrowRight") nc = at2 + (rtl ? -1 : 1);
-      else if (key === "Home") nc = 0;
-      else if (key === "End") nc = ordered2.length - 1;
-      else return false;
-      const step = nr < r ? -1 : 1;
-      while (model[nr] && !model[nr].original) nr += step;
-      nc = Math.max(0, Math.min(ordered2.length - 1, nc));
-      if (!model[nr] || !model[nr].original || nr === r && nc === at2) {
-        if (range && !cont) collapse();
-        return true;
-      }
-      const anchor = cont ? cont.anchor : here;
-      if (!cont) trail2.current = /* @__PURE__ */ new Set([here.key + "|" + here.field]);
-      trail2.current.add(model[nr].id + "|" + ordered2[nc].id);
-      setRange({ anchor, focus: { key: model[nr].id, field: ordered2[nc].id } });
-      focusCell(nr, nc, step);
+      run((o) => {
+        const now = latest.current, moved = o.extendTo({ range: rangeRef.current, trail: trail2.current, row, c, key, rtl, rowAt: now.rowAt, model: now.model, ordered: now.ordered });
+        if (!moved) return;
+        if (moved.collapse) {
+          collapse();
+          return;
+        }
+        trail2.current = moved.trail;
+        setRange(moved.range);
+        focusCell(moved.nr, moved.nc, moved.step);
+      });
       return true;
     };
     const cellClasses = (rowIndex, columnIndex) => {
@@ -17780,7 +17741,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return { inside: true, top: rowIndex === rect.r0, bottom: rowIndex === rect.r1, start: columnIndex === rect.c0, end: columnIndex === rect.c1 };
     };
     const read2 = () => {
-      if (!rect) return null;
+      if (!rect || !ops) return null;
       const rows = [];
       for (let i = rect.r0; i <= rect.r1; i += 1) if (model[i] && model[i].original) rows.push(model[i].original);
       return { rows, fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id), text: text2() };
@@ -18153,7 +18114,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     placeholder,
     label: label2,
     shortcut,
-    loading = false,
+    loading: loading2 = false,
     onAccent = false,
     suggestions,
     recent,
@@ -18274,7 +18235,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "aria-haspopup": grid ? "grid" : void 0,
       "aria-activedescendant": shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : void 0
     } : {};
-    return /* @__PURE__ */ React2.createElement("div", { ref: wrap, className: cx("plx-search", size === "sm" && "plx-search--size-sm", width === "bar" && "plx-search--bar", width === "fill" && "plx-search--fill", ["xs", "sm", "md", "lg"].includes(width) && "plx-search--width-" + width, onAccent && "plx-search--on-accent", shown && "is-open", className), role: "search" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__icon", "aria-hidden": "true" }, loading ? /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.searching }) : /* @__PURE__ */ React2.createElement(Icon, { name: SearchIcon })), /* @__PURE__ */ React2.createElement(Tooltip, { content: text2, disabled: !cut || shown, describe: false, className: "plx-search__tip" }, /* @__PURE__ */ React2.createElement(
+    return /* @__PURE__ */ React2.createElement("div", { ref: wrap, className: cx("plx-search", size === "sm" && "plx-search--size-sm", width === "bar" && "plx-search--bar", width === "fill" && "plx-search--fill", ["xs", "sm", "md", "lg"].includes(width) && "plx-search--width-" + width, onAccent && "plx-search--on-accent", shown && "is-open", className), role: "search" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-search__icon", "aria-hidden": "true" }, loading2 ? /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.searching }) : /* @__PURE__ */ React2.createElement(Icon, { name: SearchIcon })), /* @__PURE__ */ React2.createElement(Tooltip, { content: text2, disabled: !cut || shown, describe: false, className: "plx-search__tip" }, /* @__PURE__ */ React2.createElement(
       "input",
       {
         ref: input,
@@ -18799,7 +18760,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return c ? c.label : "";
     };
     const one = (a) => {
-      const disabled = off2(a), loading = !!a.loading;
+      const disabled = off2(a), loading2 = !!a.loading;
       const filled = !!a.primary;
       const only = iconOnly && !filled && !!a.icon;
       const panel = typeof a.panel === "function";
@@ -18817,16 +18778,16 @@ var Plenix = (function(exports, React2, reactDom, client) {
           label: only || a.choices ? name : void 0,
           caret: menu && !only,
           "aria-haspopup": panel ? "dialog" : menu ? "menu" : void 0,
-          expanded: loading && (panel || menu) ? false : void 0,
+          expanded: loading2 && (panel || menu) ? false : void 0,
           pressed: a.toggle ? !!a.pressed : void 0,
           disabled,
-          loading,
+          loading: loading2,
           className: a.danger && !filled ? dangerClass : void 0,
           onClick: click
         },
         text2
       );
-      const el = loading ? button : panel ? /* @__PURE__ */ React2.createElement(ActionPanel, { action: Object.assign({}, a, { disabled }), trigger: button }) : a.choices ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, radios(a)) : a.items ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, itemsOf(a, off2)) : button;
+      const el = loading2 ? button : panel ? /* @__PURE__ */ React2.createElement(ActionPanel, { action: Object.assign({}, a, { disabled }), trigger: button }) : a.choices ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, radios(a)) : a.items ? /* @__PURE__ */ React2.createElement(Menu, { label: a.label, trigger: button }, itemsOf(a, off2)) : button;
       const tip = disabled && why(a) || a.tooltip || (only ? name : null);
       return /* @__PURE__ */ React2.createElement(React2.Fragment, { key: a.id || a.label }, tip ? /* @__PURE__ */ React2.createElement(ActionHint, { content: tip }, el) : el);
     };
@@ -18864,7 +18825,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     number: ["eq", "ne", "lt", "gt", "empty", "nempty"],
     date: ["is", "before", "after", "within", "empty", "nempty"]
   };
-  const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops]) => [kind, ops.map((op) => [op, english.fields.operators[kind][op]])]));
+  const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops2]) => [kind, ops2.map((op) => [op, english.fields.operators[kind][op]])]));
   const WITHIN = [{ value: "week", label: english.fields.within.week, days: 7 }, { value: "month", label: english.fields.within.month, days: 30 }, { value: "year", label: english.fields.within.year, days: 365 }];
   const CATEGORY_ORDER = ["blue", "green", "purple", "orange", "teal", "magenta", "yellow", "navy", "red", "cyan", "lavender", "brown", "olive", "pink", "apricot", "mint", "maroon", "lime", "beige", "grey"];
   const fieldOf = (fields, key) => fields.find((f) => f.value === key) || fields[0];
@@ -22669,8 +22630,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
   }
   function Week({ days = [], variant, max: max2, t }) {
     const top = max2 || Math.max(1, ...days.filter((d) => typeof d === "number"));
-    const said = days.map((d, i) => t.weekdayNames[i] + " " + (d === null || d === void 0 ? t.toCome : d === true ? t.hit : d === false ? t.missed : d)).join(", ");
-    return /* @__PURE__ */ React2.createElement("div", { className: "plx-metric-card__week", role: "img", "aria-label": said }, days.map((d, i) => /* @__PURE__ */ React2.createElement("span", { key: i, className: "plx-metric-card__day-cell" }, variant === "marks" ? d === null || d === void 0 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-metric-card__mark plx-metric-card__mark--none" }, "\u2013") : /* @__PURE__ */ React2.createElement("span", { className: cx("plx-metric-card__mark", d ? "plx-metric-card__delta--good" : "plx-metric-card__delta--bad") }, /* @__PURE__ */ React2.createElement(Icon, { name: d ? CheckIcon : CloseIcon })) : /* @__PURE__ */ React2.createElement("svg", { className: "plx-metric-card__day-bar", viewBox: "0 0 12 40", preserveAspectRatio: "none", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement("rect", { className: "plx-metric-card__day-track", x: "0", y: "0", width: "12", height: "40" }), typeof d === "number" && d > 0 ? /* @__PURE__ */ React2.createElement("rect", { className: "plx-metric-card__day-fill", x: "0", y: 40 - Math.min(1, d / top) * 40, width: "12", height: Math.min(1, d / top) * 40 }) : null), /* @__PURE__ */ React2.createElement("span", { className: "plx-metric-card__day-letter", "aria-hidden": "true" }, t.weekdays[i]))));
+    const said2 = days.map((d, i) => t.weekdayNames[i] + " " + (d === null || d === void 0 ? t.toCome : d === true ? t.hit : d === false ? t.missed : d)).join(", ");
+    return /* @__PURE__ */ React2.createElement("div", { className: "plx-metric-card__week", role: "img", "aria-label": said2 }, days.map((d, i) => /* @__PURE__ */ React2.createElement("span", { key: i, className: "plx-metric-card__day-cell" }, variant === "marks" ? d === null || d === void 0 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-metric-card__mark plx-metric-card__mark--none" }, "\u2013") : /* @__PURE__ */ React2.createElement("span", { className: cx("plx-metric-card__mark", d ? "plx-metric-card__delta--good" : "plx-metric-card__delta--bad") }, /* @__PURE__ */ React2.createElement(Icon, { name: d ? CheckIcon : CloseIcon })) : /* @__PURE__ */ React2.createElement("svg", { className: "plx-metric-card__day-bar", viewBox: "0 0 12 40", preserveAspectRatio: "none", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement("rect", { className: "plx-metric-card__day-track", x: "0", y: "0", width: "12", height: "40" }), typeof d === "number" && d > 0 ? /* @__PURE__ */ React2.createElement("rect", { className: "plx-metric-card__day-fill", x: "0", y: 40 - Math.min(1, d / top) * 40, width: "12", height: Math.min(1, d / top) * 40 }) : null), /* @__PURE__ */ React2.createElement("span", { className: "plx-metric-card__day-letter", "aria-hidden": "true" }, t.weekdays[i]))));
   }
   function Month({ month, t }) {
     if (!month) return null;
@@ -23108,7 +23069,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   function CodeBlock({ title, maxHeight = "none", copy = true, label: label2, language = "auto", strings, className, children }) {
     const t = useStrings("codeBlock", strings);
     const [copied, setCopied] = React2.useState(false);
-    const [said, setSaid] = React2.useState("");
+    const [said2, setSaid] = React2.useState("");
     const text2 = typeof children === "string" ? children : String(children == null ? "" : children);
     const lang = language === "auto" ? detect(title, text2) : language;
     const colored = React2.useMemo(() => highlight(text2, lang), [text2, lang]);
@@ -23128,7 +23089,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text2).then(done, failed);
       else failed();
     };
-    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-code-block", "plx-code-block--" + maxHeight, className) }, title || copy ? /* @__PURE__ */ React2.createElement("div", { className: "plx-code-block__head" }, title ? /* @__PURE__ */ React2.createElement("span", { className: "plx-code-block__title" }, title) : /* @__PURE__ */ React2.createElement("span", null), copy ? /* @__PURE__ */ React2.createElement(Button, { size: "xs", variant: "ghost", icon: copied ? CheckIcon : void 0, onClick: doCopy }, copied ? t.copied : t.copy) : null, copy ? /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, said) : null) : null, /* @__PURE__ */ React2.createElement("pre", { className: "plx-code-block__pre", dir: "ltr", tabIndex: 0, "aria-label": label2 || title || t.code }, /* @__PURE__ */ React2.createElement("code", { className: "plx-code-block__code", "data-plx-language": lang }, colored)));
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-code-block", "plx-code-block--" + maxHeight, className) }, title || copy ? /* @__PURE__ */ React2.createElement("div", { className: "plx-code-block__head" }, title ? /* @__PURE__ */ React2.createElement("span", { className: "plx-code-block__title" }, title) : /* @__PURE__ */ React2.createElement("span", null), copy ? /* @__PURE__ */ React2.createElement(Button, { size: "xs", variant: "ghost", icon: copied ? CheckIcon : void 0, onClick: doCopy }, copied ? t.copied : t.copy) : null, copy ? /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, said2) : null) : null, /* @__PURE__ */ React2.createElement("pre", { className: "plx-code-block__pre", dir: "ltr", tabIndex: 0, "aria-label": label2 || title || t.code }, /* @__PURE__ */ React2.createElement("code", { className: "plx-code-block__code", "data-plx-language": lang }, colored)));
   }
   const LEVELS$2 = [2, 3, 4];
   function SectionHeading({ level = 3, collapsible = false, expanded = true, onToggle, controls, actions, className, children, ...rest }) {
@@ -23868,8 +23829,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const STATUS_ICON = { sending: ClockIcon, sent: DoneIcon, delivered: DoneAllIcon, read: DoneAllIcon };
   function Footer({ status, time, dateTime, readTime, readDateTime, edited, t }) {
     const sending = status === "sending", read2 = status === "read" && readTime;
-    const said = sending || status === "sent" && time || read2;
-    return /* @__PURE__ */ React2.createElement("div", { className: "plx-chat__footer" }, sending ? /* @__PURE__ */ React2.createElement("span", null, t.sending) : time ? /* @__PURE__ */ React2.createElement("span", null, t.sent, " ", /* @__PURE__ */ React2.createElement("time", { className: "plx-chat__time", dateTime }, time)) : null, edited ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React2.createElement("span", null, t.edited)) : null, read2 ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "|"), /* @__PURE__ */ React2.createElement("span", null, t.read, " ", /* @__PURE__ */ React2.createElement("time", { className: "plx-chat__time", dateTime: readDateTime }, readTime))) : null, STATUS_ICON[status] ? /* @__PURE__ */ React2.createElement("span", { className: cx("plx-chat__status", status === "read" && "plx-chat__status--read") }, /* @__PURE__ */ React2.createElement(Icon, { name: STATUS_ICON[status], size: "xs", label: said ? void 0 : t[status] })) : null);
+    const said2 = sending || status === "sent" && time || read2;
+    return /* @__PURE__ */ React2.createElement("div", { className: "plx-chat__footer" }, sending ? /* @__PURE__ */ React2.createElement("span", null, t.sending) : time ? /* @__PURE__ */ React2.createElement("span", null, t.sent, " ", /* @__PURE__ */ React2.createElement("time", { className: "plx-chat__time", dateTime }, time)) : null, edited ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React2.createElement("span", null, t.edited)) : null, read2 ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, "|"), /* @__PURE__ */ React2.createElement("span", null, t.read, " ", /* @__PURE__ */ React2.createElement("time", { className: "plx-chat__time", dateTime: readDateTime }, readTime))) : null, STATUS_ICON[status] ? /* @__PURE__ */ React2.createElement("span", { className: cx("plx-chat__status", status === "read" && "plx-chat__status--read") }, /* @__PURE__ */ React2.createElement(Icon, { name: STATUS_ICON[status], size: "xs", label: said2 ? void 0 : t[status] })) : null);
   }
   function Message({
     mine = false,
@@ -24344,7 +24305,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     loadOptions,
     loadDelay = 300,
     minChars = 0,
-    loading = false,
+    loading: loading2 = false,
     marks: marks2,
     strings,
     className,
@@ -24405,7 +24366,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }, query ? loadDelay : 0);
       return () => clearTimeout(timer);
     }, [async, open, text2, minChars, loadDelay]);
-    const isLoading = !!loading || async && busy;
+    const isLoading = !!loading2 || async && busy;
     const optionOf = (v) => options.find((x) => x.value === v) || (async ? loaded.find((x) => x.value === v) || seen.current.get(v) : void 0);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const current2 = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
@@ -24893,9 +24854,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
         } : value);
         let result;
         try {
-          const run = action.onSelect || action.action;
-          if (typeof run !== "function") return;
-          result = await run(...args);
+          const run2 = action.onSelect || action.action;
+          if (typeof run2 !== "function") return;
+          result = await run2(...args);
         } catch (e) {
           toast.show(t.actionFailed, {
             tone: "danger"
@@ -25037,9 +24998,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setError("");
       onDecision(d, comment.trim());
       setComment("");
-      const said = fill(t.done, { decision: word(d), title: title || "" });
-      if (toast) toast.show(said, { tone: d === "approved" ? "success" : "info" });
-      else announce(said);
+      const said2 = fill(t.done, { decision: word(d), title: title || "" });
+      if (toast) toast.show(said2, { tone: d === "approved" ? "success" : "info" });
+      else announce(said2);
     };
     return /* @__PURE__ */ React2.createElement("section", { className: cx("plx-review-flow", kind === "human" && "plx-review-flow--human", className), "aria-label": title, ...rest }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__heading" }, title ? /* @__PURE__ */ React2.createElement(H2, { className: "plx-review-flow__title" }, title) : null, detail ? /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__detail" }, detail) : null), /* @__PURE__ */ React2.createElement(WorkflowStatus, { status, strings })), kind === "human" ? /* @__PURE__ */ React2.createElement(Notice, { tone: "info", icon: SparkleIcon }, t.human) : null, reviewers.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.reviewers), /* @__PURE__ */ React2.createElement("ul", { className: "plx-review-flow__reviewers" }, reviewers.map((r) => /* @__PURE__ */ React2.createElement("li", { key: r.id || r.name, className: "plx-review-flow__reviewer" }, /* @__PURE__ */ React2.createElement(Persona, { name: r.name, src: r.src, color: r.color, size: "xs" }), r.decision ? /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.decision, strings }) : /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__waiting" }, t.waiting))))) : null, onDecision ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__decide" }, /* @__PURE__ */ React2.createElement(Field, { label: t.comment, description: t.commentHint, error: error || void 0 }, /* @__PURE__ */ React2.createElement(Textarea, { ref: field, rows: 3, value: comment, onChange: (e) => {
       setComment(e.target.value);
@@ -25085,15 +25046,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const [ask2, setAsk] = React2.useState(null);
     const what = (n) => counted(n) ?? (n === 1 ? "1 " + noun : formatNumber(n) + " " + many);
-    const run = (decision, reason) => {
+    const run2 = (decision, reason) => {
       const ids = sel.slice();
       if (onDecision) onDecision(ids, decision, reason || "");
       setSel([]);
       setAsk(null);
       const whole2 = builtIn && t.doneItems && t.doneItems[decision];
-      const said = whole2 ? loc2.t("reviewFlow.queue.doneItems." + decision, { count: ids.length, n: formatNumber(ids.length) }) : fill(t.done, { what: what(ids.length), decision: names2[decision].toLowerCase() });
-      if (toast) toast.show(said, { tone: decision === "approved" ? "success" : "info" });
-      else announce(said);
+      const said2 = whole2 ? loc2.t("reviewFlow.queue.doneItems." + decision, { count: ids.length, n: formatNumber(ids.length) }) : fill(t.done, { what: what(ids.length), decision: names2[decision].toLowerCase() });
+      if (toast) toast.show(said2, { tone: decision === "approved" ? "success" : "info" });
+      else announce(said2);
     };
     const columns = [
       { title: t.name, field: "name", kind: "name" },
@@ -25108,7 +25069,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         label: label2,
         count: counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many }),
         selection: { count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
-          { id: "approve", label: t.approve, icon: CircleCheckIcon, onSelect: () => run("approved") },
+          { id: "approve", label: t.approve, icon: CircleCheckIcon, onSelect: () => run2("approved") },
           { id: "changes", label: t.changes, icon: AlertIcon, onSelect: () => setAsk("changes-requested") },
           { id: "reject", label: t.reject, icon: CloseIcon, danger: true, onSelect: () => setAsk("rejected") }
         ] }
@@ -25122,7 +25083,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         description: t.reasonHint,
         confirmLabel: ask2 === "rejected" ? t.reject : t.changes,
         validate: (v) => v.trim() ? "" : t.needReason,
-        onSubmit: (v) => run(ask2, v.trim()),
+        onSubmit: (v) => run2(ask2, v.trim()),
         onCancel: () => setAsk(null)
       }
     ));
@@ -26930,7 +26891,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const t = useStrings("widgetGrid", strings);
     const [dragging, setDragging] = React2.useState(null);
     const [over2, setOver] = React2.useState(null);
-    const [said, setSaid] = React2.useState("");
+    const [said2, setSaid] = React2.useState("");
     const ids = items.map((i) => i.id);
     const place = (from, to) => {
       if (!onReorder || to < 0 || to >= ids.length || from === to) return;
@@ -26991,7 +26952,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         ) : null;
         return renderItem && renderItem.length > 1 ? renderItem(it, handle) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, handle, renderItem ? renderItem(it) : null);
       })()
-    ))), /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, said));
+    ))), /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, said2));
   }
   const IMAGE_EDITOR_STEPS = {
     "$description": "The image editor's steps (batch 282, Strict DS step 5): every value an edit can take, so the picture is drawn by generated rules (system/steps.css, build-steps.js) from attributes, never a style. The page reads the same file for its controls.",
@@ -27548,7 +27509,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         deselect(key);
       } else select(key);
     };
-    const extendTo = (key) => {
+    const extendTo2 = (key) => {
       if (single || blocked.has(key)) return;
       const from = anchor.current != null && items.indexOf(anchor.current) >= 0 ? items.indexOf(anchor.current) : items.indexOf(key);
       const to = items.indexOf(key);
@@ -27566,7 +27527,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         return;
       }
       if (e && e.shiftKey) {
-        extendTo(key);
+        extendTo2(key);
         return;
       }
       if (e && (e.ctrlKey || e.metaKey) || behavior === "toggle") {
@@ -27597,7 +27558,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       select,
       deselect,
       toggle: toggle2,
-      extendTo,
+      extendTo: extendTo2,
       choose,
       selectAll,
       clear,
@@ -27731,7 +27692,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     srcSet,
     sizes,
     sources,
-    loading = "lazy",
+    loading: loading2 = "lazy",
     priority = false,
     placeholder = "color",
     placeholderSrc,
@@ -27769,7 +27730,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         alt,
         width,
         height,
-        loading: priority ? "eager" : loading,
+        loading: priority ? "eager" : loading2,
         decoding: "async",
         fetchpriority: priority ? "high" : void 0,
         onLoad: (e) => {
@@ -27899,7 +27860,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       live.current.timer = null;
       live.current.tick = null;
     };
-    const run = React2.useCallback((attempt) => {
+    const run2 = React2.useCallback((attempt) => {
       stopTimers();
       const id = ++live.current.run;
       setState((s) => Object.assign({}, s, { status: "running", attempt, seconds: 0 }));
@@ -27921,12 +27882,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
         live.current.tick = setInterval(() => {
           if (live.current.mounted) setState((s) => Object.assign({}, s, { seconds: Math.max(0, Math.ceil((until - Date.now()) / 1e3)) }));
         }, 1e3);
-        live.current.timer = setTimeout(() => run(attempt + 1), wait);
+        live.current.timer = setTimeout(() => run2(attempt + 1), wait);
       });
     }, []);
     React2.useEffect(() => {
       live.current.mounted = true;
-      if (immediate) run(1);
+      if (immediate) run2(1);
       return () => {
         live.current.mounted = false;
         stopTimers();
@@ -27937,8 +27898,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const retry = React2.useCallback(() => {
       const s = current2.current;
       if (s.status === "running") return;
-      run(s.status === "done" || s.attempt === 0 || s.attempt >= opts.current.attempts ? 1 : s.attempt + 1);
-    }, [run]);
+      run2(s.status === "done" || s.attempt === 0 || s.attempt >= opts.current.attempts ? 1 : s.attempt + 1);
+    }, [run2]);
     const cancel = React2.useCallback(() => {
       stopTimers();
       live.current.run++;
@@ -28086,15 +28047,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
     let score2 = 0;
     const line = (get) => {
       for (let a = 0; a < size; a++) {
-        let run = 1, s = "";
+        let run2 = 1, s = "";
         for (let b = 0; b < size; b++) {
           const v = get(a, b);
           s += v ? "1" : "0";
           if (b > 0 && v === get(a, b - 1)) {
-            run++;
-            if (run === 5) score2 += 3;
-            else if (run > 5) score2 += 1;
-          } else run = 1;
+            run2++;
+            if (run2 === 5) score2 += 3;
+            else if (run2 > 5) score2 += 1;
+          } else run2 = 1;
         }
         for (const p of ["10111010000", "00001011101"]) {
           let i = s.indexOf(p);
@@ -28768,7 +28729,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     query: queryProp,
     onQueryChange,
     filter = true,
-    loading = false,
+    loading: loading2 = false,
     onSelect,
     autoFocus = false,
     strings,
@@ -28820,7 +28781,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setQuery("");
       if (input.current) input.current.focus();
     };
-    const run = (item) => {
+    const run2 = (item) => {
       if (!item || item.disabled) return;
       if (item.items) {
         open(item);
@@ -28843,7 +28804,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       } else if (e.key === "Enter") {
         if (shown[active]) {
           e.preventDefault();
-          run(shown[active]);
+          run2(shown[active]);
         }
       } else if (e.key === "Escape") {
         if (query) {
@@ -28863,7 +28824,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const listId = id + "-list";
     const optId = (i) => id + "-o" + i;
     const name = label2 || t.label;
-    const count2 = loading && !shown.length ? "" : q2 && !shown.length ? t.empty.replace("{query}", query.trim()) : t.results.replace("{count}", String(shown.length));
+    const count2 = loading2 && !shown.length ? "" : q2 && !shown.length ? t.empty.replace("{query}", query.trim()) : t.results.replace("{count}", String(shown.length));
     let n = -1;
     return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-command-menu", className), ...rest }, page ? /* @__PURE__ */ React2.createElement("div", { className: "plx-command-menu__page" }, /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", size: "xs", iconOnly: true, icon: ArrowLeftIcon, label: t.back, onClick: back }), /* @__PURE__ */ React2.createElement("span", { className: "plx-command-menu__page-title" }, page.label)) : null, /* @__PURE__ */ React2.createElement(
       SearchField,
@@ -28873,7 +28834,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         value: query,
         onChange: (e) => setQuery(e.target.value),
         onClear: query ? () => setQuery("") : void 0,
-        loading,
+        loading: loading2,
         label: page ? page.label : name,
         placeholder: page && page.placeholder || placeholder || t.placeholder,
         role: "combobox",
@@ -28883,7 +28844,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         "aria-activedescendant": shown[active] ? optId(active) : void 0,
         onKeyDown: onKeyDown2
       }
-    ), /* @__PURE__ */ React2.createElement("div", { ref: list2, id: listId, role: "listbox", "aria-label": page ? page.label : name, "aria-busy": loading || void 0, hidden: !shown.length || void 0, className: "plx-command-menu__list" }, groups.map((g) => {
+    ), /* @__PURE__ */ React2.createElement("div", { ref: list2, id: listId, role: "listbox", "aria-label": page ? page.label : name, "aria-busy": loading2 || void 0, hidden: !shown.length || void 0, className: "plx-command-menu__list" }, groups.map((g) => {
       const members = shown.filter((it) => (it.group || "") === g);
       const head = g ? id + "-g" + groups.indexOf(g) : void 0;
       const rows = members.map((it) => {
@@ -28904,7 +28865,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             onMouseMove: () => {
               if (i !== active) setActive(i);
             },
-            onClick: () => run(it)
+            onClick: () => run2(it)
           },
           it.icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-command-menu__icon", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { name: it.icon })) : null,
           /* @__PURE__ */ React2.createElement("span", { className: "plx-command-menu__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-command-menu__label" }, it.label), it.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-command-menu__description" }, it.description) : null),
@@ -28913,7 +28874,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         );
       });
       return g ? /* @__PURE__ */ React2.createElement("div", { key: "g" + g, role: "group", "aria-labelledby": head, className: "plx-command-menu__group" }, /* @__PURE__ */ React2.createElement("div", { id: head, className: "plx-command-menu__group-label", role: "presentation" }, g), rows) : /* @__PURE__ */ React2.createElement(React2.Fragment, { key: "g" }, rows);
-    })), !shown.length && loading ? /* @__PURE__ */ React2.createElement("div", { className: "plx-command-menu__status" }, t.loading) : null, !shown.length && !loading ? /* @__PURE__ */ React2.createElement("div", { className: "plx-command-menu__status" }, q2 ? t.empty.replace("{query}", query.trim()) : dataPhrase(t.results, { count: 0 })) : null, /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, count2));
+    })), !shown.length && loading2 ? /* @__PURE__ */ React2.createElement("div", { className: "plx-command-menu__status" }, t.loading) : null, !shown.length && !loading2 ? /* @__PURE__ */ React2.createElement("div", { className: "plx-command-menu__status" }, q2 ? t.empty.replace("{query}", query.trim()) : dataPhrase(t.results, { count: 0 })) : null, /* @__PURE__ */ React2.createElement(LiveRegion, { kind: "status" }, count2));
   });
   const keyshortcut = (b) => /\s/.test(String(b).trim()) ? void 0 : String(b).trim().split("+").map((k) => /^mod$/i.test(k) ? isMac() ? "Meta" : "Control" : /^ctrl$/i.test(k) ? "Control" : k).join("+");
   function CommandPalette({
@@ -28926,7 +28887,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     onOpenChange,
     title,
     placeholder,
-    loading,
+    loading: loading2,
     query,
     onQueryChange,
     filter,
@@ -28975,7 +28936,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           items,
           label: name,
           placeholder,
-          loading,
+          loading: loading2,
           query,
           onQueryChange,
           filter,
@@ -31600,12 +31561,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return () => document.removeEventListener("mousedown", off2);
     }, [open]);
     const q2 = text2.trim().toLowerCase();
-    const said = (n) => announce(typeof t.results === "function" ? t.results(n) : loc2.t("cascader.results", { count: n, n: formatNumber(n) }));
+    const said2 = (n) => announce(typeof t.results === "function" ? t.results(n) : loc2.t("cascader.results", { count: n, n: formatNumber(n) }));
     const searching = !!q2 && (!remote || q2.length >= minChars);
     const matches = !searching ? [] : remote ? loaded : leaves.filter((l) => !l.item.disabled && matchesText(l.item.label, text2));
     React2.useEffect(() => {
       setActive(0);
-      if (searching && !remote) said(matches.length);
+      if (searching && !remote) said2(matches.length);
     }, [q2]);
     React2.useEffect(() => {
       if (!remote || !open) return void 0;
@@ -31630,7 +31591,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           got.forEach((m) => seen.current.set(m.item.id, m));
           setLoaded(got);
           setBusy(false);
-          said(got.length);
+          said2(got.length);
         }, () => {
           if (n !== request.current) return;
           setLoaded([]);
@@ -32486,7 +32447,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const LoadMore = React2.forwardRef(function LoadMore2({
     onLoadMore,
     hasMore = true,
-    loading = false,
+    loading: loading2 = false,
     shown,
     total,
     mode = "button",
@@ -32505,8 +32466,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const infinite = mode === "infinite";
     const { visible: visible2 } = useIntersection(sentinel, { root, rootMargin: "--plx-ref-size-200px", disabled: !infinite || !hasMore });
     React2.useEffect(() => {
-      if (infinite && visible2 && hasMore && !loading && onLoadMore) onLoadMore();
-    }, [infinite, visible2, hasMore, loading, shown]);
+      if (infinite && visible2 && hasMore && !loading2 && onLoadMore) onLoadMore();
+    }, [infinite, visible2, hasMore, loading2, shown]);
     React2.useEffect(() => {
       const was = before.current;
       before.current = shown;
@@ -32516,12 +32477,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       fromButton.current = false;
     }, [shown]);
     const press = () => {
-      if (loading || !onLoadMore) return;
+      if (loading2 || !onLoadMore) return;
       fromButton.current = true;
       onLoadMore();
     };
     const count2 = typeof shown === "number" && typeof total === "number" ? t.count.replace("{shown}", formatNumber(shown)).replace("{total}", formatNumber(total)) : null;
-    return /* @__PURE__ */ React2.createElement("div", { ref, className: cx("plx-load-more", infinite && "plx-load-more--infinite", !hasMore && "is-end", className), ...rest }, infinite && hasMore ? /* @__PURE__ */ React2.createElement("div", { ref: sentinel, className: "plx-load-more__sentinel", "aria-hidden": "true" }) : null, !hasMore ? /* @__PURE__ */ React2.createElement("p", { className: "plx-load-more__end" }, t.end) : infinite && loading ? /* @__PURE__ */ React2.createElement("div", { className: "plx-load-more__loading" }, /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, t.loading)) : /* @__PURE__ */ React2.createElement(Button, { className: "plx-load-more__button", loading, onClick: press, strings: { working: t.loading } }, pageSize ? dataPhrase(t.moreCount, { n: pageSize }) : t.more), count2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-load-more__count" }, dataPhrase(count2)) : null);
+    return /* @__PURE__ */ React2.createElement("div", { ref, className: cx("plx-load-more", infinite && "plx-load-more--infinite", !hasMore && "is-end", className), ...rest }, infinite && hasMore ? /* @__PURE__ */ React2.createElement("div", { ref: sentinel, className: "plx-load-more__sentinel", "aria-hidden": "true" }) : null, !hasMore ? /* @__PURE__ */ React2.createElement("p", { className: "plx-load-more__end" }, t.end) : infinite && loading2 ? /* @__PURE__ */ React2.createElement("div", { className: "plx-load-more__loading" }, /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, t.loading)) : /* @__PURE__ */ React2.createElement(Button, { className: "plx-load-more__button", loading: loading2, onClick: press, strings: { working: t.loading } }, pageSize ? dataPhrase(t.moreCount, { n: pageSize }) : t.more), count2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-load-more__count" }, dataPhrase(count2)) : null);
   });
   const d0$7 = "M706-58v-144H202v-504H58v-52h144v-144h52v648h648v52H758v144h-52Zm0-248v-400H306v-52h452v452h-52Z";
   const d1$7 = "M690-50v-160H210v-480H50v-60h160v-160h60v640h640v60H750v160h-60Zm0-280v-360H330v-60h420v420h-60Z";
@@ -34003,7 +33964,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     mode = "fixed",
     height = "md",
     showCount = false,
-    loading = false,
+    loading: loading2 = false,
     onEndReached,
     overscan,
     strings,
@@ -34044,12 +34005,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
     } }), [v.scrollToIndex]);
     const asked = React2.useRef(-1);
     React2.useEffect(() => {
-      if (!onEndReached || loading || !total) return;
+      if (!onEndReached || loading2 || !total) return;
       if (v.range.end >= total && asked.current !== total) {
         asked.current = total;
         onEndReached();
       }
-    }, [v.range.end, total, loading]);
+    }, [v.range.end, total, loading2]);
     const draw = (index2) => {
       const r = rows ? rows[index2] : null;
       if (r && r.header) {
@@ -34073,16 +34034,16 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "div",
       {
         ref: v.viewportRef,
-        role: total || loading ? "list" : void 0,
+        role: total || loading2 ? "list" : void 0,
         "aria-label": label2,
-        "aria-busy": loading || void 0,
+        "aria-busy": loading2 || void 0,
         className: "plx-virtual-list__viewport",
         "data-plx-height": HEIGHTS.indexOf(height) >= 0 ? height : "md"
       },
       total ? /* @__PURE__ */ React2.createElement(VirtualProbe, null) : null,
       v.segments.map((s) => s.gap ? /* @__PURE__ */ React2.createElement(VirtualGap, { key: s.key, count: s.count }) : draw(s.index)),
-      loading ? /* @__PURE__ */ React2.createElement("div", { role: "listitem", className: "plx-virtual-list__loading" }, /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, t.loading)) : null,
-      !total && !loading ? /* @__PURE__ */ React2.createElement("p", { className: "plx-virtual-list__empty" }, t.empty) : null
+      loading2 ? /* @__PURE__ */ React2.createElement("div", { role: "listitem", className: "plx-virtual-list__loading" }, /* @__PURE__ */ React2.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React2.createElement("span", { "aria-hidden": "true" }, t.loading)) : null,
+      !total && !loading2 ? /* @__PURE__ */ React2.createElement("p", { className: "plx-virtual-list__empty" }, t.empty) : null
     ));
   });
   const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -34949,18 +34910,18 @@ var Plenix = (function(exports, React2, reactDom, client) {
   }
   const COLORS = { up: "status-positive", down: "status-negative", total: seriesColor(0) };
   function waterfallSteps(data = [], endLabel) {
-    let run = 0;
+    let run2 = 0;
     const out = data.map((d, i) => {
       const v = typeof d.value === "number" && isFinite(d.value) ? d.value : null;
       if (d.total) {
-        if (v !== null && (i === 0 || d.value !== void 0)) run = v;
-        return { label: d.label, kind: "total", from: 0, to: run, change: null };
+        if (v !== null && (i === 0 || d.value !== void 0)) run2 = v;
+        return { label: d.label, kind: "total", from: 0, to: run2, change: null };
       }
-      const from = run;
-      run += v || 0;
-      return { label: d.label, kind: (v || 0) < 0 ? "down" : "up", from, to: run, change: v || 0 };
+      const from = run2;
+      run2 += v || 0;
+      return { label: d.label, kind: (v || 0) < 0 ? "down" : "up", from, to: run2, change: v || 0 };
     });
-    if (endLabel !== false && (!out.length || out[out.length - 1].kind !== "total")) out.push({ label: endLabel, kind: "total", from: 0, to: run, change: null, end: true });
+    if (endLabel !== false && (!out.length || out[out.length - 1].kind !== "total")) out.push({ label: endLabel, kind: "total", from: 0, to: run2, change: null, end: true });
     return out;
   }
   function WaterfallChart({
@@ -37819,7 +37780,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const input = React2.useRef(null);
     const formId = useUid("plx-duplicate");
     const fresh = () => copyName(name, taken2, strings);
-    const said = (newName) => fill(t.done, { name: q$1(newName) });
+    const said2 = (newName) => fill(t.done, { name: q$1(newName) });
     const begin = () => {
       if (variant === "rename") {
         setValue(fresh());
@@ -37830,8 +37791,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
       const newName = fresh();
       if (onDuplicate) onDuplicate(newName, []);
-      if (toast) toast.show(said(newName), onUndo ? { action: { label: t.undo, onAction: () => onUndo(newName) } } : { tone: "success" });
-      else announce(said(newName));
+      if (toast) toast.show(said2(newName), onUndo ? { action: { label: t.undo, onAction: () => onUndo(newName) } } : { tone: "success" });
+      else announce(said2(newName));
       if (onClose) onClose();
     };
     const close = () => {
@@ -37858,8 +37819,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
         return;
       }
       if (onDuplicate) onDuplicate(v, chosen);
-      if (toast) toast.show(said(v), { tone: "success" });
-      else announce(said(v));
+      if (toast) toast.show(said2(v), { tone: "success" });
+      else announce(said2(v));
       close();
     };
     const own2 = trigger === false ? null : trigger || /* @__PURE__ */ React2.createElement(Button, { icon: EdCopyIcon, size }, t.duplicate);
@@ -38286,23 +38247,23 @@ var Plenix = (function(exports, React2, reactDom, client) {
       lock2.current = true;
       setBusy(true);
       setError("");
-      const run = generation.current;
+      const run2 = generation.current;
       try {
         const problem = validate ? await validate(value) : "";
-        if (!alive.current || run !== generation.current) return;
+        if (!alive.current || run2 !== generation.current) return;
         if (problem === false || typeof problem === "string" && problem) {
           setError(typeof problem === "string" ? problem : t.invalid);
           return;
         }
         const result = await onSubmit(value);
-        if (!alive.current || run !== generation.current) return;
+        if (!alive.current || run2 !== generation.current) return;
         setSaved(value);
         toast.show(t.saved, { tone: "success" });
         if (onSuccess) onSuccess(result);
       } catch (e2) {
-        if (alive.current && run === generation.current) setError(t.failed);
+        if (alive.current && run2 === generation.current) setError(t.failed);
       } finally {
-        if (alive.current && run === generation.current) {
+        if (alive.current && run2 === generation.current) {
           lock2.current = false;
           setBusy(false);
         }
@@ -38410,7 +38371,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const t = useStrings("draftState", strings);
     const [confirm, setConfirm] = React2.useState(false), [busy, setBusy] = React2.useState(false), [error, setError] = React2.useState("");
     const lock2 = React2.useRef(false), cancel = React2.useRef(null);
-    const run = async (fn) => {
+    const run2 = async (fn) => {
       if (lock2.current) return;
       lock2.current = true;
       setBusy(true);
@@ -38425,7 +38386,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         setBusy(false);
       }
     };
-    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-draft-state", className) }, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", icon: PencilIcon }, t.draft), version2 != null ? /* @__PURE__ */ React2.createElement(VersionLabel, { version: version2 }) : null, saveState ? /* @__PURE__ */ React2.createElement(SaveStatus, { state: saveState, strings }) : null, onResume ? /* @__PURE__ */ React2.createElement(Button, { disabled: busy, onClick: () => run(onResume) }, t.resume) : null, onDiscard ? /* @__PURE__ */ React2.createElement(Button, { variant: "danger-secondary", disabled: busy, onClick: () => setConfirm(true) }, t.discard) : null), !confirm && error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, /* @__PURE__ */ React2.createElement(
+    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-draft-state", className) }, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", icon: PencilIcon }, t.draft), version2 != null ? /* @__PURE__ */ React2.createElement(VersionLabel, { version: version2 }) : null, saveState ? /* @__PURE__ */ React2.createElement(SaveStatus, { state: saveState, strings }) : null, onResume ? /* @__PURE__ */ React2.createElement(Button, { disabled: busy, onClick: () => run2(onResume) }, t.resume) : null, onDiscard ? /* @__PURE__ */ React2.createElement(Button, { variant: "danger-secondary", disabled: busy, onClick: () => setConfirm(true) }, t.discard) : null), !confirm && error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, /* @__PURE__ */ React2.createElement(
       Dialog,
       {
         open: confirm,
@@ -38439,7 +38400,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         onClose: () => {
           if (!lock2.current) setConfirm(false);
         },
-        footer: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { ref: cancel, disabled: busy, onClick: () => setConfirm(false) }, t.cancel), /* @__PURE__ */ React2.createElement(Button, { variant: "danger", disabled: busy, onClick: () => run(onDiscard) }, t.discard))
+        footer: /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { ref: cancel, disabled: busy, onClick: () => setConfirm(false) }, t.cancel), /* @__PURE__ */ React2.createElement(Button, { variant: "danger", disabled: busy, onClick: () => run2(onDiscard) }, t.discard))
       },
       error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null
     ));
@@ -38487,7 +38448,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const t = useStrings("archiveRestore", strings);
     const [busy, setBusy] = React2.useState(false), [error, setError] = React2.useState("");
     const lock2 = React2.useRef(false);
-    const run = async (fn) => {
+    const run2 = async (fn) => {
       if (lock2.current || !fn) return;
       lock2.current = true;
       setBusy(true);
@@ -38507,10 +38468,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
         tone: "neutral",
         icon: ArchiveIcon,
         title: /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", icon: ArchiveIcon }, t.archived),
-        actions: onRestore ? /* @__PURE__ */ React2.createElement(Button, { size: "sm", disabled: busy, onClick: () => run(onRestore) }, t.restore) : null
+        actions: onRestore ? /* @__PURE__ */ React2.createElement(Button, { size: "sm", disabled: busy, onClick: () => run2(onRestore) }, t.restore) : null
       },
       t.message
-    ) : onArchive ? /* @__PURE__ */ React2.createElement(Button, { disabled: busy, onClick: () => run(onArchive) }, t.archive) : null, error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, children);
+    ) : onArchive ? /* @__PURE__ */ React2.createElement(Button, { disabled: busy, onClick: () => run2(onArchive) }, t.archive) : null, error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, children);
   }
   const FileZipIcon = { "name": "file-zip", "set": "plenix", "symbol": "folder_zip", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M648-456v-72h72v72h-72Zm0 72h-72v-72h72v72Zm0 72v-72h72v72h-72ZM450.38-600l-96-96H168v432h408v-48h72v48h144v-336H648v72h-72v-72H450.38ZM116-212v-536h259.92l96 96H844v440H116Zm52-52v-432 432Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M116-212v-536h259.92l96 96H844v440H116Zm460-40h72v-72h72v-72h-72v-72h72v-72h-72v-72h-72v72h72v72h-72v72h72v72h-72v72Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M640-480v-80h80v80h-80Zm0 80h-80v-80h80v80Zm0 80v-80h80v80h-80ZM447.38-640l-80-80H160v480h400v-80h80v80h160v-400H640v80h-80v-80H447.38ZM100-180v-600h291.92l80 80H860v520H100Zm60-60v-480 480Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M100-180v-600h291.92l80 80H860v520H100Zm460-60h80v-80h80v-80h-80v-80h80v-80h-80v-80h-80v80h80v80h-80v80h80v80h-80v80Z" } } } };
   const BY_EXT = {
@@ -39160,19 +39121,19 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const left = useLeft(state, expiresAt, remaining);
     const stayRef = React2.useRef(null);
     const signInRef = React2.useRef(null);
-    const said = React2.useRef({});
+    const said2 = React2.useRef({});
     const expired = React2.useRef(false);
     React2.useEffect(() => {
       if (state === "warning") {
-        said.current = {};
+        said2.current = {};
         expired.current = false;
       }
     }, [state, expiresAt]);
     React2.useEffect(() => {
       if (state !== "warning") return;
       MILESTONES.forEach((m) => {
-        if (left <= m && left > m - 5 && !said.current[m]) {
-          said.current[m] = true;
+        if (left <= m && left > m - 5 && !said2.current[m]) {
+          said2.current[m] = true;
           announce(fill(t.left, { time: clock(left) }));
         }
       });
@@ -39603,7 +39564,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const close = guard(() => {
       if (!lock2.current && onClose) onClose();
     });
-    const run = async (fn) => {
+    const run2 = async (fn) => {
       if (lock2.current) return;
       const at2 = epoch.current;
       lock2.current = true;
@@ -39631,7 +39592,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const save2 = () => {
       const at2 = epoch.current;
-      return run(async () => {
+      return run2(async () => {
         await onSave({ grants: draft, linkAccess: access });
         if (at2 === epoch.current && onClose) onClose();
       });
@@ -39664,7 +39625,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             onChange: (e) => setAccess(e.target.value),
             options: [{ value: "restricted", label: t.restricted }, { value: "view", label: t.anyone }]
           }
-        )), /* @__PURE__ */ React2.createElement(CopyButton, { field: true, value: url, label: t.copy, fieldLabel: t.link, disabled: !url || busy }), webShare && typeof navigator !== "undefined" && navigator.share ? /* @__PURE__ */ React2.createElement(Button, { disabled: !url || busy, onClick: () => run(() => navigator.share({ title: title || t.title, url })) }, t.nativeShare) : null) }
+        )), /* @__PURE__ */ React2.createElement(CopyButton, { field: true, value: url, label: t.copy, fieldLabel: t.link, disabled: !url || busy }), webShare && typeof navigator !== "undefined" && navigator.share ? /* @__PURE__ */ React2.createElement(Button, { disabled: !url || busy, onClick: () => run2(() => navigator.share({ title: title || t.title, url })) }, t.nativeShare) : null) }
       ] }), error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null)
     );
   }
@@ -40655,8 +40616,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       } };
       controllers.current[it.id] = ac;
       update(it.id, { status: "uploading", progress: 0, error: void 0 });
-      const run = latest.current.upload;
-      Promise.resolve().then(() => run ? run(it.file || it, { onProgress: (p) => {
+      const run2 = latest.current.upload;
+      Promise.resolve().then(() => run2 ? run2(it.file || it, { onProgress: (p) => {
         if (!ac.signal.aborted) update(it.id, { progress: clamp(p) });
       }, signal: ac.signal }) : void 0).then(
         () => {
@@ -41050,7 +41011,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const t = useStrings("downloadManager", strings);
     const [pending2, setPending] = React2.useState({}), [errors, setErrors] = React2.useState({});
     const locks = React2.useRef(/* @__PURE__ */ new Set());
-    const run = async (item, action) => {
+    const run2 = async (item, action) => {
       if (locks.current.has(item.id)) return;
       locks.current.add(item.id);
       setPending((p) => ({ ...p, [item.id]: true }));
@@ -41075,9 +41036,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
         progressLabel: t.progress,
         error: a.status === "failed" ? a.error || t.failed : void 0,
         status: /* @__PURE__ */ React2.createElement(Badge, { tone: a.status === "ready" ? "success" : a.status === "failed" ? "negative" : "active", icon: a.status === "ready" ? CheckIcon : a.status === "failed" ? AlertIcon : RefreshIcon }, t[a.status] || t.queued),
-        onCancel: onCancel && !pending2[a.id] ? () => run(a, onCancel) : void 0,
-        onRetry: onRetry && !pending2[a.id] ? () => run(a, onRetry) : void 0,
-        onDownload: a.status === "ready" && onDownload && !pending2[a.id] ? () => run(a, onDownload) : void 0,
+        onCancel: onCancel && !pending2[a.id] ? () => run2(a, onCancel) : void 0,
+        onRetry: onRetry && !pending2[a.id] ? () => run2(a, onRetry) : void 0,
+        onDownload: a.status === "ready" && onDownload && !pending2[a.id] ? () => run2(a, onDownload) : void 0,
         strings,
         href: a.status === "ready" ? a.href : void 0
       }
@@ -41268,7 +41229,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return /* @__PURE__ */ React2.createElement("canvas", { ref, role: "img", "aria-label": label2 });
   }
   function DocumentViewer({ kind = "text", src, pages = [], text: text2 = "", label: label2, thumbnails = true, initialPage = 1, initialZoom = 100, pdfModuleUrl, pdfWorkerUrl, strings, onPageChange, onError, className }) {
-    const t = useStrings("documentViewer", strings), [page, setPage] = React2.useState(initialPage), [zoom, setZoom] = React2.useState(ZOOMS.includes(initialZoom) ? initialZoom : 100), [pdf, setPdf] = React2.useState(null), [loading, setLoading] = React2.useState(false), [error, setError] = React2.useState(""), [attempt, setAttempt] = React2.useState(0), [accessible, setAccessible] = React2.useState(""), canvas2 = React2.useRef(null), viewport = React2.useRef(null);
+    const t = useStrings("documentViewer", strings), [page, setPage] = React2.useState(initialPage), [zoom, setZoom] = React2.useState(ZOOMS.includes(initialZoom) ? initialZoom : 100), [pdf, setPdf] = React2.useState(null), [loading2, setLoading] = React2.useState(false), [error, setError] = React2.useState(""), [attempt, setAttempt] = React2.useState(0), [accessible, setAccessible] = React2.useState(""), canvas2 = React2.useRef(null), viewport = React2.useRef(null);
     const errorRef = React2.useRef(onError);
     errorRef.current = onError;
     const fail = (reason, cause) => {
@@ -41364,7 +41325,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       setPage(next);
       onPageChange?.(next);
     };
-    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-document-viewer", className), "aria-label": label2 || t.document, role: "region" }, count2 ? /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(Button, { onClick: () => move2(current2 - 1), disabled: current2 <= 1 || !count2 }, t.previous), /* @__PURE__ */ React2.createElement(Text, { kind: "data", role: "status" }, t.page + " " + current2 + " / " + count2), /* @__PURE__ */ React2.createElement(Button, { onClick: () => move2(current2 + 1), disabled: current2 >= count2 || !count2 }, t.next), /* @__PURE__ */ React2.createElement(Field, { label: t.zoom }, /* @__PURE__ */ React2.createElement(Select, { data: true, value: zoom, onChange: (e) => setZoom(Number(e.target.value)), options: ZOOMS.map((z) => ({ value: z, label: z + "%" })) }))) : null, loading ? /* @__PURE__ */ React2.createElement(Text, { role: "status" }, t.loading) : null, error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger", actions: /* @__PURE__ */ React2.createElement(Button, { onClick: () => setAttempt((v) => v + 1) }, t.retry) }, error) : null, thumbnails && count2 > 1 ? /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true, role: "group", "aria-label": t.thumbnails }, Array.from({ length: count2 }, (_, i) => /* @__PURE__ */ React2.createElement(Button, { key: i, "aria-current": current2 === i + 1 ? "page" : void 0, onClick: () => move2(i + 1) }, kind === "pdf" && pdf ? /* @__PURE__ */ React2.createElement(PdfThumbnail, { pdf, number: i + 1, label: t.page + " " + (i + 1) }) : kind === "images" && pages[i]?.thumbnail ? /* @__PURE__ */ React2.createElement(Image$1, { src: pages[i].thumbnail, alt: pages[i].alt || t.page + " " + (i + 1) }) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, t.page, " ", /* @__PURE__ */ React2.createElement(Text, { as: "span", kind: "data" }, i + 1))))) : null, /* @__PURE__ */ React2.createElement("div", { ref: viewport, className: "plx-document-viewer__viewport", dir: kind === "text" ? void 0 : "ltr", "data-zoom": zoom, tabIndex: 0, role: "region", "aria-label": label2 || t.page, "aria-busy": loading || void 0 }, kind === "pdf" && pdf ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("canvas", { ref: canvas2, role: "img", "aria-label": (label2 || t.page) + " " + current2 }), /* @__PURE__ */ React2.createElement(Text, { className: "plx-document-viewer__pdf-text" }, accessible)) : kind === "images" && pages[current2 - 1] ? /* @__PURE__ */ React2.createElement(Image$1, { key: pages[current2 - 1].src, src: pages[current2 - 1].src, alt: pages[current2 - 1].alt || t.page + " " + current2, fit: "contain" }) : kind === "text" && text2 ? /* @__PURE__ */ React2.createElement("pre", { className: "plx-document-viewer__text" }, text2) : !loading && !error ? /* @__PURE__ */ React2.createElement(Text, null, t.empty) : null));
+    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-document-viewer", className), "aria-label": label2 || t.document, role: "region" }, count2 ? /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(Button, { onClick: () => move2(current2 - 1), disabled: current2 <= 1 || !count2 }, t.previous), /* @__PURE__ */ React2.createElement(Text, { kind: "data", role: "status" }, t.page + " " + current2 + " / " + count2), /* @__PURE__ */ React2.createElement(Button, { onClick: () => move2(current2 + 1), disabled: current2 >= count2 || !count2 }, t.next), /* @__PURE__ */ React2.createElement(Field, { label: t.zoom }, /* @__PURE__ */ React2.createElement(Select, { data: true, value: zoom, onChange: (e) => setZoom(Number(e.target.value)), options: ZOOMS.map((z) => ({ value: z, label: z + "%" })) }))) : null, loading2 ? /* @__PURE__ */ React2.createElement(Text, { role: "status" }, t.loading) : null, error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger", actions: /* @__PURE__ */ React2.createElement(Button, { onClick: () => setAttempt((v) => v + 1) }, t.retry) }, error) : null, thumbnails && count2 > 1 ? /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true, role: "group", "aria-label": t.thumbnails }, Array.from({ length: count2 }, (_, i) => /* @__PURE__ */ React2.createElement(Button, { key: i, "aria-current": current2 === i + 1 ? "page" : void 0, onClick: () => move2(i + 1) }, kind === "pdf" && pdf ? /* @__PURE__ */ React2.createElement(PdfThumbnail, { pdf, number: i + 1, label: t.page + " " + (i + 1) }) : kind === "images" && pages[i]?.thumbnail ? /* @__PURE__ */ React2.createElement(Image$1, { src: pages[i].thumbnail, alt: pages[i].alt || t.page + " " + (i + 1) }) : /* @__PURE__ */ React2.createElement(React2.Fragment, null, t.page, " ", /* @__PURE__ */ React2.createElement(Text, { as: "span", kind: "data" }, i + 1))))) : null, /* @__PURE__ */ React2.createElement("div", { ref: viewport, className: "plx-document-viewer__viewport", dir: kind === "text" ? void 0 : "ltr", "data-zoom": zoom, tabIndex: 0, role: "region", "aria-label": label2 || t.page, "aria-busy": loading2 || void 0 }, kind === "pdf" && pdf ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("canvas", { ref: canvas2, role: "img", "aria-label": (label2 || t.page) + " " + current2 }), /* @__PURE__ */ React2.createElement(Text, { className: "plx-document-viewer__pdf-text" }, accessible)) : kind === "images" && pages[current2 - 1] ? /* @__PURE__ */ React2.createElement(Image$1, { key: pages[current2 - 1].src, src: pages[current2 - 1].src, alt: pages[current2 - 1].alt || t.page + " " + current2, fit: "contain" }) : kind === "text" && text2 ? /* @__PURE__ */ React2.createElement("pre", { className: "plx-document-viewer__text" }, text2) : !loading2 && !error ? /* @__PURE__ */ React2.createElement(Text, null, t.empty) : null));
   }
   function VersionHistory({ versions = [], currentId, onPreview, onRestore, variant = "list", strings, className }) {
     devWarn("VersionHistory", { variant }, { variant: ["list", "restore", "preview"] });
@@ -41725,7 +41686,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const [category, setCategory] = React2.useState(null);
     const lower2 = text2.trim().toLowerCase();
     const matches = lower2 ? products.filter((p) => p.title.toLowerCase().indexOf(lower2) >= 0).slice(0, 6).map((p) => ({ value: p.title, label: p.title, description: p.meta })) : [];
-    const run = (s) => {
+    const run2 = (s) => {
       setText(s);
       setQuery(s);
     };
@@ -41760,10 +41721,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
         label: t.search,
         placeholder: t.search,
         onChange: (e) => setText(e.target.value),
-        onClear: () => run(""),
+        onClear: () => run2(""),
         suggestions: matches,
-        onSelect: (item) => run(item.value),
-        onSubmitSearch: (s) => run(s)
+        onSelect: (item) => run2(item.value),
+        onSubmitSearch: (s) => run2(s)
       }
     ))), !query && categories.length ? /* @__PURE__ */ React2.createElement("section", { className: "plx-commerce__section", "aria-labelledby": uid2 + "-categories" }, /* @__PURE__ */ React2.createElement(H22, { id: uid2 + "-categories", className: "plx-commerce__subtitle" }, t.categories), /* @__PURE__ */ React2.createElement(ContentGrid, { size: "md", label: t.categories }, categories.map((c) => /* @__PURE__ */ React2.createElement(
       Card,
@@ -41775,7 +41736,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         onOpen: () => setCategory(category === c.value ? null : c.value),
         meta: dataPhrase(products.filter((p) => p.category === c.value).length === 1 ? t.one : t.count, { n: products.filter((p) => p.category === c.value).length })
       }
-    )))) : null, !query && recommended.length ? /* @__PURE__ */ React2.createElement("section", { className: "plx-commerce__section", "aria-labelledby": uid2 + "-recommended" }, /* @__PURE__ */ React2.createElement(H22, { id: uid2 + "-recommended", className: "plx-commerce__subtitle" }, t.recommended), /* @__PURE__ */ React2.createElement(Carousel, { label: t.recommended, perView: 3 }, recommended.map(card))) : null, /* @__PURE__ */ React2.createElement("section", { className: "plx-commerce__section" }, query && !hits.length ? /* @__PURE__ */ React2.createElement(EmptyState, { size: "page", icon: SearchIcon, title: fill(t.resultsFor, { q: query }), action: /* @__PURE__ */ React2.createElement(Button, { icon: CloseIcon, onClick: () => run("") }, t.clear) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-commerce__ideas" }, /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.suggestions), ideas.map((s) => /* @__PURE__ */ React2.createElement(Button, { key: s, size: "xs", onClick: () => run(s) }, s)))) : /* @__PURE__ */ React2.createElement(
+    )))) : null, !query && recommended.length ? /* @__PURE__ */ React2.createElement("section", { className: "plx-commerce__section", "aria-labelledby": uid2 + "-recommended" }, /* @__PURE__ */ React2.createElement(H22, { id: uid2 + "-recommended", className: "plx-commerce__subtitle" }, t.recommended), /* @__PURE__ */ React2.createElement(Carousel, { label: t.recommended, perView: 3 }, recommended.map(card))) : null, /* @__PURE__ */ React2.createElement("section", { className: "plx-commerce__section" }, query && !hits.length ? /* @__PURE__ */ React2.createElement(EmptyState, { size: "page", icon: SearchIcon, title: fill(t.resultsFor, { q: query }), action: /* @__PURE__ */ React2.createElement(Button, { icon: CloseIcon, onClick: () => run2("") }, t.clear) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-commerce__ideas" }, /* @__PURE__ */ React2.createElement(Text, { variant: "secondary" }, t.suggestions), ideas.map((s) => /* @__PURE__ */ React2.createElement(Button, { key: s, size: "xs", onClick: () => run2(s) }, s)))) : /* @__PURE__ */ React2.createElement(
       ProductListing,
       {
         products: hits,
@@ -42491,7 +42452,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         alive.current = false;
       };
     }, []);
-    async function run(fn, clear) {
+    async function run2(fn, clear) {
       if (lock2.current || !fn) return;
       lock2.current = true;
       setBusy(true);
@@ -42506,13 +42467,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
         if (alive.current) setBusy(false);
       }
     }
-    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-comment-thread", className), "aria-label": title || t.title, "aria-busy": busy || void 0, ...rest }, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(Text, { as: "h3" }, title || t.title), resolved ? /* @__PURE__ */ React2.createElement(Badge, { icon: CheckIcon, tone: "success" }, t.resolved) : null, onResolve ? /* @__PURE__ */ React2.createElement(Button, { variant: "secondary", disabled: busy, onClick: () => run(() => onResolve(!resolved)) }, resolved ? t.reopen : t.resolve) : null), /* @__PURE__ */ React2.createElement(Stack, null, comments.map((c) => /* @__PURE__ */ React2.createElement(Comment, { key: c.id, ...c, strings, onEdit: onEdit ? (text2) => onEdit(c.id, text2) : void 0, onReact: onReact ? (id) => onReact(c.id, id) : void 0 }))), onReply && !resolved ? /* @__PURE__ */ React2.createElement(Stack, { as: "form", onSubmit: (e) => {
+    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-comment-thread", className), "aria-label": title || t.title, "aria-busy": busy || void 0, ...rest }, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(Text, { as: "h3" }, title || t.title), resolved ? /* @__PURE__ */ React2.createElement(Badge, { icon: CheckIcon, tone: "success" }, t.resolved) : null, onResolve ? /* @__PURE__ */ React2.createElement(Button, { variant: "secondary", disabled: busy, onClick: () => run2(() => onResolve(!resolved)) }, resolved ? t.reopen : t.resolve) : null), /* @__PURE__ */ React2.createElement(Stack, null, comments.map((c) => /* @__PURE__ */ React2.createElement(Comment, { key: c.id, ...c, strings, onEdit: onEdit ? (text2) => onEdit(c.id, text2) : void 0, onReact: onReact ? (id) => onReact(c.id, id) : void 0 }))), onReply && !resolved ? /* @__PURE__ */ React2.createElement(Stack, { as: "form", onSubmit: (e) => {
       e.preventDefault();
       if (!draft.trim()) {
         setError(t.empty);
         return;
       }
-      run(() => onReply(draft.trim()), true);
+      run2(() => onReply(draft.trim()), true);
     } }, /* @__PURE__ */ React2.createElement(Field, { label: t.reply, error }, /* @__PURE__ */ React2.createElement(Textarea, { value: draft, disabled: busy, onChange: (e) => setDraft(e.target.value) })), /* @__PURE__ */ React2.createElement(Button, { type: "submit", disabled: busy }, t.send)) : error ? /* @__PURE__ */ React2.createElement(Text, { role: "alert" }, error) : null);
   }
   function AnnotationMark({ annotation, index: index2, active, onSelect, strings }) {
@@ -42910,7 +42871,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     if (variant === "explanation" && explanation) return /* @__PURE__ */ React2.createElement(Popover, { label: t.explain, title: t.explain, trigger: /* @__PURE__ */ React2.createElement(Button, { ref, className: cls, variant: "ghost", size: "sm", icon: SparkleIcon }, label2) }, /* @__PURE__ */ React2.createElement(Text, null, explanation));
     return variant === "inline" ? /* @__PURE__ */ React2.createElement(Inline$1, { as: "span", className: cls }, /* @__PURE__ */ React2.createElement(Icon, { name: SparkleIcon }), /* @__PURE__ */ React2.createElement(Text, { as: "span" }, label2)) : /* @__PURE__ */ React2.createElement(Badge, { className: cls, tone: "neutral", icon: SparkleIcon }, label2);
   });
-  function GeneratedContent({ versions = [], versionId, defaultVersionId, onVersionChange, children, loading = false, onRegenerate, onFeedback, strings, className }) {
+  function GeneratedContent({ versions = [], versionId, defaultVersionId, onVersionChange, children, loading: loading2 = false, onRegenerate, onFeedback, strings, className }) {
     const t = useStrings("generatedContent", strings), [own2, setOwn] = React2.useState(defaultVersionId), [busy, setBusy] = React2.useState(""), [error, setError] = React2.useState(""), [feedback, setFeedback] = React2.useState(null), lock2 = React2.useRef(false), epoch = React2.useRef(0), controller = React2.useRef(null);
     const id = versionId !== void 0 ? versionId : own2, index2 = Math.max(0, versions.findIndex((v) => v.id === (id ?? versions[versions.length - 1]?.id))), version2 = versions[index2];
     React2.useEffect(() => {
@@ -42925,9 +42886,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
         controller.current?.abort();
       };
     }, [version2?.id]);
-    const run = async (type, value) => {
+    const run2 = async (type, value) => {
       const callback = type === "regenerate" ? onRegenerate : onFeedback;
-      if (lock2.current || loading || !callback) return;
+      if (lock2.current || loading2 || !callback) return;
       const at2 = epoch.current;
       lock2.current = true;
       setBusy(type);
@@ -42948,13 +42909,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     };
     const choose = (i) => {
-      if (busy || loading) return;
+      if (busy || loading2) return;
       const v = versions[i];
       if (!v) return;
       if (versionId === void 0) setOwn(v.id);
       onVersionChange?.(v.id);
     };
-    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-ai", "plx-generated-content", className), role: "region", "aria-label": t.label, "aria-busy": !!busy || loading || void 0 }, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(AILabel, { strings: strings?.aiLabel }), loading || busy ? /* @__PURE__ */ React2.createElement(Badge, { icon: SparkleIcon }, t.pending) : null), /* @__PURE__ */ React2.createElement(Stack, null, version2 ? version2.content : children), error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, feedback ? /* @__PURE__ */ React2.createElement(Inline$1, null, /* @__PURE__ */ React2.createElement(Badge, { icon: CheckIcon, role: "status" }, t.feedbackSaved)) : null, versions.length > 1 ? /* @__PURE__ */ React2.createElement(Inline$1, null, /* @__PURE__ */ React2.createElement(Button, { disabled: !!busy || loading || index2 <= 0, onClick: () => choose(index2 - 1) }, t.previous), /* @__PURE__ */ React2.createElement(Text, { variant: "data", role: "status" }, t.version + " " + (index2 + 1) + " / " + versions.length), /* @__PURE__ */ React2.createElement(Button, { disabled: !!busy || loading || index2 >= versions.length - 1, onClick: () => choose(index2 + 1) }, t.next)) : null, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, onFeedback ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { "aria-pressed": feedback === "helpful", disabled: !!busy || loading, onClick: () => run("feedback", "helpful") }, t.helpful), /* @__PURE__ */ React2.createElement(Button, { "aria-pressed": feedback === "unhelpful", disabled: !!busy || loading, onClick: () => run("feedback", "unhelpful") }, t.unhelpful)) : null, onRegenerate ? /* @__PURE__ */ React2.createElement(Button, { icon: RefreshIcon, disabled: !!busy || loading, onClick: () => run("regenerate") }, t.regenerate) : null));
+    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-ai", "plx-generated-content", className), role: "region", "aria-label": t.label, "aria-busy": !!busy || loading2 || void 0 }, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React2.createElement(AILabel, { strings: strings?.aiLabel }), loading2 || busy ? /* @__PURE__ */ React2.createElement(Badge, { icon: SparkleIcon }, t.pending) : null), /* @__PURE__ */ React2.createElement(Stack, null, version2 ? version2.content : children), error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null, feedback ? /* @__PURE__ */ React2.createElement(Inline$1, null, /* @__PURE__ */ React2.createElement(Badge, { icon: CheckIcon, role: "status" }, t.feedbackSaved)) : null, versions.length > 1 ? /* @__PURE__ */ React2.createElement(Inline$1, null, /* @__PURE__ */ React2.createElement(Button, { disabled: !!busy || loading2 || index2 <= 0, onClick: () => choose(index2 - 1) }, t.previous), /* @__PURE__ */ React2.createElement(Text, { variant: "data", role: "status" }, t.version + " " + (index2 + 1) + " / " + versions.length), /* @__PURE__ */ React2.createElement(Button, { disabled: !!busy || loading2 || index2 >= versions.length - 1, onClick: () => choose(index2 + 1) }, t.next)) : null, /* @__PURE__ */ React2.createElement(Inline$1, { wrap: true }, onFeedback ? /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement(Button, { "aria-pressed": feedback === "helpful", disabled: !!busy || loading2, onClick: () => run2("feedback", "helpful") }, t.helpful), /* @__PURE__ */ React2.createElement(Button, { "aria-pressed": feedback === "unhelpful", disabled: !!busy || loading2, onClick: () => run2("feedback", "unhelpful") }, t.unhelpful)) : null, onRegenerate ? /* @__PURE__ */ React2.createElement(Button, { icon: RefreshIcon, disabled: !!busy || loading2, onClick: () => run2("regenerate") }, t.regenerate) : null));
   }
   function hrefOf(value) {
     if (typeof value !== "string" || !value.trim()) return null;
@@ -43036,7 +42997,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         alive.current = false;
       };
     }, []);
-    async function run(value) {
+    async function run2(value) {
       if (disabled || lock2.current || !onRefine) return;
       if (value.action === "custom" && !prompt.trim()) {
         setError(t.empty);
@@ -43064,9 +43025,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
         label: label2 || t.label,
         trigger: /* @__PURE__ */ React2.createElement(Button, { icon: SparkleIcon, disabled: disabled || busy || !onRefine, caret: true }, label2 || t.label)
       },
-      /* @__PURE__ */ React2.createElement(MenuItem, { disabled: disabled || busy, onSelect: () => run({ action: "shorter" }) }, t.shorter),
-      /* @__PURE__ */ React2.createElement(MenuItem, { disabled: disabled || busy, onSelect: () => run({ action: "longer" }) }, t.longer),
-      /* @__PURE__ */ React2.createElement(MenuSub, { label: t.tone, disabled: disabled || busy }, ["formal", "casual", "neutral"].map((tone) => /* @__PURE__ */ React2.createElement(MenuItem, { key: tone, disabled: disabled || busy, onSelect: () => run({ action: "tone", tone }) }, t[tone]))),
+      /* @__PURE__ */ React2.createElement(MenuItem, { disabled: disabled || busy, onSelect: () => run2({ action: "shorter" }) }, t.shorter),
+      /* @__PURE__ */ React2.createElement(MenuItem, { disabled: disabled || busy, onSelect: () => run2({ action: "longer" }) }, t.longer),
+      /* @__PURE__ */ React2.createElement(MenuSub, { label: t.tone, disabled: disabled || busy }, ["formal", "casual", "neutral"].map((tone) => /* @__PURE__ */ React2.createElement(MenuItem, { key: tone, disabled: disabled || busy, onSelect: () => run2({ action: "tone", tone }) }, t[tone]))),
       /* @__PURE__ */ React2.createElement(
         MenuItem,
         {
@@ -43091,7 +43052,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           Button,
           {
             disabled: disabled || busy || !onRefine,
-            onClick: () => run({ action: "custom", prompt: prompt.trim() })
+            onClick: () => run2({ action: "custom", prompt: prompt.trim() })
           },
           t.apply
         ))
@@ -43231,7 +43192,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         alive.current = false;
       };
     }, []);
-    async function run(id) {
+    async function run2(id) {
       if (disabled || lock2.current || !onAction) return;
       lock2.current = true;
       setBusy(true);
@@ -43246,7 +43207,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
     const name = label2 || t.label, props = { icon: SparkleIcon, label: name, iconOnly: mode === "icon", loading: busy, disabled: disabled || !onAction || mode === "menu" && !actions.length, strings: { working: t.working }, children: name };
-    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-ai-button", className) }, mode === "menu" ? /* @__PURE__ */ React2.createElement(Menu, { label: name, trigger: /* @__PURE__ */ React2.createElement(Trigger, { ...props, externalRef: ref, caret: true }) }, actions.map((a) => /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id, icon: SparkleIcon, disabled: disabled || busy || a.disabled || !onAction, onSelect: () => run(a.id) }, a.label))) : /* @__PURE__ */ React2.createElement(Button, { ...props, ref, onClick: () => run() }), error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null);
+    return /* @__PURE__ */ React2.createElement(Stack, { className: cx("plx-ai-button", className) }, mode === "menu" ? /* @__PURE__ */ React2.createElement(Menu, { label: name, trigger: /* @__PURE__ */ React2.createElement(Trigger, { ...props, externalRef: ref, caret: true }) }, actions.map((a) => /* @__PURE__ */ React2.createElement(MenuItem, { key: a.id, icon: SparkleIcon, disabled: disabled || busy || a.disabled || !onAction, onSelect: () => run2(a.id) }, a.label))) : /* @__PURE__ */ React2.createElement(Button, { ...props, ref, onClick: () => run2() }), error ? /* @__PURE__ */ React2.createElement(Notice, { tone: "danger" }, error) : null);
   });
   function ConfidenceIndicator({ level, variant = "qualitative", value, locale, strings, className, ...rest }) {
     devWarn("ConfidenceIndicator", { variant }, { variant: ["qualitative", "numeric"] });
@@ -43924,6 +43885,70 @@ var Plenix = (function(exports, React2, reactDom, client) {
       folded.length ? /* @__PURE__ */ React2.createElement(Menu, { label: t.more, placement: "bottom-end", className: "plx-overflow-list__item", trigger: /* @__PURE__ */ React2.createElement(Button, { variant: "ghost", size, iconOnly: true, icon: MoreIcon, label: t.more }) }, folded.map((it) => /* @__PURE__ */ React2.createElement(MenuItem, { key: it.id, icon: it.icon, href: it.href, disabled: it.disabled, onSelect: choose(it) }, it.label))) : null
     );
   }
+  let helpers = null;
+  const use = (given) => {
+    helpers = given;
+  };
+  const quoted = (text2) => /[\t\n\r"]/.test(text2) ? '"' + text2.replace(/"/g, '""') + '"' : text2;
+  const textOf = (r, rows, cols) => {
+    if (!r) return "";
+    const lines = [];
+    for (let i = r.r0; i <= r.r1; i += 1) {
+      const row = rows[i];
+      if (!row || !row.original) continue;
+      lines.push(cols.slice(r.c0, r.c1 + 1).map((c) => quoted(helpers.cellText(row.original, c.id))).join("	"));
+    }
+    return lines.join("\n");
+  };
+  const rowsIn = (r, rows) => {
+    let n = 0;
+    if (r) {
+      for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) n += 1;
+    }
+    return n;
+  };
+  const countOf = (r, rows) => r ? rowsIn(r, rows) * (r.c1 - r.c0 + 1) : 0;
+  const detailsOf = ({ rect, model, ordered: ordered2, index: index2 }) => ({
+    from: { rowId: model[rect.r0].original[index2], field: ordered2[rect.c0].id },
+    to: { rowId: model[rect.r1].original[index2], field: ordered2[rect.c1].id },
+    cellCount: countOf(rect, model),
+    rowCount: rowsIn(rect, model),
+    columnCount: rect.c1 - rect.c0 + 1,
+    fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id)
+  });
+  const said = (loc2, key, n) => helpers.announce(loc2.t(key, { count: n, n: helpers.formatNumber(n) }));
+  const extendTo = ({ range, trail: trail2, row, c, key, rtl, rowAt, model, ordered: ordered2 }) => {
+    const here = { key: row.id, field: c.field };
+    const cont = range && trail2 && trail2.has(here.key + "|" + here.field) ? range : null;
+    const from = cont ? cont.focus : here;
+    const r = rowAt.get(from.key), at2 = ordered2.findIndex((x) => x.id === from.field);
+    if (r === void 0 || at2 < 0) return null;
+    let nr = r, nc = at2;
+    if (key === "ArrowDown") nr = r + 1;
+    else if (key === "ArrowUp") nr = r - 1;
+    else if (key === "ArrowLeft") nc = at2 + (rtl ? 1 : -1);
+    else if (key === "ArrowRight") nc = at2 + (rtl ? -1 : 1);
+    else if (key === "Home") nc = 0;
+    else if (key === "End") nc = ordered2.length - 1;
+    else return null;
+    const step = nr < r ? -1 : 1;
+    while (model[nr] && !model[nr].original) nr += step;
+    nc = Math.max(0, Math.min(ordered2.length - 1, nc));
+    if (!model[nr] || !model[nr].original || nr === r && nc === at2) return range && !cont ? { collapse: true } : null;
+    const reached = cont ? trail2 : /* @__PURE__ */ new Set([here.key + "|" + here.field]);
+    reached.add(model[nr].id + "|" + ordered2[nc].id);
+    return { range: { anchor: cont ? cont.anchor : here, focus: { key: model[nr].id, field: ordered2[nc].id } }, nr, nc, step, trail: reached };
+  };
+  const cellRangeOps = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    countOf,
+    detailsOf,
+    extendTo,
+    rowsIn,
+    said,
+    textOf,
+    use
+  }, Symbol.toStringTag, { value: "Module" }));
   exports.AIButton = AIButton;
   exports.AIChat = AIChat;
   exports.AIDisclaimer = AIDisclaimer;
