@@ -1,7 +1,6 @@
 /* Plenix suite · leftnav (suite/leftnav.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
 import { Button, NavList, NavPane } from 'plenix-platform';
 import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, Av, CALENDARS, CONTACTS, Ico, PROJECTS, ProjStatus, THREADS } from './shared.jsx';
-const {useState,useRef,useEffect,useCallback}=React;
 
 /* ─── Left Nav (contextual) ─────────────────────────────────────── */
 export function LeftNav({section,sub,setSub,onSettings}){

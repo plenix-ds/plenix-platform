@@ -36,7 +36,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon, asIcon as iconElement } from '../Icon/Icon.tsx';
+import { asIcon as iconElement } from '../Icon/Icon.tsx';
 import type { IconModule, IconValue } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import type { Catalog } from '../../providers/LocaleProvider.tsx';

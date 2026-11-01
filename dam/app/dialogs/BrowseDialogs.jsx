@@ -20,7 +20,7 @@
 import React from 'react';
 import {
   Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataGrid, Tag, TagList, TagInput, Button, Icon,
-  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorPicker, CATEGORY_COLORS,
+  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, ColorPicker, CATEGORY_COLORS,
 } from 'plenix-platform';
 
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
