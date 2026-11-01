@@ -36,7 +36,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CloudOffIcon from 'plenix-platform/icons/plenix/cloud-off';

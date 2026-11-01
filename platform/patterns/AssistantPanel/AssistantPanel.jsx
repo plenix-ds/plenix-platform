@@ -14,7 +14,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { SidePanel } from '../SidePanel/SidePanel.jsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { AIChat } from '../AIChat/AIChat.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AssistantPanel({open=true,onOpenChange,variant='inspector',title,context,chat={},strings,className,...rest}){

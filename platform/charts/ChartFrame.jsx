@@ -58,7 +58,7 @@ import { dataWhenText } from '../utils/dataText.tsx';
 import { isRtl } from '../utils/direction.ts';
 import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
-import { Button } from '../components/Button/Button.jsx';
+import { Button } from '../components/Button/Button.tsx';
 import { snapToGrid } from '../utils/grid.ts';
 import { useStrings } from '../providers/LocaleProvider.tsx';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';

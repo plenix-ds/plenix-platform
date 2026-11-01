@@ -54,8 +54,8 @@ import { localDigits, toLatinDigits } from '../../utils/digits.ts';
 import { useDigits } from '../../providers/LocaleProvider.tsx';
 
 import { useStrings } from '../../providers/LocaleProvider.tsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';

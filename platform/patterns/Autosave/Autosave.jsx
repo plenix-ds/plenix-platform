@@ -17,8 +17,8 @@
 */
 import React from 'react';
 import { Badge } from '../../components/Badge/Badge.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Inline } from '../../components/Stack/Stack.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Inline } from '../../components/Stack/Stack.tsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

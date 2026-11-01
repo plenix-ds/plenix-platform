@@ -7871,12 +7871,12 @@
     "tooltip-long-press-delay": {
       "$value": "{plx-sys.touch-long-press-delay}",
       "$type": "duration",
-      "$description": "On touch (a coarse pointer, no hover) the tooltip shows after a long press of this length; Tooltip.jsx reads it"
+      "$description": "On touch (a coarse pointer, no hover) the tooltip shows after a long press of this length; Tooltip.tsx reads it"
     },
     "tooltip-touch-dismiss-delay": {
       "$value": "{plx-sys.touch-dismiss-delay}",
       "$type": "duration",
-      "$description": "A tooltip opened by a long press hides this long after the finger lifts; Tooltip.jsx reads it"
+      "$description": "A tooltip opened by a long press hides this long after the finger lifts; Tooltip.tsx reads it"
     },
     "tooltip-bubble-z-index": {
       "$value": "{plx-sys.layer-popover}",

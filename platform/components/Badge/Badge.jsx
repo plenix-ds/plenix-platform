@@ -32,7 +32,7 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 
 const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
 const ALIASES = { info: 'active', warning: 'waiting', danger: 'negative' };

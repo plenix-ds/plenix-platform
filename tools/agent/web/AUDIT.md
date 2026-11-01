@@ -33,7 +33,7 @@
    - the apps have no load-failure paths.
 9. Target floor, PARTLY. Touch and mobile make controls 44px (semantic.css:223-250), but there is no coarse-pointer
    audit. Unverified: the DataGrid resize grip, the WidgetGrid handle, and size="xs" icon buttons (SecondaryPane.jsx:72-73).
-10. Touch tooltips, MISSING. Tooltip (Tooltip.jsx:34-35) opens on mouseenter and focus only.
+10. Touch tooltips, MISSING. Tooltip (Tooltip.tsx:34-35) opens on mouseenter and focus only.
 11. System appearance, PARTLY:
     - theme-boot follows the system live when data-plx-mode="system", but the default is light (theme-boot.js:8);
     - the suite pages set no mode;

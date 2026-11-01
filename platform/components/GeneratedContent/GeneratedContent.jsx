@@ -17,9 +17,9 @@
    Notes: Render trusted React content, never raw model HTML. Feedback belongs to the selected version.
 */
 import React from 'react';
-import { Stack,Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Stack,Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.ts';
 import { AILabel } from '../AILabel/AILabel.jsx';
