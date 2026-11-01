@@ -61,7 +61,9 @@
      Choosing an item closes the menu and returns focus to the trigger, unless keepOpen.
      A radio item checks itself and unchecks the others of its group (onChange); the menu shows the current choice
        when it opens.
-     A submenu item shows an end-pointing chevron; Arrow Right (Arrow Left in right-to-left), Enter, Space or a click
+     A checked checkbox or radio item shows a check (check-bold, 13 by 10px, as large as Blueprint's tick) in the item's
+       start slot.
+     A submenu item shows an end-pointing caret (triangle-right, as Blueprint's caret-right; mirrored in right to left); Arrow Right (Arrow Left in right-to-left), Enter, Space or a click
        opens the submenu beside it on its first item, and pointer hover opens it too; Arrow Left (Arrow Right in
        right-to-left) or Escape closes it and returns to its item. It sits at the item's end edge and flips to the
        other side when there is no room. Choosing an item in it closes every level.
@@ -84,8 +86,8 @@ import { Icon, asIcon } from '../Icon/Icon.tsx';
 import { Portal } from '../../utils/portal.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useGesture } from '../../hooks/useGesture.ts';
-import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
-import CheckIcon from 'plenix-platform/icons/plenix/check';
+import TriangleRightIcon from 'plenix-platform/icons/plenix/triangle-right';
+import CheckIcon from 'plenix-platform/icons/plenix/check-bold';
 
 const MenuContext = React.createContext(null);
 const RadioContext = React.createContext(null);
@@ -261,7 +263,7 @@ export function MenuSub({ label, icon, disabled = false, className, children }) 
         onPointerEnter={(e) => { if (e.pointerType === 'mouse' && !open) openIt(false); }}>
         {icon ? <span className="plx-menu__icon">{asIcon(icon)}</span> : null}
         <span className="plx-menu__label">{label}</span>
-        <span className="plx-menu-sub__arrow" aria-hidden="true"><Icon name={ChevronRightIcon} /></span>
+        <span className="plx-menu-sub__arrow" aria-hidden="true"><Icon name={TriangleRightIcon} /></span>
       </button>
       {open ? (
         <div ref={list} id={id} role="menu" aria-label={typeof label === 'string' ? label : undefined} popover={TOP_LAYER ? 'manual' : undefined}
