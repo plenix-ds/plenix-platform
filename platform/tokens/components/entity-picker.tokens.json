@@ -230,6 +230,11 @@
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color",
       "$description": "EntityPicker error: text color (feedback-danger-content)."
+    },
+    "entity-picker-option-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityPicker option: the record's or team's plain icon (content-muted; no tile, #882)."
     }
   }
 }

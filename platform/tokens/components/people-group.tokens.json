@@ -55,6 +55,16 @@
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension",
       "$description": "PeopleGroup: description text size (font-size-12)."
+    },
+    "people-group-media-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "PeopleGroup group: the width of the icon's slot, the team avatar's (size-40px), so names line up (#882)."
+    },
+    "people-group-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "PeopleGroup group: the plain group icon (content-muted; no tile, #882)."
     }
   }
 }
