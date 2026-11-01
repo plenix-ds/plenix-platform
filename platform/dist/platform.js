@@ -17682,10 +17682,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return ops = m;
   }));
   const run = (fn) => ops ? fn(ops) : load().then(fn);
-  function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange }) {
+  function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange, frame, scroller }) {
     const loc2 = useLocale();
     const [range, setRangeState] = React2.useState(null);
     const told2 = React2.useRef(false);
+    const down = React2.useRef(false);
     const latest = React2.useRef({}), rangeRef = React2.useRef(null), trail2 = React2.useRef(null);
     const setRange = (next) => {
       rangeRef.current = typeof next === "function" ? next(rangeRef.current) : next;
@@ -17725,7 +17726,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const timer = setTimeout(() => ops.said(loc2, "dataGrid.cellsSelected", ops.countOf(rect, model)), 400);
       return () => clearTimeout(timer);
     }, [rect]);
-    const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, collapse: () => {
+    const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, press: () => {
+    }, collapse: () => {
     }, copy: () => false, read: () => null };
     if (!enabled) return none;
     const collapse = () => setRange((old) => old ? null : old);
@@ -17754,6 +17756,51 @@ var Plenix = (function(exports, React2, reactDom, client) {
       });
       return true;
     };
+    const press = ({ e, row, c, focusCell }) => {
+      if (e.button !== 0) return;
+      const cell = { key: row.id, field: c.field };
+      const reach = (range2, to, from) => {
+        const now = latest.current;
+        if (from || !trail2.current) trail2.current = /* @__PURE__ */ new Set([range2.anchor.key + "|" + range2.anchor.field]);
+        trail2.current.add(to.key + "|" + to.field);
+        setRange(range2);
+        return [now.rowAt.get(to.key), now.ordered.findIndex((x) => x.id === to.field)];
+      };
+      if (e.shiftKey) {
+        e.preventDefault();
+        run((o) => {
+          const anchor = rangeRef.current && rangeRef.current.anchor || o.focusedCell(frame && frame.current) || cell;
+          const [r, k] = reach({ anchor, focus: cell }, cell, true);
+          if (r !== void 0 && k >= 0) focusCell(r, k);
+        });
+        return;
+      }
+      collapse();
+      down.current = true;
+      const release2 = () => {
+        down.current = false;
+        window.removeEventListener("mouseup", release2, true);
+      };
+      window.addEventListener("mouseup", release2, true);
+      let began = false;
+      run((o) => o.beginDrag({
+        anchor: cell,
+        frame: frame && frame.current,
+        scroller: scroller && scroller.current,
+        rowAt: latest.current.rowAt,
+        ordered: latest.current.ordered,
+        isDown: () => down.current,
+        onMove: (range2, to) => {
+          reach(range2, to, !began);
+          began = true;
+        },
+        onEnd: (last, moved) => {
+          if (!moved) return;
+          const now = latest.current, r = now.rowAt.get(last.key), k = now.ordered.findIndex((x) => x.id === last.field);
+          if (r !== void 0 && k >= 0) focusCell(r, k);
+        }
+      }));
+    };
     const cellClasses = (rowIndex, columnIndex) => {
       if (!rect || rowIndex < rect.r0 || rowIndex > rect.r1 || columnIndex < rect.c0 || columnIndex > rect.c1) return null;
       return { inside: true, top: rowIndex === rect.r0, bottom: rowIndex === rect.r1, start: columnIndex === rect.c0, end: columnIndex === rect.c1 };
@@ -17764,7 +17811,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       for (let i = rect.r0; i <= rect.r1; i += 1) if (model[i] && model[i].original) rows.push(model[i].original);
       return { rows, fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id), text: text2() };
     };
-    return { enabled: true, rect, range, rowAt, cellClasses, extend, collapse, copy, read: read2 };
+    return { enabled: true, rect, range, rowAt, cellClasses, extend, press, collapse, copy, read: read2 };
   }
   const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
   function pillFont(at2, ctx, data) {
@@ -18670,7 +18717,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
   Toolbar.Spacer = function ToolbarSpacer() {
     return /* @__PURE__ */ React2.createElement("div", { className: "plx-toolbar__spacer", "aria-hidden": "true" });
   };
-  function Divider$1({ orientation = "horizontal", className, ...rest }) {
+  function Divider$1({ orientation = "horizontal", className, children, ...rest }) {
+    if (orientation === "horizontal" && children !== void 0 && children !== null && children !== false && children !== "") {
+      return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": "horizontal", "aria-label": typeof children === "string" || typeof children === "number" ? String(children) : void 0, className: cx("plx-divider", "plx-divider--labeled", className), ...rest }, /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__text" }, children), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }));
+    }
     return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": orientation, className: cx("plx-divider", "plx-divider--" + orientation, className), ...rest });
   }
   function HintTarget({ children, "aria-describedby": description }) {
@@ -20352,6 +20402,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           ),
           role: isStatic ? "table" : groups.length || childField ? "treegrid" : "grid",
           "aria-label": label2,
+          "aria-multiselectable": props.cellSelection && !isStatic ? true : void 0,
           "aria-busy": remoteMode && remoteBusy ? true : void 0,
           "aria-rowcount": groups.length || childField ? semanticRows.length + 1 : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
           "aria-colcount": ordered2.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
@@ -21077,7 +21128,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 onPointerLeave: () => leaveCut(row.id + "|" + c.field)
               } : null,
               "aria-selected": inRange ? true : void 0,
-              onMouseDown: cellRange.enabled ? cellRange.collapse : void 0,
+              onMouseDown: cellRange.enabled ? (e) => {
+                if (!e.target.closest(interactive)) cellRange.press({ e, row, c, focusCell });
+              } : void 0,
               dir: pinned && !isStatic || kinds(c).includes("id") || isNarrow ? void 0 : "auto",
               onDoubleClick: () => {
                 if (canEdit) setEditing({ key: row.id, field: c.field, value });
@@ -21983,7 +22036,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       model,
       ordered: ordered2,
       index: index2,
-      onChange: props.onCellSelectionChange
+      onChange: props.onCellSelectionChange,
+      frame,
+      scroller: holder
     });
     live.current.cellRange = cellRange;
     const focusCell = makeFocusCell({ model, ordered: ordered2, virtualized, virtual, displayElements });
@@ -24125,10 +24180,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ));
   }
   const Chat = { Header: Header$1, Thread, Group: Group$2, Divider, Message, Attachments, Attachment, Voice, Composer, Typing };
-  function Rating({ value = 0, onChange, max: max2 = 5, label: label2, readOnly = false, className, ...rest }) {
+  function Rating({ value = 0, onChange, max: max2 = 5, half = false, label: label2, readOnly = false, className, ...rest }) {
     const tw = useStrings("rating"), loc2 = useLocale();
     if (label2 === void 0) label2 = tw.label;
     const stars = Array.from({ length: max2 }, (_, i) => i + 1);
+    const shown = half ? Math.round(value * 2) / 2 : value;
+    const state = (n) => n <= shown ? "plx-rating__star--on" : half && n - 0.5 === shown ? "plx-rating__star--half" : false;
+    const at2 = half ? Math.ceil(shown) : value;
     const starRefs = React2.useRef({});
     const focusNext = React2.useRef(0);
     React2.useEffect(() => {
@@ -24137,15 +24195,22 @@ var Plenix = (function(exports, React2, reactDom, client) {
       focusNext.current = 0;
     }, [value]);
     if (readOnly) {
-      return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-rating", "plx-rating--read-only", className), role: "img", "aria-label": tw.value.replace("{label}", label2).replace("{value}", value).replace("{max}", max2), ...rest }, stars.map((n) => /* @__PURE__ */ React2.createElement("span", { key: n, className: cx("plx-rating__star", n <= value && "plx-rating__star--on"), "aria-hidden": "true" }, "\u2605")));
+      return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-rating", "plx-rating--read-only", className), role: "img", "aria-label": tw.value.replace("{label}", label2).replace("{value}", shown).replace("{max}", max2), ...rest }, stars.map((n) => /* @__PURE__ */ React2.createElement("span", { key: n, className: cx("plx-rating__star", state(n)), "aria-hidden": "true" }, "\u2605")));
     }
-    const choose = (n) => onChange && onChange(n === value ? 0 : n);
+    const choose = (n, e) => {
+      let next = n;
+      if (half && e && e.clientX) {
+        const r = e.currentTarget.getBoundingClientRect(), early = isRtl$2(e.currentTarget) ? e.clientX > r.left + r.width / 2 : e.clientX < r.left + r.width / 2;
+        if (early) next = n - 0.5;
+      }
+      if (onChange) onChange(next === shown ? 0 : next);
+    };
     const onKey = (e, n) => {
       const step = e.key === "ArrowUp" ? 1 : e.key === "ArrowDown" ? -1 : arrowStep(e, e.currentTarget, { vertical: false });
       if (!step) return;
       e.preventDefault();
-      const next = Math.min(max2, Math.max(1, n + step));
-      focusNext.current = next;
+      const unit = half ? 0.5 : 1, next = Math.min(max2, Math.max(unit, (half ? shown : n) + step * unit));
+      focusNext.current = Math.ceil(next);
       if (onChange) onChange(next);
     };
     return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-rating", className), role: "radiogroup", "aria-label": label2, ...rest }, stars.map((n) => /* @__PURE__ */ React2.createElement(
@@ -24157,11 +24222,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
           starRefs.current[n] = el;
         },
         role: "radio",
-        "aria-checked": n === value,
-        "aria-label": loc2.t("rating.stars", { count: n }),
-        tabIndex: (value ? n === value : n === 1) ? 0 : -1,
-        className: cx("plx-rating__star", n <= value && "plx-rating__star--on"),
-        onClick: () => choose(n),
+        "aria-checked": n === at2,
+        "aria-label": loc2.t("rating.stars", { count: n === at2 ? shown : n }),
+        tabIndex: (shown ? n === at2 : n === 1) ? 0 : -1,
+        className: cx("plx-rating__star", state(n)),
+        onClick: (e) => choose(n, e),
         onKeyDown: (e) => onKey(e, n)
       },
       "\u2605"
@@ -24942,179 +25007,19 @@ var Plenix = (function(exports, React2, reactDom, client) {
       ]
     };
   }
-  const SIZES$7 = ["xs", "sm", "md", "lg", "xl"];
-  const PRESENCE$1 = ["online", "away", "busy", "dnd", "offline"];
-  function Persona({ name, src, color, secondary, role, presence, size = "md", href, strings, className, ...rest }) {
-    devWarn("Persona", { size }, { size: ["xs", "sm", "md", "lg", "xl"] });
-    const s = SIZES$7.indexOf(size) >= 0 ? size : "md";
-    const p = PRESENCE$1.indexOf(presence) >= 0 ? presence : null;
-    const words2 = useStrings("persona", strings);
-    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-persona", "plx-persona--" + s, className), ...rest }, /* @__PURE__ */ React2.createElement(Avatar, { name, src, color, presence: p || void 0, size: s, className: "plx-persona__avatar" }), /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__text" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__primary" }, href ? /* @__PURE__ */ React2.createElement(Link, { href, variant: "standalone", className: "plx-persona__name", title: name }, name) : /* @__PURE__ */ React2.createElement("span", { className: "plx-persona__name", title: name }, name), p ? /* @__PURE__ */ React2.createElement(VisuallyHidden, null, ", " + words2[p]) : null, role ? /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", size: "sm", className: "plx-persona__role" }, role) : null), secondary ? /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__secondary", title: typeof secondary === "string" ? secondary : void 0 }, secondary) : null));
-  }
-  const StackedContext = React2.createContext(false);
-  function ActivityList({ label: label2, stacked = false, titleLines = 1, className, children }) {
-    return /* @__PURE__ */ React2.createElement(StackedContext.Provider, { value: stacked }, /* @__PURE__ */ React2.createElement("ul", { "aria-label": label2, className: cx("plx-activity-list", stacked && "plx-activity-list--stacked", titleLines === 2 && "plx-activity-list--title-2", className) }, children));
-  }
-  ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
-    const stacked = React2.useContext(StackedContext);
-    const words2 = useStrings("activityList");
-    const opener = href ? /* @__PURE__ */ React2.createElement("a", { href, className: "plx-activity-list__opener" }, title) : onOpen ? /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-activity-list__opener", onClick: onOpen }, title) : /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__opener" }, title);
-    return /* @__PURE__ */ React2.createElement("li", { className: cx("plx-activity-list__item", (href || onOpen) && "is-interactive", unread && "is-unread", selected && "is-selected", className), "aria-current": selected ? "true" : void 0 }, unread ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__unread" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-visually-hidden" }, words2.unread)) : null, leading ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__leading" }, leading) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__title" }, opener), meta ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__meta", "data-plx-text-follow": stacked ? "size" : void 0 }, dataWhenText(meta)) : null), time ? /* @__PURE__ */ React2.createElement("time", { className: "plx-activity-list__time", dateTime }, time) : null, actions ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__actions" }, actions) : null);
-  };
-  const STATUS_LABELS = english.reviewFlow.statuses;
-  const WORKFLOW_STATUSES = {
-    draft: { tone: "neutral", icon: PencilIcon, label: STATUS_LABELS.draft },
-    "in-review": { tone: "active", icon: DocSearchIcon, label: STATUS_LABELS["in-review"] },
-    approved: { tone: "success", icon: CircleCheckIcon, label: STATUS_LABELS.approved },
-    "changes-requested": { tone: "action-required", icon: AlertIcon, label: STATUS_LABELS["changes-requested"] },
-    rejected: { tone: "negative", icon: CloseIcon, label: STATUS_LABELS.rejected },
-    published: { tone: "success", icon: VisibilityIcon, label: STATUS_LABELS.published },
-    scheduled: { tone: "waiting", icon: ScheduleIcon, label: STATUS_LABELS.scheduled }
-  };
-  function WorkflowStatus({ status = "draft", label: label2, size, strings, className, ...rest }) {
-    devWarn("WorkflowStatus", { size }, { size: ["md", "sm"] });
-    const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-    const names2 = useStrings("reviewFlow.statuses");
-    const words2 = label2 || strings && strings[status] || names2[status] || s.label;
-    return /* @__PURE__ */ React2.createElement(Badge, { tone: s.tone, icon: s.icon, size, className: cx("plx-workflow-status", className), ...rest }, words2);
-  }
-  function useOptionalToast() {
+  function useOptionalToast$1() {
     try {
       return useToast();
     } catch (e) {
       return null;
     }
   }
-  const VERB = { approved: "approve", "changes-requested": "changes", rejected: "reject" };
-  const LOOK = { approved: "primary", "changes-requested": "secondary", rejected: "danger-secondary" };
-  function ReviewFlow({
-    status = "in-review",
-    title,
-    headingLevel = 3,
-    detail,
-    kind = "review",
-    reviewers = [],
-    history: history2 = [],
-    onDecision,
-    decisions = ["rejected", "changes-requested", "approved"],
-    reasonFor = ["rejected", "changes-requested"],
-    strings,
-    className,
-    ...rest
-  }) {
-    const t = useStrings("reviewFlow.flow", strings);
-    const toast = useOptionalToast();
-    const [comment, setComment] = React2.useState("");
-    const [error, setError] = React2.useState("");
-    const field = React2.useRef(null);
-    const H2 = "h" + Math.min(6, Math.max(2, headingLevel));
-    const names2 = useStrings("reviewFlow.statuses");
-    const word = (d) => t[d] || names2[d] || WORKFLOW_STATUSES[d].label;
-    const decide = (d) => {
-      if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
-        setError(t.needReason);
-        if (field.current) field.current.focus();
-        return;
-      }
-      setError("");
-      onDecision(d, comment.trim());
-      setComment("");
-      const said2 = fill(t.done, { decision: word(d), title: title || "" });
-      if (toast) toast.show(said2, { tone: d === "approved" ? "success" : "info" });
-      else announce(said2);
-    };
-    return /* @__PURE__ */ React2.createElement("section", { className: cx("plx-review-flow", kind === "human" && "plx-review-flow--human", className), "aria-label": title, ...rest }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__heading" }, title ? /* @__PURE__ */ React2.createElement(H2, { className: "plx-review-flow__title" }, title) : null, detail ? /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__detail" }, detail) : null), /* @__PURE__ */ React2.createElement(WorkflowStatus, { status, strings })), kind === "human" ? /* @__PURE__ */ React2.createElement(Notice, { tone: "info", icon: SparkleIcon }, t.human) : null, reviewers.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.reviewers), /* @__PURE__ */ React2.createElement("ul", { className: "plx-review-flow__reviewers" }, reviewers.map((r) => /* @__PURE__ */ React2.createElement("li", { key: r.id || r.name, className: "plx-review-flow__reviewer" }, /* @__PURE__ */ React2.createElement(Persona, { name: r.name, src: r.src, color: r.color, size: "xs" }), r.decision ? /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.decision, strings }) : /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__waiting" }, t.waiting))))) : null, onDecision ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__decide" }, /* @__PURE__ */ React2.createElement(Field, { label: t.comment, description: t.commentHint, error: error || void 0 }, /* @__PURE__ */ React2.createElement(Textarea, { ref: field, rows: 3, value: comment, onChange: (e) => {
-      setComment(e.target.value);
-      if (error) setError("");
-    } })), /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__actions", role: "group", "aria-label": t.decisions }, decisions.map((d) => /* @__PURE__ */ React2.createElement(Button, { key: d, variant: LOOK[d], onClick: () => decide(d) }, t[VERB[d]])))) : null, history2.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.history), /* @__PURE__ */ React2.createElement(ActivityList, { label: t.history, stacked: true }, history2.map((x) => /* @__PURE__ */ React2.createElement(
-      ActivityList.Item,
-      {
-        key: x.id || x.name + x.time,
-        leading: /* @__PURE__ */ React2.createElement(Avatar, { name: x.name, src: x.src, color: x.color, size: "xs" }),
-        title: x.name,
-        meta: word(x.decision) + (x.comment ? ": " + x.comment : ""),
-        time: x.time,
-        dateTime: x.dateTime
-      }
-    )))) : null);
-  }
-  function ReviewQueue({
-    items = [],
-    label: label2,
-    noun,
-    plural,
-    onDecision,
-    selected,
-    onSelectionChange,
-    strings,
-    className,
-    ...rest
-  }) {
-    const t = useStrings("reviewFlow.queue", strings);
-    const names2 = useStrings("reviewFlow.statuses");
-    const loc2 = useLocale();
-    const builtIn = !noun && !plural;
-    const many = plural || (noun ? noun + "s" : t.plural);
-    noun = noun ?? t.noun;
-    label2 = label2 ?? t.queueLabel;
-    const counted = (m) => builtIn ? loc2.t("reviewFlow.queue.items", { count: m, n: formatNumber(m) }) : null;
-    const toast = useOptionalToast();
-    const [own2, setOwn] = React2.useState([]);
-    const sel = selected !== void 0 ? selected : own2;
-    const setSel = (ids) => {
-      if (selected === void 0) setOwn(ids);
-      if (onSelectionChange) onSelectionChange(ids);
-    };
-    const [ask2, setAsk] = React2.useState(null);
-    const what = (n) => counted(n) ?? (n === 1 ? "1 " + noun : formatNumber(n) + " " + many);
-    const run2 = (decision, reason) => {
-      const ids = sel.slice();
-      if (onDecision) onDecision(ids, decision, reason || "");
-      setSel([]);
-      setAsk(null);
-      const whole2 = builtIn && t.doneItems && t.doneItems[decision];
-      const said2 = whole2 ? loc2.t("reviewFlow.queue.doneItems." + decision, { count: ids.length, n: formatNumber(ids.length) }) : fill(t.done, { what: what(ids.length), decision: names2[decision].toLowerCase() });
-      if (toast) toast.show(said2, { tone: decision === "approved" ? "success" : "info" });
-      else announce(said2);
-    };
-    const columns = [
-      { title: t.name, field: "name", kind: "name" },
-      { title: t.type, field: "type" },
-      { title: t.submittedBy, field: "submittedBy", type: "person" },
-      { title: t.submitted, field: "submitted", kind: "data", type: "date", render: (r) => /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatDate(r.submitted)) },
-      { title: t.status, field: "status", kind: "center", render: (r) => /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.status, strings }) }
-    ];
-    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-review-queue", className), ...rest }, /* @__PURE__ */ React2.createElement(
-      CommandBar,
-      {
-        label: label2,
-        count: counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many }),
-        selection: { count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
-          { id: "approve", label: t.approve, icon: CircleCheckIcon, onSelect: () => run2("approved") },
-          { id: "changes", label: t.changes, icon: AlertIcon, onSelect: () => setAsk("changes-requested") },
-          { id: "reject", label: t.reject, icon: CloseIcon, danger: true, onSelect: () => setAsk("rejected") }
-        ] }
-      }
-    ), /* @__PURE__ */ React2.createElement(DataGrid, { label: label2, data: items, index: "id", selectable: true, selected: sel, onSelectionChange: setSel, columns }), /* @__PURE__ */ React2.createElement(
-      PromptDialog,
-      {
-        open: !!ask2,
-        title: fill(ask2 === "rejected" ? t.rejectTitle : t.changesTitle, { what: what(sel.length) }),
-        label: ask2 === "rejected" ? t.reason : t.changesLabel,
-        description: t.reasonHint,
-        confirmLabel: ask2 === "rejected" ? t.reject : t.changes,
-        validate: (v) => v.trim() ? "" : t.needReason,
-        onSubmit: (v) => run2(ask2, v.trim()),
-        onCancel: () => setAsk(null)
-      }
-    ));
-  }
   function ActionTable(props) {
     const rowMenu = useDataGridActions(props.rowMenu, void 0, props.strings), shaped = useRowTemplate(props);
     return /* @__PURE__ */ React2.createElement(DataGridEngine, { ...shaped, rowMenu });
   }
   function DataGrid(props) {
-    const toast = useOptionalToast();
+    const toast = useOptionalToast$1();
     return toast ? /* @__PURE__ */ React2.createElement(ActionTable, { ...props }) : /* @__PURE__ */ React2.createElement(ToastProvider, null, /* @__PURE__ */ React2.createElement(ActionTable, { ...props }));
   }
   DataGrid.useActions = useDataGridActions;
@@ -25984,10 +25889,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-record-page", className) }, header, aside ? /* @__PURE__ */ React2.createElement("div", { className: "plx-record-page__columns" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-record-page__body" }, children), /* @__PURE__ */ React2.createElement("aside", { className: "plx-record-page__aside" }, aside)) : /* @__PURE__ */ React2.createElement("div", { className: "plx-record-page__body" }, children));
   }
   RecordPage.Header = Header;
-  const SIZES$6 = ["xs", "sm", "md", "lg"];
+  const SIZES$7 = ["xs", "sm", "md", "lg"];
   function AvatarGroup({ people = [], label: label2, max: max2 = 4, size = "sm", layout: layout2 = "stack", onMore, strings, className, ...rest }) {
     devWarn("AvatarGroup", { size }, { size: ["xs", "sm", "md", "lg"] });
-    const s = SIZES$6.indexOf(size) >= 0 ? size : "sm";
+    const s = SIZES$7.indexOf(size) >= 0 ? size : "sm";
     const l = layout2 === "grid" ? "grid" : "stack";
     const words2 = useStrings("avatarGroup", strings);
     const limit2 = Math.max(1, max2 | 0);
@@ -26223,6 +26128,16 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const lead = /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__lead" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__heading" }, top ? mediaEl : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__text" }, /* @__PURE__ */ React2.createElement(H2, { className: "plx-entity-header__title" }, title), sub && !section ? /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__subtitle" }, sub) : null)), /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__rule", "aria-hidden": "true" }), section ? summary2 || sub ? /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__summary" }, summary2 || sub) : null : /* @__PURE__ */ React2.createElement(Details, { status: st, states, facts, strings: s, step }));
     return /* @__PURE__ */ React2.createElement("header", { ref: root, className: cx("plx-entity-header", section && "plx-entity-header--section", !aside && "plx-entity-header--solo", className) }, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__layout" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__main" }, top ? lead : /* @__PURE__ */ React2.createElement("div", { className: cx("plx-entity-header__split", section && "plx-entity-header__split--section") }, mediaEl, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__body" }, lead))), aside ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__aside" }, next && !section ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__next" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__eyebrow" }, next.label || s.next), /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__next-title" }, next.title), next.detail ? /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__next-detail" }, next.detail) : null) : null, control || hasActions ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__tools" }, control ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__control" }, control) : null, hasActions ? /* @__PURE__ */ React2.createElement(Actions, { actions, moreActions, size: section ? "sm" : "md", strings: s, labels: actionLabels, layout: actionsLayout }) : null) : null) : null));
   }
+  const StackedContext = React2.createContext(false);
+  function ActivityList({ label: label2, stacked = false, titleLines = 1, className, children }) {
+    return /* @__PURE__ */ React2.createElement(StackedContext.Provider, { value: stacked }, /* @__PURE__ */ React2.createElement("ul", { "aria-label": label2, className: cx("plx-activity-list", stacked && "plx-activity-list--stacked", titleLines === 2 && "plx-activity-list--title-2", className) }, children));
+  }
+  ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
+    const stacked = React2.useContext(StackedContext);
+    const words2 = useStrings("activityList");
+    const opener = href ? /* @__PURE__ */ React2.createElement("a", { href, className: "plx-activity-list__opener" }, title) : onOpen ? /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-activity-list__opener", onClick: onOpen }, title) : /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__opener" }, title);
+    return /* @__PURE__ */ React2.createElement("li", { className: cx("plx-activity-list__item", (href || onOpen) && "is-interactive", unread && "is-unread", selected && "is-selected", className), "aria-current": selected ? "true" : void 0 }, unread ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__unread" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-visually-hidden" }, words2.unread)) : null, leading ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__leading" }, leading) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__title" }, opener), meta ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__meta", "data-plx-text-follow": stacked ? "size" : void 0 }, dataWhenText(meta)) : null), time ? /* @__PURE__ */ React2.createElement("time", { className: "plx-activity-list__time", dateTime }, time) : null, actions ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__actions" }, actions) : null);
+  };
   function NotificationList({ items, onChange, onOpen, onViewAll, limit: limit2, label: label2, footer = true, strings, className }) {
     const t = useStrings("notificationList", strings);
     const session2 = useSession();
@@ -27164,7 +27079,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
   };
-  const version$1 = "0.79.1";
+  const version$1 = "0.80.0";
   function marginOf(value) {
     if (!value || typeof document === "undefined") return "0px";
     const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
@@ -27590,10 +27505,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       anchor: anchor.current
     };
   }
-  const SIZES$5 = ["48", "64", "96"];
+  const SIZES$6 = ["48", "64", "96"];
   function Pictogram({ icon, size = "64", twoTone = false, label: label2, className, ...rest }) {
     devWarn("Pictogram", { size }, { size: ["48", "64", "96", 48, 64, 96] });
-    const s = SIZES$5.indexOf(String(size)) >= 0 ? String(size) : "64";
+    const s = SIZES$6.indexOf(String(size)) >= 0 ? String(size) : "64";
     return /* @__PURE__ */ React2.createElement(
       "span",
       {
@@ -27965,6 +27880,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
       children,
       status || count2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-retry__status" }, status ? /* @__PURE__ */ React2.createElement("span", { className: "plx-retry__wait" }, status) : null, count2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-retry__count" }, count2) : null) : null
     );
+  }
+  const SIZES$5 = ["xs", "sm", "md", "lg", "xl"];
+  const PRESENCE$1 = ["online", "away", "busy", "dnd", "offline"];
+  function Persona({ name, src, color, secondary, role, presence, size = "md", href, strings, className, ...rest }) {
+    devWarn("Persona", { size }, { size: ["xs", "sm", "md", "lg", "xl"] });
+    const s = SIZES$5.indexOf(size) >= 0 ? size : "md";
+    const p = PRESENCE$1.indexOf(presence) >= 0 ? presence : null;
+    const words2 = useStrings("persona", strings);
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-persona", "plx-persona--" + s, className), ...rest }, /* @__PURE__ */ React2.createElement(Avatar, { name, src, color, presence: p || void 0, size: s, className: "plx-persona__avatar" }), /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__text" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__primary" }, href ? /* @__PURE__ */ React2.createElement(Link, { href, variant: "standalone", className: "plx-persona__name", title: name }, name) : /* @__PURE__ */ React2.createElement("span", { className: "plx-persona__name", title: name }, name), p ? /* @__PURE__ */ React2.createElement(VisuallyHidden, null, ", " + words2[p]) : null, role ? /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", size: "sm", className: "plx-persona__role" }, role) : null), secondary ? /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__secondary", title: typeof secondary === "string" ? secondary : void 0 }, secondary) : null));
   }
   const SIZES$4 = ["sm", "md", "lg"];
   const TONES$1 = ["info", "success", "warning", "danger", "neutral"];
@@ -34792,10 +34716,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const weekday = (r) => new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(2026, 0, 4 + r));
     const rowNames = calendar ? [0, 1, 2, 3, 4, 5, 6].map(weekday) : rows;
     const nCols = calendar ? cal.weeks : columns.length;
-    const cellAt = (r, c) => calendar ? cal.cells[c * 7 + r] : { r, c, inside: true, value: values[r] && typeof values[r][c] === "number" && isFinite(values[r][c]) ? values[r][c] : null };
+    const cellAt2 = (r, c) => calendar ? cal.cells[c * 7 + r] : { r, c, inside: true, value: values[r] && typeof values[r][c] === "number" && isFinite(values[r][c]) ? values[r][c] : null };
     const all = [];
     for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) {
-      const x = cellAt(r, c);
+      const x = cellAt2(r, c);
       if (x && x.inside && x.value !== null) all.push(x.value);
     }
     let lo = min2 !== void 0 ? min2 : all.length ? Math.min.apply(null, all) : 0;
@@ -34809,7 +34733,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const titleOf = (cell) => calendar ? formatDate(cell.date) : rowNames[cell.r] + ", " + columns[cell.c];
     const valueOf2 = (cell) => cell.value === null ? t.missing : fmt(cell.value);
     const insideAt = (r, c) => {
-      const x = cellAt(r, c);
+      const x = cellAt2(r, c);
       return !!(x && x.inside);
     };
     const ia = useChartInteraction({
@@ -34818,9 +34742,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       mode: "point",
       select: typeof onSelect === "function",
       strings: interactionStrings,
-      onSelect: (cell) => onSelect && onSelect(Object.assign({ value: cellAt(cell.r, cell.c).value }, cell)),
+      onSelect: (cell) => onSelect && onSelect(Object.assign({ value: cellAt2(cell.r, cell.c).value }, cell)),
       describe: (cell) => {
-        const x = cellAt(cell.r, cell.c);
+        const x = cellAt2(cell.r, cell.c);
         return chartTooltipText({ title: titleOf(x), items: [{ label: vLabel, value: valueOf2(x) }] });
       },
       labelOf: (c) => calendar ? formatDate(cal.cells[c * 7].date) : columns[c],
@@ -34846,11 +34770,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
       data: cal.cells.filter((x) => x.inside).map((x, i) => ({ id: i + 1, d: formatDate(x.date), v: valueOf2(x) }))
     } : {
       columns: [{ title: t.row, field: "r", kind: "name", rowLabel: true }, { title: t.column, field: "c", kind: "name" }, { title: vLabel, field: "v", kind: "data", align: "right" }],
-      data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({ id: r * columns.length + c + 1, r: rn, c: cn, v: valueOf2(cellAt(r, c)) }))))
+      data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({ id: r * columns.length + c + 1, r: rn, c: cn, v: valueOf2(cellAt2(r, c)) }))))
     };
     const hasMissing = (() => {
       for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) {
-        const x = cellAt(r, c);
+        const x = cellAt2(r, c);
         if (x && x.inside && x.value === null) return true;
       }
       return false;
@@ -34885,7 +34809,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }) : [];
       const monthTicks = calendar ? starts.filter((c, k) => k === starts.length - 1 || starts[k + 1] - c >= 3) : null;
       return /* @__PURE__ */ React2.createElement("g", { className: "plx-heat-map__plot" }, cols.map((c) => rs.map((r) => {
-        const cell = cellAt(r, c);
+        const cell = cellAt2(r, c);
         if (!cell || !cell.inside) return null;
         const empty = cell.value === null;
         return /* @__PURE__ */ React2.createElement(
@@ -34906,9 +34830,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
           x: scalePosition(x, a.c),
           y: y(a.r),
           inner: { width: w, height: h2 },
-          title: titleOf(cellAt(a.r, a.c)),
+          title: titleOf(cellAt2(a.r, a.c)),
           titleKind: calendar ? "data" : "text",
-          items: [{ label: vLabel, value: valueOf2(cellAt(a.r, a.c)), color: cellAt(a.r, a.c).value === null ? void 0 : datavizStep(sc, cellAt(a.r, a.c).value, lo, hi) }]
+          items: [{ label: vLabel, value: valueOf2(cellAt2(a.r, a.c)), color: cellAt2(a.r, a.c).value === null ? void 0 : datavizStep(sc, cellAt2(a.r, a.c).value, lo, hi) }]
         }
       ) : null);
     };
@@ -37631,6 +37555,154 @@ var Plenix = (function(exports, React2, reactDom, client) {
           }
         }
       )))
+    ));
+  }
+  const STATUS_LABELS = english.reviewFlow.statuses;
+  const WORKFLOW_STATUSES = {
+    draft: { tone: "neutral", icon: PencilIcon, label: STATUS_LABELS.draft },
+    "in-review": { tone: "active", icon: DocSearchIcon, label: STATUS_LABELS["in-review"] },
+    approved: { tone: "success", icon: CircleCheckIcon, label: STATUS_LABELS.approved },
+    "changes-requested": { tone: "action-required", icon: AlertIcon, label: STATUS_LABELS["changes-requested"] },
+    rejected: { tone: "negative", icon: CloseIcon, label: STATUS_LABELS.rejected },
+    published: { tone: "success", icon: VisibilityIcon, label: STATUS_LABELS.published },
+    scheduled: { tone: "waiting", icon: ScheduleIcon, label: STATUS_LABELS.scheduled }
+  };
+  function WorkflowStatus({ status = "draft", label: label2, size, strings, className, ...rest }) {
+    devWarn("WorkflowStatus", { size }, { size: ["md", "sm"] });
+    const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
+    const names2 = useStrings("reviewFlow.statuses");
+    const words2 = label2 || strings && strings[status] || names2[status] || s.label;
+    return /* @__PURE__ */ React2.createElement(Badge, { tone: s.tone, icon: s.icon, size, className: cx("plx-workflow-status", className), ...rest }, words2);
+  }
+  function useOptionalToast() {
+    try {
+      return useToast();
+    } catch (e) {
+      return null;
+    }
+  }
+  const VERB = { approved: "approve", "changes-requested": "changes", rejected: "reject" };
+  const LOOK = { approved: "primary", "changes-requested": "secondary", rejected: "danger-secondary" };
+  function ReviewFlow({
+    status = "in-review",
+    title,
+    headingLevel = 3,
+    detail,
+    kind = "review",
+    reviewers = [],
+    history: history2 = [],
+    onDecision,
+    decisions = ["rejected", "changes-requested", "approved"],
+    reasonFor = ["rejected", "changes-requested"],
+    strings,
+    className,
+    ...rest
+  }) {
+    const t = useStrings("reviewFlow.flow", strings);
+    const toast = useOptionalToast();
+    const [comment, setComment] = React2.useState("");
+    const [error, setError] = React2.useState("");
+    const field = React2.useRef(null);
+    const H2 = "h" + Math.min(6, Math.max(2, headingLevel));
+    const names2 = useStrings("reviewFlow.statuses");
+    const word = (d) => t[d] || names2[d] || WORKFLOW_STATUSES[d].label;
+    const decide = (d) => {
+      if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
+        setError(t.needReason);
+        if (field.current) field.current.focus();
+        return;
+      }
+      setError("");
+      onDecision(d, comment.trim());
+      setComment("");
+      const said2 = fill(t.done, { decision: word(d), title: title || "" });
+      if (toast) toast.show(said2, { tone: d === "approved" ? "success" : "info" });
+      else announce(said2);
+    };
+    return /* @__PURE__ */ React2.createElement("section", { className: cx("plx-review-flow", kind === "human" && "plx-review-flow--human", className), "aria-label": title, ...rest }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__heading" }, title ? /* @__PURE__ */ React2.createElement(H2, { className: "plx-review-flow__title" }, title) : null, detail ? /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__detail" }, detail) : null), /* @__PURE__ */ React2.createElement(WorkflowStatus, { status, strings })), kind === "human" ? /* @__PURE__ */ React2.createElement(Notice, { tone: "info", icon: SparkleIcon }, t.human) : null, reviewers.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.reviewers), /* @__PURE__ */ React2.createElement("ul", { className: "plx-review-flow__reviewers" }, reviewers.map((r) => /* @__PURE__ */ React2.createElement("li", { key: r.id || r.name, className: "plx-review-flow__reviewer" }, /* @__PURE__ */ React2.createElement(Persona, { name: r.name, src: r.src, color: r.color, size: "xs" }), r.decision ? /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.decision, strings }) : /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__waiting" }, t.waiting))))) : null, onDecision ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__decide" }, /* @__PURE__ */ React2.createElement(Field, { label: t.comment, description: t.commentHint, error: error || void 0 }, /* @__PURE__ */ React2.createElement(Textarea, { ref: field, rows: 3, value: comment, onChange: (e) => {
+      setComment(e.target.value);
+      if (error) setError("");
+    } })), /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__actions", role: "group", "aria-label": t.decisions }, decisions.map((d) => /* @__PURE__ */ React2.createElement(Button, { key: d, variant: LOOK[d], onClick: () => decide(d) }, t[VERB[d]])))) : null, history2.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.history), /* @__PURE__ */ React2.createElement(ActivityList, { label: t.history, stacked: true }, history2.map((x) => /* @__PURE__ */ React2.createElement(
+      ActivityList.Item,
+      {
+        key: x.id || x.name + x.time,
+        leading: /* @__PURE__ */ React2.createElement(Avatar, { name: x.name, src: x.src, color: x.color, size: "xs" }),
+        title: x.name,
+        meta: word(x.decision) + (x.comment ? ": " + x.comment : ""),
+        time: x.time,
+        dateTime: x.dateTime
+      }
+    )))) : null);
+  }
+  function ReviewQueue({
+    items = [],
+    label: label2,
+    noun,
+    plural,
+    onDecision,
+    selected,
+    onSelectionChange,
+    strings,
+    className,
+    ...rest
+  }) {
+    const t = useStrings("reviewFlow.queue", strings);
+    const names2 = useStrings("reviewFlow.statuses");
+    const loc2 = useLocale();
+    const builtIn = !noun && !plural;
+    const many = plural || (noun ? noun + "s" : t.plural);
+    noun = noun ?? t.noun;
+    label2 = label2 ?? t.queueLabel;
+    const counted = (m) => builtIn ? loc2.t("reviewFlow.queue.items", { count: m, n: formatNumber(m) }) : null;
+    const toast = useOptionalToast();
+    const [own2, setOwn] = React2.useState([]);
+    const sel = selected !== void 0 ? selected : own2;
+    const setSel = (ids) => {
+      if (selected === void 0) setOwn(ids);
+      if (onSelectionChange) onSelectionChange(ids);
+    };
+    const [ask2, setAsk] = React2.useState(null);
+    const what = (n) => counted(n) ?? (n === 1 ? "1 " + noun : formatNumber(n) + " " + many);
+    const run2 = (decision, reason) => {
+      const ids = sel.slice();
+      if (onDecision) onDecision(ids, decision, reason || "");
+      setSel([]);
+      setAsk(null);
+      const whole2 = builtIn && t.doneItems && t.doneItems[decision];
+      const said2 = whole2 ? loc2.t("reviewFlow.queue.doneItems." + decision, { count: ids.length, n: formatNumber(ids.length) }) : fill(t.done, { what: what(ids.length), decision: names2[decision].toLowerCase() });
+      if (toast) toast.show(said2, { tone: decision === "approved" ? "success" : "info" });
+      else announce(said2);
+    };
+    const columns = [
+      { title: t.name, field: "name", kind: "name" },
+      { title: t.type, field: "type" },
+      { title: t.submittedBy, field: "submittedBy", type: "person" },
+      { title: t.submitted, field: "submitted", kind: "data", type: "date", render: (r) => /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatDate(r.submitted)) },
+      { title: t.status, field: "status", kind: "center", render: (r) => /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.status, strings }) }
+    ];
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-review-queue", className), ...rest }, /* @__PURE__ */ React2.createElement(
+      CommandBar,
+      {
+        label: label2,
+        count: counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many }),
+        selection: { count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
+          { id: "approve", label: t.approve, icon: CircleCheckIcon, onSelect: () => run2("approved") },
+          { id: "changes", label: t.changes, icon: AlertIcon, onSelect: () => setAsk("changes-requested") },
+          { id: "reject", label: t.reject, icon: CloseIcon, danger: true, onSelect: () => setAsk("rejected") }
+        ] }
+      }
+    ), /* @__PURE__ */ React2.createElement(DataGrid, { label: label2, data: items, index: "id", selectable: true, selected: sel, onSelectionChange: setSel, columns }), /* @__PURE__ */ React2.createElement(
+      PromptDialog,
+      {
+        open: !!ask2,
+        title: fill(ask2 === "rejected" ? t.rejectTitle : t.changesTitle, { what: what(sel.length) }),
+        label: ask2 === "rejected" ? t.reason : t.changesLabel,
+        description: t.reasonHint,
+        confirmLabel: ask2 === "rejected" ? t.reject : t.changes,
+        validate: (v) => v.trim() ? "" : t.needReason,
+        onSubmit: (v) => run2(ask2, v.trim()),
+        onCancel: () => setAsk(null)
+      }
     ));
   }
   const SHOWN = 5;
@@ -44071,11 +44143,75 @@ var Plenix = (function(exports, React2, reactDom, client) {
     reached.add(model[nr].id + "|" + ordered2[nc].id);
     return { range: { anchor: cont ? cont.anchor : here, focus: { key: model[nr].id, field: ordered2[nc].id } }, nr, nc, step, trail: reached };
   };
+  const cellAt = (x, y, frame) => {
+    const el = document.elementFromPoint(x, y), cell = el && el.closest('[role="gridcell"][data-plx-field]'), row = cell && cell.closest("[data-plx-record]");
+    if (!cell || !row || !frame || !frame.contains(cell)) return null;
+    return { key: row.getAttribute("data-plx-record"), field: cell.getAttribute("data-plx-field") };
+  };
+  const focusedCell = (frame) => {
+    const cell = document.activeElement && document.activeElement.closest && document.activeElement.closest('[role="gridcell"][data-plx-field]'), row = cell && cell.closest("[data-plx-record]");
+    return cell && row && frame && frame.contains(cell) ? { key: row.getAttribute("data-plx-record"), field: cell.getAttribute("data-plx-field") } : null;
+  };
+  const EDGE = 32;
+  const MOST = 24;
+  const toward = (v, lo, hi) => v < lo + EDGE ? Math.max(-MOST, (v - lo - EDGE) / 2) : v > hi - EDGE ? Math.min(MOST, (v - hi + EDGE) / 2) : 0;
+  const beginDrag = ({ anchor, frame, scroller, rowAt, ordered: ordered2, isDown, onMove, onEnd }) => {
+    if (!isDown()) return () => {
+    };
+    let last = anchor, frameId = 0, x = 0, y = 0, moved = false;
+    const hit = () => {
+      const c = cellAt(x, y, frame);
+      if (!c || !rowAt.has(c.key) || !ordered2.some((col) => col.id === c.field) || c.key === last.key && c.field === last.field) return;
+      last = c;
+      moved = true;
+      onMove({ anchor, focus: c }, c);
+    };
+    const edge = () => {
+      if (!scroller) return;
+      const r = scroller.getBoundingClientRect(), dy = toward(y, r.top, r.bottom), dx = toward(x, r.left, r.right);
+      if (!dx && !dy) {
+        frameId = 0;
+        return;
+      }
+      scroller.scrollTop += dy;
+      scroller.scrollLeft += dx;
+      hit();
+      frameId = requestAnimationFrame(edge);
+    };
+    const move2 = (e) => {
+      if (e.buttons === 0) {
+        up();
+        return;
+      }
+      x = e.clientX;
+      y = e.clientY;
+      hit();
+      if (!frameId) edge();
+    };
+    const nothing = (e) => e.preventDefault();
+    const stop2 = () => {
+      window.removeEventListener("mousemove", move2, true);
+      window.removeEventListener("mouseup", up, true);
+      document.removeEventListener("selectstart", nothing, true);
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+    const up = () => {
+      stop2();
+      onEnd(last, moved);
+    };
+    window.addEventListener("mousemove", move2, true);
+    window.addEventListener("mouseup", up, true);
+    document.addEventListener("selectstart", nothing, true);
+    return stop2;
+  };
   const cellRangeOps = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
+    beginDrag,
+    cellAt,
     countOf,
     detailsOf,
     extendTo,
+    focusedCell,
     rowsIn,
     said,
     textOf,

@@ -7696,7 +7696,8 @@
       ],
       "web": [
         "forms|Combobox",
-        "forms|Autocomplete"
+        "forms|Autocomplete",
+        "forms|Suggest"
       ],
       "android": [
         "android-forms|Exposed dropdown menu"

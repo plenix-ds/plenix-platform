@@ -1261,6 +1261,16 @@
         }
       }
     },
+    "border-separator": {
+      "$value": "{plx-ref.color-gray-250}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "Separators between the groups of a menu (gray 250, Blueprint's shade; owner, 2026-11-01, #805)."
+        }
+      }
+    },
     "control-background": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",

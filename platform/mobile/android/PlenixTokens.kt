@@ -165,6 +165,7 @@ object PlenixColors {
     val fillNeutralPressed = Pair(Color(0xFFD0D0D0), Color(0xFF6E6E6E))
     val fillNeutralContent = Pair(Color(0xFF56585E), Color(0xFFE8E9EC))
     val borderDivider = Pair(Color(0xFFF3F3F3), Color(0xFF56585E))
+    val borderSeparator = Pair(Color(0xFFDCDDDE), Color(0xFF56585E))
     val controlBackground = Pair(Color(0xFFFFFFFF), Color(0xFF444444))
     val fieldBackground = Pair(Color(0xFFFCFCFC), Color(0xFF444444))
     val fieldBorder = Pair(Color(0xFFA3A6AD), Color(0xFFA3A6AD))

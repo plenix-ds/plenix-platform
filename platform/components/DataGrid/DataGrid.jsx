@@ -45,7 +45,9 @@
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
      cellSelection: true: cells can be selected as a block (off by default; a grid without it behaves exactly as before). Shift with an arrow,
-       Home or End extends the block from the cell that has focus (the focus cell stays in view); a plain arrow, a click or Escape collapses it; Ctrl or
+       Home or End extends the block from the cell that has focus (the focus cell stays in view); Shift with a click makes it from where it began (or the
+       focused cell) to the clicked cell; dragging with the mouse from one cell to another makes one, and the grid scrolls when the pointer is near its
+       edge (a drag, or a click on a control inside a cell, never starts on a button, link or field); a plain arrow, a click or Escape collapses it; Ctrl or
        Command with C copies it as tab-separated text that a spreadsheet pastes as rows and columns (group rows skipped). The block has the selected
        fill and a 2px border on its outer edges, its cells carry aria-selected, and the count is announced politely once the keys pause.
        api.getCellRange() returns { rows, fields, text } or null, api.clearCellRange() and api.copyCellRange() act on it.

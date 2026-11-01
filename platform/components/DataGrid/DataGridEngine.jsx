@@ -671,6 +671,8 @@ function NextEngine(props) {
     ordered,
     index,
     onChange: props.onCellSelectionChange,
+    frame,
+    scroller: holder,
   });
   live.current.cellRange = cellRange;
   const focusCell = makeFocusCell({ model, ordered, virtualized, virtual, displayElements });
