@@ -38,9 +38,9 @@ import { SearchWorkspace } from '../../patterns/SearchWorkspace/SearchWorkspace.
 import { Stack } from '../../components/Stack/Stack.tsx';
 import { ContentGrid } from '../../patterns/ContentGrid/ContentGrid.jsx';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { Button } from '../../components/Button/Button.tsx';
-import { Link } from '../../components/Link/Link.jsx';
+import { Link } from '../../components/Link/Link.tsx';
 import { Panel } from '../../components/Card/Card.jsx';
 import { SplitView, ReadingPane } from '../../patterns/SplitView/SplitView.jsx';
 import FolderIcon from 'plenix-platform/icons/plenix/folder';

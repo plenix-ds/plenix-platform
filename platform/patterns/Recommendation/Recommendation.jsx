@@ -16,11 +16,11 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { Stack,Inline } from '../../components/Stack/Stack.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
 import { SuggestedAction } from '../../components/SuggestedAction/SuggestedAction.jsx';
 import { Carousel } from '../../components/Carousel/Carousel.jsx';
-import { Link } from '../../components/Link/Link.jsx';
+import { Link } from '../../components/Link/Link.tsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function Recommendation({items=[],variant='row',perView=3,onSelect,strings,className}){

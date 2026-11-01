@@ -34,15 +34,27 @@ const SIZES = ['sm', 'md', 'lg'];
 const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
 // the geometry in the 48-unit box: the ring's center and radius (the strokes do not scale, so they fit at every size)
 const C = 24, R = 21;
-const round = (n) => Math.round(n * 100) / 100;
+const round = (n: number) => Math.round(n * 100) / 100;
 // an arc from the top, clockwise, over pct percent of the ring
-function arc(pct) {
+function arc(pct: number) {
   const a = (Math.min(pct, 99.99) / 100) * 2 * Math.PI;
   const x = round(C + R * Math.sin(a)), y = round(C - R * Math.cos(a));
   return 'M ' + C + ' ' + (C - R) + ' A ' + R + ' ' + R + ' 0 ' + (pct > 50 ? 1 : 0) + ' 1 ' + x + ' ' + y;
 }
 
-export function ProgressCircle({ value, max = 100, label, size = 'md', tone = 'info', showValue = false, locale, className, ...rest }) {
+export type ProgressCircleProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  /** 0 to max; none: indeterminate */
+  value?: number | null;
+  max?: number;
+  /** the accessible name (aria-label) */
+  label?: string;
+  size?: 'sm' | 'md' | 'lg';
+  tone?: 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+  /** lg only: the percentage inside the ring */
+  showValue?: boolean;
+  locale?: string;
+};
+export function ProgressCircle({ value, max = 100, label, size = 'md', tone = 'info', showValue = false, locale, className, ...rest }: ProgressCircleProps) {
   devWarn('ProgressCircle', { size, tone }, { size: ['sm','md','lg'], tone: ['info','success','warning','danger','neutral'] });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
@@ -51,14 +63,14 @@ export function ProgressCircle({ value, max = 100, label, size = 'md', tone = 'i
   const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   return (
     <span className={cx('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className)}
-      role="progressbar" aria-label={label} aria-valuemin={known ? 0 : undefined} aria-valuemax={known ? 100 : undefined} aria-valuenow={known ? Math.round(pct) : undefined} {...rest}>
+      role="progressbar" aria-label={label} aria-valuemin={known ? 0 : undefined} aria-valuemax={known ? 100 : undefined} aria-valuenow={known ? Math.round(pct as number) : undefined} {...rest}>
       <svg className="plx-progress-circle__svg" viewBox="0 0 48 48" focusable="false" aria-hidden="true">
         <circle className="plx-progress-circle__track" cx={C} cy={C} r={R} />
-        {known && pct >= 100 ? <circle className="plx-progress-circle__indicator" cx={C} cy={C} r={R} />
-          : known ? (pct > 0 ? <path className="plx-progress-circle__indicator" d={arc(pct)} /> : null)
+        {known && (pct as number) >= 100 ? <circle className="plx-progress-circle__indicator" cx={C} cy={C} r={R} />
+          : known ? ((pct as number) > 0 ? <path className="plx-progress-circle__indicator" d={arc(pct as number)} /> : null)
             : <path className="plx-progress-circle__indicator" d={arc(25)} />}
       </svg>
-      {showValue && known && s === 'lg' ? <span className="plx-progress-circle__value" aria-hidden="true">{new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format(pct / 100)}</span> : null}
+      {showValue && known && s === 'lg' ? <span className="plx-progress-circle__value" aria-hidden="true">{new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format((pct as number) / 100)}</span> : null}
     </span>
   );
 }

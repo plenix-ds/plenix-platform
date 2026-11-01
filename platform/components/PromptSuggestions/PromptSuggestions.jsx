@@ -11,7 +11,7 @@ import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Text } from '../Text/Text.tsx';
-import { Notice } from '../Notice/Notice.jsx';
+import { Notice } from '../Notice/Notice.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Card } from '../Card/Card.jsx';

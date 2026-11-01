@@ -26,20 +26,31 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Notice } from '../Notice/Notice.jsx';
-import { Link } from '../Link/Link.jsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { Link } from '../Link/Link.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 
 
-export function ErrorSummary({ errors = [], title, headingLevel = 2, autoFocus = true, strings, className, ...rest }) {
+// one error: the id of the field it is about, and its message
+export type ErrorSummaryError = { target: string; message: React.ReactNode };
+export type ErrorSummaryProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  errors?: ErrorSummaryError[];
+  title?: React.ReactNode;
+  /** 2 to 6 */
+  headingLevel?: number;
+  autoFocus?: boolean;
+  strings?: Catalog | null;
+};
+export function ErrorSummary({ errors = [], title, headingLevel = 2, autoFocus = true, strings, className, ...rest }: ErrorSummaryProps) {
   const t = useStrings('errorSummary', strings);
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLDivElement>(null);
   const titleId = 'plx-es' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const key = errors.map((e) => e.target + ':' + e.message).join('|');
   React.useEffect(() => { if (autoFocus && errors.length && ref.current) ref.current.focus(); }, [key, autoFocus]);
-  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
-  const heading = title || (errors.length === 1 ? t.one : t.many.replace('{count}', errors.length));
-  const go = (target) => (e) => {
+  const H = ('h' + Math.min(6, Math.max(2, headingLevel))) as React.ElementType;
+  const heading = title || (errors.length === 1 ? (t.one as React.ReactNode) : (t.many as string).replace('{count}', errors.length as unknown as string));   // replace() writes the number as text
+  const go = (target: string) => (e: React.MouseEvent<HTMLElement>) => {
     const field = typeof document !== 'undefined' && document.getElementById(target);
     if (!field) return;
     e.preventDefault();

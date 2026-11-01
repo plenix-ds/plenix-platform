@@ -15,7 +15,7 @@
 import React from 'react';
 import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Checkbox } from '../Checkbox/Checkbox.jsx';
-import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
+import { ProgressBar } from '../ProgressBar/ProgressBar.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Text } from '../Text/Text.tsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';

@@ -22,6 +22,7 @@
      placeholder: the hint in the empty field
      label: the accessible name when there is no Field
      invalid: shows the invalid state
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
        default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on
@@ -83,7 +84,7 @@ import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 
 export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate, width,
-  placeholder, label, invalid, disabled, readOnly: readOnlyOwn, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
+  placeholder, label, invalid, warning, disabled, readOnly: readOnlyOwn, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
   className, id, size, data, ...rest }, ref) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows; the list does not open, nothing is chosen, created or removed
   const t = useStrings('combobox', strings), words = t;
@@ -180,7 +181,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   );
   return (
     <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
-      <div className={cx('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled')} aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
+      <div className={cx('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled')} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={locked ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={words.removeItem.replace('{label}', t)}>{t}</Tag>; }) : null}
         {multiple ? field : <Tooltip content={label1} disabled={!cut} describe={false} placement={open ? 'top' : 'bottom'} className="plx-combobox__tip">{field}</Tooltip>}

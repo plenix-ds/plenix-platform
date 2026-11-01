@@ -33,13 +33,22 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconValue } from '../Icon/Icon.tsx';
 
 const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
-const ALIASES = { info: 'active', warning: 'waiting', danger: 'negative' };
+const ALIASES: Record<string, string> = { info: 'active', warning: 'waiting', danger: 'negative' };
 const SIZES = ['md', 'sm'];
 
 // variant is taken out so it never reaches the <span>: every badge is the soft pill
-export function Badge({ tone = 'neutral', variant, size = 'md', icon, className, children, ...rest }) {
+export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
+  tone?: 'neutral' | 'success' | 'active' | 'waiting' | 'action-required' | 'negative' | 'info' | 'warning' | 'danger';
+  /** retired: every badge is the soft pill (taken out so it never reaches the span) */
+  variant?: 'solid' | 'soft';
+  size?: 'md' | 'sm';
+  /** an icon name or an imported icon module */
+  icon?: IconValue | null;
+};
+export function Badge({ tone = 'neutral', variant, size = 'md', icon, className, children, ...rest }: BadgeProps) {
   devWarn('Badge', { tone, variant, size }, { tone: ['neutral','success','active','waiting','action-required','negative','info','warning','danger'], variant: ['solid','soft'], size: ['md','sm'] });
   const named = ALIASES[tone] || tone;
   const t = TONES.indexOf(named) >= 0 ? named : 'neutral';

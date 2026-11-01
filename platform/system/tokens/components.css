@@ -3163,6 +3163,7 @@
   --plx-comp-code-editor-gutter-border-color: var(--plx-sys-border-divider);
   --plx-comp-code-editor-gutter-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-code-editor-gutter-layer: var(--plx-sys-layer-raised);
+  --plx-comp-code-editor-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -3914,6 +3915,8 @@
   --plx-comp-field-counter-font-family: var(--plx-sys-font-data);
   --plx-comp-field-counter-font-size: var(--plx-ref-font-size-11);
   --plx-comp-field-counter-over-text: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-field-warning-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-field-warning-font-size: var(--plx-ref-font-size-11);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-input-small-min-height: var(--plx-sys-control-height-toolbar);
@@ -4401,6 +4404,9 @@
   --plx-comp-input-invalid-background: var(--plx-sys-feedback-danger-soft);
   --plx-comp-input-invalid-inner-width: var(--plx-sys-border-width-thin);
   --plx-comp-textarea-auto-grow-max-height: calc(10lh + var(--plx-sys-space-inset-sm) * 2 + var(--plx-sys-border-width-thin) * 2);
+  --plx-comp-input-warning-border-color: var(--plx-sys-feedback-warning-content);
+  --plx-comp-input-warning-background: var(--plx-sys-feedback-warning-soft);
+  --plx-comp-input-warning-inner-width: var(--plx-sys-border-width-thin);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-input-group-max-width: var(--plx-comp-input-max-width);
@@ -4427,6 +4433,7 @@
   --plx-comp-input-group-affix-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-input-group-icon-color: var(--plx-sys-content-muted);
   --plx-comp-input-group-icon-size: var(--plx-sys-control-icon-standard);
+  --plx-comp-input-group-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -4759,6 +4766,7 @@
   --plx-comp-otp-input-cell-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-otp-input-cell-invalid-border-color: var(--plx-sys-feedback-danger-solid);
   --plx-comp-otp-input-cell-disabled-background: var(--plx-sys-fill-neutral);
+  --plx-comp-otp-input-cell-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -5346,6 +5354,7 @@
   --plx-comp-rich-text-editor-hex-width: var(--plx-ref-size-120px);
   --plx-comp-rich-text-editor-picker-width: var(--plx-sys-control-height-toolbar);
   --plx-comp-rich-text-editor-selected-node-outline-width: var(--plx-comp-link-focus-outline-width);
+  --plx-comp-rich-text-editor-warning-border-color: var(--plx-comp-input-warning-border-color);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {

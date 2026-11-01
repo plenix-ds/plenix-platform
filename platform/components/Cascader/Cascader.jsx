@@ -26,6 +26,7 @@
      placeholder: the hint in the empty field (default strings.placeholder)
      label: the accessible name when there is no Field
      invalid: the invalid state (the field's border in the danger color); a Field with an error sets it
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not change it: the list does not open and the tags cannot be removed; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the field's button (a Field sets it, so its label names it)
@@ -90,7 +91,7 @@ const withSelf = (items, choosable, label) => items.map((it) => (Array.isArray(i
   ? Object.assign({}, it, { children: (choosable(it) ? [{ id: SELF + it.id, self: it.id, label: label(it), disabled: it.disabled }] : []).concat(withSelf(it.children, choosable, label)) }) : it));
 
 export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
-  choosableParents = false, maxTags = 0, maxChoices, loadOptions, loadDelay = 300, minChars = 0, placeholder, label, invalid, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
+  choosableParents = false, maxTags = 0, maxChoices, loadOptions, loadDelay = 300, minChars = 0, placeholder, label, invalid, warning, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('cascader', strings);
   const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -196,7 +197,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
 
   return (
     <div ref={wrap} className={cx('plx-cascader', multiple && 'plx-cascader--multiple', open && 'is-open', disabled && 'is-disabled', className)} onKeyDown={onListKey}>
-      <div className="plx-cascader__field plx-input" aria-invalid={invalid || undefined}>
+      <div className="plx-cascader__field plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}>
         {multiple ? shownTags.map((v) => <Tag key={v} onRemove={disabled || locked ? undefined : () => { setLimitShown(false); onChange(chosen.filter((x) => x !== v)); }} removeLabel={t.remove.replace('{label}', nameOf(v))}>{nameOf(v)}</Tag>) : null}
         {multiple && hiddenTags.length ? (
           <Tooltip content={hiddenTags.map(nameOf).join(', ')} placement="bottom" className="plx-cascader__more-tip">

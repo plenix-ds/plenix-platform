@@ -45,7 +45,7 @@ import { cx } from '../../utils/cx.ts';
 import { devWarn } from '../../utils/devWarn.ts';
 import { Icon } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
-import { Isolate } from '../Isolate/Isolate.jsx';
+import { Isolate } from '../Isolate/Isolate.tsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 import PersonFemaleIcon from 'plenix-platform/icons/plenix/person-female';
 import PersonMaleIcon from 'plenix-platform/icons/plenix/person-male';
