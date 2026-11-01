@@ -1,0 +1,2 @@
+### Changed
+- The size of one import from the npm package is measured with Vite (Rollup) now (#807, owner): `node tools/agent/one-part-sizes.js` and `check-bundle.js` check the limits against it, because it is what most consumers use and it keeps what only a lazily loaded part needs in that part's own chunk; esbuild's number stays beside it as a cross-check that reports and never fails. Limits unchanged (`{ Button }` 105, `{ Badge }` 30, `{ DataGrid }` 450, `* as P` 1,420 KB). `docs/build.md` lists the tool and why.
