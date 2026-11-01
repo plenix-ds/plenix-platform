@@ -31,7 +31,7 @@
      onDisconnect(account): runs after the Disconnect question is confirmed
      onReconnect(account): Reconnect on a failed connection (no question: the person already agreed)
      confirm: false connects and disconnects without the questions (default true)
-     headingLevel: the level of each service's name (default 3)
+     headingLevel: the number of the heading level of each service's name (default 3)
      strings: the words, for other languages: { label: "Connected accounts", connect: "Connect", disconnect: "Disconnect",
        reconnect: "Reconnect", cancel: "Cancel", connected: "Connected", disconnected: "Not connected", error:
        "Connection error", as: "As {account}", since: "since {date}", connectTitle: "Connect {service}?", connectMessage:
