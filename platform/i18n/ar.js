@@ -194,6 +194,9 @@ export default {
     "more": "+{n}",
     "moreLabel": "{n} إضافية"
   },
+  "anchor": {
+    "label": "في هذه الصفحة"
+  },
   "backToTop": {
     "label": "العودة إلى الأعلى"
   },
