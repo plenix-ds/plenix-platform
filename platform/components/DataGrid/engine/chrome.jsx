@@ -52,14 +52,23 @@ export function failureState({ failed, B, S, onRetry, remoteError, setRetry }) {
 }
 
 // drawn in place of the manage-columns dialog when its file could not load (issue 807): Retry loads it again, Close ends the request
-export function manageFailed({ B, S, retry, close }) {
+// and returns focus to where "Manage columns" was chosen (the header menu's trigger or the column header), or to the grid if that is gone
+export function manageFailed({ B, S, retry, close, from, frame }) {
+  const closeAndReturn = () => {
+    const back =
+      from && from !== document.body && from.isConnected
+        ? from
+        : frame.current && frame.current.querySelector('[tabindex="0"]');
+    close();
+    if (back && back.focus) back.focus();
+  };
   return (
     <Inline role="alert">
       <span className={B + '__empty'}>{S.columnsFailed}</span>
       <Button size="sm" onClick={retry}>
         {S.retry}
       </Button>
-      <Button size="sm" variant="ghost" onClick={close}>
+      <Button size="sm" variant="ghost" onClick={closeAndReturn}>
         {S.close}
       </Button>
     </Inline>

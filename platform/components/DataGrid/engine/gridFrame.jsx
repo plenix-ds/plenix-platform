@@ -105,7 +105,7 @@ export function gridFrame({
         <Rare
           part="manageDialog"
           args={{ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }}
-          fallback={(retry) => manageFailed({ B, S, retry, close: () => setManaging(false) })}
+          fallback={(retry, from) => manageFailed({ B, S, retry, close: () => setManaging(false), from, frame })}
         />
       ) : null}
       <div
