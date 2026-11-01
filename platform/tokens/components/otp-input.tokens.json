@@ -74,12 +74,7 @@
     "otp-input-cell-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "OtpInput box: the character's color when disabled.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "OtpInput box: the character's color when disabled."
     }
   }
 }

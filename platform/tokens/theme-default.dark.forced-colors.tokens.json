@@ -1,0 +1,57 @@
+{
+  "$description": "theme-default.dark.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in theme-default.dark.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-sys": {
+    "state-selected": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "state-selected-pressed": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "state-selected-border": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "message-incoming-border": {
+      "$value": "CanvasText",
+      "$type": "color"
+    },
+    "message-outgoing-border": {
+      "$value": "CanvasText",
+      "$type": "color"
+    },
+    "content-disabled": {
+      "$value": "GrayText",
+      "$type": "color"
+    },
+    "focus-ring-color": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "selected-border": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "selected-content": {
+      "$value": "HighlightText",
+      "$type": "color"
+    },
+    "frost-state-selected": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "data-grid-row-selected": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "data-grid-row-selected-hover": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "data-grid-row-selected-text": {
+      "$value": "HighlightText",
+      "$type": "color"
+    }
+  }
+}

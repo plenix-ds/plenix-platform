@@ -17,5 +17,6 @@
         data color  a color swatch keeps its real color (forced-color-adjust: none): the color is the content
    2. More contrast (@media (prefers-contrast: more)): the theme stays, its weakest roles step up: every border role
       takes the strong border, and muted and subtle text take the default text color, light and dark.
-   The values are in platform/tokens ($extensions.com.plenix.forcedColors and contrastMore); build-tokens.js writes them
-   under exclusive media conditions. This file holds no rules. */
+   The values are in platform/tokens, in the condition sets beside each token's set (<set>.forced-colors.tokens.json and
+   <set>.more-contrast.tokens.json, #372 step 4); build-tokens.js writes them under exclusive media conditions.
+   This file holds no rules. */

@@ -16,6 +16,7 @@
 // Alone: node check-system.rules/field-background.js     -> FIELD_BACKGROUND_OK, or the findings and exit 1
 const fs = require('fs');
 const path = require('path');
+const { CONDITION_FILE } = require('./token-sets.js');
 
 const NAME = 'field-background';
 const ROOT = path.join(__dirname, '..');
@@ -28,7 +29,8 @@ function files(root) {
   const tok = path.join(root, 'platform', 'tokens'), out = [];
   if (fs.existsSync(path.join(tok, 'components.tokens.json'))) out.push(path.join(tok, 'components.tokens.json'));
   const dir = path.join(tok, 'components');
-  if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.tokens.json')).sort()) out.push(path.join(dir, f));
+  // a condition set (#372 step 4: <name>.forced-colors.tokens.json) holds a token's value under a condition, never its base value
+  if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.tokens.json') && !CONDITION_FILE.test(x)).sort()) out.push(path.join(dir, f));
   return out;
 }
 

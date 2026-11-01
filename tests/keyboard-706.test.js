@@ -31,7 +31,10 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const render = async (src, dir) => {
       await page.evaluate(async (src, dir) => {
         window.__root && window.__root.unmount();
-        document.documentElement.setAttribute('dir', dir || 'ltr'); document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
+        // right to left by dir alone: the language stays English, so the checks find the same button names in both directions
+        // (issue 784: with lang="ar" the parts speak Arabic, "Reassign" is "إعادة الإسناد", and the English names found
+        // nothing). The parts read their direction from dir, so the arrow and side checks stay real
+        document.documentElement.setAttribute('dir', dir || 'ltr'); document.documentElement.setAttribute('lang', 'en');
         window.__log = []; document.querySelector('main').innerHTML = '<div id="c" style="padding:24px;min-block-size:520px"></div>';
         const el = (0, eval)('(' + src + ')')(React.createElement, Plenix, React);
         window.__root = ReactDOM.createRoot(document.getElementById('c')); window.__root.render(el);
@@ -117,9 +120,13 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     for (const [dir, into, out] of [['ltr', 'ArrowRight', 'ArrowLeft'], ['rtl', 'ArrowLeft', 'ArrowRight']]) {
       await render(MILLER, dir); const d = 'miller ' + dir + ': ';
       assert.equal(await count('[role=listbox][tabindex="0"]'), 1, d + 'one column, one Tab stop');
-      await focus('[role=listbox]');
-      await press('ArrowDown'); assert.equal(await activeText(), 'Brand', d + 'Arrow Down chooses the first item');
+      // focusing a column with nothing chosen chooses its first item (MillerColumns' onFocus; issue 777: the test had pressed
+      // Arrow Down for it, which then moved on to Events)
+      await focus('[role=listbox]'); await wait(150);
+      assert.equal(await activeText(), 'Brand', d + 'focusing the column chooses its first item');
       assert.equal(await count('[role=listbox]'), 2, d + 'choosing a parent lists its children in the next column');
+      await press('ArrowDown'); assert.equal(await activeText(), 'Events', d + 'Arrow Down chooses the next item');
+      await press('ArrowUp'); assert.equal(await activeText(), 'Brand', d + 'Arrow Up chooses the one before');
       await press('End'); assert.equal(await activeText(), 'Archive', d + 'End chooses the last item');
       await press('Home'); assert.equal(await activeText(), 'Brand', d + 'Home chooses the first item');
       await press('e'); assert.equal(await activeText(), 'Events', d + 'typing a letter moves to the next item that starts with it');
@@ -241,7 +248,9 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const QUERY = (h, P, R) => { const App = () => { const v = R.useState({ join: 'and', items: [] }); return h(P.QueryBuilder, { label: 'Audience', fields: [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'size', label: 'Size', kind: 'number' }], value: v[0], onChange: (x) => { window.__log.push(x.items.length); v[1](x); } }); }; return h(App); };
     await render(QUERY);
     await focus('[data-plx-add="root"] button'); await press('Enter');
-    assert.equal((await at()).tag, 'select', 'query builder: Add rule moves focus to the new rule\'s field');
+    // the field is a Select, drawn by Plenix since f7017fea (dropdown-look-36): its native <select> is hidden and hands focus
+    // to the drawn field, a role="combobox" element (issue 789: the check expected the native select's tag)
+    assert.equal((await at()).role, 'combobox', 'query builder: Add rule moves focus to the new rule\'s field');
     assert.ok(await inside('[data-plx-rule]'), 'query builder: the field is the new rule\'s');
     await focusNamed('button', 'Rule 1: Remove rule'); await press('Enter');
     assert.equal(await count('[data-plx-rule]'), 0, 'query builder: Remove rule removes it');

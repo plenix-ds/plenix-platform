@@ -154,32 +154,17 @@
     "transfer-list-option-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "TransferList: a checked row.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "TransferList: a checked row."
     },
     "transfer-list-option-selected-active-background": {
       "$value": "{plx-sys.state-selected-pressed}",
       "$type": "color",
-      "$description": "TransferList: a checked row that is also the active row while the list has keyboard focus.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "TransferList: a checked row that is also the active row while the list has keyboard focus."
     },
     "transfer-list-option-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "TransferList: a row that cannot be moved.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "TransferList: a row that cannot be moved."
     },
     "transfer-list-empty-text": {
       "$value": "{plx-sys.content-subtle}",

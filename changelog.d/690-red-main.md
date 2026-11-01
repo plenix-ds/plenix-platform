@@ -1,2 +1,0 @@
-### Added
-- CI reports a red `styling/phase-2` (#690, audit finding #684): the `red-main` job at the end of `ci.yml` runs after a push to `styling/phase-2`, opens or updates ONE issue labeled `red-main` that names the failing jobs and the commit, and closes it with a comment when a push is green again. A cancelled run (a newer push took its place) changes nothing. It uses only the run's `GITHUB_TOKEN` (`issues: write`, `actions: read`, for that job alone). HANDOFF.md has a new "Green before a merge" section that names the checks that must be green.

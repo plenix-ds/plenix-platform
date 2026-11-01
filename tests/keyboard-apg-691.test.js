@@ -188,7 +188,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     }
 
     // ───────── SplitView's divider ─────────
-    const SPLITVIEW = (h, P) => h('div', { style: { inlineSize: 1200, blockSize: 480 } }, h(P.SplitView, { label: 'Panes', firstLabel: 'List', defaultSize: 320, first: h('div', null, 'First panel'), second: h('div', null, 'Second panel') }));
+    const SPLITVIEW = (h, P) => h('div', { style: { inlineSize: 1200, blockSize: 480 } }, h(P.SplitView, { label: 'Panes', firstLabel: 'List', defaultSize: 480,   /* inside SplitView's 360 to 720 side-by-side limits, so it can narrow too (issue 777: 320 sat at the minimum) */ first: h('div', null, 'First panel'), second: h('div', null, 'Second panel') }));
     for (const [dir, grow, shrink] of [['ltr', 'ArrowRight', 'ArrowLeft'], ['rtl', 'ArrowLeft', 'ArrowRight']]) {
       await render(SPLITVIEW, dir); const d = 'split view ' + dir + ': ';
       const sep = () => page.evaluate(() => { const s = document.querySelector('[role=separator][aria-orientation=vertical]'); return s ? { now: +s.getAttribute('aria-valuenow'), min: +s.getAttribute('aria-valuemin'), max: +s.getAttribute('aria-valuemax') } : null; });

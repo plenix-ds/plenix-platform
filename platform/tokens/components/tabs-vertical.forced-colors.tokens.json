@@ -1,0 +1,13 @@
+{
+  "$description": "components/tabs-vertical.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/tabs-vertical.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "tabs-vertical-tab-selected-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "tabs-vertical-tab-selected-text": {
+      "$value": "HighlightText",
+      "$type": "color"
+    }
+  }
+}

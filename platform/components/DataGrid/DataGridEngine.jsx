@@ -33,12 +33,12 @@ import { tokenPixels } from './environment.js';
 
 import { MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 
-import { opening, writeView, recordKey, valueAt } from './state.js';
+import { opening, recordKey, valueAt } from './state.js';
 import { createAdapter } from './adapter.js';
 import { valueText } from './cells.jsx';
 import { recordsOf } from './records.js';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
-import { EMPTY_ROWS, GRID, kinds, lengthName, typeOf, words } from './engine/helpers.jsx';
+import { EMPTY_ROWS, GRID, kinds, lengthName, typeOf } from './engine/helpers.jsx';
 import { pillFont, pillSheet } from './engine/pill.js';
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
@@ -49,6 +49,9 @@ import { sortActions } from './engine/sortActions.js';
 import { useGrouping } from './engine/useGrouping.js';
 import { groupActions } from './engine/groupActions.js';
 import { useRowModel } from './engine/useRowModel.js';
+import { useViewSync } from './engine/useViewSync.js';
+import { columnSizing } from './engine/columnSizing.js';
+import { syncLive } from './engine/liveState.js';
 import { useRemoteRows } from './engine/useRemoteRows.js';
 import { useTableModel } from './engine/useTableModel.js';
 import { bodyRows } from './engine/bodyRows.jsx';
@@ -486,11 +489,13 @@ function NextEngine(props) {
       emit('rowMoved', api.row(recordKey(item[index])));
     }
   });
-  live.current = {
+
+  syncLive({
+    live,
     props,
     frame,
     index,
-    data: canonical,
+    canonical,
     source,
     recordsByKey,
     replaceData,
@@ -507,11 +512,11 @@ function NextEngine(props) {
     childField,
     expanded,
     setExpanded,
-    fields: columns,
+    columns,
     table,
     selection,
     sorting,
-    setSorting: changeSort,
+    changeSort,
     resize,
     move,
     pick,
@@ -520,11 +525,10 @@ function NextEngine(props) {
     pageSize,
     setPageSize,
     virtual,
-    rowElements: rowElements.current,
-    headerElements: headerElements.current,
-    listeners: listeners.current
-  };
-
+    rowElements,
+    headerElements,
+    listeners
+  });
   React.useLayoutEffect(() => {
     const at = frame.current;
     if (!at || !metrics.min) return;
@@ -731,77 +735,40 @@ function NextEngine(props) {
   React.useLayoutEffect(() => {
     virtual.measure();
   }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
-  React.useEffect(() => {
-    if (!metrics.row || !Object.keys(autoSizing).length || ready.current) return;
-    ready.current = true;
-    api.options = options;
-    deliveredReady.current = onReady;
-    onReady?.(api);
-    emit('tableBuilt');
-  }, [metrics.row, autoSizing]);
-  React.useEffect(() => {
-    if (ready.current && onReady !== deliveredReady.current) {
-      deliveredReady.current = onReady;
-      onReady?.(api);
-    }
-  }, [onReady]);
-  React.useEffect(() => {
-    if (!ready.current || props.onViewChange) return;
-    writeView(storageKey, {
-      sort: sorting.map((s) => ({ column: s.id, dir: s.desc ? 'desc' : 'asc' })),
-      order: columnOrder,
-      hidden: Object.keys(columnVisibility).filter((k) => columnVisibility[k] === false),
-      widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
-      rowHeight: effectiveStep,
-      wrapHeaders: effectiveWrap,
-      wrapColumns: props.wrapColumns || wrapColumns,
-      groupBy,
-      collapsed: [...collapsed]
-    });
-  }, [
+
+  useViewSync({
+    metrics,
+    autoSizing,
+    ready,
+    api,
+    options,
+    deliveredReady,
+    onReady,
+    emit,
+    props,
     storageKey,
-    JSON.stringify(sorting),
-    JSON.stringify(columnOrder),
-    JSON.stringify(columnVisibility),
-    JSON.stringify(sizing),
+    sorting,
+    columnOrder,
+    columnVisibility,
+    sizing,
     effectiveStep,
     effectiveWrap,
-    metrics.row,
-    groupSignal,
+    wrapColumns,
     groupBy,
-    collapsed
-  ]);
-  React.useEffect(() => {
-    if (!ready.current) return;
-    const active = new Set(table.getFilteredRowModel().rows.map((r) => r.id)),
-      next = { ...selection };
-    const known = new Set(canonical.map((record) => recordKey(record[index])));
-    const hidden = Object.keys(next).filter((key) => next[key] && known.has(key) && !active.has(key));
-    const removed = Object.keys(next).filter((key) => next[key] && !known.has(key));
-    if (removed.length || (!keepHiddenSelection && hidden.length)) {
-      removed.concat(!keepHiddenSelection ? hidden : []).forEach((key) => delete next[key]);
-      notifySelection(next);
-    } else if (hidden.length !== selectionInfo.current.hidden) {
-      selectionInfo.current = { hidden: hidden.length };
-      const records = canonical.filter((r) => selection[recordKey(r[index])]);
-      onSelectionChange?.(
-        records.map((r) => r[index]),
-        { count: records.length, hidden: hidden.length }
-      );
-    }
-    emit(
-      'dataFiltered',
-      filters.map((f) => ({ field: f.id, type: 'like', value: f.value })),
-      table.getFilteredRowModel().rows.map((r) => api.row(r.id))
-    );
-  }, [deferredFilter, JSON.stringify(filters), source, keepHiddenSelection]);
-  const previousData = React.useRef(source);
-  React.useEffect(() => {
-    if (ready.current && previousData.current !== source) {
-      previousData.current = source;
-      emit('dataChanged', source);
-    }
-  }, [source]);
+    collapsed,
+    groupSignal,
+    table,
+    selection,
+    canonical,
+    index,
+    keepHiddenSelection,
+    notifySelection,
+    selectionInfo,
+    onSelectionChange,
+    filters,
+    deferredFilter,
+    source
+  });
   React.useEffect(() => {
     setLoaded(pageSize);
   }, [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize]);
@@ -869,19 +836,8 @@ function NextEngine(props) {
     selectable,
     options
   });
-  const fit = (field) => {
-    const c = columns.find((c) => c.field === field),
-      ctx = document.createElement('canvas').getContext('2d'),
-      cs = getComputedStyle(frame.current);
-    const data = kinds(c).includes('data');
-    ctx.font =
-      cs.getPropertyValue('--plx-comp-data-grid-font-size') +
-      ' ' +
-      cs.getPropertyValue(data ? '--plx-comp-data-grid-data-font-family' : '--plx-comp-data-grid-font-family');
-    ctx.wordSpacing = data ? cs.getPropertyValue('--plx-sys-font-data-word-spacing').trim() || '0px' : '0px';
-    const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
-    resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
-  };
+
+  const { fit, startResize } = columnSizing({ columns, frame, source, resize, metrics, table, B });
   const menuItems = (items, row, extra) =>
     items.map((item, i) => {
       if (
@@ -910,27 +866,6 @@ function NextEngine(props) {
         </MenuItem>
       );
     });
-
-  const startResize = (event, column) => {
-    if (event.type === 'mousedown' && event.button !== 0) return;
-    if (event.type === 'mousedown') event.preventDefault();
-    event.stopPropagation();
-    const head = table.getFlatHeaders().find((h) => h.column.id === column.id);
-    const doc = frame.current?.ownerDocument || document,
-      cover = doc.createElement('div');
-    cover.className = B + '__resize-cover';
-    doc.body.appendChild(cover);
-    const end = () => {
-      cover.remove();
-      doc.removeEventListener('mouseup', end);
-      doc.removeEventListener('touchend', end);
-      doc.removeEventListener('touchcancel', end);
-    };
-    doc.addEventListener('mouseup', end);
-    doc.addEventListener('touchend', end);
-    doc.addEventListener('touchcancel', end);
-    head?.getResizeHandler(doc)(event);
-  };
 
   const { chooserColumns, headerCell } = headerRows({
     groupBy,

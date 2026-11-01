@@ -48,6 +48,9 @@ const HOSTILE = [
   ['attribute name tricks', '<p o\nnclick="window.__pwn++">x</p>'],
   // javascript:, data:, vbscript: in href
   ['javascript href', '<a href="javascript:window.__pwn++">x</a>'],
+  // an empty href (issue 783): it must not come back on a second pass, as the dropped javascript: hrefs did (href="")
+  ['empty href', '<a href="">x</a>'],
+  ['link without an href', '<a>x</a>'],
   ['javascript href upper case', '<a href="JAVASCRIPT:window.__pwn++">x</a>'],
   ['javascript href mixed case', '<a href="JaVaScRiPt:window.__pwn++">x</a>'],
   ['javascript href decimal entity', '<a href="&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;window.__pwn++">x</a>'],
@@ -273,7 +276,10 @@ const KEPT = [
         const out = clean(html), r = { name, out, problems: [], stable: true, ran: 0 };
         const holder = document.createElement('div'); holder.innerHTML = out; r.problems = problems(holder);
         if (/<\s*(script|style|iframe|object|embed|svg|math|template|noscript|meta|link|base|form|frame)/i.test(out)) r.problems.push('the output text holds a dangerous tag');
-        if (/\son[a-z]+\s*=/i.test(out)) r.problems.push('the output text holds an on* attribute');
+        // in the tags only: hostile markup the cleaner keeps as text arrives escaped ("&lt;img … onerror=…&gt;"), which is inert
+        // words, not an attribute (issue 777: the check read that text as an attribute; the DOM check above already sees none)
+        const tags = (out.match(/<[^>]*>/g) || []).join('');
+        if (/\son[a-z]+\s*=/i.test(tags)) r.problems.push('the output text holds an on* attribute');
         r.stable = clean(out) === out;
         // execution: put it on the page in two parsing contexts
         const before = window.__pwn;

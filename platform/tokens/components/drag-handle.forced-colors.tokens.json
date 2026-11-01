@@ -1,0 +1,9 @@
+{
+  "$description": "components/drag-handle.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/drag-handle.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "drag-handle-disabled-text": {
+      "$value": "GrayText",
+      "$type": "color"
+    }
+  }
+}

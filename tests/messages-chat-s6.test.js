@@ -40,7 +40,14 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     await new Promise((r) => setTimeout(r, 300));
     const side = await page.evaluate(() => { const m = document.querySelector('.plx-chat__message:not(.plx-chat__message--mine)'), a = m.querySelector('.plx-chat__avatar').getBoundingClientRect(), b = m.querySelector('.plx-chat__bubble').getBoundingClientRect(); return (a.left + a.width / 2) > (b.left + b.width / 2); });
     assert.ok(side, 'in right to left, their avatar is on the end (right) half of the bubble');
-    // the spec page: every part, the rules, the slice 4 place
+    // the spec page: every part, the rules, the slice 4 place. Only where the design system is checked out: the CI browser
+    // jobs never check it out (and the automatic runs keep off the spec, owner 2026-10-25), so there it is a visible skip,
+    // never a failure (issue 777, as #762 did for the release tests)
+    if (!require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'))) {
+      const why = 'the spec page part skipped: design system not available (platform/design-system is not checked out)';
+      console.log('MESSAGES_CHAT_S6_SPEC_SKIPPED ' + why);
+      if (process.env.GITHUB_ACTIONS) console.log('::warning title=messages-chat-s6 spec part skipped::' + why);
+    } else {
     await page.goto('http://localhost:' + PORT + '/Plenix/platform/design-system/index.html#/specialized/typing-indicator', { waitUntil: 'networkidle0' });
     await new Promise((r) => setTimeout(r, 3000));
     const spec = await page.evaluate(() => ({ groups: document.querySelectorAll('.plx-chat__group').length, voice: document.querySelectorAll('.plx-chat__voice').length, media: document.querySelectorAll('.plx-chat__media').length,
@@ -49,6 +56,7 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     assert.ok(/Ratings, review stars/.test(spec.text), 'the owner\'s "no ratings" rule is in the avoid list');
     assert.ok(/crossing the border/.test(spec.text), 'the avatar rule is in the avoid list');
     assert.ok(/Slice 4: not on this page yet/.test(spec.text), 'the slice 4 place is marked');
+    }
     assert.deepEqual(errors, [], 'no script errors');
     console.log('messages-chat-s6: OK');
   } finally { if (browser) await browser.close(); server.close(); }

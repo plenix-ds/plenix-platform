@@ -19,7 +19,7 @@ In a list-and-detail screen (SplitWorkspace), clicking a row opens it beside the
 - Added in commit f6c4a7db (2026-10-31) "#681 SplitWorkspace passes its list's DataGrid options (grid)".
 
 ## How it checks
-- Opens `tests/fixtures/platform-host.html` in headless Chrome, draws two SplitWorkspaces with three documents (one with its own grid name), clicks, ticks and right-clicks rows, and records what the app receives.
+- Opens `tests/fixtures/platform-host.html` in headless Chrome, draws two SplitWorkspaces with three documents (one with its own grid name), clicks, ticks and right-clicks rows, and records what the app receives. The two hosts are grids (issue #777): in a flex row the workspace shrank to its content, its grid was 0px wide, and a click missed the row.
 
 ## What a failure means
 - In a list-and-detail screen, a person could not open a record, select rows or use the row menu.

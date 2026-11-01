@@ -1,0 +1,21 @@
+{
+  "$description": "components/calendar.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/calendar.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "calendar-day-selected-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "calendar-day-selected-border-color": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "calendar-day-selected-text": {
+      "$value": "HighlightText",
+      "$type": "color"
+    },
+    "calendar-day-disabled-text": {
+      "$value": "GrayText",
+      "$type": "color"
+    }
+  }
+}

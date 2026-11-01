@@ -129,32 +129,17 @@
     "calendar-day-selected-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "Calendar chosen day (and a range's two ends): the selected fill.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "Calendar chosen day (and a range's two ends): the selected fill."
     },
     "calendar-day-selected-border-color": {
       "$value": "{plx-sys.state-selected-border}",
       "$type": "color",
-      "$description": "Calendar chosen day: the selected edge.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "Calendar chosen day: the selected edge."
     },
     "calendar-day-selected-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color",
-      "$description": "Calendar chosen day: the number in the selected content color.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "Calendar chosen day: the number in the selected content color."
     },
     "calendar-day-selected-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
@@ -169,12 +154,7 @@
     "calendar-day-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "Calendar: a day that cannot be chosen.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "Calendar: a day that cannot be chosen."
     },
     "calendar-range-background": {
       "$value": "{plx-sys.state-selected}",

@@ -17594,6 +17594,218 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     );
     return { loadedRows, groups, model };
   }
+  function useViewSync({
+    metrics,
+    autoSizing,
+    ready,
+    api,
+    options,
+    deliveredReady,
+    onReady,
+    emit,
+    props,
+    storageKey,
+    sorting,
+    columnOrder,
+    columnVisibility,
+    sizing,
+    effectiveStep,
+    effectiveWrap,
+    wrapColumns,
+    groupBy: groupBy2,
+    collapsed,
+    groupSignal,
+    table,
+    selection,
+    canonical: canonical2,
+    index: index2,
+    keepHiddenSelection,
+    notifySelection,
+    selectionInfo,
+    onSelectionChange,
+    filters,
+    deferredFilter,
+    source
+  }) {
+    React$1.useEffect(() => {
+      if (!metrics.row || !Object.keys(autoSizing).length || ready.current) return;
+      ready.current = true;
+      api.options = options;
+      deliveredReady.current = onReady;
+      onReady?.(api);
+      emit("tableBuilt");
+    }, [metrics.row, autoSizing]);
+    React$1.useEffect(() => {
+      if (ready.current && onReady !== deliveredReady.current) {
+        deliveredReady.current = onReady;
+        onReady?.(api);
+      }
+    }, [onReady]);
+    React$1.useEffect(() => {
+      if (!ready.current || props.onViewChange) return;
+      writeView$1(storageKey, {
+        sort: sorting.map((s) => ({ column: s.id, dir: s.desc ? "desc" : "asc" })),
+        order: columnOrder,
+        hidden: Object.keys(columnVisibility).filter((k) => columnVisibility[k] === false),
+        widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + "px"])),
+        rowHeight: effectiveStep,
+        wrapHeaders: effectiveWrap,
+        wrapColumns: props.wrapColumns || wrapColumns,
+        groupBy: groupBy2,
+        collapsed: [...collapsed]
+      });
+    }, [
+      storageKey,
+      JSON.stringify(sorting),
+      JSON.stringify(columnOrder),
+      JSON.stringify(columnVisibility),
+      JSON.stringify(sizing),
+      effectiveStep,
+      effectiveWrap,
+      metrics.row,
+      groupSignal,
+      groupBy2,
+      collapsed
+    ]);
+    React$1.useEffect(() => {
+      if (!ready.current) return;
+      const active = new Set(table.getFilteredRowModel().rows.map((r) => r.id)), next = { ...selection };
+      const known = new Set(canonical2.map((record) => recordKey(record[index2])));
+      const hidden = Object.keys(next).filter((key) => next[key] && known.has(key) && !active.has(key));
+      const removed = Object.keys(next).filter((key) => next[key] && !known.has(key));
+      if (removed.length || !keepHiddenSelection && hidden.length) {
+        removed.concat(!keepHiddenSelection ? hidden : []).forEach((key) => delete next[key]);
+        notifySelection(next);
+      } else if (hidden.length !== selectionInfo.current.hidden) {
+        selectionInfo.current = { hidden: hidden.length };
+        const records = canonical2.filter((r) => selection[recordKey(r[index2])]);
+        onSelectionChange?.(
+          records.map((r) => r[index2]),
+          { count: records.length, hidden: hidden.length }
+        );
+      }
+      emit(
+        "dataFiltered",
+        filters.map((f) => ({ field: f.id, type: "like", value: f.value })),
+        table.getFilteredRowModel().rows.map((r) => api.row(r.id))
+      );
+    }, [deferredFilter, JSON.stringify(filters), source, keepHiddenSelection]);
+    const previousData = React$1.useRef(source);
+    React$1.useEffect(() => {
+      if (ready.current && previousData.current !== source) {
+        previousData.current = source;
+        emit("dataChanged", source);
+      }
+    }, [source]);
+  }
+  function columnSizing({ columns, frame, source, resize, metrics, table, B }) {
+    const fit2 = (field) => {
+      const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
+      const data = kinds(c).includes("data");
+      ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size") + " " + cs.getPropertyValue(data ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family");
+      ctx.wordSpacing = data ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
+      const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
+      resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
+    };
+    const startResize = (event, column) => {
+      if (event.type === "mousedown" && event.button !== 0) return;
+      if (event.type === "mousedown") event.preventDefault();
+      event.stopPropagation();
+      const head = table.getFlatHeaders().find((h2) => h2.column.id === column.id);
+      const doc = frame.current?.ownerDocument || document, cover = doc.createElement("div");
+      cover.className = B + "__resize-cover";
+      doc.body.appendChild(cover);
+      const end = () => {
+        cover.remove();
+        doc.removeEventListener("mouseup", end);
+        doc.removeEventListener("touchend", end);
+        doc.removeEventListener("touchcancel", end);
+      };
+      doc.addEventListener("mouseup", end);
+      doc.addEventListener("touchend", end);
+      doc.addEventListener("touchcancel", end);
+      head?.getResizeHandler(doc)(event);
+    };
+    return { fit: fit2, startResize };
+  }
+  function syncLive({
+    live,
+    props,
+    frame,
+    index: index2,
+    canonical: canonical2,
+    source,
+    recordsByKey,
+    replaceData,
+    model,
+    groups,
+    groupBy: groupBy2,
+    changeGroups,
+    toggleGroup,
+    collapsed,
+    updateRecord,
+    commitEdit,
+    editing,
+    setEditing,
+    childField,
+    expanded,
+    setExpanded,
+    columns,
+    table,
+    selection,
+    sorting,
+    changeSort,
+    resize,
+    move: move2,
+    pick,
+    setPage,
+    page,
+    pageSize,
+    setPageSize,
+    virtual,
+    rowElements,
+    headerElements,
+    listeners: listeners2
+  }) {
+    live.current = {
+      props,
+      frame,
+      index: index2,
+      data: canonical2,
+      source,
+      recordsByKey,
+      replaceData,
+      model,
+      groups,
+      groupBy: groupBy2,
+      changeGroups,
+      toggleGroup,
+      collapsed,
+      updateRecord,
+      commitEdit,
+      editing,
+      setEditing,
+      childField,
+      expanded,
+      setExpanded,
+      fields: columns,
+      table,
+      selection,
+      sorting,
+      setSorting: changeSort,
+      resize,
+      move: move2,
+      pick,
+      setPage,
+      page,
+      pageSize,
+      setPageSize,
+      virtual,
+      rowElements: rowElements.current,
+      headerElements: headerElements.current,
+      listeners: listeners2.current
+    };
+  }
   function useRemoteRows({ props, mode, page, pageSize, sorting, filters }) {
     const fetching = React$1.useRef(false);
     const [remoteBusy, setRemoteBusy] = React$1.useState(false);
@@ -19291,9 +19503,58 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const [step, setStep] = React$1.useState(min2);
     const [width, setWidth] = React$1.useState(0);
     const measured2 = React$1.useRef(null);
+    const [fonts, setFonts] = React$1.useState(0);
+    React$1.useEffect(() => {
+      const set2 = typeof document !== "undefined" ? document.fonts : void 0;
+      if (!set2 || typeof set2.addEventListener !== "function") return void 0;
+      let live = true;
+      const again = () => {
+        if (live) setFonts((n) => n + 1);
+      };
+      set2.addEventListener("loadingdone", again);
+      if (set2.ready && typeof set2.ready.then === "function") set2.ready.then(again, () => {
+      });
+      return () => {
+        live = false;
+        set2.removeEventListener("loadingdone", again);
+      };
+    }, []);
+    const later = React$1.useRef(null);
+    React$1.useEffect(() => () => {
+      if (later.current) later.current();
+    }, []);
     React$1.useLayoutEffect(() => {
       if (!hold) setStep(min2);
     }, [width, key, min2, hold]);
+    React$1.useLayoutEffect(() => {
+      if (!fonts || hold) return;
+      const el = ref.current;
+      if (later.current) {
+        later.current();
+        later.current = null;
+      }
+      const open = !!el && !!el.querySelector('[aria-expanded="true"]'), focused = !!el && el.contains(document.activeElement);
+      if (el && (open || focused)) {
+        const again = () => {
+          if (later.current) {
+            later.current();
+            later.current = null;
+          }
+          setFonts((n) => n + 1);
+        };
+        const out = (e) => {
+          if (!e.relatedTarget || !el.contains(e.relatedTarget)) again();
+        };
+        el.addEventListener("focusout", out);
+        const timer = open ? setTimeout(again, 1e3) : null;
+        later.current = () => {
+          el.removeEventListener("focusout", out);
+          if (timer) clearTimeout(timer);
+        };
+        return;
+      }
+      setStep(min2);
+    }, [fonts]);
     React$1.useLayoutEffect(() => {
       const el = ref.current;
       if (!el || typeof ResizeObserver === "undefined") return void 0;
@@ -19304,7 +19565,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     React$1.useLayoutEffect(() => {
       const el = ref.current;
       if (!el || step >= max2 || hold) return;
-      const signature = [el, width, key, max2, min2, rows, step, el.textContent];
+      const signature = [el, width, key, max2, min2, rows, step, el.textContent, fonts];
       if (measured2.current && signature.every((value, i) => value === measured2.current[i])) return;
       measured2.current = signature;
       if (Array.prototype.some.call(rows === ":self" ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
@@ -20756,11 +21017,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         emit("rowMoved", api.row(recordKey(item[index2])));
       }
     });
-    live.current = {
+    syncLive({
+      live,
       props,
       frame,
       index: index2,
-      data: canonical2,
+      canonical: canonical2,
       source,
       recordsByKey,
       replaceData,
@@ -20777,11 +21039,11 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       childField,
       expanded,
       setExpanded,
-      fields: columns,
+      columns,
       table,
       selection,
       sorting,
-      setSorting: changeSort,
+      changeSort,
       resize,
       move: move2,
       pick,
@@ -20790,10 +21052,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       pageSize,
       setPageSize,
       virtual,
-      rowElements: rowElements.current,
-      headerElements: headerElements.current,
-      listeners: listeners2.current
-    };
+      rowElements,
+      headerElements,
+      listeners: listeners2
+    });
     React$1.useLayoutEffect(() => {
       const at2 = frame.current;
       if (!at2 || !metrics.min) return;
@@ -20940,76 +21202,39 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     React$1.useLayoutEffect(() => {
       virtual.measure();
     }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
-    React$1.useEffect(() => {
-      if (!metrics.row || !Object.keys(autoSizing).length || ready.current) return;
-      ready.current = true;
-      api.options = options;
-      deliveredReady.current = onReady;
-      onReady?.(api);
-      emit("tableBuilt");
-    }, [metrics.row, autoSizing]);
-    React$1.useEffect(() => {
-      if (ready.current && onReady !== deliveredReady.current) {
-        deliveredReady.current = onReady;
-        onReady?.(api);
-      }
-    }, [onReady]);
-    React$1.useEffect(() => {
-      if (!ready.current || props.onViewChange) return;
-      writeView$1(storageKey, {
-        sort: sorting.map((s) => ({ column: s.id, dir: s.desc ? "desc" : "asc" })),
-        order: columnOrder,
-        hidden: Object.keys(columnVisibility).filter((k) => columnVisibility[k] === false),
-        widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + "px"])),
-        rowHeight: effectiveStep,
-        wrapHeaders: effectiveWrap,
-        wrapColumns: props.wrapColumns || wrapColumns,
-        groupBy: groupBy2,
-        collapsed: [...collapsed]
-      });
-    }, [
+    useViewSync({
+      metrics,
+      autoSizing,
+      ready,
+      api,
+      options,
+      deliveredReady,
+      onReady,
+      emit,
+      props,
       storageKey,
-      JSON.stringify(sorting),
-      JSON.stringify(columnOrder),
-      JSON.stringify(columnVisibility),
-      JSON.stringify(sizing),
+      sorting,
+      columnOrder,
+      columnVisibility,
+      sizing,
       effectiveStep,
       effectiveWrap,
-      metrics.row,
+      wrapColumns,
+      groupBy: groupBy2,
+      collapsed,
       groupSignal,
-      groupBy2,
-      collapsed
-    ]);
-    React$1.useEffect(() => {
-      if (!ready.current) return;
-      const active = new Set(table.getFilteredRowModel().rows.map((r) => r.id)), next = { ...selection };
-      const known = new Set(canonical2.map((record) => recordKey(record[index2])));
-      const hidden = Object.keys(next).filter((key) => next[key] && known.has(key) && !active.has(key));
-      const removed = Object.keys(next).filter((key) => next[key] && !known.has(key));
-      if (removed.length || !keepHiddenSelection && hidden.length) {
-        removed.concat(!keepHiddenSelection ? hidden : []).forEach((key) => delete next[key]);
-        notifySelection(next);
-      } else if (hidden.length !== selectionInfo.current.hidden) {
-        selectionInfo.current = { hidden: hidden.length };
-        const records = canonical2.filter((r) => selection[recordKey(r[index2])]);
-        onSelectionChange?.(
-          records.map((r) => r[index2]),
-          { count: records.length, hidden: hidden.length }
-        );
-      }
-      emit(
-        "dataFiltered",
-        filters.map((f) => ({ field: f.id, type: "like", value: f.value })),
-        table.getFilteredRowModel().rows.map((r) => api.row(r.id))
-      );
-    }, [deferredFilter, JSON.stringify(filters), source, keepHiddenSelection]);
-    const previousData = React$1.useRef(source);
-    React$1.useEffect(() => {
-      if (ready.current && previousData.current !== source) {
-        previousData.current = source;
-        emit("dataChanged", source);
-      }
-    }, [source]);
+      table,
+      selection,
+      canonical: canonical2,
+      index: index2,
+      keepHiddenSelection,
+      notifySelection,
+      selectionInfo,
+      onSelectionChange,
+      filters,
+      deferredFilter,
+      source
+    });
     React$1.useEffect(() => {
       setLoaded(pageSize);
     }, [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize]);
@@ -21069,14 +21294,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       selectable,
       options
     });
-    const fit2 = (field) => {
-      const c = columns.find((c2) => c2.field === field), ctx = document.createElement("canvas").getContext("2d"), cs = getComputedStyle(frame.current);
-      const data2 = kinds(c).includes("data");
-      ctx.font = cs.getPropertyValue("--plx-comp-data-grid-font-size") + " " + cs.getPropertyValue(data2 ? "--plx-comp-data-grid-data-font-family" : "--plx-comp-data-grid-font-family");
-      ctx.wordSpacing = data2 ? cs.getPropertyValue("--plx-sys-font-data-word-spacing").trim() || "0px" : "0px";
-      const values = [c.title || field, ...source.map((r) => valueText(valueAt(r, field)))];
-      resize(field, Math.max(...values.map((v) => ctx.measureText(v).width)) + metrics.space * 2);
-    };
+    const { fit: fit2, startResize } = columnSizing({ columns, frame, source, resize, metrics, table, B });
     const menuItems = (items, row, extra) => items.map((item, i) => {
       if (!item.separator && !item.disabled && typeof (item.onSelect || item.action) !== "function" && Object.prototype.hasOwnProperty.call(React$1.createElement("span"), "_store") && !warnedActions.current.has(item.label)) {
         warnedActions.current.add(item.label);
@@ -21096,25 +21314,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         item.label
       );
     });
-    const startResize = (event, column) => {
-      if (event.type === "mousedown" && event.button !== 0) return;
-      if (event.type === "mousedown") event.preventDefault();
-      event.stopPropagation();
-      const head = table.getFlatHeaders().find((h2) => h2.column.id === column.id);
-      const doc = frame.current?.ownerDocument || document, cover = doc.createElement("div");
-      cover.className = B + "__resize-cover";
-      doc.body.appendChild(cover);
-      const end = () => {
-        cover.remove();
-        doc.removeEventListener("mouseup", end);
-        doc.removeEventListener("touchend", end);
-        doc.removeEventListener("touchcancel", end);
-      };
-      doc.addEventListener("mouseup", end);
-      doc.addEventListener("touchend", end);
-      doc.addEventListener("touchcancel", end);
-      head?.getResizeHandler(doc)(event);
-    };
     const { chooserColumns, headerCell } = headerRows({
       groupBy: groupBy2,
       columnMenu,
@@ -26588,7 +26787,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         const el = document.createElement(tag2.toLowerCase());
         if (tag2 === "A") {
           const href = (n.getAttribute("href") || "").trim();
-          if (SAFE_HREF.test(href)) el.setAttribute("href", href);
+          if (href && SAFE_HREF.test(href)) el.setAttribute("href", href);
         }
         if (tag2 === "IMG") {
           const src = (n.getAttribute("src") || "").trim();

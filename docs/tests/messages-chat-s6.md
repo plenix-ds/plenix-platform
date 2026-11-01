@@ -24,7 +24,7 @@ The Messages app shows conversations with the shared chat parts (date lines, gro
 
 ## How it checks
 - Starts the local test server and opens the real suite page `messages/index.html#/thread/1`; counts the chat parts, types and sends a reply, then switches to Arabic, right to left.
-- Opens the design spec page `platform/design-system/index.html#/specialized/typing-indicator` and reads its examples and text.
+- Opens the design spec page `platform/design-system/index.html#/specialized/typing-indicator` and reads its examples and text, only where the design system is checked out. Without it (the CI browser jobs never check it out), that part prints "MESSAGES_CHAT_S6_SPEC_SKIPPED … design system not available" and, on GitHub, a warning, instead of failing (issue #777).
 - No baseline.
 
 ## What a failure means

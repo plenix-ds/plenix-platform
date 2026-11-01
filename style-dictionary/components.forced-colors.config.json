@@ -1,0 +1,27 @@
+{
+  "source": [
+    "platform/tokens/components.forced-colors.tokens.json",
+    "platform/tokens/components/*.forced-colors.tokens.json"
+  ],
+  "platforms": {
+    "css": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/",
+      "files": [
+        {
+          "destination": "components.forced-colors.css",
+          "format": "css/variables",
+          "options": {
+            "selector": [
+              "@media (forced-colors: active)",
+              ":root,[data-plx-density],[data-plx-interaction]"
+            ],
+            "outputReferences": true
+          }
+        }
+      ]
+    }
+  }
+}

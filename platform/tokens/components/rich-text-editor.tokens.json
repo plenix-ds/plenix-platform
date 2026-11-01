@@ -54,12 +54,7 @@
     "rich-text-editor-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
       "$type": "color",
-      "$description": "RichTextEditor disabled: the text color.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
+      "$description": "RichTextEditor disabled: the text color."
     },
     "rich-text-editor-toolbar-border-color": {
       "$value": "{plx-sys.border-divider}",
@@ -224,22 +219,12 @@
     "rich-text-editor-selected-cell-background": {
       "$value": "{plx-comp.data-grid-row-selected-background}",
       "$type": "color",
-      "$description": "RichTextEditor table: the cells of a table selection (the selected row fill of the Plenix table).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "Highlight"
-        }
-      }
+      "$description": "RichTextEditor table: the cells of a table selection (the selected row fill of the Plenix table)."
     },
     "rich-text-editor-selected-node-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color",
-      "$description": "RichTextEditor image: the outline of a selected image (the focus color).",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "HighlightText"
-        }
-      }
+      "$description": "RichTextEditor image: the outline of a selected image (the focus color)."
     },
     "rich-text-editor-selected-node-outline-width": {
       "$value": "{plx-comp.link-focus-outline-width}",

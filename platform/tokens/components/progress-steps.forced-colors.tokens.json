@@ -1,0 +1,17 @@
+{
+  "$description": "components/progress-steps.tokens.json: the values under forced colors (@media (forced-colors: active): Windows High Contrast and other contrast themes). A condition set: each token is defined in components/progress-steps.tokens.json, and this file holds only its value under the condition (#372 step 4).",
+  "plx-comp": {
+    "progress-steps-current-marker-background": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "progress-steps-current-marker-border-color": {
+      "$value": "Highlight",
+      "$type": "color"
+    },
+    "progress-steps-current-marker-text": {
+      "$value": "HighlightText",
+      "$type": "color"
+    }
+  }
+}
