@@ -25,6 +25,10 @@
       "$value": "var(--plx-sys-border-strong)",
       "$type": "color"
     },
+    "border-separator": {
+      "$value": "var(--plx-sys-border-strong)",
+      "$type": "color"
+    },
     "control-border": {
       "$value": "var(--plx-sys-border-strong)",
       "$type": "color"
