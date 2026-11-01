@@ -11,7 +11,7 @@
 # new version, and a broken release shows in our own apps first.
 # Both names serve /srv/plenix/www on the publish host (Nginx, site file /etc/nginx/sites-available/plenix); the reverse
 # proxy gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
-# The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study, docs/page-headers, and the DataGrid studies docs/grid-header-study, docs/grid-row-hover-study, docs/grid-row-selection-study) are published too, at /Plenix/docs/<study>/.
+# The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study, docs/page-headers, and the DataGrid studies docs/grid-header-study, docs/grid-row-hover-study, docs/grid-row-selection-study, and the dashboard study docs/dashboard-study with its self-contained original in original/) are published too, at /Plenix/docs/<study>/.
 # Run from the repository root:  bash deploy.sh   The publish host, account and key come from the environment or from
 # publish.config (tools/publish-config.sh: PUBLISH_HOST, PUBLISH_USER, PUBLISH_KEY; no defaults).
 set -euo pipefail
@@ -46,6 +46,7 @@ tar -czf "$PKG" --exclude='*.bak' --exclude='node_modules' --transform='s,^,Plen
   messages notes projects settings tasks check-system.js \
   docs/font-study docs/composition docs/reading-pane-study docs/page-headers \
   docs/grid-header-study docs/grid-row-hover-study docs/grid-row-selection-study \
+  docs/dashboard-study \
   release packages/styles/plenix.css
 
 gzip -t "$PKG" || { echo "package is damaged; nothing published"; rm -f "$PKG"; exit 1; }
@@ -92,7 +93,9 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
   sudo mv /srv/plenix/www.new/Plenix/packages/styles/plenix.css /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css
   sudo rm -rf /srv/plenix/www.new/Plenix/packages
   B=\$(sha256sum /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css | cut -c1-8)
-  # the study pages too: platform.css's two hundred imports trip the server's request limit (429) and the page shows unstyled
+  # the study pages too: platform.css's two hundred imports trip the server's request limit (429) and the page shows unstyled.
+  # Only a study's own pages (docs/<study>/*.html, 9 of them) are rewritten; a file one folder deeper, such as the dashboard
+  # study's self-contained original (docs/dashboard-study/original/), is published unchanged
   for f in /srv/plenix/www.new/Plenix/docs/*/*.html; do
     sudo sed -i \"s|href=\\\"../../platform/platform.css\\\"|href=\\\"../../platform/dist/platform.bundle.css?v=\$B\\\"|\" \"\$f\"
   done

@@ -93,6 +93,7 @@ child({ units: ['components/DataGrid'] }, 'data-grid-row-template-839.test.js');
 child({ units: ['components/Rating', 'components/Divider'] }, 'rating-divider-808.test.js');   // Rating half stars (clicks, keys, read-only) and Divider with a text, left to right and right to left (issue 808)
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
 child({ units: ['components/DataGrid'] }, 'data-grid-default-cards-679.test.js');   // every grid's narrow cards are the row template by default; plain stays reachable; wide unchanged (issue 679)
+child({ units: ['components/DataGrid'] }, 'data-grid-edit-keys-737.test.js');   // F2 and typing start editing; not read-only, IME, Ctrl/Alt/Meta, Space; Shift+arrows keep working (issue 737)
 child({ units: ['components/MenuBar', 'components/Menu'] }, 'menubar-805.test.js');   // the MenuBar: one Tab stop, the arrows, open and switch, Escape, hover, type-ahead, More (issue 805)
 child({ units: ['components/DataGrid'] }, 'data-grid-cell-range-465.test.js');   // cell range selection: Shift with the arrows, the border, copy, announcement, 600 rows (issue 465)
 child({ units: ['components/Text', 'components/Isolate', 'components/DataGrid'] }, 'bidi-data-838.test.js');   // a spaced phone number and IBAN keep their digit groups in order in an Arabic page (issue 838)
@@ -108,6 +109,8 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 // platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
 // a date with no time is that calendar day in every time zone (issue 342)
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
+// a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)
+child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.ts'] }, 'branch-loader-814.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
 child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.ts'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)
