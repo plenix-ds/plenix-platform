@@ -22,6 +22,18 @@ Run each command from the repository folder.
   - "Checks" (`ci.yml`) runs the changed-mode tests on every pull request and on pushes to styling/phase-2 and main.
   - "Full suite" (`full.yml`) and "On-demand tests" (`on-demand.yml`) run only when started by hand: Actions, then the workflow, then Run workflow.
 
+## Refreshing a baseline in your run
+
+- Add the test name with its flag as one line of your run-tests issue, for example `- zero-overlap --record` or `- visual --update`. `tests/run.js` passes the flag to that test only and prints `flags: --record` under its heading.
+- Only the allowed flags pass: `--update` for visual, typography, component-tokens, reflow, focus-order and a11y; `--record` for zero-overlap. Any other flag stops the run with a message, so a typo never records a baseline.
+- The new baseline files appear in the run's clean copy. The Tech Lead brings them back as a pull request for QA.
+- The lines for the baselines that are red today:
+  - `- visual --update`
+  - `- typography --update`
+  - `- component-tokens --update`
+  - `- reflow --update`
+  - `- zero-overlap --record`
+
 ## The groups
 
 Each line links to the test's page. A test that a group test starts is listed under what it protects, not under its group.
