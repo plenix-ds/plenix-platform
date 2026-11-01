@@ -17,6 +17,7 @@
      placeholder: the hint in the empty field (default strings.placeholder)
      label: the accessible name when there is no Field
      invalid: the invalid state (the field's border in the danger color); a Field with an error sets it
+     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not change it: the list does not open and the tags cannot be removed; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the field's button (a Field sets it, so its label names it)
@@ -63,7 +64,7 @@ const leavesOf = (items, trail = []) => items.reduce((all, it) => (Array.isArray
 const pathTo = (items, id) => { const hit = leavesOf(items).find((l) => l.item.id === id); return hit ? hit.trail : null; };
 
 export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
-  placeholder, label, invalid, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
+  placeholder, label, invalid, warning, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('cascader', strings);
   const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -125,7 +126,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
 
   return (
     <div ref={wrap} className={cx('plx-cascader', multiple && 'plx-cascader--multiple', open && 'is-open', disabled && 'is-disabled', className)} onKeyDown={onListKey}>
-      <div className="plx-cascader__field plx-input" aria-invalid={invalid || undefined}>
+      <div className="plx-cascader__field plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}>
         {multiple ? chosen.map((v) => { const trail = pathTo(options, v); const name = trail ? trail[trail.length - 1].label : String(v);
           return <Tag key={v} onRemove={disabled || locked ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={t.remove.replace('{label}', name)}>{name}</Tag>; }) : null}
         <button ref={button} type="button" id={id} className="plx-cascader__trigger" aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? auto + '-pop' : undefined}

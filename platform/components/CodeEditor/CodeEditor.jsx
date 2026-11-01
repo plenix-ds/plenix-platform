@@ -18,6 +18,7 @@
      tabSize: the spaces Tab inserts (default 2)
      label: the accessible name when it has no Field
      invalid: marks the editor invalid: the danger border and aria-invalid (a Field with an error sets it)
+     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the editor off (default false)
      required: handed to the <textarea> (a Field sets it)
      id: handed to the <textarea>, with aria-describedby (a Field sets both)
@@ -60,7 +61,7 @@ function insert(el, text, selStart, selEnd) {
 }
 
 export const CodeEditor = React.forwardRef(function CodeEditor({ value, defaultValue = '', onChange, language = 'jsx', lineNumbers = false, readOnly: readOnlyOwn,
-  height = 'md', maxHeight = 'none', tabSize = 2, label, invalid, disabled = false, required, id, 'aria-describedby': describedBy, strings, className, onKeyDown, ...rest }, ref) {
+  height = 'md', maxHeight = 'none', tabSize = 2, label, invalid, warning, disabled = false, required, id, 'aria-describedby': describedBy, strings, className, onKeyDown, ...rest }, ref) {
   const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's
   const t = useStrings('codeEditor', strings);
   const area = React.useRef(null);
@@ -109,7 +110,7 @@ export const CodeEditor = React.forwardRef(function CodeEditor({ value, defaultV
 
   return (
     <div className={cx('plx-code-editor', lineNumbers && 'plx-code-editor--line-numbers', readOnly && 'plx-code-editor--readonly', 'plx-code-editor--height-' + height,
-      maxHeight === 'tall' && 'plx-code-editor--tall', invalid && 'is-invalid', disabled && 'is-disabled', className)}>
+      maxHeight === 'tall' && 'plx-code-editor--tall', invalid && 'is-invalid', disabled && 'is-disabled', className)} data-plx-warning={warning || undefined}>
       <div className="plx-code-editor__scroller">
         {lineNumbers ? (
           <div className="plx-code-editor__gutter" aria-hidden="true">

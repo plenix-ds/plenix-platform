@@ -9,6 +9,7 @@
      Input.size: "sm" | "md" (default) | a number: "sm" uses the existing toolbar control height; "md" keeps today’s standard height; a number keeps the native size attribute.
      Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
+     Input.warning: marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
        leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
@@ -23,6 +24,7 @@
        the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
+     Textarea.warning: marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
      Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
      Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
        scrolls inside; it cannot be resized by hand (default false)
@@ -30,6 +32,7 @@
      Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
+     Select.warning: marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
      Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
        the ref is the hidden native <select>
@@ -99,7 +102,7 @@ const TEXT_TYPES = { text: 1, search: 1, email: 1, url: 1, tel: 1 };
 // the Tooltip around a text Input in a bar: its width class follows the Input's (fixed: xs, sm, md)
 const tipWidth = (width) => (width === 'xs' || width === 'sm' || width === 'md' ? 'plx-input__tip--fixed' : width === 'lg' || width === 'fill' ? 'plx-input__tip--' + width : null);
 
-export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, onInput, ...rest }, ref) {
+export const Input = React.forwardRef(function Input({ invalid, warning, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, onInput, ...rest }, ref) {
   // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
   const locked = useReadOnly(readOnly);
   const own = React.useRef(null);
@@ -108,7 +111,7 @@ export const Input = React.forwardRef(function Input({ invalid, width, data = fa
   const bar = useInBar(own, '.plx-input-group') && !!TEXT_TYPES[type];
   const [, redraw] = React.useReducer((n) => n + 1, 0);
   const cut = useTruncated(own, bar ? 'bar|' + rest.value : '', bar);
-  const field = <input ref={setRef} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', bar && 'plx-input__bar-text', look(appearance), className)} aria-invalid={invalid || undefined}
+  const field = <input ref={setRef} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', bar && 'plx-input__bar-text', look(appearance), className)} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}
     onInput={bar ? (e) => { redraw(); if (onInput) onInput(e); } : onInput} {...TYPE_HINTS[type]} {...rest} />;
   if (!bar) return field;
   const text = rest.value !== undefined && rest.value !== null ? String(rest.value) : own.current ? own.current.value : String(rest.defaultValue || '');
@@ -118,7 +121,7 @@ export const Input = React.forwardRef(function Input({ invalid, width, data = fa
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
 const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
 
-export const Textarea = React.forwardRef(function Textarea({ invalid, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }, ref) {
+export const Textarea = React.forwardRef(function Textarea({ invalid, warning, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }, ref) {
   const locked = useReadOnly(readOnly);   // its own readOnly, else the nearest read-only region's
   const own = React.useRef(null);
   const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
@@ -131,16 +134,16 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
     el.style.blockSize = gridPx(el.scrollHeight + edge, { round: 'up', el });
   }, [autoGrow]);
   React.useLayoutEffect(() => { fit(); });
-  return <textarea ref={setRef} rows={rows} readOnly={locked || undefined} className={cx('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
+  return <textarea ref={setRef} rows={rows} readOnly={locked || undefined} className={cx('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}
     onInput={(e) => { fit(); if (onInput) onInput(e); }} {...rest} />;
 });
 
 /* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
-const SelectNative = React.forwardRef(function SelectNative({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }, ref) {
+const SelectNative = React.forwardRef(function SelectNative({ invalid, warning, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
   return (
     <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
-      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...readOnlyProps(locked, rest, { pointer: true })}>
+      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} {...readOnlyProps(locked, rest, { pointer: true })}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
       <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
@@ -151,7 +154,7 @@ const SelectNative = React.forwardRef(function SelectNative({ invalid, options, 
 /* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
    hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
    come from it, so a form posts, a reset resets and e.target.value works as before. */
-const SelectList = React.forwardRef(function SelectList({ invalid, options, appearance, size, joined, data, block = false, width, className, children, id, onFocus, onBlur, onKeyDown,
+const SelectList = React.forwardRef(function SelectList({ invalid, warning, options, appearance, size, joined, data, block = false, width, className, children, id, onFocus, onBlur, onKeyDown,
   'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, readOnly, ...rest }, ref) {
   const locked = useReadOnly(readOnly);   // keeps the value and focus; a press, Space, the arrows or typing do not open or change it
   const native = React.useRef(null), field = React.useRef(null), wrap = React.useRef(null), list = React.useRef(null), last = React.useRef(null), buffer = React.useRef(''), timer = React.useRef(0);
@@ -263,7 +266,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
       <Tooltip content={current ? current.label : ''} disabled={!cut || open} describe={false} className="plx-select__tip">
       <div ref={field} id={id} role="combobox" tabIndex={disabled ? -1 : 0} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? listId : undefined}
         aria-activedescendant={open && active >= 0 ? optId(active) : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)}
-        aria-describedby={describedBy} aria-errormessage={errorMessage} aria-invalid={invalid || undefined} aria-required={rest.required || undefined} aria-disabled={disabled || undefined}
+        aria-describedby={describedBy} aria-errormessage={errorMessage} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} aria-required={rest.required || undefined} aria-disabled={disabled || undefined}
         className={cx('plx-input', 'plx-select__field', asData && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
         {...readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey }, { pointer: true })}
         onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>

@@ -17,6 +17,7 @@
      now: the date counted from (default: today), for tests and examples
      label: the accessible name when there is no Field
      invalid, disabled: the field's states (a Field sets invalid with its error)
+     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      id: the id of the preset select (a Field sets it)
      strings: the words it shows, for other languages: { custom: "Custom", none: "Any time", amount: "Amount", unit:
        "Unit", past: "Last", future: "Next", units: { day: ["day", "days"], … }, presets: { "last-7-days": "Last 7 days", … },
@@ -76,7 +77,7 @@ export function resolveRelativeDate(value, now) {
 }
 
 export const RelativeDateInput = React.forwardRef(function RelativeDateInput({ value, defaultValue = '', onChange, direction = 'past', presets, now, label,
-  invalid, disabled, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
+  invalid, warning, disabled, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('relativeDateInput', strings);   // units and presets merge key by key
   const auto = 'plx-rd' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [own, setOwn] = React.useState(defaultValue);
@@ -100,13 +101,13 @@ export const RelativeDateInput = React.forwardRef(function RelativeDateInput({ v
     <div className={cx('plx-relative-date-input', custom && 'plx-relative-date-input--custom', className)}>
       <div className="plx-relative-date-input__row" role="group" aria-label={label}>
         <Select ref={ref} id={id} className="plx-relative-date-input__preset" value={custom ? CUSTOM : current || ''} onChange={onPreset} options={options}
-          aria-label={label} invalid={invalid} disabled={disabled} aria-describedby={descr} {...rest} />
+          aria-label={label} invalid={invalid} warning={warning} disabled={disabled} aria-describedby={descr} {...rest} />
         {custom ? (
           <React.Fragment>
             {direction === 'both' ? <Select className="plx-relative-date-input__direction" value={current.direction} aria-label={t.direction} disabled={disabled}
               options={[{ value: 'past', label: t.past }, { value: 'future', label: t.future }]} onChange={(e) => part('direction', e.target.value)} /> : null}
             <NumberInput className="plx-relative-date-input__amount" min={1} max={999} step={1} decimals={0} width="xs" value={amount} aria-label={t.amount}
-              disabled={disabled} invalid={invalid} aria-describedby={descr}
+              disabled={disabled} invalid={invalid} warning={warning} aria-describedby={descr}
               onChange={(n) => { if (n !== null && n >= 1) part('amount', Math.min(999, Math.round(n))); }} />
             <Select className="plx-relative-date-input__unit" value={current.unit} aria-label={t.unit} disabled={disabled}
               options={UNITS.map((u) => ({ value: u, label: t.units[u][+amount === 1 ? 0 : 1] }))} onChange={(e) => part('unit', e.target.value)} />
