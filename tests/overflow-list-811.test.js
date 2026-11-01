@@ -47,7 +47,7 @@ const NAMES = { ltr: ['Share', 'Export', 'Duplicate', 'Move to folder', 'Archive
         assert.deepEqual(await page.evaluate(() => window.__log.slice()), ['i' + (shown + 1)]);
       });
       await check(T + 'pressing a shown item runs onSelect', async () => { await page.evaluate(() => { window.__log = []; }); await (await page.$('[data-w="700"] .plx-overflow-list > button')).click(); await wait(150); assert.deepEqual(await page.evaluate(() => window.__log.slice()), ['i0']); });
-      await check(T + 'an item with its own content draws it in the row', async () => assert.ok(await page.evaluate(() => !!document.querySelector('[data-w="tags"] .plx-overflow-list > .plx-tag'))));
+      await check(T + 'an item with its own content draws it in the row', async () => assert.ok(await page.evaluate(() => !!document.querySelector('[data-w="tags"] .plx-overflow-list > .plx-overflow-list__item > .plx-tag'))));
       await check(T + 'one Tab stop for the item that fits and one for the "…" button, nothing hidden', async () => {
         const r = await page.evaluate(() => ({ stops: [...document.querySelectorAll('[data-w="150"] button')].filter((e) => !e.disabled).length, copy: !!document.querySelector('.plx-overflow-list__meter') }));
         assert.equal(r.stops, 2, 'one item and the "…" button'); assert.equal(r.copy, false, 'no measuring copy');
