@@ -191,5 +191,13 @@ fs.readdirSync(CDN).filter((f) => /\.(c|m)?js$/.test(f)).forEach((f) => {
   if (hit) { nonAscii++; console.log('BUNDLE_FAIL: ' + f + ':' + hit.line + ' a non-ASCII character in code (a page loaded without a charset breaks): ' + JSON.stringify(hit.text)); }
 });
 if (!nonAscii) console.log('  non-ASCII characters in the code of the CDN scripts: 0');
-if (up || over || styleParts || nonAscii) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : '', nonAscii ? nonAscii + ' script' + (nonAscii > 1 ? 's' : '') + ' with non-ASCII code' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
+// React in scope (check-system.rules/react-in-scope.js, the npm DataGrid that did not draw): every shipped ES module binds the React it uses
+let noReact = 0;
+const inScope = require('./check-system.rules/react-in-scope.js');
+for (const f of inScope.esModules()) {
+  const hit = inScope.unboundReact(fs.readFileSync(f, 'utf8'));
+  if (hit) { noReact++; console.log('BUNDLE_FAIL: ' + path.relative(ROOT, f) + ':' + hit.line + ' React is used but never imported (the first render throws "React is not defined"): ' + JSON.stringify(hit.text)); }
+}
+if (!noReact) console.log('  ES modules that use React without importing it: 0');
+if (up || over || styleParts || nonAscii || noReact) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : '', nonAscii ? nonAscii + ' script' + (nonAscii > 1 ? 's' : '') + ' with non-ASCII code' : '', noReact ? noReact + ' module' + (noReact > 1 ? 's' : '') + ' using React without importing it' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
 console.log(down ? 'BUNDLE_OK (' + down + ' went down: lower the baseline)' : 'BUNDLE_OK');
