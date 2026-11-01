@@ -178,6 +178,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 
 - [icon-fetch-642](icon-fetch-642.md): A page with many icons loads them all without overwhelming the server, so no icon is left blank.
 - [icon-module-url-284](icon-module-url-284.md): Icons still show when a website renames the Plenix files while bundling them.
+- [icon-names-lazy-882](icon-names-lazy-882.md): An app built from the Plenix package loads the list of icon names only when it draws an icon by name, so small parts stay small.
 - [icon-mv3-284](icon-mv3-284.md): Plenix icons work inside a Chrome extension, which may not load any code from the internet.
 - [icon-offline-archive-284](icon-offline-archive-284.md): A website that hosts its own copy of Plenix shows every icon with no internet connection.
 - [icon-package-assets-284](icon-package-assets-284.md): The downloadable Plenix package holds the files for every documented icon, so no icon is missing for a site that hosts Plenix itself.

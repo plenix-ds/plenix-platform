@@ -68,6 +68,8 @@ child({ units: ['components/Icon'] }, 'icon-module-url-284.test.js');
 child({ units: ['components/Icon'] }, 'icon-retry-283.test.js');
 child({ units: ['components/Icon'] }, 'icon-mv3-284.test.js');
 child({ units: ['components/Icon'] }, 'icon-package-assets-284.test.js');
+// the npm package's ES modules load the icon name tables only when an Icon meets a name (issue 882, item 11)
+child({ units: ['components/Icon'] }, 'icon-names-lazy-882.test.js');
 // the Card accent is removed (issue 621): when the Card or one of the application pages that used it changed
 child({ units: ['components/Card'], apps: ['dashboard', 'calendar', 'settings', 'projects'] }, 'card-accent-621.test.js');
 // a fetched icon asks for one file, a few at a time (issue 642): when the Icon component changed
