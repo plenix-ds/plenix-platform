@@ -1,0 +1,11 @@
+{
+  "$description": "MenuBar (platform/components/MenuBar, issue 805): a bordered row of menu buttons (File, Edit, View). The menu's own surface roles; no new color.",
+  "plx-comp": {
+    "menubar-background": { "$value": "{plx-comp.menu-background}", "$type": "color", "$description": "MenuBar: the bar's fill, the menu's." },
+    "menubar-border-color": { "$value": "{plx-sys.border-subtle}", "$type": "color", "$description": "MenuBar: the bar's border, the subtle border role." },
+    "menubar-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "MenuBar: the bar's border width, the subtle border role." },
+    "menubar-radius": { "$value": "{plx-comp.menu-radius}", "$type": "dimension", "$description": "MenuBar: the bar's corners, the menu's." },
+    "menubar-padding": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "MenuBar: the space between the border and the first and last menu button." },
+    "menubar-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "MenuBar: the space between two menu buttons." }
+  }
+}

@@ -14,14 +14,14 @@
 */
 import React from 'react';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { Link } from '../../components/Link/Link.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { Link } from '../../components/Link/Link.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

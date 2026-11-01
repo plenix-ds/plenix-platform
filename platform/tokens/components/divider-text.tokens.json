@@ -1,0 +1,7 @@
+{
+  "$description": "Divider with a text in the middle (platform/components/Divider, issue 808). Existing roles only.",
+  "plx-comp": {
+    "divider-text-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Divider: the space between the text and the line on each side." },
+    "divider-text-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Divider: the text in the middle, the muted text color." }
+  }
+}

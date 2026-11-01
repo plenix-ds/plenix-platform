@@ -36,8 +36,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
-import { Spinner } from '../Loading/Loading.jsx';
+import { Button } from '../Button/Button.tsx';
+import { Spinner } from '../Loading/Loading.tsx';
 import { useIntersection } from '../../hooks/useIntersection.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';

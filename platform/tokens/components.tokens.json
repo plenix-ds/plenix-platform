@@ -1011,19 +1011,19 @@
       "$description": "Select: a disabled row text color."
     },
     "select-group-text": {
-      "$value": "{plx-comp.menu-group-label-text}",
+      "$value": "{plx-sys.content-muted}",
       "$type": "color",
-      "$description": "Select: a group heading color."
+      "$description": "Select: a group heading color; its own since the menu's heading took Blueprint's style (#805)."
     },
     "select-group-font-size": {
-      "$value": "{plx-comp.menu-group-label-font-size}",
+      "$value": "{plx-ref.font-size-11}",
       "$type": "dimension",
-      "$description": "Select: a group heading size."
+      "$description": "Select: a group heading size; its own since the menu's heading took Blueprint's style (#805)."
     },
     "select-group-font-weight": {
-      "$value": "{plx-comp.menu-group-label-font-weight}",
+      "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight",
-      "$description": "Select: a group heading weight."
+      "$description": "Select: a group heading weight; its own since the menu's heading took Blueprint's style (#805)."
     },
     "select-group-padding-block": {
       "$value": "{plx-comp.menu-group-label-padding-block}",
@@ -3718,6 +3718,11 @@
       "$value": "{plx-sys.space-inset-xs}",
       "$type": "dimension"
     },
+    "menu-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Menu: its text font, a token choice (#805). Plenix's text font by default; Blueprint uses the system UI stack."
+    },
     "menu-padding-inline": {
       "$value": "{plx-sys.space-inset-xs}",
       "$type": "dimension"
@@ -3743,16 +3748,33 @@
       "$type": "dimension"
     },
     "menu-item-text": {
-      "$value": "{plx-sys.content-default}",
-      "$type": "color"
+      "$value": "{plx-sys.content-strong}",
+      "$type": "color",
+      "$description": "Menu item: the strongest text (content-strong, gray 950 in light: 16.5:1, as Blueprint's 16.2:1), so regular-weight items read as dark as Blueprint's (#805, owner 2026-11-01)."
     },
     "menu-item-gap": {
       "$value": "{plx-sys.space-inline-sm}",
       "$type": "dimension"
     },
     "menu-item-font-size": {
-      "$value": "{plx-ref.font-size-13}",
-      "$type": "dimension"
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "Menu item: 15px, so DM Sans draws as large as Blueprint's 14px system text (#805, owner 2026-11-01): DM Sans's x-height is 0.50 em against Blueprint's 0.53 (7.5px against 7.4px)."
+    },
+    "menu-item-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "Menu item: regular (400), as Blueprint (#805, owner 2026-11-01); the darker color (menu-item-text) gives Blueprint's darkness, so the weight no longer makes up for it."
+    },
+    "menu-item-line-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "Menu item: a 24px line, Blueprint's line ratio (22px for 14px) at 15px, on the 4px grid (#805); with the 4px padding a one-line item is 32px, and a wrapped label grows by whole lines."
+    },
+    "menu-item-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Menu item: 4px above and below the label, as Blueprint (#805); the minimum height still holds a one-line item."
     },
     "menu-item-min-height": {
       "$value": "{plx-sys.control-height-standard}",
@@ -3798,16 +3820,23 @@
       "$type": "color"
     },
     "menu-check-height": {
-      "$value": "{plx-ref.size-16px}",
+      "$value": "{plx-ref.size-24px}",
       "$type": "dimension"
     },
     "menu-check-width": {
       "$value": "{plx-ref.size-16px}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$description": "Menu check: the slot's width, Blueprint's 16px, so labels line up as Blueprint's; the larger check (menu-check-icon-size) is centered on it."
+    },
+    "menu-check-icon-size": {
+      "$value": "{plx-sys.icon-size-lg}",
+      "$type": "dimension",
+      "$description": "Menu check: the check's box, 24px, so the check (check-bold) draws 13 by 10px, as Blueprint's 14 by 10px tick (#805, owner 2026-11-01); it is centered on the 16px slot."
     },
     "menu-divider-border-top-color": {
-      "$value": "{plx-sys.border-divider}",
-      "$type": "color"
+      "$value": "{plx-sys.border-separator}",
+      "$type": "color",
+      "$description": "Menu divider (Menu and MenuBar): border-separator, gray 250 in light (#dcddde, 1.36:1 on white), Blueprint's own shade (black at 15% on white, #dbdcdc, 1.37:1); gray 700 in dark, border-strong under more contrast (#805, owner 2026-11-01)."
     },
     "menu-divider-border-top-width": {
       "$value": "{plx-sys.border-width-thin}",
@@ -3817,17 +3846,30 @@
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension"
     },
+    "menu-divider-margin-inline": {
+      "$value": "calc({plx-comp.menu-padding-inline} * -1)",
+      "$type": "dimension",
+      "$description": "Menu divider: it runs the menu's full width, edge to edge through the menu's padding, as Blueprint (#805)."
+    },
     "menu-group-label-text": {
-      "$value": "{plx-sys.content-muted}",
-      "$type": "color"
+      "$value": "{plx-sys.content-strong}",
+      "$type": "color",
+      "$description": "Menu group heading: the strongest text, the same color as the items, as Blueprint (#805)."
     },
     "menu-group-label-font-size": {
-      "$value": "{plx-ref.font-size-11}",
-      "$type": "dimension"
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "Menu group heading: 15px, as the items, the size of Blueprint's 14px heading in DM Sans (#805)."
+    },
+    "menu-group-label-line-height": {
+      "$value": "{plx-sys.label-height-16px}",
+      "$type": "dimension",
+      "$description": "Menu group heading: a 16px line, on the 4px grid, the nearest to Blueprint's 17px (#805, owner 2026-11-01); with its 4px padding the heading is 24px, and its text sits within 1px of Blueprint's under the divider (cap top 10px below the line against 11px, the next item 1px higher)."
     },
     "menu-group-label-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
-      "$type": "fontWeight"
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight",
+      "$description": "Menu group heading: bold (700), as Blueprint's bold heading: strokes 2.0px against Blueprint's 1.9px, one clear step above the regular items (#805, owner 2026-11-01)."
     },
     "menu-group-label-padding-block": {
       "$value": "{plx-sys.space-inset-xs}",
@@ -7876,12 +7918,12 @@
     "tooltip-long-press-delay": {
       "$value": "{plx-sys.touch-long-press-delay}",
       "$type": "duration",
-      "$description": "On touch (a coarse pointer, no hover) the tooltip shows after a long press of this length; Tooltip.jsx reads it"
+      "$description": "On touch (a coarse pointer, no hover) the tooltip shows after a long press of this length; Tooltip.tsx reads it"
     },
     "tooltip-touch-dismiss-delay": {
       "$value": "{plx-sys.touch-dismiss-delay}",
       "$type": "duration",
-      "$description": "A tooltip opened by a long press hides this long after the finger lifts; Tooltip.jsx reads it"
+      "$description": "A tooltip opened by a long press hides this long after the finger lifts; Tooltip.tsx reads it"
     },
     "tooltip-bubble-z-index": {
       "$value": "{plx-sys.layer-popover}",

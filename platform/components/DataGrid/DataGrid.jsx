@@ -44,6 +44,16 @@
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
+     cellSelection: true: cells can be selected as a block (off by default; a grid without it behaves exactly as before). Shift with an arrow,
+       Home or End extends the block from the cell that has focus (the focus cell stays in view); Shift with a click makes it from where it began (or the
+       focused cell) to the clicked cell; dragging with the mouse from one cell to another makes one, and the grid scrolls when the pointer is near its
+       edge (a drag, or a click on a control inside a cell, never starts on a button, link or field); a plain arrow, a click or Escape collapses it; Ctrl or
+       Command with C copies it as tab-separated text that a spreadsheet pastes as rows and columns (group rows skipped). The block has the selected
+       fill and a 2px border on its outer edges, its cells carry aria-selected, and the count is announced politely once the keys pause.
+       api.getCellRange() returns { rows, fields, text } or null, api.clearCellRange() and api.copyCellRange() act on it.
+       It is independent of row selection and of editing (Enter edits the active cell and collapses the block). Not for the static Table.
+     onCellSelectionChange({ from, to, cellCount, rowCount, columnCount, fields }): runs when the cell block changes (null when it ends; from and
+       to are { rowId, field })
      unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
      markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
      unreadOnly with onUnreadOnlyChange controls the unread filter. Nothing is drawn above the headers (Fluent): the app
@@ -108,9 +118,22 @@
        escape hatch for a dense specialized grid) | "list" (the row cards under narrowAt, 600px). Row cards: the keyColumns (default the
        first three text columns) first, as the primary and secondary lines, then every other visible field as a labeled detail; the
        selection checkbox, the row actions and the row menu stay on the card; nothing scrolls sideways
+     layout: "A" | "B" | "wide" (issue 839; the row template, an option: unset, and without template, the grid is exactly as before). A and B are the narrow
+       view's card (the table while the columns fit, else every record as a card; the switch is #679's, measured): A is three aligned lines
+       (title | date, subtitle | primary, secondary | tertiary) with one vertical line down the list, for records with many fields that must line up and
+       scan down; B has the primary value beside the title, the subtitle on its own line and the three small facts (secondary | tertiary | date) on the
+       third, for short lists where the primary value matters most. "wide" draws the same slots as one aligned row at any width, a column each in the
+       order title, subtitle, date, primary, secondary, tertiary, for when the room always fits. With only template set, the layout is "A"
+     template: { title, subtitle, date, primary, secondary, tertiary }: the row template's slots, each a column's field, every slot optional. Slots left
+       out are filled by one fixed rule (engine/rowTemplate.js): the first date column is the date, the first number column the primary value, then
+       title, subtitle, primary, secondary, tertiary and date take the next columns in the order of `columns`. A column that fills no slot is not drawn
+       in a card: map every field a person needs while scanning; the rest shows when the row is opened. Selection, the open row, the keyboard and the
+       row menu work in every layout
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     Cell selection copy: copied cells keep their text as is: a value starting with =, +, - or @ is read by spreadsheet apps as a formula when
+       pasted. Apps that copy untrusted text into spreadsheets should guard it.
      A column is dragged no wider than --plx-sys-shell-pane-window-share (90%) of the table, down to the 4px grid; a smaller maxWidth still applies.
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
@@ -122,7 +145,8 @@
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
+       row's menu. On a cell its column lets people edit: Enter or F2 starts editing with the value kept, and typing a character starts it with that character
+       in place of the value (not Space, which still chooses the row; not during IME composition, with Ctrl, Alt or Meta held, or in a read-only cell); Enter saves, Escape cancels. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
      Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
        on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
      Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
@@ -138,13 +162,16 @@
 */
 import React from 'react';
 import { DataGridEngine } from './DataGridEngine.jsx';
+import { useRowTemplate } from './engine/rowTemplate.js';
 import { useDataGridActions } from './actions.jsx';
 import { unreadCommands } from './unread-commands.js';
-import { ToastProvider } from '../Toast/Toast.jsx';
-import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
+import { ToastProvider, useToast } from '../Toast/Toast.jsx';
+
+// a toast when the page has a ToastProvider; nothing otherwise. Toast's own hook, not ReviewFlow's: ReviewFlow would pull the command bar, the quick filter, the avatar and a dialog into every grid (issue 807)
+function useOptionalToast() { try { return useToast(); } catch (e) { return null; } }
 
 // the row menu's actions with Undo, as the CommandBar's selection commands
-function ActionTable(props) { const rowMenu = useDataGridActions(props.rowMenu, undefined, props.strings); return <DataGridEngine {...props} rowMenu={rowMenu} />; }
+function ActionTable(props) { const rowMenu = useDataGridActions(props.rowMenu, undefined, props.strings), shaped = useRowTemplate(props); return <DataGridEngine {...shaped} rowMenu={rowMenu} />; }
 
 export function DataGrid(props) { const toast = useOptionalToast(); return toast ? <ActionTable {...props} /> : <ToastProvider><ActionTable {...props} /></ToastProvider>; }
 DataGrid.useActions = useDataGridActions;

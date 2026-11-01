@@ -33,13 +33,13 @@
      The page applies the choice (useCollectionView, or matchesDate from utils/fields.ts). */
 import React from 'react';
 import { singleChoice } from './single-choice.js';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Checkbox, RadioGroup } from '../../components/Checkbox/Checkbox.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Inline } from '../../components/Stack/Stack.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Inline } from '../../components/Stack/Stack.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { PanelTrigger, Pill, toggle } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';

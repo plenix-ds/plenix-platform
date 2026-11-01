@@ -22,7 +22,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useOverflow, splitAt } from '../../utils/overflow.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';

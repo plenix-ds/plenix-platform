@@ -55,6 +55,12 @@ export default {
       "text": "There’s nothing left to do here."
     }
   },
+  "menuBar": {
+    "more": "More menus"
+  },
+  "overflowList": {
+    "more": "More items"
+  },
   "pagination": {
     "label": "Pages",
     "range": "{first}–{last} of {total}",
@@ -225,6 +231,9 @@ export default {
     "notImage": "Choose an image file",
     "picture": "{name}’s photo"
   },
+  "anchor": {
+    "label": "On this page"
+  },
   "backToTop": {
     "label": "Back to top"
   },
@@ -295,6 +304,12 @@ export default {
     "empty": "No items",
     "remove": "Remove {label}",
     "columns": "Options",
+    "allOf": "All of {label}",
+    "more": "+{n}",
+    "moreLabel": "{n} more",
+    "limit": "You can choose up to {n}.",
+    "loading": "Loading…",
+    "error": "The matches could not be loaded",
     "results": {
       "one": "{n} match",
       "other": "{n} matches"
@@ -609,6 +624,7 @@ export default {
     "error": "The options could not be loaded",
     "emptyText": "No matches",
     "removeItem": "Remove {label}",
+    "clear": "Clear",
     "results": {
       "one": "{n} option",
       "other": "{n} options"
@@ -730,9 +746,19 @@ export default {
     "all": "All"
   },
   "dataGrid": {
+    "cellsSelected": {
+      "one": "{n} cell selected",
+      "other": "{n} cells selected"
+    },
+    "cellsCopied": {
+      "one": "{n} cell copied",
+      "other": "{n} cells copied"
+    },
     "empty": "Nothing to show",
     "failed": "The table could not load",
     "retry": "Retry",
+    "columnsFailed": "The column list could not open",
+    "close": "Close",
     "selectAll": "Select all rows",
     "selectRow": "Select row",
     "rowActions": "Row actions",
@@ -2253,7 +2279,8 @@ export default {
       "left": "{n} characters left",
       "over": "{n} characters too many"
     },
-    "about": "About {label}"
+    "about": "About {label}",
+    "warning": "Warning"
   },
   "icon": {
     "status": {

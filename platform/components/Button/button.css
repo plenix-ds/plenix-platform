@@ -1,4 +1,4 @@
-/* Plenix · Button and ButtonGroup (platform/components/Button). Anatomy and API: Button.jsx.
+/* Plenix · Button and ButtonGroup (platform/components/Button). Anatomy and API: Button.tsx.
    Zero overlap (Styling Standard 3.3): each property is declared once, in .plx-button, and reads a state variable. A
    variant (and a colored surface) assigns the values of its states; one of five mutually exclusive states then picks
    the value: disabled (also aria-disabled and loading), pressed, hovered, selected, at rest. The state matrix:
@@ -693,7 +693,7 @@
   --plx-state-button-min-inline-size: var(--plx-comp-button-height);
 }
 /* the caret: the thin outline chevron (an Icon child, chevron-down, at optical size 20), muted on the unfilled buttons; on a
-   filled button (primary, danger) and on a disabled one it keeps the label's color (owner, 2026-10-14); Button.jsx gives
+   filled button (primary, danger) and on a disabled one it keeps the label's color (owner, 2026-10-14); Button.tsx gives
    it plx-button__caret--current then */
 .plx-button__caret {
   --plx-comp-icon-context-show-20: block;

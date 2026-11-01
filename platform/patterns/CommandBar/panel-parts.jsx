@@ -16,11 +16,11 @@
        row; each move is announced (WCAG 2.5.7: a way without dragging) */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Menu, MenuItem, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { LiveRegion } from '../../utils/announce.tsx';
 import { CommandBarButton, useCommandBar } from './CommandBar.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';

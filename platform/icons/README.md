@@ -124,8 +124,9 @@ A site that loads Plenix from the CDN (`plenix.js`, `window.Plenix`) registers t
 <script src="/plenix-icons-st-john.js"></script>
 ```
 
+- **For an extension or an offline app, build your site icon file with tools/icons/site-icons.js; don't copy icon files.**
 - **The generator:** `node tools/icons/site-icons.js <site> <folder or file> … [--out <folder>] [--allow-unknown]`
-  - **What it reads:** `.js`, `.jsx`, `.mjs`, `.html` and `.htm`, including a page's inline scripts. It skips `node_modules`, `dist`, `vendor` and dot folders.
+  - **What it reads:** `.js`, `.jsx`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.mts`, `.cts`, `.html` and `.htm`, including a page's inline scripts (TypeScript is read with Babel's own TypeScript parser, as JSX is). It skips `node_modules`, `dist`, `vendor` and dot folders.
   - **Point it at the site's own source,** not at a built file that bundles Plenix.
   - **A use is one of these:**
     - an icon slot, read with Babel as the Platform's own check reads it (`platform/icons/uses.js`): `<Icon name>`, `icon="…"`, `{ icon: '…' }`, `h(Plenix.Icon, { name })`, a constant whose name ends in `Icon` or `Icons`, or a parameter's default
