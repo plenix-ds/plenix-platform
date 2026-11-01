@@ -23,25 +23,29 @@
      left the arrows are mirrored, and so are the block's start and end edges (they are logical).
      The count is announced politely once the arrow keys pause (400 ms), never once per key press while Shift and an arrow repeat.
    Notes:
+     The rules of moving the block, the copy's text, the counts and the announcements are in cellRangeOps.js, loaded with one dynamic import the first
+       time a block is extended (the npm package splits it into a chunk, so a grid without the option does not carry it; the iife builds inline it).
      Moved to its own file with the other concerns of the engine (issue 714); the rule that nothing changes for a grid without the option is
      proved by the engine's differential probe, run with the option off.
 */
 import React from 'react';
+import { useLocale } from '../../../providers/LocaleProvider.tsx';
 import { announce } from '../../../utils/announce.tsx';
 import { formatNumber } from '../../../utils/format.ts';
-import { useLocale } from '../../../providers/LocaleProvider.tsx';
 import { valueAt } from '../state.js';
 import { valueText } from '../cells.jsx';
 
-// a spreadsheet's text: cells by tab, rows by line break; a cell with a tab, a line break or a quote is quoted, its quotes doubled
-const quoted = (text) => (/[\t\n\r"]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text);
+// the operations, loaded on first use (a block can only exist once they are loaded, so everything but the first extend finds them ready)
+let ops = null, loading = null;
+const load = () => loading || (loading = import('./cellRangeOps.js').then((m) => { m.use({ cellText: (record, id) => valueText(valueAt(record, id)), announce, formatNumber }); return (ops = m); }));
+const run = (fn) => (ops ? fn(ops) : load().then(fn));   // in order: presses before the load finishes are applied one after another
 
 export function useCellRange({ enabled, model, ordered, index, onChange }) {
   const loc = useLocale();
-  const [range, setRange] = React.useState(null);
+  const [range, setRangeState] = React.useState(null);
   const told = React.useRef(false);   // onChange has been given a range: it is told when the range ends too
-  const latest = React.useRef({});
-  const trail = React.useRef(null);   // the cells the block's focus end has been on ('rowId|field'), anchor included
+  const latest = React.useRef({}), rangeRef = React.useRef(null), trail = React.useRef(null);   // trail: the cells the block's focus end has been on ('rowId|field'), anchor included
+  const setRange = (next) => { rangeRef.current = typeof next === 'function' ? next(rangeRef.current) : next; setRangeState(rangeRef.current); };
 
   // the position of each record row in the model (group rows have no cells)
   const rowAt = React.useMemo(() => {
@@ -57,50 +61,16 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
     const r = { r0: Math.min(a, f), r1: Math.max(a, f), c0: Math.min(ca, cf), c1: Math.max(ca, cf) };
     return r.r0 === r.r1 && r.c0 === r.c1 ? null : r;
   }, [enabled, range, rowAt, ordered]);
-  latest.current = { range, rect, model, ordered, index, onChange };
+  latest.current = { range, rect, model, ordered, index, onChange, rowAt };
 
-  // the block as tab-separated text; the records between the first and last row (group rows skipped), the columns between the first and last
-  const text = () => {
-    const { rect: r, model: rows, ordered: cols } = latest.current;
-    if (!r) return '';
-    const lines = [];
-    for (let i = r.r0; i <= r.r1; i += 1) {
-      const row = rows[i];
-      if (!row || !row.original) continue;
-      lines.push(cols.slice(r.c0, r.c1 + 1).map((c) => quoted(valueText(valueAt(row.original, c.id)))).join('\t'));
-    }
-    return lines.join('\n');
-  };
-  const count = () => {
-    const { rect: r, model: rows } = latest.current;
-    if (!r) return 0;
-    let rowsIn = 0;
-    for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) rowsIn += 1;
-    return rowsIn * (r.c1 - r.c0 + 1);
-  };
-  // the records between the first and last row of the block (group rows have none)
-  const rowsOf = () => {
-    const { rect: r, model: rows } = latest.current;
-    let n = 0;
-    if (r) for (let i = r.r0; i <= r.r1; i += 1) if (rows[i] && rows[i].original) n += 1;
-    return n;
-  };
-  const said = (key, n) => announce(loc.t(key, { count: n, n: formatNumber(n) }));
-
-  // how many cells are selected, once the keys pause (Shift and an arrow repeat: one announcement, not one per press)
+  // what the caller is told, and how many cells are selected once the keys pause (Shift and an arrow repeat: one announcement, not one per press)
   React.useEffect(() => {
     if (!enabled) return undefined;
     const { onChange: tell } = latest.current;
-    if (tell) {
-      if (!rect) { if (told.current) { told.current = false; tell(null); } }
-      else { told.current = true; tell({
-        from: { rowId: model[rect.r0].original[index], field: ordered[rect.c0].id },
-        to: { rowId: model[rect.r1].original[index], field: ordered[rect.c1].id },
-        cellCount: count(), rowCount: rowsOf(), columnCount: rect.c1 - rect.c0 + 1, fields: ordered.slice(rect.c0, rect.c1 + 1).map((c) => c.id)
-      }); }
-    }
-    if (!rect) return undefined;
-    const timer = setTimeout(() => said('dataGrid.cellsSelected', count()), 400);
+    if (!rect) { if (told.current) { told.current = false; if (tell) tell(null); } return undefined; }
+    if (!ops) return undefined;   // a rectangle exists only after the operations are loaded
+    if (tell) { told.current = true; tell(ops.detailsOf({ rect, model, ordered, index })); }
+    const timer = setTimeout(() => ops.said(loc, 'dataGrid.cellsSelected', ops.countOf(rect, model)), 400);
     return () => clearTimeout(timer);
   }, [rect]);   // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -108,40 +78,25 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
   if (!enabled) return none;
 
   const collapse = () => setRange((old) => (old ? null : old));
+  const text = () => (ops && rect ? ops.textOf(rect, model, ordered) : '');
   const copy = () => {
     const t = text();
     if (!t) return false;
     try { if (navigator.clipboard) navigator.clipboard.writeText(t); } catch (e) { /* the browser refused the clipboard: nothing to say */ }
-    said('dataGrid.cellsCopied', count());
+    ops.said(loc, 'dataGrid.cellsCopied', ops.countOf(rect, model));
     return true;
   };
-  // Shift with an arrow, Home or End: the focus end of the block moves, the anchor stays where the block began. The focus end is the block's own
-  // (not the cell that has DOM focus): focus follows a frame later, and keys that repeat must not start from where it still is
-  // When keyboard focus is on a cell the block never reached (moved there by script or by any means other than these keys), the block's
-  // focus end and the DOM focus disagree: the old block ends and a new one starts from the cell that has focus
+  // Shift with an arrow, Home or End (the rules are in cellRangeOps.js). The press is always taken; the block moves once the operations are loaded,
+  // from the block's own latest range (so keys that repeat before a frame has drawn still start from where the last one ended)
   const extend = ({ row, c, key, rtl, focusCell }) => {
-    const here = { key: row.id, field: c.field };
-    const cont = range && trail.current && trail.current.has(here.key + '|' + here.field) ? range : null;
-    const from = cont ? cont.focus : here;
-    const r = rowAt.get(from.key), at = ordered.findIndex((x) => x.id === from.field);
-    if (r === undefined || at < 0) return false;
-    let nr = r, nc = at;
-    if (key === 'ArrowDown') nr = r + 1;
-    else if (key === 'ArrowUp') nr = r - 1;
-    else if (key === 'ArrowLeft') nc = at + (rtl ? 1 : -1);
-    else if (key === 'ArrowRight') nc = at + (rtl ? -1 : 1);
-    else if (key === 'Home') nc = 0;
-    else if (key === 'End') nc = ordered.length - 1;
-    else return false;
-    const step = nr < r ? -1 : 1;
-    while (model[nr] && !model[nr].original) nr += step;   // a group row has no cells: skip it
-    nc = Math.max(0, Math.min(ordered.length - 1, nc));
-    if (!model[nr] || !model[nr].original || (nr === r && nc === at)) { if (range && !cont) collapse(); return true; }   // the edge: nothing moves (an old block elsewhere ends)
-    const anchor = cont ? cont.anchor : here;
-    if (!cont) trail.current = new Set([here.key + '|' + here.field]);
-    trail.current.add(model[nr].id + '|' + ordered[nc].id);
-    setRange({ anchor, focus: { key: model[nr].id, field: ordered[nc].id } });
-    focusCell(nr, nc, step);
+    run((o) => {
+      const now = latest.current, moved = o.extendTo({ range: rangeRef.current, trail: trail.current, row, c, key, rtl, rowAt: now.rowAt, model: now.model, ordered: now.ordered });
+      if (!moved) return;
+      if (moved.collapse) { collapse(); return; }
+      trail.current = moved.trail;
+      setRange(moved.range);
+      focusCell(moved.nr, moved.nc, moved.step);
+    });
     return true;
   };
   const cellClasses = (rowIndex, columnIndex) => {
@@ -150,7 +105,7 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
   };
   // what the adapter reads: the block as rows and columns of records and fields
   const read = () => {
-    if (!rect) return null;
+    if (!rect || !ops) return null;
     const rows = [];
     for (let i = rect.r0; i <= rect.r1; i += 1) if (model[i] && model[i].original) rows.push(model[i].original);
     return { rows, fields: ordered.slice(rect.c0, rect.c1 + 1).map((c) => c.id), text: text() };
