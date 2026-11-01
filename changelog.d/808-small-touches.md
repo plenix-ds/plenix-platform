@@ -1,5 +1,0 @@
-### Added
-- Rating half stars (#808): `half` shows and sets halves (3.5): a click on the first half of a star (the right half in right to left) sets the half, the arrow keys move by half a star with focus staying on the star that holds the value (named "3.5 stars"), and read-only reads "Rating: 3.5 of 5". The half is the star in the off color with the same star in the on color over its first half, clipped, so the button and its focus ring stay one box. Without `half` nothing changes.
-- Divider with a text (#808): `<Divider>or</Divider>` draws a line on each side of a short text in the middle (named by the text, one line, the muted text color; the lines and the text keep their order in right to left); a vertical divider ignores it. Tokens `divider-text-gap` and `divider-text-color` name existing roles.
-- A "Suggest" page in the design spec (#808), under Select and lookup: type-ahead built from the existing Combobox, with the iOS and Android counterparts of Autocomplete. Spec examples for half stars and the divider with text.
-- Test: `tests/rating-divider-808.test.js` (written, not run).

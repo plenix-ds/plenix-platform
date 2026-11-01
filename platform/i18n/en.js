@@ -764,6 +764,8 @@ export default {
     "empty": "Nothing to show",
     "failed": "The table could not load",
     "retry": "Retry",
+    "columnsFailed": "The column list could not open",
+    "close": "Close",
     "selectAll": "Select all rows",
     "selectRow": "Select row",
     "rowActions": "Row actions",

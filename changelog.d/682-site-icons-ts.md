@@ -1,5 +1,0 @@
-### Fixed
-- `tools/icons/site-icons.js` reads TypeScript (#682): `.ts`, `.tsx`, `.mts` and `.cts` (and `.cjs`) beside `.js`, `.jsx` and `.mjs`, with Babel's own TypeScript parser (the same icon-name rules as JavaScript). `.ts` and `.tsx` were already read; `.mts`, `.cts` and `.cjs` were not, and a name written with a TypeScript wrapper (`'folder' as const`, `x!`, `x satisfies T`, `<T>x`) was reported as a name built at run time: the wrapper is now read through. On RedSave's source (239 TypeScript files) it lists the 59 icons RedSave uses and writes a 71 KB icon file. Test: a case in `tests/site-icons.test.js` (written, not run).
-
-### Changed
-- Upgrade note: for an extension or an offline app, build your site icon file with `tools/icons/site-icons.js`; don't copy icon files. (Measured on the 0.78.0 CDN: a site file for 59 icons is 71 KB, for 316 icons about 380 KB; copying every weight and size of each Material icon is what makes an icon file megabytes.) The line is also in `platform/icons/README.md`.

@@ -340,6 +340,8 @@ export default {
     "empty": "لا يوجد شيء للعرض",
     "failed": "تعذّر تحميل الجدول",
     "retry": "إعادة المحاولة",
+    "columnsFailed": "تعذّر فتح قائمة الأعمدة",
+    "close": "إغلاق",
     "selectAll": "تحديد كل الصفوف",
     "selectRow": "تحديد الصف",
     "rowActions": "إجراءات الصف",
