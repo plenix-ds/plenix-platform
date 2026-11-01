@@ -49,7 +49,7 @@ import { FieldLayoutContext } from '../../components/Field/Field.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { ActionBar } from '../ActionBar/ActionBar.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const LAYOUTS = ['one-column', 'two-column'];
 

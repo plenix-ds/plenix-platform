@@ -38,7 +38,7 @@ import { useDescribedBy } from '../../utils/describedBy.ts';
 import { formatBytes } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AttachmentIcon from 'plenix-platform/icons/plenix/attachment';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';

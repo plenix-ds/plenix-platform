@@ -22,32 +22,32 @@
 import React from 'react';
 
 const PREFIX = 'plx-search-history:';
-const listeners = {};
-const memory = {};   // the page's copy: what storage holds, or all there is when storage is off
+const listeners: Record<string, ((items: string[]) => void)[]> = {};
+const memory: Record<string, string[]> = {};   // the page's copy: what storage holds, or all there is when storage is off
 
-const read = (key) => {
-  try { const v = JSON.parse(window.localStorage.getItem(PREFIX + key)); if (Array.isArray(v)) return v.filter((x) => typeof x === 'string'); } catch (e) { /* storage off */ }
+const read = (key: string): string[] => {
+  try { const v = JSON.parse(window.localStorage.getItem(PREFIX + key) as string); if (Array.isArray(v)) return v.filter((x) => typeof x === 'string'); } catch (e) { /* storage off */ }
   return memory[key] || [];
 };
-const write = (key, items) => { memory[key] = items; try { window.localStorage.setItem(PREFIX + key, JSON.stringify(items)); } catch (e) { /* storage off: kept for this page only */ } };
+const write = (key: string, items: string[]) => { memory[key] = items; try { window.localStorage.setItem(PREFIX + key, JSON.stringify(items)); } catch (e) { /* storage off: kept for this page only */ } };
 
-export function useSearchHistory(key, options = {}) {
+export function useSearchHistory(key: string, options: { max?: number } = {}): { items: string[]; add(query: unknown): void; remove(query: string): void; clear(): void } {
   const max = Math.max(1, Number(options.max) || 5);
-  const [items, setItems] = React.useState(() => (typeof window === 'undefined' ? [] : read(key).slice(0, max)));
+  const [items, setItems] = React.useState<string[]>(() => (typeof window === 'undefined' ? [] : read(key).slice(0, max)));
   React.useEffect(() => {
-    const mine = (next) => setItems(next.slice(0, max));
+    const mine = (next: string[]) => setItems(next.slice(0, max));
     (listeners[key] = listeners[key] || []).push(mine);
-    const fromTab = (e) => { if (e.key === PREFIX + key) mine(read(key)); };
+    const fromTab = (e: StorageEvent) => { if (e.key === PREFIX + key) mine(read(key)); };
     window.addEventListener('storage', fromTab);
     return () => { listeners[key] = (listeners[key] || []).filter((f) => f !== mine); window.removeEventListener('storage', fromTab); };
   }, [key, max]);
-  const save = React.useCallback((next) => { write(key, next); (listeners[key] || []).forEach((f) => f(next)); }, [key]);
-  const add = React.useCallback((query) => {
+  const save = React.useCallback((next: string[]) => { write(key, next); (listeners[key] || []).forEach((f) => f(next)); }, [key]);
+  const add = React.useCallback((query: unknown) => {
     const q = String(query || '').trim();
     if (!q) return;
     save([q].concat(read(key).filter((x) => x.toLowerCase() !== q.toLowerCase())).slice(0, max));
   }, [key, max, save]);
-  const remove = React.useCallback((query) => { save(read(key).filter((x) => x !== query)); }, [key, save]);
+  const remove = React.useCallback((query: string) => { save(read(key).filter((x) => x !== query)); }, [key, save]);
   const clear = React.useCallback(() => { save([]); }, [save]);
   return { items, add, remove, clear };
 }

@@ -38,59 +38,72 @@
      a traversal knows how far it went and can be undone.
 */
 import React from 'react';
-import { confirmLeave, hasUnsaved } from './UnsavedGuard.jsx';
+import { confirmLeave, hasUnsaved } from './UnsavedGuard.tsx';
+
+// a screen: its path ("/note/42"), the path's parts, the query's values and its address ("#/note/42?tab=files")
+export type Screen = { path: string; parts: string[]; params: Record<string, string>; href: string };
+export type ScreenPath = string | (string | number)[];
+export type ScreenParams = Record<string, unknown> | null | undefined;
+export type ScreenLocationOptions = { app?: string; legacy?(hash: string): ScreenPath | null | undefined };
+export type ScreenLocation = Screen & {
+  navigate(path: ScreenPath, params?: ScreenParams, options?: { replace?: boolean }): Promise<boolean>;
+  parent(path: ScreenPath, params?: ScreenParams): Promise<boolean>;
+  hrefOf(path: ScreenPath, params?: ScreenParams): string;
+};
+// what an application keeps between visits (plenix.<app>.view)
+export type ViewState = { screen?: string; [key: string]: unknown };
 
 const KEY = 'plxScreen';
-const isScreen = (hash) => !hash || hash === '#' || hash.indexOf('#/') === 0;
+const isScreen = (hash: string | null | undefined) => !hash || hash === '#' || hash.indexOf('#/') === 0;
 
-export function screenHref(path, params) {
+export function screenHref(path: ScreenPath | null | undefined, params?: ScreenParams): string {
   const parts = Array.isArray(path) ? path.map((p) => encodeURIComponent(String(p))) : String(path || '/').split('/').filter(Boolean);
   const q = new URLSearchParams();
-  Object.keys(params || {}).forEach((k) => { const v = params[k]; if (v !== undefined && v !== null && v !== '') q.append(k, String(v)); });
+  Object.keys(params || {}).forEach((k) => { const v = params![k]; if (v !== undefined && v !== null && v !== '') q.append(k, String(v)); });
   const query = q.toString();
   return '#/' + parts.join('/') + (query ? '?' + query : '');
 }
 
-export function parseScreen(hash) {
+export function parseScreen(hash: string | null | undefined): Screen {
   const h = hash && hash.indexOf('#/') === 0 ? hash.slice(1) : '/';
   const at = h.indexOf('?');
   const parts = (at >= 0 ? h.slice(0, at) : h).split('/').filter(Boolean).map((p) => { try { return decodeURIComponent(p); } catch (e) { return p; } });
-  const params = {};
+  const params: Record<string, string> = {};
   if (at >= 0) new URLSearchParams(h.slice(at + 1)).forEach((v, k) => { params[k] = v; });
   return { path: '/' + parts.join('/'), parts, params, href: screenHref(parts, params) };
 }
 
 /* ── the view state: plenix.<app>.view ── */
-const viewKey = (app) => 'plenix.' + app + '.view';
-export function readView(app) {
-  try { const v = JSON.parse(localStorage.getItem(viewKey(app))); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; }
+const viewKey = (app: string) => 'plenix.' + app + '.view';
+export function readView(app: string): ViewState {
+  try { const v = JSON.parse(localStorage.getItem(viewKey(app)) as string); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; }
 }
-function writeView(app, patch) {
+function writeView(app: string, patch: ViewState) {
   try { localStorage.setItem(viewKey(app), JSON.stringify(Object.assign(readView(app), patch))); } catch (e) { /* not stored: it lasts for this visit */ }
 }
 
-export function useViewState(app) {
+export function useViewState(app: string): [ViewState, (patch: ViewState | ((view: ViewState) => ViewState)) => void] {
   const [view, setView] = React.useState(() => readView(app));
-  const update = React.useCallback((patch) => {
+  const update = React.useCallback((patch: ViewState | ((view: ViewState) => ViewState)) => {
     setView((v) => { const p = typeof patch === 'function' ? patch(v) : patch; writeView(app, p); return Object.assign({}, v, p); });
   }, [app]);
   return [view, update];
 }
 
 /* ── the page's screen: one per page, shared by every component that asks ── */
-let current = null;      // the screen shown: parseScreen(…)
+let current: Screen | null = null;      // the screen shown: parseScreen(…)
 let at = 0;              // the place of the current entry in this tab's history (history.state.plxScreen)
-const trail = [];        // trail[i]: the screen of entry i, as far as this page knows
-let app = null;          // the application whose last screen is kept
-let undoTo = null;       // a traversal being undone: the entry it returns to
+const trail: string[] = [];        // trail[i]: the screen of entry i, as far as this page knows
+let app: string | null = null;          // the application whose last screen is kept
+let undoTo: number | null = null;       // a traversal being undone: the entry it returns to
 let passing = false;     // the person chose Leave: the next traversal goes through
-const subscribers = new Set();
+const subscribers = new Set<(screen: Screen) => void>();
 
-const urlOf = (href) => location.pathname + location.search + href;
-const placeOf = (state) => (state && typeof state[KEY] === 'number' ? state[KEY] : null);
-const tag = (i) => { try { history.replaceState(Object.assign({}, history.state, { [KEY]: i }), '', location.href); } catch (e) { /* no history API */ } };
+const urlOf = (href: string) => location.pathname + location.search + href;
+const placeOf = (state: { [key: string]: unknown } | null): number | null => (state && typeof state[KEY] === 'number' ? state[KEY] as number : null);
+const tag = (i: number) => { try { history.replaceState(Object.assign({}, history.state, { [KEY]: i }), '', location.href); } catch (e) { /* no history API */ } };
 
-function show(next, i) {
+function show(next: Screen, i: number) {
   at = i;
   trail[i] = next.href;
   if (current && next.href === current.href) return;
@@ -99,7 +112,7 @@ function show(next, i) {
   subscribers.forEach((f) => f(next));
 }
 
-function start(options) {
+function start(options: ScreenLocationOptions) {
   if (current) { if (options.app && !app) app = options.app; return; }
   app = options.app || null;
   const hash = location.hash;
@@ -123,14 +136,14 @@ function onTraverse() {
   if (undoTo !== null) { if (place === undoTo) undoTo = null; return; }
   const to = place === null ? at + 1 : place;   // an entry the browser added (a link) comes after this one
   if (place === null) tag(to);
-  if (!isScreen(location.hash)) { at = to; trail[to] = current.href; return; }   // #main and the like: the same screen
+  if (!isScreen(location.hash)) { at = to; trail[to] = current!.href; return; }   // #main and the like: the same screen
   const next = parseScreen(location.hash);
-  if (next.href === current.href) { at = to; trail[to] = next.href; return; }
+  if (next.href === current!.href) { at = to; trail[to] = next.href; return; }
   if (passing || !hasUnsaved(next)) { passing = false; show(next, to); return; }
   // unsaved work: the page stays where it was while the question is open (the move is undone), and Leave redoes it
   const from = at;
   if (to === from) {   // nothing to undo: put the address of the shown screen back if the person stays
-    confirmLeave(next).then((ok) => { if (ok) show(next, to); else history.replaceState(history.state, '', urlOf(current.href)); });
+    confirmLeave(next).then((ok) => { if (ok) show(next, to); else history.replaceState(history.state, '', urlOf(current!.href)); });
     return;
   }
   undoTo = from;
@@ -138,10 +151,10 @@ function onTraverse() {
   confirmLeave(next).then((ok) => { if (ok) { passing = true; history.go(to - from); } });
 }
 
-export function navigate(path, params, options) {
+export function navigate(path: ScreenPath, params?: ScreenParams, options?: { replace?: boolean }): Promise<boolean> {
   start({});
   const next = parseScreen(screenHref(path, params));
-  if (next.href === current.href) return Promise.resolve(true);
+  if (next.href === current!.href) return Promise.resolve(true);
   return confirmLeave(next).then((ok) => {
     if (!ok) return false;
     if (options && options.replace) history.replaceState(Object.assign({}, history.state, { [KEY]: at }), '', urlOf(next.href));
@@ -151,19 +164,19 @@ export function navigate(path, params, options) {
   });
 }
 
-export function goToParent(path, params) {
+export function goToParent(path: ScreenPath, params?: ScreenParams): Promise<boolean> {
   start({});
   const href = parseScreen(screenHref(path, params)).href;
   if (at > 0 && trail[at - 1] === href) { history.back(); return Promise.resolve(true); }
   return navigate(path, params);
 }
 
-export function useScreenLocation(options) {
+export function useScreenLocation(options?: ScreenLocationOptions): ScreenLocation {
   start(options || {});
-  const [loc, setLoc] = React.useState(current);
+  const [loc, setLoc] = React.useState(current as Screen);
   React.useEffect(() => {
     subscribers.add(setLoc);
-    if (loc !== current) setLoc(current);
+    if (loc !== current) setLoc(current!);
     return () => { subscribers.delete(setLoc); };
   }, []);
   return React.useMemo(() => Object.assign({}, loc, { navigate, parent: goToParent, hrefOf: screenHref }), [loc]);

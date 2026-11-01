@@ -2,7 +2,7 @@
 //   node tests/anchor-811.test.js   → ANCHOR_811_OK
 // Cases, in left to right and right to left, with the sections in a scrolling region and in the page: the navigation is named (the catalog's
 //   "On this page", Arabic في هذه الصفحة) and each section is a link to its id (a subsection is a nested list); the first section is current
-//   at the top; scrolling a section to the top makes it current (one aria-current="location" at a time); at the end of a scrollable region the last section
+//   at the top, and that first reading does not call onChange (the fixture leaves room after the last section, so each one can reach the top); scrolling a section to the top makes it current (one aria-current="location" at a time); at the end of a scrollable region the last section
 //   is current and back at the top the first again; pressing a link scrolls to the section, moves focus to it (it takes tabindex -1), marks it
 //   current, tells onChange, and leaves the page's address alone; Tab then Enter does the same; a section whose element is missing does nothing;
 //   the target's scroll margin counts (a page section sits at its margin from the top); and the rows are NavList's: the current one has the selected fill.
@@ -30,6 +30,8 @@ const NAMES = { ltr: ['Before you upload', 'Uploading files', 'Tags and metadata
           window.__root && window.__root.unmount(); window.__log = []; document.querySelector('main').innerHTML = '<div id="c" style="padding:16px"></div>';
           const h = React.createElement, ids = ['s1', 's2', 's3', 's4'], body = [];
           ids.forEach((id, i) => { body.push(h('h3', { id, key: 'h' + i, style: { scrollMarginBlockStart: mode === 'page' ? '12px' : '0px' } }, names[i])); for (let j = 0; j < 6; j++) body.push(h('p', { key: 'p' + i + j }, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.')); });
+          // room after the last section, so every section, the last ones too, can reach the top before the end of the scroll
+          body.push(h('div', { key: 'end', style: { blockSize: mode === 'region' ? 320 : '100vh' } }));
           const App = () => {
             const area = React.useRef(null);
             const items = [{ id: 's1', label: names[0] }, { id: 's2', label: names[1], children: [{ id: 's3', label: names[2] }] }, { id: 's4', label: names[3] }, { id: 'missing', label: 'Not on the page' }];

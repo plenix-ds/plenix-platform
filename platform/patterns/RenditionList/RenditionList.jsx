@@ -17,7 +17,7 @@ import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { DownloadButton } from '../../components/DownloadButton/DownloadButton.jsx';
 import { Menu,MenuItem } from '../../components/Menu/Menu.jsx';
 import { formatBytes } from '../../utils/format.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
 export function RenditionList({items=[],variant='table',strings,className}){
   devWarn('RenditionList', { variant }, { variant: ['table','menu'] });

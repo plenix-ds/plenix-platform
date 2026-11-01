@@ -48,7 +48,7 @@ import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints, ChartPatterns, patternFill } from './a11y.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 import EdRecenterIcon from 'plenix-platform/icons/plenix/ed-recenter';
 import EdZoomInIcon from 'plenix-platform/icons/plenix/ed-zoom-in';
 import EdZoomOutIcon from 'plenix-platform/icons/plenix/ed-zoom-out';

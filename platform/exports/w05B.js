@@ -8,4 +8,4 @@ export { Spotlight } from '../components/Spotlight/Spotlight.jsx';
 export { MenuRadioGroup } from '../components/Menu/Menu.jsx';
 export { MenuSub } from '../components/Menu/Menu.jsx';
 export { ContextMenu } from '../components/Menu/Menu.jsx';
-export { usePrint } from '../hooks/usePrint.js';
+export { usePrint } from '../hooks/usePrint.ts';

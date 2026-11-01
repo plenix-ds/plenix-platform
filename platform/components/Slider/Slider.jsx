@@ -39,8 +39,8 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { gridPx } from '../../utils/grid.ts';
-import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const MAX_STEP_MARKS = 12;
 

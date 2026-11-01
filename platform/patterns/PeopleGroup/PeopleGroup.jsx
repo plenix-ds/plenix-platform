@@ -38,7 +38,7 @@ import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
 import { fill } from '../../utils/fill.ts';
 

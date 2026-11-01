@@ -43,29 +43,35 @@ import { isRtl } from '../utils/direction.ts';
 
 export const VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
 
+export type VirtualAxis = 'x' | 'y';
+export type VirtualSegment = { key: string; index: number; gap?: undefined; count?: undefined } | { key: string; gap: true; count: number; index?: undefined };
+export type VirtualGapProps = { count: number; axis?: VirtualAxis };
+export type VirtualProbeProps = { axis?: VirtualAxis };
+export type VirtualizerOptions = { count?: number; mode?: 'fixed' | 'measured'; axis?: VirtualAxis; grid?: boolean; overscan?: number; sticky?: number[] };
+
 // a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
-export function gapPieces(count) {
-  const out = [];
+export function gapPieces(count: number): number[] {
+  const out: number[] = [];
   let n = Math.max(0, Math.floor(count));
   for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) { out.push(p); n -= p; }
   return out;
 }
 
-export function VirtualGap({ count, axis = 'y' }) {
+export function VirtualGap({ count, axis = 'y' }: VirtualGapProps) {
   if (!count) return null;
   return React.createElement('div', { className: 'plx-virtual-gap', 'data-plx-axis': axis, 'aria-hidden': 'true' },
     gapPieces(count).map((p, i) => React.createElement('div', { key: i, className: 'plx-virtual-gap__piece', 'data-plx-axis': axis, 'data-plx-span': String(p) })));
 }
 
-export function VirtualProbe({ axis = 'y' }) {
+export function VirtualProbe({ axis = 'y' }: VirtualProbeProps) {
   return React.createElement('div', { className: 'plx-virtual-probe', 'data-plx-axis': axis, 'data-plx-virtual-probe': '', 'aria-hidden': 'true' });
 }
 
-export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = false, overscan = 4, sticky } = {}) {
-  const viewportRef = React.useRef(null);
+export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = false, overscan = 4, sticky }: VirtualizerOptions = {}) {
+  const viewportRef = React.useRef<HTMLElement>(null);
   const [view, setView] = React.useState({ offset: 0, size: 0, pitch: 0, columns: 1 });
   const [focused, setFocused] = React.useState(-1);
-  const sizes = React.useRef(new Map());   // measured mode: index → size along the axis
+  const sizes = React.useRef(new Map<number, number>());   // measured mode: index → size along the axis
   const shown = React.useRef({ start: 0, end: 0 });   // the rows rendered last
   const horizontal = axis === 'x';
 
@@ -73,11 +79,11 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
   const measure = React.useCallback(() => {
     const el = viewportRef.current;
     if (!el) return;
-    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
+    const probe = el.querySelector<HTMLElement>(':scope > [data-plx-virtual-probe]');
     const pitch = probe ? (horizontal ? probe.offsetWidth : probe.offsetHeight) : 0;
     let columns = 1;
     if (grid) {
-      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
+      const items = el.querySelectorAll<HTMLElement>(':scope > [data-plx-virtual-index]');
       if (items.length) {
         const top = items[0].offsetTop;
         let n = 0;
@@ -87,7 +93,7 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
       }
     }
     if (mode === 'measured') {
-      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach((it) => {
+      el.querySelectorAll<HTMLElement>(':scope > [data-plx-virtual-index]').forEach((it) => {
         sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
       });
     }
@@ -103,8 +109,8 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
     // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
     if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
     const onScroll = () => measure();
-    const onFocus = (e) => { const it = e.target.closest && e.target.closest('[data-plx-virtual-index]'); setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1); };
-    const onBlur = (e) => { if (!el.contains(e.relatedTarget)) setFocused(-1); };
+    const onFocus = (e: FocusEvent) => { const it = (e.target as Element).closest && (e.target as Element).closest('[data-plx-virtual-index]'); setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1); };
+    const onBlur = (e: FocusEvent) => { if (!el.contains(e.relatedTarget as Node | null)) setFocused(-1); };
     el.addEventListener('scroll', onScroll, { passive: true });
     el.addEventListener('focusin', onFocus);
     el.addEventListener('focusout', onBlur);
@@ -119,7 +125,7 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
   // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
   // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
   // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
-  let first;
+  let first: number;
   const last = shown.current;
   if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
     let pos = last.start * pitch, i = last.start;
@@ -139,16 +145,16 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
   shown.current = { start: startRow, end: endRow };
 
   // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
-  const pinned = [];
+  const pinned: number[] = [];
   if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
   const header = (sticky || []).filter((i) => i < start).sort((a, b) => b - a)[0];
   if (header !== undefined && !grid) pinned.push(header);
 
-  const segments = [];
+  const segments: VirtualSegment[] = [];
   const rowsOut = [...new Set(pinned)].filter((r) => r < startRow || r >= endRow).sort((a, b) => a - b);
   let at = 0;
-  const pushRows = (from, to) => { for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({ key: 'i' + i, index: i }); };
-  const pushGap = (from, to) => { if (to > from) segments.push({ key: 'g' + from, gap: true, count: to - from }); };
+  const pushRows = (from: number, to: number) => { for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({ key: 'i' + i, index: i }); };
+  const pushGap = (from: number, to: number) => { if (to > from) segments.push({ key: 'g' + from, gap: true, count: to - from }); };
   rowsOut.filter((r) => r < startRow).forEach((r) => { pushGap(at, r); pushRows(r, r + 1); at = r + 1; });
   pushGap(at, startRow);
   pushRows(startRow, endRow);
@@ -156,8 +162,8 @@ export function useVirtualizer({ count = 0, mode = 'fixed', axis = 'y', grid = f
   rowsOut.filter((r) => r >= endRow).forEach((r) => { pushGap(at, r); pushRows(r, r + 1); at = r + 1; });
   pushGap(at, rows);
 
-  const itemProps = React.useCallback((index) => ({ 'data-plx-virtual-index': index, 'aria-posinset': index + 1, 'aria-setsize': count }), [count]);
-  const scrollToIndex = React.useCallback((index) => {
+  const itemProps = React.useCallback((index: number) => ({ 'data-plx-virtual-index': index, 'aria-posinset': index + 1, 'aria-setsize': count }), [count]);
+  const scrollToIndex = React.useCallback((index: number) => {
     const el = viewportRef.current;
     if (!el) return;
     const offset = Math.floor(index / columns) * pitch;

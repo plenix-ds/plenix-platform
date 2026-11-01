@@ -28,7 +28,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Notice } from '../Notice/Notice.jsx';
 import { Link } from '../Link/Link.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 
 export function ErrorSummary({ errors = [], title, headingLevel = 2, autoFocus = true, strings, className, ...rest }) {

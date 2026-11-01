@@ -10,8 +10,8 @@
        are subsections, the same shape, one level
      label: the accessible name of the navigation (default "On this page", strings.label)
      scrollRef: a ref to the scrolling region the sections are in (default: the page)
-     value: the id of the current section (controlled); without it the current section follows the scroll
-     onChange(id): runs when the current section changes, by scrolling or by a choice
+     value: a string or null: the id of the current section (controlled; null when none is); without it the current section follows the scroll
+     onChange(id): runs when the current section changes, by scrolling or by a choice; not for the first reading when it is drawn
      strings: the words it shows and announces, for other languages: { label: "On this page" }
      className: more classes on the navigation
    Behavior:
@@ -26,7 +26,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const flatten = (items, out = []) => { items.forEach((it) => { out.push(it); if (it.children) flatten(it.children, out); }); return out; };
@@ -39,9 +39,10 @@ export function Anchor({ items = [], label, scrollRef, value, onChange, strings,
   const [own, setOwn] = React.useState(null);
   const controlled = value !== undefined;
   const current = controlled ? value : own;
-  const now = React.useRef(current), change = React.useRef(onChange), until = React.useRef(0), measureNow = React.useRef(null);
+  const now = React.useRef(current), change = React.useRef(onChange), until = React.useRef(0), measureNow = React.useRef(null), mounted = React.useRef(false);
   now.current = current; change.current = onChange;
-  const set = (id) => { if (id === now.current) return; now.current = id; if (!controlled) setOwn(id); if (change.current) change.current(id); };
+  // quiet: the first reading when it is drawn sets the current section without telling onChange (it is not a change)
+  const set = (id, quiet) => { if (id === now.current) return; now.current = id; if (!controlled) setOwn(id); if (change.current && !quiet) change.current(id); };
   const flat = flatten(items), ids = flat.map((i) => i.id).join('|');
   const pageOf = () => (nav.current && nav.current.ownerDocument) || document;
 
@@ -49,7 +50,7 @@ export function Anchor({ items = [], label, scrollRef, value, onChange, strings,
     const area = scrollRef && scrollRef.current, doc = pageOf(), view = doc.defaultView || window;
     const scroller = area || view;
     let frame = 0;
-    const measure = () => {
+    const measure = (quiet) => {
       frame = 0;
       if (performance.now() < until.current) return;
       const top = area ? area.getBoundingClientRect().top : 0;
@@ -59,13 +60,13 @@ export function Anchor({ items = [], label, scrollRef, value, onChange, strings,
       there.forEach((x) => { const margin = parseFloat(view.getComputedStyle(x.el).scrollMarginTop) || 0; if (x.el.getBoundingClientRect().top <= top + margin + 1) found = x.id; });
       const atEnd = area ? area.scrollTop + area.clientHeight >= area.scrollHeight - 1 : view.innerHeight + view.scrollY >= doc.documentElement.scrollHeight - 1;
       const scrolled = area ? area.scrollTop > 0 : view.scrollY > 0;   // a page too short to scroll does not jump to its last section
-      set(atEnd && scrolled ? there[there.length - 1].id : found);
+      set(atEnd && scrolled ? there[there.length - 1].id : found, quiet === true);
     };
-    measureNow.current = measure;
+    measureNow.current = () => measure();
     const onScroll = () => { if (!frame) frame = view.requestAnimationFrame(measure); };
     scroller.addEventListener('scroll', onScroll, { passive: true });
     view.addEventListener('resize', onScroll);
-    measure();
+    if (!mounted.current) { mounted.current = true; measure(true); } else measure();
     return () => { scroller.removeEventListener('scroll', onScroll); view.removeEventListener('resize', onScroll); if (frame) view.cancelAnimationFrame(frame); measureNow.current = null; };
   }, [ids, scrollRef]);   // eslint-disable-line react-hooks/exhaustive-deps
 

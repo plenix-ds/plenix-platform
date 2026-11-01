@@ -54,7 +54,7 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Toolbar } from '../../components/Toolbar/Toolbar.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { BarActions, foldOrder } from '../CommandBar/BarActions.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);

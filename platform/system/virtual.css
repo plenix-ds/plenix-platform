@@ -1,5 +1,5 @@
 /* Plenix · Virtualization (platform/system/virtual.css): the stand-ins for the items useVirtualizer does not render
-   (hooks/useVirtualizer.js). A run of items is a gap made of pieces of 1, 2, 4 … 1048576 items; each piece is one rule
+   (hooks/useVirtualizer.ts). A run of items is a gap made of pieces of 1, 2, 4 … 1048576 items; each piece is one rule
    here (data-plx-span: the piece's length), drawn along its axis (data-plx-axis, on the gap and each piece), sized in items of --plx-sys-virtual-item-size plus --plx-sys-virtual-item-gap, the size the
    container's stylesheet gives its items. No style is written by script. */
 .plx-virtual-gap{flex-grow:0;flex-shrink:0;grid-column-end:-1;grid-column-start:1;pointer-events:none;}

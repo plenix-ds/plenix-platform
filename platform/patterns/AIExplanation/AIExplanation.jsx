@@ -12,6 +12,6 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { ConfidenceIndicator } from '../../components/ConfidenceIndicator/ConfidenceIndicator.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AIExplanation({summary,factors=[],confidence,label,title,open,onOpenChange,strings,className}){const t=useStrings('aiExplanation', strings);return <Popover title={title||t.title} open={open} onOpenChange={onOpenChange} closeButton strings={{close:t.close}} trigger={<Button icon={SparkleIcon}>{label||t.label}</Button>}><Stack className={cx('plx-ai-explanation',className)}><Text as="p">{summary}</Text>{factors.length?<Stack as="ul">{factors.map(f=><Text as="li" key={f.id}><Text variant="strong">{f.label}</Text>{f.detail?' — '+f.detail:null}</Text>)}</Stack>:null}{confidence?<ConfidenceIndicator {...confidence}/>:null}</Stack></Popover>;}

@@ -15,7 +15,7 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Persona } from '../Persona/Persona.jsx';
 import { Time } from '../Time/Time.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 export function Comment({author={},body='',time,own=false,edited=false,resolved=false,reactions=[],onEdit,onResolve,onReact,strings,className,...rest}) {

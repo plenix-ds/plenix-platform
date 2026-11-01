@@ -35,51 +35,72 @@
      Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
      unmodified components keep their existing defaults. Catalog translations are application-owned. */
 import React from 'react';
-import { DirectionProvider } from './DirectionProvider.jsx';
+import { DirectionProvider } from './DirectionProvider.tsx';
 import { directionOf } from '../utils/direction.ts';
 import * as F from '../utils/format.ts';
+import type { Direction } from '../utils/direction.ts';
+import type { Digits } from '../utils/format.ts';
 import english from '../i18n/en.js';
 import arabic from '../i18n/ar.js';
 
-// Plenix's own words in other languages: used after the application's catalog for the same language, before English
-const BUILT_IN = { ar: arabic };
-
-const canonical = (value, fallback = 'en') => { try { return Intl.getCanonicalLocales(value || fallback)[0] || fallback; } catch (e) { return fallback; } };
-const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
-const messageAt = (catalog, key) => {
-  if (own(catalog, key)) return catalog[key];
-  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+// a catalog: messages by key (flat dot keys or nested sections); a message is a text, a number or a plural object
+export type Catalog = { [key: string]: unknown };
+export type Values = Record<string, unknown>;
+export type TranslateOptions = { ordinal?: boolean };
+export type Translator = {
+  locale: string; dir: Direction;
+  t(key: string, values?: Values, options?: TranslateOptions): string;
+  strings(section: string, values?: Values): Record<string, string>;
+  plural(count: unknown, options?: TranslateOptions): Intl.LDMLPluralRule;
+  section(name: string): Catalog;
 };
-const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+// the bound format helpers: each takes the helper's own arguments, then its options (the locale and time zone are set)
+export type BoundFormat = Record<keyof typeof FORMATTERS, (...args: unknown[]) => string>;
+export type LocaleValue = Translator & { digits?: Digits; format: BoundFormat };
+export type LocaleProviderProps = {
+  locale?: string; catalogs?: Record<string, Catalog>; messages?: Catalog; fallbackLocale?: string; timeZone?: string;
+  dir?: Direction; digits?: 'auto' | Digits; root?: boolean; children?: React.ReactNode;
+};
+
+// Plenix's own words in other languages: used after the application's catalog for the same language, before English
+const BUILT_IN: Record<string, Catalog> = { ar: arabic };
+
+const canonical = (value: string | null | undefined, fallback = 'en'): string => { try { return Intl.getCanonicalLocales(value || fallback)[0] || fallback; } catch (e) { return fallback; } };
+const own = (value: unknown, key: string) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog: unknown, key: string): unknown => {
+  if (own(catalog, key)) return (catalog as Catalog)[key];
+  return String(key).split('.').reduce((node: unknown, part) => own(node, part) ? (node as Catalog)[part] : undefined, catalog);
+};
+const text = (message: unknown, values: Values) => String(message).replace(/\{(\w+)\}/g, (match, key: string) => own(values, key) ? String(values[key]) : match);
 
 // a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
 // with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
 const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
-const pluralMessage = (v) => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every((k) => PLURAL_KEY.test(k));
+const pluralMessage = (v: unknown) => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v as Catalog).every((k) => PLURAL_KEY.test(k));
 
-export function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+export function createTranslator(locale = 'en', catalogs: Record<string, Catalog> | null = {}, fallbackLocale = 'en'): Translator {
   const language = canonical(locale), fallback = canonical(fallbackLocale);
   const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
   const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.flatMap((key) => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(english);
+  const sources: Catalog[] = chain.flatMap((key) => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(english);
   const cardinal = new Intl.PluralRules(language), ordinal = new Intl.PluralRules(language, { type: 'ordinal' });
-  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
-  const choose = (value, values, options) => {
+  const plural = (count: unknown, options: TranslateOptions = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value: unknown, values: Values, options: TranslateOptions) => {
     if (typeof value === 'string' || typeof value === 'number') return text(value, values);
     if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
     const exact = '=' + Number(values.count), category = plural(values.count, options);
-    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    const item = own(value, exact) ? (value as Catalog)[exact] : (value as Catalog)[category] !== undefined ? (value as Catalog)[category] : (value as Catalog).other;
     return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
   };
-  const t = (key, values = {}, options = {}) => {
+  const t = (key: string, values: Values = {}, options: TranslateOptions = {}) => {
     for (const source of sources) { const result = choose(messageAt(source, key), values, options); if (result !== undefined) return result; }
     return String(key);
   };
-  const strings = (section, values = {}) => {
-    const keys = new Set();
+  const strings = (section: string, values: Values = {}) => {
+    const keys = new Set<string>();
     sources.forEach((source) => {
       const node = messageAt(source, section);
-      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach((key) => keys.add(key));
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node as Catalog).forEach((key) => keys.add(key));
       Object.keys(source).filter((key) => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach((key) => keys.add(key.slice(section.length + 1)));
     });
     return Object.fromEntries([...keys].map((key) => [key, t(section + '.' + key, values)]));
@@ -87,27 +108,27 @@ export function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 
   // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
   // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
   const isPlural = pluralMessage;
-  const merge = (a, b) => {
+  const merge = (a: unknown, b: unknown): unknown => {
     if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
-    const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
-    Object.keys(b).forEach((k) => { out[k] = merge(out[k], b[k]); });
+    const out = Object.assign({} as Catalog, a && typeof a === 'object' && !isPlural(a) ? a : {});
+    Object.keys(b).forEach((k) => { out[k] = merge(out[k], (b as Catalog)[k]); });
     return out;
   };
-  const section = (name) => sources.slice().reverse().reduce((acc, source) => merge(acc, messageAt(source, name)), {});
+  const section = (name: string) => sources.slice().reverse().reduce((acc: Catalog, source) => merge(acc, messageAt(source, name)) as Catalog, {});
   return { locale: language, dir: directionOf(language), t, strings, plural, section };
 }
 
-const FORMATTERS = { number: ['formatNumber', 1], unit: ['formatUnit', 2], bytes: ['formatBytes', 1], duration: ['formatDuration', 1],
+const FORMATTERS: Record<string, [keyof typeof F, number]> = { number: ['formatNumber', 1], unit: ['formatUnit', 2], bytes: ['formatBytes', 1], duration: ['formatDuration', 1],
   compact: ['formatCompact', 1], date: ['formatDate', 1], time: ['formatTime', 1], dateTime: ['formatDateTime', 1], relative: ['formatRelative', 1],
   range: ['formatRange', 2], currency: ['formatCurrency', 2], percent: ['formatPercent', 1], list: ['formatList', 1],
   personName: ['formatPersonName', 1], address: ['formatAddress', 1], phone: ['formatPhone', 1], regionName: ['regionName', 1] };
-const bind = (locale, timeZone, digits) => { const tag = F.numeralLocale(locale, digits); return Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) =>
-  [name, (...args) => F[fn](...Array.from({ length: count }, (_, index) => args[index]), Object.assign({ locale: tag, timeZone }, args[count]))])); };
-const LocaleContext = React.createContext(null);
+const bind = (locale: string, timeZone?: string, digits?: string): BoundFormat => { const tag = F.numeralLocale(locale, digits); return Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) =>
+  [name, (...args: unknown[]) => (F[fn] as (...a: unknown[]) => string)(...Array.from({ length: count }, (_, index) => args[index]), Object.assign({ locale: tag, timeZone }, args[count]))])) as BoundFormat; };
+const LocaleContext = React.createContext<LocaleValue | null>(null);
 
-export function LocaleProvider({ locale, catalogs, messages, fallbackLocale = 'en', timeZone, dir, digits = 'auto', root = false, children }) {
+export function LocaleProvider({ locale, catalogs, messages, fallbackLocale = 'en', timeZone, dir, digits = 'auto', root = false, children }: LocaleProviderProps) {
   const language = canonical(locale || F.formatLocale());
-  const value = React.useMemo(() => {
+  const value = React.useMemo((): LocaleValue => {
     const sources = Object.assign({}, catalogs, messages ? { [language]: messages } : {});
     return Object.assign(createTranslator(language, sources, fallbackLocale), { dir: dir || directionOf(language), digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)), format: bind(language, timeZone, digits === 'auto' ? undefined : digits) });
   }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
@@ -116,12 +137,12 @@ export function LocaleProvider({ locale, catalogs, messages, fallbackLocale = 'e
 
 // a component's words (owner, arabic-words-37): its section of the catalogs for the locale, with the component's strings
 // prop on top (an app's own words still win). useStrings('pagination', strings) -> { label, range, previous, … }
-export function useStrings(name, strings) {
+export function useStrings(name: string, strings?: Catalog | null): Catalog {
   const loc = useLocale();
   return React.useMemo(() => {
     const base = loc.section(name);
     if (!strings) return base;
-    const out = Object.assign({}, base);
+    const out: Catalog = Object.assign({}, base);
     Object.keys(strings).forEach((k) => {
       const v = strings[k], b = base[k];
       out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
@@ -130,15 +151,15 @@ export function useStrings(name, strings) {
   }, [loc, name, strings]);
 }
 
-export function useLocale() {
+export function useLocale(): LocaleValue {
   const value = React.useContext(LocaleContext);
   const language = canonical(F.formatLocale());
-  const fallback = React.useMemo(() => Object.assign(createTranslator(language), { format: bind(language) }), [language]);
+  const fallback = React.useMemo((): LocaleValue => Object.assign(createTranslator(language), { format: bind(language) }), [language]);
   return value || fallback;
 }
 
 // the digits the text around uses ("arab" or "latn"): the nearest LocaleProvider's, else the page's language (cheap: no translator is built)
-export function useDigits() {
+export function useDigits(): Digits | undefined {
   const value = React.useContext(LocaleContext);
   return value ? value.digits : F.digitsOf(F.formatLocale());
 }

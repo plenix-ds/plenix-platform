@@ -16,7 +16,7 @@ import { MediaViewer } from '../../components/MediaViewer/MediaViewer.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function AssetGallery({ items = [], layout = 'masonry', size = 'md', lightbox = false, onOpen, label, strings, className }) {
   devWarn('AssetGallery', { size }, { size: ['xs','sm','md','lg'] });

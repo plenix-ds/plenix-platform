@@ -43,7 +43,7 @@ import { snapToGrid } from '../utils/grid.ts';
 import { ChartFrame } from './ChartFrame.jsx';
 import { useChartInteraction } from './interaction.js';
 import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const INTERACTION = { hint: 'Use the arrow keys to move through the tree.', hintSelect: ' Enter folds or opens a branch.', selected: '{text}' };
 const ORIENTATIONS = ['left-to-right', 'top-to-bottom'];

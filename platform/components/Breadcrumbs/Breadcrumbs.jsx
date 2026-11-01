@@ -17,7 +17,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Breadcrumbs({ items = [], label, className }) {
   const tw = useStrings('breadcrumbs');

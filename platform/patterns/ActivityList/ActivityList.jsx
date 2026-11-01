@@ -33,7 +33,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { dataWhenText } from '../../utils/dataText.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 // stacked lists set the meta's text in the smallest type: text inside the meta follows it (data-plx-text-follow)
 const StackedContext = React.createContext(false);

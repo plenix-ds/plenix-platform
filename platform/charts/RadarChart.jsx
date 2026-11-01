@@ -35,7 +35,7 @@ import { scaleLinear } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, withColors, legendItems, finite } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // px: the room around the web for the measures' names (on the 4px grid); the start and end sides take the longest name
 const WEB_MARGIN = { top: 24, bottom: 24 };

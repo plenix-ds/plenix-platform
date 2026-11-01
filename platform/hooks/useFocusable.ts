@@ -47,20 +47,32 @@ import React from 'react';
 import { useRovingFocus, roveTo } from '../utils/roving.ts';
 import { arrowStep } from '../utils/direction.ts';
 
+export type FocusableOptions = {
+  tabStop?: 'tab' | 'target' | 'none'; disabled?: boolean; onFocusChange?(focused: boolean, visible: boolean): void;
+  handlers?: { onFocus?(e: React.FocusEvent<HTMLElement>): void; onBlur?(e: React.FocusEvent<HTMLElement>): void };
+};
+export type FocusProps = {
+  tabIndex?: number; onFocus(e: React.FocusEvent<HTMLElement>): void; onBlur(e: React.FocusEvent<HTMLElement>): void;
+};
+export type FocusGroupOptions = {
+  orientation?: 'horizontal' | 'vertical' | 'both'; loop?: boolean; items?: string | (() => HTMLElement[]);
+  onKeyDown?(e: React.KeyboardEvent<HTMLElement>): void; ignore?(e: React.KeyboardEvent<HTMLElement>): boolean | undefined; modifiers?: boolean;
+};
+
 const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
 
-function isVisibleFocus(el) {
+function isVisibleFocus(el: Element): boolean {
   try { return el.matches(':focus-visible'); } catch (e) { return true; }   // a browser without :focus-visible shows it always
 }
 
-export function useFocusable(options = {}) {
+export function useFocusable(options: FocusableOptions = {}): { focused: boolean; focusVisible: boolean; focusProps: FocusProps } {
   const { tabStop = 'tab', disabled = false, onFocusChange, handlers = {} } = options;
   const [state, setState] = React.useState({ focused: false, visible: false });
-  const set = (focused, visible) => {
+  const set = (focused: boolean, visible: boolean) => {
     setState((s) => (s.focused === focused && s.visible === visible ? s : { focused, visible }));
     if (onFocusChange) onFocusChange(focused, visible);
   };
-  const focusProps = {
+  const focusProps: FocusProps = {
     onFocus: (e) => { if (handlers.onFocus) handlers.onFocus(e); if (e.target === e.currentTarget) set(true, isVisibleFocus(e.currentTarget)); },
     onBlur: (e) => { if (handlers.onBlur) handlers.onBlur(e); if (e.target === e.currentTarget) set(false, false); }
   };
@@ -68,25 +80,25 @@ export function useFocusable(options = {}) {
   return { focused: state.focused, focusVisible: state.focused && state.visible, focusProps };
 }
 
-export function useFocusGroup(ref, options = {}) {
+export function useFocusGroup(ref: React.RefObject<HTMLElement | null>, options: FocusGroupOptions = {}) {
   const { orientation = 'horizontal', loop = true, items: selector = ITEMS, onKeyDown, ignore, modifiers = false } = options;
-  const itemsOf = () => (typeof selector === 'function' ? selector() : ref.current
-    ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el) => el.getClientRects().length > 0 && !el.closest('[hidden]'))
+  const itemsOf = (): HTMLElement[] => (typeof selector === 'function' ? selector() : ref.current
+    ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el: HTMLElement) => el.getClientRects().length > 0 && !el.closest('[hidden]'))
     : []);
   useRovingFocus(ref, itemsOf);
   const KEYS = orientation === 'vertical' ? ['ArrowUp', 'ArrowDown'] : orientation === 'both' ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
   const groupProps = {
-    onKeyDown: (e) => {
+    onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
       if (onKeyDown) onKeyDown(e);
       if (e.defaultPrevented || (!modifiers && (e.altKey || e.ctrlKey || e.metaKey))) return;
       if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
-      const t = e.target;
+      const t = e.target as HTMLElement;
       if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
       if (ignore && ignore(e)) return;
       const list = itemsOf();
-      const i = list.indexOf(document.activeElement);
+      const i = list.indexOf(document.activeElement as HTMLElement);
       if (i < 0 || !list.length) return;
-      let n;
+      let n: number;
       if (e.key === 'Home') n = 0;
       else if (e.key === 'End') n = list.length - 1;
       else {
@@ -98,7 +110,7 @@ export function useFocusGroup(ref, options = {}) {
       e.preventDefault();
       list[n].focus();
     },
-    onFocus: (e) => { roveTo(ref, itemsOf(), e.target); }
+    onFocus: (e: React.FocusEvent<HTMLElement>) => { roveTo(ref, itemsOf(), e.target); }
   };
   return { groupProps };
 }

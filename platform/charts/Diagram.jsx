@@ -46,7 +46,7 @@ import { ChartFrame } from './ChartFrame.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
 import { graphLayers, graphNeighbors, useGraphView, directionalMove } from './NetworkGraph.jsx';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const SHAPES = ['process', 'decision', 'terminal', 'data'];
 // SVG geometry, in pixels on the 4px grid: each shape's size, the gaps between layers and across them, a group's padding

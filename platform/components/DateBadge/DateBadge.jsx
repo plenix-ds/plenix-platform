@@ -17,7 +17,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function DateBadge({ day, weekday, today = false, dateTime, className, ...rest }) {
   const t = useStrings('dateBadge');

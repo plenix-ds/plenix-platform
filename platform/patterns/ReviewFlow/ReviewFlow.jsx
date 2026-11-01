@@ -69,7 +69,7 @@ import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import english from '../../i18n/en.js';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';

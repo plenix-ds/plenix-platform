@@ -4244,6 +4244,10 @@
   --plx-comp-help-panel-gap: var(--plx-sys-space-stack-md);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-highlight-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-highlight-joined-underline-width: var(--plx-sys-border-width-medium);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-icon-tile-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-icon-tile-border-color: var(--plx-sys-border-default);
   --plx-comp-icon-tile-sm-size: var(--plx-ref-size-32px);
@@ -5461,7 +5465,6 @@
   --plx-comp-search-option-icon-text: var(--plx-sys-content-muted);
   --plx-comp-search-option-description-text: var(--plx-sys-content-subtle);
   --plx-comp-search-option-description-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-search-match-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-search-bar-width: var(--plx-ref-size-240px);
   --plx-comp-search-over-background: var(--plx-sys-surface-default);
   --plx-comp-search-over-radius: var(--plx-sys-radius-control-6px);

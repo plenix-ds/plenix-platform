@@ -29,11 +29,17 @@
 */
 import React from 'react';
 import { directionOf, getDirection } from '../utils/direction.ts';
+import type { Direction } from '../utils/direction.ts';
 
-export const DirectionContext = React.createContext(null);
+export type DirectionValue = { dir: Direction; rtl: boolean; setDir(dir: string): void };
+export type DirectionProviderProps = {
+  dir?: Direction; locale?: string; lang?: string; root?: boolean; follow?: boolean; children?: React.ReactNode;
+};
+
+export const DirectionContext = React.createContext<DirectionValue | null>(null);
 
 // follow: the page's own direction, read from <html> and kept current; it writes nothing and adds no element
-function PageDirection({ children }) {
+function PageDirection({ children }: { children?: React.ReactNode }) {
   const [page, setPage] = React.useState(() => (typeof document !== 'undefined' ? getDirection() : 'ltr'));
   React.useEffect(() => {
     const observer = new MutationObserver(() => setPage(getDirection()));
@@ -41,17 +47,17 @@ function PageDirection({ children }) {
     setPage(getDirection());
     return () => observer.disconnect();
   }, []);
-  const value = React.useMemo(() => ({ dir: page, rtl: page === 'rtl', setDir: (d) => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr') }), [page]);
+  const value = React.useMemo((): DirectionValue => ({ dir: page, rtl: page === 'rtl', setDir: (d) => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr') }), [page]);
   return <DirectionContext.Provider value={value}>{children}</DirectionContext.Provider>;
 }
 
-export function DirectionProvider({ follow = false, ...props }) {
+export function DirectionProvider({ follow = false, ...props }: DirectionProviderProps) {
   return follow ? <PageDirection>{props.children}</PageDirection> : <OwnDirection {...props} />;
 }
 
-function OwnDirection({ dir, locale, lang, root = false, children }) {
+function OwnDirection({ dir, locale, lang, root = false, children }: Omit<DirectionProviderProps, 'follow'>) {
   const wanted = dir || (locale ? directionOf(locale) : null);
-  const [own, setOwn] = React.useState(wanted);
+  const [own, setOwn] = React.useState<Direction | null>(wanted);
   React.useEffect(() => { setOwn(wanted); }, [wanted]);
   const current = own || (typeof document !== 'undefined' ? getDirection() : 'ltr');
   const language = lang || locale || undefined;
@@ -65,7 +71,7 @@ function OwnDirection({ dir, locale, lang, root = false, children }) {
       if (language) { if (before.lang == null) html.removeAttribute('lang'); else html.setAttribute('lang', before.lang); }
     };
   }, [root, current, language]);
-  const value = React.useMemo(() => ({ dir: current, rtl: current === 'rtl', setDir: (d) => setOwn(d === 'rtl' ? 'rtl' : 'ltr') }), [current]);
+  const value = React.useMemo((): DirectionValue => ({ dir: current, rtl: current === 'rtl', setDir: (d) => setOwn(d === 'rtl' ? 'rtl' : 'ltr') }), [current]);
   return (
     <DirectionContext.Provider value={value}>
       {root ? children : <div className="plx-direction" dir={current} lang={language}>{children}</div>}
@@ -73,9 +79,9 @@ function OwnDirection({ dir, locale, lang, root = false, children }) {
   );
 }
 
-export function useDirection() {
+export function useDirection(): DirectionValue {
   const ctx = React.useContext(DirectionContext);
-  const [page, setPage] = React.useState(() => (typeof document !== 'undefined' ? getDirection() : 'ltr'));
+  const [page, setPage] = React.useState<Direction>(() => (typeof document !== 'undefined' ? getDirection() : 'ltr'));
   React.useEffect(() => {
     if (ctx) return undefined;
     const observer = new MutationObserver(() => setPage(getDirection()));
@@ -83,5 +89,5 @@ export function useDirection() {
     return () => observer.disconnect();
   }, [ctx]);
   if (ctx) return ctx;
-  return { dir: page, rtl: page === 'rtl', setDir: (d) => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr') };
+  return { dir: page, rtl: page === 'rtl', setDir: (d: string) => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr') };
 }

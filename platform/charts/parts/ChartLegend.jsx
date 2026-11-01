@@ -33,7 +33,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function ChartLegend({ items = [], orientation = 'horizontal', shape = 'square', interactive = false, hidden, defaultHidden = [],
   onToggle, label, strings, className, ...rest }) {
