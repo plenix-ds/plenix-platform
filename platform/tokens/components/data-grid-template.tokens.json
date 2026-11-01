@@ -95,6 +95,16 @@
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color",
       "$description": "A card: the checkbox fill, the Checkbox's own role (the table's checkboxes keep the grid accent)."
+    },
+    "data-grid-template-check-target": {
+      "$value": "{plx-ref.control-size-28px}",
+      "$type": "dimension",
+      "$description": "A card: the height the checkbox is placed in, the Checkbox's target at the regular density (the sample's). The box sits at its top, past the padding, not at its center."
+    },
+    "data-grid-template-check-padding": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "A card: the space above the checkbox inside its target, the Checkbox's padding at the regular density (the sample's)."
     }
   }
 }

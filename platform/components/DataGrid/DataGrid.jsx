@@ -120,7 +120,8 @@
        count of records, then each record as three aligned lines (the title and the date, the subtitle and the primary value, the secondary and the tertiary)
        with the values the columns' own cells show (their render or formatter), the fields no slot takes as "Label: value" lines under the third, the selection
        checkbox at the start and the row menu at the end; nothing scrolls sideways. keyColumns, if the app gives them, are the title, the subtitle and
-       the primary value. layout="plain" is the card of before (the key values, then every other field as a labeled detail)
+       the primary value. layout="plain" is the card of before (the key values, then every other field as a labeled detail). A right-to-left phone
+       number (Arabic) needs a left-to-right mark before each space in its column's render (phone.replace(/ /g, '\u200E ')), as the sample does, or its groups read in the wrong order
      layout: "A" | "B" | "wide" | "plain" (issues 839 and 679; the row template). Unset, and without template, a grid draws "A" in its narrow card (the default of every grid; "plain" draws the old plain card; narrow="table" keeps a table). A and B are the narrow
        view's card (the table while the columns fit, else every record as a card; the switch is #679's, measured): A is three aligned lines
        (title | date, subtitle | primary, secondary | tertiary) with one vertical line down the list, for records with many fields that must line up and
