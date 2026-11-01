@@ -81,7 +81,7 @@ import { useLayer, useUid } from '../../utils/layer.ts';
 import { Icon, asIcon } from '../Icon/Icon.jsx';
 import { Portal } from '../../utils/portal.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
-import { useGesture } from '../../hooks/useGesture.js';
+import { useGesture } from '../../hooks/useGesture.ts';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 

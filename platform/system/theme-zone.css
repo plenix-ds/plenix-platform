@@ -1,5 +1,5 @@
 /* Plenix · Theme zones (platform/system/theme-zone.css). A region with its own theme, mode or accent (ThemeZone,
-   providers/ThemeProvider.jsx): its element carries data-plx-theme and data-plx-mode, so the theme's roles (themes/<name>.css)
+   providers/ThemeProvider.tsx): its element carries data-plx-theme and data-plx-mode, so the theme's roles (themes/<name>.css)
    are declared again on it and everything inside resolves to them; the zone draws its own fill and text color from them.
      <div class="plx-theme-zone plx-theme-zone--canvas" data-plx-theme="default" data-plx-mode="dark" data-plx-density="standard">…</div> */
 .plx-theme-zone{color:var(--plx-sys-content-default);color-scheme:var(--plx-sys-color-scheme,light);}

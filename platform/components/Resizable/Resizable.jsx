@@ -61,7 +61,7 @@ import { paneMax } from '../../utils/paneLimit.ts';
 import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.ts';
 import { LiveRegion } from '../../utils/announce.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 

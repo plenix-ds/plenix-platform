@@ -48,7 +48,7 @@ import { Link } from '../../components/Link/Link.jsx';
 import { List } from '../../components/List/List.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);

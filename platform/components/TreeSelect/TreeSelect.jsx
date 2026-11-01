@@ -29,6 +29,9 @@
      className: more classes on the field
      Other props pass through to the trigger <button> (aria-describedby).
    Behavior:
+     The typed text is marked in each result it matches, every occurrence, in either case, by the shared helper (utils/highlight.tsx:
+       highlightMatch; matchesText decides what is listed). Arabic matches without its vowel marks, and a match of Arabic letters is
+       underlined instead of set heavier, so the joined letters stay whole. The list is read as plain text.
      The trigger is a select-only combobox (a button with role combobox): Enter, Space or a click opens the popover;
        Escape, a click outside and Tab out close it, and focus returns to the trigger. At the Narrow window class the
        popover is a bottom Sheet (Popover's sheetOnNarrow).
@@ -44,14 +47,15 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
 import { isRtl } from '../../utils/direction.ts';
 import { Icon, asIcon, iconKey } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { SearchField } from '../SearchField/SearchField.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
@@ -75,7 +79,7 @@ const ancestors = (byId, id) => { const out = []; let at = byId.get(id); while (
 // the nodes that match the text, with the nodes above them (only their matching branches)
 function filterNodes(nodes, q) {
   return nodes.reduce((out, n) => {
-    const own = String(n.label).toLowerCase().indexOf(q) >= 0;
+    const own = matchesText(n.label, q);
     const kids = kidsOf(n) ? filterNodes(n.children, q) : [];
     if (own || kids.length) out.push(Object.assign({}, n, { children: own && !kids.length ? n.children : kids }));
     return out;
@@ -157,7 +161,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
           {multiple ? <input type="checkbox" className="plx-check__input plx-tree-select__mark" tabIndex={-1} aria-hidden="true" inert="" readOnly checked={state === 'true'}
             ref={(el) => { if (el) el.indeterminate = state === 'mixed'; }} /> : null}
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || state === 'true'))}</span> : null}
-          <span className="plx-tree__label">{n.label}</span>
+          <span className="plx-tree__label">{q ? highlightMatch(n.label, q) : n.label}</span>
         </div>
         {isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
       </li>

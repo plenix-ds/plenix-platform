@@ -10962,7 +10962,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     return { enabled, keys, count: keys.size, has: (record) => keys.has(keyOf2(record)), mark, open };
   }
   const GridPane = React$1.createContext(false);
-  function Scrollbars({ holder, viewportId }) {
+  function Scrollbars({ holder, viewportId, hideX = false }) {
     const thumbs = React$1.useRef({});
     const [sizes, setSizes] = React$1.useState({}), [drag, setDrag] = React$1.useState(null);
     React$1.useLayoutEffect(() => {
@@ -11044,7 +11044,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         className: "plx-data-grid__scroll plx-data-grid__scroll--" + axis,
         "aria-hidden": "true",
         onPointerDown: (event) => start2(event, axis),
-        "data-plx-thumb": sizes[axis] || void 0,
+        "data-plx-thumb": (axis === "x" && hideX ? null : sizes[axis]) || void 0,
         "data-plx-dragging": drag === axis ? "" : void 0
       },
       /* @__PURE__ */ React$1.createElement(
@@ -11054,7 +11054,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             thumbs.current[axis] = node;
           },
           className: "plx-data-grid__thumb plx-data-grid__thumb--" + axis,
-          "data-plx-thumb": sizes[axis] || void 0,
+          "data-plx-thumb": (axis === "x" && hideX ? null : sizes[axis]) || void 0,
           "data-plx-scroll-viewport": viewportId,
           onPointerDown: (event) => start2(event, axis)
         }
@@ -14301,7 +14301,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       changeOrder(current2);
       emit("columnMoved", api.column(field), current2.map(api.column));
     };
-    const pinnedAt = columns.findIndex((c) => c.rowLabel), pinnedIds = columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map((c) => c.field);
+    const pinnedAt = columns.findIndex((c) => c.rowLabel), pinnedIds = columns.filter((c, i) => c.frozen || props.isStatic && pinnedAt >= 0 && i <= pinnedAt).map((c) => c.field);
     const orderAt = (id) => {
       const i = (columnOrder || []).indexOf(id);
       return i < 0 ? (columnOrder || []).length + columns.findIndex((c) => c.field === id) : i;
@@ -18570,6 +18570,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     pickCheckbox,
     kindsOf,
     pinStart,
+    leadFrozen,
     editing,
     cells,
     showTypes,
@@ -18748,7 +18749,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           "div",
           {
             className: cx(
-              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
+              `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
+              leadFrozen && B + "__grid-frozen",
               modes,
               selection[row.id] && B + "__grid-cell--selected-start"
             ),
@@ -18767,11 +18769,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
           const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
           const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
+          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes("icon");
           const mods = cx(
             isStatic && B + "__value--static",
             k.includes("wrap") && B + "__value--wrap",
             sized && B + "__value--sized",
-            lines && k.includes("wrap") && B + "__value--lines"
+            lines && k.includes("wrap") && B + "__value--lines",
+            isNarrow && B + "__value--narrow"
           ) || void 0, shown = CellValue({
             block: B,
             column: c,
@@ -18799,7 +18803,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
                 onFocus: (e) => enterCut(e, row.id + "|" + c.field),
                 onPointerLeave: () => leaveCut(row.id + "|" + c.field)
               } : null,
-              dir: pinned && !isStatic || kinds(c).includes("id") ? void 0 : "auto",
+              dir: pinned && !isStatic || kinds(c).includes("id") || isNarrow ? void 0 : "auto",
               onDoubleClick: () => {
                 if (canEdit) setEditing({ key: row.id, field: c.field, value });
               },
@@ -18817,6 +18821,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
                 focusCell
               }),
               "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
+              "data-plx-label": detail ? c.title || c.field : void 0,
+              "aria-label": detail ? (c.title || c.field) + ": " + valueText(value) : void 0,
               "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? "size family weight" : "size family",
               className: cx(
                 "" + B + "__grid-cell",
@@ -18837,6 +18843,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
                 (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + "__cell--row-label",
                 k.includes("icon") && B + "__w-lead",
                 keys.includes(c.field) && B + "__cell--key",
+                detail && B + "__cell--list-detail",
                 keys[0] === c.field && B + "__cell--key-first",
                 (c.align || c.type === "bytes") && B + "__cell--align-" + (c.align || "right")
               )
@@ -20717,7 +20724,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       onRetry
     } = props;
     const showTypes = typeIconsProp ?? !isStatic;
-    const narrow = requestedNarrow === void 0 ? inPane && !isStatic ? "table" : "list" : requestedNarrow;
+    const narrow = requestedNarrow === void 0 ? isStatic ? "list" : "auto" : requestedNarrow;
     const B = isStatic ? "plx-table" : GRID;
     const S2 = useStrings("dataGrid", props.strings), initial = React$1.useMemo(() => opening(props), [storageKey]);
     const frame = React$1.useRef(null), holder = React$1.useRef(null), header = React$1.useRef(null), live = React$1.useRef({}), ready = React$1.useRef(false);
@@ -20985,6 +20992,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = virtualized ? model.slice(first, last) : model;
     const frozen = new Set(columnPinning.left), ordered2 = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
     const pinStart = (column) => (selectable ? metrics.lead : 0) + column.getStart("left");
+    const leadFrozen = frozen.size > 0 && !isNarrow;
     const widths = Object.fromEntries(ordered2.map((column) => [column.id, column.getSize()]));
     const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ["icon", "actions"].includes(kind));
     const keys = keyColumns?.length ? keyColumns : columns.filter((c) => !kinds(c).some((k) => ["icon", "actions"].includes(k)) && !c.rowHandle).slice(0, 3).map((c) => c.field);
@@ -21166,10 +21174,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           groupGap: tokenPixels("--plx-comp-data-grid-group-gap", at2)
         };
         setMetrics((old) => Object.keys(next).every((k) => next[k] === old[k]) ? old : next);
-        const threshold = narrow === "auto" ? keys.reduce(
-          (sum2, field) => sum2 + (live.current.table?.getColumn(field)?.getSize() || next.min),
-          selectable ? next.lead : 0
-        ) : tokenPixels(narrowAt, at2), want = listed && at2.clientWidth > 0 && at2.clientWidth < threshold;
+        const visible2 = live.current.table?.getVisibleLeafColumns() || [];
+        const required = visible2.reduce((sum2, column) => sum2 + (column.getSize() || next.min), 0) + (selectable ? next.lead : 0) + (rowMenu && rowMenuButton ? next.menu : 0) + (props.viewMenu ? next.lead : 0);
+        const threshold = narrow === "auto" ? required : tokenPixels(narrowAt, at2), want = listed && at2.clientWidth > 0 && at2.clientWidth < threshold;
         setNarrow(want);
         if (!isStatic && !height && mode !== "pages" && holder.current) {
           const top = holder.current.getBoundingClientRect().top, room = at2.getBoundingClientRect().bottom - top;
@@ -21198,7 +21205,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         mo.disconnect();
         if (raf) cancelAnimationFrame(raf);
       };
-    }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join("|")]);
+    }, [inPane, effectiveStep, effectiveWrap, height, narrow, narrowAt, mode, columns, keys.join("|"), JSON.stringify(autoSizing), JSON.stringify(sizing), JSON.stringify(columnVisibility), selectable, !!rowMenu, rowMenuButton, props.viewMenu]);
     React$1.useLayoutEffect(() => {
       virtual.measure();
     }, [metrics.row, metrics.line, metrics.group, metrics.groupGap, model.length, collapsed]);
@@ -21428,6 +21435,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       pickCheckbox,
       kindsOf,
       pinStart,
+      leadFrozen,
       editing,
       cells,
       showTypes,
@@ -21548,7 +21556,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             selectable ? /* @__PURE__ */ React$1.createElement(
               "div",
               {
-                className: `${B}__grid-col ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`,
+                className: cx(`${B}__grid-col ${B}__grid-row-header ${B}__w-lead`, leadFrozen && B + "__grid-frozen"),
                 role: "columnheader"
               },
               /* @__PURE__ */ React$1.createElement("div", { className: `${B}__grid-col-content ${B}__grid-col-content--row-header` }, /* @__PURE__ */ React$1.createElement(
@@ -21582,6 +21590,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             className: cx(
               `${B}__grid-tableholder`,
               height === "100%" && B + "__grid-tableholder--fill",
+              isNarrow && B + "__grid-tableholder--narrow",
               isStatic && B + "__grid-tableholder--static"
             ),
             "data-plx-height": lengthName(height),
@@ -21631,7 +21640,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered: ordered2, S: S2, setRetry })
         )
       ),
-      !isStatic ? /* @__PURE__ */ React$1.createElement(Scrollbars, { holder, viewportId }) : null,
+      !isStatic ? /* @__PURE__ */ React$1.createElement(Scrollbars, { holder, viewportId, hideX: isNarrow }) : null,
       pagesFooter({ mode, failed, B, S: S2, displayedTotal, page, pageSize, props, setPage, setPageSize, label: label2 }),
       loadMoreFooter({
         mode,

@@ -955,6 +955,11 @@
     "line-height"
    ]
   },
+  "plx-data-grid__grid-cell--narrow": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
+  },
   "plx-data-grid__grid-cell--data": {
    "contract": "establishes",
    "role": "body",
@@ -1788,6 +1793,12 @@
     "font-size",
     "font-weight",
     "line-height"
+   ]
+  },
+  "plx-match": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
    ]
   },
   "plx-media-card__meta": {
@@ -2715,12 +2726,6 @@
     "font-size"
    ]
   },
-  "plx-search__match": {
-   "contract": "adjusts",
-   "props": [
-    "font-weight"
-   ]
-  },
   "plx-search__option": {
    "contract": "adjusts",
    "props": [
@@ -2983,6 +2988,11 @@
     "font-weight",
     "line-height"
    ]
+  },
+  "plx-table__grid-cell--narrow": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
   },
   "plx-table__grid-col-content--icon": {
    "contract": "adjusts",

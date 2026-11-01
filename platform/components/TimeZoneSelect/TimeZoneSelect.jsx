@@ -44,14 +44,14 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, formatNumber } from '../../utils/format.ts';
 import { localDigits, toLatinDigits } from '../../utils/digits.ts';
-import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { useDigits } from '../../providers/LocaleProvider.tsx';
 import { Isolate } from '../Isolate/Isolate.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
-import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.tsx';
 import { Icon } from '../Icon/Icon.jsx';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // a few zones for browsers without Intl.supportedValuesOf

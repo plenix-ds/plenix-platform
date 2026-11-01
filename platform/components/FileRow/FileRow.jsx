@@ -63,7 +63,7 @@ import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { RenameAction } from '../../patterns/RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../../patterns/DeleteFlow/DeleteFlow.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
 import MoreIcon from 'plenix-platform/icons/plenix/more';

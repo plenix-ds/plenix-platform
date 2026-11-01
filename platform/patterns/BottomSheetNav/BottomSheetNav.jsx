@@ -38,7 +38,7 @@ import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { NavList } from '../../components/NavList/NavList.jsx';
 import { RowButton } from '../../components/RowButton/RowButton.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function BottomSheetNav({ open, onClose, title, items, groups, value, onSelect, layout = 'list', detent = 'medium', footer, strings, className }) {
   const t = useStrings('bottomSheetNav', strings);

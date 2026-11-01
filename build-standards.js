@@ -123,7 +123,7 @@ module.exports = function buildStandards(root, opts) {
     '   this file.',
     '   Summary: The themes a page can use. The default theme is the current Plenix look; more are added in the design system.',
     '   Usage:',
-    '     const { theme, setTheme, themes } = useTheme();   // providers/ThemeProvider.jsx',
+    '     const { theme, setTheme, themes } = useTheme();   // providers/ThemeProvider.tsx',
     '     PlenixWorkspace.setTheme("default")               // providers/theme-boot.js, before React',
     '   Props:',
     '     THEMES: [{ name, label, description }], the default theme first',

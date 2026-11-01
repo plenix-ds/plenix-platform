@@ -58,7 +58,7 @@ import { Input } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { formatBytes, formatNumber } from '../../utils/format.ts';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import EdCropIcon from 'plenix-platform/icons/plenix/ed-crop';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';

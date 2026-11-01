@@ -42,7 +42,7 @@ import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartHover, labelRoom, legendItems, finite, AXIS_TITLE_ROOM } from './chart-kit.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 const extent = (list, from0) => {
   let lo = from0 ? 0 : Infinity, hi = from0 ? 0 : -Infinity;

@@ -62,7 +62,7 @@ import { SegmentedControl } from '../../components/SegmentedControl/SegmentedCon
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';

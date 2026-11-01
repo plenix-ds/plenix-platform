@@ -1,13 +1,13 @@
 /* Plenix · DataGridEngine scrollbars
    Summary: Floating pointer scroll controls for the React-owned viewport.
    Usage: <Scrollbars holder={holderRef}/>
-   Props: A scrollable element ref.
+   Props: A scrollable element ref; hideX: no sideways control (the row cards of a narrow grid never scroll sideways, issue 679).
    Behavior: CSS scroll timelines position the token-sized thumbs; pointer dragging writes native scroll offsets.
    Notes: Browsers without timeline and anchor support retain their native scrollbars. The thumb carries its axis
      (__thumb--x, --y) and its size (data-plx-thumb) itself, so its rules need no track above it. */
 import React from 'react';
 import { isRtl } from '../../utils/direction.ts';
-export function Scrollbars({ holder, viewportId }) {
+export function Scrollbars({ holder, viewportId, hideX = false }) {
   const thumbs = React.useRef({});
   const [sizes, setSizes] = React.useState({}),
     [drag, setDrag] = React.useState(null);
@@ -106,7 +106,7 @@ export function Scrollbars({ holder, viewportId }) {
       className={'plx-data-grid__scroll plx-data-grid__scroll--' + axis}
       aria-hidden="true"
       onPointerDown={(event) => start(event, axis)}
-      data-plx-thumb={sizes[axis] || undefined}
+      data-plx-thumb={(axis === 'x' && hideX ? null : sizes[axis]) || undefined}
       data-plx-dragging={drag === axis ? '' : undefined}
     >
       <div
@@ -114,7 +114,7 @@ export function Scrollbars({ holder, viewportId }) {
           thumbs.current[axis] = node;
         }}
         className={'plx-data-grid__thumb plx-data-grid__thumb--' + axis}
-        data-plx-thumb={sizes[axis] || undefined}
+        data-plx-thumb={(axis === 'x' && hideX ? null : sizes[axis]) || undefined}
         data-plx-scroll-viewport={viewportId}
         onPointerDown={(event) => start(event, axis)}
       />

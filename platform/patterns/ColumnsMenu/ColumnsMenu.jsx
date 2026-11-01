@@ -43,7 +43,7 @@ import { Text } from '../../components/Text/Text.jsx';
 import { LiveRegion } from '../../utils/announce.tsx';
 import { PanelTrigger, toggle } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import DragIcon from 'plenix-platform/icons/plenix/drag';

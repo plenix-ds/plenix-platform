@@ -48,7 +48,7 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 import { Icon } from '../Icon/Icon.jsx';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';

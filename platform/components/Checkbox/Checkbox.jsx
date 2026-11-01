@@ -44,7 +44,7 @@
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
      RadioGroup and ChoiceList pass other props to the <fieldset>; their readOnly goes to each radio.
-     Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.jsx): it keeps its
+     Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.tsx): it keeps its
        value and focus, a click or a change key does not change it, and Checkbox and Switch are marked aria-readonly.
      Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang ("ar", "en", …) on Checkbox, Radio and Switch go on
        the row (the <label>), so the box and its text change sides together; on RadioGroup and ChoiceList they go on the
@@ -54,7 +54,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 
 export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {

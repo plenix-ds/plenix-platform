@@ -116,7 +116,7 @@ import { Spinner } from '../Loading/Loading.jsx';
 import { ProgressSteps } from '../ProgressSteps/ProgressSteps.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Textarea } from '../Input/Input.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
