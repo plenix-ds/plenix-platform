@@ -5,7 +5,7 @@ This test makes sure the choice cards work with a radio (one choice), a checkbox
 - File: `tests/control-cards-804.test.js`
 
 ## What it checks
-- Each kind is a group named by its legend, with one native control per card: a radio, a checkbox, or a checkbox with the switch role. The control is labelled by its card and described by the card's description.
+- Each kind is a group named by its legend, with one native control per card: a radio, a checkbox, or a checkbox with the switch role. The control is named by the card's label alone (not the description) and described by the card's description, so neither is read twice.
 - A click on a card's text changes its control; a disabled card ignores it.
 - Keys:
   - Space toggles a checkbox card and a switch card; the arrow keys do not move between them;

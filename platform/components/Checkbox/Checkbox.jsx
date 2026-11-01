@@ -45,10 +45,10 @@
      Switch is a checkbox with role="switch".
      The selected ChoiceList card shows the selected state.
      ChoiceList cards (issue 804): each card is the label of its native control, so the whole card is the target and the
-       control is the one focus stop, named by the card's label and described by its text. A radio card is a native radio
-       group (the arrow keys move the choice, Space chooses); a checkbox card and a switch card toggle with Space or a click
-       and have no arrow keys; a switch is the native checkbox with role="switch", announced on or off. The fieldset's
-       legend names the group for every kind. A disabled card is dimmed, has no hover, and is skipped by the keys.
+       control is the one focus stop, named by the card's label alone (aria-labelledby) and described by its description
+       (aria-describedby), so neither is read twice. A radio card is a native radio group (the arrow keys move the choice,
+       Space chooses); a checkbox card and a switch card toggle with Space or a click and have no arrow keys; a switch is
+       the native checkbox with role="switch", announced on or off. The fieldset's legend names the group for every kind. A disabled card is dimmed, has no hover, and is skipped by the keys.
    Notes:
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
@@ -115,10 +115,13 @@ export function ChoiceList({ legend, name, value, values, onChange, options, con
     <fieldset className={cx('plx-choice-list', several && 'plx-choice-list--' + kind, className)} {...rest}>
       {legend ? <legend className="plx-choice-list__legend">{legend}</legend> : null}
       {options.map((o) => {
-        const descId = o.description ? auto + '-d-' + String(o.value).replace(/[^a-zA-Z0-9_-]/g, '_') : undefined;
-        const input = readOnlyProps(locked, { name: name || auto, value: o.value, checked: on(o), disabled: o.disabled || undefined, onChange: () => change(o), 'aria-describedby': descId },
+        // the name is the card's label alone and the description its hint, so neither is read twice
+        const key = String(o.value).replace(/[^a-zA-Z0-9_-]/g, '_');
+        const labelId = auto + '-l-' + key;
+        const descId = o.description ? auto + '-d-' + key : undefined;
+        const input = readOnlyProps(locked, { name: name || auto, value: o.value, checked: on(o), disabled: o.disabled || undefined, onChange: () => change(o), 'aria-labelledby': labelId, 'aria-describedby': descId },
           { aria: kind !== 'radio' });
-        const text = <span className="plx-choice__text"><span className="plx-choice__label">{o.label}</span>{o.description ? <span id={descId} className="plx-choice__description">{o.description}</span> : null}</span>;
+        const text = <span className="plx-choice__text"><span id={labelId} className="plx-choice__label">{o.label}</span>{o.description ? <span id={descId} className="plx-choice__description">{o.description}</span> : null}</span>;
         return (
           <label key={o.value} className={cx('plx-choice', 'plx-choice--' + kind, on(o) && 'is-selected', o.disabled && 'is-disabled')} hidden={o.hidden || undefined}>
             {kind === 'switch' ? (

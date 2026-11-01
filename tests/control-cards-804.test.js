@@ -2,7 +2,7 @@
    switch inside each clickable card.
    Summary (the browser):
      each kind: a fieldset named by its legend; one native control per card (radio, checkbox, or a checkbox with
-       role="switch"), labelled by its card and described by the card's description
+       role="switch"), named by its card's label alone and described by the card's description (never read twice)
      a click anywhere on a card (its description, its label) changes the control; a disabled card ignores it
      keys: Space toggles a checkbox or a switch card and the arrows do nothing there; in a radio group the arrows move the
        choice and skip a disabled card
@@ -53,12 +53,23 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
         const fs = document.querySelector('#' + k + ' fieldset'), inputs = [...fs.querySelectorAll('input')];
         return { legend: fs.querySelector('legend').textContent, roles: inputs.map((i) => i.getAttribute('role') || i.type), inCard: inputs.every((i) => i.closest('label.plx-choice')),
           perCard: [...fs.querySelectorAll('label.plx-choice')].map((l) => l.querySelectorAll('input').length),
+          names: inputs.map((i) => { const l = document.getElementById(i.getAttribute('aria-labelledby')); return l && l.classList.contains('plx-choice__label') ? l.textContent : null; }),
           described: inputs.every((i) => { const d = document.getElementById(i.getAttribute('aria-describedby')); return d && d.textContent.endsWith(' detail'); }) };
       }));
       assert.deepEqual(s.map((x) => x.legend), ['Plan', 'Days', 'Notifications'], dir + ': each group is named by its legend');
       assert.deepEqual(s.map((x) => x.roles[0]), ['radio', 'checkbox', 'switch'], dir + ': the native control of each kind (a switch is a checkbox with role="switch")');
       assert.ok(s.every((x) => x.inCard && x.perCard.every((n) => n === 1)), dir + ': one control per card, inside the card\'s label');
       assert.ok(s.every((x) => x.described), dir + ': each control is described by its card\'s description');
+      assert.deepEqual(s.map((x) => x.names), [['Solo', 'Team', 'Parish'], ['Saturday', 'Sunday', 'Wednesday'], ['Email', 'Texts', 'Alerts']],
+        dir + ': each control is labelled by its card\'s label alone (the description is not part of the name)');
+      // the accessibility tree: the name is the label, the description is the hint, and neither repeats the other
+      const ax = [];
+      for (const kind of ['radio', 'checkbox', 'switch']) {
+        const node = await page.accessibility.snapshot({ root: await page.$(card(kind, 1) + ' input'), interestingOnly: false });
+        ax.push({ role: node.role, name: node.name, description: node.description });
+      }
+      assert.deepEqual(ax, [{ role: 'radio', name: 'Solo', description: 'Solo detail' }, { role: 'checkbox', name: 'Saturday', description: 'Saturday detail' },
+        { role: 'switch', name: 'Email', description: 'Email detail' }], dir + ': the accessible name excludes the description, which is read once, as the hint');
 
       // clicks anywhere on a card
       await page.click(card('checkbox', 1) + ' .plx-choice__description'); await pause();
