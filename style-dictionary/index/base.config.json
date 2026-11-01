@@ -1,0 +1,32 @@
+{
+  "source": [
+    "platform/tokens/reference.tokens.json",
+    "platform/tokens/reference/+([a-z0-9-]).tokens.json",
+    "platform/tokens/theme-default.tokens.json",
+    "platform/tokens/semantic.tokens.json",
+    "platform/tokens/semantic/+([a-z0-9-]).tokens.json",
+    "platform/tokens/components.tokens.json",
+    "platform/tokens/components/+([a-z0-9-]).tokens.json"
+  ],
+  "log": {
+    "warnings": "disabled",
+    "verbosity": "silent",
+    "errors": {
+      "brokenReferences": "console"
+    }
+  },
+  "platforms": {
+    "json": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/index/",
+      "files": [
+        {
+          "destination": "base.json",
+          "format": "json"
+        }
+      ]
+    }
+  }
+}
