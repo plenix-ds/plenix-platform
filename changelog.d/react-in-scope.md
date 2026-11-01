@@ -1,0 +1,3 @@
+### Fixed
+- The npm package's DataGrid (and `plenix.esm.js`) failed to draw with "React is not defined" (0.79.0): `engine/chrome.jsx` and `engine/headerRows.jsx`, split out of the engine in #714, used JSX without importing React, which only works where React is a global (the CDN script and the applications, which is why every test and probe passed). Both import React now; no other source file of the Platform uses JSX or `React.` without it.
+- `node check-bundle.js` now fails when a shipped ES module (every file of `packages/react/dist`, and `plenix.esm.js`) uses `React` without binding it (`check-system.rules/react-in-scope.js`; the parser finds the real reference, so a comment or a word in a string never counts). It fails on the 0.79.0 build and passes on this one.
