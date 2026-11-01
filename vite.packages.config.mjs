@@ -100,7 +100,7 @@ export function packageConfig(name, overrides = {}) {
     ] } : {},
     // every module, the bundled packages included, is lowered to es2019 as it is read (the old builds' target), so the
     // output needs no final esbuild pass (build.target 'esnext'): that pass drops the banner comment
-    esbuild: { include: /\.[cm]?[jt]sx?$/, exclude: [], target: 'es2019', jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },
+    esbuild: { include: /\.[cm]?[jt]sx?$/, exclude: [], charset: 'ascii', target: 'es2019', jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },
     build: Object.assign({
       outDir: b.outDir,
       emptyOutDir: false,
