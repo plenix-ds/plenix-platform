@@ -14,13 +14,14 @@
      engine function, in the same place. The engine is documented in DataGridEngine.jsx.
 */
 import React from 'react';
-import { manageDialog, failureState, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './chrome.jsx';
+import { failureState, manageFailed, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './chrome.jsx';
 import { cx } from '../../../utils/cx.ts';
 import { lengthName } from './helpers.jsx';
 import { tableKeys } from './keys.js';
 import { tokenPixels } from '../environment.js';
 import { WidthPixels, Check, Width, RowGap } from './parts.jsx';
 import { Scrollbars } from '../scrollbars.jsx';
+import { Rare } from './rare.jsx';
 
 export function gridFrame({
   widthPixels,
@@ -100,7 +101,13 @@ export function gridFrame({
 }) {
   return (
     <WidthPixels.Provider value={widthPixels}>
-      {manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility })}
+      {headerMenu && !isStatic && managing ? (
+        <Rare
+          part="manageDialog"
+          args={{ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility }}
+          fallback={(retry, from) => manageFailed({ B, S, retry, close: () => setManaging(false), from, frame })}
+        />
+      ) : null}
       <div
         ref={frame}
         className={cx(
