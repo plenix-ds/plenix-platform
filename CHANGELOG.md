@@ -13,7 +13,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ### Upgrading from 0.81.0
 1. **Narrow grids look different on purpose:** a grid that doesn't fit shows the template card (title, date, subtitle, the primary value and two more lines; extra fields as "Label: value" lines). An app that needs the old plain card passes `layout="plain"`; one that must stay a table passes `narrow="table"`.
 2. **SplitView `maxSize` no longer limits dragging side by side** (it still limits the stacked form). Nothing to change; remove it when convenient.
-3. **Nothing else to change.** Apps on the CDN loader follow this release by themselves; npm apps update the version as usual.
+3. **Time zone:** an app with a `timeZone` on LocaleProvider now gets moments in UTC from a date-time DatePicker: store them as they are. A picker that must keep the computer's zone inside such a region passes `timeZone={null}`. Apps without a `timeZone` are unchanged.
+4. **Long trees:** a Tree with over 200 visible rows now scrolls itself: give its container a height, or pass `virtualized={false}` to keep the old layout.
+5. **Nothing else to change.** ChoiceList without `control` is a radio group of cards as before (now named by each card's label alone); a hierarchy without `hasChildren` and `loadChildren` works as before. Apps on the CDN loader follow this release by themselves; npm apps update the version as usual.
 
 ### Added
 - EntityTitle (#803, idea 3 of the component study #767): a short title line for list rows and cards, where EntityHeader is too big.
