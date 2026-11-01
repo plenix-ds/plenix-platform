@@ -37,8 +37,29 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconValue } from '../Icon/Icon.tsx';
 
-export function Timeline({ items = [], orientation = 'vertical', align = 'start', label, className, ...rest }) {
+export type TimelineItem = {
+  id?: string | number;
+  /** an icon name or an imported module in the marker; none: a dot */
+  icon?: IconValue | null;
+  /** the time as shown */
+  time?: React.ReactNode;
+  /** the machine-readable time (the time element's dateTime) */
+  dateTime?: string;
+  title?: React.ReactNode;
+  badge?: React.ReactNode;
+  description?: React.ReactNode;
+  content?: React.ReactNode;
+};
+export type TimelineProps = Omit<React.HTMLAttributes<HTMLOListElement>, 'children'> & {
+  items?: TimelineItem[];
+  orientation?: 'vertical' | 'horizontal';
+  align?: 'start' | 'alternate';
+  /** the accessible name (aria-label) */
+  label?: string;
+};
+export function Timeline({ items = [], orientation = 'vertical', align = 'start', label, className, ...rest }: TimelineProps) {
   const horizontal = orientation === 'horizontal';
   const alternate = !horizontal && align === 'alternate';
   return (

@@ -11,11 +11,11 @@
      engine gives every value span (__value--wrap, --sized, --lines). */
 import React from 'react';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { Badge } from '../Badge/Badge.jsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { DataPill } from '../DataPill/DataPill.jsx';
 import { formatBytes } from '../../utils/format.ts';
-import { Isolate } from '../Isolate/Isolate.jsx';
+import { Isolate } from '../Isolate/Isolate.tsx';
 import { localDigits } from '../../utils/digits.ts';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 export const valueText=value=>value==null?'':Array.isArray(value)?value.map(valueText).join(', '):typeof value==='object'?String(value.label??value.name??''):String(value);

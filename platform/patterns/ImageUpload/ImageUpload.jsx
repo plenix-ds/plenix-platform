@@ -55,7 +55,7 @@ import { Icon } from '../../components/Icon/Icon.tsx';
 import { Slider } from '../../components/Slider/Slider.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { announce } from '../../utils/announce.tsx';
 import { formatBytes, formatNumber } from '../../utils/format.ts';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';

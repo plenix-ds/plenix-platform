@@ -27,7 +27,15 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export function Columns({ count = 2, divided = false, gap = 'md', ratio = 'equal', collapseBelow, className, children, ...rest }) {
+export type ColumnsProps = React.HTMLAttributes<HTMLDivElement> & {
+  count?: 2 | 3 | 4;
+  divided?: boolean;
+  gap?: 'sm' | 'md' | 'lg';
+  /** two columns only: 'equal', or the wider side */
+  ratio?: string;
+  collapseBelow?: 'narrow' | 'medium';
+};
+export function Columns({ count = 2, divided = false, gap = 'md', ratio = 'equal', collapseBelow, className, children, ...rest }: ColumnsProps) {
   return (
     <div className={cx('plx-columns', 'plx-columns--' + count, divided ? 'plx-columns--divided' : 'plx-columns--gap-' + gap,
       count === 2 && ratio !== 'equal' ? 'plx-columns--' + ratio : null, collapseBelow ? 'plx-columns--collapse-below-' + collapseBelow : null, className)} {...rest}>

@@ -49,7 +49,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { IconTile } from '../IconTile/IconTile.jsx';
+import { IconTile } from '../IconTile/IconTile.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Spinner } from '../Loading/Loading.tsx';
 import { announce } from '../../utils/announce.tsx';

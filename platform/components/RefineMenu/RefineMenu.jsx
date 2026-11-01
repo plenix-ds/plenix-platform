@@ -10,7 +10,7 @@ import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Text } from '../Text/Text.tsx';
-import { Notice } from '../Notice/Notice.jsx';
+import { Notice } from '../Notice/Notice.tsx';
 import { Menu, MenuItem, MenuSub } from '../Menu/Menu.jsx';
 import { Dialog } from '../Dialog/Dialog.jsx';
 import { Field } from '../Field/Field.jsx';

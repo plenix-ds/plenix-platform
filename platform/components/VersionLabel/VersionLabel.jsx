@@ -25,8 +25,8 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Badge } from '../Badge/Badge.jsx';
-import { Link } from '../Link/Link.jsx';
+import { Badge } from '../Badge/Badge.tsx';
+import { Link } from '../Link/Link.tsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

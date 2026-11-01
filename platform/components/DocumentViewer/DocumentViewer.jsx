@@ -26,7 +26,7 @@ import { Button } from '../Button/Button.tsx';
 import { Select } from '../Input/Input.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Text } from '../Text/Text.tsx';
-import { Notice } from '../Notice/Notice.jsx';
+import { Notice } from '../Notice/Notice.tsx';
 import { Image } from '../Image/Image.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { cx } from '../../utils/cx.ts';

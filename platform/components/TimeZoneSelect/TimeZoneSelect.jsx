@@ -45,7 +45,7 @@ import { cx } from '../../utils/cx.ts';
 import { formatLocale, formatNumber } from '../../utils/format.ts';
 import { localDigits, toLatinDigits } from '../../utils/digits.ts';
 import { useDigits } from '../../providers/LocaleProvider.tsx';
-import { Isolate } from '../Isolate/Isolate.jsx';
+import { Isolate } from '../Isolate/Isolate.tsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 

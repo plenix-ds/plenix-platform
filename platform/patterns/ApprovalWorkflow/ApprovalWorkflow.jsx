@@ -14,13 +14,13 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { ReviewFlow, WorkflowStatus } from '../ReviewFlow/ReviewFlow.jsx';
-import { ProgressSteps } from '../../components/ProgressSteps/ProgressSteps.jsx';
+import { ProgressSteps } from '../../components/ProgressSteps/ProgressSteps.tsx';
 import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.tsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

@@ -24,7 +24,7 @@ import { RoleLabel } from '../../components/RoleLabel/RoleLabel.jsx';
 import { CopyButton } from '../../components/CopyButton/CopyButton.jsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Tabs } from '../../components/Tabs/Tabs.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
