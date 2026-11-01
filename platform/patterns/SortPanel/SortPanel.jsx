@@ -29,7 +29,7 @@ import { Text } from '../../components/Text/Text.tsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
-import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';
+import { KIND_ICONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';

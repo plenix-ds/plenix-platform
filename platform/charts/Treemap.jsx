@@ -105,7 +105,7 @@ export function Treemap({ title, description, data = [], variant, color, format,
           groups.forEach((g, gi) => {
             const b = boxes[gi];
             const inside = nested ? { x: b.x + GROUP_PAD, y: b.y + GROUP_HEAD, width: Math.max(0, b.width - 2 * GROUP_PAD), height: Math.max(0, b.height - GROUP_HEAD - GROUP_PAD) } : b;
-            squarify(g.parts.map((p) => p.value), inside.x, inside.y, inside.width, inside.height).forEach((r, pi) => { laid.push({ tile: tiles[n], rect: r, index: n }); n++; });
+            squarify(g.parts.map((p) => p.value), inside.x, inside.y, inside.width, inside.height).forEach((r) => { laid.push({ tile: tiles[n], rect: r, index: n }); n++; });
           });
           const a = keys.index !== null && keys.index !== undefined && laid[keys.index] ? laid[keys.index] : null;
           return (

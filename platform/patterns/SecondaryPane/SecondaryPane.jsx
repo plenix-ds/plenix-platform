@@ -55,7 +55,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.tsx';
+import { asIcon as iconElement } from '../../components/Icon/Icon.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShell/AppShell.jsx';

@@ -11,7 +11,7 @@
    Notes: Caller owns storage, privacy and retention; selecting a prompt never sends it to a model implicitly.
 */
 import React from 'react';
-import { Stack,Inline } from '../../components/Stack/Stack.tsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { Notice } from '../../components/Notice/Notice.tsx';

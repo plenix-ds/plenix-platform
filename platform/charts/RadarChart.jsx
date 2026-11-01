@@ -91,7 +91,7 @@ export function RadarChart({ title, description, hideCaption, size = 'lg', axes 
               {ticks.map((v) => <polygon key={v} className="plx-chart__grid-line plx-radar-chart__ring" points={poly(r(v))} />)}
               {axes.map((a, ai) => { const [x2, y2] = pt(ai, end); return <line key={a.key} className="plx-chart__grid-line plx-radar-chart__spoke" x1={cx0} y1={cy0} x2={x2} y2={y2} />; })}
             </g>
-            {list.map((s, si) => (
+            {list.map((s) => (
               <polygon key={s.id} className="plx-chart__line plx-radar-chart__area" data-plx-dataviz={s.color} points={axes.map((a, ai) => pt(ai, r(valueOf(s, ai))).join(',')).join(' ')} />
             ))}
             {showPoints ? list.map((s, si) => axes.map((a, ai) => {
