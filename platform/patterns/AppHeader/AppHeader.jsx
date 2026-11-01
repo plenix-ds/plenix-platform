@@ -105,7 +105,7 @@ import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.tsx';
 import { SurfaceContext } from '../../providers/Surface.tsx';
 import { BrandMark } from '../../components/Brand/Brand.jsx';
-import { Count } from '../../components/Count/Count.jsx';
+import { Count } from '../../components/Count/Count.tsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.tsx';

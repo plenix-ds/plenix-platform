@@ -49,7 +49,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { arrowStep } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
-import { Count } from '../Count/Count.jsx';
+import { Count } from '../Count/Count.tsx';
 import { Icon, stateIcon } from '../Icon/Icon.tsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

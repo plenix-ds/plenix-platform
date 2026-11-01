@@ -2332,7 +2332,8 @@ export default {
       "left": "بقي {n} حرفًا",
       "over": "زاد {n} حرفًا"
     },
-    "about": "معلومات عن {label}"
+    "about": "معلومات عن {label}",
+    "warning": "تحذير"
   },
   "icon": {
     "status": {

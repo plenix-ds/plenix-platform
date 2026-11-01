@@ -60,7 +60,7 @@ import { Select } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { SegmentedControl } from '../../components/SegmentedControl/SegmentedControl.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.tsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';

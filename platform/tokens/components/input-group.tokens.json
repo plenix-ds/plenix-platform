@@ -125,6 +125,11 @@
       "$value": "{plx-sys.control-icon-standard}",
       "$type": "dimension",
       "$description": "InputGroup icon: the standard control’s grid icon."
+    },
+    "input-group-warning-border-color": {
+      "$value": "{plx-comp.input-warning-border-color}",
+      "$type": "color",
+      "$description": "InputGroup: the border of a group with a warning."
     }
   }
 }

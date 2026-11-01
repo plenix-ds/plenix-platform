@@ -27,8 +27,18 @@ import { cx } from '../../utils/cx.ts';
 // the levels with their own size (section-heading.css); the others keep the base size
 const LEVELS = [2, 3, 4];
 
-export function SectionHeading({ level = 3, collapsible = false, expanded = true, onToggle, controls, actions, className, children, ...rest }) {
-  const Tag = level ? 'h' + level : 'div';
+export type SectionHeadingProps = React.HTMLAttributes<HTMLElement> & {
+  /** the heading level (h1 to h6); 0 or none: a div */
+  level?: number;
+  collapsible?: boolean;
+  expanded?: boolean;
+  onToggle?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /** the id of the region the toggle shows and hides */
+  controls?: string;
+  actions?: React.ReactNode;
+};
+export function SectionHeading({ level = 3, collapsible = false, expanded = true, onToggle, controls, actions, className, children, ...rest }: SectionHeadingProps) {
+  const Tag = (level ? 'h' + level : 'div') as React.ElementType;
   const sized = LEVELS.indexOf(level) >= 0 && 'plx-section-heading--level-' + level;
   if (collapsible) {
     return (

@@ -50,7 +50,7 @@ import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { CommandBar, CommandBarButton } from '../CommandBar/CommandBar.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Chip } from '../../components/Tag/Tag.jsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
 import { useUid } from '../../utils/layer.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

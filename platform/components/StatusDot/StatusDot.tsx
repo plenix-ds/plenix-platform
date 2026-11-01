@@ -29,16 +29,24 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconModule } from '../Icon/Icon.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseN2Icon from 'plenix-platform/icons/plenix/close-2';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const GLYPHS = { online: CheckIcon, away: ClockIcon, dnd: RemoveIcon, offline: CloseN2Icon };   // busy is the solid dot: nothing cut out
+const GLYPHS: Record<string, IconModule> = { online: CheckIcon, away: ClockIcon, dnd: RemoveIcon, offline: CloseN2Icon };   // busy is the solid dot: nothing cut out
 const SIZES = ['md', 'lg'];
 
-export function StatusDot({ tone = 'neutral', size = 'sm', icon = false, label, className, ...rest }) {
+export type StatusDotProps = React.HTMLAttributes<HTMLSpanElement> & {
+  tone?: 'info' | 'success' | 'warning' | 'danger' | 'neutral' | 'online' | 'away' | 'busy' | 'dnd' | 'offline';
+  size?: 'sm' | 'md' | 'lg';
+  /** a presence tone's glyph cut out of the dot (md and lg) */
+  icon?: boolean;
+  label?: React.ReactNode;
+};
+export function StatusDot({ tone = 'neutral', size = 'sm', icon = false, label, className, ...rest }: StatusDotProps) {
   devWarn('StatusDot', { tone, size }, { tone: ['info','success','warning','danger','neutral','online','away','busy','dnd','offline'], size: ['sm','md','lg'] });
   const s = SIZES.indexOf(size) >= 0 ? size : null;
   const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];

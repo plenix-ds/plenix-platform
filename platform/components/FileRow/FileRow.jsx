@@ -60,7 +60,7 @@ import { Checkbox } from '../Checkbox/Checkbox.jsx';
 import { Button } from '../Button/Button.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
-import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
+import { ProgressBar } from '../ProgressBar/ProgressBar.tsx';
 import { RenameAction } from '../../patterns/RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../../patterns/DeleteFlow/DeleteFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

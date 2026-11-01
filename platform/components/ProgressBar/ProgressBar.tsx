@@ -30,7 +30,21 @@ import { numeralLocale } from '../../utils/format.ts';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 
-export function ProgressBar({ value, max = 100, label, labelHidden = false, showValue = false, tone = 'info', color, size = 'md', locale, className, ...rest }) {
+export type ProgressBarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> & {
+  /** 0 to max; none: indeterminate */
+  value?: number | null;
+  max?: number;
+  /** the visible label, and the accessible name */
+  label?: string;
+  labelHidden?: boolean;
+  showValue?: boolean;
+  tone?: 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+  /** a data color's name, instead of a tone */
+  color?: string;
+  size?: 'sm' | 'md';
+  locale?: string;
+};
+export function ProgressBar({ value, max = 100, label, labelHidden = false, showValue = false, tone = 'info', color, size = 'md', locale, className, ...rest }: ProgressBarProps) {
   devWarn('ProgressBar', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md'] });
   const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   const known = typeof value === 'number' && !Number.isNaN(value);
@@ -42,7 +56,7 @@ export function ProgressBar({ value, max = 100, label, labelHidden = false, show
       {showLabel || (showValue && known) ? (
         <div className="plx-progress-bar__head">
           {showLabel ? <span className="plx-progress-bar__label" id={id}>{label}</span> : null}
-          {showValue && known ? <span className="plx-progress-bar__value">{new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format(pct / 100)}</span> : null}
+          {showValue && known ? <span className="plx-progress-bar__value">{new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format((pct as number) / 100)}</span> : null}
         </div>
       ) : null}
       {known ? (

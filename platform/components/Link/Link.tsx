@@ -37,12 +37,25 @@ import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.tsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import OpenIcon from 'plenix-platform/icons/plenix/open';
 
 
+export type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  variant?: 'inline' | 'standalone' | 'subtle';
+  /** opens in a new tab, marked with its icon and words */
+  external?: boolean;
+  /** a back link: the chevron before the words */
+  back?: boolean;
+  onAccent?: boolean;
+  visited?: boolean;
+  /** the element or component it renders as (a router's link) */
+  as?: React.ElementType;
+  strings?: Catalog | null;
+};
 export const Link = React.forwardRef(function Link({ href, variant = 'inline', external = false, back = false, onAccent = false, visited = false,
-  as: Tag = 'a', strings, className, children, ...rest }, ref) {
+  as: Tag = 'a', strings, className, children, ...rest }: LinkProps, ref: React.ForwardedRef<HTMLAnchorElement>) {
   devWarn('Link', { variant }, { variant: ['inline','standalone','subtle'] });
   const s = useStrings('link', strings);
   const kind = back ? 'standalone' : variant;
@@ -54,7 +67,7 @@ export const Link = React.forwardRef(function Link({ href, variant = 'inline', e
       {back ? <span className="plx-link__icon"><Icon name={ChevronLeftIcon} /></span> : null}
       {children}
       {external ? <span className="plx-link__icon"><Icon name={OpenIcon} /></span> : null}
-      {external ? <VisuallyHidden> ({s.newTab})</VisuallyHidden> : null}
+      {external ? <VisuallyHidden> ({s.newTab as React.ReactNode})</VisuallyHidden> : null}
     </Tag>
   );
 });

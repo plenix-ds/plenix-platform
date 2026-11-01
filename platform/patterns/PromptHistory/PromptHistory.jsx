@@ -14,7 +14,7 @@ import React from 'react';
 import { Stack,Inline } from '../../components/Stack/Stack.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { cx } from '../../utils/cx.ts';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Time } from '../../components/Time/Time.jsx';

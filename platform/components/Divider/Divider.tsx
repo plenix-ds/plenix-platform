@@ -14,6 +14,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export function Divider({ orientation = 'horizontal', className, ...rest }) {
+export type DividerProps = React.HTMLAttributes<HTMLDivElement> & { orientation?: 'horizontal' | 'vertical' };
+export function Divider({ orientation = 'horizontal', className, ...rest }: DividerProps) {
   return <div role="separator" aria-orientation={orientation} className={cx('plx-divider', 'plx-divider--' + orientation, className)} {...rest} />;
 }

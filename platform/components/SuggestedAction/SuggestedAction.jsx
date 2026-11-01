@@ -18,8 +18,8 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { Stack,Inline } from '../../components/Stack/Stack.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Badge } from '../Badge/Badge.jsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { cx } from '../../utils/cx.ts';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export const SuggestedAction=React.forwardRef(function SuggestedAction({variant='chip',children,description,onAction,disabled=false,strings,className},ref){

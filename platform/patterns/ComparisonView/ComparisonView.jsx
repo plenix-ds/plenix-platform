@@ -47,7 +47,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { SegmentedControl } from '../../components/SegmentedControl/SegmentedControl.jsx';
 import { Switch } from '../../components/Checkbox/Checkbox.jsx';
 import { Slider } from '../../components/Slider/Slider.jsx';

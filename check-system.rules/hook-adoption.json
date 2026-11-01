@@ -54,7 +54,7 @@
     "platform/components/TimePicker/TimePicker.jsx"
   ],
   "dataWhenText": [
-    "platform/components/Banner/Banner.jsx",
+    "platform/components/Banner/Banner.tsx",
     "platform/components/Field/Field.jsx",
     "platform/components/Checkbox/Checkbox.jsx",
     "platform/components/Metric/Metric.jsx",

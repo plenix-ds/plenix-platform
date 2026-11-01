@@ -30,7 +30,17 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export const Sticky = React.forwardRef(function Sticky({ as: As = 'div', edge = 'top', fixed = false, shadow = 'stuck', safeArea = false, stuck = false, label, className, children, ...rest }, ref) {
+export type StickyProps = React.HTMLAttributes<HTMLElement> & {
+  as?: React.ElementType;
+  edge?: 'top' | 'bottom';
+  fixed?: boolean;
+  shadow?: 'stuck' | 'always' | 'none';
+  safeArea?: boolean;
+  stuck?: boolean;
+  /** names it as a region (aria-label) */
+  label?: string;
+};
+export const Sticky = React.forwardRef(function Sticky({ as: As = 'div', edge = 'top', fixed = false, shadow = 'stuck', safeArea = false, stuck = false, label, className, children, ...rest }: StickyProps, ref: React.ForwardedRef<HTMLElement>) {
   return (
     <As ref={ref} role={label ? 'region' : undefined} aria-label={label}
       className={cx('plx-sticky', 'plx-sticky--' + edge, fixed && 'plx-sticky--fixed', 'plx-sticky--shadow-' + shadow, safeArea && 'plx-sticky--safe-area', stuck && 'is-stuck', className)} {...rest}>

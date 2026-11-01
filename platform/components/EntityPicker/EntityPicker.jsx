@@ -23,6 +23,7 @@
      onBrowse(): shows "Browse all {entityName}" at the end of the list, for a dialog that searches with filters
      label: the accessible name when there is no Field
      invalid, disabled: the field's states; a Field sets invalid with its error
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      id: the id of the input (a Field sets it)
      strings: the words it shows and announces: { placeholderPeople: "Search by name or email", placeholder: "Search
        {entityName}", empty: "No {entityName} found", browse: "Browse all {entityName}", loading: "Loading…", error: "The
@@ -48,7 +49,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { IconTile } from '../IconTile/IconTile.jsx';
+import { IconTile } from '../IconTile/IconTile.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Spinner } from '../Loading/Loading.tsx';
 import { announce } from '../../utils/announce.tsx';
@@ -65,7 +66,7 @@ import { fill } from '../../utils/fill.ts';
 
 const NAMES = { people: 'people', teams: 'teams', records: 'records' };
 export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'records', options = [], value, values, onChange, multiple = false,
-  loadOptions, loadDelay = 300, minChars = 1, entityName, placeholder, onBrowse, label, invalid, disabled, id, strings, className, ...rest }, ref) {
+  loadOptions, loadDelay = 300, minChars = 1, entityName, placeholder, onBrowse, label, invalid, warning, disabled, id, strings, className, ...rest }, ref) {
   const t = useStrings('entityPicker', strings);
   const loc = useLocale();
   const noun = entityName || NAMES[kind] || NAMES.records;
@@ -146,7 +147,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
   React.useLayoutEffect(() => { const el = list.current; if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [showList]);
   return (
     <div ref={wrap} className={cx('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)}>
-      <div className="plx-entity-picker__field plx-input" aria-invalid={invalid || undefined}>
+      <div className="plx-entity-picker__field plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const name = o ? o.label : String(v);
           return <Tag key={v} onRemove={disabled ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={fill(t.remove, { label: name })}>{name}</Tag>; }) : null}
         {current && !open ? <span className="plx-entity-picker__chosen" aria-hidden="true">{visual(current, 'field')}</span> : null}

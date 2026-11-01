@@ -72,11 +72,11 @@ import { formatBytes, formatNumber, formatPercent } from '../../utils/format.ts'
 import { announce } from '../../utils/announce.tsx';
 import { useUid } from '../../utils/layer.ts';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Icon } from '../../components/Icon/Icon.tsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { ProgressBar } from '../../components/ProgressBar/ProgressBar.jsx';
+import { ProgressBar } from '../../components/ProgressBar/ProgressBar.tsx';
 import { DropZone } from '../../components/DropZone/DropZone.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';

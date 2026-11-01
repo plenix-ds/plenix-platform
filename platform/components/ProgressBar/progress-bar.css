@@ -1,4 +1,4 @@
-/* Plenix · ProgressBar (platform/components/ProgressBar). Anatomy and API: ProgressBar.jsx. */
+/* Plenix · ProgressBar (platform/components/ProgressBar). Anatomy and API: ProgressBar.tsx. */
 .plx-progress-bar{display:grid;min-inline-size:0;row-gap:var(--plx-comp-progress-bar-row-gap);}
 .plx-progress-bar__head{align-items:baseline;column-gap:var(--plx-comp-progress-bar-head-gap);display:flex;justify-content:space-between;min-inline-size:0;}
 .plx-progress-bar__label{color:var(--plx-comp-progress-bar-label-text);font-size:var(--plx-comp-progress-bar-label-font-size);min-inline-size:0;}
