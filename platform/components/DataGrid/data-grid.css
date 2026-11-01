@@ -599,4 +599,12 @@ a.plx-data-grid__cell-content{align-items:center;align-self:stretch;display:inli
 .plx-data-grid__grid-row[data-plx-unread]::before{content:"";--plx-state-data-grid-unread-bar-width:var(--plx-comp-data-grid-unread-bar-width);position:absolute;inset-block-start:0;inset-block-end:0;inset-inline-start:0;inline-size:var(--plx-state-data-grid-unread-bar-width);background-color:var(--plx-comp-data-grid-unread-bar-color);pointer-events:none;z-index:var(--plx-sys-layer-sticky);}
 
 @property --plx-state-data-grid-unread-bar-width{syntax:"*";inherits:false;}
-
+/* cell range selection (the option cellSelection, issue 465): the cells inside the selected block take the selected fill, and the block has a
+   2px border on its outer edges, drawn by a pseudo-element over each edge cell (logical edges: the block's start is its right edge in right to
+   left); the active cell keeps its own ring above it */
+.plx-data-grid__grid-cell.plx-data-grid__grid-cell--range{--plx-state-data-grid-cell-fill:var(--plx-comp-data-grid-range-background);}
+.plx-data-grid__grid-cell--range::after{border-color:var(--plx-comp-data-grid-range-border-color);content:"";inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}
+.plx-data-grid__grid-cell--range-top::after{border-block-start-style:solid;border-block-start-width:var(--plx-comp-data-grid-range-border-width);}
+.plx-data-grid__grid-cell--range-bottom::after{border-block-end-style:solid;border-block-end-width:var(--plx-comp-data-grid-range-border-width);}
+.plx-data-grid__grid-cell--range-start::after{border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-data-grid-range-border-width);}
+.plx-data-grid__grid-cell--range-end::after{border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-data-grid-range-border-width);}

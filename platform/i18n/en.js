@@ -743,6 +743,14 @@ export default {
     "all": "All"
   },
   "dataGrid": {
+    "cellsSelected": {
+      "one": "{n} cell selected",
+      "other": "{n} cells selected"
+    },
+    "cellsCopied": {
+      "one": "{n} cell copied",
+      "other": "{n} cells copied"
+    },
     "empty": "Nothing to show",
     "failed": "The table could not load",
     "retry": "Retry",
