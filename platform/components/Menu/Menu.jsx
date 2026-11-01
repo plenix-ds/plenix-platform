@@ -59,6 +59,8 @@
      Choosing an item closes the menu and returns focus to the trigger, unless keepOpen.
      A radio item checks itself and unchecks the others of its group (onChange); the menu shows the current choice
        when it opens.
+     A checked checkbox or radio item shows a check (check-bold, 13 by 10px, as large as Blueprint's tick) in the item's
+       start slot.
      A submenu item shows an end-pointing caret (triangle-right, as Blueprint's caret-right; mirrored in right to left); Arrow Right (Arrow Left in right-to-left), Enter, Space or a click
        opens the submenu beside it on its first item, and pointer hover opens it too; Arrow Left (Arrow Right in
        right-to-left) or Escape closes it and returns to its item. It sits at the item's end edge and flips to the
@@ -83,7 +85,7 @@ import { Portal } from '../../utils/portal.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useGesture } from '../../hooks/useGesture.ts';
 import TriangleRightIcon from 'plenix-platform/icons/plenix/triangle-right';
-import CheckIcon from 'plenix-platform/icons/plenix/check';
+import CheckIcon from 'plenix-platform/icons/plenix/check-bold';
 
 const MenuContext = React.createContext(null);
 const RadioContext = React.createContext(null);

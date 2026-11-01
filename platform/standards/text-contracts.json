@@ -1877,13 +1877,15 @@
    "contract": "adjusts",
    "props": [
     "font-size",
-    "font-weight"
+    "font-weight",
+    "line-height"
    ]
   },
   "plx-menu__item": {
    "contract": "adjusts",
    "props": [
     "font-size",
+    "font-weight",
     "line-height"
    ]
   },
