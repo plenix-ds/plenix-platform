@@ -1,0 +1,80 @@
+{
+  "$description": "Anchor (platform/components/Anchor, issue 811): the sections of a page as a list of links. Each row takes NavList's item roles, as vertical Tabs do.",
+  "plx-comp": {
+    "anchor-row-gap": {
+      "$value": "{plx-comp.nav-list-items-row-gap}",
+      "$type": "dimension",
+      "$description": "The space between two sections (the navigation list's)."
+    },
+    "anchor-nested-indent": {
+      "$value": "{plx-sys.space-inline-lg}",
+      "$type": "dimension",
+      "$description": "A subsection: how far it is indented."
+    },
+    "anchor-radius": {
+      "$value": "{plx-comp.nav-list-item-radius}",
+      "$type": "dimension",
+      "$description": "A section row: its corners (a navigation list row's)."
+    },
+    "anchor-text": {
+      "$value": "{plx-comp.nav-list-item-text}",
+      "$type": "color",
+      "$description": "A section row: its name (a navigation list row's)."
+    },
+    "anchor-font-size": {
+      "$value": "{plx-comp.nav-list-item-font-size}",
+      "$type": "dimension",
+      "$description": "A section row: its name's size."
+    },
+    "anchor-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "A section row: its name's weight (the current section is heavier)."
+    },
+    "anchor-min-height": {
+      "$value": "{plx-comp.nav-list-item-min-height}",
+      "$type": "dimension",
+      "$description": "A section row: its least height (the standard control height)."
+    },
+    "anchor-padding-inline": {
+      "$value": "{plx-comp.nav-list-item-padding-inline}",
+      "$type": "dimension",
+      "$description": "A section row: the space at its sides."
+    },
+    "anchor-hover-background": {
+      "$value": "{plx-comp.nav-list-item-hover-background}",
+      "$type": "color",
+      "$description": "A section row with the pointer over it: the hover fill."
+    },
+    "anchor-hover-shadow": {
+      "$value": "{plx-comp.nav-list-item-hover-shadow}",
+      "$type": "shadow",
+      "$description": "A section row with the pointer over it: the hover edge."
+    },
+    "anchor-hover-text": {
+      "$value": "{plx-comp.nav-list-item-text}",
+      "$type": "color",
+      "$description": "A section row with the pointer over it: its name."
+    },
+    "anchor-current-background": {
+      "$value": "{plx-comp.nav-list-item-current-background}",
+      "$type": "color",
+      "$description": "The current section: the selected fill (the navigation pane's current row)."
+    },
+    "anchor-current-shadow": {
+      "$value": "{plx-comp.nav-list-item-current-shadow}",
+      "$type": "shadow",
+      "$description": "The current section: the selected edge."
+    },
+    "anchor-current-text": {
+      "$value": "{plx-comp.nav-list-item-current-text}",
+      "$type": "color",
+      "$description": "The current section: its name in the selected content color."
+    },
+    "anchor-current-font-weight": {
+      "$value": "{plx-comp.nav-list-item-current-font-weight}",
+      "$type": "fontWeight",
+      "$description": "The current section: its name's weight."
+    }
+  }
+}

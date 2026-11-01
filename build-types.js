@@ -101,6 +101,7 @@ function typeOf(name, text, def, called) {
   // the text starts with what it is (a pinned header): "a string: …", "a ref to …"
   if (/^(a )?(string or a number|number or a string)\b/i.test(text.trim())) return 'number | string';
   if (/^true or a number\b/i.test(text.trim())) return 'boolean | number';
+  if (/^(a )?string or null\b/i.test(text.trim())) return 'string | null';
   if (/^(a |the )?string\b/i.test(text.trim())) return 'string';
   if (/^a ref\b/i.test(text.trim())) return 'React.Ref<any>';
   if (/^an (element|node)\b/i.test(text.trim())) return 'React.ReactNode';

@@ -31,6 +31,13 @@
     "font-weight"
    ]
   },
+  "plx-anchor__link": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
   "plx-app-header__app": {
    "contract": "adjusts",
    "props": [
@@ -390,6 +397,12 @@
    "props": [
     "font-size",
     "font-weight"
+   ]
+  },
+  "plx-cascader__limit": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
    ]
   },
   "plx-cascader__match": {
