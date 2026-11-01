@@ -28,7 +28,7 @@
        (several choices) | "switch" (each option on or off; the switch at the card's end, as in a settings row)
      ChoiceList.name: the inputs' name (default a generated one)
      ChoiceList.value: the selected option value (radio)
-     ChoiceList.values: the checked option values (checkbox and switch)
+     ChoiceList.values: an array: the checked option values (checkbox and switch)
      ChoiceList.onChange(value | values): runs with the chosen option value (radio), or the new array of values (checkbox and
        switch)
      ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden, disabled }]
