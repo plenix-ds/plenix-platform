@@ -241,6 +241,12 @@ export default {
     "empty": "لا توجد عناصر",
     "remove": "إزالة {label}",
     "columns": "الخيارات",
+    "allOf": "كل {label}",
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية",
+    "limit": "يمكنك اختيار {n} كحد أقصى.",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
     "results": {
       "zero": "لا توجد تطابقات",
       "one": "تطابق واحد",
