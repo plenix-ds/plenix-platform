@@ -31,7 +31,18 @@ const BANNER = '/*\n * GENERATED FILE — DO NOT EDIT\n * Source: platform/index
 // the old bundle's error for a missing global, in its words; it runs before the bundle passes React and ReactDOM in
 const GUARD = Object.entries({ 'react': 'React', 'react-dom': 'ReactDOM' })
   .map(([spec, name]) => 'if (!window.' + name + ') throw new Error(\'Plenix: "' + spec + '" is not loaded before this script\');\n').join('');
-const FOOTER = 'window.Plenix = Object.freeze(Object.assign({}, Plenix));\n';
+// the frozen global, then the version check (#842): the released plenix.css carries its release as --plx-version; when it
+// names another release than this script, the page mixes two releases, and the console says so once (after the page loads,
+// so the stylesheet has applied). The source stylesheet has no stamp: no check
+const FOOTER = 'window.Plenix = Object.freeze(Object.assign({}, Plenix));\n'
+  + '(function () {\n'
+  + '  function check() {\n'
+  + '    var css = getComputedStyle(document.documentElement).getPropertyValue(\'--plx-version\').trim().replace(/^["\']|["\']$/g, \'\');\n'
+  + '    if (css && css !== window.Plenix.version) console.warn(\'Plenix: the script and the stylesheet come from different releases (script \' + window.Plenix.version + \', styles \' + css + \'). Load every Plenix file from the same release folder.\');\n'
+  + '  }\n'
+  + '  if (typeof window.addEventListener !== \'function\') return;\n'
+  + '  if (document.readyState === \'complete\') check(); else window.addEventListener(\'load\', check, { once: true });\n'
+  + '})();\n';
 const ICON = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+|[a-z0-9]+(?:_[a-z0-9]+)+)$/;
 
 // plenix-platform/icons/<set>/<name>: the asset layout's icon modules, bundled like a source file (#282); the applications'
@@ -100,8 +111,8 @@ export default defineConfig({
   publicDir: false,
   logLevel: 'warn',
   plugins: [plenixIcons, finish],
-  define: { 'process.env.NODE_ENV': JSON.stringify('production') },
-  esbuild: { jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },
+  define: { 'process.env.NODE_ENV': JSON.stringify('production'), __PLENIX_VERSION__: JSON.stringify(require('./package.json').version) },
+  esbuild: { include: /\.[cm]?[jt]sx?$/, exclude: [], charset: 'ascii', jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },   // charset ascii: no non-ASCII byte in the output (a page loaded without a charset still runs)
   build: {
     outDir: path.join(ROOT, 'build', 'vite'),
     emptyOutDir: false,

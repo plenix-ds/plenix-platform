@@ -71,6 +71,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color messageText;
   final Color messageRead;
   final Color contentDefault;
+  final Color contentStrong;
   final Color contentMuted;
   final Color contentSubtle;
   final Color contentDisabled;
@@ -160,6 +161,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color fillNeutralPressed;
   final Color fillNeutralContent;
   final Color borderDivider;
+  final Color borderSeparator;
   final Color controlBackground;
   final Color fieldBackground;
   final Color fieldBorder;
@@ -437,6 +439,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.messageText,
     required this.messageRead,
     required this.contentDefault,
+    required this.contentStrong,
     required this.contentMuted,
     required this.contentSubtle,
     required this.contentDisabled,
@@ -526,6 +529,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.fillNeutralPressed,
     required this.fillNeutralContent,
     required this.borderDivider,
+    required this.borderSeparator,
     required this.controlBackground,
     required this.fieldBackground,
     required this.fieldBorder,
@@ -804,6 +808,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     messageText: Color(0xFF253442),
     messageRead: Color(0xFF107C10),
     contentDefault: Color(0xFF34363B),
+    contentStrong: Color(0xFF1E1F22),
     contentMuted: Color(0xFF56585E),
     contentSubtle: Color(0xFF56585E),
     contentDisabled: Color(0xFF8E9094),
@@ -893,6 +898,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     fillNeutralPressed: Color(0xFFD0D0D0),
     fillNeutralContent: Color(0xFF56585E),
     borderDivider: Color(0xFFF3F3F3),
+    borderSeparator: Color(0xFFDCDDDE),
     controlBackground: Color(0xFFFFFFFF),
     fieldBackground: Color(0xFFFCFCFC),
     fieldBorder: Color(0xFFA3A6AD),
@@ -1171,6 +1177,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     messageText: Color(0xFFE8E9EC),
     messageRead: Color(0xFF9BD39B),
     contentDefault: Color(0xFFE8E9EC),
+    contentStrong: Color(0xFFF3F3F3),
     contentMuted: Color(0xFFD0D0D0),
     contentSubtle: Color(0xFF8E9094),
     contentDisabled: Color(0xFF56585E),
@@ -1260,6 +1267,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     fillNeutralPressed: Color(0xFF6E6E6E),
     fillNeutralContent: Color(0xFFE8E9EC),
     borderDivider: Color(0xFF56585E),
+    borderSeparator: Color(0xFF56585E),
     controlBackground: Color(0xFF444444),
     fieldBackground: Color(0xFF444444),
     fieldBorder: Color(0xFFA3A6AD),

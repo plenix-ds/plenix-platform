@@ -12,7 +12,7 @@
        children load when it is first opened (with loadChildren)
      loadChildren(node): returns the item's children (an array or a promise of one) the first time it opens (issue 814,
        useBranchLoader, as Tree): a spinner and "Loading…" while they arrive, a failure with Try again, never asked twice
-     virtualized: the tree draws only the rows in view (useVirtualizer; issue 815), as Tree: default on above 200 visible
+     virtualized: true or false: the tree draws only the rows in view (useVirtualizer; issue 815), as Tree: default on above 200 visible
        rows (TREE_AUTO_VIRTUAL), while searching too; true or false decides
      value: the chosen item's id (one choice)
      values: the checked items' ids, with multiple (the leaves: items without children)
@@ -24,6 +24,7 @@
      label: the accessible name when there is no Field (also the popover's name)
      defaultExpanded: the ids of the items open when the tree first shows (default: the items above the chosen ones)
      invalid: shows the invalid state (a Field sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not open the tree, so nothing changes; default the nearest ReadOnly region's (useReadOnly)
      required: a choice is required (a Field sets it)
@@ -58,9 +59,9 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { highlightMatch, matchesText } from '../../utils/highlight.tsx';
 import { isRtl } from '../../utils/direction.ts';
-import { Icon, asIcon, iconKey } from '../Icon/Icon.jsx';
+import { Icon, asIcon, iconKey } from '../Icon/Icon.tsx';
 import { Popover } from '../Popover/Popover.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
@@ -105,7 +106,7 @@ function flatten(nodes, open, parent, out) {
 const EMPTY = [];
 
 export function TreeSelect({ nodes: given = EMPTY, loadChildren, virtualized, value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
-  invalid, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
+  invalid, warning, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the choice shows and the tree does not open
   const t = useStrings('treeSelect', strings);
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -239,7 +240,7 @@ export function TreeSelect({ nodes: given = EMPTY, loadChildren, virtualized, va
   const summary = names.length > 2 ? t.more.replace('{list}', names.slice(0, 2).join(', ')).replace('{n}', names.length - 2) : names.join(', ');
   const name = label || t.choose;
   const trigger = (
-    <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} aria-required={required || undefined} aria-readonly={locked || undefined} disabled={disabled}
+    <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} aria-required={required || undefined} aria-readonly={locked || undefined} disabled={disabled}
       className={cx('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')} {...rest}>
       <Tooltip content={names.length ? summary : ''} disabled={!cut || open || !names.length} className="plx-tree-select__tip"><span ref={valueRef} className={names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'}>{names.length ? summary : (placeholder || t.placeholder)}</span></Tooltip>
       <span className="plx-tree-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>

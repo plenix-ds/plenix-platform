@@ -11,11 +11,11 @@
      Archive is not deletion. The caller controls data access and read-only enforcement.
 */
 import React from 'react';
-import { Banner } from '../../components/Banner/Banner.jsx';
-import { Badge } from '../../components/Badge/Badge.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Banner } from '../../components/Banner/Banner.tsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ArchiveIcon from 'plenix-platform/icons/plenix/archive';

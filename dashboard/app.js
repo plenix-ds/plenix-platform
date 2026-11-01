@@ -10,7 +10,7 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     account: { name: "Jordan Avery", firstName: "Jordan", lastName: "Avery", email: "jordan.avery@example.com" },
     notifications: [
       { id: 1, text: "Fr. Daniel uploaded 12 new assets to Liturgy", time: "5 min ago", unread: true },
-      { id: 2, text: "Maya Chen sent a message: Round 3 concepts — confirm Thursday?", time: "10:24 AM", unread: true },
+      { id: 2, text: "Maya Chen sent a message: Round 3 concepts \u2014 confirm Thursday?", time: "10:24 AM", unread: true },
       { id: 3, text: "Sarah M. approved your batch download request", time: "22 min ago", unread: true },
       { id: 4, text: "Task due Mar 8: Deliver logo concepts round 3", time: "Yesterday", unread: false },
       { id: 5, text: "Version 3 of Banner Icon Set is now live", time: "Yesterday", unread: false }
@@ -47,24 +47,24 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
   };
   const Ico = ({ n, color = "currentColor", sw = 1.65 }) => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className: "plx-u-shrink-0 plx-u-icon-box" }, /* @__PURE__ */ React.createElement("path", { d: P[n], stroke: color, strokeWidth: sw, strokeLinecap: "round", strokeLinejoin: "round" }));
   const PROJECTS = [
-    { id: 1, name: "Kitchen Renovation", status: "active", color: "brown", tags: ["personal", "home"], files: 14, desc: "Full kitchen remodel — cabinets, counters, plumbing. Target Q3 2026." },
-    { id: 2, name: "Apex Co — Brand Refresh", status: "active", color: "blue", tags: ["client", "design"], files: 31, desc: "Visual identity refresh: logo, color system, digital templates." },
+    { id: 1, name: "Kitchen Renovation", status: "active", color: "brown", tags: ["personal", "home"], files: 14, desc: "Full kitchen remodel \u2014 cabinets, counters, plumbing. Target Q3 2026." },
+    { id: 2, name: "Apex Co \u2014 Brand Refresh", status: "active", color: "blue", tags: ["client", "design"], files: 31, desc: "Visual identity refresh: logo, color system, digital templates." },
     { id: 3, name: "AI Writing Tools", status: "paused", color: "purple", tags: ["research", "ai"], files: 8, desc: "Evaluating AI writing assistants for team adoption." },
-    { id: 4, name: "Spain — June 2026", status: "active", color: "green", tags: ["personal", "travel"], files: 9, desc: "Two weeks in Madrid and Seville. Flights booked." },
+    { id: 4, name: "Spain \u2014 June 2026", status: "active", color: "green", tags: ["personal", "travel"], files: 9, desc: "Two weeks in Madrid and Seville. Flights booked." },
     { id: 5, name: "Tax & Finances 2026", status: "active", color: "red", tags: ["personal", "finance"], files: 22, desc: "Annual tax prep, estimated payments, expense tracking." },
-    { id: 6, name: "Home Purchase 2024", status: "completed", color: "gray", tags: ["archive", "legal"], files: 67, desc: "Archive — all docs from 412 Birchwood Dr closing." }
+    { id: 6, name: "Home Purchase 2024", status: "completed", color: "gray", tags: ["archive", "legal"], files: 67, desc: "Archive \u2014 all docs from 412 Birchwood Dr closing." }
   ];
   const EMAILS = [
-    { id: 1, from: "Maya Chen", subj: "Round 3 concepts — confirm Thursday?", prev: "Hey! Just want to confirm we're presenting the logo directions this Thursday…", time: "10:24 AM", unread: true, av: "M", avColor: "blue", proj: "Apex Co" },
-    { id: 2, from: "ABC Plumbing", subj: "Kitchen quote follow-up", prev: "Hi, this is Jeff from ABC Plumbing. Following up on our estimate…", time: "9:41 AM", unread: true, av: "A", avColor: "brown", proj: "Kitchen Reno" },
-    { id: 3, from: "Luis Herrera", subj: "Q1 tax docs ready for review", prev: "Your estimated Q1 tax documents are attached. Please review section 3…", time: "Yesterday", unread: false, av: "L", avColor: "purple", proj: "Tax" },
-    { id: 4, from: "James Whitfield", subj: "RE: SOW — one small change", prev: "Looks mostly good. I'd like to adjust the payment milestone on page 3…", time: "Yesterday", unread: false, av: "J", avColor: "blue", proj: "Apex Co" },
+    { id: 1, from: "Maya Chen", subj: "Round 3 concepts \u2014 confirm Thursday?", prev: "Hey! Just want to confirm we're presenting the logo directions this Thursday\u2026", time: "10:24 AM", unread: true, av: "M", avColor: "blue", proj: "Apex Co" },
+    { id: 2, from: "ABC Plumbing", subj: "Kitchen quote follow-up", prev: "Hi, this is Jeff from ABC Plumbing. Following up on our estimate\u2026", time: "9:41 AM", unread: true, av: "A", avColor: "brown", proj: "Kitchen Reno" },
+    { id: 3, from: "Luis Herrera", subj: "Q1 tax docs ready for review", prev: "Your estimated Q1 tax documents are attached. Please review section 3\u2026", time: "Yesterday", unread: false, av: "L", avColor: "purple", proj: "Tax" },
+    { id: 4, from: "James Whitfield", subj: "RE: SOW \u2014 one small change", prev: "Looks mostly good. I'd like to adjust the payment milestone on page 3\u2026", time: "Yesterday", unread: false, av: "J", avColor: "blue", proj: "Apex Co" },
     { id: 5, from: "Booking.com", subj: "Your Madrid reservation is confirmed", prev: "Thank you for booking! Your reservation at Hotel Only YOU Atocha is confirmed.", time: "Mar 3", unread: false, av: "B", avColor: "green", proj: "Spain" }
   ];
   const EVENTS = [
-    { id: 1, time: "9:00 AM", title: "Standup — Apex team", sub: "30 min", color: "blue" },
+    { id: 1, time: "9:00 AM", title: "Standup \u2014 Apex team", sub: "30 min", color: "blue" },
     { id: 2, time: "2:00 PM", title: "Contractor call (ABC)", sub: "1 hour", color: "brown" },
-    { id: 3, time: "4:30 PM", title: "Budget review — kitchen", sub: "30 min", color: "brown" }
+    { id: 3, time: "4:30 PM", title: "Budget review \u2014 kitchen", sub: "30 min", color: "brown" }
   ];
   const CALENDARS = [
     { id: "work", label: "Work", color: "blue", on: true },
@@ -74,25 +74,25 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     { id: "tax", label: "Finance & Tax", color: "red", on: true }
   ];
   const CAL_EVENTS = [
-    { id: 1, date: 5, title: "Standup — Apex", time: "9:00 AM", color: "blue", cal: "work" },
+    { id: 1, date: 5, title: "Standup \u2014 Apex", time: "9:00 AM", color: "blue", cal: "work" },
     { id: 2, date: 5, title: "Contractor call", time: "2:00 PM", color: "brown", cal: "apex" },
-    { id: 3, date: 8, title: "Logo review — Round 3", time: "10:00 AM", color: "blue", cal: "work" },
+    { id: 3, date: 8, title: "Logo review \u2014 Round 3", time: "10:00 AM", color: "blue", cal: "work" },
     { id: 4, date: 10, title: "Plumbing quote (2nd)", time: "11:00 AM", color: "brown", cal: "home" },
     { id: 5, date: 15, title: "Q1 tax payment due", time: "All day", color: "red", cal: "tax" },
     { id: 6, date: 18, title: "Brand presentation", time: "3:00 PM", color: "blue", cal: "apex" },
-    { id: 7, date: 28, title: "Spain trip — depart", time: "All day", color: "green", cal: "travel" }
+    { id: 7, date: 28, title: "Spain trip \u2014 depart", time: "All day", color: "green", cal: "travel" }
   ];
   const CONTACTS = [
-    { id: 1, name: "Maya Chen", gender: "female", role: "Creative Director", co: "Apex Co", av: "M", avColor: "blue", last: "10:24 AM", msg: "Sounds great — I'll have concepts by Friday." },
+    { id: 1, name: "Maya Chen", gender: "female", role: "Creative Director", co: "Apex Co", av: "M", avColor: "blue", last: "10:24 AM", msg: "Sounds great \u2014 I'll have concepts by Friday." },
     { id: 2, name: "Jeff Torres", gender: "male", role: "Plumber", co: "ABC Plumbing", av: "J", avColor: "brown", last: "9:41 AM", msg: "We can do Thursday the 12th at 2pm." },
     { id: 3, name: "Luis Herrera", gender: "male", role: "CPA", co: "Herrera Tax", av: "L", avColor: "purple", last: "Yesterday", msg: "Your Q1 tax docs are attached." },
-    { id: 4, name: "James Whitfield", gender: "male", role: "CEO", co: "Apex Co", av: "J", avColor: "blue", last: "Yesterday", msg: "RE: SOW — looks good, one small change." },
+    { id: 4, name: "James Whitfield", gender: "male", role: "CEO", co: "Apex Co", av: "J", avColor: "blue", last: "Yesterday", msg: "RE: SOW \u2014 looks good, one small change." },
     { id: 5, name: "Sarah Morgan", gender: "female", role: "Friend", co: "", av: "S", avColor: "green", last: "Mar 3", msg: "Did you decide on the cabinet color?" }
   ];
   const THREADS = [
-    { id: 1, name: "Maya Chen", av: "M", avColor: "blue", ch: "WhatsApp", preview: "Sounds great — I'll have concepts by Friday.", time: "10:24 AM", unread: 2 },
+    { id: 1, name: "Maya Chen", av: "M", avColor: "blue", ch: "WhatsApp", preview: "Sounds great \u2014 I'll have concepts by Friday.", time: "10:24 AM", unread: 2 },
     { id: 2, name: "ABC Plumbing", av: "A", avColor: "brown", ch: "SMS", preview: "We can do Thursday the 12th at 2pm.", time: "9:41 AM", unread: 1 },
-    { id: 3, name: "James Whitfield", av: "J", avColor: "blue", ch: "Email", preview: "RE: SOW — looks good, one small change.", time: "Yesterday", unread: 0 },
+    { id: 3, name: "James Whitfield", av: "J", avColor: "blue", ch: "Email", preview: "RE: SOW \u2014 looks good, one small change.", time: "Yesterday", unread: 0 },
     { id: 4, name: "Garret Builders", av: "G", avColor: "gray", ch: "SMS", preview: "Demo day confirmed. See you at 10am.", time: "Yesterday", unread: 0 }
   ];
   const ALL_TASKS = [
@@ -102,26 +102,26 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     { id: 4, title: "Deliver logo concepts round 3", done: false, due: "Mar 8", proj: "Apex Co", pri: "high" },
     { id: 5, title: "Send revised SOW for approval", done: true, due: "Feb 28", proj: "Apex Co", pri: "high" },
     { id: 6, title: "Set up brand asset folder", done: false, due: "Mar 12", proj: "Apex Co", pri: "med" },
-    { id: 7, title: "Book Madrid hotel — Chueca", done: false, due: "Mar 20", proj: "Spain Trip", pri: "med" },
+    { id: 7, title: "Book Madrid hotel \u2014 Chueca", done: false, due: "Mar 20", proj: "Spain Trip", pri: "med" },
     { id: 8, title: "File Q1 estimated tax payment", done: false, due: "Mar 15", proj: "Tax", pri: "high" },
-    { id: 9, title: "Upload expense receipts Jan–Feb", done: false, due: "Mar 10", proj: "Tax", pri: "med" }
+    { id: 9, title: "Upload expense receipts Jan\u2013Feb", done: false, due: "Mar 10", proj: "Tax", pri: "med" }
   ];
   const ALL_NOTES = [
-    { id: 1, folder: "Kitchen Reno", title: "Contractor comparison", preview: "ABC Plumbing came in $2,400 under Garret but has mixed Yelp reviews…", date: "Mar 2", tags: ["contractors", "cost"] },
+    { id: 1, folder: "Kitchen Reno", title: "Contractor comparison", preview: "ABC Plumbing came in $2,400 under Garret but has mixed Yelp reviews\u2026", date: "Mar 2", tags: ["contractors", "cost"] },
     { id: 2, folder: "Kitchen Reno", title: "Cabinet style decisions", preview: "Leaning Shaker in off-white. Confirm door pull finish with Sarah.", date: "Feb 22", tags: ["design", "decisions"] },
     { id: 3, folder: "Apex Co", title: "Kickoff meeting recap", preview: "Client wants to retain the wordmark but fully refresh the color system.", date: "Feb 20", tags: ["client", "milestone"] },
-    { id: 4, folder: "Apex Co", title: "Typography shortlist", preview: "Top candidates: Canela, Söhne Breit, GT Planar. Present 3 directions.", date: "Mar 1", tags: ["type", "design"] },
-    { id: 5, folder: "Spain Trip", title: "Hotel shortlist — Madrid", preview: "Barrio de Chueca is the area. Budget €150/night max. 3 options.", date: "Feb 28", tags: ["travel", "hotels"] },
+    { id: 4, folder: "Apex Co", title: "Typography shortlist", preview: "Top candidates: Canela, S\xF6hne Breit, GT Planar. Present 3 directions.", date: "Mar 1", tags: ["type", "design"] },
+    { id: 5, folder: "Spain Trip", title: "Hotel shortlist \u2014 Madrid", preview: "Barrio de Chueca is the area. Budget \u20AC150/night max. 3 options.", date: "Feb 28", tags: ["travel", "hotels"] },
     { id: 6, folder: "Research", title: "AI tools comparison", preview: "Compared Jasper, Copy.ai, and Claude for long-form writing. Claude wins.", date: "Mar 3", tags: ["ai", "tools"] }
   ];
   const ALL_BOOKMARKS = [
-    { id: 1, col: "Kitchen Inspo", title: "Shaker Cabinet Guide — Houzz", url: "houzz.com", date: "Feb 18", tags: ["cabinets"], thumb: "🏠" },
-    { id: 2, col: "Kitchen Inspo", title: "Quartz vs Granite 2026", url: "thespruce.com", date: "Feb 10", tags: ["countertops"], thumb: "🪨" },
-    { id: 3, col: "Brand Research", title: "2026 Brand Design Trends", url: "underconsideration.com", date: "Feb 22", tags: ["branding"], thumb: "🎨" },
-    { id: 4, col: "Brand Research", title: "Apex Competitor — Studio Maake", url: "studiomaake.com", date: "Feb 12", tags: ["competitor"], thumb: "🔍" },
-    { id: 5, col: "Spain Trip", title: "Seville Top 20 Restaurants", url: "eater.com", date: "Feb 28", tags: ["food"], thumb: "🍽️" },
-    { id: 6, col: "Spain Trip", title: "Renfe Madrid–Seville Tickets", url: "renfe.com", date: "Mar 1", tags: ["transport"], thumb: "🚄" },
-    { id: 7, col: "AI Tools", title: "Claude API Documentation", url: "docs.anthropic.com", date: "Mar 3", tags: ["claude"], thumb: "🤖" }
+    { id: 1, col: "Kitchen Inspo", title: "Shaker Cabinet Guide \u2014 Houzz", url: "houzz.com", date: "Feb 18", tags: ["cabinets"], thumb: "\u{1F3E0}" },
+    { id: 2, col: "Kitchen Inspo", title: "Quartz vs Granite 2026", url: "thespruce.com", date: "Feb 10", tags: ["countertops"], thumb: "\u{1FAA8}" },
+    { id: 3, col: "Brand Research", title: "2026 Brand Design Trends", url: "underconsideration.com", date: "Feb 22", tags: ["branding"], thumb: "\u{1F3A8}" },
+    { id: 4, col: "Brand Research", title: "Apex Competitor \u2014 Studio Maake", url: "studiomaake.com", date: "Feb 12", tags: ["competitor"], thumb: "\u{1F50D}" },
+    { id: 5, col: "Spain Trip", title: "Seville Top 20 Restaurants", url: "eater.com", date: "Feb 28", tags: ["food"], thumb: "\u{1F37D}\uFE0F" },
+    { id: 6, col: "Spain Trip", title: "Renfe Madrid\u2013Seville Tickets", url: "renfe.com", date: "Mar 1", tags: ["transport"], thumb: "\u{1F684}" },
+    { id: 7, col: "AI Tools", title: "Claude API Documentation", url: "docs.anthropic.com", date: "Mar 3", tags: ["claude"], thumb: "\u{1F916}" }
   ];
   const ALL_FILES = [
     { name: "2026-02-28_KitchenReno_Quote_ABCPlumbing.pdf", t: "PDF", s: "1.2 MB", folder: "Kitchen Reno", d: "Feb 28", ai: true },
@@ -133,10 +133,10 @@ if (!window.Plenix) throw new Error('Plenix: "plenix-platform" is not loaded bef
     { name: "2026-01-05_TaxDocs_W2_Employer.pdf", t: "PDF", s: "224 KB", folder: "Tax 2026", d: "Jan 5", ai: true }
   ];
   const CAPTURES = [
-    { label: "Contractor quote screenshot", fileName: "IMG_4891.png", type: "PNG", emoji: "📸", context: "Screenshot of ABC Plumbing estimate. Kitchen sink relocation. Labor $1,200, materials $640, permit $180. Total $2,020. March 4 2026. Project: Kitchen Renovation." },
-    { label: "Client contract PDF", fileName: "document(3).pdf", type: "PDF", emoji: "📄", context: "Contract from Apex Design Co. Scope: brand identity refresh — logo, color system, typography. 50/50 payment split. March 4 2026." },
-    { label: "Flight search screenshot", fileName: "Screen Shot 2026-03-03.png", type: "PNG", emoji: "✈️", context: "Google Flights results for Madrid round trip June 14–21 from JFK. Prices $640–$910. Iberia and Delta. Project: Spain Trip." },
-    { label: "Budget spreadsheet", fileName: "Untitled spreadsheet.xlsx", type: "XLSX", emoji: "📊", context: "Budget tracker for Apex Co brand refresh. Categories: design fees, ad spend, printing. Total budget $18,400. Q2 2026." }
+    { label: "Contractor quote screenshot", fileName: "IMG_4891.png", type: "PNG", emoji: "\u{1F4F8}", context: "Screenshot of ABC Plumbing estimate. Kitchen sink relocation. Labor $1,200, materials $640, permit $180. Total $2,020. March 4 2026. Project: Kitchen Renovation." },
+    { label: "Client contract PDF", fileName: "document(3).pdf", type: "PDF", emoji: "\u{1F4C4}", context: "Contract from Apex Design Co. Scope: brand identity refresh \u2014 logo, color system, typography. 50/50 payment split. March 4 2026." },
+    { label: "Flight search screenshot", fileName: "Screen Shot 2026-03-03.png", type: "PNG", emoji: "\u2708\uFE0F", context: "Google Flights results for Madrid round trip June 14\u201321 from JFK. Prices $640\u2013$910. Iberia and Delta. Project: Spain Trip." },
+    { label: "Budget spreadsheet", fileName: "Untitled spreadsheet.xlsx", type: "XLSX", emoji: "\u{1F4CA}", context: "Budget tracker for Apex Co brand refresh. Categories: design fees, ad spend, printing. Total budget $18,400. Q2 2026." }
   ];
   async function callClaude(sys, usr) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
@@ -214,7 +214,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
       }
       setLoading(false);
     };
-    return /* @__PURE__ */ React.createElement(plenixPlatform.Dialog, { open: true, onClose: close, title: "AI File Naming", description: "Select a file — AI reads the content and proposes a structured name." }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "md" }, /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement(plenixPlatform.Dialog, { open: true, onClose: close, title: "AI File Naming", description: "Select a file \u2014 AI reads the content and proposes a structured name." }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "md" }, /* @__PURE__ */ React.createElement(
       plenixPlatform.RadioTiles,
       {
         legend: "File",
@@ -224,7 +224,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
         onChange: (v) => pick(CAPTURES.find((f) => f.fileName === v)),
         options: CAPTURES.map((f) => ({ value: f.fileName, label: f.emoji + " " + f.label, description: f.fileName }))
       }
-    ), sel ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "md" }, facts("Selected file", [["Original filename", sel.fileName, true], ["Type", sel.type, true]]), loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "info" }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Chat.Typing, { label: "Thinking" }), /* @__PURE__ */ React.createElement("span", null, "Reading content and extracting metadata…"))), /* @__PURE__ */ React.createElement(plenixPlatform.Skeleton, { height: "32px" }), /* @__PURE__ */ React.createElement(plenixPlatform.Skeleton, { height: "24px", width: "200px" })) : null, res && !loading && !saved ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm", className: "plx-motion-enter" }, /* @__PURE__ */ React.createElement(plenixPlatform.CodeBlock, { title: "Proposed filename", language: "text" }, res.filename), /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Filename parts" }, Object.entries(res.parts || {}).filter(([k]) => PART[k]).map(([k, v]) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: k }, PART[k] + ": " + v))), res.tags ? /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Tags" }, res.tags.map((t) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: t }, t))) : null, res.summary ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary", as: "p" }, /* @__PURE__ */ React.createElement("q", null, res.summary)) : null, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "primary", onClick: () => setSaved(true) }, "Accept & Save"), /* @__PURE__ */ React.createElement(plenixPlatform.Button, { onClick: () => pick(sel) }, "Regenerate"), /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "ghost", onClick: () => {
+    ), sel ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "md" }, facts("Selected file", [["Original filename", sel.fileName, true], ["Type", sel.type, true]]), loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "info" }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Chat.Typing, { label: "Thinking" }), /* @__PURE__ */ React.createElement("span", null, "Reading content and extracting metadata\u2026"))), /* @__PURE__ */ React.createElement(plenixPlatform.Skeleton, { height: "32px" }), /* @__PURE__ */ React.createElement(plenixPlatform.Skeleton, { height: "24px", width: "200px" })) : null, res && !loading && !saved ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm", className: "plx-motion-enter" }, /* @__PURE__ */ React.createElement(plenixPlatform.CodeBlock, { title: "Proposed filename", language: "text" }, res.filename), /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Filename parts" }, Object.entries(res.parts || {}).filter(([k]) => PART[k]).map(([k, v]) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: k }, PART[k] + ": " + v))), res.tags ? /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Tags" }, res.tags.map((t) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: t }, t))) : null, res.summary ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary", as: "p" }, /* @__PURE__ */ React.createElement("q", null, res.summary)) : null, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "primary", onClick: () => setSaved(true) }, "Accept & Save"), /* @__PURE__ */ React.createElement(plenixPlatform.Button, { onClick: () => pick(sel) }, "Regenerate"), /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "ghost", onClick: () => {
       setSel(null);
       setRes(null);
     } }, "Cancel"))) : null, saved ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm", className: "plx-motion-enter" }, /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "success" }, "Saved to OneDrive"), /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "data" }, res && res.filename), /* @__PURE__ */ React.createElement(plenixPlatform.Inline, null, /* @__PURE__ */ React.createElement(plenixPlatform.Button, { onClick: () => {
@@ -293,13 +293,13 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
       setLoading(false);
     };
     const SUGG = ["contractor quote kitchen", "Apex brand guidelines", "flights to Madrid", "tax documents 2026", "meeting notes"];
-    return /* @__PURE__ */ React.createElement(plenixPlatform.PageContent, { className: "plx-motion-enter" }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "md", className: "plx-u-mx-auto plx-u-w-100p plx-u-max-w-600px" }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "xs" }, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { as: "h1", variant: "title" }, "Search everything"), /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary" }, "Files, notes, tasks, bookmarks, contacts — unified across all projects.")), /* @__PURE__ */ React.createElement(plenixPlatform.Field, { label: "Search everything", hideLabel: true }, /* @__PURE__ */ React.createElement(plenixPlatform.SearchField, { ref, label: "Search everything", value: q, onChange: (e) => setQ(e.target.value), onKeyDown: (e) => e.key === "Enter" && run(), placeholder: "Try: contractor quote from last month…", loading, shortcut: "Enter" })), /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "primary", onClick: run, disabled: !q.trim() || loading }, loading ? "Searching…" : "Search"), q ? /* @__PURE__ */ React.createElement(plenixPlatform.Button, { onClick: () => {
+    return /* @__PURE__ */ React.createElement(plenixPlatform.PageContent, { className: "plx-motion-enter" }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "md", className: "plx-u-mx-auto plx-u-w-100p plx-u-max-w-600px" }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "xs" }, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { as: "h1", variant: "title" }, "Search everything"), /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary" }, "Files, notes, tasks, bookmarks, contacts \u2014 unified across all projects.")), /* @__PURE__ */ React.createElement(plenixPlatform.Field, { label: "Search everything", hideLabel: true }, /* @__PURE__ */ React.createElement(plenixPlatform.SearchField, { ref, label: "Search everything", value: q, onChange: (e) => setQ(e.target.value), onKeyDown: (e) => e.key === "Enter" && run(), placeholder: "Try: contractor quote from last month\u2026", loading, shortcut: "Enter" })), /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "primary", onClick: run, disabled: !q.trim() || loading }, loading ? "Searching\u2026" : "Search"), q ? /* @__PURE__ */ React.createElement(plenixPlatform.Button, { onClick: () => {
       setQ("");
       setRes(null);
     } }, "Clear") : null), !res && !loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "eyebrow" }, "Suggested searches"), /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { wrap: true, gap: "sm" }, SUGG.map((s) => /* @__PURE__ */ React.createElement(plenixPlatform.Button, { key: s, size: "sm", onClick: () => {
       setQ(s);
       setTimeout(run, 80);
-    } }, s)))) : null, loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "info" }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Chat.Typing, { label: "Searching" }), /* @__PURE__ */ React.createElement("span", null, "Scanning all modules…"))), [1, 2, 3].map((i) => /* @__PURE__ */ React.createElement(plenixPlatform.Skeleton, { key: i, height: "72px" }))) : null, res && !loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm", className: "plx-motion-enter" }, res.answer ? /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "info" }, res.answer) : null, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "eyebrow" }, res.results && res.results.length || 0, " results"), (res.results || []).map((r, i) => /* @__PURE__ */ React.createElement(plenixPlatform.Card, { key: i, title: r.name, meta: r.preview, onOpen: () => {
+    } }, s)))) : null, loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "info" }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Chat.Typing, { label: "Searching" }), /* @__PURE__ */ React.createElement("span", null, "Scanning all modules\u2026"))), [1, 2, 3].map((i) => /* @__PURE__ */ React.createElement(plenixPlatform.Skeleton, { key: i, height: "72px" }))) : null, res && !loading ? /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm", className: "plx-motion-enter" }, res.answer ? /* @__PURE__ */ React.createElement(plenixPlatform.Notice, { tone: "info" }, res.answer) : null, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "eyebrow" }, res.results && res.results.length || 0, " results"), (res.results || []).map((r, i) => /* @__PURE__ */ React.createElement(plenixPlatform.Card, { key: i, title: r.name, meta: r.preview, onOpen: () => {
     } }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { wrap: true, gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Tag, null, r.module), r.project ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary" }, r.project) : null, r.tags && r.tags.length ? /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Tags" }, r.tags.map((t) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: t }, t))) : null, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "data", className: "plx-u-ml-auto" }, r.date))))) : null));
   }
   const { useState: useState$3 } = React;
@@ -325,14 +325,14 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
       noun: "contact",
       filters: [{ id: "co", label: "Company", multiple: true }],
       columns: [{ title: "Name", field: "name", kind: "name" }, { title: "Role", field: "role" }, { title: "Company", field: "co" }],
-      rows: () => CONTACTS.map((c) => ({ key: "c" + c.id, name: c.name, sub: c.role + " · " + c.co, cells: { role: c.role, co: c.co }, facets: { co: c.co } }))
+      rows: () => CONTACTS.map((c) => ({ key: "c" + c.id, name: c.name, sub: c.role + " \xB7 " + c.co, cells: { role: c.role, co: c.co }, facets: { co: c.co } }))
     },
     calendar: {
       label: "Calendar",
       noun: "event",
       filters: [{ id: "cal", label: "Calendar", multiple: true }],
       columns: [{ title: "Event", field: "name", kind: "name" }, { title: "Date", field: "date", kind: "data" }, { title: "Time", field: "time", kind: "data" }, { title: "Calendar", field: "cal" }],
-      rows: () => CAL_EVENTS.map((e) => ({ key: "e" + e.id, name: e.title, sub: "Mar " + e.date + " · " + e.time, cells: { date: "Mar " + e.date, time: e.time, cal: cap(e.cal) }, facets: { cal: cap(e.cal) } }))
+      rows: () => CAL_EVENTS.map((e) => ({ key: "e" + e.id, name: e.title, sub: "Mar " + e.date + " \xB7 " + e.time, cells: { date: "Mar " + e.date, time: e.time, cal: cap(e.cal) }, facets: { cal: cap(e.cal) } }))
     },
     tasks: {
       label: "Tasks",
@@ -398,8 +398,8 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
         return !v || has.indexOf(v) >= 0;
       });
     });
-    if (sort === "Name A–Z") found = found.slice().sort((a, b) => a.name.localeCompare(b.name));
-    if (sort === "Name Z–A") found = found.slice().sort((a, b) => b.name.localeCompare(a.name));
+    if (sort === "Name A\u2013Z") found = found.slice().sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "Name Z\u2013A") found = found.slice().sort((a, b) => b.name.localeCompare(a.name));
     const defs = src.filters.map((f) => ({ ...f, options: optsOf(rows, f.id), value: f.multiple ? filters[f.id] || [] : filters[f.id] || null }));
     return /* @__PURE__ */ React.createElement("div", { className: "plx-u-px-32px plx-u-py-24px plx-u-flex-1 plx-u-flex plx-u-flex-column plx-u-min-h-0 plx-u-overflow-y-auto" }, /* @__PURE__ */ React.createElement(
       plenixPlatform.SearchWorkspace,
@@ -408,12 +408,12 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
         query,
         onQueryChange: onQuery,
         noun: src.noun,
-        placeholder: app === "home" ? "Search files, notes, tasks, contacts…" : "Search " + src.label.toLowerCase() + "…",
+        placeholder: app === "home" ? "Search files, notes, tasks, contacts\u2026" : "Search " + src.label.toLowerCase() + "\u2026",
         count: found.length,
         filters: defs,
         onFilterChange: (id, v) => setFilters({ ...filters, [id]: v }),
         onClearAll: () => setFilters({}),
-        sort: { value: sort, options: ["Relevance", "Name A–Z", "Name Z–A"], onChange: setSort },
+        sort: { value: sort, options: ["Relevance", "Name A\u2013Z", "Name Z\u2013A"], onChange: setSort },
         headEnd: app === "home" && onAskAI ? /* @__PURE__ */ React.createElement(plenixPlatform.Button, { size: "sm", icon: "sparkle", onClick: () => onAskAI(query) }, "Ask AI") : null
       },
       /* @__PURE__ */ React.createElement(
@@ -574,7 +574,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
     const recentShown = recent.filter((x) => x.toLowerCase().indexOf(typed) >= 0);
     const searchSuggestions = recentShown.length ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(plenixPlatform.SectionHeading, null, "Recent searches"), /* @__PURE__ */ React.createElement(plenixPlatform.ActivityList, { label: "Recent searches" }, recentShown.map((x) => /* @__PURE__ */ React.createElement(plenixPlatform.ActivityList.Item, { key: x, leading: /* @__PURE__ */ React.createElement(plenixPlatform.Icon, { name: "clock" }), title: x, onOpen: () => runSearch(x) })))) : null;
     const results = typed ? findResults(scope, hq) : null;
-    const searchResults = results ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(plenixPlatform.SectionHeading, null, "Results"), results.length ? /* @__PURE__ */ React.createElement(plenixPlatform.ActivityList, { label: "Results", stacked: true }, results.map((r) => /* @__PURE__ */ React.createElement(plenixPlatform.ActivityList.Item, { key: r.key, title: r.name, meta: r.section ? r.section + " · " + r.sub : r.sub, onOpen: () => afterSearchView(() => openResult(r, r.app)) }))) : /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary", as: "p" }, "Nothing matches “" + hq.trim() + "”.")) : null;
+    const searchResults = results ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(plenixPlatform.SectionHeading, null, "Results"), results.length ? /* @__PURE__ */ React.createElement(plenixPlatform.ActivityList, { label: "Results", stacked: true }, results.map((r) => /* @__PURE__ */ React.createElement(plenixPlatform.ActivityList.Item, { key: r.key, title: r.name, meta: r.section ? r.section + " \xB7 " + r.sub : r.sub, onOpen: () => afterSearchView(() => openResult(r, r.app)) }))) : /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary", as: "p" }, "Nothing matches \u201C" + hq.trim() + "\u201D.")) : null;
     const main = ai !== null ? /* @__PURE__ */ React.createElement(SearchScreen, { key: ai, initialQuery: ai }) : find ? /* @__PURE__ */ React.createElement(FindWorkspace, { key: find.app, app: find.app, query: find.query, onQuery: (q) => {
       loc.navigate(["search"], { q }, { replace: true });
       setHq(q);
@@ -584,7 +584,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
       {
         page,
         mainClassName: "plx-shell-main",
-        footer: /* @__PURE__ */ React.createElement(plenixPlatform.StatusBar, { start: /* @__PURE__ */ React.createElement("span", null, SUITE.length - 1, " applications · Lighthouse Way"), end: /* @__PURE__ */ React.createElement("span", null, "Synced just now") }),
+        footer: /* @__PURE__ */ React.createElement(plenixPlatform.StatusBar, { start: /* @__PURE__ */ React.createElement("span", null, SUITE.length - 1, " applications \xB7 Lighthouse Way"), end: /* @__PURE__ */ React.createElement("span", null, "Synced just now") }),
         sideNav: HAS_NAV.includes(app) ? /* @__PURE__ */ React.createElement(LeftNav, { section: app, sub, setSub, onSettings: () => plenixPlatform.leavePage(settingsPage(SETTINGS_FOR[app] || "general")) }) : null,
         header: /* @__PURE__ */ React.createElement(
           plenixPlatform.AppHeader,
@@ -597,7 +597,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
             search: /* @__PURE__ */ React.createElement(
               plenixPlatform.SearchField,
               {
-                placeholder: inSuite && app !== "home" ? "Search " + label.toLowerCase() + "…" : "Search files, notes, contacts…",
+                placeholder: inSuite && app !== "home" ? "Search " + label.toLowerCase() + "\u2026" : "Search files, notes, contacts\u2026",
                 label: "Search",
                 shortcut: "Ctrl K",
                 onAccent,
@@ -662,7 +662,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
     const showDesc = prefs?.projDesc || false;
     const active = PROJECTS.filter((p) => p.status === "active");
     const catLabel = { personal: "Personal", client: "Client", research: "Research", travel: "Travel", finance: "Finance" };
-    return /* @__PURE__ */ React.createElement(plenixPlatform.Panel, { icon: "briefcase", title: "Projects", flush: density !== "card", actions: /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "xs" }, allLink("View all projects", onViewAll), handle) }, density === "card" ? /* @__PURE__ */ React.createElement(plenixPlatform.ContentGrid, { size: "md", label: "Active projects" }, active.map((p) => /* @__PURE__ */ React.createElement(plenixPlatform.Card, { key: p.id, title: p.name, meta: /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "xs" }, /* @__PURE__ */ React.createElement(plenixPlatform.ColorSwatch, { color: p.color, size: "sm" }), showCategory ? catLabel[p.tags[0]] || p.tags[0] : null), onOpen: () => onProject(p) }, showDesc ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary" }, p.desc.substring(0, 55), "…") : null, showFiles ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "data" }, p.files, " files") : null, showTags ? /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Tags" }, p.tags.slice(0, 2).map((t) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: t }, t))) : null))) : /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "none" }, active.map((p) => /* @__PURE__ */ React.createElement(plenixPlatform.RowButton, { key: p.id, onClick: () => onProject(p) }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm", inset: "sm", justify: "between" }, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "strong", truncate: true }, p.name), /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, showCategory ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "caption" }, catLabel[p.tags[0]] || p.tags[0]) : null, showFiles ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "data" }, p.files) : null))))));
+    return /* @__PURE__ */ React.createElement(plenixPlatform.Panel, { icon: "briefcase", title: "Projects", flush: density !== "card", actions: /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "xs" }, allLink("View all projects", onViewAll), handle) }, density === "card" ? /* @__PURE__ */ React.createElement(plenixPlatform.ContentGrid, { size: "md", label: "Active projects" }, active.map((p) => /* @__PURE__ */ React.createElement(plenixPlatform.Card, { key: p.id, title: p.name, meta: /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "xs" }, /* @__PURE__ */ React.createElement(plenixPlatform.ColorSwatch, { color: p.color, size: "sm" }), showCategory ? catLabel[p.tags[0]] || p.tags[0] : null), onOpen: () => onProject(p) }, showDesc ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "secondary" }, p.desc.substring(0, 55), "\u2026") : null, showFiles ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "data" }, p.files, " files") : null, showTags ? /* @__PURE__ */ React.createElement(plenixPlatform.TagList, { label: "Tags" }, p.tags.slice(0, 2).map((t) => /* @__PURE__ */ React.createElement(plenixPlatform.Tag, { key: t }, t))) : null))) : /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "none" }, active.map((p) => /* @__PURE__ */ React.createElement(plenixPlatform.RowButton, { key: p.id, onClick: () => onProject(p) }, /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm", inset: "sm", justify: "between" }, /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "strong", truncate: true }, p.name), /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "sm" }, showCategory ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "caption" }, catLabel[p.tags[0]] || p.tags[0]) : null, showFiles ? /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "data" }, p.files) : null))))));
   }
   function ContactsWidget({ handle, onViewAll }) {
     return /* @__PURE__ */ React.createElement(plenixPlatform.Panel, { icon: "settings-users", title: "Contacts", actions: /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { gap: "xs" }, allLink("View all contacts", onViewAll), handle) }, /* @__PURE__ */ React.createElement(plenixPlatform.Stack, { gap: "sm" }, CONTACTS.map((c) => /* @__PURE__ */ React.createElement(plenixPlatform.Inline, { key: c.id, gap: "sm" }, /* @__PURE__ */ React.createElement(plenixPlatform.Avatar, { name: c.name, size: "sm" }), /* @__PURE__ */ React.createElement(plenixPlatform.Text, { variant: "strong", truncate: true, className: "plx-u-flex-1" }, c.name), /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "ghost", size: "xs", iconOnly: true, label: "Message " + c.name, icon: /* @__PURE__ */ React.createElement(plenixPlatform.Icon, { name: "message" }) }), /* @__PURE__ */ React.createElement(plenixPlatform.Button, { variant: "ghost", size: "xs", iconOnly: true, label: "Call " + c.name, icon: /* @__PURE__ */ React.createElement(plenixPlatform.Icon, { name: "phone" }) })))));
@@ -764,7 +764,7 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
   function ProjectContent({ proj, panel }) {
     const pTasks = ALL_TASKS.filter((t) => t.proj.includes(proj.name.split(" ")[0]));
     const pNotes = ALL_NOTES.filter((n) => n.folder.split(" ")[0] === proj.name.split(" ")[0]);
-    const pFiles = ALL_FILES.filter((f) => f.folder === proj.name.split("—")[0].trim().replace("Tax & Finances 2026", "Tax 2026"));
+    const pFiles = ALL_FILES.filter((f) => f.folder === proj.name.split("\u2014")[0].trim().replace("Tax & Finances 2026", "Tax 2026"));
     const [done, setDone] = useState(() => Object.fromEntries(pTasks.map((t) => [t.id, t.done])));
     const doneT = pTasks.filter((t) => done[t.id]).length;
     const pct = pTasks.length ? Math.round(doneT / pTasks.length * 100) : 0;
@@ -798,14 +798,14 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
     ] })));
     const placeholders = {
       roadmap: ["Roadmap", "Gantt-style timeline planning with drag-and-drop tasks and milestones. Coming soon.", "roadmap"],
-      contacts: ["Contacts", "People linked to this project with roles — Owner, Client, Consultant, Reviewer. Coming soon.", "contacts"],
+      contacts: ["Contacts", "People linked to this project with roles \u2014 Owner, Client, Consultant, Reviewer. Coming soon.", "contacts"],
       bookmarks: ["Bookmarks", "Save, organize, and retrieve links with folder hierarchy, smart rules, and sharing. Coming soon.", "link"],
-      images: ["Images", "Image gallery — upload, paste URL, or search Unsplash. Source for mood boards. Coming soon.", "images"],
+      images: ["Images", "Image gallery \u2014 upload, paste URL, or search Unsplash. Source for mood boards. Coming soon.", "images"],
       mood_boards: ["Mood boards", "Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.", "mood"],
       time_tracking: ["Time tracking", "Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.", "time"],
-      activity: ["Activity feed", "Every event logged — task changes, files, comments, status updates. Coming soon.", "activity"],
+      activity: ["Activity feed", "Every event logged \u2014 task changes, files, comments, status updates. Coming soon.", "activity"],
       bookkeeping: ["Financials", "Budget tracking, milestone payments, invoices, and payment history. Coming soon.", "finance"],
-      risks: ["Risks", "RIAC log — Risks, Issues, Assumptions, Constraints with owner and priority. Coming soon.", "risks"],
+      risks: ["Risks", "RIAC log \u2014 Risks, Issues, Assumptions, Constraints with owner and priority. Coming soon.", "risks"],
       changes: ["Changes", "Formal change request workflow with timeline and cost impact. Coming soon.", "changes"]
     };
     if (placeholders[panel]) {

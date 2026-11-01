@@ -61,6 +61,9 @@ export function createAdapter(current) {
     on: (name, fn) => { const listeners = current.current.listeners; if (!listeners.has(name)) listeners.set(name, new Set()); listeners.get(name).add(fn); },
     off: (name, fn) => current.current.listeners.get(name)?.delete(fn),
     getGroups:()=>current.current.groups.map(group),setGroupBy:value=>current.current.changeGroups(value),
+    getCellRange:()=>{const r=current.current.cellRange,v=r&&r.enabled?r.read():null;return v?{rows:v.rows,fields:v.fields,text:v.text}:null;},
+    clearCellRange:()=>{const r=current.current.cellRange;if(r&&r.enabled)r.collapse();},
+    copyCellRange:()=>{const r=current.current.cellRange;return !!(r&&r.enabled&&r.copy());},
     copyToClipboard:()=>{const fields=current.current.table.getVisibleLeafColumns();const text=[fields.map(c=>c.columnDef.meta.title||c.id),...api.getData(true).map(record=>fields.map(c=>valueAt(record,c.id)))].map(values=>values.map(value=>valueText(value).replace(/[\t\r\n]/g,' ')).join('\t')).join('\n');return navigator.clipboard.writeText(text);},
     print:()=>window.print(),options: {}, row: id => row(asKey(id)), column, cell: (id, field) => cell(asKey(id), field)
   };

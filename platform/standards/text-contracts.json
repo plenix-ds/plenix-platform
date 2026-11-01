@@ -31,6 +31,13 @@
     "font-weight"
    ]
   },
+  "plx-anchor__link": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
   "plx-app-header__app": {
    "contract": "adjusts",
    "props": [
@@ -390,6 +397,12 @@
    "props": [
     "font-size",
     "font-weight"
+   ]
+  },
+  "plx-cascader__limit": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
    ]
   },
   "plx-cascader__match": {
@@ -1402,6 +1415,12 @@
     "line-height"
    ]
   },
+  "plx-field__warning": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
   "plx-fieldset__legend": {
    "contract": "adjusts",
    "props": [
@@ -1849,17 +1868,25 @@
     "line-height"
    ]
   },
+  "plx-menu": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
+  },
   "plx-menu__group-label": {
    "contract": "adjusts",
    "props": [
     "font-size",
-    "font-weight"
+    "font-weight",
+    "line-height"
    ]
   },
   "plx-menu__item": {
    "contract": "adjusts",
    "props": [
-    "font-size"
+    "font-size",
+    "font-weight",
+    "line-height"
    ]
   },
   "plx-metric-card__change": {
@@ -3799,6 +3826,110 @@
    "contract": "establishes",
    "role": "caption",
    "font": "sans"
+  },
+  "plx-combobox__option-description": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-data-grid__cell--slot-title": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-data-grid__cell--slot-subtitle": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-secondary": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-date": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-primary": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "font-weight",
+    "line-height"
+   ]
+  },
+  "plx-data-grid__cell--slot-tertiary": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-title": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-table__cell--slot-subtitle": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-secondary": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-date": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-primary": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "mono",
+   "adjusts": [
+    "font-size",
+    "font-weight",
+    "line-height"
+   ]
+  },
+  "plx-table__cell--slot-tertiary": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "mono",
+   "adjusts": [
+    "line-height"
+   ]
   }
  }
 }

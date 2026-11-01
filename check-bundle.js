@@ -170,17 +170,34 @@ for (const k of Object.keys(RULES)) {
 }
 console.log('  (information, never a failure) plenix.css: ' + kb(need('plenix.css')) + ' KB; plenix.min.css: ' + kb(need('plenix.min.css')) + ' KB; unsupported CSS inside @supports (has a fallback): ' + css.guarded + ' rules');
 // one import from the npm package (#685): what an app that imports one part bundles (tools/agent/one-part-sizes.js: the
-// repository's esbuild, minified, React external, against packages/react); a size above its limit fails, so tree-shaking
+// Vite, minified, React external, with esbuild's number beside it as a cross-check, against packages/react); a size above its limit fails, so tree-shaking
 // cannot break again unseen
 const parts = require('./tools/agent/one-part-sizes.js');
 let over = 0;
 if (fs.existsSync(parts.entryOf())) {
-  console.log('  one import from @plenix-ds/react (minified, React external):');
+  console.log('  one import from @plenix-ds/react (Vite, minified, React external; esbuild beside it, cross-check only):');
   for (const r of parts.measure()) { if (r.over) over++; console.log('        ' + parts.line(r)); }
 } else { console.log('BUNDLE_FAIL: packages/react is missing: run node build-packages.js'); process.exit(1); }
 // the styles per part (#710): foundations.css and parts/*.css add up to plenix.css, in its order, and ties keep it
 // (tools/agent/style-parts-check.js)
 if (!fs.existsSync(path.join(ROOT, 'packages', 'styles', 'foundations.css'))) { console.log('BUNDLE_FAIL: packages/styles/foundations.css is missing: run node build-packages.js'); process.exit(1); }
 const styleParts = require('./tools/agent/style-parts-check.js').check(LIST).bad ? 1 : 0;
-if (up || over || styleParts) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
+// no non-ASCII character in the code of a shipped script (check-system.rules/ascii-bundles.js, the charset break of 2026-11-02): a page that loads
+// plenix.js or plenix.esm.js without a charset must still run (comments may hold any character); never a baseline, always zero
+let nonAscii = 0;
+const ascii = require('./check-system.rules/ascii-bundles.js');
+fs.readdirSync(CDN).filter((f) => /\.(c|m)?js$/.test(f)).forEach((f) => {
+  const hit = ascii.nonAsciiOutsideComments(fs.readFileSync(path.join(CDN, f), 'utf8'));
+  if (hit) { nonAscii++; console.log('BUNDLE_FAIL: ' + f + ':' + hit.line + ' a non-ASCII character in code (a page loaded without a charset breaks): ' + JSON.stringify(hit.text)); }
+});
+if (!nonAscii) console.log('  non-ASCII characters in the code of the CDN scripts: 0');
+// React in scope (check-system.rules/react-in-scope.js, the npm DataGrid that did not draw): every shipped ES module binds the React it uses
+let noReact = 0;
+const inScope = require('./check-system.rules/react-in-scope.js');
+for (const f of inScope.esModules()) {
+  const hit = inScope.unboundReact(fs.readFileSync(f, 'utf8'));
+  if (hit) { noReact++; console.log('BUNDLE_FAIL: ' + path.relative(ROOT, f) + ':' + hit.line + ' React is used but never imported (the first render throws "React is not defined"): ' + JSON.stringify(hit.text)); }
+}
+if (!noReact) console.log('  ES modules that use React without importing it: 0');
+if (up || over || styleParts || nonAscii || noReact) { console.log('BUNDLE_FAIL (' + [up ? up + ' rule' + (up > 1 ? 's' : '') + ' went up' : '', over ? over + ' one-part import' + (over > 1 ? 's' : '') + ' over the limit' : '', styleParts ? 'the style parts do not add up to plenix.css' : '', nonAscii ? nonAscii + ' script' + (nonAscii > 1 ? 's' : '') + ' with non-ASCII code' : '', noReact ? noReact + ' module' + (noReact > 1 ? 's' : '') + ' using React without importing it' : ''].filter(Boolean).join(', ') + ')'); process.exit(1); }
 console.log(down ? 'BUNDLE_OK (' + down + ' went down: lower the baseline)' : 'BUNDLE_OK');

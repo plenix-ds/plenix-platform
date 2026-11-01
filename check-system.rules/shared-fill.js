@@ -6,7 +6,7 @@
 //   const fill = (s, v) => s.replace(/\{(\w+)\}/g, …)           finding: use utils/fill.ts (a copy behaved four ways: an undefined
 //                                                               value wrote "undefined" in some of them)
 //   const TOP_LAYER = FLOATING_ANCHOR && …                      finding: import TOP_LAYER from utils/floating.ts
-//   const asIcon = (i) => iconElement(i)                         finding: import { asIcon } from Icon.jsx (a state icon: stateIcon)
+//   const asIcon = (i) => iconElement(i)                         finding: import { asIcon } from Icon.tsx (a state icon: stateIcon)
 // A function named fill that does not fill a placeholder (Icon's fill is a flag; a counter in useVirtualizer) is not read.
 //   require('./check-system.rules/shared-fill.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
 // Alone: node check-system.rules/shared-fill.js     -> SHARED_FILL_OK, or the findings and exit 1
@@ -21,7 +21,7 @@ const SKIP_FILE = /[\\/](dist|vendor|node_modules|design-system|mobile|icons|rel
 const FILL_DEF = /(?:\b(?:const|let|var)\s+fill\s*=|\bfunction\s+fill\s*\()/g;
 const PLACEHOLDER = /\{\(?\\w|\\\{|'\{|\{\w+\}/;
 const TOP_LAYER_DEF = /\bconst\s+TOP_LAYER\s*=[^;]*(FLOATING_ANCHOR|anchor-name)/;
-// a local asIcon: the one is exported by components/Icon/Icon.jsx
+// a local asIcon: the one is exported by components/Icon/Icon.tsx
 const ASICON_DEF = /\b(?:const|let|var)\s+asIcon\s*=|\bfunction\s+asIcon\s*\(/;
 
 const lineOf = (text, i) => text.slice(0, i).split('\n').length;
@@ -41,7 +41,7 @@ function check({ files, add }) {
       const near = text.slice(m.index, m.index + 360);
       if (/\.(replace|split)\(/.test(near) && PLACEHOLDER.test(near)) add(NAME, abs, lineOf(text, m.index), 'a local fill(): import { fill } from utils/fill.ts (one filler for every text; fillNodes for nodes in the data font)');
     }
-    if (!/[\\/]components[\\/]Icon[\\/]Icon\.[jt]sx$/.test(abs)) { const a = ASICON_DEF.exec(text); if (a) add(NAME, abs, lineOf(text, a.index), 'a local asIcon: import { asIcon } from components/Icon/Icon.jsx (a state icon: stateIcon)'); }
+    if (!/[\\/]components[\\/]Icon[\\/]Icon\.[jt]sx$/.test(abs)) { const a = ASICON_DEF.exec(text); if (a) add(NAME, abs, lineOf(text, a.index), 'a local asIcon: import { asIcon } from components/Icon/Icon.tsx (a state icon: stateIcon)'); }
     const t = TOP_LAYER_DEF.exec(text);
     if (t) add(NAME, abs, lineOf(text, t.index), 'a local TOP_LAYER: import { TOP_LAYER } from utils/floating.ts');
   }

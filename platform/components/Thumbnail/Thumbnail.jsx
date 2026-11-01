@@ -13,7 +13,7 @@
      The icon is decorative and hidden from assistive technology.
 */
 import React from 'react';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';
 
 export function Thumbnail({ src, alt = '', icon = 'document' }) {

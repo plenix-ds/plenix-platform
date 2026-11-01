@@ -39,7 +39,7 @@ const pending: Partial<Record<Politeness, ReturnType<typeof setTimeout> | null>>
 const waiting: Record<Politeness, { text: string; queue: boolean }[]> = { polite: [], assertive: [] };   // the messages of the current pause: { text, queue }
 
 // sentences joined: a period between two messages unless the first already ends a sentence
-const joinMessages = (list: string[]) => list.reduce((all, t) => (!all ? t : all + (/[.!?…]$/.test(all) ? ' ' : '. ') + t), '');
+const joinMessages = (list: string[]) => list.reduce((all, t) => (!all ? t : all + (/[.!?\u2026]$/.test(all) ? ' ' : '. ') + t), '');
 
 // the page-wide region for one politeness (made once, visually hidden)
 function region(politeness: Politeness): HTMLElement {

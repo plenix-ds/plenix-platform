@@ -41,7 +41,7 @@
 import React from 'react';
 import { cx } from '../utils/cx.ts';
 import { formatList } from '../utils/format.ts';
-import { Button } from '../components/Button/Button.jsx';
+import { Button } from '../components/Button/Button.tsx';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';

@@ -8,11 +8,11 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../Stack/Stack.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Notice } from '../Notice/Notice.jsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Text } from '../Text/Text.tsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Card } from '../Card/Card.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

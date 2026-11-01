@@ -11,8 +11,6 @@
        with hasChildren: true and no children array is a parent whose children load when it is first chosen
      loadChildren(item): returns the item's children (an array or a promise of one) the first time it is chosen (issue 814,
        useBranchLoader): its column shows a spinner and "Loading…", a failure says so with Try again, never asked twice
-     loader: a useBranchLoader result to share instead (Cascader passes its own, so its search and path see the same
-       loaded children)
      path: the chosen item of each column, by id from the left ([] for none), for a controlled view
      defaultPath: the path it starts with, uncontrolled
      onPathChange(path, item): runs when the path changes, with the item chosen last (undefined when a column is left)
@@ -35,6 +33,8 @@
        children open in the next column at once), Home and End the first and last, Arrow Right moves into the children
        (choosing the first), Arrow Left back to the parent's column, Enter opens a leaf (onOpen) or moves into a parent;
        typing a letter moves to the next item that starts with it. The active item is the column's aria-activedescendant.
+     Tabbing into a column with nothing chosen chooses its first item; a click chooses the item clicked, also as the
+       column's first focus (a searchable Cascader's first click chose the first item instead: issue 814).
      Choosing a parent clears the columns to its right; the newest column scrolls into view.
      A column with no children says so (strings.empty). Long columns scroll on their own (each list is focusable).
      A parent to load (hasChildren) is chosen like any other; its column is aria-busy and its spinner announces "Loading
@@ -43,12 +43,14 @@
    Notes:
      For narrow windows, show one level at a time instead (drilldown navigation); for a value in a form, Cascader.
      Widths are steps, never numbers: data-plx-width sets one of the six column width tokens.
+     Cascader hands its own branch loader (useBranchLoader) to its columns through an internal loader prop, so its search and
+       its path see the same loaded children; an application passes loadChildren instead.
      The checkbox marks (checked) are drawn with the Checkbox control but are inert and hidden: the row is the target and
        its aria-checked says whether it is checked.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { tokenPx } from '../../patterns/AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
@@ -73,6 +75,7 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items: gi
   const widths = columnWidths || ownWidths;
   const lists = React.useRef([]), columns = React.useRef([]);
   const focusAt = React.useRef(null);
+  const pressing = React.useRef(false);   // a click focuses its column: that focus must not choose the first item over the clicked one
 
   // the columns: the top level, then the children of each chosen parent
   const cols = [{ items, parent: null }];
@@ -178,7 +181,7 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items: gi
               <ul ref={(el) => { lists.current[level] = el; }} className="plx-miller-columns__list" role="listbox" tabIndex={0} aria-label={name}
                 aria-busy={col.parent && loader.needs(col.parent) && loader.statusOf(col.parent) !== 'failed' ? true : undefined}
                 aria-activedescendant={here ? optId(level, here.id) : undefined} onKeyDown={onKey(level)}
-                onFocus={() => { if (!here && col.items.length) choose(level, enabled(col.items)[0]); }}>
+                onFocus={() => { if (!pressing.current && !here && col.items.length) choose(level, enabled(col.items)[0]); }}>
                 {col.items.length ? col.items.map((it) => {
                   const on = here && here.id === it.id, parent = hasKids(it), isChecked = checked && !parent && checked.indexOf(it.id) >= 0;
                   return (
@@ -186,7 +189,7 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items: gi
                       aria-checked={checked && !parent ? !!isChecked : undefined}
                       className={cx('plx-miller-columns__item', on && 'is-selected', on && level === chosen.length - 1 && 'is-current', it.disabled && 'is-disabled')}
                       onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => { choose(level, it); const el = lists.current[level]; if (el) el.focus();
+                      onClick={() => { choose(level, it); const el = lists.current[level]; pressing.current = true; if (el) el.focus(); pressing.current = false;
                         if (openOnClick && !parent && !it.disabled && onOpen) onOpen(it, chosen.slice(0, level).map((x) => x.id).concat([it.id])); }}
                       onDoubleClick={() => { if (!parent && !it.disabled && onOpen) onOpen(it, chosen.slice(0, level).map((x) => x.id).concat([it.id])); }}
                       onMouseEnter={expandOnHover && parent && !it.disabled ? () => choose(level, it) : undefined}>

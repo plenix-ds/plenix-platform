@@ -25,6 +25,7 @@
      defaultTime: the time a date-time value takes when only its date is chosen ("HH:MM", default "09:00")
      timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none)
      invalid: the danger border and aria-invalid (a Field with an error sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the field and its button off
      readOnly: shows the date and does not change it: the field is read-only and the calendar button is not shown; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the date field (a Field sets it)
@@ -63,11 +64,11 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, numeralLocale } from '../../utils/format.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Input } from '../Input/Input.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { Popover } from '../Popover/Popover.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
@@ -103,7 +104,7 @@ const zoneOf = (locale, style) => {
 const monthBounds = (iso, n) => { const first = addMonths(iso.slice(0, 7) + '-01', n); return { start: first, end: addDays(addMonths(first, 1), -1) }; };
 
 export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single', value, defaultValue, onChange, presets, months, min, max, width,
-  isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, readOnly: readOnlyOwn, required, id,
+  isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, warning, disabled, readOnly: readOnlyOwn, required, id,
   'aria-describedby': describedBy, locale: localeProp, strings, className, ...rest }, ref) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows and nothing changes it (no calendar button)
   const t = useStrings('datePicker', strings);   // the locale's words (platform/i18n), with the strings prop on top
@@ -136,7 +137,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
     const s = text.trim();
     if (!s) { setBad(false); if (datePart) setDate(null); return; }
     if (range) {
-      const two = s.split(/\s*(?:–|—|\s-\s|\bto\b)\s*/);
+      const two = s.split(/\s*(?:\u2013|\u2014|\s-\s|\bto\b)\s*/);
       const a = readDate(two[0], form.order), b = two[1] ? readDate(two[1], form.order) : null;
       if (!a || (two[1] && !b) || !allowed(a) || (b && !allowed(b))) { setBad(true); return; }
       const next = b && b < a ? { start: b, end: a } : { start: a, end: b };
@@ -184,11 +185,11 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   const cut = useTruncated(input, text);   // the date (or range) is cut (issue 558): its full text goes in a Tooltip on hover and focus
   const field = (
     <div className="plx-date-picker__field">
-      <div className={cx('plx-date-picker__date', range && 'plx-date-picker__date--range', 'plx-input', 'plx-input--data', disabled && 'is-disabled')} aria-invalid={(invalid || bad) || undefined}
+      <div className={cx('plx-date-picker__date', range && 'plx-date-picker__date--range', 'plx-input', 'plx-input--data', disabled && 'is-disabled')} aria-invalid={(invalid || bad) || undefined} data-plx-warning={warning || undefined}
         onMouseDown={(e) => { if (!disabled && input.current && e.target !== input.current && !e.target.closest('button')) { e.preventDefault(); input.current.focus(); } }}>
         <Tooltip content={text} disabled={!cut || !text || open} describe={false} className="plx-date-picker__tip">
           <input ref={input} id={id} type="text" className="plx-date-picker__input" value={text} placeholder={range ? form.hint + DASH + form.hint : form.hint} required={required}
-            aria-describedby={describedBy} aria-invalid={(invalid || bad) || undefined} disabled={disabled} readOnly={locked || undefined} autoComplete="off"
+            aria-describedby={describedBy} aria-invalid={(invalid || bad) || undefined} data-plx-warning={warning || undefined} disabled={disabled} readOnly={locked || undefined} autoComplete="off"
             onChange={(e) => { typing.current = true; setText(e.target.value); if (bad) setBad(false); }}
             onBlur={read}
             onKeyDown={(e) => {
@@ -199,7 +200,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
         {locked ? null : <Button variant="ghost" size="2xs" iconOnly icon={CalendarIcon} className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />}
       </div>
       {dateTime ? (
-        <InputGroup data suffix={zone || undefined} disabled={disabled} invalid={invalid} className="plx-date-picker__time">
+        <InputGroup data suffix={zone || undefined} disabled={disabled} invalid={invalid} warning={warning} className="plx-date-picker__time">
           <Input type="time" data aria-label={t.time} value={timePart} disabled={disabled} readOnly={locked || undefined}
             onChange={(e) => { const v = e.target.value; if (datePart) commit(datePart + 'T' + (v || defaultTime)); }} />
         </InputGroup>

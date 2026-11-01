@@ -2,3 +2,7 @@
 .plx-divider{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;flex-shrink:0;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
 .plx-divider--horizontal{block-size:0;border-block-start-color:var(--plx-comp-divider-horizontal-border-block-start-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-divider-horizontal-border-block-start-width);inline-size:100%;}
 .plx-divider--vertical{align-self:stretch;border-inline-start-color:var(--plx-comp-divider-vertical-border-inline-start-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-divider-vertical-border-inline-start-width);inline-size:0;}
+/* a horizontal rule with a short text in the middle (issue 808): a line on each side, the text one line in the muted color */
+.plx-divider--labeled{align-items:center;column-gap:var(--plx-comp-divider-text-gap);display:flex;inline-size:100%;}
+.plx-divider__line{border-block-start-color:var(--plx-comp-divider-horizontal-border-block-start-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-divider-horizontal-border-block-start-width);flex-grow:1;}
+.plx-divider__text{color:var(--plx-comp-divider-text-color);flex-shrink:0;white-space:nowrap;}

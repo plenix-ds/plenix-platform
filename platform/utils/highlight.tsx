@@ -15,7 +15,7 @@
    Behavior:
      Upper and lower case are the same (the reader's language rules). Arabic matches without its vowel marks (fatha, damma,
      kasra, shadda, sukun, the dagger alef) and without the stretching line (tatweel), in the text and in the label, so
-     "محمد" finds "مُحَمَّد". A mark that belongs to the last matched letter is marked with it, so a letter is never split from
+     the word "Muhammad" without marks finds it with them (U+0645 U+062D U+0645 U+062F). A mark that belongs to the last matched letter is marked with it, so a letter is never split from
      its mark. A match is found in the label's own order, so right to left reads as written.
      A match made of Arabic letters gets plx-match--joined: it is underlined instead of set in a heavier weight, because a
      change of weight inside a word breaks the joined letter shapes (the pieces are still one word, with the same font).
@@ -26,9 +26,9 @@
 import React from 'react';
 
 // the Arabic vowel marks and the stretching line: ignored when matching (tatweel U+0640, U+064B to U+065F, the dagger alef U+0670)
-const IGNORED = /[ـً-ٰٟ]/;
+const IGNORED = /[\u0640\u064B-\u065F\u0670]/;
 // a letter of the Arabic script (the joined one: its shapes depend on its neighbors)
-const JOINED = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+const JOINED = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
 interface Folded {
   text: string;

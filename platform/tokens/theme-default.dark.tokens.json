@@ -228,6 +228,16 @@
         }
       }
     },
+    "content-strong": {
+      "$value": "{plx-ref.color-gray-100}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "The strongest text, one step stronger than body text: menu items."
+        }
+      }
+    },
     "content-muted": {
       "$value": "{plx-ref.color-gray-300}",
       "$type": "color",
@@ -1265,6 +1275,16 @@
         "plenix": {
           "group": "border",
           "purpose": "Dividers between the items of a list."
+        }
+      }
+    },
+    "border-separator": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "Separators between the groups of a menu (gray 250, Blueprint's shade; owner, 2026-11-01, #805)."
         }
       }
     },

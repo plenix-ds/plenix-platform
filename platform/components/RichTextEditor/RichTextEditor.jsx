@@ -28,6 +28,7 @@
      placeholder: the hint in the empty area
      readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
      invalid: marks the area invalid (aria-invalid); put the message in Field's error
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the area cannot be used (default false)
      strings: the words it shows, for other languages (the richTextEditor section of i18n/en.js: every button, menu and field name; on(name),
        off(name) announce a format turned on or off from the keyboard; tip(name, keys) is a button's tooltip; leave is
@@ -88,9 +89,9 @@ import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useOverflow, splitAt } from '../../utils/overflow.ts';
 import { Toolbar } from '../Toolbar/Toolbar.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Input } from '../Input/Input.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../Menu/Menu.jsx';
 import { ColorSwatch } from '../ColorSwatch/ColorSwatch.jsx';
 import { CATEGORY_COLORS } from '../ColorSwatch/categoryColors.js';
@@ -280,7 +281,7 @@ function makeEditor(T, el, o) {
 }
 
 export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = 'basic', markdownShortcuts = true, mentions, placeholder, readOnly: readOnlyOwn,
-  invalid, disabled = false, strings, className, id, ...rest }) {
+  invalid, warning, disabled = false, strings, className, id, ...rest }) {
   const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's
   const t = useStrings('richTextEditor', strings);
   // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
@@ -594,7 +595,7 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
       <Button key="rm" size="sm" onClick={removeColor}>{t.remove}</Button>];
   }
   return (
-    <div className={cx('plx-rich-text-editor', readOnly && 'is-read-only', disabled && 'is-disabled', className)} {...rest}>
+    <div className={cx('plx-rich-text-editor', readOnly && 'is-read-only', disabled && 'is-disabled', className)} data-plx-warning={warning || undefined} {...rest}>
       {showToolbar ? (
         <Toolbar label={t.toolbar} className="plx-rich-text-editor__toolbar">
           <div ref={groupsRef} className="plx-rich-text-editor__groups">{splitAt(GROUPS.map(groupEl), fit, more)}</div>

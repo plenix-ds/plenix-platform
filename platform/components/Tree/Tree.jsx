@@ -14,7 +14,7 @@
      loadChildren(node): returns the item's children (an array or a promise of one) the first time it opens (issue 814,
        useBranchLoader): the row shows a spinner and "Loading…" under it, a failure says so with a Try again button, and
        children that arrived are never asked for again
-     virtualized: draw only the rows in view (useVirtualizer; issue 815); default on above TREE_AUTO_VIRTUAL (200) visible
+     virtualized: true or false: draw only the rows in view (useVirtualizer; issue 815); default on above TREE_AUTO_VIRTUAL (200) visible
        rows, so short trees are unchanged; true or false decides. A virtualized tree scrolls itself: give it a height
        (its container's block size), its rows the tree's fixed row height
      selected: the id of the selected item
@@ -44,7 +44,7 @@ import React from 'react';
 import { isRtl } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
-import { Icon, asIcon as iconElement, isIconModule, iconKey } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement, isIconModule, iconKey } from '../Icon/Icon.tsx';
 import { useFocusable } from '../../hooks/useFocusable.ts';
 import { useBranchLoader, BranchStatus } from '../../hooks/useBranchLoader.ts';
 import { useVirtualizer, VirtualGap, VirtualProbe } from '../../hooks/useVirtualizer.ts';

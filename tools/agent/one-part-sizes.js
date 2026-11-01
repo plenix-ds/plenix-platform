@@ -1,13 +1,15 @@
 // node tools/agent/one-part-sizes.js [--check] [--entry <file>]
 // What one import from @plenix-ds/react costs an application (#685): tiny applications that import one part, bundled the
-// way the audit measured (#684, #685): the repository's esbuild, minified, React external, against the built package
+// way the audit measured (#684, #685): minified, React external, against the built package
 // (packages/react, from node build-packages.js). Prints the minified and gzipped size of each; --check fails when an import
 // goes above its limit, so tree-shaking cannot break again unseen. Not a test: it builds and measures, it runs no page.
-// Why esbuild and not Vite (#709 step 6): it stands in for the application's bundler, not for Plenix's build. esbuild is a
-// standard bundler many applications use, it tree-shakes the package as a typical application bundler would, and keeping it
-// keeps every limit comparable with the audit's numbers (#684, #685).
+// Two bundlers, one case list (#807, owner): Vite (Rollup with esbuild's minifier, tools/agent/one-part-vite.mjs) is the measure: it is what most
+// consumers of the package use, and the limits are checked against it. esbuild (the audit's bundler, #684, #685) stays as a cross-check: it reports its
+// number beside it and never fails. They can differ a lot for a part that loads another part on first use (a dynamic import()): Rollup keeps what only
+// that part needs in its own chunk; esbuild's splitting puts the public components such a part shares with the package's index into a chunk the entry
+// imports statically, so it counts them at the start.
 'use strict';
-const fs = require('fs'), path = require('path'), zlib = require('zlib');
+const fs = require('fs'), path = require('path'), zlib = require('zlib'), cp = require('child_process');
 const esbuild = require('esbuild');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -19,17 +21,26 @@ const PKG = path.join(ROOT, 'packages', 'react');
 const CASES = [
   { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 105 },
   { name: '{ Badge }', code: 'import { Badge } from "plenix"; console.log(Badge);', limit: 30 },
-  { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 440 },
-  { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1400 },
+  { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 450 }, // 450: #714's module split (call objects, about 1.6 KB) and room for #465 cell selection (opt-in)
+  { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1420 }, // 1,420: the owner-approved #775 and #769 parts (branch loader #814, Anchor, Cascader extras) add about 1 to 2 KB each
 ];
 // the module the application imports: the package's ES module entry, as a bundler reads it (package.json "module")
 const entryOf = () => path.join(PKG, JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf8')).module);
 
-// each case bundled against entry: [{ name, kb, gz, limit, over }]. Bundled with splitting, as an application's bundler
-// does, and counted as what loads at the start: the entry and the chunks it imports statically. A chunk only a dynamic
-// import() reaches (the icon name list, #702) loads later, when needed, and is not counted. With no dynamic import this is
-// the same number as one flat file (#685's measure).
+// each case bundled against entry: [{ name, kb, gz, limit, over, esKb, esGz }]. kb and gz are Vite's (the limit applies to them), esKb and esGz esbuild's.
+// Bundled with splitting, as an application's bundler does, and counted as what loads at the start: the entry and the chunks it imports statically. A chunk
+// only a dynamic import() reaches (the icon name list, #702) loads later, when needed, and is not counted. With no dynamic import this is the same number
+// as one flat file (#685's measure).
 function measure(entry = entryOf()) {
+  const run = cp.spawnSync(process.execPath, [path.join(__dirname, 'one-part-vite.mjs'), entry], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 });
+  if (run.status !== 0) throw new Error('one-part-vite.mjs failed: ' + (run.stderr || run.stdout).slice(0, 400));
+  const vite = Object.fromEntries(JSON.parse(run.stdout).map((r) => [r.name, r]));
+  return measureEsbuild(entry).map((e) => {
+    const c = CASES.find((x) => x.name === e.name), v = vite[e.name], kb = v.bytes / 1024;
+    return { name: e.name, kb, gz: v.gzip / 1024, limit: c.limit, over: kb > c.limit, esKb: e.kb, esGz: e.gz };
+  });
+}
+function measureEsbuild(entry) {
   return CASES.map((c) => {
     const out = esbuild.buildSync({
       entryPoints: { app: caseFile(c) }, absWorkingDir: ROOT,
@@ -41,7 +52,7 @@ function measure(entry = entryOf()) {
     const walk = (k) => { if (seen.has(k)) return; seen.add(k); outputs[k].imports.filter((i) => i.kind === 'import-statement' && outputs[i.path]).forEach((i) => walk(i.path)); };
     walk(start);
     const code = Buffer.concat([...seen].map((k) => Buffer.from(files.get(path.resolve(ROOT, k))))), kb = code.length / 1024;
-    return { name: c.name, kb, gz: zlib.gzipSync(code).length / 1024, limit: c.limit, over: kb > c.limit };
+    return { name: c.name, kb, gz: zlib.gzipSync(code).length / 1024 };
   });
 }
 // a case's code as a file in the scratch folder: splitting needs a real entry point (stdin cannot be split)
@@ -52,7 +63,7 @@ function caseFile(c) {
   fs.writeFileSync(file, c.code);
   return file;
 }
-const line = (r) => r.name.padEnd(13) + (r.kb.toFixed(1) + ' KB').padStart(11) + (r.gz.toFixed(1) + ' KB gzipped').padStart(19) + '   limit ' + r.limit + ' KB' + (r.over ? '   OVER' : '');
+const line = (r) => r.name.padEnd(13) + (r.kb.toFixed(1) + ' KB').padStart(11) + (r.gz.toFixed(1) + ' KB gzipped').padStart(19) + '   limit ' + r.limit + ' KB' + (r.over ? '   OVER' : '') + '   (esbuild ' + r.esKb.toFixed(1) + ' KB, cross-check)';
 module.exports = { measure, line, entryOf, CASES };
 
 if (require.main === module) {
@@ -60,7 +71,7 @@ if (require.main === module) {
   const entry = at >= 0 ? path.resolve(args[at + 1]) : entryOf();
   if (!fs.existsSync(entry)) { console.error('ONE_PART_SIZES_FAIL ' + path.relative(ROOT, entry) + ' is missing: run node build-app.js and node build-packages.js first'); process.exit(2); }
   const results = measure(entry);
-  console.log('One import from ' + path.relative(ROOT, entry) + ' (minified, React external):');
+  console.log('One import from ' + path.relative(ROOT, entry) + ' (Vite, minified, React external; esbuild beside it as a cross-check):');
   results.forEach((r) => console.log('  ' + line(r)));
   if (args.includes('--check')) {
     const over = results.filter((r) => r.over);

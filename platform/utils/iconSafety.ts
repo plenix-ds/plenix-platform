@@ -98,7 +98,7 @@ function attributes(text: string): Attributes | null {
 export function checkIconSvg(text: unknown): IconSvgCheck {
   if (typeof text !== 'string') return no('the file is not text');
   if (text.length > ICON_LIMITS.file) return no('the file is larger than ' + ICON_LIMITS.file + ' characters');
-  let s = text.replace(/^﻿/, '').replace(/^\s*<\?xml\s[^<>?]*\?>/, '');
+  let s = text.replace(/^\uFEFF/, '').replace(/^\s*<\?xml\s[^<>?]*\?>/, '');
   if (s.includes('<!')) return no('the file has a doctype, an entity, CDATA or a comment');
   if (s.includes('<?')) return no('the file has a processing instruction');
   if (s.includes('&')) return no('the file has an entity reference');

@@ -16,12 +16,26 @@
        RTL_LANGUAGES), else "ltr"
      physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
        only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     readsLeftToRight(children): true when the children are only text and numbers with no letter of a right-to-left script (Arabic, Hebrew, Syriac, Thaana and
+       the presentation forms): a phone number, an IBAN, a date, a version. A value like that is shown left to right as written (a left-to-right island),
+       because with no strong letter the digit groups of a spaced value ("(617) 555-0142") would otherwise take the page's direction and swap places
+       (Unicode rule N1, issue 838); a value with an Arabic letter in it keeps dir="auto"
+       Digits count as letters of their script here: a value whose source already has Arabic-Indic digits (U+0660 to U+0669, in the range above) keeps
+       dir="auto". The fix covers the usual case: the source has Latin digits and the page shows them as Arabic-Indic digits (shownDigits)
      RTL_LANGUAGES: the language subtags written right to left
    Behavior:
      The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
        stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
        computed direction only where it measures or handles arrow keys.
 */
+import React from 'react';
+// a letter of a right-to-left script (written as escapes: a script that carries raw characters breaks when a page loads without a charset)
+const RTL_LETTER = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
+export function readsLeftToRight(children: React.ReactNode): boolean {
+  let plain = true;
+  React.Children.forEach(children, (c) => { if (typeof c === 'string' || typeof c === 'number') { if (RTL_LETTER.test(String(c))) plain = false; } else if (c != null && typeof c !== 'boolean') plain = false; });
+  return plain;
+}
 export const RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
 
 export type Direction = 'ltr' | 'rtl';
