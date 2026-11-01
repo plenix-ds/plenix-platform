@@ -20,6 +20,9 @@
  "test-site/index.html#/event/e10": {
   "scroller": 1
  },
+ "test-site/index.html#/bookstore": {
+  "cut-off": 9
+ },
  "test-site/index.html#/announcements": {
   "scroller": 1
  },
