@@ -119,6 +119,7 @@
 @import url("patterns/Retry/retry.css") layer(plx.patterns);
 @import url("components/AvatarGroup/avatar-group.css") layer(plx.components);
 @import url("components/Persona/persona.css") layer(plx.components);
+@import url("components/EntityTitle/entity-title.css") layer(plx.components);
 @import url("components/ProgressCircle/progress-circle.css") layer(plx.components);
 @import url("components/QRCode/qr-code.css") layer(plx.components);
 @import url("components/VersionLabel/version-label.css") layer(plx.components);

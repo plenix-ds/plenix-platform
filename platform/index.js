@@ -141,6 +141,7 @@ export { encodeBarcode, barcodeCheckDigit, BARCODE_QUIET_ZONE } from './utils/ba
 export { useRetry, RetryNotice } from './patterns/Retry/Retry.jsx';
 export { AvatarGroup } from './components/AvatarGroup/AvatarGroup.jsx';
 export { Persona } from './components/Persona/Persona.jsx';
+export { EntityTitle } from './components/EntityTitle/EntityTitle.jsx';
 export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.tsx';
 export { QRCode } from './components/QRCode/QRCode.jsx';
 export { qrEncode } from './utils/qr.ts';

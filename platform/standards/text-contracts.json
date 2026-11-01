@@ -1334,6 +1334,21 @@
     "font-weight"
    ]
   },
+  "plx-entity-title__subtitle": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "line-height"
+   ]
+  },
+  "plx-entity-title__title": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight",
+    "line-height"
+   ]
+  },
   "plx-entity-picker__description": {
    "contract": "adjusts",
    "props": [
