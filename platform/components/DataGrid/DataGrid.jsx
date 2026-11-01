@@ -44,13 +44,14 @@
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
-     cellSelection: an option, off by default (a grid without it behaves exactly as before): cells can be selected as a block. Shift with an arrow,
+     cellSelection: true: cells can be selected as a block (off by default; a grid without it behaves exactly as before). Shift with an arrow,
        Home or End extends the block from the cell that has focus (the focus cell stays in view); a plain arrow, a click or Escape collapses it; Ctrl or
        Command with C copies it as tab-separated text that a spreadsheet pastes as rows and columns (group rows skipped). The block has the selected
        fill and a 2px border on its outer edges, its cells carry aria-selected, and the count is announced politely once the keys pause.
-       onCellSelectionChange({ from, to, cellCount, rowCount, columnCount, fields }) runs when the block changes (null when it ends; from and to are
-       { rowId, field }). api.getCellRange() returns { rows, fields, text } or null, api.clearCellRange() and api.copyCellRange() act on it.
+       api.getCellRange() returns { rows, fields, text } or null, api.clearCellRange() and api.copyCellRange() act on it.
        It is independent of row selection and of editing (Enter edits the active cell and collapses the block). Not for the static Table.
+     onCellSelectionChange({ from, to, cellCount, rowCount, columnCount, fields }): runs when the cell block changes (null when it ends; from and
+       to are { rowId, field })
      unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
      markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
      unreadOnly with onUnreadOnlyChange controls the unread filter. Nothing is drawn above the headers (Fluent): the app
@@ -118,6 +119,8 @@
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     Cell selection copy: copied cells keep their text as is: a value starting with =, +, - or @ is read by spreadsheet apps as a formula when
+       pasted. Apps that copy untrusted text into spreadsheets should guard it.
      A column is dragged no wider than --plx-sys-shell-pane-window-share (90%) of the table, down to the 4px grid; a smaller maxWidth still applies.
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
