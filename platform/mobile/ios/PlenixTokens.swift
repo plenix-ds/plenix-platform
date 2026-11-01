@@ -169,6 +169,7 @@ public enum Plenix {
         public static let fillNeutralPressed = Plenix.color(light: 0xFFD0D0D0, dark: 0xFF6E6E6E)
         public static let fillNeutralContent = Plenix.color(light: 0xFF56585E, dark: 0xFFE8E9EC)
         public static let borderDivider = Plenix.color(light: 0xFFF3F3F3, dark: 0xFF56585E)
+        public static let borderSeparator = Plenix.color(light: 0xFFDCDDDE, dark: 0xFF56585E)
         public static let controlBackground = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF444444)
         public static let fieldBackground = Plenix.color(light: 0xFFFCFCFC, dark: 0xFF444444)
         public static let fieldBorder = Plenix.color(light: 0xFFA3A6AD, dark: 0xFFA3A6AD)

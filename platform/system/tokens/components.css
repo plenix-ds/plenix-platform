@@ -861,7 +861,7 @@
   --plx-comp-menu-check-height: var(--plx-ref-size-24px);
   --plx-comp-menu-check-width: var(--plx-ref-size-16px);
   --plx-comp-menu-check-icon-size: var(--plx-sys-icon-size-lg);
-  --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-default);
+  --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-separator);
   --plx-comp-menu-divider-border-top-width: var(--plx-sys-border-width-thin);
   --plx-comp-menu-divider-margin-block: var(--plx-sys-space-stack-xs);
   --plx-comp-menu-divider-margin-inline: calc(var(--plx-comp-menu-padding-inline) * -1);

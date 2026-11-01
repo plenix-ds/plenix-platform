@@ -24942,179 +24942,19 @@ var Plenix = (function(exports, React2, reactDom, client) {
       ]
     };
   }
-  const SIZES$7 = ["xs", "sm", "md", "lg", "xl"];
-  const PRESENCE$1 = ["online", "away", "busy", "dnd", "offline"];
-  function Persona({ name, src, color, secondary, role, presence, size = "md", href, strings, className, ...rest }) {
-    devWarn("Persona", { size }, { size: ["xs", "sm", "md", "lg", "xl"] });
-    const s = SIZES$7.indexOf(size) >= 0 ? size : "md";
-    const p = PRESENCE$1.indexOf(presence) >= 0 ? presence : null;
-    const words2 = useStrings("persona", strings);
-    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-persona", "plx-persona--" + s, className), ...rest }, /* @__PURE__ */ React2.createElement(Avatar, { name, src, color, presence: p || void 0, size: s, className: "plx-persona__avatar" }), /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__text" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__primary" }, href ? /* @__PURE__ */ React2.createElement(Link, { href, variant: "standalone", className: "plx-persona__name", title: name }, name) : /* @__PURE__ */ React2.createElement("span", { className: "plx-persona__name", title: name }, name), p ? /* @__PURE__ */ React2.createElement(VisuallyHidden, null, ", " + words2[p]) : null, role ? /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", size: "sm", className: "plx-persona__role" }, role) : null), secondary ? /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__secondary", title: typeof secondary === "string" ? secondary : void 0 }, secondary) : null));
-  }
-  const StackedContext = React2.createContext(false);
-  function ActivityList({ label: label2, stacked = false, titleLines = 1, className, children }) {
-    return /* @__PURE__ */ React2.createElement(StackedContext.Provider, { value: stacked }, /* @__PURE__ */ React2.createElement("ul", { "aria-label": label2, className: cx("plx-activity-list", stacked && "plx-activity-list--stacked", titleLines === 2 && "plx-activity-list--title-2", className) }, children));
-  }
-  ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
-    const stacked = React2.useContext(StackedContext);
-    const words2 = useStrings("activityList");
-    const opener = href ? /* @__PURE__ */ React2.createElement("a", { href, className: "plx-activity-list__opener" }, title) : onOpen ? /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-activity-list__opener", onClick: onOpen }, title) : /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__opener" }, title);
-    return /* @__PURE__ */ React2.createElement("li", { className: cx("plx-activity-list__item", (href || onOpen) && "is-interactive", unread && "is-unread", selected && "is-selected", className), "aria-current": selected ? "true" : void 0 }, unread ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__unread" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-visually-hidden" }, words2.unread)) : null, leading ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__leading" }, leading) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__title" }, opener), meta ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__meta", "data-plx-text-follow": stacked ? "size" : void 0 }, dataWhenText(meta)) : null), time ? /* @__PURE__ */ React2.createElement("time", { className: "plx-activity-list__time", dateTime }, time) : null, actions ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__actions" }, actions) : null);
-  };
-  const STATUS_LABELS = english.reviewFlow.statuses;
-  const WORKFLOW_STATUSES = {
-    draft: { tone: "neutral", icon: PencilIcon, label: STATUS_LABELS.draft },
-    "in-review": { tone: "active", icon: DocSearchIcon, label: STATUS_LABELS["in-review"] },
-    approved: { tone: "success", icon: CircleCheckIcon, label: STATUS_LABELS.approved },
-    "changes-requested": { tone: "action-required", icon: AlertIcon, label: STATUS_LABELS["changes-requested"] },
-    rejected: { tone: "negative", icon: CloseIcon, label: STATUS_LABELS.rejected },
-    published: { tone: "success", icon: VisibilityIcon, label: STATUS_LABELS.published },
-    scheduled: { tone: "waiting", icon: ScheduleIcon, label: STATUS_LABELS.scheduled }
-  };
-  function WorkflowStatus({ status = "draft", label: label2, size, strings, className, ...rest }) {
-    devWarn("WorkflowStatus", { size }, { size: ["md", "sm"] });
-    const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-    const names2 = useStrings("reviewFlow.statuses");
-    const words2 = label2 || strings && strings[status] || names2[status] || s.label;
-    return /* @__PURE__ */ React2.createElement(Badge, { tone: s.tone, icon: s.icon, size, className: cx("plx-workflow-status", className), ...rest }, words2);
-  }
-  function useOptionalToast() {
+  function useOptionalToast$1() {
     try {
       return useToast();
     } catch (e) {
       return null;
     }
   }
-  const VERB = { approved: "approve", "changes-requested": "changes", rejected: "reject" };
-  const LOOK = { approved: "primary", "changes-requested": "secondary", rejected: "danger-secondary" };
-  function ReviewFlow({
-    status = "in-review",
-    title,
-    headingLevel = 3,
-    detail,
-    kind = "review",
-    reviewers = [],
-    history: history2 = [],
-    onDecision,
-    decisions = ["rejected", "changes-requested", "approved"],
-    reasonFor = ["rejected", "changes-requested"],
-    strings,
-    className,
-    ...rest
-  }) {
-    const t = useStrings("reviewFlow.flow", strings);
-    const toast = useOptionalToast();
-    const [comment, setComment] = React2.useState("");
-    const [error, setError] = React2.useState("");
-    const field = React2.useRef(null);
-    const H2 = "h" + Math.min(6, Math.max(2, headingLevel));
-    const names2 = useStrings("reviewFlow.statuses");
-    const word = (d) => t[d] || names2[d] || WORKFLOW_STATUSES[d].label;
-    const decide = (d) => {
-      if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
-        setError(t.needReason);
-        if (field.current) field.current.focus();
-        return;
-      }
-      setError("");
-      onDecision(d, comment.trim());
-      setComment("");
-      const said2 = fill(t.done, { decision: word(d), title: title || "" });
-      if (toast) toast.show(said2, { tone: d === "approved" ? "success" : "info" });
-      else announce(said2);
-    };
-    return /* @__PURE__ */ React2.createElement("section", { className: cx("plx-review-flow", kind === "human" && "plx-review-flow--human", className), "aria-label": title, ...rest }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__heading" }, title ? /* @__PURE__ */ React2.createElement(H2, { className: "plx-review-flow__title" }, title) : null, detail ? /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__detail" }, detail) : null), /* @__PURE__ */ React2.createElement(WorkflowStatus, { status, strings })), kind === "human" ? /* @__PURE__ */ React2.createElement(Notice, { tone: "info", icon: SparkleIcon }, t.human) : null, reviewers.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.reviewers), /* @__PURE__ */ React2.createElement("ul", { className: "plx-review-flow__reviewers" }, reviewers.map((r) => /* @__PURE__ */ React2.createElement("li", { key: r.id || r.name, className: "plx-review-flow__reviewer" }, /* @__PURE__ */ React2.createElement(Persona, { name: r.name, src: r.src, color: r.color, size: "xs" }), r.decision ? /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.decision, strings }) : /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__waiting" }, t.waiting))))) : null, onDecision ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__decide" }, /* @__PURE__ */ React2.createElement(Field, { label: t.comment, description: t.commentHint, error: error || void 0 }, /* @__PURE__ */ React2.createElement(Textarea, { ref: field, rows: 3, value: comment, onChange: (e) => {
-      setComment(e.target.value);
-      if (error) setError("");
-    } })), /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__actions", role: "group", "aria-label": t.decisions }, decisions.map((d) => /* @__PURE__ */ React2.createElement(Button, { key: d, variant: LOOK[d], onClick: () => decide(d) }, t[VERB[d]])))) : null, history2.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.history), /* @__PURE__ */ React2.createElement(ActivityList, { label: t.history, stacked: true }, history2.map((x) => /* @__PURE__ */ React2.createElement(
-      ActivityList.Item,
-      {
-        key: x.id || x.name + x.time,
-        leading: /* @__PURE__ */ React2.createElement(Avatar, { name: x.name, src: x.src, color: x.color, size: "xs" }),
-        title: x.name,
-        meta: word(x.decision) + (x.comment ? ": " + x.comment : ""),
-        time: x.time,
-        dateTime: x.dateTime
-      }
-    )))) : null);
-  }
-  function ReviewQueue({
-    items = [],
-    label: label2,
-    noun,
-    plural,
-    onDecision,
-    selected,
-    onSelectionChange,
-    strings,
-    className,
-    ...rest
-  }) {
-    const t = useStrings("reviewFlow.queue", strings);
-    const names2 = useStrings("reviewFlow.statuses");
-    const loc2 = useLocale();
-    const builtIn = !noun && !plural;
-    const many = plural || (noun ? noun + "s" : t.plural);
-    noun = noun ?? t.noun;
-    label2 = label2 ?? t.queueLabel;
-    const counted = (m) => builtIn ? loc2.t("reviewFlow.queue.items", { count: m, n: formatNumber(m) }) : null;
-    const toast = useOptionalToast();
-    const [own2, setOwn] = React2.useState([]);
-    const sel = selected !== void 0 ? selected : own2;
-    const setSel = (ids) => {
-      if (selected === void 0) setOwn(ids);
-      if (onSelectionChange) onSelectionChange(ids);
-    };
-    const [ask2, setAsk] = React2.useState(null);
-    const what = (n) => counted(n) ?? (n === 1 ? "1 " + noun : formatNumber(n) + " " + many);
-    const run2 = (decision, reason) => {
-      const ids = sel.slice();
-      if (onDecision) onDecision(ids, decision, reason || "");
-      setSel([]);
-      setAsk(null);
-      const whole2 = builtIn && t.doneItems && t.doneItems[decision];
-      const said2 = whole2 ? loc2.t("reviewFlow.queue.doneItems." + decision, { count: ids.length, n: formatNumber(ids.length) }) : fill(t.done, { what: what(ids.length), decision: names2[decision].toLowerCase() });
-      if (toast) toast.show(said2, { tone: decision === "approved" ? "success" : "info" });
-      else announce(said2);
-    };
-    const columns = [
-      { title: t.name, field: "name", kind: "name" },
-      { title: t.type, field: "type" },
-      { title: t.submittedBy, field: "submittedBy", type: "person" },
-      { title: t.submitted, field: "submitted", kind: "data", type: "date", render: (r) => /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatDate(r.submitted)) },
-      { title: t.status, field: "status", kind: "center", render: (r) => /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.status, strings }) }
-    ];
-    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-review-queue", className), ...rest }, /* @__PURE__ */ React2.createElement(
-      CommandBar,
-      {
-        label: label2,
-        count: counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many }),
-        selection: { count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
-          { id: "approve", label: t.approve, icon: CircleCheckIcon, onSelect: () => run2("approved") },
-          { id: "changes", label: t.changes, icon: AlertIcon, onSelect: () => setAsk("changes-requested") },
-          { id: "reject", label: t.reject, icon: CloseIcon, danger: true, onSelect: () => setAsk("rejected") }
-        ] }
-      }
-    ), /* @__PURE__ */ React2.createElement(DataGrid, { label: label2, data: items, index: "id", selectable: true, selected: sel, onSelectionChange: setSel, columns }), /* @__PURE__ */ React2.createElement(
-      PromptDialog,
-      {
-        open: !!ask2,
-        title: fill(ask2 === "rejected" ? t.rejectTitle : t.changesTitle, { what: what(sel.length) }),
-        label: ask2 === "rejected" ? t.reason : t.changesLabel,
-        description: t.reasonHint,
-        confirmLabel: ask2 === "rejected" ? t.reject : t.changes,
-        validate: (v) => v.trim() ? "" : t.needReason,
-        onSubmit: (v) => run2(ask2, v.trim()),
-        onCancel: () => setAsk(null)
-      }
-    ));
-  }
   function ActionTable(props) {
     const rowMenu = useDataGridActions(props.rowMenu, void 0, props.strings), shaped = useRowTemplate(props);
     return /* @__PURE__ */ React2.createElement(DataGridEngine, { ...shaped, rowMenu });
   }
   function DataGrid(props) {
-    const toast = useOptionalToast();
+    const toast = useOptionalToast$1();
     return toast ? /* @__PURE__ */ React2.createElement(ActionTable, { ...props }) : /* @__PURE__ */ React2.createElement(ToastProvider, null, /* @__PURE__ */ React2.createElement(ActionTable, { ...props }));
   }
   DataGrid.useActions = useDataGridActions;
@@ -25984,10 +25824,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-record-page", className) }, header, aside ? /* @__PURE__ */ React2.createElement("div", { className: "plx-record-page__columns" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-record-page__body" }, children), /* @__PURE__ */ React2.createElement("aside", { className: "plx-record-page__aside" }, aside)) : /* @__PURE__ */ React2.createElement("div", { className: "plx-record-page__body" }, children));
   }
   RecordPage.Header = Header;
-  const SIZES$6 = ["xs", "sm", "md", "lg"];
+  const SIZES$7 = ["xs", "sm", "md", "lg"];
   function AvatarGroup({ people = [], label: label2, max: max2 = 4, size = "sm", layout: layout2 = "stack", onMore, strings, className, ...rest }) {
     devWarn("AvatarGroup", { size }, { size: ["xs", "sm", "md", "lg"] });
-    const s = SIZES$6.indexOf(size) >= 0 ? size : "sm";
+    const s = SIZES$7.indexOf(size) >= 0 ? size : "sm";
     const l = layout2 === "grid" ? "grid" : "stack";
     const words2 = useStrings("avatarGroup", strings);
     const limit2 = Math.max(1, max2 | 0);
@@ -26223,6 +26063,16 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const lead = /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__lead" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__heading" }, top ? mediaEl : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__text" }, /* @__PURE__ */ React2.createElement(H2, { className: "plx-entity-header__title" }, title), sub && !section ? /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__subtitle" }, sub) : null)), /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__rule", "aria-hidden": "true" }), section ? summary2 || sub ? /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__summary" }, summary2 || sub) : null : /* @__PURE__ */ React2.createElement(Details, { status: st, states, facts, strings: s, step }));
     return /* @__PURE__ */ React2.createElement("header", { ref: root, className: cx("plx-entity-header", section && "plx-entity-header--section", !aside && "plx-entity-header--solo", className) }, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__layout" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__main" }, top ? lead : /* @__PURE__ */ React2.createElement("div", { className: cx("plx-entity-header__split", section && "plx-entity-header__split--section") }, mediaEl, /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__body" }, lead))), aside ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__aside" }, next && !section ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__next" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__eyebrow" }, next.label || s.next), /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__next-title" }, next.title), next.detail ? /* @__PURE__ */ React2.createElement("p", { className: "plx-entity-header__next-detail" }, next.detail) : null) : null, control || hasActions ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__tools" }, control ? /* @__PURE__ */ React2.createElement("div", { className: "plx-entity-header__control" }, control) : null, hasActions ? /* @__PURE__ */ React2.createElement(Actions, { actions, moreActions, size: section ? "sm" : "md", strings: s, labels: actionLabels, layout: actionsLayout }) : null) : null) : null));
   }
+  const StackedContext = React2.createContext(false);
+  function ActivityList({ label: label2, stacked = false, titleLines = 1, className, children }) {
+    return /* @__PURE__ */ React2.createElement(StackedContext.Provider, { value: stacked }, /* @__PURE__ */ React2.createElement("ul", { "aria-label": label2, className: cx("plx-activity-list", stacked && "plx-activity-list--stacked", titleLines === 2 && "plx-activity-list--title-2", className) }, children));
+  }
+  ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
+    const stacked = React2.useContext(StackedContext);
+    const words2 = useStrings("activityList");
+    const opener = href ? /* @__PURE__ */ React2.createElement("a", { href, className: "plx-activity-list__opener" }, title) : onOpen ? /* @__PURE__ */ React2.createElement("button", { type: "button", className: "plx-activity-list__opener", onClick: onOpen }, title) : /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__opener" }, title);
+    return /* @__PURE__ */ React2.createElement("li", { className: cx("plx-activity-list__item", (href || onOpen) && "is-interactive", unread && "is-unread", selected && "is-selected", className), "aria-current": selected ? "true" : void 0 }, unread ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__unread" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-visually-hidden" }, words2.unread)) : null, leading ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__leading" }, leading) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__title" }, opener), meta ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__meta", "data-plx-text-follow": stacked ? "size" : void 0 }, dataWhenText(meta)) : null), time ? /* @__PURE__ */ React2.createElement("time", { className: "plx-activity-list__time", dateTime }, time) : null, actions ? /* @__PURE__ */ React2.createElement("span", { className: "plx-activity-list__actions" }, actions) : null);
+  };
   function NotificationList({ items, onChange, onOpen, onViewAll, limit: limit2, label: label2, footer = true, strings, className }) {
     const t = useStrings("notificationList", strings);
     const session2 = useSession();
@@ -27590,10 +27440,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
       anchor: anchor.current
     };
   }
-  const SIZES$5 = ["48", "64", "96"];
+  const SIZES$6 = ["48", "64", "96"];
   function Pictogram({ icon, size = "64", twoTone = false, label: label2, className, ...rest }) {
     devWarn("Pictogram", { size }, { size: ["48", "64", "96", 48, 64, 96] });
-    const s = SIZES$5.indexOf(String(size)) >= 0 ? String(size) : "64";
+    const s = SIZES$6.indexOf(String(size)) >= 0 ? String(size) : "64";
     return /* @__PURE__ */ React2.createElement(
       "span",
       {
@@ -27965,6 +27815,15 @@ var Plenix = (function(exports, React2, reactDom, client) {
       children,
       status || count2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-retry__status" }, status ? /* @__PURE__ */ React2.createElement("span", { className: "plx-retry__wait" }, status) : null, count2 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-retry__count" }, count2) : null) : null
     );
+  }
+  const SIZES$5 = ["xs", "sm", "md", "lg", "xl"];
+  const PRESENCE$1 = ["online", "away", "busy", "dnd", "offline"];
+  function Persona({ name, src, color, secondary, role, presence, size = "md", href, strings, className, ...rest }) {
+    devWarn("Persona", { size }, { size: ["xs", "sm", "md", "lg", "xl"] });
+    const s = SIZES$5.indexOf(size) >= 0 ? size : "md";
+    const p = PRESENCE$1.indexOf(presence) >= 0 ? presence : null;
+    const words2 = useStrings("persona", strings);
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-persona", "plx-persona--" + s, className), ...rest }, /* @__PURE__ */ React2.createElement(Avatar, { name, src, color, presence: p || void 0, size: s, className: "plx-persona__avatar" }), /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__text" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__primary" }, href ? /* @__PURE__ */ React2.createElement(Link, { href, variant: "standalone", className: "plx-persona__name", title: name }, name) : /* @__PURE__ */ React2.createElement("span", { className: "plx-persona__name", title: name }, name), p ? /* @__PURE__ */ React2.createElement(VisuallyHidden, null, ", " + words2[p]) : null, role ? /* @__PURE__ */ React2.createElement(Badge, { tone: "neutral", size: "sm", className: "plx-persona__role" }, role) : null), secondary ? /* @__PURE__ */ React2.createElement("div", { className: "plx-persona__secondary", title: typeof secondary === "string" ? secondary : void 0 }, secondary) : null));
   }
   const SIZES$4 = ["sm", "md", "lg"];
   const TONES$1 = ["info", "success", "warning", "danger", "neutral"];
@@ -37631,6 +37490,154 @@ var Plenix = (function(exports, React2, reactDom, client) {
           }
         }
       )))
+    ));
+  }
+  const STATUS_LABELS = english.reviewFlow.statuses;
+  const WORKFLOW_STATUSES = {
+    draft: { tone: "neutral", icon: PencilIcon, label: STATUS_LABELS.draft },
+    "in-review": { tone: "active", icon: DocSearchIcon, label: STATUS_LABELS["in-review"] },
+    approved: { tone: "success", icon: CircleCheckIcon, label: STATUS_LABELS.approved },
+    "changes-requested": { tone: "action-required", icon: AlertIcon, label: STATUS_LABELS["changes-requested"] },
+    rejected: { tone: "negative", icon: CloseIcon, label: STATUS_LABELS.rejected },
+    published: { tone: "success", icon: VisibilityIcon, label: STATUS_LABELS.published },
+    scheduled: { tone: "waiting", icon: ScheduleIcon, label: STATUS_LABELS.scheduled }
+  };
+  function WorkflowStatus({ status = "draft", label: label2, size, strings, className, ...rest }) {
+    devWarn("WorkflowStatus", { size }, { size: ["md", "sm"] });
+    const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
+    const names2 = useStrings("reviewFlow.statuses");
+    const words2 = label2 || strings && strings[status] || names2[status] || s.label;
+    return /* @__PURE__ */ React2.createElement(Badge, { tone: s.tone, icon: s.icon, size, className: cx("plx-workflow-status", className), ...rest }, words2);
+  }
+  function useOptionalToast() {
+    try {
+      return useToast();
+    } catch (e) {
+      return null;
+    }
+  }
+  const VERB = { approved: "approve", "changes-requested": "changes", rejected: "reject" };
+  const LOOK = { approved: "primary", "changes-requested": "secondary", rejected: "danger-secondary" };
+  function ReviewFlow({
+    status = "in-review",
+    title,
+    headingLevel = 3,
+    detail,
+    kind = "review",
+    reviewers = [],
+    history: history2 = [],
+    onDecision,
+    decisions = ["rejected", "changes-requested", "approved"],
+    reasonFor = ["rejected", "changes-requested"],
+    strings,
+    className,
+    ...rest
+  }) {
+    const t = useStrings("reviewFlow.flow", strings);
+    const toast = useOptionalToast();
+    const [comment, setComment] = React2.useState("");
+    const [error, setError] = React2.useState("");
+    const field = React2.useRef(null);
+    const H2 = "h" + Math.min(6, Math.max(2, headingLevel));
+    const names2 = useStrings("reviewFlow.statuses");
+    const word = (d) => t[d] || names2[d] || WORKFLOW_STATUSES[d].label;
+    const decide = (d) => {
+      if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
+        setError(t.needReason);
+        if (field.current) field.current.focus();
+        return;
+      }
+      setError("");
+      onDecision(d, comment.trim());
+      setComment("");
+      const said2 = fill(t.done, { decision: word(d), title: title || "" });
+      if (toast) toast.show(said2, { tone: d === "approved" ? "success" : "info" });
+      else announce(said2);
+    };
+    return /* @__PURE__ */ React2.createElement("section", { className: cx("plx-review-flow", kind === "human" && "plx-review-flow--human", className), "aria-label": title, ...rest }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__head" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__heading" }, title ? /* @__PURE__ */ React2.createElement(H2, { className: "plx-review-flow__title" }, title) : null, detail ? /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__detail" }, detail) : null), /* @__PURE__ */ React2.createElement(WorkflowStatus, { status, strings })), kind === "human" ? /* @__PURE__ */ React2.createElement(Notice, { tone: "info", icon: SparkleIcon }, t.human) : null, reviewers.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.reviewers), /* @__PURE__ */ React2.createElement("ul", { className: "plx-review-flow__reviewers" }, reviewers.map((r) => /* @__PURE__ */ React2.createElement("li", { key: r.id || r.name, className: "plx-review-flow__reviewer" }, /* @__PURE__ */ React2.createElement(Persona, { name: r.name, src: r.src, color: r.color, size: "xs" }), r.decision ? /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.decision, strings }) : /* @__PURE__ */ React2.createElement("span", { className: "plx-review-flow__waiting" }, t.waiting))))) : null, onDecision ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__decide" }, /* @__PURE__ */ React2.createElement(Field, { label: t.comment, description: t.commentHint, error: error || void 0 }, /* @__PURE__ */ React2.createElement(Textarea, { ref: field, rows: 3, value: comment, onChange: (e) => {
+      setComment(e.target.value);
+      if (error) setError("");
+    } })), /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__actions", role: "group", "aria-label": t.decisions }, decisions.map((d) => /* @__PURE__ */ React2.createElement(Button, { key: d, variant: LOOK[d], onClick: () => decide(d) }, t[VERB[d]])))) : null, history2.length ? /* @__PURE__ */ React2.createElement("div", { className: "plx-review-flow__section" }, /* @__PURE__ */ React2.createElement("p", { className: "plx-review-flow__label" }, t.history), /* @__PURE__ */ React2.createElement(ActivityList, { label: t.history, stacked: true }, history2.map((x) => /* @__PURE__ */ React2.createElement(
+      ActivityList.Item,
+      {
+        key: x.id || x.name + x.time,
+        leading: /* @__PURE__ */ React2.createElement(Avatar, { name: x.name, src: x.src, color: x.color, size: "xs" }),
+        title: x.name,
+        meta: word(x.decision) + (x.comment ? ": " + x.comment : ""),
+        time: x.time,
+        dateTime: x.dateTime
+      }
+    )))) : null);
+  }
+  function ReviewQueue({
+    items = [],
+    label: label2,
+    noun,
+    plural,
+    onDecision,
+    selected,
+    onSelectionChange,
+    strings,
+    className,
+    ...rest
+  }) {
+    const t = useStrings("reviewFlow.queue", strings);
+    const names2 = useStrings("reviewFlow.statuses");
+    const loc2 = useLocale();
+    const builtIn = !noun && !plural;
+    const many = plural || (noun ? noun + "s" : t.plural);
+    noun = noun ?? t.noun;
+    label2 = label2 ?? t.queueLabel;
+    const counted = (m) => builtIn ? loc2.t("reviewFlow.queue.items", { count: m, n: formatNumber(m) }) : null;
+    const toast = useOptionalToast();
+    const [own2, setOwn] = React2.useState([]);
+    const sel = selected !== void 0 ? selected : own2;
+    const setSel = (ids) => {
+      if (selected === void 0) setOwn(ids);
+      if (onSelectionChange) onSelectionChange(ids);
+    };
+    const [ask2, setAsk] = React2.useState(null);
+    const what = (n) => counted(n) ?? (n === 1 ? "1 " + noun : formatNumber(n) + " " + many);
+    const run2 = (decision, reason) => {
+      const ids = sel.slice();
+      if (onDecision) onDecision(ids, decision, reason || "");
+      setSel([]);
+      setAsk(null);
+      const whole2 = builtIn && t.doneItems && t.doneItems[decision];
+      const said2 = whole2 ? loc2.t("reviewFlow.queue.doneItems." + decision, { count: ids.length, n: formatNumber(ids.length) }) : fill(t.done, { what: what(ids.length), decision: names2[decision].toLowerCase() });
+      if (toast) toast.show(said2, { tone: decision === "approved" ? "success" : "info" });
+      else announce(said2);
+    };
+    const columns = [
+      { title: t.name, field: "name", kind: "name" },
+      { title: t.type, field: "type" },
+      { title: t.submittedBy, field: "submittedBy", type: "person" },
+      { title: t.submitted, field: "submitted", kind: "data", type: "date", render: (r) => /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, formatDate(r.submitted)) },
+      { title: t.status, field: "status", kind: "center", render: (r) => /* @__PURE__ */ React2.createElement(WorkflowStatus, { status: r.status, strings }) }
+    ];
+    return /* @__PURE__ */ React2.createElement("div", { className: cx("plx-review-queue", className), ...rest }, /* @__PURE__ */ React2.createElement(
+      CommandBar,
+      {
+        label: label2,
+        count: counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many }),
+        selection: { count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
+          { id: "approve", label: t.approve, icon: CircleCheckIcon, onSelect: () => run2("approved") },
+          { id: "changes", label: t.changes, icon: AlertIcon, onSelect: () => setAsk("changes-requested") },
+          { id: "reject", label: t.reject, icon: CloseIcon, danger: true, onSelect: () => setAsk("rejected") }
+        ] }
+      }
+    ), /* @__PURE__ */ React2.createElement(DataGrid, { label: label2, data: items, index: "id", selectable: true, selected: sel, onSelectionChange: setSel, columns }), /* @__PURE__ */ React2.createElement(
+      PromptDialog,
+      {
+        open: !!ask2,
+        title: fill(ask2 === "rejected" ? t.rejectTitle : t.changesTitle, { what: what(sel.length) }),
+        label: ask2 === "rejected" ? t.reason : t.changesLabel,
+        description: t.reasonHint,
+        confirmLabel: ask2 === "rejected" ? t.reject : t.changes,
+        validate: (v) => v.trim() ? "" : t.needReason,
+        onSubmit: (v) => run2(ask2, v.trim()),
+        onCancel: () => setAsk(null)
+      }
     ));
   }
   const SHOWN = 5;
