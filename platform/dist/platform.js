@@ -8744,14 +8744,14 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const group = React$1.useContext(RadioContext);
     const radio = type === "radio" || !!group && value !== void 0;
     const on = radio && group && value !== void 0 ? group.value === value : checked2;
-    const marked2 = radio || checked2 !== void 0;
+    const marked = radio || checked2 !== void 0;
     const role = radio ? "menuitemradio" : checked2 === void 0 ? "menuitem" : "menuitemcheckbox";
     const stay = keepOpen || radio && !!group && group.keepOpen;
     const props = {
       role,
       tabIndex: -1,
       "data-plx-menu-item": "",
-      "aria-checked": marked2 ? !!on : void 0,
+      "aria-checked": marked ? !!on : void 0,
       "aria-disabled": disabled || void 0,
       className: cx("plx-menu__item", danger && "plx-menu__item--danger", className),
       onClick: (e) => {
@@ -8765,7 +8765,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       ...rest
     };
-    const content = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, marked2 ? /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-menu__check", radio && "plx-menu__check--radio", on && "is-checked"), "aria-hidden": "true" }, on ? /* @__PURE__ */ React$1.createElement(Icon, { icon: CheckIcon, filled: false }) : null) : null, icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-menu__icon" }, asIcon(icon)) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-menu__label" }, children));
+    const content = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, marked ? /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-menu__check", radio && "plx-menu__check--radio", on && "is-checked"), "aria-hidden": "true" }, on ? /* @__PURE__ */ React$1.createElement(Icon, { icon: CheckIcon, filled: false }) : null) : null, icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-menu__icon" }, asIcon(icon)) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-menu__label" }, children));
     return href && !disabled ? /* @__PURE__ */ React$1.createElement("a", { href, ...props }, content) : /* @__PURE__ */ React$1.createElement("button", { type: "button", ...props }, content);
   }
   function MenuDivider() {
@@ -9186,6 +9186,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   function Bleed({ as: As = "div", space = "md", sides = "inline", className, children, ...rest }) {
     return /* @__PURE__ */ React$1.createElement(As, { className: cx("plx-bleed", "plx-bleed--" + space, "plx-bleed--" + sides, className), ...rest }, children);
   }
+  const ReasonIcon = Icon;
+  const ReasonText = Text;
   const ReadOnlyContext = React$1.createContext(false);
   function ReadOnlyProvider({ readOnly = true, children }) {
     return /* @__PURE__ */ React$1.createElement(ReadOnlyContext.Provider, { value: !!readOnly }, children);
@@ -9339,7 +9341,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         ...rest,
         "aria-describedby": joinIds(rest["aria-describedby"], on && reason ? reasonId : null)
       },
-      on && reason ? /* @__PURE__ */ React$1.createElement(Inline$1, { gap: "xs" }, /* @__PURE__ */ React$1.createElement(Icon, { name: LockIcon, size: "sm" }), /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary", id: reasonId }, reason)) : null,
+      on && reason ? /* @__PURE__ */ React$1.createElement(Inline$1, { gap: "xs" }, /* @__PURE__ */ React$1.createElement(ReasonIcon, { name: LockIcon, size: "sm" }), /* @__PURE__ */ React$1.createElement(ReasonText, { variant: "secondary", id: reasonId }, reason)) : null,
       children
     ));
   });
@@ -18561,7 +18563,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     isOpen,
     on,
     childField,
-    marked: marked2,
+    marked,
     virtualized,
     chooseRow,
     emit,
@@ -18720,7 +18722,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             "" + B + "__grid-row",
             (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + "__grid-selectable",
             childField && "" + B + "__grid-tree-level-" + Math.min(12, row.depth),
-            marked2(row.id) && "" + B + "__grid-selected",
+            marked(row.id) && "" + B + "__grid-selected",
             isStatic && B + "__grid-row--static",
             anyWrap && !isNarrow && (isStatic || (effectiveStep || "short") !== "short") && B + "__grid-row--wrap",
             isNarrow && B + "__grid-row--narrow",
@@ -18827,7 +18829,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
               className: cx(
                 "" + B + "__grid-cell",
                 modes,
-                !selectable && marked2(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
+                !selectable && marked(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
                 bare && B + "__grid-cell--bare",
                 selectable && ordered2.indexOf(column) === 0 && B + "__grid-cell--after-lead",
                 ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
@@ -19212,16 +19214,67 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const locked = useReadOnly(readOnly);
     return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-switch", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref, type: "checkbox", role: "switch", className: "plx-switch__input", "aria-label": labelHidden ? label2 : void 0, ...readOnlyProps(locked, rest) }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" }), label2 && !labelHidden ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__label" }, label2) : null);
   });
+  const IGNORED = /[ـً-ٰٟ]/;
+  const JOINED = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+  function fold$1(source) {
+    let text2 = "";
+    const start2 = [];
+    const end = [];
+    let at2 = 0;
+    for (const ch of source) {
+      const next = at2 + ch.length;
+      if (!IGNORED.test(ch)) {
+        const low = ch.toLocaleLowerCase();
+        for (let i = 0; i < low.length; i += 1) {
+          start2.push(at2);
+          end.push(next);
+        }
+        text2 += low;
+      }
+      at2 = next;
+    }
+    return { text: text2, start: start2, end };
+  }
+  function ranges(label2, typed) {
+    const query = fold$1(String(typed ?? "").trim()).text;
+    if (!query) return [];
+    const folded = fold$1(label2);
+    const found = [];
+    let from = folded.text.indexOf(query);
+    while (from >= 0) {
+      const last = from + query.length - 1;
+      let to = folded.end[last];
+      while (to < label2.length && IGNORED.test(label2.charAt(to))) to += 1;
+      found.push([folded.start[from], to]);
+      from = folded.text.indexOf(query, from + query.length);
+    }
+    return found;
+  }
+  function matchesText(label2, typed) {
+    const query = fold$1(String(typed ?? "").trim()).text;
+    return !query || fold$1(String(label2 ?? "")).text.indexOf(query) >= 0;
+  }
+  function highlightMatch(label2, typed) {
+    const text2 = String(label2 ?? "");
+    const found = ranges(text2, typed);
+    if (!found.length) return text2;
+    const pieces = [];
+    let at2 = 0;
+    found.forEach(([from, to], i) => {
+      if (from > at2) pieces.push(text2.slice(at2, from));
+      const part = text2.slice(from, to);
+      pieces.push(
+        /* @__PURE__ */ React$1.createElement("span", { key: "m" + i, className: JOINED.test(part) ? "plx-match plx-match--joined" : "plx-match" }, part)
+      );
+      at2 = to;
+    });
+    if (at2 < text2.length) pieces.push(text2.slice(at2));
+    return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, pieces);
+  }
   const d0$T = "M762.69-160.92 524.46-399.16q-30 22.77-65.79 35.27-35.79 12.5-73.87 12.5-93.58 0-159.11-65.51-65.53-65.51-65.53-159.04 0-93.52 65.51-159.1 65.51-65.57 159.04-65.57 93.52 0 159.1 65.53 65.57 65.53 65.57 159.11 0 39.23-12.88 75.02-12.89 35.8-34.89 64.64l238.23 238.23-37.15 37.16ZM384.77-403.38q72.31 0 122.46-50.16 50.16-50.15 50.16-122.46t-50.16-122.46q-50.15-50.16-122.46-50.16t-122.46 50.16Q212.15-648.31 212.15-576t50.16 122.46q50.15 50.16 122.46 50.16Z";
   const d1$S = "M781.69-136.92 530.46-388.16q-30 24.77-69 38.77-39 14-80.69 14-102.55 0-173.58-71.01-71.03-71.01-71.03-173.54 0-102.52 71.01-173.6 71.01-71.07 173.54-71.07 102.52 0 173.6 71.03 71.07 71.03 71.07 173.58 0 42.85-14.38 81.85-14.39 39-38.39 67.84l251.23 251.23-42.15 42.16ZM380.77-395.38q77.31 0 130.96-53.66 53.66-53.65 53.66-130.96t-53.66-130.96q-53.65-53.66-130.96-53.66t-130.96 53.66Q196.15-657.31 196.15-580t53.66 130.96q53.65 53.66 130.96 53.66Z";
   const SearchIcon = { "name": "search", "set": "plenix", "symbol": "search", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$T }, "fill": { "viewBox": "0 -960 960 960", "d": d0$T } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$S }, "fill": { "viewBox": "0 -960 960 960", "d": d1$S } } } };
   const asItem = (kind) => (x) => typeof x === "string" ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind });
-  function marked(label2, text2) {
-    const s = String(label2), q2 = String(text2 || "").trim();
-    const at2 = q2 ? s.toLowerCase().indexOf(q2.toLowerCase()) : -1;
-    if (at2 < 0) return s;
-    return [s.slice(0, at2), /* @__PURE__ */ React$1.createElement("strong", { key: "m", className: "plx-search__match" }, s.slice(at2, at2 + q2.length)), s.slice(at2 + q2.length)];
-  }
   const SearchInput = React$1.forwardRef(function SearchInput2({
     value,
     onChange,
@@ -19431,7 +19484,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onMouseEnter: () => setActive(i)
       },
       /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: it.kind === "recent" ? ClockIcon : SearchIcon })),
-      /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-label" }, it.kind === "recent" ? it.label : marked(it.label, text2)), it.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-description" }, it.description) : null)
+      /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-text" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-label" }, it.kind === "recent" ? it.label : highlightMatch(it.label, text2)), it.description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-search__option-description" }, it.description) : null)
     )))) : null);
   });
   function CollapsedSearch({ value, label: label2, onKeyDown: onKeyDown2, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
@@ -21291,7 +21344,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return () => el.removeEventListener("scroll", nearEnd);
     }, [scrollFill, nearEnd]);
     const openId = props.openKey !== void 0 ? props.openKey == null ? null : recordKey(props.openKey) : ownOpen;
-    const isOpen = (id) => openId != null && String(id) === String(openId), marked2 = (id) => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
+    const isOpen = (id) => openId != null && String(id) === String(openId), marked = (id) => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
     const { selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow } = selectionActions({
       table,
       live,
@@ -21426,7 +21479,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       isOpen,
       on,
       childField,
-      marked: marked2,
+      marked,
       virtualized,
       chooseRow,
       emit,
@@ -23846,7 +23899,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const tags = multiple && !marks2;
     const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
-    const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || String(o.label).toLowerCase().indexOf(q2) >= 0);
+    const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q2 || matchesText(o.label, text2));
     const groupOrder = [];
     matching.forEach((o) => {
       if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
@@ -23998,7 +24051,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             readOnly: true
           }
         ) : null,
-        marks2 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, it.o.label) : it.o.label
+        /* @__PURE__ */ React$1.createElement("span", { className: "plx-combobox__option-label" }, highlightMatch(it.o.label, text2))
       )
     ]) : isLoading ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty plx-combobox__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-combobox__empty", role: "presentation" }, emptyText)) : null);
   });
@@ -25609,6 +25662,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = limit2 ? own2.slice(0, limit2) : own2;
     return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-notification-list", className) }, shown.length ? /* @__PURE__ */ React$1.createElement(ActivityList, { label: label2 || t.label, titleLines: 2 }, shown.map((n) => /* @__PURE__ */ React$1.createElement(ActivityList.Item, { key: n.id, title: n.text, time: n.time, unread: !!n.unread, onOpen: () => open(n) }))) : /* @__PURE__ */ React$1.createElement(EmptyState, { size: "inline" }, t.empty), footer ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-notification-list__footer" }, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", disabled: !unread, onClick: markAll }, t.markAllRead), onViewAll ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", onClick: onViewAll }, t.viewAll) : null) : null);
   }
+  const LeaveDialog = ConfirmDialog;
   const STRINGS = { title: "Leave without saving?", message: "Your changes will be lost.", leave: "Leave", stay: "Keep editing" };
   const guards = /* @__PURE__ */ new Set();
   let leaving = false;
@@ -25636,7 +25690,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         });
       };
       root.render(/* @__PURE__ */ React$1.createElement(
-        ConfirmDialog,
+        LeaveDialog,
         {
           open: true,
           destructive: true,
@@ -30914,7 +30968,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return () => document.removeEventListener("mousedown", off2);
     }, [open]);
     const q2 = text2.trim().toLowerCase();
-    const matches = q2 ? leavesOf(options).filter((l) => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q2) >= 0) : [];
+    const matches = q2 ? leavesOf(options).filter((l) => !l.item.disabled && matchesText(l.item.label, text2)) : [];
     React$1.useEffect(() => {
       setActive(0);
       if (q2) announce(typeof t.results === "function" ? t.results(matches.length) : loc2.t("cascader.results", { count: matches.length, n: formatNumber(matches.length) }));
@@ -31016,7 +31070,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onClick: () => pick(m.item, m.trail),
         onMouseEnter: () => setActive(i)
       },
-      /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-label" }, m.item.label),
+      /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-label" }, highlightMatch(m.item.label, text2)),
       m.trail.length > 1 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-path" }, pathLabel(m.trail.slice(0, -1))) : null
     )) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
       MillerColumns,
@@ -32325,7 +32379,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   };
   function filterNodes(nodes, q2) {
     return nodes.reduce((out, n) => {
-      const own2 = String(n.label).toLowerCase().indexOf(q2) >= 0;
+      const own2 = matchesText(n.label, q2);
       const kids = kidsOf(n) ? filterNodes(n.children, q2) : [];
       if (own2 || kids.length) out.push(Object.assign({}, n, { children: own2 && !kids.length ? n.children : kids }));
       return out;
@@ -32492,7 +32546,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
               if (el) el.indeterminate = state === "mixed";
             }
           }
-        ) : null, n.icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-tree__icon" }, asIcon(iconOf(n, isOpen || state === "true"))) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-tree__label" }, n.label)),
+        ) : null, n.icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-tree__icon" }, asIcon(iconOf(n, isOpen || state === "true"))) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-tree__label" }, q2 ? highlightMatch(n.label, q2) : n.label)),
         isOpen ? /* @__PURE__ */ React$1.createElement("ul", { role: "group", className: "plx-tree__group" }, renderNodes(n.children, level + 1)) : null
       );
     });
