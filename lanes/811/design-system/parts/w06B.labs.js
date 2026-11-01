@@ -308,7 +308,7 @@ if (window.DS && DS.registerLab) {
           { id: 'og', label: 'Gap (icon to text)', css: ['column-gap'], part: OPT, cat: 'space' },
           { id: 'orad', label: 'Option corners', css: CORNERS, show: 'border-top-left-radius', part: OPT, cat: 'radius' },
           { id: 'ic', label: 'Option icon color', css: ['color'], part: '.plx-search__option-icon', cat: 'color' },
-          { id: 'mw', label: 'Matching text weight', css: ['font-weight'], part: '.plx-search__match', cat: 'font-weight' },
+          { id: 'mw', label: 'Matching text weight', css: ['font-weight'], part: '.plx-match:not(.plx-match--joined)', cat: 'font-weight' },
           { id: 'dc', label: 'Description color', css: ['color'], part: '.plx-search__option-description', cat: 'color' },
           { id: 'dfs', label: 'Description size', css: ['font-size'], part: '.plx-search__option-description', cat: 'font-size' },
           { id: 'tc', label: 'Heading color', css: ['color'], part: '.plx-search__popup-title', cat: 'color' },
@@ -358,7 +358,7 @@ if (window.DS && DS.registerLab) {
         html: function (variant, size, state, extraCls) {
           var sug = variant === 'suggestions', act = state === 'active';
           var opts = sug
-            ? option('suggestion', 'Cross <strong class="plx-search__match">gol</strong>d', 0, act, 'Crosses') + option('suggestion', '<strong class="plx-search__match">Gol</strong>d leaf border', 1, false, 'Borders') + option('suggestion', 'Banner <strong class="plx-search__match">gol</strong>d', 2, false)
+            ? option('suggestion', 'Cross <span class="plx-match">gol</span>d', 0, act, 'Crosses') + option('suggestion', '<span class="plx-match">Gol</span>d leaf border', 1, false, 'Borders') + option('suggestion', 'Banner <span class="plx-match">gol</span>d', 2, false)
             : recentRow('sunset banner', 0, act) + recentRow('easter cross', 1, false) + recentRow('parish logo', 2, false);
           var headHtml = sug ? '' : '<div class="plx-search__popup-head"><span class="plx-search__popup-title" id="ds-w06b-recent-' + variant + '">Recent searches</span>'
             + (variant === 'history' ? '<button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--size-2xs plx-search__popup-action"><span class="plx-button__label">Clear recent searches</span></button>' : '') + '</div>';

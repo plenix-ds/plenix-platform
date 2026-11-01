@@ -50,7 +50,7 @@ import { formatNumber } from '../../utils/format.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
