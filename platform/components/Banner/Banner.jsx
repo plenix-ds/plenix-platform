@@ -28,8 +28,8 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon, StatusIcon } from '../Icon/Icon.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Icon, StatusIcon } from '../Icon/Icon.tsx';
+import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

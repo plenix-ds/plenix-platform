@@ -29,7 +29,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useTruncated } from '../../utils/overflow.ts';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { Isolate } from '../../components/Isolate/Isolate.jsx';
 
 export function PropertyList({ layout = 'columns', className, children, ...rest }) {

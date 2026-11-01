@@ -49,7 +49,7 @@ import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
 import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.tsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 

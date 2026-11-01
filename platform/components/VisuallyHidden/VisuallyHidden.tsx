@@ -9,6 +9,7 @@
 */
 import React from 'react';
 
-export function VisuallyHidden({ as: Tag = 'span', children, ...rest }) {
+export type VisuallyHiddenProps = React.HTMLAttributes<HTMLElement> & { as?: React.ElementType };
+export function VisuallyHidden({ as: Tag = 'span', children, ...rest }: VisuallyHiddenProps) {
   return <Tag className="plx-visually-hidden" {...rest}>{children}</Tag>;
 }

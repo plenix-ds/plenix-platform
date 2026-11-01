@@ -27,8 +27,8 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
+import { Icon } from '../Icon/Icon.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseN2Icon from 'plenix-platform/icons/plenix/close-2';

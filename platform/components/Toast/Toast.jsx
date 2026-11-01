@@ -40,8 +40,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Button } from '../Button/Button.tsx';
 import { tokenMs } from '../../utils/tokenTime.ts';
 import { announce } from '../../utils/announce.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

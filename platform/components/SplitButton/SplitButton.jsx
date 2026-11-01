@@ -35,7 +35,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Menu } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

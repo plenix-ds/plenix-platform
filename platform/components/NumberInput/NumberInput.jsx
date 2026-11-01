@@ -51,7 +51,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.ts';
 import { Input } from '../Input/Input.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';

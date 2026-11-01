@@ -12,10 +12,10 @@
      The pattern owns no payment processing or subscription authorization.
 */
 import React from 'react';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Banner } from '../../components/Banner/Banner.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Select } from '../../components/Input/Input.jsx';

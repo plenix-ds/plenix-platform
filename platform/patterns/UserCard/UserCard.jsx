@@ -46,8 +46,8 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Image } from '../../components/Image/Image.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { List } from '../../components/List/List.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
