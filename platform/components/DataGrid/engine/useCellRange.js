@@ -18,7 +18,8 @@
      The range is kept as keys (a row's id and a column's id), so it survives scrolling and virtualization; the copy reads the grid's data, not
      the page, so a block of any size copies at once. One cell is not a range: with the anchor and the focus on the same cell there is no
      rectangle. Shift with an arrow moves the focus end one cell (the focus cell scrolls into view and keeps keyboard focus); Shift with Home
-     or End goes to the first or last column of the row; Escape, a plain arrow or a mouse press on a cell collapses the block to the active cell. In right to
+     or End goes to the first or last column of the row; when focus is on a cell the block never reached (moved there by script), Shift
+     with an arrow starts a new block from that cell; Escape, a plain arrow or a mouse press on a cell collapses the block to the active cell. In right to
      left the arrows are mirrored, and so are the block's start and end edges (they are logical).
      The count is announced politely once the arrow keys pause (400 ms), never once per key press while Shift and an arrow repeat.
    Notes:
@@ -40,6 +41,7 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
   const [range, setRange] = React.useState(null);
   const told = React.useRef(false);   // onChange has been given a range: it is told when the range ends too
   const latest = React.useRef({});
+  const trail = React.useRef(null);   // the cells the block's focus end has been on ('rowId|field'), anchor included
 
   // the position of each record row in the model (group rows have no cells)
   const rowAt = React.useMemo(() => {
@@ -115,8 +117,12 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
   };
   // Shift with an arrow, Home or End: the focus end of the block moves, the anchor stays where the block began. The focus end is the block's own
   // (not the cell that has DOM focus): focus follows a frame later, and keys that repeat must not start from where it still is
+  // When keyboard focus is on a cell the block never reached (moved there by script or by any means other than these keys), the block's
+  // focus end and the DOM focus disagree: the old block ends and a new one starts from the cell that has focus
   const extend = ({ row, c, key, rtl, focusCell }) => {
-    const from = range ? range.focus : { key: row.id, field: c.field };
+    const here = { key: row.id, field: c.field };
+    const cont = range && trail.current && trail.current.has(here.key + '|' + here.field) ? range : null;
+    const from = cont ? cont.focus : here;
     const r = rowAt.get(from.key), at = ordered.findIndex((x) => x.id === from.field);
     if (r === undefined || at < 0) return false;
     let nr = r, nc = at;
@@ -130,8 +136,10 @@ export function useCellRange({ enabled, model, ordered, index, onChange }) {
     const step = nr < r ? -1 : 1;
     while (model[nr] && !model[nr].original) nr += step;   // a group row has no cells: skip it
     nc = Math.max(0, Math.min(ordered.length - 1, nc));
-    if (!model[nr] || !model[nr].original || (nr === r && nc === at)) return true;   // the edge: nothing moves
-    const anchor = range ? range.anchor : { key: row.id, field: c.field };
+    if (!model[nr] || !model[nr].original || (nr === r && nc === at)) { if (range && !cont) collapse(); return true; }   // the edge: nothing moves (an old block elsewhere ends)
+    const anchor = cont ? cont.anchor : here;
+    if (!cont) trail.current = new Set([here.key + '|' + here.field]);
+    trail.current.add(model[nr].id + '|' + ordered[nc].id);
     setRange({ anchor, focus: { key: model[nr].id, field: ordered[nc].id } });
     focusCell(nr, nc, step);
     return true;
