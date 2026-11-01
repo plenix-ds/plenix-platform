@@ -18,7 +18,7 @@
      label: names the group and each box ("Verification code, character 2 of 6"); without it, inside a Field, the Field's
        label names the first box
      invalid: the invalid state (every box's border in the danger color); a Field with an error sets it
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: none of the boxes can be used
      required: the code is required (a Field sets it)
      autoFocus: the first box takes focus when it appears

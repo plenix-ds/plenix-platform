@@ -28,7 +28,7 @@
      placeholder: the hint in the empty area
      readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
      invalid: marks the area invalid (aria-invalid); put the message in Field's error
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the area cannot be used (default false)
      strings: the words it shows, for other languages (the richTextEditor section of i18n/en.js: every button, menu and field name; on(name),
        off(name) announce a format turned on or off from the keyboard; tip(name, keys) is a button's tooltip; leave is

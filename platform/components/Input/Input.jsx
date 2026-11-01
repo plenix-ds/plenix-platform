@@ -9,7 +9,7 @@
      Input.size: "sm" | "md" (default) | a number: "sm" uses the existing toolbar control height; "md" keeps today’s standard height; a number keeps the native size attribute.
      Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
-     Input.warning: marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
+     Input.warning: true marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
        leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
@@ -24,7 +24,7 @@
        the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
-     Textarea.warning: marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
+     Textarea.warning: true marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
      Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
      Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
        scrolls inside; it cannot be resized by hand (default false)
@@ -32,7 +32,7 @@
      Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
-     Select.warning: marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
+     Select.warning: true marks the field with a warning (data-plx-warning, a warning border and fill); put the message in Field's warning
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
      Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
        the ref is the hidden native <select>

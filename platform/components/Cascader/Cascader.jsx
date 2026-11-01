@@ -17,7 +17,7 @@
      placeholder: the hint in the empty field (default strings.placeholder)
      label: the accessible name when there is no Field
      invalid: the invalid state (the field's border in the danger color); a Field with an error sets it
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not change it: the list does not open and the tags cannot be removed; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the field's button (a Field sets it, so its label names it)

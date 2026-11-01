@@ -10,7 +10,7 @@
        box whose purpose is plain from where it sits); default false (owner, 2026-10-16, the composition standard)
      description: help text under the control (under the label with "row")
      error: the error message under the control; it marks the field invalid
-     warning: a warning message under the control (a caution that does not block): drawn with a warning icon and the word "Warning"
+     warning: an element (or text): the warning message under the control (a caution that does not block): drawn with a warning icon and the word "Warning"
        for screen readers, never by color alone; the control takes a warning border and fill (its warning prop). An error wins: with
        both, only the error shows.
      required: marks the field and the control required; the label shows " *" (default false)

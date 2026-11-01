@@ -17,7 +17,7 @@
      now: the date counted from (default: today), for tests and examples
      label: the accessible name when there is no Field
      invalid, disabled: the field's states (a Field sets invalid with its error)
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      id: the id of the preset select (a Field sets it)
      strings: the words it shows, for other languages: { custom: "Custom", none: "Any time", amount: "Amount", unit:
        "Unit", past: "Last", future: "Next", units: { day: ["day", "days"], … }, presets: { "last-7-days": "Last 7 days", … },

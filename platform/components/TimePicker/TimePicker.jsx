@@ -23,7 +23,7 @@
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
      label: the accessible name when there is no Field (the group's name with segments)
      invalid: the invalid state (the border in the danger color); a Field with an error sets it
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the time and does not change it: the list does not open, the segments take no digits or arrows that change a value; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the input, or of the first segment (a Field sets it)

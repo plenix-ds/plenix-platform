@@ -19,7 +19,7 @@
      data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
      invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: handed to the Input; the box takes the disabled fill
      readOnly: handed to the Input; the box takes the read-only fill
      required: handed to the Input (a Field sets it)

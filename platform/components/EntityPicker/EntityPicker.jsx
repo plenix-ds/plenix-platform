@@ -23,7 +23,7 @@
      onBrowse(): shows "Browse all {entityName}" at the end of the list, for a dialog that searches with filters
      label: the accessible name when there is no Field
      invalid, disabled: the field's states; a Field sets invalid with its error
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      id: the id of the input (a Field sets it)
      strings: the words it shows and announces: { placeholderPeople: "Search by name or email", placeholder: "Search
        {entityName}", empty: "No {entityName} found", browse: "Browse all {entityName}", loading: "Loading…", error: "The

@@ -27,7 +27,7 @@
        short centered count: carts, copies, seats)
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
      invalid: the danger border and aria-invalid (a Field with an error sets it)
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the field and its buttons off
      readOnly: the value can be read and copied, not changed; the buttons turn off; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the field (a Field sets it)

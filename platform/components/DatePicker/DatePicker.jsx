@@ -25,7 +25,7 @@
      defaultTime: the time a date-time value takes when only its date is chosen ("HH:MM", default "09:00")
      timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none)
      invalid: the danger border and aria-invalid (a Field with an error sets it)
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the field and its button off
      readOnly: shows the date and does not change it: the field is read-only and the calendar button is not shown; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the date field (a Field sets it)

@@ -19,7 +19,7 @@
      placeholder: the hint in the empty field (default "Choose a time zone")
      label: the accessible name when there is no Field
      invalid: shows the invalid state
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      readOnly: shows the chosen zone and does not open the list or change it; default the nearest ReadOnly region's (useReadOnly)
      disabled: the field cannot be used
      locale: the language of the zone names (default the page's language)

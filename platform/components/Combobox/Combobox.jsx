@@ -22,7 +22,7 @@
      placeholder: the hint in the empty field
      label: the accessible name when there is no Field
      invalid: shows the invalid state
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
        default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on

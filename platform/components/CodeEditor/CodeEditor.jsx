@@ -18,7 +18,7 @@
      tabSize: the spaces Tab inserts (default 2)
      label: the accessible name when it has no Field
      invalid: marks the editor invalid: the danger border and aria-invalid (a Field with an error sets it)
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the editor off (default false)
      required: handed to the <textarea> (a Field sets it)
      id: handed to the <textarea>, with aria-describedby (a Field sets both)

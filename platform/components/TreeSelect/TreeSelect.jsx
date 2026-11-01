@@ -19,7 +19,7 @@
      label: the accessible name when there is no Field (also the popover's name)
      defaultExpanded: the ids of the items open when the tree first shows (default: the items above the chosen ones)
      invalid: shows the invalid state (a Field sets it)
-     warning: a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the choice and does not open the tree, so nothing changes; default the nearest ReadOnly region's (useReadOnly)
      required: a choice is required (a Field sets it)
