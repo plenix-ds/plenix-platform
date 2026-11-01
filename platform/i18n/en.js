@@ -225,6 +225,9 @@ export default {
     "notImage": "Choose an image file",
     "picture": "{name}’s photo"
   },
+  "anchor": {
+    "label": "On this page"
+  },
   "backToTop": {
     "label": "Back to top"
   },
