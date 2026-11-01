@@ -19,7 +19,7 @@ This test makes sure the date and time pickers show and save dates and times in 
   - The calendar's today mark and the Today preset are the app zone's today (Pago Pago on a Kiritimati computer, whose dates always differ).
   - New York around its clock changes, on a Tokyo computer: EST or EDT named for the value, the skipped and the repeated time saved as above.
   - Keyboard around midnight: Alt+Arrow Down opens the calendar on the chosen New York day, Arrow Right moves, and Enter chooses.
-  - Arabic (ar-EG) in Cairo, right to left: Arabic-Indic digits, the Arabic month and zone names, the Cairo day chosen in the calendar, and the calendar button at the inline end. Left to right, the button is at the other end.
+  - Arabic (ar-EG) in Cairo, right to left: Arabic-Indic digits, the month and zone names as the browser names them in ar-EG (English names the zone GMT+3), the Cairo day chosen in the calendar, and the calendar button at the inline end. Left to right, the button is at the other end.
 - No script errors.
 
 ## Why it exists

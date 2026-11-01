@@ -14,7 +14,7 @@
          same day there; an "HH:MM" value stays "HH:MM"
        no time zone: DatePicker and TimePicker give exactly what they gave before (wall clock, "HH:MM")
        keyboard: Alt+Arrow Down opens the calendar, the arrows move, Enter chooses, in the zone
-       Arabic (ar-EG, Cairo) right to left: Arabic-Indic digits, the Arabic month and zone names, the calendar button at the
+       Arabic (ar-EG, Cairo) right to left: Arabic-Indic digits, the month and zone names as the browser's Intl names them in ar-EG, the calendar button at the
          inline end; left to right the same at the other end
    Usage: node tests/picker-timezone-813.test.js   → PICKER_TIMEZONE_813_OK */
 const assert = require('assert/strict');
@@ -207,13 +207,18 @@ function loadZone() {
       { id: 'ar', zone: 'Africa/Cairo', locale: 'ar-EG', dir: 'rtl', value: '2026-07-01T22:30:00.000Z', props: { mode: 'date-time', locale: 'ar-EG' } },   // the date's form and digits come from the picker's own locale; LocaleProvider gives the words and the zone
       { id: 'en', zone: 'Africa/Cairo', locale: 'en-US', dir: 'ltr', value: '2026-07-01T22:30:00.000Z', props: { mode: 'date-time' } },
     ]);
-    r = await read('ar');
-    assert.ok(/[٠-٩]/.test(r.date) && !/[0-9]/.test(r.date), 'Arabic writes the date in Arabic-Indic digits; got ' + r.date);
-    assert.ok(/٠٢/.test(r.date) && /٠٧/.test(r.date), 'the date is July 2 in Cairo, not the computer\'s July 1; got ' + r.date);
-    assert.equal(r.time, '01:30', 'the time is Cairo\'s');
-    r = await read('en');
-    assert.deepEqual([r.date, r.time], ['07/02/2026', '01:30'], 'the same moment in English: July 2, 01:30 in Cairo');
-    assert.ok(/[؀-ۿ]/.test(r.suffix), 'the zone is named in Arabic; got ' + r.suffix);
+    // the Arabic picker's reading kept in its own variable (QA on bef84188: the zone check read the English picker)
+    const ar = await read('ar');
+    assert.ok(/[٠-٩]/.test(ar.date) && !/[0-9]/.test(ar.date), 'Arabic writes the date in Arabic-Indic digits; got ' + ar.date);
+    assert.ok(/٠٢/.test(ar.date) && /٠٧/.test(ar.date), 'the date is July 2 in Cairo, not the computer\'s July 1; got ' + ar.date);
+    assert.equal(ar.time, '01:30', 'the time is Cairo\'s');
+    // the zone is named in the picker's locale for Cairo at that moment: exactly what this browser's Intl gives for ar-EG
+    // (a full ICU says "غرينتش+٣"; a browser with fewer zone names may say "GMT+3"), never the computer's zone
+    const arZone = await page.evaluate(() => { const p = new Intl.DateTimeFormat('ar-EG-u-nu-arab', { timeZone: 'Africa/Cairo', timeZoneName: 'short' }).formatToParts(new Date('2026-07-01T22:30:00.000Z')).find((x) => x.type === 'timeZoneName'); return p ? p.value : ''; });
+    assert.equal(ar.suffix, arZone, 'the Arabic picker names Cairo\'s zone in ar-EG; got ' + ar.suffix + ', Intl gives ' + arZone);
+    const en = await read('en');
+    assert.deepEqual([en.date, en.time], ['07/02/2026', '01:30'], 'the same moment in English: July 2, 01:30 in Cairo');
+    assert.ok(/GMT\+3/.test(en.suffix), 'the English picker names Cairo\'s zone GMT+3; got ' + en.suffix);
     const sides = await page.evaluate(() => ['ar', 'en'].map((id) => {
       const root = document.getElementById(id), input = root.querySelector('.plx-date-picker__input'), button = root.querySelector('.plx-date-picker__button');
       return { dir: getComputedStyle(input).direction, input: input.getBoundingClientRect().left, button: button.getBoundingClientRect().left };
@@ -225,7 +230,9 @@ function loadZone() {
     await page.waitForSelector('.plx-calendar__day.is-selected', { visible: true });
     const arCal = await page.evaluate(() => ({ chosen: document.querySelector('.plx-calendar__day.is-selected').getAttribute('data-plx-date'), text: document.querySelector('.plx-calendar').textContent }));
     assert.equal(arCal.chosen, '2026-07-02', 'the chosen day in the calendar is the Cairo day');
-    assert.ok(/يوليو/.test(arCal.text) && /[٠-٩]/.test(arCal.text), 'the calendar shows the Arabic month name and Arabic-Indic digits');
+    // the month as this browser's Intl names July in ar-EG (يوليو with a full ICU), and Arabic-Indic digits
+    const arMonth = await page.evaluate(() => new Intl.DateTimeFormat('ar-EG-u-nu-arab', { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2026, 6, 15))));
+    assert.ok(arCal.text.includes(arMonth) && /[٠-٩]/.test(arCal.text), 'the calendar shows the month in ar-EG (' + arMonth + ') and Arabic-Indic digits');
     await page.keyboard.press('Escape');
 
     assert.deepEqual(errors, [], 'no script errors');
