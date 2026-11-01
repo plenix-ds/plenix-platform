@@ -110,6 +110,8 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
 // a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)
 child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.ts'] }, 'branch-loader-814.test.js');
+// EntityTitle, a short title line for list rows and cards (issue 803)
+child({ units: ['components/EntityTitle', 'components/RowButton', 'components/Card'] }, 'entity-title-803.test.js');
 // Tree and TreeSelect draw only the rows in view above 200 rows (issue 815, part 1)
 child({ units: ['components/Tree', 'components/TreeSelect', 'hooks/useVirtualizer.ts'] }, 'tree-virtual-815.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)

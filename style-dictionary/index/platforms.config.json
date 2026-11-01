@@ -1,0 +1,27 @@
+{
+  "source": [
+    "platform/tokens/platform-ios.tokens.json",
+    "platform/tokens/platform-android.tokens.json"
+  ],
+  "log": {
+    "warnings": "disabled",
+    "verbosity": "silent",
+    "errors": {
+      "brokenReferences": "console"
+    }
+  },
+  "platforms": {
+    "json": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/index/",
+      "files": [
+        {
+          "destination": "platforms.json",
+          "format": "json"
+        }
+      ]
+    }
+  }
+}

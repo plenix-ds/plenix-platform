@@ -1,0 +1,28 @@
+{
+  "source": [
+    "platform/tokens/semantic.density-comfortable.tokens.json",
+    "platform/tokens/components.density-comfortable.tokens.json",
+    "platform/tokens/components/*.density-comfortable.tokens.json"
+  ],
+  "log": {
+    "warnings": "disabled",
+    "verbosity": "silent",
+    "errors": {
+      "brokenReferences": "console"
+    }
+  },
+  "platforms": {
+    "json": {
+      "transforms": [
+        "name/kebab"
+      ],
+      "buildPath": "build/sd/index/",
+      "files": [
+        {
+          "destination": "density-comfortable.json",
+          "format": "json"
+        }
+      ]
+    }
+  }
+}
