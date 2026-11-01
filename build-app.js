@@ -37,7 +37,8 @@ console.log('Built the library block of platform/index.js and platform.css (' + 
 const PARTS = require('./build-spec-parts.js')(ROOT);
 if (!PARTS.skipped) console.log('Built platform/design-system/spec-parts.js and ds-sample-parts.css (' + PARTS.parts + ' part files' + (PARTS.changed ? '' : ', unchanged') + ')');
 // the token stylesheets first (platform/tokens/*.tokens.json -> system/tokens/*.css, themes/plenix.css; batch 158)
-const TOKENS = buildTokens(ROOT);
+// the stylesheets only: the token index reads every Platform stylesheet, so it comes after the steps that write the others
+const TOKENS = buildTokens(ROOT, { index: false });
 console.log('Built ' + TOKENS.files.length + ' token stylesheets from platform/tokens (' + TOKENS.count + ' tokens' + (TOKENS.stale.length ? ', ' + TOKENS.stale.length + ' changed' : '') + ')');
 // then the icon stylesheet (platform/icons/ -> components/Icon/icon.css): the bundles below do not read it, the pages do
 const ICONS = buildIcons(ROOT);
@@ -56,6 +57,9 @@ const PAGE_ICONS = require('./tools/icons/site-icons.js').buildPages(ROOT);
 console.log('Built ' + PAGE_ICONS.pages + ' page icon files (' + PAGE_ICONS.icons + ' icons' + (PAGE_ICONS.changed ? ', ' + PAGE_ICONS.stale.length + ' changed' : ', unchanged') + '; ' + PAGE_ICONS.unknown.length + ' names that are not icons, such as the suite\'s capability keys)');
 // then the step rules (build-steps.js -> system/steps.css): values from the data arrive as attributes (batch 267)
 const STEPS = require('./build-steps.js')(ROOT);
+// then the token index (tools/token-index.js), now that every stylesheet exists, and the native files from it; the steps
+// below read the index (build-native-guidance.js). A fresh checkout gets the same index as a rebuilt one (#692)
+const MOB = buildTokens.indexAndMobile(ROOT);
 // the Platforms Standard (platform/standards/platforms.md) as the design system's data (batch 297)
 const PLAT = require('./build-platforms.js')(ROOT);
 // Plenix's own guidance for the Apple HIG pages, mapped to Web and Android (platform/standards/native-guidance.json, batch 330)
@@ -64,8 +68,7 @@ console.log('Built platform/design-system/native-guidance.js (' + NG.pages + ' p
 // each Web item's Last reviewed date, from the design system's history (STANDARD.md §7)
 const RV = require('./build-reviewed.js')(ROOT);
 console.log('Built platform/design-system/reviewed.js (' + RV.count + ' items dated' + (RV.changed ? '' : ', unchanged') + ')');
-// the native token outputs (Swift, Kotlin, Dart; Platforms Standard 7.2), written by build-tokens.js with the stylesheets
-const MOB = TOKENS.mobile;
+// the native token outputs (Swift, Kotlin, Dart; Platforms Standard 7.2), written above with the token index
 console.log('Built platform/mobile (' + MOB.files.length + ' files, ' + MOB.colors + ' colors' + (MOB.changed ? '' : ', unchanged') + ')');
 console.log('Built platform/design-system/platforms-standard.js (' + PLAT.sections + ' sections, ' + PLAT.tables + ' tables' + (PLAT.changed ? '' : ', unchanged') + ')');
 console.log('Built platform/system/steps.css (' + STEPS.rules + ' rules' + (STEPS.changed ? '' : ', unchanged') + ')');

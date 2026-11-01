@@ -94,12 +94,12 @@ One design system and the suite of applications built on it, owned by one person
   - Never raise the baseline to pass. `--list` shows where each finding comes from: the source module, or the CSS rule.
   - `node build-packages.js` builds the CDN files and runs no test (#466, #472); CI also builds them.
 - **Run `npm ci` first in a fresh clone or worktree, and after pulling a build change.** The build outputs are not in git
-  (#692, `.gitignore`); `npm ci` builds them (package.json's prepare: `node build-app.js && node build-docs.js`). Without
+  (#692, `.gitignore`); `npm ci` builds them (package.json's prepare: `node build-app.js`). Without
   it there is no `platform/dist/platform.js`, no `<app>/app.js` and no token CSS, so pages open blank and check-system
   says "run npm ci first". `node build-app.js` alone rebuilds them after a source change.
 - Generated files (never edit by hand, never committed): `platform/dist/`, `<app>/app.js`, `<app>/plenix-icons-<app>.js`,
   `platform/system/steps.css`, `platform/system/tokens/*.css`, `platform/system/themes/`, `platform/tokens/tokens.index.json`,
-  `platform/components/Icon/icon.css` and `glyphs.js`, `platform/mobile/`, `docs/plenix-docs.html`, `docs/plenix-data.js`;
+  `platform/components/Icon/icon.css` and `glyphs.js`, `platform/mobile/`;
   in the spec, `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js` (still committed in its own repository).
 - Clean copy for builds and proofs: a detached `git worktree` (for example `../Plenix-b0`) with `node_modules` linked
   as a junction; copy in only your changed files; for build-app, write `platform/design-system/.git` as

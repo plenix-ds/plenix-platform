@@ -25,7 +25,7 @@ build/vite/
 # Style Dictionary's side-by-side token output (npm run tokens:sd, #372 step 1); never committed
 build/sd/
 
-# Build outputs (#692): written by `npm ci` (its prepare script: node build-app.js && node build-docs.js), never committed.
+# Build outputs (#692): written by `npm ci` (its prepare script: node build-app.js), never committed.
 # A fresh checkout has none of them until `npm ci` (or node build-app.js) has run.
 /platform/dist/platform.js
 /platform/dist/plenix-icons-plenix.js
@@ -51,5 +51,3 @@ build/sd/
 /*/app.js
 /*/plenix-icons-*.js
 /dam/app/assets.js
-/docs/plenix-docs.html
-/docs/plenix-data.js

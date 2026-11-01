@@ -260,7 +260,7 @@ function generate(manifest) {
   return { files, written };
 }
 
-function build(root = ROOT, { check = false } = {}) {
+function build(root = ROOT, { check = false, index = true } = {}) {
   const manifest = load(root);
   const { files, written } = generate(manifest);
   const stale = [];
@@ -274,8 +274,10 @@ function build(root = ROOT, { check = false } = {}) {
   // whole token set, the component tokens kept beside their components included (a partial copy, such as the theme test's,
   // builds only the stylesheets)
   const whole = fs.existsSync(path.join(root, 'platform', 'components')) && fs.existsSync(path.join(root, 'build-mobile.js'));
-  if (!check && whole) require('./tools/token-index.js').writeIndex(root, written);
-  const mobile = check || !whole ? null : require('./build-mobile.js')(root);
+  // index: false leaves both to indexAndMobile, which build-app.js calls once the other stylesheets are built (#692: the index
+  // reads every Platform stylesheet, and a fresh checkout has the generated ones only after their own steps)
+  if (!check && whole && index) require('./tools/token-index.js').writeIndex(root, written);
+  const mobile = check || !whole || !index ? null : require('./build-mobile.js')(root);
   return { files: Object.keys(files), stale, count: written.length, mobile };
 }
 
@@ -284,6 +286,8 @@ module.exports.toCss = toCss; module.exports.toJson = toJson;
 // TEMPORARY until issue 372 step 10 (Style Dictionary writes the stylesheets, and tools/token-index.js reads where each token
 // is written from them): where this build writes each token, [{ name, file, line, selector }], for the token index
 module.exports.writtenForIndex = (root = ROOT) => generate(load(root)).written;
+// the token index, then the native files from it (build-app.js, after every stylesheet step)
+module.exports.indexAndMobile = (root = ROOT) => { require('./tools/token-index.js').writeIndex(root, module.exports.writtenForIndex(root)); return require('./build-mobile.js')(root); };
 if (require.main === module) {
   const check = process.argv.includes('--check');
   const r = build(ROOT, { check });
