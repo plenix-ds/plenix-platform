@@ -14,15 +14,15 @@
 */
 import React from 'react';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Tabs } from '../../components/Tabs/Tabs.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input, Textarea } from '../../components/Input/Input.jsx';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { DropZone } from '../../components/DropZone/DropZone.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Notice } from '../../components/Notice/Notice.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Notice } from '../../components/Notice/Notice.tsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

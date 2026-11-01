@@ -4,29 +4,29 @@
 //   d = the same thing as the target's primary leaf (a covers entry + its own variant page), c = already answered by an
 //   existing record through a cross-section covers entry (give it its own thin record + variant page)
 const EX = {   // existing Platform code (for extend targets)
-  Text: ['platform/components/Text/Text.jsx', 'platform/components/Text/text.css'],
-  SectionHeading: ['platform/components/SectionHeading/SectionHeading.jsx'],
-  List: ['platform/components/List/List.jsx', 'platform/components/List/list.css'],
-  Stack: ['platform/components/Stack/Stack.jsx', 'platform/components/Stack/stack.css'],
-  Columns: ['platform/components/Columns/Columns.jsx', 'platform/components/Columns/columns.css'],
-  Preview: ['platform/components/Preview/Preview.jsx', 'platform/components/Preview/preview.css'],
+  Text: ['platform/components/Text/Text.tsx', 'platform/components/Text/text.css'],
+  SectionHeading: ['platform/components/SectionHeading/SectionHeading.tsx'],
+  List: ['platform/components/List/List.tsx', 'platform/components/List/list.css'],
+  Stack: ['platform/components/Stack/Stack.tsx', 'platform/components/Stack/stack.css'],
+  Columns: ['platform/components/Columns/Columns.tsx', 'platform/components/Columns/columns.css'],
+  Preview: ['platform/components/Preview/Preview.tsx', 'platform/components/Preview/preview.css'],
   ContentGrid: ['platform/patterns/ContentGrid/ContentGrid.jsx', 'platform/patterns/ContentGrid/content-grid.css'],
   AppShell: ['platform/patterns/AppShell/AppShell.jsx', 'platform/patterns/AppShell/app-shell.css'],
   BrandMark: ['platform/components/Brand/Brand.jsx', 'platform/components/Brand/brand.css', 'platform/brand/'],
   ColorSwatch: ['platform/components/ColorSwatch/ColorSwatch.jsx', 'platform/components/ColorSwatch/color-swatch.css'],
   Avatar: ['platform/components/Avatar/Avatar.jsx', 'platform/components/Avatar/avatar.css'],
-  StatusDot: ['platform/components/StatusDot/StatusDot.jsx', 'platform/components/StatusDot/status-dot.css'],
-  Icon: ['platform/components/Icon/Icon.jsx', 'platform/components/Icon/icon.css'],
-  Notice: ['platform/components/Notice/Notice.jsx', 'platform/components/Notice/notice.css'],
-  EmptyState: ['platform/components/EmptyState/EmptyState.jsx', 'platform/components/EmptyState/empty-state.css'],
+  StatusDot: ['platform/components/StatusDot/StatusDot.tsx', 'platform/components/StatusDot/status-dot.css'],
+  Icon: ['platform/components/Icon/Icon.tsx', 'platform/components/Icon/icon.css'],
+  Notice: ['platform/components/Notice/Notice.tsx', 'platform/components/Notice/notice.css'],
+  EmptyState: ['platform/components/EmptyState/EmptyState.tsx', 'platform/components/EmptyState/empty-state.css'],
   Toast: ['platform/components/Toast/Toast.jsx', 'platform/components/Toast/toast.css'],
-  Tooltip: ['platform/components/Tooltip/Tooltip.jsx', 'platform/components/Tooltip/tooltip.css'],
+  Tooltip: ['platform/components/Tooltip/Tooltip.tsx', 'platform/components/Tooltip/tooltip.css'],
   Dialog: ['platform/components/Dialog/Dialog.jsx', 'platform/components/Dialog/dialog.css'],
   Menu: ['platform/components/Menu/Menu.jsx', 'platform/components/Menu/menu.css'],
   Fieldset: ['platform/components/Fieldset/Fieldset.jsx', 'platform/components/Fieldset/fieldset.css'],
   Field: ['platform/components/Field/Field.jsx', 'platform/components/Field/field.css'],
   Input: ['platform/components/Input/Input.jsx', 'platform/components/Input/input.css'],
-  Button: ['platform/components/Button/Button.jsx', 'platform/components/Button/button.css'],
+  Button: ['platform/components/Button/Button.tsx', 'platform/components/Button/button.css'],
   Combobox: ['platform/components/Combobox/Combobox.jsx', 'platform/components/Combobox/combobox.css'],
   SearchField: ['platform/components/SearchField/SearchField.jsx', 'platform/components/SearchField/search-field.css'],
   Slider: ['platform/components/Slider/Slider.jsx', 'platform/components/Slider/slider.css'],
@@ -106,7 +106,7 @@ t('AppShell', 'extend', 'S', 2, 'B', [], ['contained (one column)', 'focus (full
 t('Image', 'component', 'M', 2, 'C', ['aspect-ratio-scale'], ['fit cover', 'fit contain', 'responsive (srcSet, sizes)', 'lazy', 'placeholder (blur/color)', 'error fallback', 'rounded'], '');
 t('Figure', 'component', 'S', 2, 'C', ['Image'], ['caption below', 'caption overlay', 'with credit'], '');
 t('Illustration', 'component', 'M', 2, 'C', [], ['spot (sm)', 'scene (md, lg)', 'empty-state set', 'error set', 'on accent'], 'a small illustration set built from existing palette roles (no new colors), platform/illustrations/*.svg + Illustration component; EmptyState can take one');
-t('IconTile', 'component', 'S', 2, 'C', [], ['hues (data colors)', 'tones', 'sizes sm md lg', 'filled icon'], 'extracted from EntityHeader Media ({icon, hue}); EntityHeader then uses it', ['platform/components/IconTile/IconTile.jsx', 'platform/components/IconTile/icon-tile.css', 'platform/tokens/components/icon-tile.tokens.json', 'platform/patterns/EntityHeader/EntityHeader.jsx', 'platform/patterns/EntityHeader/entity-header.css']);
+t('IconTile', 'component', 'S', 2, 'C', [], ['hues (data colors)', 'tones', 'sizes sm md lg', 'filled icon'], 'extracted from EntityHeader Media ({icon, hue}); EntityHeader then uses it', ['platform/components/IconTile/IconTile.tsx', 'platform/components/IconTile/icon-tile.css', 'platform/tokens/components/icon-tile.tokens.json', 'platform/patterns/EntityHeader/EntityHeader.jsx', 'platform/patterns/EntityHeader/entity-header.css']);
 t('Pictogram', 'component', 'S', 2, 'C', ['IconTile'], ['48', '64', '96', 'two-tone (filled + tint)'], 'large Material Symbols (unedited) in a pictogram frame; no new SVGs');
 t('BrandMark', 'extend', 'M', 2, 'C', [], ['logo (mark + wordmark lockup)', 'wordmark', 'mark', 'product mark per app (PLENIX_APPS)', 'mono', 'on accent', 'sizes'], 'BrandMark kind prop; product marks from apps.js', EX.BrandMark);
 t('brand-application', 'foundation', 'S', 2, 'C', ['BrandMark'], ['clear space', 'minimum size', 'backgrounds', 'misuse'], 'brand tokens (clear space, min size) + rules page with specimens', ['platform/brand/brand-rules.json', 'platform/components/Brand/brand.css']);

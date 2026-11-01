@@ -8,12 +8,12 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../Stack/Stack.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Notice } from '../Notice/Notice.jsx';
-import { Badge } from '../Badge/Badge.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Text } from '../Text/Text.tsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { Badge } from '../Badge/Badge.tsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

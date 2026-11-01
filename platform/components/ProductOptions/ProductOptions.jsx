@@ -59,7 +59,7 @@ import { RadioTiles } from '../RadioTiles/RadioTiles.jsx';
 import { ColorSwatch } from '../ColorSwatch/ColorSwatch.jsx';
 import { NumberInput } from '../NumberInput/NumberInput.jsx';
 import { Field } from '../Field/Field.jsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import { fill } from '../../utils/fill.ts';

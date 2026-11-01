@@ -5,10 +5,8 @@
    Props: fillNodes(template, values): a placeholder whose value is undefined stays as written.
    Notes: Shared by TeachingBubble and RetryNotice (issue 693: one copy of the same function in each). */
 import React from 'react';
-import { Text } from '../components/Text/Text.jsx';
+import { Text } from '../components/Text/Text.tsx';
 
-// Text as this file draws it (Text.jsx is not typed yet: its inferred props would all be required)
-const DataText = Text as React.ComponentType<{ variant?: string; children?: React.ReactNode }>;
 
 export const fillNodes = (template: string, values: Record<string, React.ReactNode>): React.ReactNode[] =>
   template
@@ -16,5 +14,5 @@ export const fillNodes = (template: string, values: Record<string, React.ReactNo
     .filter(Boolean)
     .map((part, i) => {
       const m = /^\{(\w+)\}$/.exec(part);
-      return m && values[m[1]] !== undefined ? <DataText key={i} variant="data">{values[m[1]]}</DataText> : part;
+      return m && values[m[1]] !== undefined ? <Text key={i} variant="data">{values[m[1]]}</Text> : part;
     });

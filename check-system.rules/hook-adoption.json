@@ -21,7 +21,7 @@
     "platform/components/Cascader/Cascader.jsx"
   ],
   "useDescribedBy": [
-    "platform/components/Tooltip/Tooltip.jsx",
+    "platform/components/Tooltip/Tooltip.tsx",
     "platform/components/Field/Field.jsx",
     "platform/components/Cascader/Cascader.jsx",
     "platform/components/CodeEditor/CodeEditor.jsx",
@@ -47,14 +47,14 @@
   ],
   "useFloating": [
     "platform/components/Menu/Menu.jsx",
-    "platform/components/Tooltip/Tooltip.jsx",
+    "platform/components/Tooltip/Tooltip.tsx",
     "platform/components/Popover/Popover.jsx",
     "platform/components/Combobox/Combobox.jsx",
     "platform/components/Cascader/Cascader.jsx",
     "platform/components/TimePicker/TimePicker.jsx"
   ],
   "dataWhenText": [
-    "platform/components/Banner/Banner.jsx",
+    "platform/components/Banner/Banner.tsx",
     "platform/components/Field/Field.jsx",
     "platform/components/Checkbox/Checkbox.jsx",
     "platform/components/Metric/Metric.jsx",

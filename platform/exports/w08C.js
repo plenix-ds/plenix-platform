@@ -3,5 +3,5 @@
 // public); FilterPanel and SortPanel were built in w07K.
 export { RoleLabel } from '../components/RoleLabel/RoleLabel.jsx';
 export { SearchResult, SearchResultGroup, highlightMatches } from '../components/SearchResult/SearchResult.jsx';
-export { Timeline } from '../components/Timeline/Timeline.jsx';
+export { Timeline } from '../components/Timeline/Timeline.tsx';
 export { ResourceList } from '../patterns/ResourceList/ResourceList.jsx';

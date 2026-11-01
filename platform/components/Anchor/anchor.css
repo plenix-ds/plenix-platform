@@ -1,0 +1,63 @@
+/* Plenix · Anchor (platform/components/Anchor). The sections of a page as a list of links, each a navigation list row (NavList's item
+   roles: the same corners, size, hover and current look); the current one has the selected fill and weight. Nested sections are indented. */
+@property --plx-state-anchor-background {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-anchor-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-anchor-shadow {
+  syntax: "*";
+  inherits: false;
+}
+@property --plx-state-anchor-text {
+  syntax: "*";
+  inherits: false;
+}
+.plx-anchor__list {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding-block-end: 0;
+  padding-block-start: 0;
+  padding-inline-end: 0;
+  padding-inline-start: 0;
+  row-gap: var(--plx-comp-anchor-row-gap);
+}
+.plx-anchor__list--nested {
+  padding-inline-start: var(--plx-comp-anchor-nested-indent);
+}
+.plx-anchor__link {
+  align-items: center;
+  background-color: var(--plx-state-anchor-background, transparent);
+  border-end-end-radius: var(--plx-comp-anchor-radius);
+  border-end-start-radius: var(--plx-comp-anchor-radius);
+  border-start-end-radius: var(--plx-comp-anchor-radius);
+  border-start-start-radius: var(--plx-comp-anchor-radius);
+  box-shadow: var(--plx-state-anchor-shadow, none);
+  color: var(--plx-state-anchor-text, var(--plx-comp-anchor-text));
+  display: flex;
+  font-size: var(--plx-comp-anchor-font-size);
+  font-weight: var(--plx-state-anchor-font-weight, var(--plx-comp-anchor-font-weight));
+  min-block-size: var(--plx-comp-anchor-min-height);
+  padding-inline-end: var(--plx-comp-anchor-padding-inline);
+  padding-inline-start: var(--plx-comp-anchor-padding-inline);
+  text-decoration-line: none;
+}
+.plx-anchor__link:is(:hover, .is-hover):where(:not(.is-current)) {
+  --plx-state-anchor-background: var(--plx-comp-anchor-hover-background);
+  --plx-state-anchor-shadow: var(--plx-comp-anchor-hover-shadow);
+  --plx-state-anchor-text: var(--plx-comp-anchor-hover-text);
+}
+.plx-anchor__link.is-current {
+  --plx-state-anchor-background: var(--plx-comp-anchor-current-background);
+  --plx-state-anchor-font-weight: var(--plx-comp-anchor-current-font-weight);
+  --plx-state-anchor-shadow: var(--plx-comp-anchor-current-shadow);
+  --plx-state-anchor-text: var(--plx-comp-anchor-current-text);
+}

@@ -1,5 +1,5 @@
 /* Plenix · ProgressCircle (platform/components/ProgressCircle). A ring: the track and the arc in a tone, drawn in SVG; the
-   named size sets the box and the stroke, which does not scale with the box. Anatomy and API: ProgressCircle.jsx. */
+   named size sets the box and the stroke, which does not scale with the box. Anatomy and API: ProgressCircle.tsx. */
 .plx-progress-circle{align-items:center;display:inline-flex;flex-shrink:0;justify-content:center;position:relative;vertical-align:middle;}
 .plx-progress-circle--sm{block-size:var(--plx-comp-progress-circle-sm-size);inline-size:var(--plx-comp-progress-circle-sm-size);}
 .plx-progress-circle--md{block-size:var(--plx-comp-progress-circle-md-size);inline-size:var(--plx-comp-progress-circle-md-size);}

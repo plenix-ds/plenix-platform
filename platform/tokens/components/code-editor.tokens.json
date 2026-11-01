@@ -130,6 +130,11 @@
       "$value": "{plx-sys.layer-raised}",
       "$type": "number",
       "$description": "CodeEditor: the gutter lies over the code that scrolls under it sideways."
+    },
+    "code-editor-warning-border-color": {
+      "$value": "{plx-comp.input-warning-border-color}",
+      "$type": "color",
+      "$description": "CodeEditor: the border of an editor with a warning."
     }
   }
 }

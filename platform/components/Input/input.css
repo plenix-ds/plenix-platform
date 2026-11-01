@@ -52,8 +52,9 @@
 /* the border: invalid, focused, hovered (an enabled field), at rest (the fallback). Focus and hover recolor the border
    only; an invalid field has a 2px danger border (its border and a line inside it) on the lightest red fill (owner, 2026-10-16) */
 .plx-input[aria-invalid="true"]{--plx-state-input-border:var(--plx-comp-input-invalid-border-color);box-shadow:inset 0 0 0 var(--plx-comp-input-invalid-inner-width) var(--plx-comp-input-invalid-border-color);}
-.plx-input:is(:focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible):where(:not([aria-invalid="true"])){--plx-state-input-border:var(--plx-comp-input-focus-border-color);}
-.plx-input:is(:hover, .is-hover):where(:not([aria-invalid="true"], :focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible, :disabled, [aria-disabled="true"], .is-disabled)){--plx-state-input-border:var(--plx-comp-input-hover-border-color);}
+.plx-input[data-plx-warning="true"]:where(:not([aria-invalid="true"])){--plx-state-input-border:var(--plx-comp-input-warning-border-color);box-shadow:inset 0 0 0 var(--plx-comp-input-warning-inner-width) var(--plx-comp-input-warning-border-color);}
+.plx-input:is(:focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible):where(:not([aria-invalid="true"], [data-plx-warning="true"])){--plx-state-input-border:var(--plx-comp-input-focus-border-color);}
+.plx-input:is(:hover, .is-hover):where(:not([aria-invalid="true"], [data-plx-warning="true"], :focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible, :disabled, [aria-disabled="true"], .is-disabled)){--plx-state-input-border:var(--plx-comp-input-hover-border-color);}
 /* the background: the color well, disabled, read-only, invalid, filled, at rest (the fallback). The filled appearance
    (owner, 2026-10-16): the outline field's border and corners, a gray fill and the value in dark gray; there is no
    underline appearance */
@@ -63,7 +64,8 @@
    while it is not focused, over hover and invalid; outside one the context is unset and nothing changes */
 .plx-input:is([readonly], [aria-readonly="true"]):where(:not(:focus-visible, :focus, :focus-within, .is-focused, .is-focus-visible)){--plx-state-input-readonly-border:var(--plx-comp-input-context-readonly-border);}
 .plx-input[aria-invalid="true"]:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-readonly="true"])){--plx-state-input-background:var(--plx-comp-input-invalid-background);}
-.plx-input--filled:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-readonly="true"], [aria-invalid="true"])){--plx-state-input-background:var(--plx-comp-input-filled-background);}
+.plx-input[data-plx-warning="true"]:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-readonly="true"], [aria-invalid="true"])){--plx-state-input-background:var(--plx-comp-input-warning-background);}
+.plx-input--filled:where(:not([type="color"], :disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-readonly="true"], [aria-invalid="true"], [data-plx-warning="true"])){--plx-state-input-background:var(--plx-comp-input-filled-background);}
 /* the text: disabled, filled, at rest (the fallback) */
 .plx-input:is(:disabled, [aria-disabled="true"], .is-disabled){--plx-state-input-text:var(--plx-comp-input-disabled-text);}
 .plx-input--filled:where(:not(:disabled, [aria-disabled="true"], .is-disabled, [readonly], [aria-readonly="true"])){--plx-state-input-text:var(--plx-comp-input-filled-text);}
