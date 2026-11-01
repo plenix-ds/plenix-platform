@@ -20,7 +20,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { useHotkeyList, hotkeyLabel } from '../../utils/hotkey.ts';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function ShortcutsDialog({ open, onClose, searchable = true, strings, className }) {
   const t = useStrings('shortcutsDialog', strings);

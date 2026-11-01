@@ -12,4 +12,6 @@
 */
 import React from 'react';
 
-export const SurfaceContext = React.createContext(null);
+export type Surface = 'inverse' | 'accent' | null;
+
+export const SurfaceContext = React.createContext<Surface>(null);

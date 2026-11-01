@@ -33,7 +33,7 @@ This test makes sure a folder tree with thousands of items stays fast: above 200
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`.
-- In changed mode, Layout starts it when Tree, TreeSelect or `hooks/useVirtualizer.js` changes, or when this test's file changes.
+- In changed mode, Layout starts it when Tree, TreeSelect or `hooks/useVirtualizer.ts` changes, or when this test's file changes.
 - A full run always runs it. CI: the "fixtures" browser job (Layout's job).
 - Written, not run: the owner starts the tests.
 

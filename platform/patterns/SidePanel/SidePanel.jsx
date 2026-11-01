@@ -44,7 +44,7 @@ import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { gridWithin } from '../../utils/grid.ts';
 import { paneMax } from '../../utils/paneLimit.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useMonitorWidth } from '../../utils/monitorWidths.ts';
 import PanelRightCloseIcon from 'plenix-platform/icons/plenix/panel-right-close';
 import PanelRightOpenIcon from 'plenix-platform/icons/plenix/panel-right-open';

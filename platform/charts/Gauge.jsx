@@ -39,7 +39,7 @@ import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Badge } from '../components/Badge/Badge.jsx';
 import { seriesColor } from './scales.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';

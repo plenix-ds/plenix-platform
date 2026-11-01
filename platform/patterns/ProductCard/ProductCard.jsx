@@ -66,7 +66,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import DoNotDisturbIcon from 'plenix-platform/icons/plenix/do-not-disturb';
 import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';

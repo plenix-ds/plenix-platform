@@ -37,7 +37,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CloudOffIcon from 'plenix-platform/icons/plenix/cloud-off';
 import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';

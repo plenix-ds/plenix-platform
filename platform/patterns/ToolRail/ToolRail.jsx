@@ -20,13 +20,13 @@
    Behavior:
      It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
      enters and leaves the rail. Its Tab stop and arrow keys are the shared focus group (useFocusGroup,
-     hooks/useFocusable.js); NavPane's and SecondaryPane's collapsed rails are this rail.
+     hooks/useFocusable.ts); NavPane's and SecondaryPane's collapsed rails are this rail.
      Each tool is an icon-only toggle button with a tooltip at its end side.
    Notes:
      The editor page sets the dark mode on its container.
 */
 import React from 'react';
-import { useFocusGroup } from '../../hooks/useFocusable.js';
+import { useFocusGroup } from '../../hooks/useFocusable.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
@@ -40,7 +40,7 @@ export function ToolRail({ label, showLabels = false, className, children }) {
   const ref = React.useRef(null);
   const itemsOf = () => (ref.current ? Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])')) : []);
   // one Tab stop: Tab enters and leaves the rail; Arrow Up / Down (looping), Home and End move between tools (batch 213).
-  // The shared focus group (hooks/useFocusable.js, issue 262); the rail's own items, and a held modifier still moves, as before
+  // The shared focus group (hooks/useFocusable.ts, issue 262); the rail's own items, and a held modifier still moves, as before
   const { groupProps } = useFocusGroup(ref, { orientation: 'vertical', items: itemsOf, modifiers: true });
   return (
     <LabelsContext.Provider value={showLabels}>

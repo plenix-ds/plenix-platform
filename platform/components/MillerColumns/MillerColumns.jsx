@@ -50,10 +50,10 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.jsx';
 import { tokenPx } from '../../patterns/AppShell/AppShell.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { fill } from '../../utils/fill.ts';
-import { useBranchLoader, BranchStatus } from '../../hooks/useBranchLoader.js';
+import { useBranchLoader, BranchStatus } from '../../hooks/useBranchLoader.ts';
 
 const MIN_STEP = 1, MAX_STEP = 6, DEFAULT_STEP = 3;
 const EMPTY = [];

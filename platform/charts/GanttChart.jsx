@@ -45,7 +45,7 @@ import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { DataLabel } from './parts/DataLabel.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartPoints, ChartPatterns, patternFill } from './a11y.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // SVG geometry on the 4px grid: a milestone's half width, how far before a task's end its arrow leaves it, the arrowhead's
 // length, the active ring's room, the task name's distance from the plot

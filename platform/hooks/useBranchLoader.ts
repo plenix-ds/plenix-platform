@@ -36,45 +36,78 @@
 import React from 'react';
 import { announce } from '../utils/announce.tsx';
 import { fill } from '../utils/fill.ts';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
+import type { Catalog } from '../providers/LocaleProvider.tsx';
 import { Button } from '../components/Button/Button.jsx';
 import { Spinner } from '../components/Loading/Loading.jsx';
 
 const h = React.createElement;
+// the props this hook gives Button and Spinner (both still JavaScript, issue 708: their props are not typed yet)
+const RetryButton = Button as unknown as React.ComponentType<{ variant: string; size: string; onClick: (e: React.MouseEvent) => void; children?: React.ReactNode }>;
+const LoadingSpinner = Spinner as unknown as React.ComponentType<{ size: string; label: string }>;
 
-export function useBranchLoader(loadChildren, options = {}) {
-  const t = useStrings('branch', options.strings);
-  const [entries, setEntries] = React.useState({});   // id → { status: 'loading' | 'failed' | 'done', children }
+// a node of a hierarchy: an id, a label, and either its children or hasChildren (children still to load)
+export interface BranchNode {
+  id: string | number;
+  label?: React.ReactNode;
+  hasChildren?: boolean;
+  children?: BranchNode[] | null;
+  [key: string]: unknown;
+}
+export type BranchStatusName = 'idle' | 'loading' | 'failed' | 'done';
+type Key = string | number;
+type Entry<T extends BranchNode> = { status: 'loading' | 'failed' } | { status: 'done'; children: T[] };
+export type LoadChildren<T extends BranchNode> = (node: T) => T[] | null | undefined | Promise<T[] | null | undefined>;
+export interface BranchWords { loading: string; loadingName: string; failed: string; failedName: string; retry: string }
+export interface BranchLoader<T extends BranchNode = BranchNode> {
+  needs: (node: T | null | undefined) => boolean;
+  statusOf: (node: T | null | undefined) => BranchStatusName;
+  load: (node: T) => Promise<T[] | null>;
+  retry: (node: T) => Promise<T[] | null>;
+  ensure: (nodes: ReadonlyArray<T | null | undefined> | null | undefined) => void;
+  merge: (nodes: T[]) => T[];
+  strings: BranchWords;
+}
+
+export function useBranchLoader<T extends BranchNode = BranchNode>(loadChildren?: LoadChildren<T> | null, options: { strings?: Partial<BranchWords> } = {}): BranchLoader<T> {
+  const t = useStrings('branch', (options.strings || null) as Catalog | null) as unknown as BranchWords;
+  const [entries, setEntries] = React.useState<Record<Key, Entry<T>>>({});
   const live = React.useRef(entries); live.current = entries;
-  const promises = React.useRef({});
+  const promises = React.useRef<Record<Key, Promise<T[] | null>>>({});
   const mounted = React.useRef(true);
   React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
-  const set = (id, entry) => { live.current = Object.assign({}, live.current, { [id]: entry }); if (mounted.current) setEntries(live.current); };
+  const set = (id: Key, entry: Entry<T>) => { live.current = Object.assign({}, live.current, { [id]: entry }); if (mounted.current) setEntries(live.current); };
+  const childrenOf = (n: T): T[] | null => (Array.isArray(n.children) ? (n.children as T[]) : null);
 
-  const needs = (n) => !!(loadChildren && n && n.hasChildren && !Array.isArray(n.children));
-  const statusOf = (n) => {
+  const needs = (n: T | null | undefined): boolean => !!(loadChildren && n && n.hasChildren && !Array.isArray(n.children));
+  const statusOf = (n: T | null | undefined): BranchStatusName => {
     if (!n) return 'done';
     if (Array.isArray(n.children)) return 'done';
     const e = live.current[n.id];
     return e ? e.status : needs(n) ? 'idle' : 'done';
   };
-  const load = (n) => {
-    if (!needs(n)) return Promise.resolve(n && Array.isArray(n.children) ? n.children : null);
+  const load = (n: T): Promise<T[] | null> => {
+    if (!needs(n) || !loadChildren) return Promise.resolve(n ? childrenOf(n) : null);
     const e = live.current[n.id];
     if (e && e.status === 'done') return Promise.resolve(e.children);
-    if (e && e.status === 'loading' && promises.current[n.id]) return promises.current[n.id];
+    const pending = promises.current[n.id];
+    if (e && e.status === 'loading' && pending) return pending;
     set(n.id, { status: 'loading' });
     const p = Promise.resolve().then(() => loadChildren(n)).then(
-      (kids) => { const children = Array.isArray(kids) ? kids : []; set(n.id, { status: 'done', children }); delete promises.current[n.id]; return children; },
-      () => { set(n.id, { status: 'failed' }); delete promises.current[n.id]; announce(fill(t.failedName, { label: n.label })); return null; });
+      (kids): T[] => { const children = Array.isArray(kids) ? kids : []; set(n.id, { status: 'done', children }); delete promises.current[n.id]; return children; },
+      (): null => { set(n.id, { status: 'failed' }); delete promises.current[n.id]; announce(fill(t.failedName, { label: n.label })); return null; });
     promises.current[n.id] = p;
     return p;
   };
-  const retry = (n) => { if (n && live.current[n.id] && live.current[n.id].status === 'failed') { const next = Object.assign({}, live.current); delete next[n.id]; live.current = next; } return load(n); };
+  const retry = (n: T): Promise<T[] | null> => {
+    const e = n ? live.current[n.id] : undefined;
+    if (e && e.status === 'failed') { const next = Object.assign({}, live.current); delete next[n.id]; live.current = next; }
+    return load(n);
+  };
   // the branches open at the last ensure: one that failed asks again when it is opened anew (closed, then opened)
-  const wasOpen = React.useRef(new Set());
-  const ensure = (list) => {
-    const now = new Set();
+  const wasOpen = React.useRef<Set<Key>>(new Set());
+  const ensure = (list: ReadonlyArray<T | null | undefined> | null | undefined): void => {
+    const now = new Set<Key>();
     (list || []).forEach((n) => {
       if (!n) return;
       now.add(n.id);
@@ -88,17 +121,17 @@ export function useBranchLoader(loadChildren, options = {}) {
 
   // the nodes with each loaded branch in place; the same array (and the same node objects) while nothing under them loaded
   // (kept per nodes array, so a loader shared by two parts, Cascader and its columns, keeps both results)
-  const cache = React.useRef(new WeakMap());
-  const merge = (nodes) => {
+  const cache = React.useRef(new WeakMap<T[], { entries: Record<Key, Entry<T>>; out: T[] }>());
+  const merge = (nodes: T[]): T[] => {
     if (!nodes || typeof nodes !== 'object') return nodes;
     const c = cache.current.get(nodes);
     if (c && c.entries === entries) return c.out;
     const done = Object.keys(entries).filter((id) => entries[id].status === 'done');
-    const walk = (list) => {
+    const walk = (list: T[]): T[] => {
       let changed = false;
-      const out = list.map((n) => {
-        let kids = Array.isArray(n.children) ? n.children : null;
-        const e = !kids && entries[n.id];
+      const out = list.map((n): T => {
+        let kids = childrenOf(n);
+        const e = kids ? undefined : entries[n.id];
         if (e && e.status === 'done') kids = e.children;
         if (!kids) return n;
         const merged = walk(kids);
@@ -116,16 +149,16 @@ export function useBranchLoader(loadChildren, options = {}) {
 }
 
 // what an opened branch shows while its children load, or after they failed
-export function BranchStatus({ loader, node, className }) {
+export function BranchStatus<T extends BranchNode>({ loader, node, className }: { loader: BranchLoader<T>; node: T; className: string }): React.ReactElement | null {
   const status = loader.statusOf(node), t = loader.strings;
   if (status === 'failed') {
     return h('span', { className: className + ' is-failed' },
       h('span', { className: className + '-text' }, t.failed),
-      h(Button, { variant: 'ghost', size: 'sm', onClick: (e) => { e.stopPropagation(); loader.retry(node); } }, t.retry));
+      h(RetryButton, { variant: 'ghost', size: 'sm', onClick: (e: React.MouseEvent) => { e.stopPropagation(); loader.retry(node); } }, t.retry));
   }
   if (status === 'loading' || status === 'idle') {
     return h('span', { className: className + ' is-loading' },
-      h(Spinner, { size: 'sm', label: fill(t.loadingName, { label: node.label }) }),
+      h(LoadingSpinner, { size: 'sm', label: fill(t.loadingName, { label: node.label }) }),
       h('span', { className: className + '-text', 'aria-hidden': 'true' }, t.loading));
   }
   return null;

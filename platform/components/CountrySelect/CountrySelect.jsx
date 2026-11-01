@@ -44,7 +44,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale } from '../../utils/format.ts';
 import { Combobox } from '../Combobox/Combobox.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 // ISO 3166-1 alpha-2: every assigned country and region code
 const REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG '

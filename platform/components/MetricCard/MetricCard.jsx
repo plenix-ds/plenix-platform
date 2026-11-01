@@ -96,7 +96,7 @@ import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { Sparkline } from '../../charts/Sparkline.jsx';
 import { Gauge } from '../../charts/Gauge.jsx';
 import { PieChart } from '../../charts/PieChart.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ArrowUpIcon from 'plenix-platform/icons/plenix/arrow-up';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';

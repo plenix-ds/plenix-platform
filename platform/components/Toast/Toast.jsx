@@ -44,7 +44,7 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { tokenMs } from '../../utils/tokenTime.ts';
 import { announce } from '../../utils/announce.tsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';

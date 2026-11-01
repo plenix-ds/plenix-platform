@@ -36,7 +36,7 @@ import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints } from './a11y.js';
-import { useStrings } from '../providers/LocaleProvider.jsx';
+import { useStrings } from '../providers/LocaleProvider.tsx';
 
 // SVG geometry on the 4px grid: a group's name row and inset, the label's inset in a tile, the smallest tile that shows a
 // name (and a value), the ring's room

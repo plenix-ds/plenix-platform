@@ -42,7 +42,7 @@ This test makes sure a big folder list or category list opens at once, because e
 
 ## When it runs
 - A child test of the Layout test (`tests/layout.test.js`), which is AUTOMATIC in `tests/run.js`.
-- In changed mode, Layout starts it when Tree, TreeSelect, Cascader, MillerColumns or `hooks/useBranchLoader.js` changes, or when this test's file changes.
+- In changed mode, Layout starts it when Tree, TreeSelect, Cascader, MillerColumns or `hooks/useBranchLoader.ts` changes, or when this test's file changes.
 - A full run always runs it. CI: the "fixtures" browser job (Layout's job).
 - Written, not run: the owner starts the tests.
 

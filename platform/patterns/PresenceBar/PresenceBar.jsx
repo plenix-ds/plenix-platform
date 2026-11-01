@@ -15,7 +15,7 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 export function PresenceBar({people=[],mode='viewers',max=4,onPerson,strings,className,...rest}) {
  const t=useStrings('presenceBar', strings);const m=['viewers','editors','cursors'].includes(mode)?mode:'viewers';const list=people.filter(p=>m==='editors'?p.role==='editor':m==='cursors'?!!p.cursor:true);

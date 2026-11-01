@@ -24,7 +24,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
 import { Icon } from '../Icon/Icon.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 

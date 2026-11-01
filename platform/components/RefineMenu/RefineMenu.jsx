@@ -15,7 +15,7 @@ import { Menu, MenuItem, MenuSub } from '../Menu/Menu.jsx';
 import { Dialog } from '../Dialog/Dialog.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Textarea } from '../Input/Input.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function RefineMenu({ onRefine, disabled = false, label, strings, className }) {
   const t = useStrings('refineMenu', strings),

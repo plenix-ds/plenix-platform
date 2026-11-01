@@ -20,7 +20,7 @@ import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function Checklist({ title, items = [], completed = [], onChange, progress = true, collapsible = false, onDismiss, strings, className }) {
   const t = useStrings('checklist', strings);

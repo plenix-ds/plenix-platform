@@ -33,43 +33,55 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ConfirmDialog } from '../components/Dialog/Dialog.jsx';
 
+// ConfirmDialog as this file draws it (Dialog.jsx is not typed yet: its inferred props would all be required)
+const LeaveDialog = ConfirmDialog as React.ComponentType<{
+  open?: boolean; destructive?: boolean; title?: string; message?: string; confirmLabel?: string; cancelLabel?: string;
+  onConfirm?(): void; onCancel?(): void;
+}>;
+
+export type GuardStrings = { title?: string; message?: string; leave?: string; stay?: string };
+// the next screen (useScreenLocation's { path, parts, params }), or null for another page
+export type NextScreen = { path: string; parts: string[]; params: Record<string, string> } | null;
+export type GuardOptions = { keeps?(next: NonNullable<NextScreen>): boolean; strings?: GuardStrings };
+type GuardState = { dirty: boolean; message?: string; options: GuardOptions };
+
 const STRINGS = { title: 'Leave without saving?', message: 'Your changes will be lost.', leave: 'Leave', stay: 'Keep editing' };
-const guards = new Set();          // every mounted guard: a ref to { dirty, message, options }
+const guards = new Set<React.MutableRefObject<GuardState | null>>();          // every mounted guard: a ref to { dirty, message, options }
 let leaving = false;               // the person chose Leave: the page may unload without asking again
-let pending = null;                // the question on screen, if any (one at a time)
+let pending: Promise<boolean> | null = null;                // the question on screen, if any (one at a time)
 
 // the first dirty guard that the next screen would lose (next null: another page)
-function blocking(next) {
+function blocking(next: NextScreen): GuardState | null {
   for (const g of guards) {
-    const c = g.current;
+    const c = g.current!;
     if (c.dirty && !(next && c.options.keeps && c.options.keeps(next))) return c;
   }
   return null;
 }
 
 // asks with the Plenix dialog in a root of its own; resolves true for Leave
-function ask(c) {
+function ask(c: GuardState): Promise<boolean> {
   if (pending) return pending;
   const t = Object.assign({}, STRINGS, c.options.strings);
   pending = new Promise((resolve) => {
     const el = document.createElement('div');
     document.body.appendChild(el);
     const root = createRoot(el);
-    const done = (ok) => { queueMicrotask(() => { root.unmount(); el.remove(); pending = null; resolve(ok); }); };
-    root.render(<ConfirmDialog open destructive title={t.title} message={c.message || t.message} confirmLabel={t.leave} cancelLabel={t.stay}
+    const done = (ok: boolean) => { queueMicrotask(() => { root.unmount(); el.remove(); pending = null; resolve(ok); }); };
+    root.render(<LeaveDialog open destructive title={t.title} message={c.message || t.message} confirmLabel={t.leave} cancelLabel={t.stay}
       onConfirm={() => done(true)} onCancel={() => done(false)} />);
   });
   return pending;
 }
 
-export function hasUnsaved(next) { return !!blocking(next === undefined ? null : next); }
+export function hasUnsaved(next?: NextScreen): boolean { return !!blocking(next === undefined ? null : next); }
 
-export function confirmLeave(next) {
+export function confirmLeave(next?: NextScreen): Promise<boolean> {
   const c = blocking(next === undefined ? null : next);
   return c ? ask(c) : Promise.resolve(true);
 }
 
-export function leavePage(url) {
+export function leavePage(url: string): Promise<boolean> {
   return confirmLeave(null).then((ok) => { if (ok) { leaving = true; location.href = url; } return ok; });
 }
 
@@ -86,7 +98,7 @@ function install() {
   // a link to another page: ask before following it (capture: before the link's own handlers navigate)
   document.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    const a = e.target && (e.target as Element).closest ? (e.target as Element).closest<HTMLAnchorElement>('a[href]') : null;
     if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
     const to = new URL(a.href, location.href);
     if (to.origin === location.origin && to.pathname === location.pathname && to.search === location.search) return;   // this page: a screen (useScreenLocation)
@@ -97,16 +109,16 @@ function install() {
   }, true);
 }
 
-export function useUnsavedGuard(dirty, message, options) {
-  const ref = React.useRef(null);
+export function useUnsavedGuard(dirty: unknown, message?: string, options?: GuardOptions) {
+  const ref = React.useRef<GuardState | null>(null);
   ref.current = { dirty: !!dirty, message, options: options || {} };
   React.useEffect(() => {
     install();
     guards.add(ref);
     return () => { guards.delete(ref); };
   }, []);
-  return React.useCallback((fn) => (...args) => {
-    const c = ref.current;
+  return React.useCallback(<A extends unknown[], R>(fn?: ((...args: A) => R) | null) => (...args: A) => {
+    const c = ref.current!;
     if (!c.dirty) return fn && fn(...args);
     return ask(c).then((ok) => (ok && fn ? fn(...args) : undefined));
   }, []);

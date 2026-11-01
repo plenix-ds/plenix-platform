@@ -53,7 +53,7 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import RenameIcon from 'plenix-platform/icons/plenix/rename';
 import { fill } from '../../utils/fill.ts';
 

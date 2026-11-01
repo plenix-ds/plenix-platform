@@ -22,6 +22,18 @@ Run each command from the repository folder.
   - "Checks" (`ci.yml`) runs the changed-mode tests on every pull request and on pushes to styling/phase-2 and main.
   - "Full suite" (`full.yml`) and "On-demand tests" (`on-demand.yml`) run only when started by hand: Actions, then the workflow, then Run workflow.
 
+## Refreshing a baseline in your run
+
+- Add the test name with its flag as one line of your run-tests issue, for example `- zero-overlap --record` or `- visual --update`. `tests/run.js` passes the flag to that test only and prints `flags: --record` under its heading.
+- Only the allowed flags pass: `--update` for visual, typography, component-tokens, reflow, focus-order and a11y; `--record` for zero-overlap. Any other flag stops the run with a message, so a typo never records a baseline.
+- The new baseline files appear in the run's clean copy. The Tech Lead brings them back as a pull request for QA.
+- The lines for the baselines that are red today:
+  - `- visual --update`
+  - `- typography --update`
+  - `- component-tokens --update`
+  - `- reflow --update`
+  - `- zero-overlap --record`
+
 ## The groups
 
 Each line links to the test's page. A test that a group test starts is listed under what it protects, not under its group.
@@ -37,10 +49,11 @@ Each line links to the test's page. A test that a group test starts is listed un
 - [data-grid-group-165](data-grid-group-165.md): Grouping a table by any kind of field (text, yes/no, numbers, dates, tags) puts each record in the right group.
 - [data-grid-group-browser-165](data-grid-group-browser-165.md): The Group by list offers every column that can be grouped, and grouping by a date period or a number range works in a real table.
 - [data-grid-high](data-grid-high.md): The most important fixes to tables keep working: default sorts, remembered views, row menus, Arabic text direction, selection, and buttons inside rows.
-- [data-grid-narrow-168](data-grid-narrow-168.md): A table inside a split view (a list beside a detail pane) stays a table, instead of turning into a narrow list on its own.
+- [data-grid-narrow-168](data-grid-narrow-168.md): A table switches between a full table and row cards by whether its columns fit its space, in a split view and on its own, never by a fixed width.
 - [data-grid-next-capabilities](data-grid-next-capabilities.md): The table's independent renderer (DataGridEngine) can still do everything the grid offers: grouping, trees, editing, moving rows and columns, rows from a server, and more.
 - [data-grid-next-independent](data-grid-next-independent.md): The table's independent renderer (DataGridEngine) works on its own, with none of the old grid code loaded.
 - [data-grid-next-perf](data-grid-next-perf.md): Large tables (600 rows with rich cells) open, sort, filter and scroll within time limits.
+- [data-grid-responsive-679](data-grid-responsive-679.md): A table shows as a full table while it fits its space and turns into readable row cards when it does not, so nobody has to scroll sideways to read or act on a row.
 - [data-grid-pane-150](data-grid-pane-150.md): A table inside a pane shows its rows and fills its pane, even when the pane is further down the page than the window.
 - [data-grid-perf](data-grid-perf.md): A 600-row table with rich cells opens, sorts, filters and scrolls quickly, with and without a saved view.
 - [data-grid-rest](data-grid-rest.md): The rest of the table fixes keep working: file sizes, missing values, rich cells, column widths, the narrow switch, and undo for row actions.

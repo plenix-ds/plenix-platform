@@ -17,7 +17,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ArchiveIcon from 'plenix-platform/icons/plenix/archive';
 
 export function ArchiveRestore({ archived = false, onArchive, onRestore, strings, children, className }) {

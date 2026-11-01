@@ -15,7 +15,7 @@ import { Notice } from '../Notice/Notice.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Card } from '../Card/Card.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function PromptSuggestions({ options = [], variant = 'chips', onSelect, disabled = false, strings, className }) {
   devWarn('PromptSuggestions', { variant }, { variant: ['chips', 'cards'] });

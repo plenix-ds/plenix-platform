@@ -23,9 +23,9 @@ import { DropZone } from '../../components/DropZone/DropZone.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
 import { cx } from '../../utils/cx.ts';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function ImportDialog({ open, title, onClose, initialMode = 'file', accept = '', multiple = false, onImport, validate, strings, className }) {
   const t = useStrings('importDialog', strings);

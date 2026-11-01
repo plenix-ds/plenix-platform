@@ -21,6 +21,12 @@ The test runner: it starts the tests one after another and times each.
   - `node tests/run.js keyboard:Toolbar,Tabs`: only some parts of a test (see `parts.json`).
   - `node tests/run.js --on-demand`: the on-demand tests.
   - `node tests/run.js --release`: the tests of the release build, after `node build-packages.js`. The CI build job runs it after its release build (`ci.yml` and `full.yml`).
+  - `node tests/run.js "zero-overlap --record"`: a test with its own flags (issue #764). The flags follow the name, in the same argument or in the ones right after it; only the `--` words are split off, so `"keyboard:Toolbar, Tabs"` keeps its parts. The run report shows them under the test's heading (`flags: --record`).
+- Allowed flags: only the flags in its `FLAGS` list pass to a test. Any other flag after a name stops the run with a message, so a typo never records a baseline.
+  - `--update`: visual, typography, component-tokens, reflow, focus-order, a11y.
+  - `--record`: zero-overlap.
+  - Not listed: site-coverage's `--list`, which only prints a table and writes nothing.
+- A flag with no test name before it (for example `node tests/run.js --update`) stops the run; before issue #764 it was ignored. Only `--full`, `--on-demand` and `--release` stand alone.
 
 ## changed.js
 Works out what changed since the last commit, so each test checks only what the change can affect.
