@@ -2,9 +2,11 @@
 //                                                    left <base ref> (their merge base; head: default HEAD)
 // node tools/agent/generated.js --restore            puts every generated file back as committed (before a commit)
 // node tools/agent/generated.js --list               prints the patterns
-// The files the build writes (node build-app.js and its steps). A task branch never commits them: every branch would
-// change them, so every pull request would conflict with the next. The integrator rebuilds them when it merges
-// (tools/agent/take-pr.js, take-lane.js) and release.sh commits them. Owner, 2026-10-15 (the Claude + Codex pilot).
+// The files a task branch never commits. Since #692 the build's outputs are not in git at all (.gitignore; npm ci builds
+// them through package.json's prepare script), so this list keeps only what the integrator writes into tracked files: the
+// release's CHANGELOG.md and package.json "version" (release.sh), the spec submodule's pointer and its own generated files,
+// and the library block of platform/index.js and platform.css (build-exports.js). Owner, 2026-10-15 (the Claude + Codex
+// pilot); narrowed by #692.
 // package.json is the one partly generated file: release.sh writes only its "version" field. --check fails on package.json
 // only when that field differs from the merge base, --restore puts back only that field, and take-pr.js takes the rest of
 // the file from the branch, so a branch may change its devDependencies, scripts and the rest (Dependabot, the Vite steps
@@ -12,17 +14,7 @@
 const { execSync } = require('child_process');
 const path = require('path');
 const GENERATED = [
-  /^platform\/dist\//,
-  /^platform\/system\/tokens\//, /^platform\/system\/themes\//, /^platform\/system\/steps\.css$/, /^platform\/system\/layout-modes\.css$/,
-  /^platform\/tokens\/tokens\.index\.json$/, /^platform\/tokens\/build\.json$/,
-  /(^|\/)app\.js$/, /^dam\/app\/assets\.js$/,
-  /^platform\/components\/Icon\/icon\.css$/, /^platform\/components\/Brand\/brand\.css$/,
-  /^platform\/components\/ColorSwatch\/(categoryColors|dataColors)\.js$/,
-  /^platform\/components\/(DataGrid\/data-grid|Table\/table)-steps\.css$/, /^platform\/components\/Table\/table-base\.css$/,   // build-steps.js
-  /^platform\/patterns\/ImageEditor\/imageEditorSteps\.js$/, /^platform\/utils\/sizeSteps\.js$/,
-  /^platform\/providers\/(pageLayouts|themes)\.js$/,
-  /^platform\/mobile\//, /^packages\//, /^release\//,     // the packages and the release (release/cdn/<v>/icons/<set>/ too, #279)
-  /^docs\/plenix-docs\.html$/, /^docs\/plenix-data\.js$/,
+  /^packages\//, /^release\//,                            // the packages and the release (ignored; never committed)
   /^CHANGELOG\.md$/, /^package\.json$/,                    // written by release.sh
   /^platform\/design-system$/, /^node_modules$/,           // the submodule pointer and the dependency junction
   // inside platform/design-system (its own repo)

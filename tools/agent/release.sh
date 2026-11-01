@@ -27,7 +27,9 @@ git -C platform/design-system diff --cached --quiet || git -C platform/design-sy
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 git -C platform/design-system push -q origin HEAD:main
-git add CHANGELOG.md package.json platform/design-system "$@"
+# the paths a caller names that git ignores (a build output, #692: never committed) are left out, so git add does not stop
+paths=(); for p in "$@"; do git check-ignore -q "$p" || paths+=("$p"); done
+git add CHANGELOG.md package.json platform/design-system ${paths[@]+"${paths[@]}"}
 git commit -qm "$V: $SUBJ
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"

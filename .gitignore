@@ -24,3 +24,32 @@ tools/overflow-report/
 build/vite/
 # Style Dictionary's side-by-side token output (npm run tokens:sd, #372 step 1); never committed
 build/sd/
+
+# Build outputs (#692): written by `npm ci` (its prepare script: node build-app.js && node build-docs.js), never committed.
+# A fresh checkout has none of them until `npm ci` (or node build-app.js) has run.
+/platform/dist/platform.js
+/platform/dist/plenix-icons-plenix.js
+/platform/system/tokens/
+/platform/system/themes/default.css
+/platform/system/themes/index.css
+/platform/system/steps.css
+/platform/system/layout-modes.css
+/platform/tokens/tokens.index.json
+/platform/components/Icon/icon.css
+/platform/components/Icon/glyphs.js
+/platform/components/Brand/brand.css
+/platform/components/ColorSwatch/categoryColors.js
+/platform/components/ColorSwatch/dataColors.js
+/platform/components/Table/table-base.css
+/platform/components/Table/table-steps.css
+/platform/components/DataGrid/data-grid-steps.css
+/platform/patterns/ImageEditor/imageEditorSteps.js
+/platform/utils/sizeSteps.js
+/platform/providers/pageLayouts.js
+/platform/providers/themes.js
+/platform/mobile/
+/*/app.js
+/*/plenix-icons-*.js
+/dam/app/assets.js
+/docs/plenix-docs.html
+/docs/plenix-data.js
