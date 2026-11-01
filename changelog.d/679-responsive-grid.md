@@ -4,7 +4,4 @@
   - Nothing is pinned by default: no selection column, no row-label columns, no trailing row menu. `frozen: true` still pins a column, and the selection column pins beside it.
   - Sort, filters, groups, selection, the open row, the saved view and right to left carry across the switch. The cards are drawn in full; the table keeps its virtualization.
   - `narrow="table"` keeps a fixed table that may scroll sideways, the escape hatch for dense specialized grids. `narrow="list"` keeps the cards under `narrowAt`.
-  - A static Table is unchanged.
-
-### Upgrading from 0.79.0
-- A grid that must stay a table in a narrow space passes `narrow="table"`. A grid that relied on row-label columns staying pinned marks them `frozen: true`.
+  - A static Table is unchanged. (Upgrading: see the release's "Upgrading from 0.79.1".)

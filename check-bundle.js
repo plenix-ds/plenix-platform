@@ -170,12 +170,12 @@ for (const k of Object.keys(RULES)) {
 }
 console.log('  (information, never a failure) plenix.css: ' + kb(need('plenix.css')) + ' KB; plenix.min.css: ' + kb(need('plenix.min.css')) + ' KB; unsupported CSS inside @supports (has a fallback): ' + css.guarded + ' rules');
 // one import from the npm package (#685): what an app that imports one part bundles (tools/agent/one-part-sizes.js: the
-// repository's esbuild, minified, React external, against packages/react); a size above its limit fails, so tree-shaking
+// Vite, minified, React external, with esbuild's number beside it as a cross-check, against packages/react); a size above its limit fails, so tree-shaking
 // cannot break again unseen
 const parts = require('./tools/agent/one-part-sizes.js');
 let over = 0;
 if (fs.existsSync(parts.entryOf())) {
-  console.log('  one import from @plenix-ds/react (minified, React external):');
+  console.log('  one import from @plenix-ds/react (Vite, minified, React external; esbuild beside it, cross-check only):');
   for (const r of parts.measure()) { if (r.over) over++; console.log('        ' + parts.line(r)); }
 } else { console.log('BUNDLE_FAIL: packages/react is missing: run node build-packages.js'); process.exit(1); }
 // the styles per part (#710): foundations.css and parts/*.css add up to plenix.css, in its order, and ties keep it

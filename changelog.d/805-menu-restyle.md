@@ -1,0 +1,3 @@
+### Changed
+- Menu restyled with Blueprint's typography and spacing (#805, owner 2026-11-01), in DM Sans: larger item text in the strongest text color, items padded 4px by 8px, a bold group heading in the default text color, dividers from edge to edge, and Blueprint's triangle for a submenu (mirrored in right to left). The font is one token, `menu-font-family`. Tokens only, no new color.
+- Menu dividers use a new border role, `border-separator` (#805, owner 2026-11-01): gray 250 in the light theme, Blueprint's shade, a step lighter than before; gray 700 in the dark theme; `border-strong` in both more-contrast themes. MenuBar's dividers follow. No other border changes.
