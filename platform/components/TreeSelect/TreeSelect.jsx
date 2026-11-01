@@ -8,7 +8,10 @@
    Props:
      width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
-     nodes: the hierarchy, as Tree takes it: [{ id, label, icon, children: [...] }]
+     nodes: the hierarchy, as Tree takes it: [{ id, label, icon, children: [...] }]; hasChildren: true marks an item whose
+       children load when it is first opened (with loadChildren)
+     loadChildren(node): returns the item's children (an array or a promise of one) the first time it opens (issue 814,
+       useBranchLoader, as Tree): a spinner and "Loading…" while they arrive, a failure with Try again, never asked twice
      value: the chosen item's id (one choice)
      values: the checked items' ids, with multiple (the leaves: items without children)
      onChange(id | ids): runs with the chosen item's id, or with multiple the new list of checked ids
@@ -40,6 +43,9 @@
        Space or a click checks or clears it and the popover stays open; a parent's checkbox is checked when every item
        under it is, mixed when some are, and checks or clears them all.
      Search keeps the matching items and their parents, opened; ↓ from the search field moves into the tree.
+     A branch to load opens like any other (click or key) and is aria-busy while it loads; search finds it by its own label
+       and its children once they have loaded, and never loads a branch by itself. With multiple, checking a branch that
+       has not loaded loads it, then checks everything under it.
    Notes:
      The checkbox is the Checkbox control drawn in the row, not focusable and hidden from assistive technology: the
        item's aria-checked says its state. For a flat list use a select or Combobox; for picking among thousands of
@@ -56,6 +62,7 @@ import { useTruncated } from '../../utils/overflow.ts';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
+import { useBranchLoader, BranchStatus } from '../../hooks/useBranchLoader.ts';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
@@ -64,15 +71,15 @@ import SquareMinusIcon from 'plenix-platform/icons/plenix/square-minus';
 const OPEN_ICONS = { folder: FolderOpenIcon };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon);
 const kidsOf = (n) => (n.children && n.children.length ? n.children : null);
-// every node by id, with its parent and the leaves under it
-function index(nodes) {
+// every node by id, with its parent and the leaves under it (a branch still to load has none yet: pending)
+function index(nodes, pending) {
   const byId = new Map();
   const walk = (list, parent) => list.forEach((n) => {
     byId.set(n.id, { node: n, parent });
     if (kidsOf(n)) walk(n.children, n.id);
   });
   walk(nodes, null);
-  const leaves = (n) => (kidsOf(n) ? n.children.reduce((all, c) => all.concat(leaves(c)), []) : [n.id]);
+  const leaves = (n) => (kidsOf(n) ? n.children.reduce((all, c) => all.concat(leaves(c)), []) : pending(n) ? [] : [n.id]);
   return { byId, leaves };
 }
 const ancestors = (byId, id) => { const out = []; let at = byId.get(id); while (at && at.parent !== null) { out.push(at.parent); at = byId.get(at.parent); } return out; };
@@ -90,13 +97,19 @@ function flatten(nodes, open, parent, out) {
   return out;
 }
 
-export function TreeSelect({ nodes = [], value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
+const EMPTY = [];
+
+export function TreeSelect({ nodes: given = EMPTY, loadChildren, value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
   invalid, warning, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the choice shows and the tree does not open
   const t = useStrings('treeSelect', strings);
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const { byId, leaves } = React.useMemo(() => index(nodes), [nodes]);
+  const loader = useBranchLoader(loadChildren);
+  const nodes = loader.merge(given);   // each loaded branch's children in place (issue 814)
+  const branchy = (n) => !!kidsOf(n) || loader.needs(n);   // a branch: children here, or children to load
+  const { byId, leaves } = React.useMemo(() => index(nodes, loader.needs), [nodes, !!loadChildren]);
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
+  const chosenRef = React.useRef(chosen); chosenRef.current = chosen;
   const [open, setOpen] = React.useState(false);
   const valueRef = React.useRef(null), cut = useTruncated(valueRef);   // the chosen text is cut: its full text goes in a Tooltip
   const [text, setText] = React.useState('');
@@ -112,6 +125,8 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   // while searching every branch that holds a match is open
   const openSet = q ? new Set(Array.from(byId.keys())) : new Set(expanded);
   const flat = flatten(shownNodes, openSet, null, []);
+  // each open branch that has not loaded asks once (never while searching: search does not load branches by itself)
+  React.useEffect(() => { if (open && !q) loader.ensure(flat.filter((v) => openSet.has(v.node.id)).map((v) => v.node)); });
   const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.find((v) => chosen.indexOf(v.node.id) >= 0) || flat[0] || { node: {} }).node.id;
   // the popover focuses the active item when it opens (read after the tree is drawn)
   const activeRef = React.useRef(active); activeRef.current = active;
@@ -128,33 +143,47 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   const choose = (n) => {
     if (!onChange) return;
     if (!multiple) { onChange(n.id); setOpen(false); setText(''); return; }
+    // a branch not loaded yet: load it, then check everything under it (its leaves are known only then)
+    if (loader.needs(n)) {
+      loader.load(n).then((kids) => {
+        if (!kids) return;
+        const now = chosenRef.current, ls = index([Object.assign({}, n, { children: kids })], loader.needs).leaves(Object.assign({}, n, { children: kids }));
+        if (ls.length) onChange(now.concat(ls.filter((l) => now.indexOf(l) < 0)));
+      });
+      return;
+    }
     const ls = leaves(n), all = ls.every((l) => chosen.indexOf(l) >= 0);
     onChange(all ? chosen.filter((c) => ls.indexOf(c) < 0) : chosen.concat(ls.filter((l) => chosen.indexOf(l) < 0)));
   };
   const onKeyDown = (e) => {
     const at = flat.findIndex((v) => v.node.id === active), cur = flat[at];
     if (!cur) return;
-    const kids = kidsOf(cur.node), isOpen = kids && openSet.has(cur.node.id);
+    const pending = !q && loader.needs(cur.node), kids = !!kidsOf(cur.node) || pending, isOpen = kids && openSet.has(cur.node.id);
     const rtl = isRtl(e.currentTarget);
     if (e.key === 'ArrowDown') { if (flat[at + 1]) moveTo(flat[at + 1].node.id); }
     else if (e.key === 'ArrowUp') { if (flat[at - 1]) moveTo(flat[at - 1].node.id); else if (searchRef.current) searchRef.current.focus(); }
     else if (e.key === 'Home') moveTo(flat[0].node.id);
     else if (e.key === 'End') moveTo(flat[flat.length - 1].node.id);
-    else if (e.key === (rtl ? 'ArrowLeft' : 'ArrowRight')) { if (kids && !isOpen) toggleOpen(cur.node.id); else if (kids) moveTo(cur.node.children[0].id); }
+    else if (e.key === (rtl ? 'ArrowLeft' : 'ArrowRight')) {
+      if (kids && !isOpen) toggleOpen(cur.node.id);
+      else if (pending) { if (loader.statusOf(cur.node) === 'failed') loader.retry(cur.node); }   // an open branch that failed asks again
+      else if (kids) moveTo(cur.node.children[0].id);
+    }
     else if (e.key === (rtl ? 'ArrowRight' : 'ArrowLeft')) { if (kids && isOpen && !q) toggleOpen(cur.node.id); else if (cur.parent !== null) moveTo(cur.parent); }
     else if (e.key === 'Enter' || e.key === ' ') choose(cur.node);
     else return;
     e.preventDefault();
   };
   const renderNodes = (list, level) => list.map((n) => {
-    const kids = kidsOf(n), isOpen = kids && openSet.has(n.id), state = stateOf(n);
+    const pending = !q && loader.needs(n), kids = !!kidsOf(n) || pending, isOpen = kids && openSet.has(n.id), state = stateOf(n);
     return (
       <li key={n.id} ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
+        aria-busy={pending && isOpen && loader.statusOf(n) === 'loading' ? true : undefined}
         aria-expanded={kids ? !!isOpen : undefined} aria-selected={multiple ? undefined : state === 'true'} aria-checked={multiple ? state : undefined}
         tabIndex={n.id === active ? 0 : -1} className={cx('plx-tree__item', !multiple && state === 'true' && 'is-selected')}
         onFocus={(e) => { if (e.target === e.currentTarget) { setFocusId(n.id); setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null); } }}
         onBlur={(e) => { if (e.target === e.currentTarget) setRingId(null); }}
-        onClick={(e) => { if (e.target.closest('[role="treeitem"]') !== e.currentTarget) return; moveTo(n.id); choose(n); }}>
+        onClick={(e) => { if (e.target.closest('[role="treeitem"]') !== e.currentTarget || e.target.closest('.plx-tree__row--status')) return; moveTo(n.id); choose(n); }}>
         <div className={cx('plx-tree__row', !multiple && state === 'true' && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggleOpen(n.id); moveTo(n.id); } : undefined}>{kids ? <Icon icon={isOpen ? SquareMinusIcon : SquarePlusIcon} filled={false} /> : null}</span>
@@ -163,7 +192,13 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || state === 'true'))}</span> : null}
           <span className="plx-tree__label">{q ? highlightMatch(n.label, q) : n.label}</span>
         </div>
-        {isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
+        {isOpen && pending ? (
+          <ul role="group" className="plx-tree__group">
+            <li role="none" className="plx-tree__item"><div className="plx-tree__row plx-tree__row--status" data-plx-level={Math.min(level + 1, 12)}>
+              <span className="plx-tree__toggle is-leaf" aria-hidden="true" /><BranchStatus loader={loader} node={n} className="plx-tree__status" />
+            </div></li>
+          </ul>
+        ) : isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
       </li>
     );
   });

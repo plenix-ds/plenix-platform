@@ -35,3 +35,7 @@
 .plx-miller-columns__resizer.is-hover{background-color:var(--plx-comp-miller-columns-resizer-hover-background);}
 .plx-miller-columns__resizer:focus-visible,
 .plx-miller-columns__resizer.is-focus-visible{background-color:var(--plx-comp-miller-columns-resizer-focus-background);}
+/* a column whose parent is loading its children, or failed to (issue 814, useBranchLoader) */
+.plx-miller-columns__status{align-items:center;column-gap:var(--plx-comp-miller-columns-item-gap);display:inline-flex;flex-wrap:wrap;}
+/* right to left the columns run from the right: a parent's chevron points to its children, to the left (issue 814) */
+.plx-miller-columns__chevron:dir(rtl){--plx-comp-icon-turn:rotate(180deg);}

@@ -1,2 +1,0 @@
-### Changed
-- DataGrid no longer pulls ReviewFlow into every grid (#807, a dependency fix, not lazy loading): it only used ReviewFlow's `useOptionalToast`, which brought the command bar, the quick filter, the avatar and a dialog with it. It uses Toast's own hook with the same behavior (a toast when the page has a `ToastProvider`, nothing otherwise). `import { DataGrid }` is smaller; nothing changes for a person.

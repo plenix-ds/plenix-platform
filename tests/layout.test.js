@@ -108,6 +108,8 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 // platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
 // a date with no time is that calendar day in every time zone (issue 342)
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
+// a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)
+child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.ts'] }, 'branch-loader-814.test.js');
 // control cards: ChoiceList with a radio, a checkbox or a switch in each card (issue 804)
 child({ units: ['components/Checkbox'] }, 'control-cards-804.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
