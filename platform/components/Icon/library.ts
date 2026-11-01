@@ -4,9 +4,9 @@
      package's ES modules swap this file at build time (build-packages.js) for one whose LIBRARY is empty and whose
      loadLibrary() loads the names the first time Icon meets a name outside the Plenix set, so an app that imports one part
      does not carry the 54 KB list.
-   Usage: import { LIBRARY, loadLibrary } from './library.js'   (Icon.jsx only)
+   Usage: import { LIBRARY, loadLibrary } from './library.ts'   (Icon.tsx only)
    Props:
      LIBRARY: the library's symbol names, space separated (glyphs.js LIBRARY)
      loadLibrary: null when the names are built in; in the npm package, a function that returns a Promise of the names */
 export { LIBRARY } from './glyphs.js';
-export const loadLibrary = null;
+export const loadLibrary: (() => Promise<string>) | null = null;

@@ -21,12 +21,12 @@
 */
 import React from 'react';
 import { useSeparateAudio } from './useSeparateAudio.js';
-import { Stack, Inline } from '../Stack/Stack.jsx';
+import { Stack, Inline } from '../Stack/Stack.tsx';
 import { Field } from '../Field/Field.jsx';
 import { Select } from '../Input/Input.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Slider } from '../Slider/Slider.jsx';
-import { Text } from '../Text/Text.jsx';
+import { Text } from '../Text/Text.tsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Link } from '../Link/Link.jsx';
 import { useUid } from '../../utils/layer.ts';

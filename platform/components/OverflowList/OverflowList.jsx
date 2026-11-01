@@ -26,7 +26,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import MoreIcon from 'plenix-platform/icons/plenix/more';

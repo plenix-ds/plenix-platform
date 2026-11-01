@@ -89,7 +89,7 @@ module.exports = function buildIcons(root) {
     '   Summary: GENERATED FILE — DO NOT EDIT. Written by build-icons.js from platform/icons/ (Material Symbols Sharp, weight\n' +
     '     300, used exactly as published): the names the Icon component resolves. The drawings are modules (imported, or\n' +
     '     registered by an icon file: plenix-icons-<site>.js), else the files of the asset layout, fetched once (issue 557).\n' +
-    '   Usage: import { SYMBOLS, NAMES, MIRRORED, LIBRARY, LIBRARY_COMMIT } from \'./glyphs.js\'   (Icon.jsx only)\n' +
+    '   Usage: import { SYMBOLS, NAMES, MIRRORED, LIBRARY, LIBRARY_COMMIT } from \'./glyphs.js\'   (Icon.tsx only)\n' +
     '   Props:\n' +
     '     SYMBOLS: the Plenix set\'s symbols, space separated\n' +
     '     NAMES: each Plenix icon name (and its underscore alias) -> [symbol, 1 when its outline is the fill version]\n' +

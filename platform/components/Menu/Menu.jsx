@@ -78,7 +78,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useLayer, useUid } from '../../utils/layer.ts';
-import { Icon, asIcon } from '../Icon/Icon.jsx';
+import { Icon, asIcon } from '../Icon/Icon.tsx';
 import { Portal } from '../../utils/portal.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useGesture } from '../../hooks/useGesture.ts';

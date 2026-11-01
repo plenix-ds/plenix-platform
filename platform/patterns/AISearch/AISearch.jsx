@@ -13,9 +13,9 @@
    Notes: This is a UI adapter, not a model or search service; caller content must be trusted React nodes.
 */
 import React from 'react';
-import { Stack,Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Stack,Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { cx } from '../../utils/cx.ts';

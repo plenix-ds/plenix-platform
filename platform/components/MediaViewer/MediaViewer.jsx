@@ -35,7 +35,7 @@ import { cx } from '../../utils/cx.ts';
 import { useLayer, useUid } from '../../utils/layer.ts';
 import { MediaPlayer } from '../MediaPlayer/MediaPlayer.jsx';
 import { useGesture } from '../../hooks/useGesture.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { arrowStep } from '../../utils/direction.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';

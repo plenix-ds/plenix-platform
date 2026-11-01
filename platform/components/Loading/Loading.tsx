@@ -22,21 +22,23 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 // a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
-const sizeName = (v) => (v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined);
-export function Skeleton({ width, height, className, ...rest }) {
+const sizeName = (v: string | number | undefined) => (v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined);
+export type SkeletonProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & { width?: string | number; height?: string | number };
+export function Skeleton({ width, height, className, ...rest }: SkeletonProps) {
   return <span className={cx('plx-skeleton', className)} aria-hidden="true" data-plx-width={sizeName(width)} data-plx-height={sizeName(height)} {...rest} />;
 }
 
-export function Spinner({ size = 'md', label, className, ...rest }) {
+export type SpinnerProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & { size?: 'sm' | 'md' | 'lg'; label?: React.ReactNode };
+export function Spinner({ size = 'md', label, className, ...rest }: SpinnerProps) {
   devWarn('Spinner', { size }, { size: ['sm','md','lg'] });
   const t = useStrings('loading');
   return (
     <span className={cx('plx-spinner', 'plx-spinner--' + size, className)} role="status" {...rest}>
-      <VisuallyHidden>{label ?? t.label}</VisuallyHidden>
+      <VisuallyHidden>{label ?? (t.label as React.ReactNode)}</VisuallyHidden>
     </span>
   );
 }

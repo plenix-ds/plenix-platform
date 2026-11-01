@@ -31,15 +31,15 @@
        their count. */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
-import { Icon } from '../../components/Icon/Icon.jsx';
+import { Icon } from '../../components/Icon/Icon.tsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { LiveRegion } from '../../utils/announce.tsx';
 import { PanelTrigger, toggle } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';

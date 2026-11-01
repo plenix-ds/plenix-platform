@@ -77,8 +77,8 @@ import { gridPx } from '../../utils/grid.ts';
 import { isDataValue } from '../../utils/dataValue.ts';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated, useInBar } from '../../utils/overflow.ts';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 

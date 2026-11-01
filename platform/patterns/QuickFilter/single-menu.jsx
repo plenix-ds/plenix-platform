@@ -7,8 +7,8 @@
 import React from 'react';
 import { MenuRadioGroup, MenuItem } from '../../components/Menu/Menu.jsx';
 import { singleChoice } from './single-choice.js';
-import { Text } from '../../components/Text/Text.jsx';
-import { Inline } from '../../components/Stack/Stack.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Inline } from '../../components/Stack/Stack.tsx';
 import { formatNumber } from '../../utils/format.ts';
 export function SingleQuickFilterMenu({ label, options = [], value, required, onChange, counts, strings }) {
   const chosen = singleChoice(options, value, required);

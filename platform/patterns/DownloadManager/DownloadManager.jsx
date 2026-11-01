@@ -15,7 +15,7 @@ import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';

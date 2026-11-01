@@ -8,10 +8,10 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Stack, Inline } from '../../components/Stack/Stack.tsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { cx } from '../../utils/cx.ts';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';

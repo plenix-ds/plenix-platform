@@ -15,13 +15,13 @@
 */
 import { ManageColumnsDialog } from '../../../patterns/ColumnsMenu/ColumnsMenu.jsx';
 import { EmptyState } from '../../EmptyState/EmptyState.jsx';
-import { Button } from '../../Button/Button.jsx';
+import { Button } from '../../Button/Button.tsx';
 import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
 import { Menu, MenuItem, MenuDivider } from '../../Menu/Menu.jsx';
 import { cx } from '../../../utils/cx.ts';
-import { Inline } from '../../Stack/Stack.jsx';
+import { Inline } from '../../Stack/Stack.tsx';
 import { words } from './helpers.jsx';
-import { Text } from '../../Text/Text.jsx';
+import { Text } from '../../Text/Text.tsx';
 import { Select } from '../../Input/Input.jsx';
 import { Pagination } from '../../Pagination/Pagination.jsx';
 

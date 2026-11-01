@@ -47,7 +47,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
