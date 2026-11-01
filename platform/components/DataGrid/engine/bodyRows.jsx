@@ -309,6 +309,7 @@ export function bodyRows({
           >
             <Check
               label={S.selectRow + ' ' + record[index]}
+              card={card}
               checked={selection[row.id]}
               onChange={(e) => pickCheckbox(row, e)}
             />

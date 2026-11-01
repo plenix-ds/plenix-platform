@@ -90,6 +90,11 @@
       "$value": "{plx-sys.data-grid-header-bottom}",
       "$type": "color",
       "$description": "The bar over the cards: the thin line below it."
+    },
+    "data-grid-template-check-accent-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "A card: the checkbox fill, the Checkbox's own role (the table's checkboxes keep the grid accent)."
     }
   }
 }

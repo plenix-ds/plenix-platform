@@ -181,6 +181,7 @@ export function gridFrame({
                     <div className={cx(`${B}__grid-col-content ${B}__grid-col-content--row-header`, cardBar != null && B + '__grid-col-content--card')}>
                       <Check
                         label={S.selectAll}
+                        card={cardBar != null}
                         checked={allVisible}
                         mixed={selectedVisible.length > 0 && !allVisible}
                         onChange={(e) => selectAll(e.target.checked)}

@@ -232,6 +232,8 @@
 /* the bar over the cards: the select-all checkbox and the count, as the sample's */
 .plx-data-grid__grid-header.plx-data-grid__grid-header--card{background-color:var(--plx-comp-data-grid-template-bar-background);background-image:none;border-block-end-color:var(--plx-comp-data-grid-template-bar-line);}
 .plx-data-grid__grid-headers--card{--plx-state-data-grid-headers-inline-size:100%;align-items:center;column-gap:var(--plx-comp-data-grid-template-bar-gap);min-block-size:calc(var(--plx-comp-data-grid-template-bar-height) - var(--plx-comp-data-grid-line-width));padding-inline:var(--plx-comp-data-grid-template-bar-padding);}
+/* the card's checkboxes take the Checkbox's own accent (the sample's), not the table's pale dark-mode blue */
+.plx-data-grid__check-input.plx-data-grid__check-input--card{accent-color:var(--plx-comp-data-grid-template-check-accent-color);}
 .plx-data-grid__grid-col.plx-data-grid__grid-col--card{flex-basis:auto;inline-size:auto;max-inline-size:none;min-inline-size:0;}
 .plx-data-grid__grid-col-content.plx-data-grid__grid-col-content--card{--plx-state-data-grid-content-justify:flex-start;block-size:auto;inline-size:auto;min-inline-size:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-data-grid__card-count{color:var(--plx-comp-text-label-text);font-family:var(--plx-comp-text-label-font-family);font-size:var(--plx-comp-text-label-font-size);font-weight:var(--plx-comp-text-label-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);word-spacing:normal;}
