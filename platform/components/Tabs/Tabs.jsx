@@ -50,7 +50,7 @@ import { arrowStep } from '../../utils/direction.ts';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { Count } from '../Count/Count.jsx';
-import { Icon, stateIcon } from '../Icon/Icon.jsx';
+import { Icon, stateIcon } from '../Icon/Icon.tsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CaretIcon from 'plenix-platform/icons/plenix/caret';

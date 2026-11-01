@@ -11,11 +11,11 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
-import { Icon } from '../Icon/Icon.jsx';
+import { Button } from '../Button/Button.tsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 import { Popover } from '../Popover/Popover.jsx';
-import { Text } from '../Text/Text.jsx';
+import { Text } from '../Text/Text.tsx';
 import { fill } from '../../utils/fill.ts';
 import ReplyIcon from 'plenix-platform/icons/plenix/reply';
 import MoreIcon from 'plenix-platform/icons/plenix/more';

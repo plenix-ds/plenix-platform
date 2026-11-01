@@ -9,9 +9,9 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Text } from '../Text/Text.jsx';
+import { Button } from '../Button/Button.tsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Text } from '../Text/Text.tsx';
 import { MediaViewer } from '../MediaViewer/MediaViewer.jsx';
 import { useStrings, useDigits } from '../../providers/LocaleProvider.tsx';
 import { announce } from '../../utils/announce.tsx';

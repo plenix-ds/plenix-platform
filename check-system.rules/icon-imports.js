@@ -11,7 +11,7 @@
 // Slots: icon, iconStart, iconEnd, glyph and any <name>Icon or <name>Icons; name on <Icon> and <StatusIcon>.
 // Not slots, because in the Platform they carry no icon name: leading (it takes an element: an <Icon name="…"> inside
 // it is judged as an Icon), mark (a drag-and-drop insertion mark, or a mark-as-read function; EmptyState's mark is a
-// local that holds its icon prop), symbol (ECharts' marker shape in charts, the resolver's own field in Icon.jsx).
+// local that holds its icon prop), symbol (ECharts' marker shape in charts, the resolver's own field in Icon.tsx).
 // What it knowingly misses:
 //   - a name that arrives from outside the file: a prop (<Button icon={icon}>), {...rest}, or another file's constant
 //     (an imported table is judged in its own file only when its name ends in Icon or Icons, or when it sits in a slot there)

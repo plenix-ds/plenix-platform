@@ -25,7 +25,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];

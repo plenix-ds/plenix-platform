@@ -109,7 +109,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   function checkIconSvg(text2) {
     if (typeof text2 !== "string") return no("the file is not text");
     if (text2.length > ICON_LIMITS.file) return no("the file is larger than " + ICON_LIMITS.file + " characters");
-    let s = text2.replace(/^﻿/, "").replace(/^\s*<\?xml\s[^<>?]*\?>/, "");
+    let s = text2.replace(/^\uFEFF/, "").replace(/^\s*<\?xml\s[^<>?]*\?>/, "");
     if (s.includes("<!")) return no("the file has a doctype, an entity, CDATA or a comment");
     if (s.includes("<?")) return no("the file has a processing instruction");
     if (s.includes("&")) return no("the file has an entity reference");
@@ -546,19 +546,19 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     },
     "emptyState": {
       "offline": {
-        "title": "You’re offline",
-        "text": "Check your connection. This page updates when you’re back online."
+        "title": "You\u2019re offline",
+        "text": "Check your connection. This page updates when you\u2019re back online."
       },
       "degraded": {
-        "title": "Some features aren’t working",
+        "title": "Some features aren\u2019t working",
         "text": "A service is slow or not responding, so what you see may be out of date."
       },
       "permission-denied": {
-        "title": "You don’t have access",
+        "title": "You don\u2019t have access",
         "text": "Ask the owner to share it with you."
       },
       "not-found": {
-        "title": "This page doesn’t exist",
+        "title": "This page doesn\u2019t exist",
         "text": "It may have been moved or deleted. Check the address or go back."
       },
       "maintenance": {
@@ -567,12 +567,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       "completion": {
         "title": "All done",
-        "text": "There’s nothing left to do here."
+        "text": "There\u2019s nothing left to do here."
       }
     },
     "pagination": {
       "label": "Pages",
-      "range": "{first}–{last} of {total}",
+      "range": "{first}\u2013{last} of {total}",
       "previous": "Previous page",
       "next": "Next page",
       "page": "Page {n}",
@@ -738,7 +738,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "remove": "Remove photo",
       "tooLarge": "The picture is larger than {max}",
       "notImage": "Choose an image file",
-      "picture": "{name}’s photo"
+      "picture": "{name}\u2019s photo"
     },
     "backToTop": {
       "label": "Back to top"
@@ -1008,7 +1008,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "emoji": "Add an emoji",
       "emojiSoon": "The emoji picker is coming soon.",
       "dictate": "Dictate a message",
-      "listening": "Listening…",
+      "listening": "Listening\u2026",
       "stop": "Stop",
       "micBlocked": "The microphone is blocked. Allow it in the browser to dictate.",
       "micStopped": "Dictation stopped.",
@@ -1120,7 +1120,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "none": "No column matches"
     },
     "combobox": {
-      "loading": "Loading…",
+      "loading": "Loading\u2026",
       "error": "The options could not be loaded",
       "emptyText": "No matches",
       "removeItem": "Remove {label}",
@@ -1156,7 +1156,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "commandMenu": {
       "label": "Commands",
       "placeholder": "Type a command or search",
-      "empty": "No results for “{query}”",
+      "empty": "No results for \u201C{query}\u201D",
       "loading": "Loading",
       "back": "Back",
       "results": "{count} results"
@@ -1200,7 +1200,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "none": "No differences",
       "one": "1 difference",
       "many": "{n} differences",
-      "empty": "—"
+      "empty": "\u2014"
     },
     "confidenceIndicator": {
       "high": "High confidence",
@@ -1221,7 +1221,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "as": "As {account}",
       "since": "since {date}",
       "connectTitle": "Connect {service}?",
-      "connectMessage": "You’ll sign in to {service} to allow this. Plenix will be able to:",
+      "connectMessage": "You\u2019ll sign in to {service} to allow this. Plenix will be able to:",
       "continue": "Continue to {service}",
       "disconnectTitle": "Disconnect {service}?",
       "disconnectMessage": "You can connect it again at any time.",
@@ -1235,7 +1235,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "copyButton": {
       "copy": "Copy",
       "copied": "Copied",
-      "failed": "Couldn’t copy. Select the text and copy it by hand."
+      "failed": "Couldn\u2019t copy. Select the text and copy it by hand."
     },
     "countrySelect": {
       "country": "Choose a country or region",
@@ -1277,24 +1277,24 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "clearFilter": "Clear filter",
       "groupBy": "Group by this field",
       "ungroup": "Ungroup",
-      "noGroup": "Don’t group by this field",
+      "noGroup": "Don\u2019t group by this field",
       "sizeToFit": "Size column to fit",
       "sizeAllToFit": "Size all columns to fit",
-      "moreColumns": "More…",
+      "moreColumns": "More\u2026",
       "columns": "Columns",
       "loadMore": "Load more",
       "loading": "Loading records",
       "group": "Group by this field",
       "filterBy": "Filter by this field",
       "any": "Any",
-      "contains": "Contains…",
+      "contains": "Contains\u2026",
       "moveRow": "Move row",
       "moveUp": "Move up",
       "moveDown": "Move down",
       "moveTop": "Move to top",
       "moveBottom": "Move to bottom",
       "resize": "Resize",
-      "range": "{first}–{last} of {total}",
+      "range": "{first}\u2013{last} of {total}",
       "count": "{shown} of {total}",
       "pages": "{label} pages",
       "loaded": "{n} more rows loaded, {shown} of {total}",
@@ -1311,20 +1311,20 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "min": "Min",
       "max": "Max",
       "sortText": [
-        "Sort A → Z",
-        "Sort Z → A"
+        "Sort A \u2192 Z",
+        "Sort Z \u2192 A"
       ],
       "sortNumber": [
-        "Sort 1 → 9",
-        "Sort 9 → 1"
+        "Sort 1 \u2192 9",
+        "Sort 9 \u2192 1"
       ],
       "sortDate": [
-        "Sort oldest → newest",
-        "Sort newest → oldest"
+        "Sort oldest \u2192 newest",
+        "Sort newest \u2192 oldest"
       ],
       "sortCheck": [
-        "Sort unchecked → checked",
-        "Sort checked → unchecked"
+        "Sort unchecked \u2192 checked",
+        "Sort checked \u2192 unchecked"
       ],
       "unread": "Unread ({count})",
       "columnsLabel": "{label} columns",
@@ -1441,7 +1441,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "placeholder": "Search {entityName}",
       "empty": "No {entityName} found",
       "browse": "Browse all {entityName}",
-      "loading": "Loading…",
+      "loading": "Loading\u2026",
       "error": "The results could not be loaded",
       "remove": "Remove {label}",
       "results": {
@@ -1495,14 +1495,14 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "one": "1 item",
       "empty": "This folder is empty",
       "emptyText": "Upload files or create a folder.",
-      "noMatch": "Nothing matches “{q}”",
+      "noMatch": "Nothing matches \u201C{q}\u201D",
       "download": "Download",
       "moveTo": "Move to",
       "delete": "Delete",
       "noun": "item",
       "plural": "items",
       "drop": "Drop files to upload to {folder}",
-      "nameTaken": "A file or folder named “{name}” is already here.",
+      "nameTaken": "A file or folder named \u201C{name}\u201D is already here.",
       "nameEmpty": "Give the folder a name.",
       "items": "{n} items",
       "item": "{n} item"
@@ -1531,7 +1531,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "Nothing here yet",
       "open": "Open",
       "download": "Download",
-      "rename": "Rename…",
+      "rename": "Rename\u2026",
       "delete": "Delete",
       "moveTo": "Move to",
       "file": "file",
@@ -1555,7 +1555,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "select": "Select {name}",
       "more": "More actions for {name}",
       "download": "Download {name}",
-      "rename": "Rename…",
+      "rename": "Rename\u2026",
       "delete": "Delete",
       "cancel": "Cancel",
       "retry": "Try again",
@@ -1573,7 +1573,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "more": "More filters",
       "clearAll": "Clear all",
       "one": "{label}: {value}",
-      "several": "{label} · {count}"
+      "several": "{label} \xB7 {count}"
     },
     "filterPanel": {
       "label": "Filter",
@@ -1711,8 +1711,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "loadMore": {
       "more": "Load more",
       "moreCount": "Show {n} more",
-      "loading": "Loading…",
-      "end": "You’ve reached the end",
+      "loading": "Loading\u2026",
+      "end": "You\u2019ve reached the end",
       "count": "{shown} of {total}",
       "added": {
         "one": "{n} more item loaded",
@@ -1770,7 +1770,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "vs": "vs",
       "empty": "No data",
       "loading": "Loading {title}",
-      "error": "Couldn’t load the figures.",
+      "error": "Couldn\u2019t load the figures.",
       "retry": "Try again",
       "stale": "Out of date",
       "rank": "#{n}",
@@ -2066,12 +2066,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "renameAction": {
       "label": "Name",
       "rename": "Rename",
-      "open": "Rename…",
+      "open": "Rename\u2026",
       "title": "Rename {name}",
       "cancel": "Cancel",
       "empty": "Enter a name",
-      "slash": "A name can’t contain / or \\",
-      "taken": "There’s already an item named {name} here",
+      "slash": "A name can\u2019t contain / or \\",
+      "taken": "There\u2019s already an item named {name} here",
       "tooLong": "Use {max} characters or fewer",
       "renamed": "Renamed to {name}",
       "failed": "The name could not be changed"
@@ -2100,10 +2100,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "selected": "{n} of {total} selected"
     },
     "retry": {
-      "title": "Couldn’t load",
+      "title": "Couldn\u2019t load",
       "retry": "Retry",
       "retryNow": "Retry now",
-      "retrying": "Retrying…",
+      "retrying": "Retrying\u2026",
       "waiting": "Retrying in {time}",
       "attempt": "Attempt {attempt} of {attempts}",
       "stopped": "Stopped after {attempts} attempts",
@@ -2212,7 +2212,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "defaultFont": "Default font",
       "size": "Size",
       "defaultSize": "Default size",
-      "custom": "Custom…",
+      "custom": "Custom\u2026",
       "customFont": "Font family",
       "customSize": "Font size",
       "insertTable": "Insert table",
@@ -2270,7 +2270,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "builtIn": "Built-in",
       "custom": "Custom",
       "permissions": "Permissions",
-      "builtInNote": "Built-in roles can’t be changed. Duplicate one to make your own.",
+      "builtInNote": "Built-in roles can\u2019t be changed. Duplicate one to make your own.",
       "addMember": "Add a member",
       "remove": "Remove {name}",
       "lastMember": "{role} needs at least one member. Add someone else first.",
@@ -2314,7 +2314,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "title": "Search",
       "selectAll": "Select all",
       "allSelected": "Every {noun} is selected",
-      "placeholder": "Search…",
+      "placeholder": "Search\u2026",
       "result": "result",
       "results": "results",
       "searchField": "Search {nouns}",
@@ -2329,8 +2329,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "table": "Table",
       "sort": "Sort",
       "sortValue": "Sort: {value}",
-      "noMatchQuery": "Nothing matches “{query}”.",
-      "noMatchQueryFilters": "Nothing matches “{query}” with these filters.",
+      "noMatchQuery": "Nothing matches \u201C{query}\u201D.",
+      "noMatchQueryFilters": "Nothing matches \u201C{query}\u201D with these filters.",
       "noMatchFilters": "Nothing matches these filters."
     },
     "secondaryPane": {
@@ -2342,12 +2342,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     },
     "sessionTimeout": {
       "warningTitle": "Your session is about to end",
-      "warning": "You’ll be signed out in {time} because you haven’t been active.",
+      "warning": "You\u2019ll be signed out in {time} because you haven\u2019t been active.",
       "stay": "Stay signed in",
       "signOut": "Sign out",
       "signedOutTitle": "You were signed out",
       "signedOut": "For your security, you were signed out after {minutes} minutes without activity.",
-      "signedOutShort": "For your security, you were signed out because you weren’t active.",
+      "signedOutShort": "For your security, you were signed out because you weren\u2019t active.",
       "saved": "Your changes are saved.",
       "signIn": "Sign in again",
       "left": "{time} left",
@@ -2586,7 +2586,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "remove": "Remove from the list",
       "again": "Upload again",
       "tooLarge": "This file is larger than {max}.",
-      "wrongType": "This type of file can’t be uploaded here.",
+      "wrongType": "This type of file can\u2019t be uploaded here.",
       "error": "The upload failed. Try again.",
       "failedNamed": "{name} failed: {reason}",
       "status": "canceled"
@@ -2601,7 +2601,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "utils": {
       "clipboard": {
         "copied": "Copied",
-        "failed": "Couldn’t copy. Select the text and copy it by hand."
+        "failed": "Couldn\u2019t copy. Select the text and copy it by hand."
       }
     },
     "versionCompare": {
@@ -2661,7 +2661,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "extra-tall": "Extra tall"
     },
     "virtualList": {
-      "loading": "Loading…",
+      "loading": "Loading\u2026",
       "empty": "No items",
       "count": {
         "one": "{n} item",
@@ -3034,7 +3034,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "categories": "Shop by category",
         "recommended": "Recommended for you",
         "results": "Products",
-        "resultsFor": "Results for “{q}”",
+        "resultsFor": "Results for \u201C{q}\u201D",
         "count": "{n} products",
         "one": "1 product",
         "suggestions": "Try one of these",
@@ -3077,7 +3077,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "free": "Free",
         "items": "{n} items",
         "item": "1 item",
-        "times": "× {n}"
+        "times": "\xD7 {n}"
       }
     },
     "dnd": {
@@ -3110,24 +3110,24 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "fields": {
       "directions": {
         "text": [
-          "A → Z",
-          "Z → A"
+          "A \u2192 Z",
+          "Z \u2192 A"
         ],
         "select": [
-          "First → Last",
-          "Last → First"
+          "First \u2192 Last",
+          "Last \u2192 First"
         ],
         "multi": [
-          "First → Last",
-          "Last → First"
+          "First \u2192 Last",
+          "Last \u2192 First"
         ],
         "number": [
-          "1 → 9",
-          "9 → 1"
+          "1 \u2192 9",
+          "9 \u2192 1"
         ],
         "date": [
-          "Oldest → newest",
-          "Newest → oldest"
+          "Oldest \u2192 newest",
+          "Newest \u2192 oldest"
         ]
       },
       "operators": {
@@ -3153,7 +3153,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         },
         "number": {
           "eq": "=",
-          "ne": "≠",
+          "ne": "\u2260",
           "lt": "<",
           "gt": ">",
           "empty": "is empty",
@@ -3197,203 +3197,203 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   };
   const arabic = {
     "pagination": {
-      "label": "الصفحات",
-      "range": "{first} إلى {last} من {total}",
-      "previous": "الصفحة السابقة",
-      "next": "الصفحة التالية",
-      "page": "الصفحة {n}",
-      "perPage": "لكل صفحة"
+      "label": "\u0627\u0644\u0635\u0641\u062D\u0627\u062A",
+      "range": "{first} \u0625\u0644\u0649 {last} \u0645\u0646 {total}",
+      "previous": "\u0627\u0644\u0635\u0641\u062D\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629",
+      "next": "\u0627\u0644\u0635\u0641\u062D\u0629 \u0627\u0644\u062A\u0627\u0644\u064A\u0629",
+      "page": "\u0627\u0644\u0635\u0641\u062D\u0629 {n}",
+      "perPage": "\u0644\u0643\u0644 \u0635\u0641\u062D\u0629"
     },
     "chart": {
       "barChart": {
-        "category": "الفئة",
-        "total": "الإجمالي",
-        "range": "النطاق",
-        "count": "العدد"
+        "category": "\u0627\u0644\u0641\u0626\u0629",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A",
+        "range": "\u0627\u0644\u0646\u0637\u0627\u0642",
+        "count": "\u0627\u0644\u0639\u062F\u062F"
       },
       "boxPlot": {
-        "group": "المجموعة",
-        "min": "الحد الأدنى",
-        "q1": "الربع الأول",
-        "median": "الوسيط",
-        "q3": "الربع الثالث",
-        "max": "الحد الأقصى",
-        "outliers": "القيم الشاذة",
-        "n": "القيم"
+        "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+        "min": "\u0627\u0644\u062D\u062F \u0627\u0644\u0623\u062F\u0646\u0649",
+        "q1": "\u0627\u0644\u0631\u0628\u0639 \u0627\u0644\u0623\u0648\u0644",
+        "median": "\u0627\u0644\u0648\u0633\u064A\u0637",
+        "q3": "\u0627\u0644\u0631\u0628\u0639 \u0627\u0644\u062B\u0627\u0644\u062B",
+        "max": "\u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649",
+        "outliers": "\u0627\u0644\u0642\u064A\u0645 \u0627\u0644\u0634\u0627\u0630\u0629",
+        "n": "\u0627\u0644\u0642\u064A\u0645"
       },
       "bulletChart": {
-        "measure": "المقياس",
-        "value": "القيمة",
-        "target": "الهدف",
-        "ranges": "النطاقات",
-        "poor": "ضعيف",
-        "fair": "مقبول",
-        "good": "جيد"
+        "measure": "\u0627\u0644\u0645\u0642\u064A\u0627\u0633",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "target": "\u0627\u0644\u0647\u062F\u0641",
+        "ranges": "\u0627\u0644\u0646\u0637\u0627\u0642\u0627\u062A",
+        "poor": "\u0636\u0639\u064A\u0641",
+        "fair": "\u0645\u0642\u0628\u0648\u0644",
+        "good": "\u062C\u064A\u062F"
       },
       "chartFrame": {
-        "showData": "عرض البيانات",
-        "table": "{title}: البيانات"
+        "showData": "\u0639\u0631\u0636 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A",
+        "table": "{title}: \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A"
       },
       "comboChart": {
-        "category": "الفئة",
-        "bars": "الأعمدة",
-        "lines": "الخطوط"
+        "category": "\u0627\u0644\u0641\u0626\u0629",
+        "bars": "\u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+        "lines": "\u0627\u0644\u062E\u0637\u0648\u0637"
       },
       "diagram": {
-        "step": "الخطوة",
-        "kind": "النوع",
-        "next": "يؤدي إلى",
-        "previous": "يأتي من",
-        "process": "الخطوة",
-        "decision": "قرار",
-        "terminal": "بداية أو نهاية",
-        "data": "البيانات",
-        "box": "الجزء",
-        "group": "المجموعة",
-        "end": "النهاية"
+        "step": "\u0627\u0644\u062E\u0637\u0648\u0629",
+        "kind": "\u0627\u0644\u0646\u0648\u0639",
+        "next": "\u064A\u0624\u062F\u064A \u0625\u0644\u0649",
+        "previous": "\u064A\u0623\u062A\u064A \u0645\u0646",
+        "process": "\u0627\u0644\u062E\u0637\u0648\u0629",
+        "decision": "\u0642\u0631\u0627\u0631",
+        "terminal": "\u0628\u062F\u0627\u064A\u0629 \u0623\u0648 \u0646\u0647\u0627\u064A\u0629",
+        "data": "\u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A",
+        "box": "\u0627\u0644\u062C\u0632\u0621",
+        "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+        "end": "\u0627\u0644\u0646\u0647\u0627\u064A\u0629"
       },
       "funnelChart": {
-        "stage": "المرحلة",
-        "value": "العدد",
-        "kept": "المتبقي من الخطوة السابقة",
-        "ofFirst": "من الخطوة الأولى"
+        "stage": "\u0627\u0644\u0645\u0631\u062D\u0644\u0629",
+        "value": "\u0627\u0644\u0639\u062F\u062F",
+        "kept": "\u0627\u0644\u0645\u062A\u0628\u0642\u064A \u0645\u0646 \u0627\u0644\u062E\u0637\u0648\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629",
+        "ofFirst": "\u0645\u0646 \u0627\u0644\u062E\u0637\u0648\u0629 \u0627\u0644\u0623\u0648\u0644\u0649"
       },
       "ganttChart": {
-        "task": "المهمة",
-        "progress": "تم",
-        "dependsOn": "بانتظار",
-        "status": "الحالة",
-        "today": "اليوم",
-        "milestone": "مَعلَم",
-        "start": "البداية",
-        "end": "النهاية"
+        "task": "\u0627\u0644\u0645\u0647\u0645\u0629",
+        "progress": "\u062A\u0645",
+        "dependsOn": "\u0628\u0627\u0646\u062A\u0638\u0627\u0631",
+        "status": "\u0627\u0644\u062D\u0627\u0644\u0629",
+        "today": "\u0627\u0644\u064A\u0648\u0645",
+        "milestone": "\u0645\u064E\u0639\u0644\u064E\u0645",
+        "start": "\u0627\u0644\u0628\u062F\u0627\u064A\u0629",
+        "end": "\u0627\u0644\u0646\u0647\u0627\u064A\u0629"
       },
       "gauge": {
-        "showData": "عرض البيانات",
-        "table": "{title}: البيانات",
-        "measure": "المقياس",
-        "value": "القيمة",
-        "min": "الحد الأدنى",
-        "max": "الحد الأقصى",
+        "showData": "\u0639\u0631\u0636 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A",
+        "table": "{title}: \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A",
+        "measure": "\u0627\u0644\u0645\u0642\u064A\u0627\u0633",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "min": "\u0627\u0644\u062D\u062F \u0627\u0644\u0623\u062F\u0646\u0649",
+        "max": "\u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649",
         "ok": ""
       },
       "geoMap": {
-        "region": "المنطقة",
-        "place": "المكان",
-        "value": "القيمة",
-        "noData": "لا توجد بيانات",
-        "latitude": "خط العرض",
-        "longitude": "خط الطول",
-        "zoom": "التكبير",
-        "zoomIn": "تكبير",
-        "zoomOut": "تصغير",
-        "reset": "عرض الخريطة كاملة"
+        "region": "\u0627\u0644\u0645\u0646\u0637\u0642\u0629",
+        "place": "\u0627\u0644\u0645\u0643\u0627\u0646",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "noData": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A",
+        "latitude": "\u062E\u0637 \u0627\u0644\u0639\u0631\u0636",
+        "longitude": "\u062E\u0637 \u0627\u0644\u0637\u0648\u0644",
+        "zoom": "\u0627\u0644\u062A\u0643\u0628\u064A\u0631",
+        "zoomIn": "\u062A\u0643\u0628\u064A\u0631",
+        "zoomOut": "\u062A\u0635\u063A\u064A\u0631",
+        "reset": "\u0639\u0631\u0636 \u0627\u0644\u062E\u0631\u064A\u0637\u0629 \u0643\u0627\u0645\u0644\u0629"
       },
       "heatMap": {
-        "value": "القيمة",
-        "row": "الصف",
-        "column": "العمود",
-        "date": "التاريخ",
-        "missing": "لا توجد بيانات",
-        "low": "منخفض",
-        "high": "مرتفع",
-        "scale": "مقياس الألوان"
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "row": "\u0627\u0644\u0635\u0641",
+        "column": "\u0627\u0644\u0639\u0645\u0648\u062F",
+        "date": "\u0627\u0644\u062A\u0627\u0631\u064A\u062E",
+        "missing": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A",
+        "low": "\u0645\u0646\u062E\u0641\u0636",
+        "high": "\u0645\u0631\u062A\u0641\u0639",
+        "scale": "\u0645\u0642\u064A\u0627\u0633 \u0627\u0644\u0623\u0644\u0648\u0627\u0646"
       },
       "lineChart": {
-        "category": "الفئة"
+        "category": "\u0627\u0644\u0641\u0626\u0629"
       },
       "lollipopChart": {
-        "category": "الفئة",
-        "value": "القيمة"
+        "category": "\u0627\u0644\u0641\u0626\u0629",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629"
       },
       "networkGraph": {
-        "node": "العقدة",
-        "group": "المجموعة",
-        "links": "متصل بـ",
-        "zoomIn": "تكبير",
-        "zoomOut": "تصغير",
-        "fit": "ملاءمة",
-        "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
-        "none": "لا شيء"
+        "node": "\u0627\u0644\u0639\u0642\u062F\u0629",
+        "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+        "links": "\u0645\u062A\u0635\u0644 \u0628\u0640",
+        "zoomIn": "\u062A\u0643\u0628\u064A\u0631",
+        "zoomOut": "\u062A\u0635\u063A\u064A\u0631",
+        "fit": "\u0645\u0644\u0627\u0621\u0645\u0629",
+        "hintZoom": " \u0627\u0644\u0623\u0632\u0631\u0627\u0631 +/- \u0644\u0644\u062A\u0643\u0628\u064A\u0631 \u0648\u0627\u0644\u062A\u0635\u063A\u064A\u0631\u060C \u0648\u0627\u0644\u0631\u0642\u0645 0 \u064A\u0646\u0627\u0633\u0628 \u0627\u0644\u0631\u0633\u0645.",
+        "none": "\u0644\u0627 \u0634\u064A\u0621"
       },
       "pieChart": {
-        "part": "الجزء",
-        "value": "القيمة",
-        "share": "الحصة",
-        "total": "الإجمالي",
-        "other": "أخرى"
+        "part": "\u0627\u0644\u062C\u0632\u0621",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "share": "\u0627\u0644\u062D\u0635\u0629",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A",
+        "other": "\u0623\u062E\u0631\u0649"
       },
       "radarChart": {
-        "measure": "المقياس"
+        "measure": "\u0627\u0644\u0645\u0642\u064A\u0627\u0633"
       },
       "sankeyDiagram": {
-        "source": "المصدر",
-        "target": "الهدف",
-        "value": "القيمة",
-        "total": "الإجمالي"
+        "source": "\u0627\u0644\u0645\u0635\u062F\u0631",
+        "target": "\u0627\u0644\u0647\u062F\u0641",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A"
       },
       "scatterChart": {
-        "series": "السلسلة",
-        "item": "العنصر"
+        "series": "\u0627\u0644\u0633\u0644\u0633\u0644\u0629",
+        "item": "\u0627\u0644\u0639\u0646\u0635\u0631"
       },
       "timelineChart": {
-        "item": "العنصر",
-        "lane": "المسار",
-        "today": "اليوم",
-        "date": "التاريخ",
-        "dates": "التواريخ",
-        "start": "البداية",
-        "end": "النهاية"
+        "item": "\u0627\u0644\u0639\u0646\u0635\u0631",
+        "lane": "\u0627\u0644\u0645\u0633\u0627\u0631",
+        "today": "\u0627\u0644\u064A\u0648\u0645",
+        "date": "\u0627\u0644\u062A\u0627\u0631\u064A\u062E",
+        "dates": "\u0627\u0644\u062A\u0648\u0627\u0631\u064A\u062E",
+        "start": "\u0627\u0644\u0628\u062F\u0627\u064A\u0629",
+        "end": "\u0627\u0644\u0646\u0647\u0627\u064A\u0629"
       },
       "treeChart": {
-        "name": "الاسم",
-        "detail": "التفاصيل",
-        "parent": "يتبع لـ",
-        "level": "المستوى",
-        "folded": "مطوي",
-        "open": "مفتوح"
+        "name": "\u0627\u0644\u0627\u0633\u0645",
+        "detail": "\u0627\u0644\u062A\u0641\u0627\u0635\u064A\u0644",
+        "parent": "\u064A\u062A\u0628\u0639 \u0644\u0640",
+        "level": "\u0627\u0644\u0645\u0633\u062A\u0648\u0649",
+        "folded": "\u0645\u0637\u0648\u064A",
+        "open": "\u0645\u0641\u062A\u0648\u062D"
       },
       "treemap": {
-        "group": "المجموعة",
-        "item": "الجزء",
-        "value": "القيمة",
-        "share": "الحصة"
+        "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+        "item": "\u0627\u0644\u062C\u0632\u0621",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "share": "\u0627\u0644\u062D\u0635\u0629"
       },
       "waterfallChart": {
-        "step": "الخطوة",
-        "change": "التغيير",
-        "total": "الإجمالي",
-        "running": "المجموع التراكمي",
-        "increase": "زيادة",
-        "decrease": "نقصان",
-        "end": "النهاية"
+        "step": "\u0627\u0644\u062E\u0637\u0648\u0629",
+        "change": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A",
+        "running": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639 \u0627\u0644\u062A\u0631\u0627\u0643\u0645\u064A",
+        "increase": "\u0632\u064A\u0627\u062F\u0629",
+        "decrease": "\u0646\u0642\u0635\u0627\u0646",
+        "end": "\u0627\u0644\u0646\u0647\u0627\u064A\u0629"
       },
       "wordCloud": {
-        "value": "العدد",
-        "word": "المصطلح",
-        "group": "المجموعة"
+        "value": "\u0627\u0644\u0639\u062F\u062F",
+        "word": "\u0627\u0644\u0645\u0635\u0637\u0644\u062D",
+        "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629"
       },
       "chartLegend": {
-        "legend": "دليل الرسم"
+        "legend": "\u062F\u0644\u064A\u0644 \u0627\u0644\u0631\u0633\u0645"
       }
     },
     "avatar": {
-      "online": "متصل",
-      "away": "غائب",
-      "busy": "مشغول",
-      "dnd": "عدم الإزعاج",
-      "offline": "غير متصل"
+      "online": "\u0645\u062A\u0635\u0644",
+      "away": "\u063A\u0627\u0626\u0628",
+      "busy": "\u0645\u0634\u063A\u0648\u0644",
+      "dnd": "\u0639\u062F\u0645 \u0627\u0644\u0625\u0632\u0639\u0627\u062C",
+      "offline": "\u063A\u064A\u0631 \u0645\u062A\u0635\u0644"
     },
     "avatarGroup": {
       "more": "+{n}",
-      "moreLabel": "{n} إضافية"
+      "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629"
     },
     "backToTop": {
-      "label": "العودة إلى الأعلى"
+      "label": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0623\u0639\u0644\u0649"
     },
     "barcode": {
-      "label": "الباركود {format}: {value}",
-      "invalid": "رمز {format} غير صالح",
+      "label": "\u0627\u0644\u0628\u0627\u0631\u0643\u0648\u062F {format}: {value}",
+      "invalid": "\u0631\u0645\u0632 {format} \u063A\u064A\u0631 \u0635\u0627\u0644\u062D",
       "formats": {
         "code128": "Code 128",
         "ean13": "EAN-13",
@@ -3404,2308 +3404,2308 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "name": "Plenix"
     },
     "button": {
-      "working": "جارٍ العمل"
+      "working": "\u062C\u0627\u0631\u064D \u0627\u0644\u0639\u0645\u0644"
     },
     "calendar": {
-      "label": "التقويم",
-      "previous": "الشهر السابق",
-      "next": "الشهر التالي",
-      "week": "الأسبوع",
-      "weekShort": "أسبوع",
-      "today": "اليوم"
+      "label": "\u0627\u0644\u062A\u0642\u0648\u064A\u0645",
+      "previous": "\u0627\u0644\u0634\u0647\u0631 \u0627\u0644\u0633\u0627\u0628\u0642",
+      "next": "\u0627\u0644\u0634\u0647\u0631 \u0627\u0644\u062A\u0627\u0644\u064A",
+      "week": "\u0627\u0644\u0623\u0633\u0628\u0648\u0639",
+      "weekShort": "\u0623\u0633\u0628\u0648\u0639",
+      "today": "\u0627\u0644\u064A\u0648\u0645"
     },
     "carousel": {
-      "slide": "{n} من {total}",
-      "previous": "الشريحة السابقة",
-      "next": "الشريحة التالية",
-      "goTo": "الانتقال إلى الشريحة {n}",
-      "goToPage": "الانتقال إلى الصفحة {n}",
-      "pages": "الشرائح",
-      "pause": "إيقاف مؤقت",
-      "play": "تشغيل",
-      "pauseLabel": "إيقاف الشرائح مؤقتًا",
-      "playLabel": "تشغيل الشرائح",
-      "strip": "الشرائح"
+      "slide": "{n} \u0645\u0646 {total}",
+      "previous": "\u0627\u0644\u0634\u0631\u064A\u062D\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629",
+      "next": "\u0627\u0644\u0634\u0631\u064A\u062D\u0629 \u0627\u0644\u062A\u0627\u0644\u064A\u0629",
+      "goTo": "\u0627\u0644\u0627\u0646\u062A\u0642\u0627\u0644 \u0625\u0644\u0649 \u0627\u0644\u0634\u0631\u064A\u062D\u0629 {n}",
+      "goToPage": "\u0627\u0644\u0627\u0646\u062A\u0642\u0627\u0644 \u0625\u0644\u0649 \u0627\u0644\u0635\u0641\u062D\u0629 {n}",
+      "pages": "\u0627\u0644\u0634\u0631\u0627\u0626\u062D",
+      "pause": "\u0625\u064A\u0642\u0627\u0641 \u0645\u0624\u0642\u062A",
+      "play": "\u062A\u0634\u063A\u064A\u0644",
+      "pauseLabel": "\u0625\u064A\u0642\u0627\u0641 \u0627\u0644\u0634\u0631\u0627\u0626\u062D \u0645\u0624\u0642\u062A\u064B\u0627",
+      "playLabel": "\u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u0634\u0631\u0627\u0626\u062D",
+      "strip": "\u0627\u0644\u0634\u0631\u0627\u0626\u062D"
     },
     "cascader": {
-      "placeholder": "اختيار",
+      "placeholder": "\u0627\u062E\u062A\u064A\u0627\u0631",
       "separator": " / ",
-      "search": "بحث",
-      "noMatches": "لا توجد نتائج مطابقة",
-      "empty": "لا توجد عناصر",
-      "remove": "إزالة {label}",
-      "columns": "الخيارات",
+      "search": "\u0628\u062D\u062B",
+      "noMatches": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {label}",
+      "columns": "\u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
       "results": {
-        "zero": "لا توجد تطابقات",
-        "one": "تطابق واحد",
-        "two": "تطابقان",
-        "few": "{n} تطابقات",
-        "many": "{n} تطابقًا",
-        "other": "{n} تطابق"
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0637\u0627\u0628\u0642\u0627\u062A",
+        "one": "\u062A\u0637\u0627\u0628\u0642 \u0648\u0627\u062D\u062F",
+        "two": "\u062A\u0637\u0627\u0628\u0642\u0627\u0646",
+        "few": "{n} \u062A\u0637\u0627\u0628\u0642\u0627\u062A",
+        "many": "{n} \u062A\u0637\u0627\u0628\u0642\u064B\u0627",
+        "other": "{n} \u062A\u0637\u0627\u0628\u0642"
       }
     },
     "codeBlock": {
-      "code": "الرمز",
-      "copy": "نسخ",
-      "copied": "تم النسخ",
-      "failed": "تعذّر النسخ"
+      "code": "\u0627\u0644\u0631\u0645\u0632",
+      "copy": "\u0646\u0633\u062E",
+      "copied": "\u062A\u0645 \u0627\u0644\u0646\u0633\u062E",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u0646\u0633\u062E"
     },
     "codeEditor": {
-      "hint": "مفتاح Tab يضيف مسافة بادئة. اضغط Escape ثم Tab للخروج من المحرّر."
+      "hint": "\u0645\u0641\u062A\u0627\u062D Tab \u064A\u0636\u064A\u0641 \u0645\u0633\u0627\u0641\u0629 \u0628\u0627\u062F\u0626\u0629. \u0627\u0636\u063A\u0637 Escape \u062B\u0645 Tab \u0644\u0644\u062E\u0631\u0648\u062C \u0645\u0646 \u0627\u0644\u0645\u062D\u0631\u0651\u0631."
     },
     "combobox": {
-      "loading": "جارٍ التحميل…",
-      "error": "تعذّر تحميل الخيارات",
-      "emptyText": "لا توجد نتائج مطابقة",
-      "removeItem": "إزالة {label}",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
+      "emptyText": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629",
+      "removeItem": "\u0625\u0632\u0627\u0644\u0629 {label}",
       "results": {
-        "zero": "لا توجد خيارات",
-        "one": "خيار واحد",
-        "two": "خياران",
-        "few": "{n} خيارات",
-        "many": "{n} خيارًا",
-        "other": "{n} خيار"
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062E\u064A\u0627\u0631\u0627\u062A",
+        "one": "\u062E\u064A\u0627\u0631 \u0648\u0627\u062D\u062F",
+        "two": "\u062E\u064A\u0627\u0631\u0627\u0646",
+        "few": "{n} \u062E\u064A\u0627\u0631\u0627\u062A",
+        "many": "{n} \u062E\u064A\u0627\u0631\u064B\u0627",
+        "other": "{n} \u062E\u064A\u0627\u0631"
       }
     },
     "commandMenu": {
-      "label": "الأوامر",
-      "placeholder": "اكتب أمرًا أو ابحث",
-      "empty": "لا توجد نتائج لـ «{query}»",
-      "loading": "جارٍ التحميل",
-      "back": "رجوع",
-      "results": "{count} نتيجة"
+      "label": "\u0627\u0644\u0623\u0648\u0627\u0645\u0631",
+      "placeholder": "\u0627\u0643\u062A\u0628 \u0623\u0645\u0631\u064B\u0627 \u0623\u0648 \u0627\u0628\u062D\u062B",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0644\u0640 \xAB{query}\xBB",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644",
+      "back": "\u0631\u062C\u0648\u0639",
+      "results": "{count} \u0646\u062A\u064A\u062C\u0629"
     },
     "contextualHelp": {
-      "more": "المزيد عن {title}",
-      "moreUntitled": "مزيد من المعلومات"
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F \u0639\u0646 {title}",
+      "moreUntitled": "\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062A"
     },
     "copyButton": {
-      "copy": "نسخ",
-      "copied": "تم النسخ",
-      "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+      "copy": "\u0646\u0633\u062E",
+      "copied": "\u062A\u0645 \u0627\u0644\u0646\u0633\u062E",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u0646\u0633\u062E. \u062D\u062F\u0651\u062F \u0627\u0644\u0646\u0635 \u0648\u0627\u0646\u0633\u062E\u0647 \u064A\u062F\u0648\u064A\u064B\u0627."
     },
     "countrySelect": {
-      "country": "اختر بلدًا أو منطقة",
-      "language": "اختر لغة",
-      "locale": "اختر لغة ومنطقة",
-      "suggested": "مقترح",
-      "all": "الكل"
+      "country": "\u0627\u062E\u062A\u0631 \u0628\u0644\u062F\u064B\u0627 \u0623\u0648 \u0645\u0646\u0637\u0642\u0629",
+      "language": "\u0627\u062E\u062A\u0631 \u0644\u063A\u0629",
+      "locale": "\u0627\u062E\u062A\u0631 \u0644\u063A\u0629 \u0648\u0645\u0646\u0637\u0642\u0629",
+      "suggested": "\u0645\u0642\u062A\u0631\u062D",
+      "all": "\u0627\u0644\u0643\u0644"
     },
     "dataGrid": {
-      "empty": "لا يوجد شيء للعرض",
-      "failed": "تعذّر تحميل الجدول",
-      "retry": "إعادة المحاولة",
-      "selectAll": "تحديد كل الصفوف",
-      "selectRow": "تحديد الصف",
-      "rowActions": "إجراءات الصف",
-      "clearSort": "إلغاء الفرز",
-      "hide": "إخفاء الحقل",
-      "showAll": "إظهار كل الحقول",
-      "narrower": "أضيق",
-      "wider": "أعرض",
-      "fit": "ملاءمة المحتوى",
-      "deleted": "محذوف",
-      "moveLeft": "نقل إلى اليسار",
-      "moveRight": "نقل إلى اليمين",
-      "perPage": "الصفوف في كل صفحة",
-      "view": "خيارات العرض",
-      "wrapHeaders": "التفاف العناوين",
-      "markRead": "وضع علامة مقروء",
-      "markUnread": "وضع علامة غير مقروء",
-      "wrapText": "التفاف النص",
-      "wrapAll": "التفاف كل الأعمدة",
-      "fullText": "عرض النص كاملًا",
-      "rowHeight": "ارتفاع الصف",
-      "short": "قصير",
-      "medium": "متوسط",
-      "tall": "طويل",
-      "extra-tall": "طويل جدًا",
-      "filter": "تصفية",
-      "clearFilter": "مسح التصفية",
-      "groupBy": "التجميع حسب هذا الحقل",
-      "ungroup": "إلغاء التجميع",
-      "noGroup": "عدم التجميع حسب هذا الحقل",
-      "sizeToFit": "ملاءمة عرض العمود",
-      "sizeAllToFit": "ملاءمة عرض كل الأعمدة",
-      "moreColumns": "المزيد…",
-      "columns": "الأعمدة",
-      "loadMore": "تحميل المزيد",
-      "loading": "جارٍ تحميل السجلات",
-      "group": "التجميع حسب هذا الحقل",
-      "filterBy": "التصفية حسب هذا الحقل",
-      "any": "أي قيمة",
-      "contains": "يحتوي على…",
-      "moveRow": "نقل الصف",
-      "moveUp": "نقل لأعلى",
-      "moveDown": "نقل لأسفل",
-      "moveTop": "نقل إلى الأعلى",
-      "moveBottom": "نقل إلى الأسفل",
-      "resize": "تغيير الحجم",
-      "range": "{first}–{last} من {total}",
-      "count": "{shown} من {total}",
-      "pages": "صفحات {label}",
-      "loaded": "تم تحميل {n} صفوف إضافية، {shown} من {total}",
-      "noValue": "(فارغ)",
-      "addTo": "إضافة سجل إلى {value}",
-      "groupRow": "{value}، مجموعة، {count} {records}",
-      "record": "سجل",
-      "records": "سجلات",
-      "expanded": "موسّع",
-      "collapsed": "مطوي",
-      "sum": "المجموع",
-      "countOf": "العدد",
-      "average": "المتوسط",
-      "min": "الأدنى",
-      "max": "الأقصى",
+      "empty": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0634\u064A\u0621 \u0644\u0644\u0639\u0631\u0636",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u062C\u062F\u0648\u0644",
+      "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629",
+      "selectAll": "\u062A\u062D\u062F\u064A\u062F \u0643\u0644 \u0627\u0644\u0635\u0641\u0648\u0641",
+      "selectRow": "\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0635\u0641",
+      "rowActions": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0635\u0641",
+      "clearSort": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0641\u0631\u0632",
+      "hide": "\u0625\u062E\u0641\u0627\u0621 \u0627\u0644\u062D\u0642\u0644",
+      "showAll": "\u0625\u0638\u0647\u0627\u0631 \u0643\u0644 \u0627\u0644\u062D\u0642\u0648\u0644",
+      "narrower": "\u0623\u0636\u064A\u0642",
+      "wider": "\u0623\u0639\u0631\u0636",
+      "fit": "\u0645\u0644\u0627\u0621\u0645\u0629 \u0627\u0644\u0645\u062D\u062A\u0648\u0649",
+      "deleted": "\u0645\u062D\u0630\u0648\u0641",
+      "moveLeft": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u064A\u0633\u0627\u0631",
+      "moveRight": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u064A\u0645\u064A\u0646",
+      "perPage": "\u0627\u0644\u0635\u0641\u0648\u0641 \u0641\u064A \u0643\u0644 \u0635\u0641\u062D\u0629",
+      "view": "\u062E\u064A\u0627\u0631\u0627\u062A \u0627\u0644\u0639\u0631\u0636",
+      "wrapHeaders": "\u0627\u0644\u062A\u0641\u0627\u0641 \u0627\u0644\u0639\u0646\u0627\u0648\u064A\u0646",
+      "markRead": "\u0648\u0636\u0639 \u0639\u0644\u0627\u0645\u0629 \u0645\u0642\u0631\u0648\u0621",
+      "markUnread": "\u0648\u0636\u0639 \u0639\u0644\u0627\u0645\u0629 \u063A\u064A\u0631 \u0645\u0642\u0631\u0648\u0621",
+      "wrapText": "\u0627\u0644\u062A\u0641\u0627\u0641 \u0627\u0644\u0646\u0635",
+      "wrapAll": "\u0627\u0644\u062A\u0641\u0627\u0641 \u0643\u0644 \u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "fullText": "\u0639\u0631\u0636 \u0627\u0644\u0646\u0635 \u0643\u0627\u0645\u0644\u064B\u0627",
+      "rowHeight": "\u0627\u0631\u062A\u0641\u0627\u0639 \u0627\u0644\u0635\u0641",
+      "short": "\u0642\u0635\u064A\u0631",
+      "medium": "\u0645\u062A\u0648\u0633\u0637",
+      "tall": "\u0637\u0648\u064A\u0644",
+      "extra-tall": "\u0637\u0648\u064A\u0644 \u062C\u062F\u064B\u0627",
+      "filter": "\u062A\u0635\u0641\u064A\u0629",
+      "clearFilter": "\u0645\u0633\u062D \u0627\u0644\u062A\u0635\u0641\u064A\u0629",
+      "groupBy": "\u0627\u0644\u062A\u062C\u0645\u064A\u0639 \u062D\u0633\u0628 \u0647\u0630\u0627 \u0627\u0644\u062D\u0642\u0644",
+      "ungroup": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u062A\u062C\u0645\u064A\u0639",
+      "noGroup": "\u0639\u062F\u0645 \u0627\u0644\u062A\u062C\u0645\u064A\u0639 \u062D\u0633\u0628 \u0647\u0630\u0627 \u0627\u0644\u062D\u0642\u0644",
+      "sizeToFit": "\u0645\u0644\u0627\u0621\u0645\u0629 \u0639\u0631\u0636 \u0627\u0644\u0639\u0645\u0648\u062F",
+      "sizeAllToFit": "\u0645\u0644\u0627\u0621\u0645\u0629 \u0639\u0631\u0636 \u0643\u0644 \u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "moreColumns": "\u0627\u0644\u0645\u0632\u064A\u062F\u2026",
+      "columns": "\u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "loadMore": "\u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0645\u0632\u064A\u062F",
+      "loading": "\u062C\u0627\u0631\u064D \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0633\u062C\u0644\u0627\u062A",
+      "group": "\u0627\u0644\u062A\u062C\u0645\u064A\u0639 \u062D\u0633\u0628 \u0647\u0630\u0627 \u0627\u0644\u062D\u0642\u0644",
+      "filterBy": "\u0627\u0644\u062A\u0635\u0641\u064A\u0629 \u062D\u0633\u0628 \u0647\u0630\u0627 \u0627\u0644\u062D\u0642\u0644",
+      "any": "\u0623\u064A \u0642\u064A\u0645\u0629",
+      "contains": "\u064A\u062D\u062A\u0648\u064A \u0639\u0644\u0649\u2026",
+      "moveRow": "\u0646\u0642\u0644 \u0627\u0644\u0635\u0641",
+      "moveUp": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "moveDown": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644",
+      "moveTop": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0623\u0639\u0644\u0649",
+      "moveBottom": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0623\u0633\u0641\u0644",
+      "resize": "\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u062D\u062C\u0645",
+      "range": "{first}\u2013{last} \u0645\u0646 {total}",
+      "count": "{shown} \u0645\u0646 {total}",
+      "pages": "\u0635\u0641\u062D\u0627\u062A {label}",
+      "loaded": "\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 {n} \u0635\u0641\u0648\u0641 \u0625\u0636\u0627\u0641\u064A\u0629\u060C {shown} \u0645\u0646 {total}",
+      "noValue": "(\u0641\u0627\u0631\u063A)",
+      "addTo": "\u0625\u0636\u0627\u0641\u0629 \u0633\u062C\u0644 \u0625\u0644\u0649 {value}",
+      "groupRow": "{value}\u060C \u0645\u062C\u0645\u0648\u0639\u0629\u060C {count} {records}",
+      "record": "\u0633\u062C\u0644",
+      "records": "\u0633\u062C\u0644\u0627\u062A",
+      "expanded": "\u0645\u0648\u0633\u0651\u0639",
+      "collapsed": "\u0645\u0637\u0648\u064A",
+      "sum": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639",
+      "countOf": "\u0627\u0644\u0639\u062F\u062F",
+      "average": "\u0627\u0644\u0645\u062A\u0648\u0633\u0637",
+      "min": "\u0627\u0644\u0623\u062F\u0646\u0649",
+      "max": "\u0627\u0644\u0623\u0642\u0635\u0649",
       "sortText": [
-        "فرز من أ إلى ي",
-        "فرز من ي إلى أ"
+        "\u0641\u0631\u0632 \u0645\u0646 \u0623 \u0625\u0644\u0649 \u064A",
+        "\u0641\u0631\u0632 \u0645\u0646 \u064A \u0625\u0644\u0649 \u0623"
       ],
       "sortNumber": [
-        "فرز من 1 إلى 9",
-        "فرز من 9 إلى 1"
+        "\u0641\u0631\u0632 \u0645\u0646 1 \u0625\u0644\u0649 9",
+        "\u0641\u0631\u0632 \u0645\u0646 9 \u0625\u0644\u0649 1"
       ],
       "sortDate": [
-        "فرز من الأقدم إلى الأحدث",
-        "فرز من الأحدث إلى الأقدم"
+        "\u0641\u0631\u0632 \u0645\u0646 \u0627\u0644\u0623\u0642\u062F\u0645 \u0625\u0644\u0649 \u0627\u0644\u0623\u062D\u062F\u062B",
+        "\u0641\u0631\u0632 \u0645\u0646 \u0627\u0644\u0623\u062D\u062F\u062B \u0625\u0644\u0649 \u0627\u0644\u0623\u0642\u062F\u0645"
       ],
       "sortCheck": [
-        "فرز من غير المحدد إلى المحدد",
-        "فرز من المحدد إلى غير المحدد"
+        "\u0641\u0631\u0632 \u0645\u0646 \u063A\u064A\u0631 \u0627\u0644\u0645\u062D\u062F\u062F \u0625\u0644\u0649 \u0627\u0644\u0645\u062D\u062F\u062F",
+        "\u0641\u0631\u0632 \u0645\u0646 \u0627\u0644\u0645\u062D\u062F\u062F \u0625\u0644\u0649 \u063A\u064A\u0631 \u0627\u0644\u0645\u062D\u062F\u062F"
       ],
-      "unread": "غير مقروء ({count})",
-      "columnsLabel": "أعمدة {label}",
-      "rowsLabel": "صفوف {label}",
-      "columnActions": "إجراءات العمود {title}",
-      "unreadRow": "{label}، غير مقروء",
-      "editCell": "تعديل {title}"
+      "unread": "\u063A\u064A\u0631 \u0645\u0642\u0631\u0648\u0621 ({count})",
+      "columnsLabel": "\u0623\u0639\u0645\u062F\u0629 {label}",
+      "rowsLabel": "\u0635\u0641\u0648\u0641 {label}",
+      "columnActions": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0639\u0645\u0648\u062F {title}",
+      "unreadRow": "{label}\u060C \u063A\u064A\u0631 \u0645\u0642\u0631\u0648\u0621",
+      "editCell": "\u062A\u0639\u062F\u064A\u0644 {title}"
     },
     "dataPill": {
-      "male": "ذكر",
-      "female": "أنثى"
+      "male": "\u0630\u0643\u0631",
+      "female": "\u0623\u0646\u062B\u0649"
     },
     "datePicker": {
-      "open": "اختيار التاريخ",
-      "dialog": "اختيار التاريخ",
-      "time": "الوقت",
-      "presets": "الإعدادات المسبقة",
-      "today": "اليوم",
-      "tomorrow": "غدًا",
-      "nextWeek": "بعد أسبوع",
-      "last7": "آخر 7 أيام",
-      "last30": "آخر 30 يومًا",
-      "thisMonth": "هذا الشهر",
-      "lastMonth": "الشهر الماضي"
+      "open": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0627\u0644\u062A\u0627\u0631\u064A\u062E",
+      "dialog": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0627\u0644\u062A\u0627\u0631\u064A\u062E",
+      "time": "\u0627\u0644\u0648\u0642\u062A",
+      "presets": "\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0627\u0644\u0645\u0633\u0628\u0642\u0629",
+      "today": "\u0627\u0644\u064A\u0648\u0645",
+      "tomorrow": "\u063A\u062F\u064B\u0627",
+      "nextWeek": "\u0628\u0639\u062F \u0623\u0633\u0628\u0648\u0639",
+      "last7": "\u0622\u062E\u0631 7 \u0623\u064A\u0627\u0645",
+      "last30": "\u0622\u062E\u0631 30 \u064A\u0648\u0645\u064B\u0627",
+      "thisMonth": "\u0647\u0630\u0627 \u0627\u0644\u0634\u0647\u0631",
+      "lastMonth": "\u0627\u0644\u0634\u0647\u0631 \u0627\u0644\u0645\u0627\u0636\u064A"
     },
     "documentViewer": {
-      "document": "المستند",
-      "previous": "الصفحة السابقة",
-      "next": "الصفحة التالية",
-      "page": "الصفحة",
-      "zoom": "التكبير",
-      "thumbnails": "مصغّرات الصفحات",
-      "loading": "جارٍ تحميل المستند",
-      "failed": "تعذّر فتح المستند.",
-      "failedEngine": "تعذّر تشغيل عارض المستندات. حاول مرة أخرى لاحقًا.",
-      "failedAccess": "تعذّر فتح المستند. ربما نُقل أو لا تملك صلاحية الوصول إليه.",
-      "failedParse": "تعذّرت قراءة هذا الملف كملف PDF.",
-      "failedRender": "تعذّر عرض هذه الصفحة.",
-      "empty": "لا يوجد مستند.",
-      "retry": "حاول مرة أخرى"
+      "document": "\u0627\u0644\u0645\u0633\u062A\u0646\u062F",
+      "previous": "\u0627\u0644\u0635\u0641\u062D\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629",
+      "next": "\u0627\u0644\u0635\u0641\u062D\u0629 \u0627\u0644\u062A\u0627\u0644\u064A\u0629",
+      "page": "\u0627\u0644\u0635\u0641\u062D\u0629",
+      "zoom": "\u0627\u0644\u062A\u0643\u0628\u064A\u0631",
+      "thumbnails": "\u0645\u0635\u063A\u0651\u0631\u0627\u062A \u0627\u0644\u0635\u0641\u062D\u0627\u062A",
+      "loading": "\u062C\u0627\u0631\u064D \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0645\u0633\u062A\u0646\u062F",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0641\u062A\u062D \u0627\u0644\u0645\u0633\u062A\u0646\u062F.",
+      "failedEngine": "\u062A\u0639\u0630\u0651\u0631 \u062A\u0634\u063A\u064A\u0644 \u0639\u0627\u0631\u0636 \u0627\u0644\u0645\u0633\u062A\u0646\u062F\u0627\u062A. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649 \u0644\u0627\u062D\u0642\u064B\u0627.",
+      "failedAccess": "\u062A\u0639\u0630\u0651\u0631 \u0641\u062A\u062D \u0627\u0644\u0645\u0633\u062A\u0646\u062F. \u0631\u0628\u0645\u0627 \u0646\u064F\u0642\u0644 \u0623\u0648 \u0644\u0627 \u062A\u0645\u0644\u0643 \u0635\u0644\u0627\u062D\u064A\u0629 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u064A\u0647.",
+      "failedParse": "\u062A\u0639\u0630\u0651\u0631\u062A \u0642\u0631\u0627\u0621\u0629 \u0647\u0630\u0627 \u0627\u0644\u0645\u0644\u0641 \u0643\u0645\u0644\u0641 PDF.",
+      "failedRender": "\u062A\u0639\u0630\u0651\u0631 \u0639\u0631\u0636 \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629.",
+      "empty": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0645\u0633\u062A\u0646\u062F.",
+      "retry": "\u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649"
     },
     "downloadButton": {
-      "download": "تنزيل",
-      "downloading": "جارٍ التنزيل",
-      "ready": "التنزيل جاهز"
+      "download": "\u062A\u0646\u0632\u064A\u0644",
+      "downloading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u0646\u0632\u064A\u0644",
+      "ready": "\u0627\u0644\u062A\u0646\u0632\u064A\u0644 \u062C\u0627\u0647\u0632"
     },
     "emptyState": {
       "offline": {
-        "title": "أنت غير متصل بالإنترنت",
-        "text": "تحقق من اتصالك. ستُحدَّث هذه الصفحة عند عودتك إلى الاتصال."
+        "title": "\u0623\u0646\u062A \u063A\u064A\u0631 \u0645\u062A\u0635\u0644 \u0628\u0627\u0644\u0625\u0646\u062A\u0631\u0646\u062A",
+        "text": "\u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u062A\u0635\u0627\u0644\u0643. \u0633\u062A\u064F\u062D\u062F\u064E\u0651\u062B \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629 \u0639\u0646\u062F \u0639\u0648\u062F\u062A\u0643 \u0625\u0644\u0649 \u0627\u0644\u0627\u062A\u0635\u0627\u0644."
       },
       "degraded": {
-        "title": "بعض الميزات لا تعمل",
-        "text": "هناك خدمة بطيئة أو لا تستجيب، لذا قد تكون المعلومات المعروضة غير محدّثة."
+        "title": "\u0628\u0639\u0636 \u0627\u0644\u0645\u064A\u0632\u0627\u062A \u0644\u0627 \u062A\u0639\u0645\u0644",
+        "text": "\u0647\u0646\u0627\u0643 \u062E\u062F\u0645\u0629 \u0628\u0637\u064A\u0626\u0629 \u0623\u0648 \u0644\u0627 \u062A\u0633\u062A\u062C\u064A\u0628\u060C \u0644\u0630\u0627 \u0642\u062F \u062A\u0643\u0648\u0646 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062A \u0627\u0644\u0645\u0639\u0631\u0648\u0636\u0629 \u063A\u064A\u0631 \u0645\u062D\u062F\u0651\u062B\u0629."
       },
       "permission-denied": {
-        "title": "لا تملك صلاحية الوصول",
-        "text": "اطلب من المالك مشاركتها معك."
+        "title": "\u0644\u0627 \u062A\u0645\u0644\u0643 \u0635\u0644\u0627\u062D\u064A\u0629 \u0627\u0644\u0648\u0635\u0648\u0644",
+        "text": "\u0627\u0637\u0644\u0628 \u0645\u0646 \u0627\u0644\u0645\u0627\u0644\u0643 \u0645\u0634\u0627\u0631\u0643\u062A\u0647\u0627 \u0645\u0639\u0643."
       },
       "not-found": {
-        "title": "هذه الصفحة غير موجودة",
-        "text": "ربما نُقلت أو حُذفت. تحقق من العنوان أو ارجع إلى الصفحة السابقة."
+        "title": "\u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629 \u063A\u064A\u0631 \u0645\u0648\u062C\u0648\u062F\u0629",
+        "text": "\u0631\u0628\u0645\u0627 \u0646\u064F\u0642\u0644\u062A \u0623\u0648 \u062D\u064F\u0630\u0641\u062A. \u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0639\u0646\u0648\u0627\u0646 \u0623\u0648 \u0627\u0631\u062C\u0639 \u0625\u0644\u0649 \u0627\u0644\u0635\u0641\u062D\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629."
       },
       "maintenance": {
-        "title": "متوقف للصيانة",
-        "text": "يجري تحديث هذه الخدمة. حاول مرة أخرى بعد بضع دقائق."
+        "title": "\u0645\u062A\u0648\u0642\u0641 \u0644\u0644\u0635\u064A\u0627\u0646\u0629",
+        "text": "\u064A\u062C\u0631\u064A \u062A\u062D\u062F\u064A\u062B \u0647\u0630\u0647 \u0627\u0644\u062E\u062F\u0645\u0629. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649 \u0628\u0639\u062F \u0628\u0636\u0639 \u062F\u0642\u0627\u0626\u0642."
       },
       "completion": {
-        "title": "اكتمل كل شيء",
-        "text": "لم يتبقَّ شيء لإنجازه هنا."
+        "title": "\u0627\u0643\u062A\u0645\u0644 \u0643\u0644 \u0634\u064A\u0621",
+        "text": "\u0644\u0645 \u064A\u062A\u0628\u0642\u064E\u0651 \u0634\u064A\u0621 \u0644\u0625\u0646\u062C\u0627\u0632\u0647 \u0647\u0646\u0627."
       }
     },
     "entityPicker": {
-      "placeholderPeople": "ابحث بالاسم أو البريد الإلكتروني",
-      "placeholder": "ابحث في {entityName}",
-      "empty": "لم يتم العثور على {entityName}",
-      "browse": "تصفح كل {entityName}",
-      "loading": "جارٍ التحميل…",
-      "error": "تعذّر تحميل النتائج",
-      "remove": "إزالة {label}",
+      "placeholderPeople": "\u0627\u0628\u062D\u062B \u0628\u0627\u0644\u0627\u0633\u0645 \u0623\u0648 \u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A",
+      "placeholder": "\u0627\u0628\u062D\u062B \u0641\u064A {entityName}",
+      "empty": "\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 {entityName}",
+      "browse": "\u062A\u0635\u0641\u062D \u0643\u0644 {entityName}",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0646\u062A\u0627\u0626\u062C",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {label}",
       "results": {
-        "zero": "لا توجد نتائج",
-        "one": "نتيجة واحدة",
-        "two": "نتيجتان",
-        "few": "{n} نتائج",
-        "many": "{n} نتيجةً",
-        "other": "{n} نتيجة"
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C",
+        "one": "\u0646\u062A\u064A\u062C\u0629 \u0648\u0627\u062D\u062F\u0629",
+        "two": "\u0646\u062A\u064A\u062C\u062A\u0627\u0646",
+        "few": "{n} \u0646\u062A\u0627\u0626\u062C",
+        "many": "{n} \u0646\u062A\u064A\u062C\u0629\u064B",
+        "other": "{n} \u0646\u062A\u064A\u062C\u0629"
       }
     },
     "errorSummary": {
-      "one": "توجد مشكلة",
-      "many": "توجد {count} مشكلات"
+      "one": "\u062A\u0648\u062C\u062F \u0645\u0634\u0643\u0644\u0629",
+      "many": "\u062A\u0648\u062C\u062F {count} \u0645\u0634\u0643\u0644\u0627\u062A"
     },
     "file": {
-      "folder": "مجلد",
-      "items": "{n} عناصر",
-      "item": "{n} عنصر"
+      "folder": "\u0645\u062C\u0644\u062F",
+      "items": "{n} \u0639\u0646\u0627\u0635\u0631",
+      "item": "{n} \u0639\u0646\u0635\u0631"
     },
     "fileInput": {
-      "choose": "اختيار ملف",
-      "chooseMany": "اختيار ملفات",
-      "none": "لم يتم اختيار ملف",
-      "count": "{count} ملفات",
-      "remove": "إزالة {name}"
+      "choose": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0644\u0641",
+      "chooseMany": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0644\u0641\u0627\u062A",
+      "none": "\u0644\u0645 \u064A\u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0644\u0641",
+      "count": "{count} \u0645\u0644\u0641\u0627\u062A",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {name}"
     },
     "fileRow": {
-      "select": "تحديد {name}",
-      "more": "المزيد من الإجراءات لـ {name}",
-      "download": "تنزيل {name}",
-      "rename": "إعادة تسمية…",
-      "delete": "حذف",
-      "cancel": "إلغاء",
-      "retry": "حاول مرة أخرى",
+      "select": "\u062A\u062D\u062F\u064A\u062F {name}",
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0644\u0640 {name}",
+      "download": "\u062A\u0646\u0632\u064A\u0644 {name}",
+      "rename": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629\u2026",
+      "delete": "\u062D\u0630\u0641",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "retry": "\u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649",
       "transfer": "{label} {name}",
-      "uploading": "جارٍ الرفع",
-      "file": "ملف",
-      "files": "ملفات",
-      "folder": "مجلد",
-      "folders": "مجلدات",
-      "items": "{n} عناصر",
-      "item": "{n} عنصر"
+      "uploading": "\u062C\u0627\u0631\u064D \u0627\u0644\u0631\u0641\u0639",
+      "file": "\u0645\u0644\u0641",
+      "files": "\u0645\u0644\u0641\u0627\u062A",
+      "folder": "\u0645\u062C\u0644\u062F",
+      "folders": "\u0645\u062C\u0644\u062F\u0627\u062A",
+      "items": "{n} \u0639\u0646\u0627\u0635\u0631",
+      "item": "{n} \u0639\u0646\u0635\u0631"
     },
     "generatedContent": {
-      "label": "محتوى مُنشأ",
-      "helpful": "مفيد",
-      "unhelpful": "غير مفيد",
-      "regenerate": "إعادة الإنشاء",
-      "previous": "الإصدار السابق",
-      "next": "الإصدار التالي",
-      "version": "الإصدار",
-      "feedbackSaved": "تم حفظ الملاحظات",
-      "failed": "فشل الإجراء. حاول مرة أخرى.",
-      "pending": "جارٍ العمل"
+      "label": "\u0645\u062D\u062A\u0648\u0649 \u0645\u064F\u0646\u0634\u0623",
+      "helpful": "\u0645\u0641\u064A\u062F",
+      "unhelpful": "\u063A\u064A\u0631 \u0645\u0641\u064A\u062F",
+      "regenerate": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0625\u0646\u0634\u0627\u0621",
+      "previous": "\u0627\u0644\u0625\u0635\u062F\u0627\u0631 \u0627\u0644\u0633\u0627\u0628\u0642",
+      "next": "\u0627\u0644\u0625\u0635\u062F\u0627\u0631 \u0627\u0644\u062A\u0627\u0644\u064A",
+      "version": "\u0627\u0644\u0625\u0635\u062F\u0627\u0631",
+      "feedbackSaved": "\u062A\u0645 \u062D\u0641\u0638 \u0627\u0644\u0645\u0644\u0627\u062D\u0638\u0627\u062A",
+      "failed": "\u0641\u0634\u0644 \u0627\u0644\u0625\u062C\u0631\u0627\u0621. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "pending": "\u062C\u0627\u0631\u064D \u0627\u0644\u0639\u0645\u0644"
     },
     "image": {
-      "error": "الصورة غير متاحة"
+      "error": "\u0627\u0644\u0635\u0648\u0631\u0629 \u063A\u064A\u0631 \u0645\u062A\u0627\u062D\u0629"
     },
     "inlineEdit": {
-      "edit": "تعديل",
-      "save": "حفظ",
-      "cancel": "إلغاء",
-      "empty": "إضافة قيمة",
-      "saved": "تم الحفظ",
-      "failed": "تعذّر حفظ التغيير"
+      "edit": "\u062A\u0639\u062F\u064A\u0644",
+      "save": "\u062D\u0641\u0638",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "empty": "\u0625\u0636\u0627\u0641\u0629 \u0642\u064A\u0645\u0629",
+      "saved": "\u062A\u0645 \u0627\u0644\u062D\u0641\u0638",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062D\u0641\u0638 \u0627\u0644\u062A\u063A\u064A\u064A\u0631"
     },
     "link": {
-      "newTab": "يفتح في علامة تبويب جديدة"
+      "newTab": "\u064A\u0641\u062A\u062D \u0641\u064A \u0639\u0644\u0627\u0645\u0629 \u062A\u0628\u0648\u064A\u0628 \u062C\u062F\u064A\u062F\u0629"
     },
     "loadMore": {
-      "more": "تحميل المزيد",
-      "moreCount": "عرض {n} إضافية",
-      "loading": "جارٍ التحميل…",
-      "end": "وصلت إلى النهاية",
-      "count": "{shown} من {total}",
+      "more": "\u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0645\u0632\u064A\u062F",
+      "moreCount": "\u0639\u0631\u0636 {n} \u0625\u0636\u0627\u0641\u064A\u0629",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "end": "\u0648\u0635\u0644\u062A \u0625\u0644\u0649 \u0627\u0644\u0646\u0647\u0627\u064A\u0629",
+      "count": "{shown} \u0645\u0646 {total}",
       "added": {
-        "zero": "لم يتم تحميل عناصر إضافية",
-        "one": "تم تحميل عنصر إضافي واحد",
-        "two": "تم تحميل عنصرين إضافيين",
-        "few": "تم تحميل {n} عناصر إضافية",
-        "many": "تم تحميل {n} عنصرًا إضافيًا",
-        "other": "تم تحميل {n} عنصر إضافي"
+        "zero": "\u0644\u0645 \u064A\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 \u0639\u0646\u0627\u0635\u0631 \u0625\u0636\u0627\u0641\u064A\u0629",
+        "one": "\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 \u0639\u0646\u0635\u0631 \u0625\u0636\u0627\u0641\u064A \u0648\u0627\u062D\u062F",
+        "two": "\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 \u0639\u0646\u0635\u0631\u064A\u0646 \u0625\u0636\u0627\u0641\u064A\u064A\u0646",
+        "few": "\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 {n} \u0639\u0646\u0627\u0635\u0631 \u0625\u0636\u0627\u0641\u064A\u0629",
+        "many": "\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 {n} \u0639\u0646\u0635\u0631\u064B\u0627 \u0625\u0636\u0627\u0641\u064A\u064B\u0627",
+        "other": "\u062A\u0645 \u062A\u062D\u0645\u064A\u0644 {n} \u0639\u0646\u0635\u0631 \u0625\u0636\u0627\u0641\u064A"
       }
     },
     "mediaViewer": {
-      "label": "معاينة",
-      "close": "إغلاق المعاينة",
-      "previous": "السابق",
-      "next": "التالي",
-      "counter": "{index} من {total}"
+      "label": "\u0645\u0639\u0627\u064A\u0646\u0629",
+      "close": "\u0625\u063A\u0644\u0627\u0642 \u0627\u0644\u0645\u0639\u0627\u064A\u0646\u0629",
+      "previous": "\u0627\u0644\u0633\u0627\u0628\u0642",
+      "next": "\u0627\u0644\u062A\u0627\u0644\u064A",
+      "counter": "{index} \u0645\u0646 {total}"
     },
     "metricCard": {
-      "more": "المزيد لـ {title}",
-      "up": "لأعلى",
-      "down": "لأسفل",
-      "good": "جيد",
-      "bad": "سيئ",
-      "vs": "مقابل",
-      "empty": "لا توجد بيانات",
-      "loading": "جارٍ تحميل {title}",
-      "error": "تعذّر تحميل الأرقام.",
-      "retry": "حاول مرة أخرى",
-      "stale": "قديم",
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F \u0644\u0640 {title}",
+      "up": "\u0644\u0623\u0639\u0644\u0649",
+      "down": "\u0644\u0623\u0633\u0641\u0644",
+      "good": "\u062C\u064A\u062F",
+      "bad": "\u0633\u064A\u0626",
+      "vs": "\u0645\u0642\u0627\u0628\u0644",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A",
+      "loading": "\u062C\u0627\u0631\u064D \u062A\u062D\u0645\u064A\u0644 {title}",
+      "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0623\u0631\u0642\u0627\u0645.",
+      "retry": "\u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649",
+      "stale": "\u0642\u062F\u064A\u0645",
       "rank": "#{n}",
-      "toCome": "قادم",
-      "hit": "تحقق الهدف",
-      "missed": "لم يتحقق",
+      "toCome": "\u0642\u0627\u062F\u0645",
+      "hit": "\u062A\u062D\u0642\u0642 \u0627\u0644\u0647\u062F\u0641",
+      "missed": "\u0644\u0645 \u064A\u062A\u062D\u0642\u0642",
       "weekdays": [
-        "ن",
-        "ث",
-        "ر",
-        "خ",
-        "ج",
-        "س",
-        "ح"
+        "\u0646",
+        "\u062B",
+        "\u0631",
+        "\u062E",
+        "\u062C",
+        "\u0633",
+        "\u062D"
       ],
       "weekdayNames": [
-        "الاثنين",
-        "الثلاثاء",
-        "الأربعاء",
-        "الخميس",
-        "الجمعة",
-        "السبت",
-        "الأحد"
+        "\u0627\u0644\u0627\u062B\u0646\u064A\u0646",
+        "\u0627\u0644\u062B\u0644\u0627\u062B\u0627\u0621",
+        "\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621",
+        "\u0627\u0644\u062E\u0645\u064A\u0633",
+        "\u0627\u0644\u062C\u0645\u0639\u0629",
+        "\u0627\u0644\u0633\u0628\u062A",
+        "\u0627\u0644\u0623\u062D\u062F"
       ],
-      "month": "{done} من {days} أيام عمل حتى الآن",
+      "month": "{done} \u0645\u0646 {days} \u0623\u064A\u0627\u0645 \u0639\u0645\u0644 \u062D\u062A\u0649 \u0627\u0644\u0622\u0646",
       "parts": "{label} {share}",
-      "compare": "{a} {av}، {b} {bv}"
+      "compare": "{a} {av}\u060C {b} {bv}"
     },
     "millerColumns": {
-      "empty": "لا توجد عناصر",
-      "resize": "تغيير عرض العمود {label}",
-      "preview": "معاينة {label}"
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
+      "resize": "\u062A\u063A\u064A\u064A\u0631 \u0639\u0631\u0636 \u0627\u0644\u0639\u0645\u0648\u062F {label}",
+      "preview": "\u0645\u0639\u0627\u064A\u0646\u0629 {label}"
     },
     "navList": {
-      "pin": "تثبيت",
-      "unpin": "إلغاء التثبيت",
-      "pinItem": "تثبيت {label}",
-      "unpinItem": "إلغاء تثبيت {label}"
+      "pin": "\u062A\u062B\u0628\u064A\u062A",
+      "unpin": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u062A\u062B\u0628\u064A\u062A",
+      "pinItem": "\u062A\u062B\u0628\u064A\u062A {label}",
+      "unpinItem": "\u0625\u0644\u063A\u0627\u0621 \u062A\u062B\u0628\u064A\u062A {label}"
     },
     "notice": {
-      "dismiss": "تجاهل"
+      "dismiss": "\u062A\u062C\u0627\u0647\u0644"
     },
     "numberInput": {
-      "decrease": "نقصان",
-      "increase": "زيادة"
+      "decrease": "\u0646\u0642\u0635\u0627\u0646",
+      "increase": "\u0632\u064A\u0627\u062F\u0629"
     },
     "otpInput": {
-      "cell": "الحرف {n} من {total}"
+      "cell": "\u0627\u0644\u062D\u0631\u0641 {n} \u0645\u0646 {total}"
     },
     "persona": {
-      "online": "متصل",
-      "away": "غائب",
-      "busy": "مشغول",
-      "dnd": "عدم الإزعاج",
-      "offline": "غير متصل"
+      "online": "\u0645\u062A\u0635\u0644",
+      "away": "\u063A\u0627\u0626\u0628",
+      "busy": "\u0645\u0634\u063A\u0648\u0644",
+      "dnd": "\u0639\u062F\u0645 \u0627\u0644\u0625\u0632\u0639\u0627\u062C",
+      "offline": "\u063A\u064A\u0631 \u0645\u062A\u0635\u0644"
     },
     "popover": {
-      "close": "إغلاق"
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "productOptions": {
       "chosen": "{label}:",
-      "unavailable": "غير متوفر في المخزون",
-      "quantity": "الكمية",
-      "quantityOf": "الكمية، {product}",
-      "unavailableName": "{label}، غير متوفر في المخزون",
-      "none": "لم يتم اختيار شيء"
+      "unavailable": "\u063A\u064A\u0631 \u0645\u062A\u0648\u0641\u0631 \u0641\u064A \u0627\u0644\u0645\u062E\u0632\u0648\u0646",
+      "quantity": "\u0627\u0644\u0643\u0645\u064A\u0629",
+      "quantityOf": "\u0627\u0644\u0643\u0645\u064A\u0629\u060C {product}",
+      "unavailableName": "{label}\u060C \u063A\u064A\u0631 \u0645\u062A\u0648\u0641\u0631 \u0641\u064A \u0627\u0644\u0645\u062E\u0632\u0648\u0646",
+      "none": "\u0644\u0645 \u064A\u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631 \u0634\u064A\u0621"
     },
     "progressSteps": {
-      "step": "الخطوة {n} من {total}",
-      "complete": "مكتملة",
-      "current": "الخطوة الحالية",
-      "upcoming": "لم تبدأ",
-      "error": "تحتاج إلى انتباه"
+      "step": "\u0627\u0644\u062E\u0637\u0648\u0629 {n} \u0645\u0646 {total}",
+      "complete": "\u0645\u0643\u062A\u0645\u0644\u0629",
+      "current": "\u0627\u0644\u062E\u0637\u0648\u0629 \u0627\u0644\u062D\u0627\u0644\u064A\u0629",
+      "upcoming": "\u0644\u0645 \u062A\u0628\u062F\u0623",
+      "error": "\u062A\u062D\u062A\u0627\u062C \u0625\u0644\u0649 \u0627\u0646\u062A\u0628\u0627\u0647"
     },
     "relativeDateInput": {
-      "custom": "مخصص",
-      "none": "أي وقت",
-      "amount": "المبلغ",
-      "unit": "الوحدة",
-      "direction": "الاتجاه",
-      "past": "الأخيرة",
-      "future": "التالي",
+      "custom": "\u0645\u062E\u0635\u0635",
+      "none": "\u0623\u064A \u0648\u0642\u062A",
+      "amount": "\u0627\u0644\u0645\u0628\u0644\u063A",
+      "unit": "\u0627\u0644\u0648\u062D\u062F\u0629",
+      "direction": "\u0627\u0644\u0627\u062A\u062C\u0627\u0647",
+      "past": "\u0627\u0644\u0623\u062E\u064A\u0631\u0629",
+      "future": "\u0627\u0644\u062A\u0627\u0644\u064A",
       "units": {
         "day": [
-          "يوم",
-          "أيام"
+          "\u064A\u0648\u0645",
+          "\u0623\u064A\u0627\u0645"
         ],
         "week": [
-          "أسبوع",
-          "أسابيع"
+          "\u0623\u0633\u0628\u0648\u0639",
+          "\u0623\u0633\u0627\u0628\u064A\u0639"
         ],
         "month": [
-          "شهر",
-          "أشهر"
+          "\u0634\u0647\u0631",
+          "\u0623\u0634\u0647\u0631"
         ],
         "year": [
-          "سنة",
-          "سنوات"
+          "\u0633\u0646\u0629",
+          "\u0633\u0646\u0648\u0627\u062A"
         ]
       },
       "presets": {
-        "today": "اليوم",
-        "yesterday": "أمس",
-        "last-7-days": "آخر 7 أيام",
-        "last-30-days": "آخر 30 يومًا",
-        "last-90-days": "آخر 90 يومًا",
-        "last-12-months": "آخر 12 شهرًا",
-        "tomorrow": "غدًا",
-        "next-7-days": "الأيام السبعة القادمة",
-        "next-30-days": "الأيام الثلاثون القادمة",
-        "next-90-days": "الأيام التسعون القادمة",
-        "next-12-months": "الأشهر الاثنا عشر القادمة"
+        "today": "\u0627\u0644\u064A\u0648\u0645",
+        "yesterday": "\u0623\u0645\u0633",
+        "last-7-days": "\u0622\u062E\u0631 7 \u0623\u064A\u0627\u0645",
+        "last-30-days": "\u0622\u062E\u0631 30 \u064A\u0648\u0645\u064B\u0627",
+        "last-90-days": "\u0622\u062E\u0631 90 \u064A\u0648\u0645\u064B\u0627",
+        "last-12-months": "\u0622\u062E\u0631 12 \u0634\u0647\u0631\u064B\u0627",
+        "tomorrow": "\u063A\u062F\u064B\u0627",
+        "next-7-days": "\u0627\u0644\u0623\u064A\u0627\u0645 \u0627\u0644\u0633\u0628\u0639\u0629 \u0627\u0644\u0642\u0627\u062F\u0645\u0629",
+        "next-30-days": "\u0627\u0644\u0623\u064A\u0627\u0645 \u0627\u0644\u062B\u0644\u0627\u062B\u0648\u0646 \u0627\u0644\u0642\u0627\u062F\u0645\u0629",
+        "next-90-days": "\u0627\u0644\u0623\u064A\u0627\u0645 \u0627\u0644\u062A\u0633\u0639\u0648\u0646 \u0627\u0644\u0642\u0627\u062F\u0645\u0629",
+        "next-12-months": "\u0627\u0644\u0623\u0634\u0647\u0631 \u0627\u0644\u0627\u062B\u0646\u0627 \u0639\u0634\u0631 \u0627\u0644\u0642\u0627\u062F\u0645\u0629"
       }
     },
     "resizable": {
-      "width": "عرض {label}",
-      "height": "ارتفاع {label}",
-      "minWidth": "أصغر عرض لـ {label} ({value}px)",
-      "maxWidth": "أكبر عرض لـ {label} ({value}px)",
-      "minHeight": "أصغر ارتفاع لـ {label} ({value}px)",
-      "maxHeight": "أكبر ارتفاع لـ {label} ({value}px)"
+      "width": "\u0639\u0631\u0636 {label}",
+      "height": "\u0627\u0631\u062A\u0641\u0627\u0639 {label}",
+      "minWidth": "\u0623\u0635\u063A\u0631 \u0639\u0631\u0636 \u0644\u0640 {label} ({value}px)",
+      "maxWidth": "\u0623\u0643\u0628\u0631 \u0639\u0631\u0636 \u0644\u0640 {label} ({value}px)",
+      "minHeight": "\u0623\u0635\u063A\u0631 \u0627\u0631\u062A\u0641\u0627\u0639 \u0644\u0640 {label} ({value}px)",
+      "maxHeight": "\u0623\u0643\u0628\u0631 \u0627\u0631\u062A\u0641\u0627\u0639 \u0644\u0640 {label} ({value}px)"
     },
     "richTextEditor": {
-      "toolbar": "التنسيق",
-      "more": "مزيد من التنسيق",
-      "bold": "غامق",
-      "italic": "مائل",
-      "underline": "تسطير",
-      "strike": "يتوسطه خط",
-      "code": "رمز مضمّن",
-      "subscript": "نص سفلي",
-      "superscript": "نص علوي",
-      "link": "رابط",
-      "bulleted": "قائمة نقطية",
-      "numbered": "قائمة مرقّمة",
-      "tasks": "قائمة مهام",
-      "quote": "اقتباس",
-      "codeBlock": "كتلة رمز",
-      "rule": "خط أفقي",
-      "image": "صورة",
-      "table": "جدول",
-      "color": "لون النص",
-      "highlight": "تمييز",
-      "alignLeft": "محاذاة إلى اليسار",
-      "alignCenter": "محاذاة إلى الوسط",
-      "alignRight": "محاذاة إلى اليمين",
-      "alignJustify": "ضبط",
-      "clear": "مسح التنسيق",
-      "undo": "تراجع",
-      "redo": "إعادة",
-      "textStyle": "نمط النص",
-      "paragraph": "فقرة",
-      "font": "الخط",
-      "defaultFont": "الخط الافتراضي",
-      "size": "الحجم",
-      "defaultSize": "الحجم الافتراضي",
-      "custom": "مخصص…",
-      "customFont": "عائلة الخط",
-      "customSize": "حجم الخط",
-      "insertTable": "إدراج جدول",
-      "rowBefore": "إضافة صف أعلاه",
-      "rowAfter": "إضافة صف أدناه",
-      "columnBefore": "إضافة عمود قبله",
-      "columnAfter": "إضافة عمود بعده",
-      "deleteRow": "حذف الصف",
-      "deleteColumn": "حذف العمود",
-      "headerRow": "صف العناوين",
-      "deleteTable": "حذف الجدول",
-      "linkAddress": "عنوان الرابط",
-      "addLink": "إضافة رابط",
-      "imageAddress": "عنوان الصورة",
-      "imageAlt": "الوصف",
-      "addImage": "إضافة صورة",
-      "swatches": "ألوان مقترحة",
-      "customColor": "لون مخصص",
-      "hex": "قيمة سداسية عشرية",
-      "apply": "تطبيق",
-      "remove": "إزالة",
-      "cancel": "إلغاء",
-      "mentions": "اقتراحات",
-      "groupMarks": "النص",
-      "groupColor": "اللون",
-      "groupAlign": "المحاذاة",
-      "groupLists": "القوائم",
-      "groupInsert": "إدراج",
-      "groupHistory": "السجل",
-      "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
-      "hint": "Escape ثم Tab للخروج من المحرّر",
-      "heading": "عنوان {n}",
+      "toolbar": "\u0627\u0644\u062A\u0646\u0633\u064A\u0642",
+      "more": "\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u062A\u0646\u0633\u064A\u0642",
+      "bold": "\u063A\u0627\u0645\u0642",
+      "italic": "\u0645\u0627\u0626\u0644",
+      "underline": "\u062A\u0633\u0637\u064A\u0631",
+      "strike": "\u064A\u062A\u0648\u0633\u0637\u0647 \u062E\u0637",
+      "code": "\u0631\u0645\u0632 \u0645\u0636\u0645\u0651\u0646",
+      "subscript": "\u0646\u0635 \u0633\u0641\u0644\u064A",
+      "superscript": "\u0646\u0635 \u0639\u0644\u0648\u064A",
+      "link": "\u0631\u0627\u0628\u0637",
+      "bulleted": "\u0642\u0627\u0626\u0645\u0629 \u0646\u0642\u0637\u064A\u0629",
+      "numbered": "\u0642\u0627\u0626\u0645\u0629 \u0645\u0631\u0642\u0651\u0645\u0629",
+      "tasks": "\u0642\u0627\u0626\u0645\u0629 \u0645\u0647\u0627\u0645",
+      "quote": "\u0627\u0642\u062A\u0628\u0627\u0633",
+      "codeBlock": "\u0643\u062A\u0644\u0629 \u0631\u0645\u0632",
+      "rule": "\u062E\u0637 \u0623\u0641\u0642\u064A",
+      "image": "\u0635\u0648\u0631\u0629",
+      "table": "\u062C\u062F\u0648\u0644",
+      "color": "\u0644\u0648\u0646 \u0627\u0644\u0646\u0635",
+      "highlight": "\u062A\u0645\u064A\u064A\u0632",
+      "alignLeft": "\u0645\u062D\u0627\u0630\u0627\u0629 \u0625\u0644\u0649 \u0627\u0644\u064A\u0633\u0627\u0631",
+      "alignCenter": "\u0645\u062D\u0627\u0630\u0627\u0629 \u0625\u0644\u0649 \u0627\u0644\u0648\u0633\u0637",
+      "alignRight": "\u0645\u062D\u0627\u0630\u0627\u0629 \u0625\u0644\u0649 \u0627\u0644\u064A\u0645\u064A\u0646",
+      "alignJustify": "\u0636\u0628\u0637",
+      "clear": "\u0645\u0633\u062D \u0627\u0644\u062A\u0646\u0633\u064A\u0642",
+      "undo": "\u062A\u0631\u0627\u062C\u0639",
+      "redo": "\u0625\u0639\u0627\u062F\u0629",
+      "textStyle": "\u0646\u0645\u0637 \u0627\u0644\u0646\u0635",
+      "paragraph": "\u0641\u0642\u0631\u0629",
+      "font": "\u0627\u0644\u062E\u0637",
+      "defaultFont": "\u0627\u0644\u062E\u0637 \u0627\u0644\u0627\u0641\u062A\u0631\u0627\u0636\u064A",
+      "size": "\u0627\u0644\u062D\u062C\u0645",
+      "defaultSize": "\u0627\u0644\u062D\u062C\u0645 \u0627\u0644\u0627\u0641\u062A\u0631\u0627\u0636\u064A",
+      "custom": "\u0645\u062E\u0635\u0635\u2026",
+      "customFont": "\u0639\u0627\u0626\u0644\u0629 \u0627\u0644\u062E\u0637",
+      "customSize": "\u062D\u062C\u0645 \u0627\u0644\u062E\u0637",
+      "insertTable": "\u0625\u062F\u0631\u0627\u062C \u062C\u062F\u0648\u0644",
+      "rowBefore": "\u0625\u0636\u0627\u0641\u0629 \u0635\u0641 \u0623\u0639\u0644\u0627\u0647",
+      "rowAfter": "\u0625\u0636\u0627\u0641\u0629 \u0635\u0641 \u0623\u062F\u0646\u0627\u0647",
+      "columnBefore": "\u0625\u0636\u0627\u0641\u0629 \u0639\u0645\u0648\u062F \u0642\u0628\u0644\u0647",
+      "columnAfter": "\u0625\u0636\u0627\u0641\u0629 \u0639\u0645\u0648\u062F \u0628\u0639\u062F\u0647",
+      "deleteRow": "\u062D\u0630\u0641 \u0627\u0644\u0635\u0641",
+      "deleteColumn": "\u062D\u0630\u0641 \u0627\u0644\u0639\u0645\u0648\u062F",
+      "headerRow": "\u0635\u0641 \u0627\u0644\u0639\u0646\u0627\u0648\u064A\u0646",
+      "deleteTable": "\u062D\u0630\u0641 \u0627\u0644\u062C\u062F\u0648\u0644",
+      "linkAddress": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0631\u0627\u0628\u0637",
+      "addLink": "\u0625\u0636\u0627\u0641\u0629 \u0631\u0627\u0628\u0637",
+      "imageAddress": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0635\u0648\u0631\u0629",
+      "imageAlt": "\u0627\u0644\u0648\u0635\u0641",
+      "addImage": "\u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631\u0629",
+      "swatches": "\u0623\u0644\u0648\u0627\u0646 \u0645\u0642\u062A\u0631\u062D\u0629",
+      "customColor": "\u0644\u0648\u0646 \u0645\u062E\u0635\u0635",
+      "hex": "\u0642\u064A\u0645\u0629 \u0633\u062F\u0627\u0633\u064A\u0629 \u0639\u0634\u0631\u064A\u0629",
+      "apply": "\u062A\u0637\u0628\u064A\u0642",
+      "remove": "\u0625\u0632\u0627\u0644\u0629",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "mentions": "\u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A",
+      "groupMarks": "\u0627\u0644\u0646\u0635",
+      "groupColor": "\u0627\u0644\u0644\u0648\u0646",
+      "groupAlign": "\u0627\u0644\u0645\u062D\u0627\u0630\u0627\u0629",
+      "groupLists": "\u0627\u0644\u0642\u0648\u0627\u0626\u0645",
+      "groupInsert": "\u0625\u062F\u0631\u0627\u062C",
+      "groupHistory": "\u0627\u0644\u0633\u062C\u0644",
+      "leave": "\u0627\u0636\u063A\u0637 Tab \u0623\u0648 Shift+Tab \u0644\u0644\u062E\u0631\u0648\u062C \u0645\u0646 \u0627\u0644\u0645\u062D\u0631\u0651\u0631",
+      "hint": "Escape \u062B\u0645 Tab \u0644\u0644\u062E\u0631\u0648\u062C \u0645\u0646 \u0627\u0644\u0645\u062D\u0631\u0651\u0631",
+      "heading": "\u0639\u0646\u0648\u0627\u0646 {n}",
       "tip": "{name} ({keys})"
     },
     "roleLabel": {
-      "owner": "المالك",
-      "editor": "محرّر",
-      "viewer": "مشاهد"
+      "owner": "\u0627\u0644\u0645\u0627\u0644\u0643",
+      "editor": "\u0645\u062D\u0631\u0651\u0631",
+      "viewer": "\u0645\u0634\u0627\u0647\u062F"
     },
     "searchField": {
-      "suggestions": "اقتراحات",
-      "recent": "عمليات البحث الأخيرة",
-      "clearRecent": "مسح عمليات البحث الأخيرة",
-      "clear": "مسح البحث",
-      "results": "{n} اقتراحات",
-      "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
-      "remove": "إزالة {query}",
-      "placeholder": "بحث",
-      "label": "بحث",
-      "searching": "جارٍ البحث"
+      "suggestions": "\u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A",
+      "recent": "\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u0623\u062E\u064A\u0631\u0629",
+      "clearRecent": "\u0645\u0633\u062D \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u0623\u062E\u064A\u0631\u0629",
+      "clear": "\u0645\u0633\u062D \u0627\u0644\u0628\u062D\u062B",
+      "results": "{n} \u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A",
+      "removed": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 {query} \u0645\u0646 \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u0623\u062E\u064A\u0631\u0629",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {query}",
+      "placeholder": "\u0628\u062D\u062B",
+      "label": "\u0628\u062D\u062B",
+      "searching": "\u062C\u0627\u0631\u064D \u0627\u0644\u0628\u062D\u062B"
     },
     "sheet": {
-      "expand": "توسيع اللوحة",
-      "shrink": "تصغير اللوحة",
-      "doneLabel": "تم",
-      "cancelLabel": "إلغاء",
-      "closeLabel": "إغلاق",
-      "done": "تم",
-      "cancel": "إلغاء",
-      "close": "إغلاق"
+      "expand": "\u062A\u0648\u0633\u064A\u0639 \u0627\u0644\u0644\u0648\u062D\u0629",
+      "shrink": "\u062A\u0635\u063A\u064A\u0631 \u0627\u0644\u0644\u0648\u062D\u0629",
+      "doneLabel": "\u062A\u0645",
+      "cancelLabel": "\u0625\u0644\u063A\u0627\u0621",
+      "closeLabel": "\u0625\u063A\u0644\u0627\u0642",
+      "done": "\u062A\u0645",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "slider": {
-      "minimum": "الحد الأدنى",
-      "maximum": "الحد الأقصى"
+      "minimum": "\u0627\u0644\u062D\u062F \u0627\u0644\u0623\u062F\u0646\u0649",
+      "maximum": "\u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649"
     },
     "splitButton": {
-      "more": "مزيد من خيارات {label}"
+      "more": "\u0645\u0632\u064A\u062F \u0645\u0646 \u062E\u064A\u0627\u0631\u0627\u062A {label}"
     },
     "tabs": {
-      "more": "المزيد",
-      "moreLabel": "مزيد من علامات التبويب"
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F",
+      "moreLabel": "\u0645\u0632\u064A\u062F \u0645\u0646 \u0639\u0644\u0627\u0645\u0627\u062A \u0627\u0644\u062A\u0628\u0648\u064A\u0628"
     },
     "teachingBubble": {
-      "close": "إغلاق",
-      "step": "{current} من {total}"
+      "close": "\u0625\u063A\u0644\u0627\u0642",
+      "step": "{current} \u0645\u0646 {total}"
     },
     "text": {
-      "more": "عرض المزيد",
-      "less": "عرض أقل"
+      "more": "\u0639\u0631\u0636 \u0627\u0644\u0645\u0632\u064A\u062F",
+      "less": "\u0639\u0631\u0636 \u0623\u0642\u0644"
     },
     "timePicker": {
-      "hour": "الساعة",
-      "minute": "الدقيقة",
-      "period": "ص أو م",
-      "am": "ص",
-      "pm": "م",
-      "times": "الأوقات",
+      "hour": "\u0627\u0644\u0633\u0627\u0639\u0629",
+      "minute": "\u0627\u0644\u062F\u0642\u064A\u0642\u0629",
+      "period": "\u0635 \u0623\u0648 \u0645",
+      "am": "\u0635",
+      "pm": "\u0645",
+      "times": "\u0627\u0644\u0623\u0648\u0642\u0627\u062A",
       "empty": "--"
     },
     "timeZoneSelect": {
-      "placeholder": "اختر منطقة زمنية",
-      "empty": "لا توجد نتائج مطابقة",
-      "utc": "التوقيت العالمي المنسق",
-      "other": "أخرى",
-      "regions.Africa": "أفريقيا",
-      "regions.America": "الأمريكتان",
-      "regions.Antarctica": "القارة القطبية الجنوبية",
-      "regions.Arctic": "القطب الشمالي",
-      "regions.Asia": "آسيا",
-      "regions.Atlantic": "المحيط الأطلسي",
-      "regions.Australia": "أستراليا",
-      "regions.Europe": "أوروبا",
-      "regions.Indian": "المحيط الهندي",
-      "regions.Pacific": "المحيط الهادئ",
+      "placeholder": "\u0627\u062E\u062A\u0631 \u0645\u0646\u0637\u0642\u0629 \u0632\u0645\u0646\u064A\u0629",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629",
+      "utc": "\u0627\u0644\u062A\u0648\u0642\u064A\u062A \u0627\u0644\u0639\u0627\u0644\u0645\u064A \u0627\u0644\u0645\u0646\u0633\u0642",
+      "other": "\u0623\u062E\u0631\u0649",
+      "regions.Africa": "\u0623\u0641\u0631\u064A\u0642\u064A\u0627",
+      "regions.America": "\u0627\u0644\u0623\u0645\u0631\u064A\u0643\u062A\u0627\u0646",
+      "regions.Antarctica": "\u0627\u0644\u0642\u0627\u0631\u0629 \u0627\u0644\u0642\u0637\u0628\u064A\u0629 \u0627\u0644\u062C\u0646\u0648\u0628\u064A\u0629",
+      "regions.Arctic": "\u0627\u0644\u0642\u0637\u0628 \u0627\u0644\u0634\u0645\u0627\u0644\u064A",
+      "regions.Asia": "\u0622\u0633\u064A\u0627",
+      "regions.Atlantic": "\u0627\u0644\u0645\u062D\u064A\u0637 \u0627\u0644\u0623\u0637\u0644\u0633\u064A",
+      "regions.Australia": "\u0623\u0633\u062A\u0631\u0627\u0644\u064A\u0627",
+      "regions.Europe": "\u0623\u0648\u0631\u0648\u0628\u0627",
+      "regions.Indian": "\u0627\u0644\u0645\u062D\u064A\u0637 \u0627\u0644\u0647\u0646\u062F\u064A",
+      "regions.Pacific": "\u0627\u0644\u0645\u062D\u064A\u0637 \u0627\u0644\u0647\u0627\u062F\u0626",
       "regions": {
-        "Africa": "أفريقيا",
-        "America": "الأمريكتان",
-        "Antarctica": "القارة القطبية الجنوبية",
-        "Arctic": "القطب الشمالي",
-        "Asia": "آسيا",
-        "Atlantic": "المحيط الأطلسي",
-        "Australia": "أستراليا",
-        "Europe": "أوروبا",
-        "Indian": "المحيط الهندي",
-        "Pacific": "المحيط الهادئ"
+        "Africa": "\u0623\u0641\u0631\u064A\u0642\u064A\u0627",
+        "America": "\u0627\u0644\u0623\u0645\u0631\u064A\u0643\u062A\u0627\u0646",
+        "Antarctica": "\u0627\u0644\u0642\u0627\u0631\u0629 \u0627\u0644\u0642\u0637\u0628\u064A\u0629 \u0627\u0644\u062C\u0646\u0648\u0628\u064A\u0629",
+        "Arctic": "\u0627\u0644\u0642\u0637\u0628 \u0627\u0644\u0634\u0645\u0627\u0644\u064A",
+        "Asia": "\u0622\u0633\u064A\u0627",
+        "Atlantic": "\u0627\u0644\u0645\u062D\u064A\u0637 \u0627\u0644\u0623\u0637\u0644\u0633\u064A",
+        "Australia": "\u0623\u0633\u062A\u0631\u0627\u0644\u064A\u0627",
+        "Europe": "\u0623\u0648\u0631\u0648\u0628\u0627",
+        "Indian": "\u0627\u0644\u0645\u062D\u064A\u0637 \u0627\u0644\u0647\u0646\u062F\u064A",
+        "Pacific": "\u0627\u0644\u0645\u062D\u064A\u0637 \u0627\u0644\u0647\u0627\u062F\u0626"
       },
       "results": {
-        "zero": "لا توجد مناطق زمنية",
-        "one": "منطقة زمنية واحدة",
-        "two": "منطقتان زمنيتان",
-        "few": "{n} مناطق زمنية",
-        "many": "{n} منطقةً زمنية",
-        "other": "{n} منطقة زمنية"
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0646\u0627\u0637\u0642 \u0632\u0645\u0646\u064A\u0629",
+        "one": "\u0645\u0646\u0637\u0642\u0629 \u0632\u0645\u0646\u064A\u0629 \u0648\u0627\u062D\u062F\u0629",
+        "two": "\u0645\u0646\u0637\u0642\u062A\u0627\u0646 \u0632\u0645\u0646\u064A\u062A\u0627\u0646",
+        "few": "{n} \u0645\u0646\u0627\u0637\u0642 \u0632\u0645\u0646\u064A\u0629",
+        "many": "{n} \u0645\u0646\u0637\u0642\u0629\u064B \u0632\u0645\u0646\u064A\u0629",
+        "other": "{n} \u0645\u0646\u0637\u0642\u0629 \u0632\u0645\u0646\u064A\u0629"
       }
     },
     "transferList": {
-      "source": "المتاح",
-      "target": "المختار",
-      "add": "إضافة",
-      "addAll": "إضافة الكل",
-      "remove": "إزالة",
-      "removeAll": "إزالة الكل",
-      "up": "نقل لأعلى",
-      "down": "نقل لأسفل",
-      "search": "بحث في {title}",
-      "selectAll": "تحديد كل عناصر {title}",
-      "count": "تم تحديد {checked} من {total}",
-      "moved": "تم نقل {n} إلى {title}",
-      "empty": "لا توجد عناصر",
-      "noMatch": "لا توجد نتائج مطابقة",
-      "moves": "نقل العناصر"
+      "source": "\u0627\u0644\u0645\u062A\u0627\u062D",
+      "target": "\u0627\u0644\u0645\u062E\u062A\u0627\u0631",
+      "add": "\u0625\u0636\u0627\u0641\u0629",
+      "addAll": "\u0625\u0636\u0627\u0641\u0629 \u0627\u0644\u0643\u0644",
+      "remove": "\u0625\u0632\u0627\u0644\u0629",
+      "removeAll": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0643\u0644",
+      "up": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "down": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644",
+      "search": "\u0628\u062D\u062B \u0641\u064A {title}",
+      "selectAll": "\u062A\u062D\u062F\u064A\u062F \u0643\u0644 \u0639\u0646\u0627\u0635\u0631 {title}",
+      "count": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {checked} \u0645\u0646 {total}",
+      "moved": "\u062A\u0645 \u0646\u0642\u0644 {n} \u0625\u0644\u0649 {title}",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
+      "noMatch": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629",
+      "moves": "\u0646\u0642\u0644 \u0627\u0644\u0639\u0646\u0627\u0635\u0631"
     },
     "treeSelect": {
-      "placeholder": "اختيار",
-      "search": "بحث",
-      "choose": "اختر عنصرًا",
-      "more": "{list} و{n} أخرى",
-      "empty": "لا توجد نتائج مطابقة"
+      "placeholder": "\u0627\u062E\u062A\u064A\u0627\u0631",
+      "search": "\u0628\u062D\u062B",
+      "choose": "\u0627\u062E\u062A\u0631 \u0639\u0646\u0635\u0631\u064B\u0627",
+      "more": "{list} \u0648{n} \u0623\u062E\u0631\u0649",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C \u0645\u0637\u0627\u0628\u0642\u0629"
     },
     "versionLabel": {
-      "version": "الإصدار",
-      "prefix": "إ",
-      "latest": "الأحدث",
-      "draft": "مسودة"
+      "version": "\u0627\u0644\u0625\u0635\u062F\u0627\u0631",
+      "prefix": "\u0625",
+      "latest": "\u0627\u0644\u0623\u062D\u062F\u062B",
+      "draft": "\u0645\u0633\u0648\u062F\u0629"
     },
     "virtualList": {
-      "loading": "جارٍ التحميل…",
-      "empty": "لا توجد عناصر",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
       "count": {
-        "zero": "لا توجد عناصر",
-        "one": "عنصر واحد",
-        "two": "عنصران",
-        "few": "{n} عناصر",
-        "many": "{n} عنصرًا",
-        "other": "{n} عنصر"
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
+        "one": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "two": "\u0639\u0646\u0635\u0631\u0627\u0646",
+        "few": "{n} \u0639\u0646\u0627\u0635\u0631",
+        "many": "{n} \u0639\u0646\u0635\u0631\u064B\u0627",
+        "other": "{n} \u0639\u0646\u0635\u0631"
       },
       "group": {
-        "zero": "لا توجد عناصر",
-        "one": "عنصر واحد",
-        "two": "عنصران",
-        "few": "{n} عناصر",
-        "many": "{n} عنصرًا",
-        "other": "{n} عنصر"
+        "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
+        "one": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "two": "\u0639\u0646\u0635\u0631\u0627\u0646",
+        "few": "{n} \u0639\u0646\u0627\u0635\u0631",
+        "many": "{n} \u0639\u0646\u0635\u0631\u064B\u0627",
+        "other": "{n} \u0639\u0646\u0635\u0631"
       },
-      "unreadRow": "{label}، غير مقروء"
+      "unreadRow": "{label}\u060C \u063A\u064A\u0631 \u0645\u0642\u0631\u0648\u0621"
     },
     "aiSearch": {
-      "label": "بحث بالذكاء الاصطناعي",
-      "query": "عبارة البحث",
-      "search": "بحث",
-      "semantic": "استخدام البحث الدلالي",
-      "results": "نتائج البحث",
-      "empty": "لا توجد نتائج.",
-      "failed": "فشل البحث. حاول مرة أخرى.",
-      "pending": "جارٍ البحث"
+      "label": "\u0628\u062D\u062B \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A",
+      "query": "\u0639\u0628\u0627\u0631\u0629 \u0627\u0644\u0628\u062D\u062B",
+      "search": "\u0628\u062D\u062B",
+      "semantic": "\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u062F\u0644\u0627\u0644\u064A",
+      "results": "\u0646\u062A\u0627\u0626\u062C \u0627\u0644\u0628\u062D\u062B",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0646\u062A\u0627\u0626\u062C.",
+      "failed": "\u0641\u0634\u0644 \u0627\u0644\u0628\u062D\u062B. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "pending": "\u062C\u0627\u0631\u064D \u0627\u0644\u0628\u062D\u062B"
     },
     "appShell": {
-      "skip": "تخطّي إلى المحتوى الرئيسي"
+      "skip": "\u062A\u062E\u0637\u0651\u064A \u0625\u0644\u0649 \u0627\u0644\u0645\u062D\u062A\u0648\u0649 \u0627\u0644\u0631\u0626\u064A\u0633\u064A"
     },
     "assignControl": {
-      "assign": "إسناد",
-      "assignToMe": "إسناد إليّ",
-      "reassign": "إعادة الإسناد",
-      "unassign": "إلغاء الإسناد",
-      "unassigned": "غير مُسنَد",
-      "cancel": "إلغاء",
-      "assigned": "مُسنَد إلى {name}",
-      "cleared": "تمت إزالة {label}",
-      "delegate": "تفويض",
-      "change": "التغيير",
-      "end": "إنهاء التفويض",
-      "delegateTitle": "تفويض {label}",
-      "to": "التفويض إلى",
-      "dates": "التواريخ",
-      "note": "ملاحظة",
-      "noteHint": "تظهر للشخص الذي تفوّضه.",
-      "needPerson": "اختر شخصًا.",
-      "needDates": "اختر اليوم الأول والأخير.",
-      "delegatedTo": "تم التفويض إلى {name}",
-      "notDelegated": "غير مفوَّض",
-      "ended": "انتهى التفويض",
-      "label": "المُسنَد إليه"
+      "assign": "\u0625\u0633\u0646\u0627\u062F",
+      "assignToMe": "\u0625\u0633\u0646\u0627\u062F \u0625\u0644\u064A\u0651",
+      "reassign": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0625\u0633\u0646\u0627\u062F",
+      "unassign": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0625\u0633\u0646\u0627\u062F",
+      "unassigned": "\u063A\u064A\u0631 \u0645\u064F\u0633\u0646\u064E\u062F",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "assigned": "\u0645\u064F\u0633\u0646\u064E\u062F \u0625\u0644\u0649 {name}",
+      "cleared": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 {label}",
+      "delegate": "\u062A\u0641\u0648\u064A\u0636",
+      "change": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631",
+      "end": "\u0625\u0646\u0647\u0627\u0621 \u0627\u0644\u062A\u0641\u0648\u064A\u0636",
+      "delegateTitle": "\u062A\u0641\u0648\u064A\u0636 {label}",
+      "to": "\u0627\u0644\u062A\u0641\u0648\u064A\u0636 \u0625\u0644\u0649",
+      "dates": "\u0627\u0644\u062A\u0648\u0627\u0631\u064A\u062E",
+      "note": "\u0645\u0644\u0627\u062D\u0638\u0629",
+      "noteHint": "\u062A\u0638\u0647\u0631 \u0644\u0644\u0634\u062E\u0635 \u0627\u0644\u0630\u064A \u062A\u0641\u0648\u0651\u0636\u0647.",
+      "needPerson": "\u0627\u062E\u062A\u0631 \u0634\u062E\u0635\u064B\u0627.",
+      "needDates": "\u0627\u062E\u062A\u0631 \u0627\u0644\u064A\u0648\u0645 \u0627\u0644\u0623\u0648\u0644 \u0648\u0627\u0644\u0623\u062E\u064A\u0631.",
+      "delegatedTo": "\u062A\u0645 \u0627\u0644\u062A\u0641\u0648\u064A\u0636 \u0625\u0644\u0649 {name}",
+      "notDelegated": "\u063A\u064A\u0631 \u0645\u0641\u0648\u064E\u0651\u0636",
+      "ended": "\u0627\u0646\u062A\u0647\u0649 \u0627\u0644\u062A\u0641\u0648\u064A\u0636",
+      "label": "\u0627\u0644\u0645\u064F\u0633\u0646\u064E\u062F \u0625\u0644\u064A\u0647"
     },
     "attachmentPicker": {
-      "label": "المرفقات",
-      "remove": "إزالة {name}",
-      "invalid": "اختر ملفًا مدعومًا ضمن الحد المسموح للحجم.",
-      "limit": "عدد المرفقات كبير جدًا.",
-      "empty": "لا توجد مرفقات."
+      "label": "\u0627\u0644\u0645\u0631\u0641\u0642\u0627\u062A",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {name}",
+      "invalid": "\u0627\u062E\u062A\u0631 \u0645\u0644\u0641\u064B\u0627 \u0645\u062F\u0639\u0648\u0645\u064B\u0627 \u0636\u0645\u0646 \u0627\u0644\u062D\u062F \u0627\u0644\u0645\u0633\u0645\u0648\u062D \u0644\u0644\u062D\u062C\u0645.",
+      "limit": "\u0639\u062F\u062F \u0627\u0644\u0645\u0631\u0641\u0642\u0627\u062A \u0643\u0628\u064A\u0631 \u062C\u062F\u064B\u0627.",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0631\u0641\u0642\u0627\u062A."
     },
     "autosave": {
-      "saving": "جارٍ الحفظ",
-      "saved": "تم الحفظ",
-      "offline": "غير متصل",
-      "failed": "فشل الحفظ",
-      "retry": "إعادة المحاولة",
-      "unsaved": "لم يتم حفظ تغييراتك."
+      "saving": "\u062C\u0627\u0631\u064D \u0627\u0644\u062D\u0641\u0638",
+      "saved": "\u062A\u0645 \u0627\u0644\u062D\u0641\u0638",
+      "offline": "\u063A\u064A\u0631 \u0645\u062A\u0635\u0644",
+      "failed": "\u0641\u0634\u0644 \u0627\u0644\u062D\u0641\u0638",
+      "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629",
+      "unsaved": "\u0644\u0645 \u064A\u062A\u0645 \u062D\u0641\u0638 \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643."
     },
     "avatarUpload": {
-      "change": "تغيير الصورة",
-      "add": "إضافة صورة",
-      "remove": "إزالة الصورة",
-      "tooLarge": "الصورة أكبر من {max}",
-      "notImage": "اختر ملف صورة",
-      "picture": "صورة {name}"
+      "change": "\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0635\u0648\u0631\u0629",
+      "add": "\u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631\u0629",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0635\u0648\u0631\u0629",
+      "tooLarge": "\u0627\u0644\u0635\u0648\u0631\u0629 \u0623\u0643\u0628\u0631 \u0645\u0646 {max}",
+      "notImage": "\u0627\u062E\u062A\u0631 \u0645\u0644\u0641 \u0635\u0648\u0631\u0629",
+      "picture": "\u0635\u0648\u0631\u0629 {name}"
     },
     "bottomSheetNav": {
-      "title": "التنقل",
-      "close": "إغلاق"
+      "title": "\u0627\u0644\u062A\u0646\u0642\u0644",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "bulkActions": {
-      "selected": "تم تحديد {n}",
-      "selectAll": "تحديد الكل",
-      "clear": "مسح",
-      "allSelected": "كل {noun} محدد",
-      "nothingToClear": "لا شيء لمسحه: حدّد {plural} أولًا",
-      "why": "حدّد {plural} لـ {action}",
-      "single": "حدّد {noun} واحدًا لـ {action}",
-      "label": "إجراءات التحديد",
-      "more": "المزيد من الإجراءات",
-      "noun": "عنصر",
-      "plural": "عناصر"
+      "selected": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {n}",
+      "selectAll": "\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0643\u0644",
+      "clear": "\u0645\u0633\u062D",
+      "allSelected": "\u0643\u0644 {noun} \u0645\u062D\u062F\u062F",
+      "nothingToClear": "\u0644\u0627 \u0634\u064A\u0621 \u0644\u0645\u0633\u062D\u0647: \u062D\u062F\u0651\u062F {plural} \u0623\u0648\u0644\u064B\u0627",
+      "why": "\u062D\u062F\u0651\u062F {plural} \u0644\u0640 {action}",
+      "single": "\u062D\u062F\u0651\u062F {noun} \u0648\u0627\u062D\u062F\u064B\u0627 \u0644\u0640 {action}",
+      "label": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u062D\u062F\u064A\u062F",
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A",
+      "noun": "\u0639\u0646\u0635\u0631",
+      "plural": "\u0639\u0646\u0627\u0635\u0631"
     },
     "columnsMenu": {
-      "label": "الأعمدة",
-      "manage": "إدارة الأعمدة",
-      "first": "العمود الأول",
-      "moveMenu": "نقل {name}",
-      "moveUp": "نقل {name} لأعلى",
-      "moveDown": "نقل {name} لأسفل",
-      "up": "نقل لأعلى",
-      "down": "نقل لأسفل",
-      "find": "البحث عن عمود",
-      "showAll": "إظهار الكل",
-      "hideAll": "إخفاء الكل",
-      "apply": "تطبيق",
-      "cancel": "إلغاء",
-      "shown": "تم إظهار {name}",
-      "hidden": "تم إخفاء {name}",
-      "isFirst": "{name} هو العمود الأول",
-      "moved": "{name}، الموضع {position} من {total}",
-      "row": "{name}{first}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
-      "firstMark": "، العمود الأول",
-      "none": "لا يوجد عمود مطابق"
+      "label": "\u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "manage": "\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "first": "\u0627\u0644\u0639\u0645\u0648\u062F \u0627\u0644\u0623\u0648\u0644",
+      "moveMenu": "\u0646\u0642\u0644 {name}",
+      "moveUp": "\u0646\u0642\u0644 {name} \u0644\u0623\u0639\u0644\u0649",
+      "moveDown": "\u0646\u0642\u0644 {name} \u0644\u0623\u0633\u0641\u0644",
+      "up": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "down": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644",
+      "find": "\u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0639\u0645\u0648\u062F",
+      "showAll": "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0643\u0644",
+      "hideAll": "\u0625\u062E\u0641\u0627\u0621 \u0627\u0644\u0643\u0644",
+      "apply": "\u062A\u0637\u0628\u064A\u0642",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "shown": "\u062A\u0645 \u0625\u0638\u0647\u0627\u0631 {name}",
+      "hidden": "\u062A\u0645 \u0625\u062E\u0641\u0627\u0621 {name}",
+      "isFirst": "{name} \u0647\u0648 \u0627\u0644\u0639\u0645\u0648\u062F \u0627\u0644\u0623\u0648\u0644",
+      "moved": "{name}\u060C \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "row": "{name}{first}. \u0627\u0644\u0645\u0641\u062A\u0627\u062D\u0627\u0646 Alt + \u0627\u0644\u0633\u0647\u0645 \u0644\u0623\u0639\u0644\u0649 \u0623\u0648 \u0644\u0623\u0633\u0641\u0644 \u064A\u0646\u0642\u0644\u0627\u0646\u0647",
+      "firstMark": "\u060C \u0627\u0644\u0639\u0645\u0648\u062F \u0627\u0644\u0623\u0648\u0644",
+      "none": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0639\u0645\u0648\u062F \u0645\u0637\u0627\u0628\u0642"
     },
     "commandBar": {
-      "more": "المزيد من الإجراءات",
-      "actions": "إجراءات {label}",
-      "find": "بحث وعرض",
-      "selected": "تم تحديد {n}",
-      "hidden": " (مخفي {n} بسبب التصفيات)",
-      "clear": "مسح التحديد",
-      "clearName": "تم تحديد {n}، مسح التحديد",
-      "swapped": "تم تحديد {n}. إجراءات التحديد متاحة.",
-      "cleared": "تم مسح التحديد.",
-      "why": "حدّد {plural} لـ {action}",
-      "single": "حدّد {noun} واحدًا لـ {action}",
-      "preset": "أي",
-      "moreLabel": "المزيد من الإجراءات",
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A",
+      "actions": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A {label}",
+      "find": "\u0628\u062D\u062B \u0648\u0639\u0631\u0636",
+      "selected": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {n}",
+      "hidden": " (\u0645\u062E\u0641\u064A {n} \u0628\u0633\u0628\u0628 \u0627\u0644\u062A\u0635\u0641\u064A\u0627\u062A)",
+      "clear": "\u0645\u0633\u062D \u0627\u0644\u062A\u062D\u062F\u064A\u062F",
+      "clearName": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {n}\u060C \u0645\u0633\u062D \u0627\u0644\u062A\u062D\u062F\u064A\u062F",
+      "swapped": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {n}. \u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u062D\u062F\u064A\u062F \u0645\u062A\u0627\u062D\u0629.",
+      "cleared": "\u062A\u0645 \u0645\u0633\u062D \u0627\u0644\u062A\u062D\u062F\u064A\u062F.",
+      "why": "\u062D\u062F\u0651\u062F {plural} \u0644\u0640 {action}",
+      "single": "\u062D\u062F\u0651\u062F {noun} \u0648\u0627\u062D\u062F\u064B\u0627 \u0644\u0640 {action}",
+      "preset": "\u0623\u064A",
+      "moreLabel": "\u0627\u0644\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A",
       "from": "",
       "to": "",
       "reorder": {
-        "moved": "تم نقل {name} إلى الموضع {position} من {total}",
-        "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
-        "reorder": "إعادة ترتيب {name}",
-        "moveUp": "نقل لأعلى",
-        "moveDown": "نقل لأسفل"
+        "moved": "\u062A\u0645 \u0646\u0642\u0644 {name} \u0625\u0644\u0649 \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+        "row": "{name}\u060C {position} \u0645\u0646 {total}. \u0627\u0644\u0645\u0641\u062A\u0627\u062D\u0627\u0646 Alt + \u0627\u0644\u0633\u0647\u0645 \u0644\u0623\u0639\u0644\u0649 \u0623\u0648 \u0644\u0623\u0633\u0641\u0644 \u064A\u0646\u0642\u0644\u0627\u0646\u0647",
+        "reorder": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0631\u062A\u064A\u0628 {name}",
+        "moveUp": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+        "moveDown": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644"
       }
     },
     "commandPalette": {
-      "title": "الأوامر",
-      "close": "إغلاق"
+      "title": "\u0627\u0644\u0623\u0648\u0627\u0645\u0631",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "comparisonView": {
-      "label": "المقارنة",
-      "modes": "العرض",
-      "columns": "جنبًا إلى جنب",
-      "matrix": "جدول",
-      "slider": "شريط التمرير",
-      "onlyDifferences": "عرض الاختلافات فقط",
-      "changed": "تم تغييره",
-      "attribute": "السمة",
-      "position": "الموضع",
-      "none": "لا توجد اختلافات",
-      "one": "اختلاف واحد",
-      "many": "{n} اختلافات",
-      "empty": "—"
+      "label": "\u0627\u0644\u0645\u0642\u0627\u0631\u0646\u0629",
+      "modes": "\u0627\u0644\u0639\u0631\u0636",
+      "columns": "\u062C\u0646\u0628\u064B\u0627 \u0625\u0644\u0649 \u062C\u0646\u0628",
+      "matrix": "\u062C\u062F\u0648\u0644",
+      "slider": "\u0634\u0631\u064A\u0637 \u0627\u0644\u062A\u0645\u0631\u064A\u0631",
+      "onlyDifferences": "\u0639\u0631\u0636 \u0627\u0644\u0627\u062E\u062A\u0644\u0627\u0641\u0627\u062A \u0641\u0642\u0637",
+      "changed": "\u062A\u0645 \u062A\u063A\u064A\u064A\u0631\u0647",
+      "attribute": "\u0627\u0644\u0633\u0645\u0629",
+      "position": "\u0627\u0644\u0645\u0648\u0636\u0639",
+      "none": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0627\u062E\u062A\u0644\u0627\u0641\u0627\u062A",
+      "one": "\u0627\u062E\u062A\u0644\u0627\u0641 \u0648\u0627\u062D\u062F",
+      "many": "{n} \u0627\u062E\u062A\u0644\u0627\u0641\u0627\u062A",
+      "empty": "\u2014"
     },
     "connectedAccounts": {
-      "label": "الحسابات المتصلة",
-      "connect": "اتصال",
-      "disconnect": "قطع الاتصال",
-      "reconnect": "إعادة الاتصال",
-      "cancel": "إلغاء",
-      "connected": "متصل",
-      "disconnected": "غير متصل",
-      "error": "خطأ في الاتصال",
-      "as": "بصفة {account}",
-      "since": "منذ {date}",
-      "connectTitle": "الاتصال بـ {service}؟",
-      "connectMessage": "ستسجّل الدخول إلى {service} للسماح بذلك. سيتمكن Plenix من:",
-      "continue": "المتابعة إلى {service}",
-      "disconnectTitle": "قطع الاتصال بـ {service}؟",
-      "disconnectMessage": "يمكنك الاتصال به مرة أخرى في أي وقت.",
-      "done": "تم الاتصال بـ {service}",
-      "undone": "تم قطع الاتصال بـ {service}"
+      "label": "\u0627\u0644\u062D\u0633\u0627\u0628\u0627\u062A \u0627\u0644\u0645\u062A\u0635\u0644\u0629",
+      "connect": "\u0627\u062A\u0635\u0627\u0644",
+      "disconnect": "\u0642\u0637\u0639 \u0627\u0644\u0627\u062A\u0635\u0627\u0644",
+      "reconnect": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0627\u062A\u0635\u0627\u0644",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "connected": "\u0645\u062A\u0635\u0644",
+      "disconnected": "\u063A\u064A\u0631 \u0645\u062A\u0635\u0644",
+      "error": "\u062E\u0637\u0623 \u0641\u064A \u0627\u0644\u0627\u062A\u0635\u0627\u0644",
+      "as": "\u0628\u0635\u0641\u0629 {account}",
+      "since": "\u0645\u0646\u0630 {date}",
+      "connectTitle": "\u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0628\u0640 {service}\u061F",
+      "connectMessage": "\u0633\u062A\u0633\u062C\u0651\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0625\u0644\u0649 {service} \u0644\u0644\u0633\u0645\u0627\u062D \u0628\u0630\u0644\u0643. \u0633\u064A\u062A\u0645\u0643\u0646 Plenix \u0645\u0646:",
+      "continue": "\u0627\u0644\u0645\u062A\u0627\u0628\u0639\u0629 \u0625\u0644\u0649 {service}",
+      "disconnectTitle": "\u0642\u0637\u0639 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0628\u0640 {service}\u061F",
+      "disconnectMessage": "\u064A\u0645\u0643\u0646\u0643 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0628\u0647 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649 \u0641\u064A \u0623\u064A \u0648\u0642\u062A.",
+      "done": "\u062A\u0645 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0628\u0640 {service}",
+      "undone": "\u062A\u0645 \u0642\u0637\u0639 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0628\u0640 {service}"
     },
     "deleteFlow": {
-      "title": "حذف {name}؟",
-      "titleMany": "حذف {count} {plural}؟",
-      "delete": "حذف",
-      "cancel": "إلغاء",
-      "permanent": "لا يمكن التراجع عن هذا.",
-      "more": "و{count} أخرى",
-      "typeLabel": "اكتب {phrase} للتأكيد",
-      "typeError": "اكتب {phrase} تمامًا كما هو معروض.",
-      "phraseMany": "حذف {count} {plural}",
-      "deleted": "تم حذف {what}",
-      "trashed": "تم نقل {what} إلى سلة المحذوفات",
-      "undo": "تراجع",
-      "retention": "استعد {them} من سلة المحذوفات خلال {days} يومًا.",
-      "it": "ه",
-      "them": "هم",
-      "names": "محذوف",
-      "noun": "عنصر",
-      "plural": "عناصر",
+      "title": "\u062D\u0630\u0641 {name}\u061F",
+      "titleMany": "\u062D\u0630\u0641 {count} {plural}\u061F",
+      "delete": "\u062D\u0630\u0641",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "permanent": "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0644\u062A\u0631\u0627\u062C\u0639 \u0639\u0646 \u0647\u0630\u0627.",
+      "more": "\u0648{count} \u0623\u062E\u0631\u0649",
+      "typeLabel": "\u0627\u0643\u062A\u0628 {phrase} \u0644\u0644\u062A\u0623\u0643\u064A\u062F",
+      "typeError": "\u0627\u0643\u062A\u0628 {phrase} \u062A\u0645\u0627\u0645\u064B\u0627 \u0643\u0645\u0627 \u0647\u0648 \u0645\u0639\u0631\u0648\u0636.",
+      "phraseMany": "\u062D\u0630\u0641 {count} {plural}",
+      "deleted": "\u062A\u0645 \u062D\u0630\u0641 {what}",
+      "trashed": "\u062A\u0645 \u0646\u0642\u0644 {what} \u0625\u0644\u0649 \u0633\u0644\u0629 \u0627\u0644\u0645\u062D\u0630\u0648\u0641\u0627\u062A",
+      "undo": "\u062A\u0631\u0627\u062C\u0639",
+      "retention": "\u0627\u0633\u062A\u0639\u062F {them} \u0645\u0646 \u0633\u0644\u0629 \u0627\u0644\u0645\u062D\u0630\u0648\u0641\u0627\u062A \u062E\u0644\u0627\u0644 {days} \u064A\u0648\u0645\u064B\u0627.",
+      "it": "\u0647",
+      "them": "\u0647\u0645",
+      "names": "\u0645\u062D\u0630\u0648\u0641",
+      "noun": "\u0639\u0646\u0635\u0631",
+      "plural": "\u0639\u0646\u0627\u0635\u0631",
       "items": {
-        "zero": "لا عناصر",
-        "one": "عنصر واحد",
-        "two": "عنصران",
-        "few": "{n} عناصر",
-        "many": "{n} عنصرًا",
-        "other": "{n} عنصر"
+        "zero": "\u0644\u0627 \u0639\u0646\u0627\u0635\u0631",
+        "one": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "two": "\u0639\u0646\u0635\u0631\u0627\u0646",
+        "few": "{n} \u0639\u0646\u0627\u0635\u0631",
+        "many": "{n} \u0639\u0646\u0635\u0631\u064B\u0627",
+        "other": "{n} \u0639\u0646\u0635\u0631"
       },
       "titleItems": {
-        "zero": "حذف لا عناصر؟",
-        "one": "حذف عنصر واحد؟",
-        "two": "حذف عنصرين؟",
-        "few": "حذف {n} عناصر؟",
-        "many": "حذف {n} عنصرًا؟",
-        "other": "حذف {n} عنصر؟"
+        "zero": "\u062D\u0630\u0641 \u0644\u0627 \u0639\u0646\u0627\u0635\u0631\u061F",
+        "one": "\u062D\u0630\u0641 \u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F\u061F",
+        "two": "\u062D\u0630\u0641 \u0639\u0646\u0635\u0631\u064A\u0646\u061F",
+        "few": "\u062D\u0630\u0641 {n} \u0639\u0646\u0627\u0635\u0631\u061F",
+        "many": "\u062D\u0630\u0641 {n} \u0639\u0646\u0635\u0631\u064B\u0627\u061F",
+        "other": "\u062D\u0630\u0641 {n} \u0639\u0646\u0635\u0631\u061F"
       },
       "phraseItems": {
-        "zero": "حذف لا عناصر",
-        "one": "حذف عنصر واحد",
-        "two": "حذف عنصرين",
-        "few": "حذف {n} عناصر",
-        "many": "حذف {n} عنصرًا",
-        "other": "حذف {n} عنصر"
+        "zero": "\u062D\u0630\u0641 \u0644\u0627 \u0639\u0646\u0627\u0635\u0631",
+        "one": "\u062D\u0630\u0641 \u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "two": "\u062D\u0630\u0641 \u0639\u0646\u0635\u0631\u064A\u0646",
+        "few": "\u062D\u0630\u0641 {n} \u0639\u0646\u0627\u0635\u0631",
+        "many": "\u062D\u0630\u0641 {n} \u0639\u0646\u0635\u0631\u064B\u0627",
+        "other": "\u062D\u0630\u0641 {n} \u0639\u0646\u0635\u0631"
       }
     },
     "duplicateAction": {
-      "duplicate": "تكرار",
-      "copyOf": "نسخة من {name}",
+      "duplicate": "\u062A\u0643\u0631\u0627\u0631",
+      "copyOf": "\u0646\u0633\u062E\u0629 \u0645\u0646 {name}",
       "numbered": "{name} ({n})",
-      "title": "تكرار {noun}",
-      "name": "الاسم",
-      "from": "من {name}",
-      "also": "انسخ أيضًا",
-      "empty": "أدخل اسمًا.",
-      "taken": "يوجد {noun} باسم {name} بالفعل.",
-      "done": "تم التكرار باسم {name}",
-      "undo": "تراجع",
-      "cancel": "إلغاء",
-      "noun": "عنصر"
+      "title": "\u062A\u0643\u0631\u0627\u0631 {noun}",
+      "name": "\u0627\u0644\u0627\u0633\u0645",
+      "from": "\u0645\u0646 {name}",
+      "also": "\u0627\u0646\u0633\u062E \u0623\u064A\u0636\u064B\u0627",
+      "empty": "\u0623\u062F\u062E\u0644 \u0627\u0633\u0645\u064B\u0627.",
+      "taken": "\u064A\u0648\u062C\u062F {noun} \u0628\u0627\u0633\u0645 {name} \u0628\u0627\u0644\u0641\u0639\u0644.",
+      "done": "\u062A\u0645 \u0627\u0644\u062A\u0643\u0631\u0627\u0631 \u0628\u0627\u0633\u0645 {name}",
+      "undo": "\u062A\u0631\u0627\u062C\u0639",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "noun": "\u0639\u0646\u0635\u0631"
     },
     "fileBrowser": {
-      "label": "الملفات",
-      "root": "المكتبة",
-      "newFolder": "مجلد جديد",
-      "folderName": "اسم المجلد",
-      "create": "إنشاء",
-      "upload": "رفع",
-      "search": "البحث في هذا المجلد",
-      "folders": "المجلدات",
-      "path": "الموقع",
-      "count": "{n} عناصر",
-      "one": "عنصر واحد",
-      "empty": "هذا المجلد فارغ",
-      "emptyText": "ارفع ملفات أو أنشئ مجلدًا.",
-      "noMatch": "لا شيء يطابق «{q}»",
-      "download": "تنزيل",
-      "moveTo": "نقل إلى",
-      "delete": "حذف",
-      "noun": "عنصر",
-      "plural": "عناصر",
-      "drop": "أفلت الملفات لرفعها إلى {folder}",
-      "nameTaken": "يوجد ملف أو مجلد باسم «{name}» هنا بالفعل.",
-      "nameEmpty": "أعطِ المجلد اسمًا.",
-      "items": "{n} عناصر",
-      "item": "{n} عنصر"
+      "label": "\u0627\u0644\u0645\u0644\u0641\u0627\u062A",
+      "root": "\u0627\u0644\u0645\u0643\u062A\u0628\u0629",
+      "newFolder": "\u0645\u062C\u0644\u062F \u062C\u062F\u064A\u062F",
+      "folderName": "\u0627\u0633\u0645 \u0627\u0644\u0645\u062C\u0644\u062F",
+      "create": "\u0625\u0646\u0634\u0627\u0621",
+      "upload": "\u0631\u0641\u0639",
+      "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0647\u0630\u0627 \u0627\u0644\u0645\u062C\u0644\u062F",
+      "folders": "\u0627\u0644\u0645\u062C\u0644\u062F\u0627\u062A",
+      "path": "\u0627\u0644\u0645\u0648\u0642\u0639",
+      "count": "{n} \u0639\u0646\u0627\u0635\u0631",
+      "one": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+      "empty": "\u0647\u0630\u0627 \u0627\u0644\u0645\u062C\u0644\u062F \u0641\u0627\u0631\u063A",
+      "emptyText": "\u0627\u0631\u0641\u0639 \u0645\u0644\u0641\u0627\u062A \u0623\u0648 \u0623\u0646\u0634\u0626 \u0645\u062C\u0644\u062F\u064B\u0627.",
+      "noMatch": "\u0644\u0627 \u0634\u064A\u0621 \u064A\u0637\u0627\u0628\u0642 \xAB{q}\xBB",
+      "download": "\u062A\u0646\u0632\u064A\u0644",
+      "moveTo": "\u0646\u0642\u0644 \u0625\u0644\u0649",
+      "delete": "\u062D\u0630\u0641",
+      "noun": "\u0639\u0646\u0635\u0631",
+      "plural": "\u0639\u0646\u0627\u0635\u0631",
+      "drop": "\u0623\u0641\u0644\u062A \u0627\u0644\u0645\u0644\u0641\u0627\u062A \u0644\u0631\u0641\u0639\u0647\u0627 \u0625\u0644\u0649 {folder}",
+      "nameTaken": "\u064A\u0648\u062C\u062F \u0645\u0644\u0641 \u0623\u0648 \u0645\u062C\u0644\u062F \u0628\u0627\u0633\u0645 \xAB{name}\xBB \u0647\u0646\u0627 \u0628\u0627\u0644\u0641\u0639\u0644.",
+      "nameEmpty": "\u0623\u0639\u0637\u0650 \u0627\u0644\u0645\u062C\u0644\u062F \u0627\u0633\u0645\u064B\u0627.",
+      "items": "{n} \u0639\u0646\u0627\u0635\u0631",
+      "item": "{n} \u0639\u0646\u0635\u0631"
     },
     "fileList": {
-      "sort": "ترتيب",
-      "sortBy": "الترتيب حسب {field}",
-      "field": "الترتيب حسب",
-      "order": "الترتيب",
-      "asc": "تصاعدي",
-      "desc": "تنازلي",
-      "name": "الاسم",
-      "size": "الحجم",
-      "modified": "تاريخ التعديل",
-      "owner": "المالك",
-      "status": "الحالة",
-      "count": "{n} عناصر",
-      "one": "عنصر واحد",
-      "empty": "لا يوجد شيء هنا بعد",
-      "open": "فتح",
-      "download": "تنزيل",
-      "rename": "إعادة تسمية…",
-      "delete": "حذف",
-      "moveTo": "نقل إلى",
-      "file": "ملف",
-      "files": "ملفات",
-      "folder": "مجلد",
-      "folders": "مجلدات",
-      "items": "{n} عناصر",
-      "item": "{n} عنصر"
+      "sort": "\u062A\u0631\u062A\u064A\u0628",
+      "sortBy": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628 \u062D\u0633\u0628 {field}",
+      "field": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628 \u062D\u0633\u0628",
+      "order": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628",
+      "asc": "\u062A\u0635\u0627\u0639\u062F\u064A",
+      "desc": "\u062A\u0646\u0627\u0632\u0644\u064A",
+      "name": "\u0627\u0644\u0627\u0633\u0645",
+      "size": "\u0627\u0644\u062D\u062C\u0645",
+      "modified": "\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0639\u062F\u064A\u0644",
+      "owner": "\u0627\u0644\u0645\u0627\u0644\u0643",
+      "status": "\u0627\u0644\u062D\u0627\u0644\u0629",
+      "count": "{n} \u0639\u0646\u0627\u0635\u0631",
+      "one": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+      "empty": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0634\u064A\u0621 \u0647\u0646\u0627 \u0628\u0639\u062F",
+      "open": "\u0641\u062A\u062D",
+      "download": "\u062A\u0646\u0632\u064A\u0644",
+      "rename": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629\u2026",
+      "delete": "\u062D\u0630\u0641",
+      "moveTo": "\u0646\u0642\u0644 \u0625\u0644\u0649",
+      "file": "\u0645\u0644\u0641",
+      "files": "\u0645\u0644\u0641\u0627\u062A",
+      "folder": "\u0645\u062C\u0644\u062F",
+      "folders": "\u0645\u062C\u0644\u062F\u0627\u062A",
+      "items": "{n} \u0639\u0646\u0627\u0635\u0631",
+      "item": "{n} \u0639\u0646\u0635\u0631"
     },
     "filePicker": {
-      "title": "اختيار ملفات",
-      "all": "كل الملفات",
-      "folders": "المجلدات",
-      "search": "البحث في الملفات",
-      "empty": "لا توجد ملفات مطابقة.",
-      "pick": "اختيار",
-      "cancel": "إلغاء",
-      "failed": "تعذّر اختيار الملفات. حاول مرة أخرى."
+      "title": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0644\u0641\u0627\u062A",
+      "all": "\u0643\u0644 \u0627\u0644\u0645\u0644\u0641\u0627\u062A",
+      "folders": "\u0627\u0644\u0645\u062C\u0644\u062F\u0627\u062A",
+      "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0645\u0644\u0641\u0627\u062A",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0644\u0641\u0627\u062A \u0645\u0637\u0627\u0628\u0642\u0629.",
+      "pick": "\u0627\u062E\u062A\u064A\u0627\u0631",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u062E\u062A\u064A\u0627\u0631 \u0627\u0644\u0645\u0644\u0641\u0627\u062A. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "filterBar": {
-      "label": "عوامل التصفية",
-      "more": "مزيد من عوامل التصفية",
-      "clearAll": "مسح الكل",
+      "label": "\u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629",
+      "more": "\u0645\u0632\u064A\u062F \u0645\u0646 \u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629",
+      "clearAll": "\u0645\u0633\u062D \u0627\u0644\u0643\u0644",
       "one": "{label}: {value}",
-      "several": "{label} · {count}"
+      "several": "{label} \xB7 {count}"
     },
     "navPane": {
-      "browse": "استعراض",
-      "expand": "توسيع الشريط الجانبي",
-      "collapse": "طي الشريط الجانبي",
-      "resize": "تغيير حجم {name}",
-      "resizeNavigation": "تغيير حجم شريط التنقل"
+      "browse": "\u0627\u0633\u062A\u0639\u0631\u0627\u0636",
+      "expand": "\u062A\u0648\u0633\u064A\u0639 \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u062C\u0627\u0646\u0628\u064A",
+      "collapse": "\u0637\u064A \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u062C\u0627\u0646\u0628\u064A",
+      "resize": "\u062A\u063A\u064A\u064A\u0631 \u062D\u062C\u0645 {name}",
+      "resizeNavigation": "\u062A\u063A\u064A\u064A\u0631 \u062D\u062C\u0645 \u0634\u0631\u064A\u0637 \u0627\u0644\u062A\u0646\u0642\u0644"
     },
     "notificationList": {
-      "label": "الإشعارات",
-      "empty": "لا توجد إشعارات",
-      "markAllRead": "تعليم الكل كمقروء",
-      "viewAll": "عرض الكل"
+      "label": "\u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062A",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0625\u0634\u0639\u0627\u0631\u0627\u062A",
+      "markAllRead": "\u062A\u0639\u0644\u064A\u0645 \u0627\u0644\u0643\u0644 \u0643\u0645\u0642\u0631\u0648\u0621",
+      "viewAll": "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644"
     },
     "peopleGroup": {
-      "team": "الفريق",
-      "group": "المجموعة",
-      "members": "{n} أعضاء",
-      "member": "{n} عضو",
-      "showMembers": "عرض الأعضاء",
-      "membersOf": "أعضاء {name}"
+      "team": "\u0627\u0644\u0641\u0631\u064A\u0642",
+      "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+      "members": "{n} \u0623\u0639\u0636\u0627\u0621",
+      "member": "{n} \u0639\u0636\u0648",
+      "showMembers": "\u0639\u0631\u0636 \u0627\u0644\u0623\u0639\u0636\u0627\u0621",
+      "membersOf": "\u0623\u0639\u0636\u0627\u0621 {name}"
     },
     "permissionSummary": {
-      "can": "يمكنه",
-      "cannot": "لا يمكنه",
-      "manage": "إدارة الوصول",
-      "canSentence": "يمكنه {list}",
-      "cannotSentence": "لا يمكنه {list}"
+      "can": "\u064A\u0645\u0643\u0646\u0647",
+      "cannot": "\u0644\u0627 \u064A\u0645\u0643\u0646\u0647",
+      "manage": "\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "canSentence": "\u064A\u0645\u0643\u0646\u0647 {list}",
+      "cannotSentence": "\u0644\u0627 \u064A\u0645\u0643\u0646\u0647 {list}"
     },
     "popconfirm": {
-      "cancel": "إلغاء"
+      "cancel": "\u0625\u0644\u063A\u0627\u0621"
     },
     "productCard": {
-      "sale": "تخفيض",
-      "outOfStock": "غير متوفر في المخزون",
-      "addToCart": "أضف إلى السلة",
-      "addToCartFor": "أضف {title} إلى السلة",
-      "now": "الآن",
-      "was": "كان",
-      "rating": "التقييم",
-      "reviews": "{n} مراجعات",
-      "review": "مراجعة واحدة",
-      "soldOut": "{title} غير متوفر في المخزون"
+      "sale": "\u062A\u062E\u0641\u064A\u0636",
+      "outOfStock": "\u063A\u064A\u0631 \u0645\u062A\u0648\u0641\u0631 \u0641\u064A \u0627\u0644\u0645\u062E\u0632\u0648\u0646",
+      "addToCart": "\u0623\u0636\u0641 \u0625\u0644\u0649 \u0627\u0644\u0633\u0644\u0629",
+      "addToCartFor": "\u0623\u0636\u0641 {title} \u0625\u0644\u0649 \u0627\u0644\u0633\u0644\u0629",
+      "now": "\u0627\u0644\u0622\u0646",
+      "was": "\u0643\u0627\u0646",
+      "rating": "\u0627\u0644\u062A\u0642\u064A\u064A\u0645",
+      "reviews": "{n} \u0645\u0631\u0627\u062C\u0639\u0627\u062A",
+      "review": "\u0645\u0631\u0627\u062C\u0639\u0629 \u0648\u0627\u062D\u062F\u0629",
+      "soldOut": "{title} \u063A\u064A\u0631 \u0645\u062A\u0648\u0641\u0631 \u0641\u064A \u0627\u0644\u0645\u062E\u0632\u0648\u0646"
     },
     "publish": {
-      "publish": "نشر",
-      "publishNow": "النشر الآن",
-      "schedule": "جدولة",
-      "cancelSchedule": "إلغاء الجدولة",
-      "unpublish": "إلغاء النشر",
-      "cancel": "إلغاء",
-      "publishTitle": "نشر {name}؟",
-      "publishMessage": "سيصبح مرئيًا لـ {audience}.",
-      "unpublishTitle": "إلغاء نشر {name}؟",
-      "unpublishMessage": "سيُخفى عن {audience}. يمكنك نشره مرة أخرى.",
-      "scheduleTitle": "جدولة {name}",
-      "when": "النشر في",
-      "whenHint": "التاريخ والوقت، بحسب منطقتك الزمنية.",
-      "past": "اختر وقتًا في المستقبل.",
-      "empty": "اختر التاريخ والوقت.",
-      "publishedLine": "نُشر {at}",
-      "publishedBy": "نُشر {at} بواسطة {by}",
-      "scheduledLine": "سيُنشر {at}",
-      "scheduledBy": "سيُنشر {at}، جدولة {by}",
-      "draftLine": "غير منشور",
-      "published": "تم نشر {name}",
-      "scheduled": "تمت جدولة {name} في {at}",
-      "unpublished": "تم إلغاء نشر {name}",
-      "undo": "تراجع",
-      "everyone": "كل من لديه صلاحية الوصول",
-      "actions": "جارٍ النشر"
+      "publish": "\u0646\u0634\u0631",
+      "publishNow": "\u0627\u0644\u0646\u0634\u0631 \u0627\u0644\u0622\u0646",
+      "schedule": "\u062C\u062F\u0648\u0644\u0629",
+      "cancelSchedule": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u062C\u062F\u0648\u0644\u0629",
+      "unpublish": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0646\u0634\u0631",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "publishTitle": "\u0646\u0634\u0631 {name}\u061F",
+      "publishMessage": "\u0633\u064A\u0635\u0628\u062D \u0645\u0631\u0626\u064A\u064B\u0627 \u0644\u0640 {audience}.",
+      "unpublishTitle": "\u0625\u0644\u063A\u0627\u0621 \u0646\u0634\u0631 {name}\u061F",
+      "unpublishMessage": "\u0633\u064A\u064F\u062E\u0641\u0649 \u0639\u0646 {audience}. \u064A\u0645\u0643\u0646\u0643 \u0646\u0634\u0631\u0647 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "scheduleTitle": "\u062C\u062F\u0648\u0644\u0629 {name}",
+      "when": "\u0627\u0644\u0646\u0634\u0631 \u0641\u064A",
+      "whenHint": "\u0627\u0644\u062A\u0627\u0631\u064A\u062E \u0648\u0627\u0644\u0648\u0642\u062A\u060C \u0628\u062D\u0633\u0628 \u0645\u0646\u0637\u0642\u062A\u0643 \u0627\u0644\u0632\u0645\u0646\u064A\u0629.",
+      "past": "\u0627\u062E\u062A\u0631 \u0648\u0642\u062A\u064B\u0627 \u0641\u064A \u0627\u0644\u0645\u0633\u062A\u0642\u0628\u0644.",
+      "empty": "\u0627\u062E\u062A\u0631 \u0627\u0644\u062A\u0627\u0631\u064A\u062E \u0648\u0627\u0644\u0648\u0642\u062A.",
+      "publishedLine": "\u0646\u064F\u0634\u0631 {at}",
+      "publishedBy": "\u0646\u064F\u0634\u0631 {at} \u0628\u0648\u0627\u0633\u0637\u0629 {by}",
+      "scheduledLine": "\u0633\u064A\u064F\u0646\u0634\u0631 {at}",
+      "scheduledBy": "\u0633\u064A\u064F\u0646\u0634\u0631 {at}\u060C \u062C\u062F\u0648\u0644\u0629 {by}",
+      "draftLine": "\u063A\u064A\u0631 \u0645\u0646\u0634\u0648\u0631",
+      "published": "\u062A\u0645 \u0646\u0634\u0631 {name}",
+      "scheduled": "\u062A\u0645\u062A \u062C\u062F\u0648\u0644\u0629 {name} \u0641\u064A {at}",
+      "unpublished": "\u062A\u0645 \u0625\u0644\u063A\u0627\u0621 \u0646\u0634\u0631 {name}",
+      "undo": "\u062A\u0631\u0627\u062C\u0639",
+      "everyone": "\u0643\u0644 \u0645\u0646 \u0644\u062F\u064A\u0647 \u0635\u0644\u0627\u062D\u064A\u0629 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "actions": "\u062C\u0627\u0631\u064D \u0627\u0644\u0646\u0634\u0631"
     },
     "queryBuilder": {
-      "builder": "المنشئ",
-      "text": "النص",
-      "viewLabel": "العرض",
-      "where": "حيث",
-      "and": "و",
-      "or": "أو",
-      "andWord": "و",
-      "orWord": "أو",
-      "join": "المطابقة",
-      "all": "كل القواعد",
-      "any": "أي قاعدة",
-      "addRule": "إضافة قاعدة",
-      "addGroup": "إضافة مجموعة",
-      "removeRule": "إزالة القاعدة",
-      "removeGroup": "إزالة المجموعة",
-      "field": "الحقل",
-      "operator": "العامل",
-      "value": "القيمة",
-      "rule": "القاعدة {n}",
-      "group": "المجموعة {n}",
-      "empty": "لا توجد قواعد: كل السجلات مطابقة.",
-      "everything": "كل سجل",
-      "matches": "{n} مطابقات",
-      "match": "{n} مطابقة",
-      "textTitle": "استعلام",
-      "added": "تمت إضافة القاعدة",
-      "groupAdded": "تمت إضافة المجموعة",
-      "removed": "تمت إزالة القاعدة",
-      "groupRemoved": "تمت إزالة المجموعة"
+      "builder": "\u0627\u0644\u0645\u0646\u0634\u0626",
+      "text": "\u0627\u0644\u0646\u0635",
+      "viewLabel": "\u0627\u0644\u0639\u0631\u0636",
+      "where": "\u062D\u064A\u062B",
+      "and": "\u0648",
+      "or": "\u0623\u0648",
+      "andWord": "\u0648",
+      "orWord": "\u0623\u0648",
+      "join": "\u0627\u0644\u0645\u0637\u0627\u0628\u0642\u0629",
+      "all": "\u0643\u0644 \u0627\u0644\u0642\u0648\u0627\u0639\u062F",
+      "any": "\u0623\u064A \u0642\u0627\u0639\u062F\u0629",
+      "addRule": "\u0625\u0636\u0627\u0641\u0629 \u0642\u0627\u0639\u062F\u0629",
+      "addGroup": "\u0625\u0636\u0627\u0641\u0629 \u0645\u062C\u0645\u0648\u0639\u0629",
+      "removeRule": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0642\u0627\u0639\u062F\u0629",
+      "removeGroup": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+      "field": "\u0627\u0644\u062D\u0642\u0644",
+      "operator": "\u0627\u0644\u0639\u0627\u0645\u0644",
+      "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+      "rule": "\u0627\u0644\u0642\u0627\u0639\u062F\u0629 {n}",
+      "group": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629 {n}",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0642\u0648\u0627\u0639\u062F: \u0643\u0644 \u0627\u0644\u0633\u062C\u0644\u0627\u062A \u0645\u0637\u0627\u0628\u0642\u0629.",
+      "everything": "\u0643\u0644 \u0633\u062C\u0644",
+      "matches": "{n} \u0645\u0637\u0627\u0628\u0642\u0627\u062A",
+      "match": "{n} \u0645\u0637\u0627\u0628\u0642\u0629",
+      "textTitle": "\u0627\u0633\u062A\u0639\u0644\u0627\u0645",
+      "added": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 \u0627\u0644\u0642\u0627\u0639\u062F\u0629",
+      "groupAdded": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+      "removed": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0642\u0627\u0639\u062F\u0629",
+      "groupRemoved": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629"
     },
     "renameAction": {
-      "label": "الاسم",
-      "rename": "إعادة تسمية",
-      "open": "إعادة تسمية…",
-      "title": "إعادة تسمية {name}",
-      "cancel": "إلغاء",
-      "empty": "أدخل اسمًا",
-      "slash": "لا يمكن أن يحتوي الاسم على / أو \\",
-      "taken": "يوجد عنصر باسم {name} هنا بالفعل",
-      "tooLong": "استخدم {max} حرفًا أو أقل",
-      "renamed": "تمت إعادة التسمية إلى {name}",
-      "failed": "تعذّر تغيير الاسم"
+      "label": "\u0627\u0644\u0627\u0633\u0645",
+      "rename": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629",
+      "open": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629\u2026",
+      "title": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629 {name}",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "empty": "\u0623\u062F\u062E\u0644 \u0627\u0633\u0645\u064B\u0627",
+      "slash": "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0623\u0646 \u064A\u062D\u062A\u0648\u064A \u0627\u0644\u0627\u0633\u0645 \u0639\u0644\u0649 / \u0623\u0648 \\",
+      "taken": "\u064A\u0648\u062C\u062F \u0639\u0646\u0635\u0631 \u0628\u0627\u0633\u0645 {name} \u0647\u0646\u0627 \u0628\u0627\u0644\u0641\u0639\u0644",
+      "tooLong": "\u0627\u0633\u062A\u062E\u062F\u0645 {max} \u062D\u0631\u0641\u064B\u0627 \u0623\u0648 \u0623\u0642\u0644",
+      "renamed": "\u062A\u0645\u062A \u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u062A\u0633\u0645\u064A\u0629 \u0625\u0644\u0649 {name}",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0627\u0633\u0645"
     },
     "renditionList": {
-      "label": "الصيغ المشتقة",
-      "name": "الاسم",
-      "format": "الصيغة",
-      "size": "الحجم",
-      "download": "تنزيل",
-      "empty": "لا توجد صيغ مشتقة."
+      "label": "\u0627\u0644\u0635\u064A\u063A \u0627\u0644\u0645\u0634\u062A\u0642\u0629",
+      "name": "\u0627\u0644\u0627\u0633\u0645",
+      "format": "\u0627\u0644\u0635\u064A\u063A\u0629",
+      "size": "\u0627\u0644\u062D\u062C\u0645",
+      "download": "\u062A\u0646\u0632\u064A\u0644",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0635\u064A\u063A \u0645\u0634\u062A\u0642\u0629."
     },
     "resourceList": {
-      "item": "عنصر",
-      "selectAll": "تحديد كل {nouns} ({n})",
-      "select": "تحديد {name}",
+      "item": "\u0639\u0646\u0635\u0631",
+      "selectAll": "\u062A\u062D\u062F\u064A\u062F \u0643\u0644 {nouns} ({n})",
+      "select": "\u062A\u062D\u062F\u064A\u062F {name}",
       "count": "{n} {nouns}",
-      "selected": "تم تحديد {n} من {total}"
+      "selected": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {n} \u0645\u0646 {total}"
     },
     "retry": {
-      "title": "تعذّر التحميل",
-      "retry": "إعادة المحاولة",
-      "retryNow": "إعادة المحاولة الآن",
-      "retrying": "جارٍ إعادة المحاولة…",
-      "waiting": "إعادة المحاولة خلال {time}",
-      "attempt": "المحاولة {attempt} من {attempts}",
-      "stopped": "توقفت بعد {attempts} محاولات",
-      "dismiss": "تجاهل",
-      "status": "فشل"
+      "title": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062A\u062D\u0645\u064A\u0644",
+      "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629",
+      "retryNow": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u0627\u0644\u0622\u0646",
+      "retrying": "\u062C\u0627\u0631\u064D \u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629\u2026",
+      "waiting": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u062E\u0644\u0627\u0644 {time}",
+      "attempt": "\u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 {attempt} \u0645\u0646 {attempts}",
+      "stopped": "\u062A\u0648\u0642\u0641\u062A \u0628\u0639\u062F {attempts} \u0645\u062D\u0627\u0648\u0644\u0627\u062A",
+      "dismiss": "\u062A\u062C\u0627\u0647\u0644",
+      "status": "\u0641\u0634\u0644"
     },
     "roleManager": {
-      "roles": "الأدوار",
-      "create": "إنشاء دور",
-      "createTitle": "إنشاء دور",
-      "name": "الاسم",
-      "description": "الوصف",
-      "descriptionHint": "جملة واحدة عمّا يستطيع أصحاب هذا الدور فعله.",
-      "startFrom": "البدء بصلاحيات",
-      "empty": "أدخل اسمًا.",
-      "taken": "يوجد دور باسم {name} بالفعل.",
-      "back": "كل الأدوار",
-      "members": "الأعضاء",
-      "member": "عضو",
-      "membersCount": "{n} أعضاء",
-      "memberCount": "{n} عضو",
-      "builtIn": "مدمج",
-      "custom": "مخصص",
-      "permissions": "الصلاحيات",
-      "builtInNote": "لا يمكن تغيير الأدوار المدمجة. انسخ أحدها لإنشاء دور خاص بك.",
-      "addMember": "إضافة عضو",
-      "remove": "إزالة {name}",
-      "lastMember": "يحتاج {role} إلى عضو واحد على الأقل. أضف شخصًا آخر أولًا.",
-      "noMembers": "لا أحد لديه هذا الدور بعد.",
-      "role": "دور",
-      "cancel": "إلغاء",
-      "delete": "حذف",
-      "added": "تمت إضافة {name} إلى {role}",
-      "removed": "تمت إزالة {name} من {role}",
-      "created": "تم إنشاء {name}",
-      "access": "أصحاب دور {role}",
-      "people": "{n} أشخاص",
-      "peopleOne": "{n} شخص",
-      "allowed": "تم السماح بـ {permission} لدور {role}",
-      "denied": "لم يعد {permission} مسموحًا لدور {role}"
+      "roles": "\u0627\u0644\u0623\u062F\u0648\u0627\u0631",
+      "create": "\u0625\u0646\u0634\u0627\u0621 \u062F\u0648\u0631",
+      "createTitle": "\u0625\u0646\u0634\u0627\u0621 \u062F\u0648\u0631",
+      "name": "\u0627\u0644\u0627\u0633\u0645",
+      "description": "\u0627\u0644\u0648\u0635\u0641",
+      "descriptionHint": "\u062C\u0645\u0644\u0629 \u0648\u0627\u062D\u062F\u0629 \u0639\u0645\u0651\u0627 \u064A\u0633\u062A\u0637\u064A\u0639 \u0623\u0635\u062D\u0627\u0628 \u0647\u0630\u0627 \u0627\u0644\u062F\u0648\u0631 \u0641\u0639\u0644\u0647.",
+      "startFrom": "\u0627\u0644\u0628\u062F\u0621 \u0628\u0635\u0644\u0627\u062D\u064A\u0627\u062A",
+      "empty": "\u0623\u062F\u062E\u0644 \u0627\u0633\u0645\u064B\u0627.",
+      "taken": "\u064A\u0648\u062C\u062F \u062F\u0648\u0631 \u0628\u0627\u0633\u0645 {name} \u0628\u0627\u0644\u0641\u0639\u0644.",
+      "back": "\u0643\u0644 \u0627\u0644\u0623\u062F\u0648\u0627\u0631",
+      "members": "\u0627\u0644\u0623\u0639\u0636\u0627\u0621",
+      "member": "\u0639\u0636\u0648",
+      "membersCount": "{n} \u0623\u0639\u0636\u0627\u0621",
+      "memberCount": "{n} \u0639\u0636\u0648",
+      "builtIn": "\u0645\u062F\u0645\u062C",
+      "custom": "\u0645\u062E\u0635\u0635",
+      "permissions": "\u0627\u0644\u0635\u0644\u0627\u062D\u064A\u0627\u062A",
+      "builtInNote": "\u0644\u0627 \u064A\u0645\u0643\u0646 \u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0623\u062F\u0648\u0627\u0631 \u0627\u0644\u0645\u062F\u0645\u062C\u0629. \u0627\u0646\u0633\u062E \u0623\u062D\u062F\u0647\u0627 \u0644\u0625\u0646\u0634\u0627\u0621 \u062F\u0648\u0631 \u062E\u0627\u0635 \u0628\u0643.",
+      "addMember": "\u0625\u0636\u0627\u0641\u0629 \u0639\u0636\u0648",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {name}",
+      "lastMember": "\u064A\u062D\u062A\u0627\u062C {role} \u0625\u0644\u0649 \u0639\u0636\u0648 \u0648\u0627\u062D\u062F \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644. \u0623\u0636\u0641 \u0634\u062E\u0635\u064B\u0627 \u0622\u062E\u0631 \u0623\u0648\u0644\u064B\u0627.",
+      "noMembers": "\u0644\u0627 \u0623\u062D\u062F \u0644\u062F\u064A\u0647 \u0647\u0630\u0627 \u0627\u0644\u062F\u0648\u0631 \u0628\u0639\u062F.",
+      "role": "\u062F\u0648\u0631",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "delete": "\u062D\u0630\u0641",
+      "added": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 {name} \u0625\u0644\u0649 {role}",
+      "removed": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 {name} \u0645\u0646 {role}",
+      "created": "\u062A\u0645 \u0625\u0646\u0634\u0627\u0621 {name}",
+      "access": "\u0623\u0635\u062D\u0627\u0628 \u062F\u0648\u0631 {role}",
+      "people": "{n} \u0623\u0634\u062E\u0627\u0635",
+      "peopleOne": "{n} \u0634\u062E\u0635",
+      "allowed": "\u062A\u0645 \u0627\u0644\u0633\u0645\u0627\u062D \u0628\u0640 {permission} \u0644\u062F\u0648\u0631 {role}",
+      "denied": "\u0644\u0645 \u064A\u0639\u062F {permission} \u0645\u0633\u0645\u0648\u062D\u064B\u0627 \u0644\u062F\u0648\u0631 {role}"
     },
     "searchWorkspace": {
-      "title": "بحث",
-      "selectAll": "تحديد الكل",
-      "allSelected": "كل {noun} محدد",
-      "placeholder": "بحث…",
-      "result": "نتيجة",
-      "results": "نتائج",
-      "searchField": "بحث في {nouns}",
-      "save": "حفظ البحث",
-      "filters": "عوامل التصفية",
-      "activeFilters": "عوامل التصفية النشطة",
+      "title": "\u0628\u062D\u062B",
+      "selectAll": "\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0643\u0644",
+      "allSelected": "\u0643\u0644 {noun} \u0645\u062D\u062F\u062F",
+      "placeholder": "\u0628\u062D\u062B\u2026",
+      "result": "\u0646\u062A\u064A\u062C\u0629",
+      "results": "\u0646\u062A\u0627\u0626\u062C",
+      "searchField": "\u0628\u062D\u062B \u0641\u064A {nouns}",
+      "save": "\u062D\u0641\u0638 \u0627\u0644\u0628\u062D\u062B",
+      "filters": "\u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629",
+      "activeFilters": "\u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629 \u0627\u0644\u0646\u0634\u0637\u0629",
       "chip": "{label}: {value}",
-      "remove": "إزالة {text}",
-      "clearAll": "مسح الكل",
-      "view": "العرض",
-      "grid": "شبكة",
-      "table": "جدول",
-      "sort": "ترتيب",
-      "sortValue": "الترتيب: {value}",
-      "noMatchQuery": "لا شيء يطابق «{query}».",
-      "noMatchQueryFilters": "لا شيء يطابق «{query}» مع عوامل التصفية هذه.",
-      "noMatchFilters": "لا شيء يطابق عوامل التصفية هذه."
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {text}",
+      "clearAll": "\u0645\u0633\u062D \u0627\u0644\u0643\u0644",
+      "view": "\u0627\u0644\u0639\u0631\u0636",
+      "grid": "\u0634\u0628\u0643\u0629",
+      "table": "\u062C\u062F\u0648\u0644",
+      "sort": "\u062A\u0631\u062A\u064A\u0628",
+      "sortValue": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628: {value}",
+      "noMatchQuery": "\u0644\u0627 \u0634\u064A\u0621 \u064A\u0637\u0627\u0628\u0642 \xAB{query}\xBB.",
+      "noMatchQueryFilters": "\u0644\u0627 \u0634\u064A\u0621 \u064A\u0637\u0627\u0628\u0642 \xAB{query}\xBB \u0645\u0639 \u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629 \u0647\u0630\u0647.",
+      "noMatchFilters": "\u0644\u0627 \u0634\u064A\u0621 \u064A\u0637\u0627\u0628\u0642 \u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629 \u0647\u0630\u0647."
     },
     "secondaryPane": {
-      "expand": "توسيع {name}",
-      "collapse": "طيّ {name}",
-      "resize": "تغيير حجم {name}",
-      "close": "إغلاق {name}",
-      "back": "العودة إلى {name}"
+      "expand": "\u062A\u0648\u0633\u064A\u0639 {name}",
+      "collapse": "\u0637\u064A\u0651 {name}",
+      "resize": "\u062A\u063A\u064A\u064A\u0631 \u062D\u062C\u0645 {name}",
+      "close": "\u0625\u063A\u0644\u0627\u0642 {name}",
+      "back": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 {name}"
     },
     "sessionTimeout": {
-      "warningTitle": "جلستك على وشك الانتهاء",
-      "warning": "سيتم تسجيل خروجك خلال {time} لأنك لم تكن نشطًا.",
-      "stay": "البقاء متصلًا",
-      "signOut": "تسجيل الخروج",
-      "signedOutTitle": "تم تسجيل خروجك",
-      "signedOut": "حفاظًا على أمانك، تم تسجيل خروجك بعد {minutes} دقيقة دون نشاط.",
-      "signedOutShort": "حفاظًا على أمانك، تم تسجيل خروجك لأنك لم تكن نشطًا.",
-      "saved": "تم حفظ تغييراتك.",
-      "signIn": "تسجيل الدخول مرة أخرى",
-      "left": "متبقي {time}",
-      "ended": "تم تسجيل الخروج"
+      "warningTitle": "\u062C\u0644\u0633\u062A\u0643 \u0639\u0644\u0649 \u0648\u0634\u0643 \u0627\u0644\u0627\u0646\u062A\u0647\u0627\u0621",
+      "warning": "\u0633\u064A\u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u062E\u0631\u0648\u062C\u0643 \u062E\u0644\u0627\u0644 {time} \u0644\u0623\u0646\u0643 \u0644\u0645 \u062A\u0643\u0646 \u0646\u0634\u0637\u064B\u0627.",
+      "stay": "\u0627\u0644\u0628\u0642\u0627\u0621 \u0645\u062A\u0635\u0644\u064B\u0627",
+      "signOut": "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062E\u0631\u0648\u062C",
+      "signedOutTitle": "\u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u062E\u0631\u0648\u062C\u0643",
+      "signedOut": "\u062D\u0641\u0627\u0638\u064B\u0627 \u0639\u0644\u0649 \u0623\u0645\u0627\u0646\u0643\u060C \u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u062E\u0631\u0648\u062C\u0643 \u0628\u0639\u062F {minutes} \u062F\u0642\u064A\u0642\u0629 \u062F\u0648\u0646 \u0646\u0634\u0627\u0637.",
+      "signedOutShort": "\u062D\u0641\u0627\u0638\u064B\u0627 \u0639\u0644\u0649 \u0623\u0645\u0627\u0646\u0643\u060C \u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u062E\u0631\u0648\u062C\u0643 \u0644\u0623\u0646\u0643 \u0644\u0645 \u062A\u0643\u0646 \u0646\u0634\u0637\u064B\u0627.",
+      "saved": "\u062A\u0645 \u062D\u0641\u0638 \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643.",
+      "signIn": "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649",
+      "left": "\u0645\u062A\u0628\u0642\u064A {time}",
+      "ended": "\u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062E\u0631\u0648\u062C"
     },
     "sortableList": {
-      "moveMenu": "نقل {name}",
-      "moveUp": "نقل لأعلى",
-      "moveDown": "نقل لأسفل",
-      "moveEarlier": "نقل لوقت أبكر",
-      "moveLater": "نقل لوقت أحدث",
-      "moveFirst": "نقل إلى البداية",
-      "moveLast": "نقل إلى النهاية",
-      "moveUpNamed": "نقل {name} لأعلى",
-      "moveDownNamed": "نقل {name} لأسفل"
+      "moveMenu": "\u0646\u0642\u0644 {name}",
+      "moveUp": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "moveDown": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644",
+      "moveEarlier": "\u0646\u0642\u0644 \u0644\u0648\u0642\u062A \u0623\u0628\u0643\u0631",
+      "moveLater": "\u0646\u0642\u0644 \u0644\u0648\u0642\u062A \u0623\u062D\u062F\u062B",
+      "moveFirst": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0628\u062F\u0627\u064A\u0629",
+      "moveLast": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0646\u0647\u0627\u064A\u0629",
+      "moveUpNamed": "\u0646\u0642\u0644 {name} \u0644\u0623\u0639\u0644\u0649",
+      "moveDownNamed": "\u0646\u0642\u0644 {name} \u0644\u0623\u0633\u0641\u0644"
     },
     "uploadManager": {
-      "dialogTitle": "رفع ملفات",
-      "queue": "عمليات الرفع",
-      "drop": "اسحب الملفات أو المجلدات وأفلتها هنا",
-      "or": "أو",
-      "chooseFiles": "اختيار ملفات",
-      "chooseFolder": "اختر مجلدًا",
-      "uploading": "جارٍ رفع {n} ملفات",
-      "uploadingOne": "جارٍ رفع ملف واحد",
-      "done": "اكتمل {n} عمليات رفع",
-      "doneOne": "اكتملت عملية رفع واحدة",
-      "failed": "فشلت {n} عمليات رفع",
-      "failedOne": "فشلت عملية رفع واحدة",
-      "none": "لا توجد عمليات رفع",
-      "progress": "تم رفع {done} من {total}",
-      "overall": "التقدم الإجمالي",
-      "waiting": "بالانتظار",
-      "uploaded": "تم الرفع",
-      "canceled": "أُلغي",
-      "cancelAll": "إلغاء الكل",
-      "clear": "مسح المكتملة",
-      "hide": "إخفاء عمليات الرفع",
-      "show": "إظهار عمليات الرفع",
-      "close": "إغلاق",
-      "finish": "تم",
-      "remove": "إزالة من القائمة",
-      "again": "الرفع مرة أخرى",
-      "tooLarge": "هذا الملف أكبر من {max}.",
-      "wrongType": "لا يمكن رفع هذا النوع من الملفات هنا.",
-      "error": "فشل الرفع. حاول مرة أخرى.",
-      "failedNamed": "فشل {name}: {reason}",
-      "status": "أُلغي"
+      "dialogTitle": "\u0631\u0641\u0639 \u0645\u0644\u0641\u0627\u062A",
+      "queue": "\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0631\u0641\u0639",
+      "drop": "\u0627\u0633\u062D\u0628 \u0627\u0644\u0645\u0644\u0641\u0627\u062A \u0623\u0648 \u0627\u0644\u0645\u062C\u0644\u062F\u0627\u062A \u0648\u0623\u0641\u0644\u062A\u0647\u0627 \u0647\u0646\u0627",
+      "or": "\u0623\u0648",
+      "chooseFiles": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0644\u0641\u0627\u062A",
+      "chooseFolder": "\u0627\u062E\u062A\u0631 \u0645\u062C\u0644\u062F\u064B\u0627",
+      "uploading": "\u062C\u0627\u0631\u064D \u0631\u0641\u0639 {n} \u0645\u0644\u0641\u0627\u062A",
+      "uploadingOne": "\u062C\u0627\u0631\u064D \u0631\u0641\u0639 \u0645\u0644\u0641 \u0648\u0627\u062D\u062F",
+      "done": "\u0627\u0643\u062A\u0645\u0644 {n} \u0639\u0645\u0644\u064A\u0627\u062A \u0631\u0641\u0639",
+      "doneOne": "\u0627\u0643\u062A\u0645\u0644\u062A \u0639\u0645\u0644\u064A\u0629 \u0631\u0641\u0639 \u0648\u0627\u062D\u062F\u0629",
+      "failed": "\u0641\u0634\u0644\u062A {n} \u0639\u0645\u0644\u064A\u0627\u062A \u0631\u0641\u0639",
+      "failedOne": "\u0641\u0634\u0644\u062A \u0639\u0645\u0644\u064A\u0629 \u0631\u0641\u0639 \u0648\u0627\u062D\u062F\u0629",
+      "none": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0645\u0644\u064A\u0627\u062A \u0631\u0641\u0639",
+      "progress": "\u062A\u0645 \u0631\u0641\u0639 {done} \u0645\u0646 {total}",
+      "overall": "\u0627\u0644\u062A\u0642\u062F\u0645 \u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A",
+      "waiting": "\u0628\u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631",
+      "uploaded": "\u062A\u0645 \u0627\u0644\u0631\u0641\u0639",
+      "canceled": "\u0623\u064F\u0644\u063A\u064A",
+      "cancelAll": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0643\u0644",
+      "clear": "\u0645\u0633\u062D \u0627\u0644\u0645\u0643\u062A\u0645\u0644\u0629",
+      "hide": "\u0625\u062E\u0641\u0627\u0621 \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0631\u0641\u0639",
+      "show": "\u0625\u0638\u0647\u0627\u0631 \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0631\u0641\u0639",
+      "close": "\u0625\u063A\u0644\u0627\u0642",
+      "finish": "\u062A\u0645",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 \u0645\u0646 \u0627\u0644\u0642\u0627\u0626\u0645\u0629",
+      "again": "\u0627\u0644\u0631\u0641\u0639 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649",
+      "tooLarge": "\u0647\u0630\u0627 \u0627\u0644\u0645\u0644\u0641 \u0623\u0643\u0628\u0631 \u0645\u0646 {max}.",
+      "wrongType": "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0631\u0641\u0639 \u0647\u0630\u0627 \u0627\u0644\u0646\u0648\u0639 \u0645\u0646 \u0627\u0644\u0645\u0644\u0641\u0627\u062A \u0647\u0646\u0627.",
+      "error": "\u0641\u0634\u0644 \u0627\u0644\u0631\u0641\u0639. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "failedNamed": "\u0641\u0634\u0644 {name}: {reason}",
+      "status": "\u0623\u064F\u0644\u063A\u064A"
     },
     "userCard": {
-      "online": "متصل",
-      "away": "غائب",
-      "busy": "مشغول",
-      "dnd": "عدم الإزعاج",
-      "offline": "غير متصل"
+      "online": "\u0645\u062A\u0635\u0644",
+      "away": "\u063A\u0627\u0626\u0628",
+      "busy": "\u0645\u0634\u063A\u0648\u0644",
+      "dnd": "\u0639\u062F\u0645 \u0627\u0644\u0625\u0632\u0639\u0627\u062C",
+      "offline": "\u063A\u064A\u0631 \u0645\u062A\u0635\u0644"
     },
     "versionCompare": {
-      "label": "مقارنة الإصدارات",
-      "compare": "مقارنة",
-      "with": "مع",
-      "swap": "تبديل",
-      "swapLabel": "تبديل الإصدارين",
-      "view": "العرض",
-      "columns": "جنبًا إلى جنب",
-      "slider": "شريط التمرير",
-      "text": "النص",
-      "by": "بواسطة {author}",
-      "diff": "التغييرات من {base} إلى {target}",
-      "added": "مضاف",
-      "removed": "محذوف",
-      "same": "لا توجد تغييرات في النص",
-      "summary": "أُضيف {added}، وحُذف {removed}",
-      "lines": "{n} أسطر",
-      "line": "سطر واحد",
-      "previous": "التغيير السابق",
-      "next": "التغيير التالي",
-      "at": "التغيير {n} من {total}",
-      "unchanged": "عرض {n} أسطر لم تتغير",
-      "empty": "اختر إصدارين للمقارنة."
+      "label": "\u0645\u0642\u0627\u0631\u0646\u0629 \u0627\u0644\u0625\u0635\u062F\u0627\u0631\u0627\u062A",
+      "compare": "\u0645\u0642\u0627\u0631\u0646\u0629",
+      "with": "\u0645\u0639",
+      "swap": "\u062A\u0628\u062F\u064A\u0644",
+      "swapLabel": "\u062A\u0628\u062F\u064A\u0644 \u0627\u0644\u0625\u0635\u062F\u0627\u0631\u064A\u0646",
+      "view": "\u0627\u0644\u0639\u0631\u0636",
+      "columns": "\u062C\u0646\u0628\u064B\u0627 \u0625\u0644\u0649 \u062C\u0646\u0628",
+      "slider": "\u0634\u0631\u064A\u0637 \u0627\u0644\u062A\u0645\u0631\u064A\u0631",
+      "text": "\u0627\u0644\u0646\u0635",
+      "by": "\u0628\u0648\u0627\u0633\u0637\u0629 {author}",
+      "diff": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631\u0627\u062A \u0645\u0646 {base} \u0625\u0644\u0649 {target}",
+      "added": "\u0645\u0636\u0627\u0641",
+      "removed": "\u0645\u062D\u0630\u0648\u0641",
+      "same": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A \u0641\u064A \u0627\u0644\u0646\u0635",
+      "summary": "\u0623\u064F\u0636\u064A\u0641 {added}\u060C \u0648\u062D\u064F\u0630\u0641 {removed}",
+      "lines": "{n} \u0623\u0633\u0637\u0631",
+      "line": "\u0633\u0637\u0631 \u0648\u0627\u062D\u062F",
+      "previous": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0633\u0627\u0628\u0642",
+      "next": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u062A\u0627\u0644\u064A",
+      "at": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631 {n} \u0645\u0646 {total}",
+      "unchanged": "\u0639\u0631\u0636 {n} \u0623\u0633\u0637\u0631 \u0644\u0645 \u062A\u062A\u063A\u064A\u0631",
+      "empty": "\u0627\u062E\u062A\u0631 \u0625\u0635\u062F\u0627\u0631\u064A\u0646 \u0644\u0644\u0645\u0642\u0627\u0631\u0646\u0629."
     },
     "versionHistory": {
-      "label": "سجل الإصدارات",
-      "preview": "معاينة",
-      "restore": "استعادة",
-      "confirm": "استعادة هذا الإصدار؟",
-      "cancel": "إلغاء",
-      "failed": "تعذّرت استعادة الإصدار. حاول مرة أخرى.",
-      "restored": "تمت استعادة الإصدار",
-      "empty": "لا توجد إصدارات."
+      "label": "\u0633\u062C\u0644 \u0627\u0644\u0625\u0635\u062F\u0627\u0631\u0627\u062A",
+      "preview": "\u0645\u0639\u0627\u064A\u0646\u0629",
+      "restore": "\u0627\u0633\u062A\u0639\u0627\u062F\u0629",
+      "confirm": "\u0627\u0633\u062A\u0639\u0627\u062F\u0629 \u0647\u0630\u0627 \u0627\u0644\u0625\u0635\u062F\u0627\u0631\u061F",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "failed": "\u062A\u0639\u0630\u0651\u0631\u062A \u0627\u0633\u062A\u0639\u0627\u062F\u0629 \u0627\u0644\u0625\u0635\u062F\u0627\u0631. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "restored": "\u062A\u0645\u062A \u0627\u0633\u062A\u0639\u0627\u062F\u0629 \u0627\u0644\u0625\u0635\u062F\u0627\u0631",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0625\u0635\u062F\u0627\u0631\u0627\u062A."
     },
     "viewMenu": {
-      "reset": "إعادة ضبط العرض",
-      "label": "العرض",
-      "layout": "التخطيط",
-      "list": "قائمة",
-      "gallery": "معرض",
-      "size": "حجم البطاقة (المعرض)",
-      "s": "صغير",
-      "m": "متوسط",
-      "l": "كبير",
-      "height": "ارتفاع الصف (القائمة)",
-      "short": "قصير",
-      "medium": "متوسط",
-      "tall": "طويل",
-      "extra-tall": "طويل جدًا"
+      "reset": "\u0625\u0639\u0627\u062F\u0629 \u0636\u0628\u0637 \u0627\u0644\u0639\u0631\u0636",
+      "label": "\u0627\u0644\u0639\u0631\u0636",
+      "layout": "\u0627\u0644\u062A\u062E\u0637\u064A\u0637",
+      "list": "\u0642\u0627\u0626\u0645\u0629",
+      "gallery": "\u0645\u0639\u0631\u0636",
+      "size": "\u062D\u062C\u0645 \u0627\u0644\u0628\u0637\u0627\u0642\u0629 (\u0627\u0644\u0645\u0639\u0631\u0636)",
+      "s": "\u0635\u063A\u064A\u0631",
+      "m": "\u0645\u062A\u0648\u0633\u0637",
+      "l": "\u0643\u0628\u064A\u0631",
+      "height": "\u0627\u0631\u062A\u0641\u0627\u0639 \u0627\u0644\u0635\u0641 (\u0627\u0644\u0642\u0627\u0626\u0645\u0629)",
+      "short": "\u0642\u0635\u064A\u0631",
+      "medium": "\u0645\u062A\u0648\u0633\u0637",
+      "tall": "\u0637\u0648\u064A\u0644",
+      "extra-tall": "\u0637\u0648\u064A\u0644 \u062C\u062F\u064B\u0627"
     },
     "widgetGrid": {
-      "widget": "أداة",
-      "widgetLower": "أداة",
-      "move": "نقل {title} (مفاتيح الأسهم)",
-      "position": "{title}، الموضع {index} من {total}",
-      "earlier": "نقل لوقت أبكر",
-      "later": "نقل لوقت أحدث",
-      "first": "نقل إلى البداية",
-      "last": "نقل إلى النهاية"
+      "widget": "\u0623\u062F\u0627\u0629",
+      "widgetLower": "\u0623\u062F\u0627\u0629",
+      "move": "\u0646\u0642\u0644 {title} (\u0645\u0641\u0627\u062A\u064A\u062D \u0627\u0644\u0623\u0633\u0647\u0645)",
+      "position": "{title}\u060C \u0627\u0644\u0645\u0648\u0636\u0639 {index} \u0645\u0646 {total}",
+      "earlier": "\u0646\u0642\u0644 \u0644\u0648\u0642\u062A \u0623\u0628\u0643\u0631",
+      "later": "\u0646\u0642\u0644 \u0644\u0648\u0642\u062A \u0623\u062D\u062F\u062B",
+      "first": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0628\u062F\u0627\u064A\u0629",
+      "last": "\u0646\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0646\u0647\u0627\u064A\u0629"
     },
     "providers": {
       "UnsavedGuard": {
-        "title": "المغادرة دون حفظ؟",
-        "message": "ستفقد تغييراتك.",
-        "leave": "مغادرة",
-        "stay": "متابعة التحرير"
+        "title": "\u0627\u0644\u0645\u063A\u0627\u062F\u0631\u0629 \u062F\u0648\u0646 \u062D\u0641\u0638\u061F",
+        "message": "\u0633\u062A\u0641\u0642\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643.",
+        "leave": "\u0645\u063A\u0627\u062F\u0631\u0629",
+        "stay": "\u0645\u062A\u0627\u0628\u0639\u0629 \u0627\u0644\u062A\u062D\u0631\u064A\u0631"
       },
       "theme-boot": {
-        "compact": "مضغوط",
-        "standard": "قياسي",
-        "comfortable": "مريح"
+        "compact": "\u0645\u0636\u063A\u0648\u0637",
+        "standard": "\u0642\u064A\u0627\u0633\u064A",
+        "comfortable": "\u0645\u0631\u064A\u062D"
       }
     },
     "templates": {
       "templates": {
         "Templates": {
-          "empty": "لا توجد سجلات بعد",
-          "emptyDescription": "أنشئ سجلًا للبدء.",
-          "pane": "السجلات",
-          "sections": "في هذه الصفحة",
-          "retry": "حاول مرة أخرى",
-          "home": "الذهاب إلى الصفحة الرئيسية",
-          "search": "نتائج البحث",
-          "tools": "الأدوات",
-          "inspector": "الخيارات",
-          "detail": "التفاصيل",
-          "noSelection": "لم يتم تحديد شيء",
-          "noSelectionDescription": "اختر عنصرًا لعرضه هنا."
+          "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0633\u062C\u0644\u0627\u062A \u0628\u0639\u062F",
+          "emptyDescription": "\u0623\u0646\u0634\u0626 \u0633\u062C\u0644\u064B\u0627 \u0644\u0644\u0628\u062F\u0621.",
+          "pane": "\u0627\u0644\u0633\u062C\u0644\u0627\u062A",
+          "sections": "\u0641\u064A \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629",
+          "retry": "\u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649",
+          "home": "\u0627\u0644\u0630\u0647\u0627\u0628 \u0625\u0644\u0649 \u0627\u0644\u0635\u0641\u062D\u0629 \u0627\u0644\u0631\u0626\u064A\u0633\u064A\u0629",
+          "search": "\u0646\u062A\u0627\u0626\u062C \u0627\u0644\u0628\u062D\u062B",
+          "tools": "\u0627\u0644\u0623\u062F\u0648\u0627\u062A",
+          "inspector": "\u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
+          "detail": "\u0627\u0644\u062A\u0641\u0627\u0635\u064A\u0644",
+          "noSelection": "\u0644\u0645 \u064A\u062A\u0645 \u062A\u062D\u062F\u064A\u062F \u0634\u064A\u0621",
+          "noSelectionDescription": "\u0627\u062E\u062A\u0631 \u0639\u0646\u0635\u0631\u064B\u0627 \u0644\u0639\u0631\u0636\u0647 \u0647\u0646\u0627."
         }
       },
       "Commerce": {
         "Storefront": {
-          "layout": "معرض"
+          "layout": "\u0645\u0639\u0631\u0636"
         }
       }
     },
     "utils": {
       "clipboard": {
-        "copied": "تم النسخ",
-        "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+        "copied": "\u062A\u0645 \u0627\u0644\u0646\u0633\u062E",
+        "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u0646\u0633\u062E. \u062D\u062F\u0651\u062F \u0627\u0644\u0646\u0635 \u0648\u0627\u0646\u0633\u062E\u0647 \u064A\u062F\u0648\u064A\u064B\u0627."
       }
     },
     "aiButton": {
-      "label": "إجراءات الذكاء الاصطناعي",
-      "failed": "تعذّر إكمال هذا الإجراء. حاول مرة أخرى.",
-      "working": "جارٍ العمل"
+      "label": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0625\u0643\u0645\u0627\u0644 \u0647\u0630\u0627 \u0627\u0644\u0625\u062C\u0631\u0627\u0621. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "working": "\u062C\u0627\u0631\u064D \u0627\u0644\u0639\u0645\u0644"
     },
     "aiDisclaimer": {
-      "message": "قد يكون المحتوى المُنشأ بالذكاء الاصطناعي غير دقيق. راجع التفاصيل المهمة.",
-      "learn": "حول المحتوى المُنشأ بالذكاء الاصطناعي"
+      "message": "\u0642\u062F \u064A\u0643\u0648\u0646 \u0627\u0644\u0645\u062D\u062A\u0648\u0649 \u0627\u0644\u0645\u064F\u0646\u0634\u0623 \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A \u063A\u064A\u0631 \u062F\u0642\u064A\u0642. \u0631\u0627\u062C\u0639 \u0627\u0644\u062A\u0641\u0627\u0635\u064A\u0644 \u0627\u0644\u0645\u0647\u0645\u0629.",
+      "learn": "\u062D\u0648\u0644 \u0627\u0644\u0645\u062D\u062A\u0648\u0649 \u0627\u0644\u0645\u064F\u0646\u0634\u0623 \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A"
     },
     "announcement": {
-      "dismiss": "تجاهل الإعلان",
-      "failed": "تعذّر تجاهل هذا الإعلان. حاول مرة أخرى."
+      "dismiss": "\u062A\u062C\u0627\u0647\u0644 \u0627\u0644\u0625\u0639\u0644\u0627\u0646",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062C\u0627\u0647\u0644 \u0647\u0630\u0627 \u0627\u0644\u0625\u0639\u0644\u0627\u0646. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "banner": {
-      "dismiss": "تجاهل"
+      "dismiss": "\u062A\u062C\u0627\u0647\u0644"
     },
     "chat": {
-      "thinking": "جارٍ التفكير",
-      "label": "الرسالة",
-      "placeholder": "اكتب رسالة",
-      "sendLabel": "إرسال",
-      "conversation": "المحادثة",
-      "message": "الرسالة",
-      "send": "إرسال",
-      "typing": "جارٍ الكتابة",
-      "you": "أنت",
-      "sent": "تم الإرسال",
-      "read": "تمت القراءة",
-      "delivered": "تم التسليم",
-      "sending": "جارٍ الإرسال",
-      "newMessages": "رسائل جديدة",
-      "attach": "إرفاق ملف",
-      "image": "إضافة صورة",
-      "emoji": "إضافة رمز تعبيري",
-      "emojiSoon": "منتقي الرموز التعبيرية قادم قريبًا.",
-      "dictate": "إملاء رسالة",
-      "listening": "جارٍ الاستماع…",
-      "stop": "إيقاف",
-      "micBlocked": "الميكروفون محظور. اسمح به في المتصفح للإملاء.",
-      "micStopped": "توقف الإملاء.",
-      "remove": "إزالة",
-      "cancelUpload": "إلغاء الرفع",
-      "retry": "إعادة المحاولة",
-      "uploading": "جارٍ الرفع {percent}٪",
-      "uploadingPlain": "جارٍ الرفع",
-      "ready": "جاهز",
-      "failed": "تعذر الرفع",
-      "dropFiles": "أفلت الملفات لإرفاقها",
-      "attachments": "المرفقات",
-      "openImage": "فتح الصورة",
-      "imageFailed": "تعذر تحميل هذه الصورة",
-      "download": "تنزيل",
-      "playVoice": "تشغيل الرسالة الصوتية",
-      "pauseVoice": "إيقاف الرسالة الصوتية مؤقتا",
-      "voiceSeek": "موضع الرسالة الصوتية",
-      "voicePosition": "{time} من {total}",
-      "voiceSpeed": "سرعة التشغيل، {rate} مرة",
-      "voiceFailed": "تعذر تشغيل هذه الرسالة الصوتية",
-      "record": "تسجيل رسالة صوتية",
-      "recordSoon": "الرسائل الصوتية قريبا",
-      "messageActions": "إجراءات الرسالة",
-      "react": "تفاعل",
-      "reply": "رد",
-      "moreActions": "المزيد من الإجراءات",
-      "quote": "اقتباس",
-      "copyText": "نسخ النص",
-      "forward": "إعادة توجيه",
-      "edit": "تعديل",
-      "delete": "حذف",
-      "reactions": "التفاعلات",
-      "addReaction": "إضافة تفاعل",
-      "moreReactions": "المزيد من التفاعلات",
+      "thinking": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u0641\u0643\u064A\u0631",
+      "label": "\u0627\u0644\u0631\u0633\u0627\u0644\u0629",
+      "placeholder": "\u0627\u0643\u062A\u0628 \u0631\u0633\u0627\u0644\u0629",
+      "sendLabel": "\u0625\u0631\u0633\u0627\u0644",
+      "conversation": "\u0627\u0644\u0645\u062D\u0627\u062F\u062B\u0629",
+      "message": "\u0627\u0644\u0631\u0633\u0627\u0644\u0629",
+      "send": "\u0625\u0631\u0633\u0627\u0644",
+      "typing": "\u062C\u0627\u0631\u064D \u0627\u0644\u0643\u062A\u0627\u0628\u0629",
+      "you": "\u0623\u0646\u062A",
+      "sent": "\u062A\u0645 \u0627\u0644\u0625\u0631\u0633\u0627\u0644",
+      "read": "\u062A\u0645\u062A \u0627\u0644\u0642\u0631\u0627\u0621\u0629",
+      "delivered": "\u062A\u0645 \u0627\u0644\u062A\u0633\u0644\u064A\u0645",
+      "sending": "\u062C\u0627\u0631\u064D \u0627\u0644\u0625\u0631\u0633\u0627\u0644",
+      "newMessages": "\u0631\u0633\u0627\u0626\u0644 \u062C\u062F\u064A\u062F\u0629",
+      "attach": "\u0625\u0631\u0641\u0627\u0642 \u0645\u0644\u0641",
+      "image": "\u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631\u0629",
+      "emoji": "\u0625\u0636\u0627\u0641\u0629 \u0631\u0645\u0632 \u062A\u0639\u0628\u064A\u0631\u064A",
+      "emojiSoon": "\u0645\u0646\u062A\u0642\u064A \u0627\u0644\u0631\u0645\u0648\u0632 \u0627\u0644\u062A\u0639\u0628\u064A\u0631\u064A\u0629 \u0642\u0627\u062F\u0645 \u0642\u0631\u064A\u0628\u064B\u0627.",
+      "dictate": "\u0625\u0645\u0644\u0627\u0621 \u0631\u0633\u0627\u0644\u0629",
+      "listening": "\u062C\u0627\u0631\u064D \u0627\u0644\u0627\u0633\u062A\u0645\u0627\u0639\u2026",
+      "stop": "\u0625\u064A\u0642\u0627\u0641",
+      "micBlocked": "\u0627\u0644\u0645\u064A\u0643\u0631\u0648\u0641\u0648\u0646 \u0645\u062D\u0638\u0648\u0631. \u0627\u0633\u0645\u062D \u0628\u0647 \u0641\u064A \u0627\u0644\u0645\u062A\u0635\u0641\u062D \u0644\u0644\u0625\u0645\u0644\u0627\u0621.",
+      "micStopped": "\u062A\u0648\u0642\u0641 \u0627\u0644\u0625\u0645\u0644\u0627\u0621.",
+      "remove": "\u0625\u0632\u0627\u0644\u0629",
+      "cancelUpload": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0631\u0641\u0639",
+      "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629",
+      "uploading": "\u062C\u0627\u0631\u064D \u0627\u0644\u0631\u0641\u0639 {percent}\u066A",
+      "uploadingPlain": "\u062C\u0627\u0631\u064D \u0627\u0644\u0631\u0641\u0639",
+      "ready": "\u062C\u0627\u0647\u0632",
+      "failed": "\u062A\u0639\u0630\u0631 \u0627\u0644\u0631\u0641\u0639",
+      "dropFiles": "\u0623\u0641\u0644\u062A \u0627\u0644\u0645\u0644\u0641\u0627\u062A \u0644\u0625\u0631\u0641\u0627\u0642\u0647\u0627",
+      "attachments": "\u0627\u0644\u0645\u0631\u0641\u0642\u0627\u062A",
+      "openImage": "\u0641\u062A\u062D \u0627\u0644\u0635\u0648\u0631\u0629",
+      "imageFailed": "\u062A\u0639\u0630\u0631 \u062A\u062D\u0645\u064A\u0644 \u0647\u0630\u0647 \u0627\u0644\u0635\u0648\u0631\u0629",
+      "download": "\u062A\u0646\u0632\u064A\u0644",
+      "playVoice": "\u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0627\u0644\u0635\u0648\u062A\u064A\u0629",
+      "pauseVoice": "\u0625\u064A\u0642\u0627\u0641 \u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0627\u0644\u0635\u0648\u062A\u064A\u0629 \u0645\u0624\u0642\u062A\u0627",
+      "voiceSeek": "\u0645\u0648\u0636\u0639 \u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0627\u0644\u0635\u0648\u062A\u064A\u0629",
+      "voicePosition": "{time} \u0645\u0646 {total}",
+      "voiceSpeed": "\u0633\u0631\u0639\u0629 \u0627\u0644\u062A\u0634\u063A\u064A\u0644\u060C {rate} \u0645\u0631\u0629",
+      "voiceFailed": "\u062A\u0639\u0630\u0631 \u062A\u0634\u063A\u064A\u0644 \u0647\u0630\u0647 \u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0627\u0644\u0635\u0648\u062A\u064A\u0629",
+      "record": "\u062A\u0633\u062C\u064A\u0644 \u0631\u0633\u0627\u0644\u0629 \u0635\u0648\u062A\u064A\u0629",
+      "recordSoon": "\u0627\u0644\u0631\u0633\u0627\u0626\u0644 \u0627\u0644\u0635\u0648\u062A\u064A\u0629 \u0642\u0631\u064A\u0628\u0627",
+      "messageActions": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0631\u0633\u0627\u0644\u0629",
+      "react": "\u062A\u0641\u0627\u0639\u0644",
+      "reply": "\u0631\u062F",
+      "moreActions": "\u0627\u0644\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A",
+      "quote": "\u0627\u0642\u062A\u0628\u0627\u0633",
+      "copyText": "\u0646\u0633\u062E \u0627\u0644\u0646\u0635",
+      "forward": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0648\u062C\u064A\u0647",
+      "edit": "\u062A\u0639\u062F\u064A\u0644",
+      "delete": "\u062D\u0630\u0641",
+      "reactions": "\u0627\u0644\u062A\u0641\u0627\u0639\u0644\u0627\u062A",
+      "addReaction": "\u0625\u0636\u0627\u0641\u0629 \u062A\u0641\u0627\u0639\u0644",
+      "moreReactions": "\u0627\u0644\u0645\u0632\u064A\u062F \u0645\u0646 \u0627\u0644\u062A\u0641\u0627\u0639\u0644\u0627\u062A",
       "reactionCount": "{name}: {count}",
-      "thumbsUp": "إعجاب",
-      "heart": "قلب",
-      "laugh": "ضحك",
-      "wow": "دهشة",
-      "sad": "حزن",
-      "thanks": "شكرًا",
-      "replyingTo": "الرد على {name}",
-      "cancelReply": "إلغاء الرد",
-      "edited": "مُعدَّل",
-      "deleted": "تم حذف هذه الرسالة"
+      "thumbsUp": "\u0625\u0639\u062C\u0627\u0628",
+      "heart": "\u0642\u0644\u0628",
+      "laugh": "\u0636\u062D\u0643",
+      "wow": "\u062F\u0647\u0634\u0629",
+      "sad": "\u062D\u0632\u0646",
+      "thanks": "\u0634\u0643\u0631\u064B\u0627",
+      "replyingTo": "\u0627\u0644\u0631\u062F \u0639\u0644\u0649 {name}",
+      "cancelReply": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0631\u062F",
+      "edited": "\u0645\u064F\u0639\u062F\u064E\u0651\u0644",
+      "deleted": "\u062A\u0645 \u062D\u0630\u0641 \u0647\u0630\u0647 \u0627\u0644\u0631\u0633\u0627\u0644\u0629"
     },
     "checklist": {
-      "dismiss": "تجاهل قائمة المهام",
-      "progress": "المهام المكتملة"
+      "dismiss": "\u062A\u062C\u0627\u0647\u0644 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0645\u0647\u0627\u0645",
+      "progress": "\u0627\u0644\u0645\u0647\u0627\u0645 \u0627\u0644\u0645\u0643\u062A\u0645\u0644\u0629"
     },
     "comment": {
-      "edit": "تعديل",
-      "save": "حفظ",
-      "cancel": "إلغاء",
-      "resolve": "حلّ",
-      "reopen": "إعادة فتح",
-      "edited": "مُعدَّل",
-      "resolved": "تمت معالجته",
-      "message": "تعليق",
-      "empty": "أدخل تعليقًا.",
-      "failed": "تعذّر الحفظ. حاول مرة أخرى."
+      "edit": "\u062A\u0639\u062F\u064A\u0644",
+      "save": "\u062D\u0641\u0638",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "resolve": "\u062D\u0644\u0651",
+      "reopen": "\u0625\u0639\u0627\u062F\u0629 \u0641\u062A\u062D",
+      "edited": "\u0645\u064F\u0639\u062F\u064E\u0651\u0644",
+      "resolved": "\u062A\u0645\u062A \u0645\u0639\u0627\u0644\u062C\u062A\u0647",
+      "message": "\u062A\u0639\u0644\u064A\u0642",
+      "empty": "\u0623\u062F\u062E\u0644 \u062A\u0639\u0644\u064A\u0642\u064B\u0627.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062D\u0641\u0638. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "confidenceIndicator": {
-      "high": "ثقة عالية",
-      "medium": "ثقة متوسطة",
-      "low": "ثقة منخفضة",
-      "unknown": "درجة الثقة غير متاحة",
-      "label": "الثقة"
+      "high": "\u062B\u0642\u0629 \u0639\u0627\u0644\u064A\u0629",
+      "medium": "\u062B\u0642\u0629 \u0645\u062A\u0648\u0633\u0637\u0629",
+      "low": "\u062B\u0642\u0629 \u0645\u0646\u062E\u0641\u0636\u0629",
+      "unknown": "\u062F\u0631\u062C\u0629 \u0627\u0644\u062B\u0642\u0629 \u063A\u064A\u0631 \u0645\u062A\u0627\u062D\u0629",
+      "label": "\u0627\u0644\u062B\u0642\u0629"
     },
     "loadingOverlay": {
-      "loading": "جارٍ التحميل",
-      "cancel": "إلغاء"
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621"
     },
     "mediaPlayer": {
-      "rate": "سرعة التشغيل",
-      "transcript": "عرض النص المكتوب",
-      "hideTranscript": "إخفاء النص المكتوب",
-      "pip": "صورة داخل صورة",
-      "exitPip": "الخروج من صورة داخل صورة",
-      "unsupported": "ميزة صورة داخل صورة غير متاحة.",
-      "failed": "تعذّر تشغيل هذا الملف.",
-      "pipFailed": "تعذّر تغيير وضع صورة داخل صورة. حاول مرة أخرى.",
-      "seek": "الانتقال إلى {time}",
-      "fallback": "فتح ملف الوسائط",
-      "volume": "مستوى الصوت",
-      "mute": "كتم الصوت",
-      "audioFailed": "تعذّر تشغيل مسار الصوت المنفصل. يُشغَّل الفيديو دون صوت."
+      "rate": "\u0633\u0631\u0639\u0629 \u0627\u0644\u062A\u0634\u063A\u064A\u0644",
+      "transcript": "\u0639\u0631\u0636 \u0627\u0644\u0646\u0635 \u0627\u0644\u0645\u0643\u062A\u0648\u0628",
+      "hideTranscript": "\u0625\u062E\u0641\u0627\u0621 \u0627\u0644\u0646\u0635 \u0627\u0644\u0645\u0643\u062A\u0648\u0628",
+      "pip": "\u0635\u0648\u0631\u0629 \u062F\u0627\u062E\u0644 \u0635\u0648\u0631\u0629",
+      "exitPip": "\u0627\u0644\u062E\u0631\u0648\u062C \u0645\u0646 \u0635\u0648\u0631\u0629 \u062F\u0627\u062E\u0644 \u0635\u0648\u0631\u0629",
+      "unsupported": "\u0645\u064A\u0632\u0629 \u0635\u0648\u0631\u0629 \u062F\u0627\u062E\u0644 \u0635\u0648\u0631\u0629 \u063A\u064A\u0631 \u0645\u062A\u0627\u062D\u0629.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u0634\u063A\u064A\u0644 \u0647\u0630\u0627 \u0627\u0644\u0645\u0644\u0641.",
+      "pipFailed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u063A\u064A\u064A\u0631 \u0648\u0636\u0639 \u0635\u0648\u0631\u0629 \u062F\u0627\u062E\u0644 \u0635\u0648\u0631\u0629. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "seek": "\u0627\u0644\u0627\u0646\u062A\u0642\u0627\u0644 \u0625\u0644\u0649 {time}",
+      "fallback": "\u0641\u062A\u062D \u0645\u0644\u0641 \u0627\u0644\u0648\u0633\u0627\u0626\u0637",
+      "volume": "\u0645\u0633\u062A\u0648\u0649 \u0627\u0644\u0635\u0648\u062A",
+      "mute": "\u0643\u062A\u0645 \u0627\u0644\u0635\u0648\u062A",
+      "audioFailed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u0634\u063A\u064A\u0644 \u0645\u0633\u0627\u0631 \u0627\u0644\u0635\u0648\u062A \u0627\u0644\u0645\u0646\u0641\u0635\u0644. \u064A\u064F\u0634\u063A\u064E\u0651\u0644 \u0627\u0644\u0641\u064A\u062F\u064A\u0648 \u062F\u0648\u0646 \u0635\u0648\u062A."
     },
     "mentionInput": {
-      "add": "إضافة إشارة",
-      "choose": "اختر شخصًا لإشارته"
+      "add": "\u0625\u0636\u0627\u0641\u0629 \u0625\u0634\u0627\u0631\u0629",
+      "choose": "\u0627\u062E\u062A\u0631 \u0634\u062E\u0635\u064B\u0627 \u0644\u0625\u0634\u0627\u0631\u062A\u0647"
     },
     "promptSuggestions": {
-      "label": "اقتراحات الأوامر",
-      "empty": "لا توجد اقتراحات",
-      "failed": "تعذّر استخدام هذا الاقتراح. حاول مرة أخرى."
+      "label": "\u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A \u0627\u0644\u0623\u0648\u0627\u0645\u0631",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0627\u0642\u062A\u0631\u0627\u062D\u0627\u062A",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0647\u0630\u0627 \u0627\u0644\u0627\u0642\u062A\u0631\u0627\u062D. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "refineMenu": {
-      "label": "تحسين",
-      "shorter": "اختصار النص",
-      "longer": "إطالة النص",
-      "tone": "تغيير النبرة",
-      "formal": "رسمية",
-      "casual": "عفوية",
-      "neutral": "محايدة",
-      "custom": "تعليمات مخصصة",
-      "prompt": "التعليمات",
-      "apply": "تطبيق التعليمات",
-      "cancel": "إلغاء",
-      "empty": "أدخل تعليمات.",
-      "failed": "تعذّر تحسين هذا النص. حاول مرة أخرى."
+      "label": "\u062A\u062D\u0633\u064A\u0646",
+      "shorter": "\u0627\u062E\u062A\u0635\u0627\u0631 \u0627\u0644\u0646\u0635",
+      "longer": "\u0625\u0637\u0627\u0644\u0629 \u0627\u0644\u0646\u0635",
+      "tone": "\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0646\u0628\u0631\u0629",
+      "formal": "\u0631\u0633\u0645\u064A\u0629",
+      "casual": "\u0639\u0641\u0648\u064A\u0629",
+      "neutral": "\u0645\u062D\u0627\u064A\u062F\u0629",
+      "custom": "\u062A\u0639\u0644\u064A\u0645\u0627\u062A \u0645\u062E\u0635\u0635\u0629",
+      "prompt": "\u0627\u0644\u062A\u0639\u0644\u064A\u0645\u0627\u062A",
+      "apply": "\u062A\u0637\u0628\u064A\u0642 \u0627\u0644\u062A\u0639\u0644\u064A\u0645\u0627\u062A",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "empty": "\u0623\u062F\u062E\u0644 \u062A\u0639\u0644\u064A\u0645\u0627\u062A.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0633\u064A\u0646 \u0647\u0630\u0627 \u0627\u0644\u0646\u0635. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "suggestedEdit": {
-      "label": "تعديلات مقترحة",
-      "before": "قبل",
-      "after": "بعد",
-      "accept": "قبول",
-      "reject": "رفض",
-      "acceptAll": "قبول الكل",
-      "accepted": "مقبول",
-      "rejected": "مرفوض",
-      "empty": "لا توجد تعديلات مقترحة",
-      "failed": "تعذّر حفظ هذا القرار. حاول مرة أخرى."
+      "label": "\u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0645\u0642\u062A\u0631\u062D\u0629",
+      "before": "\u0642\u0628\u0644",
+      "after": "\u0628\u0639\u062F",
+      "accept": "\u0642\u0628\u0648\u0644",
+      "reject": "\u0631\u0641\u0636",
+      "acceptAll": "\u0642\u0628\u0648\u0644 \u0627\u0644\u0643\u0644",
+      "accepted": "\u0645\u0642\u0628\u0648\u0644",
+      "rejected": "\u0645\u0631\u0641\u0648\u0636",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0645\u0642\u062A\u0631\u062D\u0629",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062D\u0641\u0638 \u0647\u0630\u0627 \u0627\u0644\u0642\u0631\u0627\u0631. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "time": {
-      "now": "الآن"
+      "now": "\u0627\u0644\u0622\u0646"
     },
     "aiExplanation": {
-      "label": "لماذا هذا؟",
-      "title": "شرح الذكاء الاصطناعي",
-      "close": "إغلاق"
+      "label": "\u0644\u0645\u0627\u0630\u0627 \u0647\u0630\u0627\u061F",
+      "title": "\u0634\u0631\u062D \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "accessRequest": {
-      "title": "طلب الوصول",
-      "description": "اطلب من المالك صلاحية الوصول إلى هذا المورد.",
-      "message": "رسالة إلى المالك",
-      "request": "طلب الوصول",
-      "pending": "تم طلب الوصول",
-      "approved": "تمت الموافقة على الوصول",
-      "denied": "تم رفض الوصول",
-      "open": "فتح المورد",
-      "failed": "تعذّر إرسال طلبك. حاول مرة أخرى."
+      "title": "\u0637\u0644\u0628 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "description": "\u0627\u0637\u0644\u0628 \u0645\u0646 \u0627\u0644\u0645\u0627\u0644\u0643 \u0635\u0644\u0627\u062D\u064A\u0629 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0645\u0648\u0631\u062F.",
+      "message": "\u0631\u0633\u0627\u0644\u0629 \u0625\u0644\u0649 \u0627\u0644\u0645\u0627\u0644\u0643",
+      "request": "\u0637\u0644\u0628 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "pending": "\u062A\u0645 \u0637\u0644\u0628 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "approved": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "denied": "\u062A\u0645 \u0631\u0641\u0636 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "open": "\u0641\u062A\u062D \u0627\u0644\u0645\u0648\u0631\u062F",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0625\u0631\u0633\u0627\u0644 \u0637\u0644\u0628\u0643. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "approvalWorkflow": {
-      "approve": "موافقة",
-      "changes": "طلب تعديلات",
-      "reject": "رفض",
-      "comment": "تعليق",
-      "reason": "اشرح سبب الحاجة إلى تعديلات.",
-      "failed": "تعذّر حفظ هذا القرار. تعليقك ما زال محفوظًا.",
-      "steps": "مراحل الموافقة",
-      "recorded": "تم تسجيل القرار"
+      "approve": "\u0645\u0648\u0627\u0641\u0642\u0629",
+      "changes": "\u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A",
+      "reject": "\u0631\u0641\u0636",
+      "comment": "\u062A\u0639\u0644\u064A\u0642",
+      "reason": "\u0627\u0634\u0631\u062D \u0633\u0628\u0628 \u0627\u0644\u062D\u0627\u062C\u0629 \u0625\u0644\u0649 \u062A\u0639\u062F\u064A\u0644\u0627\u062A.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062D\u0641\u0638 \u0647\u0630\u0627 \u0627\u0644\u0642\u0631\u0627\u0631. \u062A\u0639\u0644\u064A\u0642\u0643 \u0645\u0627 \u0632\u0627\u0644 \u0645\u062D\u0641\u0648\u0638\u064B\u0627.",
+      "steps": "\u0645\u0631\u0627\u062D\u0644 \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629",
+      "recorded": "\u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u0642\u0631\u0627\u0631"
     },
     "archiveRestore": {
-      "archive": "أرشفة",
-      "restore": "استعادة",
-      "archived": "مؤرشف",
-      "message": "استعد هذا السجل ليصبح نشطًا مرة أخرى.",
-      "failed": "تعذّر تحديث السجل. حاول مرة أخرى."
+      "archive": "\u0623\u0631\u0634\u0641\u0629",
+      "restore": "\u0627\u0633\u062A\u0639\u0627\u062F\u0629",
+      "archived": "\u0645\u0624\u0631\u0634\u0641",
+      "message": "\u0627\u0633\u062A\u0639\u062F \u0647\u0630\u0627 \u0627\u0644\u0633\u062C\u0644 \u0644\u064A\u0635\u0628\u062D \u0646\u0634\u0637\u064B\u0627 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u062F\u064A\u062B \u0627\u0644\u0633\u062C\u0644. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "assetGallery": {
-      "empty": "لا توجد صور",
-      "preview": "معاينة الصورة"
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0635\u0648\u0631",
+      "preview": "\u0645\u0639\u0627\u064A\u0646\u0629 \u0627\u0644\u0635\u0648\u0631\u0629"
     },
     "auditLog": {
-      "actor": "المنفّذ",
-      "at": "الوقت",
-      "action": "الإجراء",
-      "target": "الهدف",
-      "changes": "التغييرات",
-      "view": "عرض التغييرات",
-      "field": "الحقل",
-      "before": "قبل",
-      "after": "بعد",
-      "close": "إغلاق"
+      "actor": "\u0627\u0644\u0645\u0646\u0641\u0651\u0630",
+      "at": "\u0627\u0644\u0648\u0642\u062A",
+      "action": "\u0627\u0644\u0625\u062C\u0631\u0627\u0621",
+      "target": "\u0627\u0644\u0647\u062F\u0641",
+      "changes": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631\u0627\u062A",
+      "view": "\u0639\u0631\u0636 \u0627\u0644\u062A\u063A\u064A\u064A\u0631\u0627\u062A",
+      "field": "\u0627\u0644\u062D\u0642\u0644",
+      "before": "\u0642\u0628\u0644",
+      "after": "\u0628\u0639\u062F",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "commentThread": {
-      "title": "التعليقات",
-      "reply": "رد",
-      "send": "إرسال الرد",
-      "resolve": "إغلاق النقاش",
-      "reopen": "إعادة فتح النقاش",
-      "resolved": "تمت معالجته",
-      "empty": "أدخل ردًا.",
-      "failed": "تعذّر الحفظ. حاول مرة أخرى."
+      "title": "\u0627\u0644\u062A\u0639\u0644\u064A\u0642\u0627\u062A",
+      "reply": "\u0631\u062F",
+      "send": "\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0631\u062F",
+      "resolve": "\u0625\u063A\u0644\u0627\u0642 \u0627\u0644\u0646\u0642\u0627\u0634",
+      "reopen": "\u0625\u0639\u0627\u062F\u0629 \u0641\u062A\u062D \u0627\u0644\u0646\u0642\u0627\u0634",
+      "resolved": "\u062A\u0645\u062A \u0645\u0639\u0627\u0644\u062C\u062A\u0647",
+      "empty": "\u0623\u062F\u062E\u0644 \u0631\u062F\u064B\u0627.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062D\u0641\u0638. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "downloadManager": {
-      "title": "التنزيلات",
-      "empty": "لا توجد تنزيلات",
-      "queued": "في الانتظار",
-      "progress": "جارٍ التنزيل",
-      "ready": "جاهز",
-      "failed": "فشل التنزيل",
-      "actionFailed": "تعذّر إكمال إجراء التنزيل. حاول مرة أخرى."
+      "title": "\u0627\u0644\u062A\u0646\u0632\u064A\u0644\u0627\u062A",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0646\u0632\u064A\u0644\u0627\u062A",
+      "queued": "\u0641\u064A \u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631",
+      "progress": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u0646\u0632\u064A\u0644",
+      "ready": "\u062C\u0627\u0647\u0632",
+      "failed": "\u0641\u0634\u0644 \u0627\u0644\u062A\u0646\u0632\u064A\u0644",
+      "actionFailed": "\u062A\u0639\u0630\u0651\u0631 \u0625\u0643\u0645\u0627\u0644 \u0625\u062C\u0631\u0627\u0621 \u0627\u0644\u062A\u0646\u0632\u064A\u0644. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "draftState": {
-      "draft": "مسودة",
-      "resume": "استئناف المسودة",
-      "discard": "تجاهل المسودة",
-      "confirm": "تجاهل هذه المسودة؟",
-      "message": "ستُزال هذه المسودة نهائيًا.",
-      "cancel": "الاحتفاظ بالمسودة",
-      "failed": "تعذّر تحديث المسودة. حاول مرة أخرى."
+      "draft": "\u0645\u0633\u0648\u062F\u0629",
+      "resume": "\u0627\u0633\u062A\u0626\u0646\u0627\u0641 \u0627\u0644\u0645\u0633\u0648\u062F\u0629",
+      "discard": "\u062A\u062C\u0627\u0647\u0644 \u0627\u0644\u0645\u0633\u0648\u062F\u0629",
+      "confirm": "\u062A\u062C\u0627\u0647\u0644 \u0647\u0630\u0647 \u0627\u0644\u0645\u0633\u0648\u062F\u0629\u061F",
+      "message": "\u0633\u062A\u064F\u0632\u0627\u0644 \u0647\u0630\u0647 \u0627\u0644\u0645\u0633\u0648\u062F\u0629 \u0646\u0647\u0627\u0626\u064A\u064B\u0627.",
+      "cancel": "\u0627\u0644\u0627\u062D\u062A\u0641\u0627\u0638 \u0628\u0627\u0644\u0645\u0633\u0648\u062F\u0629",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u062F\u064A\u062B \u0627\u0644\u0645\u0633\u0648\u062F\u0629. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649."
     },
     "exportDialog": {
-      "title": "تصدير",
-      "format": "الصيغة",
-      "scope": "النطاق",
-      "all": "كل السجلات",
-      "selection": "السجلات المحددة",
-      "background": "التصدير في الخلفية",
-      "export": "تصدير",
-      "cancel": "إلغاء",
-      "invalid": "اختر صيغة ونطاقًا متاحين.",
-      "failed": "تعذّر التصدير. حاول مرة أخرى.",
-      "ready": "التصدير جاهز",
-      "queued": "التصدير في قائمة الانتظار",
-      "download": "تنزيل ملف التصدير",
-      "done": "تم"
+      "title": "\u062A\u0635\u062F\u064A\u0631",
+      "format": "\u0627\u0644\u0635\u064A\u063A\u0629",
+      "scope": "\u0627\u0644\u0646\u0637\u0627\u0642",
+      "all": "\u0643\u0644 \u0627\u0644\u0633\u062C\u0644\u0627\u062A",
+      "selection": "\u0627\u0644\u0633\u062C\u0644\u0627\u062A \u0627\u0644\u0645\u062D\u062F\u062F\u0629",
+      "background": "\u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0641\u064A \u0627\u0644\u062E\u0644\u0641\u064A\u0629",
+      "export": "\u062A\u0635\u062F\u064A\u0631",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "invalid": "\u0627\u062E\u062A\u0631 \u0635\u064A\u063A\u0629 \u0648\u0646\u0637\u0627\u0642\u064B\u0627 \u0645\u062A\u0627\u062D\u064A\u0646.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062A\u0635\u062F\u064A\u0631. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "ready": "\u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u062C\u0627\u0647\u0632",
+      "queued": "\u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0641\u064A \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631",
+      "download": "\u062A\u0646\u0632\u064A\u0644 \u0645\u0644\u0641 \u0627\u0644\u062A\u0635\u062F\u064A\u0631",
+      "done": "\u062A\u0645"
     },
     "featureIntro": {
-      "new": "جديد",
-      "whatsNew": "ما الجديد",
-      "gotIt": "فهمت",
-      "later": "ليس الآن",
-      "close": "إغلاق"
+      "new": "\u062C\u062F\u064A\u062F",
+      "whatsNew": "\u0645\u0627 \u0627\u0644\u062C\u062F\u064A\u062F",
+      "gotIt": "\u0641\u0647\u0645\u062A",
+      "later": "\u0644\u064A\u0633 \u0627\u0644\u0622\u0646",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "filterPanel": {
-      "label": "تصفية",
-      "info": "تُعرض فقط السجلات التي تستوفي الشروط؛ والشرط غير المكتمل لا يؤثر في التصفية.",
-      "sub": "في هذا العرض، أظهر السجلات",
-      "where": "حيث",
-      "and": "و",
-      "or": "أو",
-      "empty": "لا شروط: تُعرض كل السجلات.",
-      "addCondition": "إضافة شرط",
-      "addGroup": "إضافة مجموعة شروط",
-      "remove": "إزالة {what}",
-      "condition": "شرط",
-      "group": "مجموعة شروط",
-      "value": "أدخل قيمة",
-      "choose": "اختر خيارات",
-      "field": "الحقل",
-      "operator": "العامل",
-      "join": "و أو أو",
-      "moved": "تم نقل {name} إلى الموضع {position} من {total}",
-      "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
-      "reorder": "إعادة ترتيب {name}",
-      "moveUp": "نقل لأعلى",
-      "moveDown": "نقل لأسفل"
+      "label": "\u062A\u0635\u0641\u064A\u0629",
+      "info": "\u062A\u064F\u0639\u0631\u0636 \u0641\u0642\u0637 \u0627\u0644\u0633\u062C\u0644\u0627\u062A \u0627\u0644\u062A\u064A \u062A\u0633\u062A\u0648\u0641\u064A \u0627\u0644\u0634\u0631\u0648\u0637\u061B \u0648\u0627\u0644\u0634\u0631\u0637 \u063A\u064A\u0631 \u0627\u0644\u0645\u0643\u062A\u0645\u0644 \u0644\u0627 \u064A\u0624\u062B\u0631 \u0641\u064A \u0627\u0644\u062A\u0635\u0641\u064A\u0629.",
+      "sub": "\u0641\u064A \u0647\u0630\u0627 \u0627\u0644\u0639\u0631\u0636\u060C \u0623\u0638\u0647\u0631 \u0627\u0644\u0633\u062C\u0644\u0627\u062A",
+      "where": "\u062D\u064A\u062B",
+      "and": "\u0648",
+      "or": "\u0623\u0648",
+      "empty": "\u0644\u0627 \u0634\u0631\u0648\u0637: \u062A\u064F\u0639\u0631\u0636 \u0643\u0644 \u0627\u0644\u0633\u062C\u0644\u0627\u062A.",
+      "addCondition": "\u0625\u0636\u0627\u0641\u0629 \u0634\u0631\u0637",
+      "addGroup": "\u0625\u0636\u0627\u0641\u0629 \u0645\u062C\u0645\u0648\u0639\u0629 \u0634\u0631\u0648\u0637",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {what}",
+      "condition": "\u0634\u0631\u0637",
+      "group": "\u0645\u062C\u0645\u0648\u0639\u0629 \u0634\u0631\u0648\u0637",
+      "value": "\u0623\u062F\u062E\u0644 \u0642\u064A\u0645\u0629",
+      "choose": "\u0627\u062E\u062A\u0631 \u062E\u064A\u0627\u0631\u0627\u062A",
+      "field": "\u0627\u0644\u062D\u0642\u0644",
+      "operator": "\u0627\u0644\u0639\u0627\u0645\u0644",
+      "join": "\u0648 \u0623\u0648 \u0623\u0648",
+      "moved": "\u062A\u0645 \u0646\u0642\u0644 {name} \u0625\u0644\u0649 \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "row": "{name}\u060C {position} \u0645\u0646 {total}. \u0627\u0644\u0645\u0641\u062A\u0627\u062D\u0627\u0646 Alt + \u0627\u0644\u0633\u0647\u0645 \u0644\u0623\u0639\u0644\u0649 \u0623\u0648 \u0644\u0623\u0633\u0641\u0644 \u064A\u0646\u0642\u0644\u0627\u0646\u0647",
+      "reorder": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0631\u062A\u064A\u0628 {name}",
+      "moveUp": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "moveDown": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644"
     },
     "formFlow": {
-      "create": "إنشاء",
-      "save": "حفظ التغييرات",
-      "cancel": "إلغاء",
-      "failed": "تعذّر الحفظ. حاول مرة أخرى.",
-      "invalid": "تحقق من الحقول قبل الحفظ.",
-      "saved": "تم الحفظ",
-      "unsaved": "ستفقد تغييراتك.",
-      "close": "إغلاق"
+      "create": "\u0625\u0646\u0634\u0627\u0621",
+      "save": "\u062D\u0641\u0638 \u0627\u0644\u062A\u063A\u064A\u064A\u0631\u0627\u062A",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062D\u0641\u0638. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "invalid": "\u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u062D\u0642\u0648\u0644 \u0642\u0628\u0644 \u0627\u0644\u062D\u0641\u0638.",
+      "saved": "\u062A\u0645 \u0627\u0644\u062D\u0641\u0638",
+      "unsaved": "\u0633\u062A\u0641\u0642\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643.",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "groupPanel": {
-      "label": "المجموعة",
-      "title": "التجميع حسب",
-      "info": "تُجمَّع الصفوف ذات القيمة نفسها تحت عنوان واحد؛ والمجموعة الفرعية تقسّم كل مجموعة مرة أخرى.",
-      "empty": "اجمع الصفوف التي تشترك في قيمة تحت عنوان واحد.",
-      "add": "إضافة مجموعة",
-      "addSub": "إضافة مجموعة فرعية",
-      "collapseAll": "طيّ الكل",
-      "expandAll": "توسيع الكل",
-      "more": "المزيد لـ {name}",
-      "hideEmpty": "إخفاء المجموعات الفارغة",
-      "remove": "إزالة التجميع حسب {name}",
-      "removeTip": "إزالة المجموعة",
-      "field": "الحقل",
-      "order": "الترتيب",
-      "moved": "تم نقل {name} إلى الموضع {position} من {total}",
-      "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
-      "reorder": "إعادة ترتيب {name}",
-      "moveUp": "نقل لأعلى",
-      "moveDown": "نقل لأسفل"
+      "label": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+      "title": "\u0627\u0644\u062A\u062C\u0645\u064A\u0639 \u062D\u0633\u0628",
+      "info": "\u062A\u064F\u062C\u0645\u064E\u0651\u0639 \u0627\u0644\u0635\u0641\u0648\u0641 \u0630\u0627\u062A \u0627\u0644\u0642\u064A\u0645\u0629 \u0646\u0641\u0633\u0647\u0627 \u062A\u062D\u062A \u0639\u0646\u0648\u0627\u0646 \u0648\u0627\u062D\u062F\u061B \u0648\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629 \u0627\u0644\u0641\u0631\u0639\u064A\u0629 \u062A\u0642\u0633\u0651\u0645 \u0643\u0644 \u0645\u062C\u0645\u0648\u0639\u0629 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "empty": "\u0627\u062C\u0645\u0639 \u0627\u0644\u0635\u0641\u0648\u0641 \u0627\u0644\u062A\u064A \u062A\u0634\u062A\u0631\u0643 \u0641\u064A \u0642\u064A\u0645\u0629 \u062A\u062D\u062A \u0639\u0646\u0648\u0627\u0646 \u0648\u0627\u062D\u062F.",
+      "add": "\u0625\u0636\u0627\u0641\u0629 \u0645\u062C\u0645\u0648\u0639\u0629",
+      "addSub": "\u0625\u0636\u0627\u0641\u0629 \u0645\u062C\u0645\u0648\u0639\u0629 \u0641\u0631\u0639\u064A\u0629",
+      "collapseAll": "\u0637\u064A\u0651 \u0627\u0644\u0643\u0644",
+      "expandAll": "\u062A\u0648\u0633\u064A\u0639 \u0627\u0644\u0643\u0644",
+      "more": "\u0627\u0644\u0645\u0632\u064A\u062F \u0644\u0640 {name}",
+      "hideEmpty": "\u0625\u062E\u0641\u0627\u0621 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0627\u062A \u0627\u0644\u0641\u0627\u0631\u063A\u0629",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u062A\u062C\u0645\u064A\u0639 \u062D\u0633\u0628 {name}",
+      "removeTip": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629",
+      "field": "\u0627\u0644\u062D\u0642\u0644",
+      "order": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628",
+      "moved": "\u062A\u0645 \u0646\u0642\u0644 {name} \u0625\u0644\u0649 \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "row": "{name}\u060C {position} \u0645\u0646 {total}. \u0627\u0644\u0645\u0641\u062A\u0627\u062D\u0627\u0646 Alt + \u0627\u0644\u0633\u0647\u0645 \u0644\u0623\u0639\u0644\u0649 \u0623\u0648 \u0644\u0623\u0633\u0641\u0644 \u064A\u0646\u0642\u0644\u0627\u0646\u0647",
+      "reorder": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0631\u062A\u064A\u0628 {name}",
+      "moveUp": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "moveDown": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644"
     },
     "helpPanel": {
-      "title": "مساعدة",
-      "search": "البحث في المساعدة",
-      "empty": "لا توجد مقالات مطابقة",
-      "back": "العودة إلى المقالات",
-      "read": "قراءة المقال كاملًا",
-      "close": "طيّ المساعدة"
+      "title": "\u0645\u0633\u0627\u0639\u062F\u0629",
+      "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0645\u0633\u0627\u0639\u062F\u0629",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0642\u0627\u0644\u0627\u062A \u0645\u0637\u0627\u0628\u0642\u0629",
+      "back": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0645\u0642\u0627\u0644\u0627\u062A",
+      "read": "\u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u0645\u0642\u0627\u0644 \u0643\u0627\u0645\u0644\u064B\u0627",
+      "close": "\u0637\u064A\u0651 \u0627\u0644\u0645\u0633\u0627\u0639\u062F\u0629"
     },
     "imageAnnotation": {
-      "title": "تعليقات توضيحية على الصورة",
-      "pin": "تثبيت",
-      "region": "المنطقة",
-      "location": "الموقع",
-      "comment": "تعليق",
-      "kind": "نوع التعليق التوضيحي",
-      "add": "إضافة تعليق توضيحي",
-      "empty": "أدخل موقعًا وتعليقًا.",
-      "failed": "تعذّر الحفظ. حاول مرة أخرى.",
-      "none": "لا توجد تعليقات توضيحية"
+      "title": "\u062A\u0639\u0644\u064A\u0642\u0627\u062A \u062A\u0648\u0636\u064A\u062D\u064A\u0629 \u0639\u0644\u0649 \u0627\u0644\u0635\u0648\u0631\u0629",
+      "pin": "\u062A\u062B\u0628\u064A\u062A",
+      "region": "\u0627\u0644\u0645\u0646\u0637\u0642\u0629",
+      "location": "\u0627\u0644\u0645\u0648\u0642\u0639",
+      "comment": "\u062A\u0639\u0644\u064A\u0642",
+      "kind": "\u0646\u0648\u0639 \u0627\u0644\u062A\u0639\u0644\u064A\u0642 \u0627\u0644\u062A\u0648\u0636\u064A\u062D\u064A",
+      "add": "\u0625\u0636\u0627\u0641\u0629 \u062A\u0639\u0644\u064A\u0642 \u062A\u0648\u0636\u064A\u062D\u064A",
+      "empty": "\u0623\u062F\u062E\u0644 \u0645\u0648\u0642\u0639\u064B\u0627 \u0648\u062A\u0639\u0644\u064A\u0642\u064B\u0627.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062D\u0641\u0638. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "none": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0639\u0644\u064A\u0642\u0627\u062A \u062A\u0648\u0636\u064A\u062D\u064A\u0629"
     },
     "importDialog": {
-      "title": "استيراد",
-      "file": "ملف",
-      "paste": "لصق البيانات",
-      "url": "رابط URL",
-      "choose": "اختر الملف المصدر",
-      "drop": "أفلت ملفًا هنا أو اخترْه أدناه.",
-      "none": "لم يتم اختيار ملف",
-      "import": "استيراد",
-      "cancel": "إلغاء",
-      "invalid": "اختر ملفًا مدعومًا أو الصق بيانات أو أدخل رابط HTTP.",
-      "failed": "تعذّر الاستيراد. مصدرك ما زال متاحًا.",
-      "unsaved": "سيُفقد مصدر الاستيراد."
+      "title": "\u0627\u0633\u062A\u064A\u0631\u0627\u062F",
+      "file": "\u0645\u0644\u0641",
+      "paste": "\u0644\u0635\u0642 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A",
+      "url": "\u0631\u0627\u0628\u0637 URL",
+      "choose": "\u0627\u062E\u062A\u0631 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0645\u0635\u062F\u0631",
+      "drop": "\u0623\u0641\u0644\u062A \u0645\u0644\u0641\u064B\u0627 \u0647\u0646\u0627 \u0623\u0648 \u0627\u062E\u062A\u0631\u0652\u0647 \u0623\u062F\u0646\u0627\u0647.",
+      "none": "\u0644\u0645 \u064A\u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0644\u0641",
+      "import": "\u0627\u0633\u062A\u064A\u0631\u0627\u062F",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "invalid": "\u0627\u062E\u062A\u0631 \u0645\u0644\u0641\u064B\u0627 \u0645\u062F\u0639\u0648\u0645\u064B\u0627 \u0623\u0648 \u0627\u0644\u0635\u0642 \u0628\u064A\u0627\u0646\u0627\u062A \u0623\u0648 \u0623\u062F\u062E\u0644 \u0631\u0627\u0628\u0637 HTTP.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u0627\u0633\u062A\u064A\u0631\u0627\u062F. \u0645\u0635\u062F\u0631\u0643 \u0645\u0627 \u0632\u0627\u0644 \u0645\u062A\u0627\u062D\u064B\u0627.",
+      "unsaved": "\u0633\u064A\u064F\u0641\u0642\u062F \u0645\u0635\u062F\u0631 \u0627\u0644\u0627\u0633\u062A\u064A\u0631\u0627\u062F."
     },
     "importWizard": {
-      "title": "استيراد السجلات",
-      "mapping": "مطابقة الأعمدة",
-      "review": "مراجعة",
-      "results": "النتائج",
-      "column": "عمود المصدر",
-      "choose": "اختر عمودًا",
-      "missing": "طابق كل الحقول المطلوبة.",
-      "invalid": "لا يحتوي المصدر على أعمدة أو صفوف صالحة للاستخدام.",
-      "done": "تم",
-      "imported": "اكتمل الاستيراد",
-      "source": "المصدر",
-      "cancel": "إلغاء",
-      "unsaved": "ستُفقد مطابقة الاستيراد."
+      "title": "\u0627\u0633\u062A\u064A\u0631\u0627\u062F \u0627\u0644\u0633\u062C\u0644\u0627\u062A",
+      "mapping": "\u0645\u0637\u0627\u0628\u0642\u0629 \u0627\u0644\u0623\u0639\u0645\u062F\u0629",
+      "review": "\u0645\u0631\u0627\u062C\u0639\u0629",
+      "results": "\u0627\u0644\u0646\u062A\u0627\u0626\u062C",
+      "column": "\u0639\u0645\u0648\u062F \u0627\u0644\u0645\u0635\u062F\u0631",
+      "choose": "\u0627\u062E\u062A\u0631 \u0639\u0645\u0648\u062F\u064B\u0627",
+      "missing": "\u0637\u0627\u0628\u0642 \u0643\u0644 \u0627\u0644\u062D\u0642\u0648\u0644 \u0627\u0644\u0645\u0637\u0644\u0648\u0628\u0629.",
+      "invalid": "\u0644\u0627 \u064A\u062D\u062A\u0648\u064A \u0627\u0644\u0645\u0635\u062F\u0631 \u0639\u0644\u0649 \u0623\u0639\u0645\u062F\u0629 \u0623\u0648 \u0635\u0641\u0648\u0641 \u0635\u0627\u0644\u062D\u0629 \u0644\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645.",
+      "done": "\u062A\u0645",
+      "imported": "\u0627\u0643\u062A\u0645\u0644 \u0627\u0644\u0627\u0633\u062A\u064A\u0631\u0627\u062F",
+      "source": "\u0627\u0644\u0645\u0635\u062F\u0631",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "unsaved": "\u0633\u062A\u064F\u0641\u0642\u062F \u0645\u0637\u0627\u0628\u0642\u0629 \u0627\u0644\u0627\u0633\u062A\u064A\u0631\u0627\u062F."
     },
     "metadataEditor": {
-      "save": "حفظ البيانات الوصفية",
-      "reset": "إعادة ضبط",
-      "apply": "تطبيق {field}",
-      "required": "أدخل قيمة.",
-      "failed": "تعذّر حفظ البيانات الوصفية. تغييراتك ما زالت متاحة.",
-      "saved": "تم حفظ البيانات الوصفية",
-      "unsaved": "ستُفقد تغييرات البيانات الوصفية."
+      "save": "\u062D\u0641\u0638 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0648\u0635\u0641\u064A\u0629",
+      "reset": "\u0625\u0639\u0627\u062F\u0629 \u0636\u0628\u0637",
+      "apply": "\u062A\u0637\u0628\u064A\u0642 {field}",
+      "required": "\u0623\u062F\u062E\u0644 \u0642\u064A\u0645\u0629.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062D\u0641\u0638 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0648\u0635\u0641\u064A\u0629. \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643 \u0645\u0627 \u0632\u0627\u0644\u062A \u0645\u062A\u0627\u062D\u0629.",
+      "saved": "\u062A\u0645 \u062D\u0641\u0638 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0648\u0635\u0641\u064A\u0629",
+      "unsaved": "\u0633\u062A\u064F\u0641\u0642\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u0648\u0635\u0641\u064A\u0629."
     },
     "onboarding": {
-      "start": "ابدأ",
-      "skip": "تخطّي الترحيب",
-      "tour": "جولة تعريفية",
-      "checklist": "ابدأ",
-      "close": "إغلاق"
+      "start": "\u0627\u0628\u062F\u0623",
+      "skip": "\u062A\u062E\u0637\u0651\u064A \u0627\u0644\u062A\u0631\u062D\u064A\u0628",
+      "tour": "\u062C\u0648\u0644\u0629 \u062A\u0639\u0631\u064A\u0641\u064A\u0629",
+      "checklist": "\u0627\u0628\u062F\u0623",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "permissionsEditor": {
-      "label": "الصلاحيات",
-      "capability": "الإمكانية",
-      "subject": "عرض الصلاحيات لـ",
-      "save": "حفظ الصلاحيات",
-      "failed": "تعذّر حفظ الصلاحيات. حاول مرة أخرى.",
-      "unsaved": "لم يتم حفظ تغييرات الصلاحيات."
+      "label": "\u0627\u0644\u0635\u0644\u0627\u062D\u064A\u0627\u062A",
+      "capability": "\u0627\u0644\u0625\u0645\u0643\u0627\u0646\u064A\u0629",
+      "subject": "\u0639\u0631\u0636 \u0627\u0644\u0635\u0644\u0627\u062D\u064A\u0627\u062A \u0644\u0640",
+      "save": "\u062D\u0641\u0638 \u0627\u0644\u0635\u0644\u0627\u062D\u064A\u0627\u062A",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062D\u0641\u0638 \u0627\u0644\u0635\u0644\u0627\u062D\u064A\u0627\u062A. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "unsaved": "\u0644\u0645 \u064A\u062A\u0645 \u062D\u0641\u0638 \u062A\u063A\u064A\u064A\u0631\u0627\u062A \u0627\u0644\u0635\u0644\u0627\u062D\u064A\u0627\u062A."
     },
     "presenceBar": {
-      "viewers": "يعرض",
-      "editors": "يحرّر",
-      "cursors": "المؤشرات",
-      "empty": "لا أحد غيرك هنا",
-      "view": "عرض الشخص"
+      "viewers": "\u064A\u0639\u0631\u0636",
+      "editors": "\u064A\u062D\u0631\u0651\u0631",
+      "cursors": "\u0627\u0644\u0645\u0624\u0634\u0631\u0627\u062A",
+      "empty": "\u0644\u0627 \u0623\u062D\u062F \u063A\u064A\u0631\u0643 \u0647\u0646\u0627",
+      "view": "\u0639\u0631\u0636 \u0627\u0644\u0634\u062E\u0635"
     },
     "quickFilter": {
-      "preset": "أي",
-      "find": "ابحث عن {noun}",
-      "none": "لا يوجد {noun} مطابق",
-      "clear": "مسح",
-      "all": "الكل",
-      "custom": "نطاق مخصص",
-      "from": "من",
-      "to": "إلى"
+      "preset": "\u0623\u064A",
+      "find": "\u0627\u0628\u062D\u062B \u0639\u0646 {noun}",
+      "none": "\u0644\u0627 \u064A\u0648\u062C\u062F {noun} \u0645\u0637\u0627\u0628\u0642",
+      "clear": "\u0645\u0633\u062D",
+      "all": "\u0627\u0644\u0643\u0644",
+      "custom": "\u0646\u0637\u0627\u0642 \u0645\u062E\u0635\u0635",
+      "from": "\u0645\u0646",
+      "to": "\u0625\u0644\u0649"
     },
     "relatedAssets": {
-      "empty": "لا توجد أصول مرتبطة"
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0623\u0635\u0648\u0644 \u0645\u0631\u062A\u0628\u0637\u0629"
     },
     "saveAs": {
-      "title": "حفظ باسم",
-      "name": "الاسم",
-      "location": "الموقع",
-      "format": "الصيغة",
-      "save": "حفظ نسخة",
-      "cancel": "إلغاء",
-      "required": "أدخل اسمًا واختر موقعًا.",
-      "failed": "تعذّر حفظ النسخة. حاول مرة أخرى.",
-      "unsaved": "ستفقد تغييراتك."
+      "title": "\u062D\u0641\u0638 \u0628\u0627\u0633\u0645",
+      "name": "\u0627\u0644\u0627\u0633\u0645",
+      "location": "\u0627\u0644\u0645\u0648\u0642\u0639",
+      "format": "\u0627\u0644\u0635\u064A\u063A\u0629",
+      "save": "\u062D\u0641\u0638 \u0646\u0633\u062E\u0629",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "required": "\u0623\u062F\u062E\u0644 \u0627\u0633\u0645\u064B\u0627 \u0648\u0627\u062E\u062A\u0631 \u0645\u0648\u0642\u0639\u064B\u0627.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062D\u0641\u0638 \u0627\u0644\u0646\u0633\u062E\u0629. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "unsaved": "\u0633\u062A\u0641\u0642\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643."
     },
     "shareDialog": {
-      "title": "الحصة",
-      "people": "الأشخاص",
-      "link": "رابط",
-      "person": "الشخص",
-      "role": "الدور",
-      "add": "إضافة شخص",
-      "remove": "إزالة",
-      "save": "حفظ الوصول",
-      "cancel": "إلغاء",
-      "copy": "نسخ الرابط",
-      "access": "الوصول عبر الرابط",
-      "restricted": "فقط من لديهم صلاحية الوصول",
-      "anyone": "يمكن لأي شخص لديه الرابط العرض",
-      "nativeShare": "المشاركة عبر الجهاز",
-      "failed": "تعذّرت المشاركة. حاول مرة أخرى.",
-      "invalid": "اختر شخصًا ودورًا متاحًا.",
-      "unsaved": "ستُفقد تغييرات الوصول."
+      "title": "\u0627\u0644\u062D\u0635\u0629",
+      "people": "\u0627\u0644\u0623\u0634\u062E\u0627\u0635",
+      "link": "\u0631\u0627\u0628\u0637",
+      "person": "\u0627\u0644\u0634\u062E\u0635",
+      "role": "\u0627\u0644\u062F\u0648\u0631",
+      "add": "\u0625\u0636\u0627\u0641\u0629 \u0634\u062E\u0635",
+      "remove": "\u0625\u0632\u0627\u0644\u0629",
+      "save": "\u062D\u0641\u0638 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "copy": "\u0646\u0633\u062E \u0627\u0644\u0631\u0627\u0628\u0637",
+      "access": "\u0627\u0644\u0648\u0635\u0648\u0644 \u0639\u0628\u0631 \u0627\u0644\u0631\u0627\u0628\u0637",
+      "restricted": "\u0641\u0642\u0637 \u0645\u0646 \u0644\u062F\u064A\u0647\u0645 \u0635\u0644\u0627\u062D\u064A\u0629 \u0627\u0644\u0648\u0635\u0648\u0644",
+      "anyone": "\u064A\u0645\u0643\u0646 \u0644\u0623\u064A \u0634\u062E\u0635 \u0644\u062F\u064A\u0647 \u0627\u0644\u0631\u0627\u0628\u0637 \u0627\u0644\u0639\u0631\u0636",
+      "nativeShare": "\u0627\u0644\u0645\u0634\u0627\u0631\u0643\u0629 \u0639\u0628\u0631 \u0627\u0644\u062C\u0647\u0627\u0632",
+      "failed": "\u062A\u0639\u0630\u0651\u0631\u062A \u0627\u0644\u0645\u0634\u0627\u0631\u0643\u0629. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "invalid": "\u0627\u062E\u062A\u0631 \u0634\u062E\u0635\u064B\u0627 \u0648\u062F\u0648\u0631\u064B\u0627 \u0645\u062A\u0627\u062D\u064B\u0627.",
+      "unsaved": "\u0633\u062A\u064F\u0641\u0642\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A \u0627\u0644\u0648\u0635\u0648\u0644."
     },
     "shortcutsDialog": {
-      "title": "اختصارات لوحة المفاتيح",
-      "search": "البحث في الاختصارات",
-      "general": "عام",
-      "empty": "لا توجد اختصارات مطابقة",
-      "close": "إغلاق"
+      "title": "\u0627\u062E\u062A\u0635\u0627\u0631\u0627\u062A \u0644\u0648\u062D\u0629 \u0627\u0644\u0645\u0641\u0627\u062A\u064A\u062D",
+      "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0627\u062E\u062A\u0635\u0627\u0631\u0627\u062A",
+      "general": "\u0639\u0627\u0645",
+      "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0627\u062E\u062A\u0635\u0627\u0631\u0627\u062A \u0645\u0637\u0627\u0628\u0642\u0629",
+      "close": "\u0625\u063A\u0644\u0627\u0642"
     },
     "sortPanel": {
-      "label": "ترتيب",
-      "title": "الترتيب حسب",
-      "within": "الترتيب داخل المجموعات حسب",
-      "info": "تُرتَّب الصفوف حسب الحقل الأول، ثم حسب الحقل التالي عند تساوي الأول.",
-      "empty": "لا ترتيب: تحتفظ الصفوف بترتيبها.",
-      "add": "إضافة ترتيب",
-      "addAnother": "إضافة ترتيب آخر",
-      "remove": "إزالة الترتيب حسب {name}",
-      "removeTip": "إزالة الترتيب",
-      "field": "الحقل",
-      "direction": "الاتجاه",
-      "moved": "تم نقل {name} إلى الموضع {position} من {total}",
-      "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
-      "reorder": "إعادة ترتيب {name}",
-      "moveUp": "نقل لأعلى",
-      "moveDown": "نقل لأسفل"
+      "label": "\u062A\u0631\u062A\u064A\u0628",
+      "title": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628 \u062D\u0633\u0628",
+      "within": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628 \u062F\u0627\u062E\u0644 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0627\u062A \u062D\u0633\u0628",
+      "info": "\u062A\u064F\u0631\u062A\u064E\u0651\u0628 \u0627\u0644\u0635\u0641\u0648\u0641 \u062D\u0633\u0628 \u0627\u0644\u062D\u0642\u0644 \u0627\u0644\u0623\u0648\u0644\u060C \u062B\u0645 \u062D\u0633\u0628 \u0627\u0644\u062D\u0642\u0644 \u0627\u0644\u062A\u0627\u0644\u064A \u0639\u0646\u062F \u062A\u0633\u0627\u0648\u064A \u0627\u0644\u0623\u0648\u0644.",
+      "empty": "\u0644\u0627 \u062A\u0631\u062A\u064A\u0628: \u062A\u062D\u062A\u0641\u0638 \u0627\u0644\u0635\u0641\u0648\u0641 \u0628\u062A\u0631\u062A\u064A\u0628\u0647\u0627.",
+      "add": "\u0625\u0636\u0627\u0641\u0629 \u062A\u0631\u062A\u064A\u0628",
+      "addAnother": "\u0625\u0636\u0627\u0641\u0629 \u062A\u0631\u062A\u064A\u0628 \u0622\u062E\u0631",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u062A\u0631\u062A\u064A\u0628 \u062D\u0633\u0628 {name}",
+      "removeTip": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u062A\u0631\u062A\u064A\u0628",
+      "field": "\u0627\u0644\u062D\u0642\u0644",
+      "direction": "\u0627\u0644\u0627\u062A\u062C\u0627\u0647",
+      "moved": "\u062A\u0645 \u0646\u0642\u0644 {name} \u0625\u0644\u0649 \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "row": "{name}\u060C {position} \u0645\u0646 {total}. \u0627\u0644\u0645\u0641\u062A\u0627\u062D\u0627\u0646 Alt + \u0627\u0644\u0633\u0647\u0645 \u0644\u0623\u0639\u0644\u0649 \u0623\u0648 \u0644\u0623\u0633\u0641\u0644 \u064A\u0646\u0642\u0644\u0627\u0646\u0647",
+      "reorder": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0631\u062A\u064A\u0628 {name}",
+      "moveUp": "\u0646\u0642\u0644 \u0644\u0623\u0639\u0644\u0649",
+      "moveDown": "\u0646\u0642\u0644 \u0644\u0623\u0633\u0641\u0644"
     },
     "tour": {
-      "next": "التالي",
-      "back": "رجوع",
-      "finish": "إنهاء الجولة",
-      "skip": "تخطّي الجولة",
-      "resume": "استئناف الجولة",
-      "close": "إغلاق",
-      "step": "{current} من {total}"
+      "next": "\u0627\u0644\u062A\u0627\u0644\u064A",
+      "back": "\u0631\u062C\u0648\u0639",
+      "finish": "\u0625\u0646\u0647\u0627\u0621 \u0627\u0644\u062C\u0648\u0644\u0629",
+      "skip": "\u062A\u062E\u0637\u0651\u064A \u0627\u0644\u062C\u0648\u0644\u0629",
+      "resume": "\u0627\u0633\u062A\u0626\u0646\u0627\u0641 \u0627\u0644\u062C\u0648\u0644\u0629",
+      "close": "\u0625\u063A\u0644\u0627\u0642",
+      "step": "{current} \u0645\u0646 {total}"
     },
     "trialUpgrade": {
-      "trial": "تجربة",
-      "compare": "مقارنة الخطط",
-      "title": "اختر خطة",
-      "plan": "الخطة",
-      "upgrade": "ترقية",
-      "cancel": "إلغاء",
-      "failed": "تعذّرت الترقية. حاول مرة أخرى.",
-      "upgraded": "تم تحديث الخطة"
+      "trial": "\u062A\u062C\u0631\u0628\u0629",
+      "compare": "\u0645\u0642\u0627\u0631\u0646\u0629 \u0627\u0644\u062E\u0637\u0637",
+      "title": "\u0627\u062E\u062A\u0631 \u062E\u0637\u0629",
+      "plan": "\u0627\u0644\u062E\u0637\u0629",
+      "upgrade": "\u062A\u0631\u0642\u064A\u0629",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "failed": "\u062A\u0639\u0630\u0651\u0631\u062A \u0627\u0644\u062A\u0631\u0642\u064A\u0629. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "upgraded": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062B \u0627\u0644\u062E\u0637\u0629"
     },
     "wizard": {
-      "back": "رجوع",
-      "next": "التالي",
-      "complete": "إنهاء",
-      "cancel": "إلغاء",
-      "summary": "مراجعة",
-      "invalid": "تحقق من هذه الخطوة قبل المتابعة.",
-      "failed": "تعذّر الحفظ. حاول مرة أخرى.",
-      "steps": "الخطوات"
+      "back": "\u0631\u062C\u0648\u0639",
+      "next": "\u0627\u0644\u062A\u0627\u0644\u064A",
+      "complete": "\u0625\u0646\u0647\u0627\u0621",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "summary": "\u0645\u0631\u0627\u062C\u0639\u0629",
+      "invalid": "\u062A\u062D\u0642\u0642 \u0645\u0646 \u0647\u0630\u0647 \u0627\u0644\u062E\u0637\u0648\u0629 \u0642\u0628\u0644 \u0627\u0644\u0645\u062A\u0627\u0628\u0639\u0629.",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u0627\u0644\u062D\u0641\u0638. \u062D\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+      "steps": "\u0627\u0644\u062E\u0637\u0648\u0627\u062A"
     },
     "wizardDialog": {
-      "close": "إغلاق",
-      "unsaved": "ستفقد تغييراتك."
+      "close": "\u0625\u063A\u0644\u0627\u0642",
+      "unsaved": "\u0633\u062A\u0641\u0642\u062F \u062A\u063A\u064A\u064A\u0631\u0627\u062A\u0643."
     },
     "breadcrumbs": {
-      "label": "مسار التنقل"
+      "label": "\u0645\u0633\u0627\u0631 \u0627\u0644\u062A\u0646\u0642\u0644"
     },
     "colorSwatch": {
-      "label": "اللون",
-      "more": "ألوان أخرى",
-      "moreChosen": "ألوان أخرى، تم اختيار {name}",
+      "label": "\u0627\u0644\u0644\u0648\u0646",
+      "more": "\u0623\u0644\u0648\u0627\u0646 \u0623\u062E\u0631\u0649",
+      "moreChosen": "\u0623\u0644\u0648\u0627\u0646 \u0623\u062E\u0631\u0649\u060C \u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631 {name}",
       "colors": {
-        "red": "أحمر",
-        "green": "أخضر",
-        "yellow": "أصفر",
-        "blue": "أزرق",
-        "orange": "برتقالي",
-        "purple": "بنفسجي",
-        "cyan": "سماوي",
-        "magenta": "أرجواني",
-        "lime": "ليموني",
-        "pink": "وردي",
-        "teal": "أزرق مخضر",
-        "lavender": "خزامي",
-        "beige": "بيج",
-        "maroon": "عنابي",
-        "mint": "نعناعي",
-        "olive": "زيتوني",
-        "apricot": "مشمشي",
-        "navy": "كحلي",
-        "grey": "رمادي",
-        "brown": "بني",
-        "gray": "رمادي"
+        "red": "\u0623\u062D\u0645\u0631",
+        "green": "\u0623\u062E\u0636\u0631",
+        "yellow": "\u0623\u0635\u0641\u0631",
+        "blue": "\u0623\u0632\u0631\u0642",
+        "orange": "\u0628\u0631\u062A\u0642\u0627\u0644\u064A",
+        "purple": "\u0628\u0646\u0641\u0633\u062C\u064A",
+        "cyan": "\u0633\u0645\u0627\u0648\u064A",
+        "magenta": "\u0623\u0631\u062C\u0648\u0627\u0646\u064A",
+        "lime": "\u0644\u064A\u0645\u0648\u0646\u064A",
+        "pink": "\u0648\u0631\u062F\u064A",
+        "teal": "\u0623\u0632\u0631\u0642 \u0645\u062E\u0636\u0631",
+        "lavender": "\u062E\u0632\u0627\u0645\u064A",
+        "beige": "\u0628\u064A\u062C",
+        "maroon": "\u0639\u0646\u0627\u0628\u064A",
+        "mint": "\u0646\u0639\u0646\u0627\u0639\u064A",
+        "olive": "\u0632\u064A\u062A\u0648\u0646\u064A",
+        "apricot": "\u0645\u0634\u0645\u0634\u064A",
+        "navy": "\u0643\u062D\u0644\u064A",
+        "grey": "\u0631\u0645\u0627\u062F\u064A",
+        "brown": "\u0628\u0646\u064A",
+        "gray": "\u0631\u0645\u0627\u062F\u064A"
       }
     },
     "dialog": {
-      "close": "إغلاق",
-      "confirmLabel": "حفظ",
-      "cancelLabel": "إلغاء",
-      "confirm": "تأكيد",
-      "cancel": "إلغاء",
-      "save": "حفظ"
+      "close": "\u0625\u063A\u0644\u0627\u0642",
+      "confirmLabel": "\u062D\u0641\u0638",
+      "cancelLabel": "\u0625\u0644\u063A\u0627\u0621",
+      "confirm": "\u062A\u0623\u0643\u064A\u062F",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "save": "\u062D\u0641\u0638"
     },
     "loading": {
-      "label": "جارٍ التحميل"
+      "label": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644"
     },
     "rating": {
-      "label": "التقييم",
-      "value": "{label}: {value} من {max}",
+      "label": "\u0627\u0644\u062A\u0642\u064A\u064A\u0645",
+      "value": "{label}: {value} \u0645\u0646 {max}",
       "stars": {
-        "zero": "لا نجوم",
-        "one": "نجمة واحدة",
-        "two": "نجمتان",
-        "few": "{count} نجوم",
-        "many": "{count} نجمة",
-        "other": "{count} نجمة"
+        "zero": "\u0644\u0627 \u0646\u062C\u0648\u0645",
+        "one": "\u0646\u062C\u0645\u0629 \u0648\u0627\u062D\u062F\u0629",
+        "two": "\u0646\u062C\u0645\u062A\u0627\u0646",
+        "few": "{count} \u0646\u062C\u0648\u0645",
+        "many": "{count} \u0646\u062C\u0645\u0629",
+        "other": "{count} \u0646\u062C\u0645\u0629"
       }
     },
     "tag": {
-      "label": "إضافة وسم",
-      "rename": "إعادة تسمية {label}",
-      "renameTag": "إعادة تسمية الوسم",
-      "remove": "إزالة {label}",
-      "removeTag": "إزالة الوسم",
-      "removeFilter": "إزالة عامل التصفية"
+      "label": "\u0625\u0636\u0627\u0641\u0629 \u0648\u0633\u0645",
+      "rename": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629 {label}",
+      "renameTag": "\u0625\u0639\u0627\u062F\u0629 \u062A\u0633\u0645\u064A\u0629 \u0627\u0644\u0648\u0633\u0645",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {label}",
+      "removeTag": "\u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0648\u0633\u0645",
+      "removeFilter": "\u0625\u0632\u0627\u0644\u0629 \u0639\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629"
     },
     "toast": {
-      "aria-label": "تجاهل",
-      "undo": "تراجع",
-      "dismiss": "تجاهل"
+      "aria-label": "\u062A\u062C\u0627\u0647\u0644",
+      "undo": "\u062A\u0631\u0627\u062C\u0639",
+      "dismiss": "\u062A\u062C\u0627\u0647\u0644"
     },
     "actionBar": {
-      "label": "الإجراءات"
+      "label": "\u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A"
     },
     "appHeader": {
-      "aria-label": "التطبيقات",
+      "aria-label": "\u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A",
       "account": {
-        "trigger": "الحساب والإعدادات لـ {name}",
-        "menu": "الحساب",
-        "myAccount": "حسابي",
-        "settings": "إعدادات Plenix",
-        "appSettings": "إعدادات {app}",
-        "app": "التطبيق",
-        "density": "كثافة العرض",
-        "compact": "مضغوط",
-        "standard": "قياسي",
-        "comfortable": "مريح",
-        "signOut": "تسجيل الخروج"
+        "trigger": "\u0627\u0644\u062D\u0633\u0627\u0628 \u0648\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A \u0644\u0640 {name}",
+        "menu": "\u0627\u0644\u062D\u0633\u0627\u0628",
+        "myAccount": "\u062D\u0633\u0627\u0628\u064A",
+        "settings": "\u0625\u0639\u062F\u0627\u062F\u0627\u062A Plenix",
+        "appSettings": "\u0625\u0639\u062F\u0627\u062F\u0627\u062A {app}",
+        "app": "\u0627\u0644\u062A\u0637\u0628\u064A\u0642",
+        "density": "\u0643\u062B\u0627\u0641\u0629 \u0627\u0644\u0639\u0631\u0636",
+        "compact": "\u0645\u0636\u063A\u0648\u0637",
+        "standard": "\u0642\u064A\u0627\u0633\u064A",
+        "comfortable": "\u0645\u0631\u064A\u062D",
+        "signOut": "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062E\u0631\u0648\u062C"
       },
-      "navLabel": "التطبيقات المثبتة",
-      "applications": "التطبيقات",
-      "search": "بحث",
-      "scope": "في {scope}",
-      "pin": "تثبيت {app} في الشريط العلوي",
-      "unpin": "إلغاء تثبيت {app} من الشريط العلوي",
-      "switchApp": "{app}، تبديل التطبيق",
-      "cancel": "إلغاء",
-      "searchHint": "اكتب ما تبحث عنه، ثم اضغط Enter.",
-      "pinnedHeading": "مثبتة في الشريط العلوي"
+      "navLabel": "\u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A \u0627\u0644\u0645\u062B\u0628\u062A\u0629",
+      "applications": "\u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A",
+      "search": "\u0628\u062D\u062B",
+      "scope": "\u0641\u064A {scope}",
+      "pin": "\u062A\u062B\u0628\u064A\u062A {app} \u0641\u064A \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u0639\u0644\u0648\u064A",
+      "unpin": "\u0625\u0644\u063A\u0627\u0621 \u062A\u062B\u0628\u064A\u062A {app} \u0645\u0646 \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u0639\u0644\u0648\u064A",
+      "switchApp": "{app}\u060C \u062A\u0628\u062F\u064A\u0644 \u0627\u0644\u062A\u0637\u0628\u064A\u0642",
+      "cancel": "\u0625\u0644\u063A\u0627\u0621",
+      "searchHint": "\u0627\u0643\u062A\u0628 \u0645\u0627 \u062A\u0628\u062D\u062B \u0639\u0646\u0647\u060C \u062B\u0645 \u0627\u0636\u063A\u0637 Enter.",
+      "pinnedHeading": "\u0645\u062B\u0628\u062A\u0629 \u0641\u064A \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u0639\u0644\u0648\u064A"
     },
     "form": {
-      "label": "إجراءات النموذج"
+      "label": "\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0646\u0645\u0648\u0630\u062C"
     },
     "reviewFlow": {
-      "label": "بانتظار المراجعة",
-      "noun": "عنصر",
-      "plural": "عناصر",
-      "queueLabel": "بانتظار المراجعة",
+      "label": "\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0629",
+      "noun": "\u0639\u0646\u0635\u0631",
+      "plural": "\u0639\u0646\u0627\u0635\u0631",
+      "queueLabel": "\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0629",
       "flow": {
-        "reviewers": "المراجعون",
-        "history": "السجل",
-        "comment": "تعليق",
-        "commentHint": "مطلوب للرفض أو لطلب التعديلات.",
-        "approve": "موافقة",
-        "changes": "طلب تعديلات",
-        "reject": "رفض",
-        "waiting": "بالانتظار",
-        "human": "محتوى مُنشأ. يراجعه شخص قبل استخدامه.",
-        "needReason": "اذكر السبب ليعرف الكاتب ما الذي يجب تغييره.",
+        "reviewers": "\u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0648\u0646",
+        "history": "\u0627\u0644\u0633\u062C\u0644",
+        "comment": "\u062A\u0639\u0644\u064A\u0642",
+        "commentHint": "\u0645\u0637\u0644\u0648\u0628 \u0644\u0644\u0631\u0641\u0636 \u0623\u0648 \u0644\u0637\u0644\u0628 \u0627\u0644\u062A\u0639\u062F\u064A\u0644\u0627\u062A.",
+        "approve": "\u0645\u0648\u0627\u0641\u0642\u0629",
+        "changes": "\u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A",
+        "reject": "\u0631\u0641\u0636",
+        "waiting": "\u0628\u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631",
+        "human": "\u0645\u062D\u062A\u0648\u0649 \u0645\u064F\u0646\u0634\u0623. \u064A\u0631\u0627\u062C\u0639\u0647 \u0634\u062E\u0635 \u0642\u0628\u0644 \u0627\u0633\u062A\u062E\u062F\u0627\u0645\u0647.",
+        "needReason": "\u0627\u0630\u0643\u0631 \u0627\u0644\u0633\u0628\u0628 \u0644\u064A\u0639\u0631\u0641 \u0627\u0644\u0643\u0627\u062A\u0628 \u0645\u0627 \u0627\u0644\u0630\u064A \u064A\u062C\u0628 \u062A\u063A\u064A\u064A\u0631\u0647.",
         "done": "{decision}: {title}",
-        "decisions": "قرارات المراجعة"
+        "decisions": "\u0642\u0631\u0627\u0631\u0627\u062A \u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0629"
       },
       "queue": {
-        "name": "الاسم",
-        "type": "النوع",
-        "submittedBy": "قدّمه",
-        "submitted": "تاريخ التقديم",
-        "status": "الحالة",
-        "approve": "موافقة",
-        "changes": "طلب تعديلات",
-        "reject": "رفض",
-        "rejectTitle": "رفض {what}؟",
-        "changesTitle": "طلب تعديلات على {what}؟",
-        "reason": "السبب",
-        "changesLabel": "ما الذي يجب تغييره",
-        "reasonHint": "يراه المؤلفون مع القرار.",
-        "needReason": "اذكر السبب ليعرف المؤلفون ما الذي يجب تغييره.",
+        "name": "\u0627\u0644\u0627\u0633\u0645",
+        "type": "\u0627\u0644\u0646\u0648\u0639",
+        "submittedBy": "\u0642\u062F\u0651\u0645\u0647",
+        "submitted": "\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0642\u062F\u064A\u0645",
+        "status": "\u0627\u0644\u062D\u0627\u0644\u0629",
+        "approve": "\u0645\u0648\u0627\u0641\u0642\u0629",
+        "changes": "\u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A",
+        "reject": "\u0631\u0641\u0636",
+        "rejectTitle": "\u0631\u0641\u0636 {what}\u061F",
+        "changesTitle": "\u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 {what}\u061F",
+        "reason": "\u0627\u0644\u0633\u0628\u0628",
+        "changesLabel": "\u0645\u0627 \u0627\u0644\u0630\u064A \u064A\u062C\u0628 \u062A\u063A\u064A\u064A\u0631\u0647",
+        "reasonHint": "\u064A\u0631\u0627\u0647 \u0627\u0644\u0645\u0624\u0644\u0641\u0648\u0646 \u0645\u0639 \u0627\u0644\u0642\u0631\u0627\u0631.",
+        "needReason": "\u0627\u0630\u0643\u0631 \u0627\u0644\u0633\u0628\u0628 \u0644\u064A\u0639\u0631\u0641 \u0627\u0644\u0645\u0624\u0644\u0641\u0648\u0646 \u0645\u0627 \u0627\u0644\u0630\u064A \u064A\u062C\u0628 \u062A\u063A\u064A\u064A\u0631\u0647.",
         "done": "{what} {decision}",
         "count": "{n} {plural}",
-        "noun": "عنصر",
-        "plural": "عناصر",
-        "queueLabel": "بانتظار المراجعة",
+        "noun": "\u0639\u0646\u0635\u0631",
+        "plural": "\u0639\u0646\u0627\u0635\u0631",
+        "queueLabel": "\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0629",
         "items": {
-          "zero": "لا عناصر",
-          "one": "عنصر واحد",
-          "two": "عنصران",
-          "few": "{n} عناصر",
-          "many": "{n} عنصرًا",
-          "other": "{n} عنصر"
+          "zero": "\u0644\u0627 \u0639\u0646\u0627\u0635\u0631",
+          "one": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+          "two": "\u0639\u0646\u0635\u0631\u0627\u0646",
+          "few": "{n} \u0639\u0646\u0627\u0635\u0631",
+          "many": "{n} \u0639\u0646\u0635\u0631\u064B\u0627",
+          "other": "{n} \u0639\u0646\u0635\u0631"
         },
         "doneItems": {
           "approved": {
-            "zero": "لم تتم الموافقة على أي عنصر",
-            "one": "تمت الموافقة على عنصر واحد",
-            "two": "تمت الموافقة على عنصرين",
-            "few": "تمت الموافقة على {n} عناصر",
-            "many": "تمت الموافقة على {n} عنصرًا",
-            "other": "تمت الموافقة على {n} عنصر"
+            "zero": "\u0644\u0645 \u062A\u062A\u0645 \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 \u0623\u064A \u0639\u0646\u0635\u0631",
+            "one": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 \u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+            "two": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 \u0639\u0646\u0635\u0631\u064A\u0646",
+            "few": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 {n} \u0639\u0646\u0627\u0635\u0631",
+            "many": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 {n} \u0639\u0646\u0635\u0631\u064B\u0627",
+            "other": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 {n} \u0639\u0646\u0635\u0631"
           },
           "rejected": {
-            "zero": "لم يتم رفض أي عنصر",
-            "one": "تم رفض عنصر واحد",
-            "two": "تم رفض عنصرين",
-            "few": "تم رفض {n} عناصر",
-            "many": "تم رفض {n} عنصرًا",
-            "other": "تم رفض {n} عنصر"
+            "zero": "\u0644\u0645 \u064A\u062A\u0645 \u0631\u0641\u0636 \u0623\u064A \u0639\u0646\u0635\u0631",
+            "one": "\u062A\u0645 \u0631\u0641\u0636 \u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+            "two": "\u062A\u0645 \u0631\u0641\u0636 \u0639\u0646\u0635\u0631\u064A\u0646",
+            "few": "\u062A\u0645 \u0631\u0641\u0636 {n} \u0639\u0646\u0627\u0635\u0631",
+            "many": "\u062A\u0645 \u0631\u0641\u0636 {n} \u0639\u0646\u0635\u0631\u064B\u0627",
+            "other": "\u062A\u0645 \u0631\u0641\u0636 {n} \u0639\u0646\u0635\u0631"
           },
           "changes-requested": {
-            "zero": "لم يتم طلب تعديلات على أي عنصر",
-            "one": "تم طلب تعديلات على عنصر واحد",
-            "two": "تم طلب تعديلات على عنصرين",
-            "few": "تم طلب تعديلات على {n} عناصر",
-            "many": "تم طلب تعديلات على {n} عنصرًا",
-            "other": "تم طلب تعديلات على {n} عنصر"
+            "zero": "\u0644\u0645 \u064A\u062A\u0645 \u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 \u0623\u064A \u0639\u0646\u0635\u0631",
+            "one": "\u062A\u0645 \u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 \u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+            "two": "\u062A\u0645 \u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 \u0639\u0646\u0635\u0631\u064A\u0646",
+            "few": "\u062A\u0645 \u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 {n} \u0639\u0646\u0627\u0635\u0631",
+            "many": "\u062A\u0645 \u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 {n} \u0639\u0646\u0635\u0631\u064B\u0627",
+            "other": "\u062A\u0645 \u0637\u0644\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A \u0639\u0644\u0649 {n} \u0639\u0646\u0635\u0631"
           }
         }
       },
       "statuses": {
-        "draft": "مسودة",
-        "in-review": "قيد المراجعة",
-        "approved": "تمت الموافقة",
-        "changes-requested": "مطلوب تعديلات",
-        "rejected": "مرفوض",
-        "published": "منشور",
-        "scheduled": "مجدول"
+        "draft": "\u0645\u0633\u0648\u062F\u0629",
+        "in-review": "\u0642\u064A\u062F \u0627\u0644\u0645\u0631\u0627\u062C\u0639\u0629",
+        "approved": "\u062A\u0645\u062A \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629",
+        "changes-requested": "\u0645\u0637\u0644\u0648\u0628 \u062A\u0639\u062F\u064A\u0644\u0627\u062A",
+        "rejected": "\u0645\u0631\u0641\u0648\u0636",
+        "published": "\u0645\u0646\u0634\u0648\u0631",
+        "scheduled": "\u0645\u062C\u062F\u0648\u0644"
       }
     },
     "collection": {
       "selected": {
-        "=0": "لم يتم تحديد أي عنصر",
-        "one": "تم تحديد عنصر واحد",
-        "two": "تم تحديد عنصرين",
-        "few": "تم تحديد {count} عناصر",
-        "many": "تم تحديد {count} عنصرًا",
-        "other": "تم تحديد {count} عنصر"
+        "=0": "\u0644\u0645 \u064A\u062A\u0645 \u062A\u062D\u062F\u064A\u062F \u0623\u064A \u0639\u0646\u0635\u0631",
+        "one": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F \u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "two": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F \u0639\u0646\u0635\u0631\u064A\u0646",
+        "few": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {count} \u0639\u0646\u0627\u0635\u0631",
+        "many": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {count} \u0639\u0646\u0635\u0631\u064B\u0627",
+        "other": "\u062A\u0645 \u062A\u062D\u062F\u064A\u062F {count} \u0639\u0646\u0635\u0631"
       }
     },
     "offboarding": {
-      "backup": "صدّر بياناتك",
-      "export": "تصدير البيانات",
-      "review": "أكّد اختيارك",
-      "reason": "السبب (اختياري)",
-      "confirmName": "اكتب اسم الحساب للتأكيد",
-      "mismatch": "أدخل اسم الحساب كما هو تمامًا.",
-      "cancel": "الإبقاء على الحساب",
-      "deleteAccount": "حذف الحساب",
-      "cancelSubscription": "إلغاء الاشتراك"
+      "backup": "\u0635\u062F\u0651\u0631 \u0628\u064A\u0627\u0646\u0627\u062A\u0643",
+      "export": "\u062A\u0635\u062F\u064A\u0631 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A",
+      "review": "\u0623\u0643\u0651\u062F \u0627\u062E\u062A\u064A\u0627\u0631\u0643",
+      "reason": "\u0627\u0644\u0633\u0628\u0628 (\u0627\u062E\u062A\u064A\u0627\u0631\u064A)",
+      "confirmName": "\u0627\u0643\u062A\u0628 \u0627\u0633\u0645 \u0627\u0644\u062D\u0633\u0627\u0628 \u0644\u0644\u062A\u0623\u0643\u064A\u062F",
+      "mismatch": "\u0623\u062F\u062E\u0644 \u0627\u0633\u0645 \u0627\u0644\u062D\u0633\u0627\u0628 \u0643\u0645\u0627 \u0647\u0648 \u062A\u0645\u0627\u0645\u064B\u0627.",
+      "cancel": "\u0627\u0644\u0625\u0628\u0642\u0627\u0621 \u0639\u0644\u0649 \u0627\u0644\u062D\u0633\u0627\u0628",
+      "deleteAccount": "\u062D\u0630\u0641 \u0627\u0644\u062D\u0633\u0627\u0628",
+      "cancelSubscription": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0627\u0634\u062A\u0631\u0627\u0643"
     },
     "imageUpload": {
-      "drop": "اسحب صورة وأفلتها هنا، أو",
-      "dropMany": "اسحب الصور وأفلتها هنا، أو",
-      "choose": "اختيار صورة",
-      "chooseMany": "اختيار صور",
-      "replace": "استبدال",
-      "remove": "إزالة {name}",
-      "alt": "الوصف",
-      "altHint": "صِف هذه الصورة لمن لا يستطيعون رؤيتها",
-      "tooLarge": "{name} أكبر من {max}",
-      "notImage": "{name} ليس صورة",
-      "removed": "تمت إزالة {name}",
+      "drop": "\u0627\u0633\u062D\u0628 \u0635\u0648\u0631\u0629 \u0648\u0623\u0641\u0644\u062A\u0647\u0627 \u0647\u0646\u0627\u060C \u0623\u0648",
+      "dropMany": "\u0627\u0633\u062D\u0628 \u0627\u0644\u0635\u0648\u0631 \u0648\u0623\u0641\u0644\u062A\u0647\u0627 \u0647\u0646\u0627\u060C \u0623\u0648",
+      "choose": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0635\u0648\u0631\u0629",
+      "chooseMany": "\u0627\u062E\u062A\u064A\u0627\u0631 \u0635\u0648\u0631",
+      "replace": "\u0627\u0633\u062A\u0628\u062F\u0627\u0644",
+      "remove": "\u0625\u0632\u0627\u0644\u0629 {name}",
+      "alt": "\u0627\u0644\u0648\u0635\u0641",
+      "altHint": "\u0635\u0650\u0641 \u0647\u0630\u0647 \u0627\u0644\u0635\u0648\u0631\u0629 \u0644\u0645\u0646 \u0644\u0627 \u064A\u0633\u062A\u0637\u064A\u0639\u0648\u0646 \u0631\u0624\u064A\u062A\u0647\u0627",
+      "tooLarge": "{name} \u0623\u0643\u0628\u0631 \u0645\u0646 {max}",
+      "notImage": "{name} \u0644\u064A\u0633 \u0635\u0648\u0631\u0629",
+      "removed": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 {name}",
       "added": {
-        "zero": "لم تتم إضافة صور",
-        "one": "تمت إضافة صورة واحدة",
-        "two": "تمت إضافة صورتين",
-        "few": "تمت إضافة {n} صور",
-        "many": "تمت إضافة {n} صورة",
-        "other": "تمت إضافة {n} صورة"
+        "zero": "\u0644\u0645 \u062A\u062A\u0645 \u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631",
+        "one": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631\u0629 \u0648\u0627\u062D\u062F\u0629",
+        "two": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631\u062A\u064A\u0646",
+        "few": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 {n} \u0635\u0648\u0631",
+        "many": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 {n} \u0635\u0648\u0631\u0629",
+        "other": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 {n} \u0635\u0648\u0631\u0629"
       },
       "crop": {
-        "title": "قصّ الصورة",
-        "zoom": "التكبير",
-        "frame": "منطقة القص. اسحب الصورة أو حرّكها بمفاتيح الأسهم",
-        "apply": "تطبيق",
-        "cancel": "إلغاء"
+        "title": "\u0642\u0635\u0651 \u0627\u0644\u0635\u0648\u0631\u0629",
+        "zoom": "\u0627\u0644\u062A\u0643\u0628\u064A\u0631",
+        "frame": "\u0645\u0646\u0637\u0642\u0629 \u0627\u0644\u0642\u0635. \u0627\u0633\u062D\u0628 \u0627\u0644\u0635\u0648\u0631\u0629 \u0623\u0648 \u062D\u0631\u0651\u0643\u0647\u0627 \u0628\u0645\u0641\u0627\u062A\u064A\u062D \u0627\u0644\u0623\u0633\u0647\u0645",
+        "apply": "\u062A\u0637\u0628\u064A\u0642",
+        "cancel": "\u0625\u0644\u063A\u0627\u0621"
       }
     },
     "voteTally": {
-      "approve": "موافقة",
-      "deny": "رفض",
-      "abstain": "امتناع",
-      "turnedOff": "متوقف",
-      "notVoted": "لم يصوّتوا",
-      "voteOf": "تصويت {name}",
-      "hiddenUntilClosed": "مخفي حتى يُغلق التصويت",
-      "totalsOnly": "المجاميع فقط",
-      "reconnecting": "إعادة الاتصال",
-      "quorum": "النصاب: حاضر {present}، المطلوب {needed} ({state})",
-      "met": "مكتمل",
-      "notMet": "غير مكتمل",
+      "approve": "\u0645\u0648\u0627\u0641\u0642\u0629",
+      "deny": "\u0631\u0641\u0636",
+      "abstain": "\u0627\u0645\u062A\u0646\u0627\u0639",
+      "turnedOff": "\u0645\u062A\u0648\u0642\u0641",
+      "notVoted": "\u0644\u0645 \u064A\u0635\u0648\u0651\u062A\u0648\u0627",
+      "voteOf": "\u062A\u0635\u0648\u064A\u062A {name}",
+      "hiddenUntilClosed": "\u0645\u062E\u0641\u064A \u062D\u062A\u0649 \u064A\u064F\u063A\u0644\u0642 \u0627\u0644\u062A\u0635\u0648\u064A\u062A",
+      "totalsOnly": "\u0627\u0644\u0645\u062C\u0627\u0645\u064A\u0639 \u0641\u0642\u0637",
+      "reconnecting": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0627\u062A\u0635\u0627\u0644",
+      "quorum": "\u0627\u0644\u0646\u0635\u0627\u0628: \u062D\u0627\u0636\u0631 {present}\u060C \u0627\u0644\u0645\u0637\u0644\u0648\u0628 {needed} ({state})",
+      "met": "\u0645\u0643\u062A\u0645\u0644",
+      "notMet": "\u063A\u064A\u0631 \u0645\u0643\u062A\u0645\u0644",
       "result": {
-        "open": "مفتوح",
-        "passing": "في طريقه للإقرار",
-        "failing": "في طريقه للرفض",
-        "passed": "أُقرّ",
-        "failed": "رُفض",
-        "tied": "تعادل",
-        "no-quorum": "لا نصاب"
+        "open": "\u0645\u0641\u062A\u0648\u062D",
+        "passing": "\u0641\u064A \u0637\u0631\u064A\u0642\u0647 \u0644\u0644\u0625\u0642\u0631\u0627\u0631",
+        "failing": "\u0641\u064A \u0637\u0631\u064A\u0642\u0647 \u0644\u0644\u0631\u0641\u0636",
+        "passed": "\u0623\u064F\u0642\u0631\u0651",
+        "failed": "\u0631\u064F\u0641\u0636",
+        "tied": "\u062A\u0639\u0627\u062F\u0644",
+        "no-quorum": "\u0644\u0627 \u0646\u0635\u0627\u0628"
       }
     },
     "card": {
       "panel": {
-        "collapse": "طيّ {title}",
-        "expand": "توسيع {title}",
-        "section": "قسم"
+        "collapse": "\u0637\u064A\u0651 {title}",
+        "expand": "\u062A\u0648\u0633\u064A\u0639 {title}",
+        "section": "\u0642\u0633\u0645"
       },
       "mediaCard": {
-        "select": "تحديد {title}",
-        "item": "عنصر",
-        "assets": "{n} أصول",
-        "asset": "{n} أصل"
+        "select": "\u062A\u062D\u062F\u064A\u062F {title}",
+        "item": "\u0639\u0646\u0635\u0631",
+        "assets": "{n} \u0623\u0635\u0648\u0644",
+        "asset": "{n} \u0623\u0635\u0644"
       },
       "card": {
-        "expand": "توسيع {title}",
-        "collapse": "طيّ {title}",
-        "card": "بطاقة"
+        "expand": "\u062A\u0648\u0633\u064A\u0639 {title}",
+        "collapse": "\u0637\u064A\u0651 {title}",
+        "card": "\u0628\u0637\u0627\u0642\u0629"
       }
     },
     "field": {
       "counter": {
-        "left": "بقي {n} حرفًا",
-        "over": "زاد {n} حرفًا"
+        "left": "\u0628\u0642\u064A {n} \u062D\u0631\u0641\u064B\u0627",
+        "over": "\u0632\u0627\u062F {n} \u062D\u0631\u0641\u064B\u0627"
       },
-      "about": "معلومات عن {label}"
+      "about": "\u0645\u0639\u0644\u0648\u0645\u0627\u062A \u0639\u0646 {label}"
     },
     "icon": {
       "status": {
-        "info": "معلومة",
-        "success": "نجاح",
-        "warning": "تحذير",
-        "danger": "خطأ",
-        "neutral": "ملاحظة"
+        "info": "\u0645\u0639\u0644\u0648\u0645\u0629",
+        "success": "\u0646\u062C\u0627\u062D",
+        "warning": "\u062A\u062D\u0630\u064A\u0631",
+        "danger": "\u062E\u0637\u0623",
+        "neutral": "\u0645\u0644\u0627\u062D\u0638\u0629"
       }
     },
     "searchResult": {
       "result": {
-        "path": "في"
+        "path": "\u0641\u064A"
       },
       "group": {
-        "more": "إظهار الكل"
+        "more": "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0643\u0644"
       }
     },
     "settingsLayout": {
       "section": {
-        "section": "قسم"
+        "section": "\u0642\u0633\u0645"
       }
     },
     "commerce": {
       "orders": {
-        "label": "الطلبات",
-        "search": "البحث في الطلبات",
-        "count": "{n} طلبات",
-        "one": "طلب واحد",
-        "noun": "طلب",
-        "plural": "طلبات",
-        "number": "الترتيب",
-        "date": "التاريخ",
-        "customer": "العميل",
-        "items": "العناصر",
-        "total": "الإجمالي",
-        "status": "الحالة",
-        "open": "فتح",
-        "fulfill": "تنفيذ",
-        "refund": "استرداد",
-        "cancel": "إلغاء الطلب",
-        "cancelMany": "إلغاء الطلبات",
-        "cancelTitle": "إلغاء {what}؟",
-        "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
-        "keep": "الإبقاء على الطلب",
-        "notFulfillable": "يمكن تنفيذ الطلبات غير المنفّذة فقط",
-        "notCancelable": "يمكن إلغاء الطلبات غير المنفّذة فقط",
-        "notRefundable": "يمكن استرداد الطلبات المشحونة أو المسلَّمة فقط",
-        "fulfilled": "تم وضع علامة شُحن على {what}",
-        "canceled": "تم إلغاء {what}"
+        "label": "\u0627\u0644\u0637\u0644\u0628\u0627\u062A",
+        "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0637\u0644\u0628\u0627\u062A",
+        "count": "{n} \u0637\u0644\u0628\u0627\u062A",
+        "one": "\u0637\u0644\u0628 \u0648\u0627\u062D\u062F",
+        "noun": "\u0637\u0644\u0628",
+        "plural": "\u0637\u0644\u0628\u0627\u062A",
+        "number": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628",
+        "date": "\u0627\u0644\u062A\u0627\u0631\u064A\u062E",
+        "customer": "\u0627\u0644\u0639\u0645\u064A\u0644",
+        "items": "\u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A",
+        "status": "\u0627\u0644\u062D\u0627\u0644\u0629",
+        "open": "\u0641\u062A\u062D",
+        "fulfill": "\u062A\u0646\u0641\u064A\u0630",
+        "refund": "\u0627\u0633\u062A\u0631\u062F\u0627\u062F",
+        "cancel": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0637\u0644\u0628",
+        "cancelMany": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0637\u0644\u0628\u0627\u062A",
+        "cancelTitle": "\u0625\u0644\u063A\u0627\u0621 {what}\u061F",
+        "cancelText": "\u0633\u064A\u064F\u0628\u0644\u064E\u0651\u063A \u0627\u0644\u0639\u0645\u064A\u0644 \u0648\u064A\u064F\u0639\u0627\u062F \u0625\u0644\u064A\u0647 \u0627\u0644\u0645\u0628\u0644\u063A \u0643\u0627\u0645\u0644\u064B\u0627. \u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0644\u062A\u0631\u0627\u062C\u0639 \u0639\u0646 \u0630\u0644\u0643.",
+        "keep": "\u0627\u0644\u0625\u0628\u0642\u0627\u0621 \u0639\u0644\u0649 \u0627\u0644\u0637\u0644\u0628",
+        "notFulfillable": "\u064A\u0645\u0643\u0646 \u062A\u0646\u0641\u064A\u0630 \u0627\u0644\u0637\u0644\u0628\u0627\u062A \u063A\u064A\u0631 \u0627\u0644\u0645\u0646\u0641\u0651\u0630\u0629 \u0641\u0642\u0637",
+        "notCancelable": "\u064A\u0645\u0643\u0646 \u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0637\u0644\u0628\u0627\u062A \u063A\u064A\u0631 \u0627\u0644\u0645\u0646\u0641\u0651\u0630\u0629 \u0641\u0642\u0637",
+        "notRefundable": "\u064A\u0645\u0643\u0646 \u0627\u0633\u062A\u0631\u062F\u0627\u062F \u0627\u0644\u0637\u0644\u0628\u0627\u062A \u0627\u0644\u0645\u0634\u062D\u0648\u0646\u0629 \u0623\u0648 \u0627\u0644\u0645\u0633\u0644\u064E\u0651\u0645\u0629 \u0641\u0642\u0637",
+        "fulfilled": "\u062A\u0645 \u0648\u0636\u0639 \u0639\u0644\u0627\u0645\u0629 \u0634\u064F\u062D\u0646 \u0639\u0644\u0649 {what}",
+        "canceled": "\u062A\u0645 \u0625\u0644\u063A\u0627\u0621 {what}"
       },
       "orderDetail": {
-        "context": "الترتيب",
-        "back": "الطلبات",
-        "items": "العناصر",
-        "delivery": "التسليم",
-        "address": "العنوان",
-        "method": "الطريقة",
-        "tracking": "رقم التتبع",
-        "payment": "الدفع",
-        "history": "السجل",
-        "fulfill": "تنفيذ",
-        "refund": "استرداد",
-        "cancel": "إلغاء الطلب",
-        "return": "بدء عملية إرجاع",
-        "cancelTitle": "إلغاء الطلب {number}؟",
-        "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
-        "keep": "الإبقاء على الطلب"
+        "context": "\u0627\u0644\u062A\u0631\u062A\u064A\u0628",
+        "back": "\u0627\u0644\u0637\u0644\u0628\u0627\u062A",
+        "items": "\u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+        "delivery": "\u0627\u0644\u062A\u0633\u0644\u064A\u0645",
+        "address": "\u0627\u0644\u0639\u0646\u0648\u0627\u0646",
+        "method": "\u0627\u0644\u0637\u0631\u064A\u0642\u0629",
+        "tracking": "\u0631\u0642\u0645 \u0627\u0644\u062A\u062A\u0628\u0639",
+        "payment": "\u0627\u0644\u062F\u0641\u0639",
+        "history": "\u0627\u0644\u0633\u062C\u0644",
+        "fulfill": "\u062A\u0646\u0641\u064A\u0630",
+        "refund": "\u0627\u0633\u062A\u0631\u062F\u0627\u062F",
+        "cancel": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0637\u0644\u0628",
+        "return": "\u0628\u062F\u0621 \u0639\u0645\u0644\u064A\u0629 \u0625\u0631\u062C\u0627\u0639",
+        "cancelTitle": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0637\u0644\u0628 {number}\u061F",
+        "cancelText": "\u0633\u064A\u064F\u0628\u0644\u064E\u0651\u063A \u0627\u0644\u0639\u0645\u064A\u0644 \u0648\u064A\u064F\u0639\u0627\u062F \u0625\u0644\u064A\u0647 \u0627\u0644\u0645\u0628\u0644\u063A \u0643\u0627\u0645\u0644\u064B\u0627. \u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0644\u062A\u0631\u0627\u062C\u0639 \u0639\u0646 \u0630\u0644\u0643.",
+        "keep": "\u0627\u0644\u0625\u0628\u0642\u0627\u0621 \u0639\u0644\u0649 \u0627\u0644\u0637\u0644\u0628"
       },
       "subscription": {
-        "plan": "خطتك",
-        "planName": "الخطة",
-        "price": "السعر",
-        "status": "الحالة",
-        "next": "الدفعة التالية",
-        "since": "عضو منذ",
-        "ends": "ينتهي الوصول في",
-        "perPeriod": "{price} لكل {period}",
-        "more": "{amount} أكثر",
-        "less": "{amount} أقل",
-        "change": "تغيير الخطة",
-        "changeTitle": "التغيير إلى {plan}؟",
-        "changeText": "ستدفع {price} اعتبارًا من {date}. حتى ذلك الحين تبقى خطتك الحالية كما هي.",
-        "changeConfirm": "تغيير الخطة",
-        "changed": "ستتغير خطتك إلى {plan} في {date}.",
-        "plans": "الخطط",
-        "current": "الخطة الحالية",
-        "method": "طريقة الدفع",
-        "update": "تحديث طريقة الدفع",
-        "manage": "إيقاف مؤقت أو إلغاء",
-        "manageText": "أوقف مؤقتًا لإيقاف الدفعات فترة مع الاحتفاظ بإعداداتك، أو ألغِ لإنهاء الخطة. في الحالتين يبقى وصولك حتى {date}.",
-        "pause": "إيقاف الاشتراك مؤقتًا",
-        "pauseTitle": "إيقاف اشتراكك مؤقتًا؟",
-        "pauseText": "لا تُسحب أي دفعات أثناء الإيقاف المؤقت. يمكنك استئنافه متى شئت.",
-        "resume": "استئناف الاشتراك",
-        "cancel": "إلغاء الاشتراك",
-        "cancelTitle": "إلغاء اشتراكك؟",
-        "cancelText": "يبقى وصولك حتى {date}، ولن تُحاسَب مرة أخرى.",
-        "keep": "الإبقاء على خطتي",
-        "history": "سجل الفواتير",
-        "date": "التاريخ",
-        "description": "الوصف",
-        "amount": "المبلغ",
-        "invoice": "فاتورة",
-        "invoiceFor": "فاتورة بتاريخ {date}",
-        "paused": "اشتراكك متوقف مؤقتًا.",
-        "canceled": "تم إلغاء اشتراكك.",
+        "plan": "\u062E\u0637\u062A\u0643",
+        "planName": "\u0627\u0644\u062E\u0637\u0629",
+        "price": "\u0627\u0644\u0633\u0639\u0631",
+        "status": "\u0627\u0644\u062D\u0627\u0644\u0629",
+        "next": "\u0627\u0644\u062F\u0641\u0639\u0629 \u0627\u0644\u062A\u0627\u0644\u064A\u0629",
+        "since": "\u0639\u0636\u0648 \u0645\u0646\u0630",
+        "ends": "\u064A\u0646\u062A\u0647\u064A \u0627\u0644\u0648\u0635\u0648\u0644 \u0641\u064A",
+        "perPeriod": "{price} \u0644\u0643\u0644 {period}",
+        "more": "{amount} \u0623\u0643\u062B\u0631",
+        "less": "{amount} \u0623\u0642\u0644",
+        "change": "\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u062E\u0637\u0629",
+        "changeTitle": "\u0627\u0644\u062A\u063A\u064A\u064A\u0631 \u0625\u0644\u0649 {plan}\u061F",
+        "changeText": "\u0633\u062A\u062F\u0641\u0639 {price} \u0627\u0639\u062A\u0628\u0627\u0631\u064B\u0627 \u0645\u0646 {date}. \u062D\u062A\u0649 \u0630\u0644\u0643 \u0627\u0644\u062D\u064A\u0646 \u062A\u0628\u0642\u0649 \u062E\u0637\u062A\u0643 \u0627\u0644\u062D\u0627\u0644\u064A\u0629 \u0643\u0645\u0627 \u0647\u064A.",
+        "changeConfirm": "\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u062E\u0637\u0629",
+        "changed": "\u0633\u062A\u062A\u063A\u064A\u0631 \u062E\u0637\u062A\u0643 \u0625\u0644\u0649 {plan} \u0641\u064A {date}.",
+        "plans": "\u0627\u0644\u062E\u0637\u0637",
+        "current": "\u0627\u0644\u062E\u0637\u0629 \u0627\u0644\u062D\u0627\u0644\u064A\u0629",
+        "method": "\u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062F\u0641\u0639",
+        "update": "\u062A\u062D\u062F\u064A\u062B \u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062F\u0641\u0639",
+        "manage": "\u0625\u064A\u0642\u0627\u0641 \u0645\u0624\u0642\u062A \u0623\u0648 \u0625\u0644\u063A\u0627\u0621",
+        "manageText": "\u0623\u0648\u0642\u0641 \u0645\u0624\u0642\u062A\u064B\u0627 \u0644\u0625\u064A\u0642\u0627\u0641 \u0627\u0644\u062F\u0641\u0639\u0627\u062A \u0641\u062A\u0631\u0629 \u0645\u0639 \u0627\u0644\u0627\u062D\u062A\u0641\u0627\u0638 \u0628\u0625\u0639\u062F\u0627\u062F\u0627\u062A\u0643\u060C \u0623\u0648 \u0623\u0644\u063A\u0650 \u0644\u0625\u0646\u0647\u0627\u0621 \u0627\u0644\u062E\u0637\u0629. \u0641\u064A \u0627\u0644\u062D\u0627\u0644\u062A\u064A\u0646 \u064A\u0628\u0642\u0649 \u0648\u0635\u0648\u0644\u0643 \u062D\u062A\u0649 {date}.",
+        "pause": "\u0625\u064A\u0642\u0627\u0641 \u0627\u0644\u0627\u0634\u062A\u0631\u0627\u0643 \u0645\u0624\u0642\u062A\u064B\u0627",
+        "pauseTitle": "\u0625\u064A\u0642\u0627\u0641 \u0627\u0634\u062A\u0631\u0627\u0643\u0643 \u0645\u0624\u0642\u062A\u064B\u0627\u061F",
+        "pauseText": "\u0644\u0627 \u062A\u064F\u0633\u062D\u0628 \u0623\u064A \u062F\u0641\u0639\u0627\u062A \u0623\u062B\u0646\u0627\u0621 \u0627\u0644\u0625\u064A\u0642\u0627\u0641 \u0627\u0644\u0645\u0624\u0642\u062A. \u064A\u0645\u0643\u0646\u0643 \u0627\u0633\u062A\u0626\u0646\u0627\u0641\u0647 \u0645\u062A\u0649 \u0634\u0626\u062A.",
+        "resume": "\u0627\u0633\u062A\u0626\u0646\u0627\u0641 \u0627\u0644\u0627\u0634\u062A\u0631\u0627\u0643",
+        "cancel": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0627\u0634\u062A\u0631\u0627\u0643",
+        "cancelTitle": "\u0625\u0644\u063A\u0627\u0621 \u0627\u0634\u062A\u0631\u0627\u0643\u0643\u061F",
+        "cancelText": "\u064A\u0628\u0642\u0649 \u0648\u0635\u0648\u0644\u0643 \u062D\u062A\u0649 {date}\u060C \u0648\u0644\u0646 \u062A\u064F\u062D\u0627\u0633\u064E\u0628 \u0645\u0631\u0629 \u0623\u062E\u0631\u0649.",
+        "keep": "\u0627\u0644\u0625\u0628\u0642\u0627\u0621 \u0639\u0644\u0649 \u062E\u0637\u062A\u064A",
+        "history": "\u0633\u062C\u0644 \u0627\u0644\u0641\u0648\u0627\u062A\u064A\u0631",
+        "date": "\u0627\u0644\u062A\u0627\u0631\u064A\u062E",
+        "description": "\u0627\u0644\u0648\u0635\u0641",
+        "amount": "\u0627\u0644\u0645\u0628\u0644\u063A",
+        "invoice": "\u0641\u0627\u062A\u0648\u0631\u0629",
+        "invoiceFor": "\u0641\u0627\u062A\u0648\u0631\u0629 \u0628\u062A\u0627\u0631\u064A\u062E {date}",
+        "paused": "\u0627\u0634\u062A\u0631\u0627\u0643\u0643 \u0645\u062A\u0648\u0642\u0641 \u0645\u0624\u0642\u062A\u064B\u0627.",
+        "canceled": "\u062A\u0645 \u0625\u0644\u063A\u0627\u0621 \u0627\u0634\u062A\u0631\u0627\u0643\u0643.",
         "statuses": {
-          "active": "نشط",
-          "paused": "متوقف مؤقتًا",
-          "canceled": "أُلغي",
-          "paid": "مدفوعة",
-          "refunded": "مُستردة",
-          "failed": "فشلت"
+          "active": "\u0646\u0634\u0637",
+          "paused": "\u0645\u062A\u0648\u0642\u0641 \u0645\u0624\u0642\u062A\u064B\u0627",
+          "canceled": "\u0623\u064F\u0644\u063A\u064A",
+          "paid": "\u0645\u062F\u0641\u0648\u0639\u0629",
+          "refunded": "\u0645\u064F\u0633\u062A\u0631\u062F\u0629",
+          "failed": "\u0641\u0634\u0644\u062A"
         }
       },
       "returns": {
-        "label": "إرجاع العناصر",
-        "items": "العناصر",
-        "reason": "السبب",
-        "resolution": "الحل",
-        "review": "مراجعة",
-        "submit": "طلب إرجاع",
-        "cancel": "إلغاء",
-        "window": "يمكنك إرجاع معظم العناصر خلال 30 يومًا من التسليم.",
-        "choose": "اختر عنصرًا واحدًا على الأقل لإرجاعه.",
-        "notReturnable": "لا يمكن إرجاعه",
-        "quantity": "كم عدد {title}",
-        "why": "لماذا تُرجع العناصر؟",
-        "whyRequired": "اختر سببًا.",
-        "note": "هل هناك ما يجب أن نعرفه؟ (اختياري)",
-        "want": "ماذا تريد؟",
-        "wantRequired": "اختر استردادًا أو استبدالًا.",
-        "send": "كيف سترسلها؟",
-        "sendRequired": "اختر طريقة الإرسال.",
-        "refund": "استرداد",
-        "refundTiming": "يصل المبلغ المسترد إلى طريقة الدفع الأصلية بعد 5 إلى 10 أيام عمل من وصول العناصر.",
-        "requested": "تم طلب الإرجاع",
-        "requestedText": "أرسلنا إليك بالبريد الإلكتروني بطاقة الإرجاع والخطوات. وهذه حالة طلب الإرجاع.",
-        "status": "حالة الإرجاع",
-        "returning": "{n} عناصر",
-        "returningOne": "عنصر واحد"
+        "label": "\u0625\u0631\u062C\u0627\u0639 \u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+        "items": "\u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+        "reason": "\u0627\u0644\u0633\u0628\u0628",
+        "resolution": "\u0627\u0644\u062D\u0644",
+        "review": "\u0645\u0631\u0627\u062C\u0639\u0629",
+        "submit": "\u0637\u0644\u0628 \u0625\u0631\u062C\u0627\u0639",
+        "cancel": "\u0625\u0644\u063A\u0627\u0621",
+        "window": "\u064A\u0645\u0643\u0646\u0643 \u0625\u0631\u062C\u0627\u0639 \u0645\u0639\u0638\u0645 \u0627\u0644\u0639\u0646\u0627\u0635\u0631 \u062E\u0644\u0627\u0644 30 \u064A\u0648\u0645\u064B\u0627 \u0645\u0646 \u0627\u0644\u062A\u0633\u0644\u064A\u0645.",
+        "choose": "\u0627\u062E\u062A\u0631 \u0639\u0646\u0635\u0631\u064B\u0627 \u0648\u0627\u062D\u062F\u064B\u0627 \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644 \u0644\u0625\u0631\u062C\u0627\u0639\u0647.",
+        "notReturnable": "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0631\u062C\u0627\u0639\u0647",
+        "quantity": "\u0643\u0645 \u0639\u062F\u062F {title}",
+        "why": "\u0644\u0645\u0627\u0630\u0627 \u062A\u064F\u0631\u062C\u0639 \u0627\u0644\u0639\u0646\u0627\u0635\u0631\u061F",
+        "whyRequired": "\u0627\u062E\u062A\u0631 \u0633\u0628\u0628\u064B\u0627.",
+        "note": "\u0647\u0644 \u0647\u0646\u0627\u0643 \u0645\u0627 \u064A\u062C\u0628 \u0623\u0646 \u0646\u0639\u0631\u0641\u0647\u061F (\u0627\u062E\u062A\u064A\u0627\u0631\u064A)",
+        "want": "\u0645\u0627\u0630\u0627 \u062A\u0631\u064A\u062F\u061F",
+        "wantRequired": "\u0627\u062E\u062A\u0631 \u0627\u0633\u062A\u0631\u062F\u0627\u062F\u064B\u0627 \u0623\u0648 \u0627\u0633\u062A\u0628\u062F\u0627\u0644\u064B\u0627.",
+        "send": "\u0643\u064A\u0641 \u0633\u062A\u0631\u0633\u0644\u0647\u0627\u061F",
+        "sendRequired": "\u0627\u062E\u062A\u0631 \u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u0625\u0631\u0633\u0627\u0644.",
+        "refund": "\u0627\u0633\u062A\u0631\u062F\u0627\u062F",
+        "refundTiming": "\u064A\u0635\u0644 \u0627\u0644\u0645\u0628\u0644\u063A \u0627\u0644\u0645\u0633\u062A\u0631\u062F \u0625\u0644\u0649 \u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062F\u0641\u0639 \u0627\u0644\u0623\u0635\u0644\u064A\u0629 \u0628\u0639\u062F 5 \u0625\u0644\u0649 10 \u0623\u064A\u0627\u0645 \u0639\u0645\u0644 \u0645\u0646 \u0648\u0635\u0648\u0644 \u0627\u0644\u0639\u0646\u0627\u0635\u0631.",
+        "requested": "\u062A\u0645 \u0637\u0644\u0628 \u0627\u0644\u0625\u0631\u062C\u0627\u0639",
+        "requestedText": "\u0623\u0631\u0633\u0644\u0646\u0627 \u0625\u0644\u064A\u0643 \u0628\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A \u0628\u0637\u0627\u0642\u0629 \u0627\u0644\u0625\u0631\u062C\u0627\u0639 \u0648\u0627\u0644\u062E\u0637\u0648\u0627\u062A. \u0648\u0647\u0630\u0647 \u062D\u0627\u0644\u0629 \u0637\u0644\u0628 \u0627\u0644\u0625\u0631\u062C\u0627\u0639.",
+        "status": "\u062D\u0627\u0644\u0629 \u0627\u0644\u0625\u0631\u062C\u0627\u0639",
+        "returning": "{n} \u0639\u0646\u0627\u0635\u0631",
+        "returningOne": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F"
       },
       "cart": {
-        "title": "السلة",
-        "items": "{n} عناصر",
-        "item": "عنصر واحد",
-        "lines": "العناصر في سلتك",
-        "remove": "إزالة {title}",
-        "noun": "عنصر",
-        "removed": "تمت إزالة {title} من سلتك.",
-        "undo": "تراجع",
-        "empty": "سلتك فارغة",
-        "emptyText": "اعثر على ما يعجبك وأضفه هنا.",
-        "continue": "متابعة التسوق",
-        "checkout": "إتمام الشراء",
-        "promo": "رمز العرض",
-        "apply": "تطبيق",
-        "applied": "تم تطبيق رمز العرض {code}",
-        "promoError": "لا يمكن استخدام هذا الرمز.",
-        "total": "الإجمالي {total}"
+        "title": "\u0627\u0644\u0633\u0644\u0629",
+        "items": "{n} \u0639\u0646\u0627\u0635\u0631",
+        "item": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "lines": "\u0627\u0644\u0639\u0646\u0627\u0635\u0631 \u0641\u064A \u0633\u0644\u062A\u0643",
+        "remove": "\u0625\u0632\u0627\u0644\u0629 {title}",
+        "noun": "\u0639\u0646\u0635\u0631",
+        "removed": "\u062A\u0645\u062A \u0625\u0632\u0627\u0644\u0629 {title} \u0645\u0646 \u0633\u0644\u062A\u0643.",
+        "undo": "\u062A\u0631\u0627\u062C\u0639",
+        "empty": "\u0633\u0644\u062A\u0643 \u0641\u0627\u0631\u063A\u0629",
+        "emptyText": "\u0627\u0639\u062B\u0631 \u0639\u0644\u0649 \u0645\u0627 \u064A\u0639\u062C\u0628\u0643 \u0648\u0623\u0636\u0641\u0647 \u0647\u0646\u0627.",
+        "continue": "\u0645\u062A\u0627\u0628\u0639\u0629 \u0627\u0644\u062A\u0633\u0648\u0642",
+        "checkout": "\u0625\u062A\u0645\u0627\u0645 \u0627\u0644\u0634\u0631\u0627\u0621",
+        "promo": "\u0631\u0645\u0632 \u0627\u0644\u0639\u0631\u0636",
+        "apply": "\u062A\u0637\u0628\u064A\u0642",
+        "applied": "\u062A\u0645 \u062A\u0637\u0628\u064A\u0642 \u0631\u0645\u0632 \u0627\u0644\u0639\u0631\u0636 {code}",
+        "promoError": "\u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0647\u0630\u0627 \u0627\u0644\u0631\u0645\u0632.",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A {total}"
       },
       "pay": {
-        "method": "طريقة الدفع",
-        "newCard": "بطاقة جديدة",
-        "number": "رقم البطاقة",
-        "accepted": "Visa أو Mastercard أو American Express أو Discover",
-        "expiry": "تاريخ الانتهاء",
-        "expiryHint": "شهر / سنة",
-        "cvc": "رمز الأمان",
-        "cvcHint": "الأرقام الثلاثة الأخيرة على ظهر البطاقة، أو أربعة على وجه American Express",
-        "name": "الاسم على البطاقة",
-        "billingSame": "عنوان الفوترة هو نفسه عنوان التسليم",
-        "billing": "عنوان الفوترة",
-        "street": "العنوان",
-        "city": "المدينة",
-        "postal": "الرمز البريدي",
-        "secure": "تذهب بيانات بطاقتك مباشرة إلى مزوّد الدفع. ولا تحتفظ هذه الصفحة بها.",
-        "charge": "سيتم تحصيل",
+        "method": "\u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062F\u0641\u0639",
+        "newCard": "\u0628\u0637\u0627\u0642\u0629 \u062C\u062F\u064A\u062F\u0629",
+        "number": "\u0631\u0642\u0645 \u0627\u0644\u0628\u0637\u0627\u0642\u0629",
+        "accepted": "Visa \u0623\u0648 Mastercard \u0623\u0648 American Express \u0623\u0648 Discover",
+        "expiry": "\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0627\u0646\u062A\u0647\u0627\u0621",
+        "expiryHint": "\u0634\u0647\u0631 / \u0633\u0646\u0629",
+        "cvc": "\u0631\u0645\u0632 \u0627\u0644\u0623\u0645\u0627\u0646",
+        "cvcHint": "\u0627\u0644\u0623\u0631\u0642\u0627\u0645 \u0627\u0644\u062B\u0644\u0627\u062B\u0629 \u0627\u0644\u0623\u062E\u064A\u0631\u0629 \u0639\u0644\u0649 \u0638\u0647\u0631 \u0627\u0644\u0628\u0637\u0627\u0642\u0629\u060C \u0623\u0648 \u0623\u0631\u0628\u0639\u0629 \u0639\u0644\u0649 \u0648\u062C\u0647 American Express",
+        "name": "\u0627\u0644\u0627\u0633\u0645 \u0639\u0644\u0649 \u0627\u0644\u0628\u0637\u0627\u0642\u0629",
+        "billingSame": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0641\u0648\u062A\u0631\u0629 \u0647\u0648 \u0646\u0641\u0633\u0647 \u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u062A\u0633\u0644\u064A\u0645",
+        "billing": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0641\u0648\u062A\u0631\u0629",
+        "street": "\u0627\u0644\u0639\u0646\u0648\u0627\u0646",
+        "city": "\u0627\u0644\u0645\u062F\u064A\u0646\u0629",
+        "postal": "\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064A\u062F\u064A",
+        "secure": "\u062A\u0630\u0647\u0628 \u0628\u064A\u0627\u0646\u0627\u062A \u0628\u0637\u0627\u0642\u062A\u0643 \u0645\u0628\u0627\u0634\u0631\u0629 \u0625\u0644\u0649 \u0645\u0632\u0648\u0651\u062F \u0627\u0644\u062F\u0641\u0639. \u0648\u0644\u0627 \u062A\u062D\u062A\u0641\u0638 \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629 \u0628\u0647\u0627.",
+        "charge": "\u0633\u064A\u062A\u0645 \u062A\u062D\u0635\u064A\u0644",
         "brands": {
           "visa": "Visa",
           "mastercard": "Mastercard",
@@ -5714,243 +5714,243 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         }
       },
       "payment": {
-        "title": "الدفع",
-        "description": "اختر طريقة الدفع. لن يُحصَّل أي مبلغ قبل الضغط على «ادفع».",
-        "pay": "ادفع {amount}",
-        "cancel": "إلغاء",
-        "declined": "لم تتم عملية الدفع",
-        "declinedText": "تم رفض بطاقتك. تحقق من البيانات أو استخدم بطاقة أخرى.",
-        "paid": "تم استلام الدفعة"
+        "title": "\u0627\u0644\u062F\u0641\u0639",
+        "description": "\u0627\u062E\u062A\u0631 \u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062F\u0641\u0639. \u0644\u0646 \u064A\u064F\u062D\u0635\u064E\u0651\u0644 \u0623\u064A \u0645\u0628\u0644\u063A \u0642\u0628\u0644 \u0627\u0644\u0636\u063A\u0637 \u0639\u0644\u0649 \xAB\u0627\u062F\u0641\u0639\xBB.",
+        "pay": "\u0627\u062F\u0641\u0639 {amount}",
+        "cancel": "\u0625\u0644\u063A\u0627\u0621",
+        "declined": "\u0644\u0645 \u062A\u062A\u0645 \u0639\u0645\u0644\u064A\u0629 \u0627\u0644\u062F\u0641\u0639",
+        "declinedText": "\u062A\u0645 \u0631\u0641\u0636 \u0628\u0637\u0627\u0642\u062A\u0643. \u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A \u0623\u0648 \u0627\u0633\u062A\u062E\u062F\u0645 \u0628\u0637\u0627\u0642\u0629 \u0623\u062E\u0631\u0649.",
+        "paid": "\u062A\u0645 \u0627\u0633\u062A\u0644\u0627\u0645 \u0627\u0644\u062F\u0641\u0639\u0629"
       },
       "checkout": {
-        "label": "إتمام الشراء",
-        "contact": "الاتصال",
-        "delivery": "التسليم",
-        "payment": "الدفع",
-        "review": "مراجعة",
-        "placeOrder": "تأكيد الطلب",
-        "cancel": "العودة إلى السلة",
-        "email": "البريد الإلكتروني",
-        "emailHint": "لتأكيد الطلب وتحديثات التسليم.",
-        "account": "لديك حساب؟",
-        "signIn": "تسجيل الدخول",
-        "name": "الاسم الكامل",
-        "street": "العنوان",
-        "street2": "الشقة أو الجناح أو الوحدة (اختياري)",
-        "city": "المدينة",
-        "region": "الولاية أو المنطقة",
-        "postal": "الرمز البريدي",
-        "country": "البلد",
-        "phone": "الهاتف (اختياري)",
-        "phoneHint": "فقط للأسئلة المتعلقة بالتسليم.",
-        "method": "طريقة التسليم",
-        "summary": "ملخص الطلب",
-        "card": "بطاقة تنتهي بـ {last4}",
-        "placed": "تم تقديم الطلب",
-        "checkAnswers": "راجع طلبك قبل تأكيده.",
-        "items": "العناصر",
-        "free": "مجاني"
+        "label": "\u0625\u062A\u0645\u0627\u0645 \u0627\u0644\u0634\u0631\u0627\u0621",
+        "contact": "\u0627\u0644\u0627\u062A\u0635\u0627\u0644",
+        "delivery": "\u0627\u0644\u062A\u0633\u0644\u064A\u0645",
+        "payment": "\u0627\u0644\u062F\u0641\u0639",
+        "review": "\u0645\u0631\u0627\u062C\u0639\u0629",
+        "placeOrder": "\u062A\u0623\u0643\u064A\u062F \u0627\u0644\u0637\u0644\u0628",
+        "cancel": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0633\u0644\u0629",
+        "email": "\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A",
+        "emailHint": "\u0644\u062A\u0623\u0643\u064A\u062F \u0627\u0644\u0637\u0644\u0628 \u0648\u062A\u062D\u062F\u064A\u062B\u0627\u062A \u0627\u0644\u062A\u0633\u0644\u064A\u0645.",
+        "account": "\u0644\u062F\u064A\u0643 \u062D\u0633\u0627\u0628\u061F",
+        "signIn": "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644",
+        "name": "\u0627\u0644\u0627\u0633\u0645 \u0627\u0644\u0643\u0627\u0645\u0644",
+        "street": "\u0627\u0644\u0639\u0646\u0648\u0627\u0646",
+        "street2": "\u0627\u0644\u0634\u0642\u0629 \u0623\u0648 \u0627\u0644\u062C\u0646\u0627\u062D \u0623\u0648 \u0627\u0644\u0648\u062D\u062F\u0629 (\u0627\u062E\u062A\u064A\u0627\u0631\u064A)",
+        "city": "\u0627\u0644\u0645\u062F\u064A\u0646\u0629",
+        "region": "\u0627\u0644\u0648\u0644\u0627\u064A\u0629 \u0623\u0648 \u0627\u0644\u0645\u0646\u0637\u0642\u0629",
+        "postal": "\u0627\u0644\u0631\u0645\u0632 \u0627\u0644\u0628\u0631\u064A\u062F\u064A",
+        "country": "\u0627\u0644\u0628\u0644\u062F",
+        "phone": "\u0627\u0644\u0647\u0627\u062A\u0641 (\u0627\u062E\u062A\u064A\u0627\u0631\u064A)",
+        "phoneHint": "\u0641\u0642\u0637 \u0644\u0644\u0623\u0633\u0626\u0644\u0629 \u0627\u0644\u0645\u062A\u0639\u0644\u0642\u0629 \u0628\u0627\u0644\u062A\u0633\u0644\u064A\u0645.",
+        "method": "\u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062A\u0633\u0644\u064A\u0645",
+        "summary": "\u0645\u0644\u062E\u0635 \u0627\u0644\u0637\u0644\u0628",
+        "card": "\u0628\u0637\u0627\u0642\u0629 \u062A\u0646\u062A\u0647\u064A \u0628\u0640 {last4}",
+        "placed": "\u062A\u0645 \u062A\u0642\u062F\u064A\u0645 \u0627\u0644\u0637\u0644\u0628",
+        "checkAnswers": "\u0631\u0627\u062C\u0639 \u0637\u0644\u0628\u0643 \u0642\u0628\u0644 \u062A\u0623\u0643\u064A\u062F\u0647.",
+        "items": "\u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+        "free": "\u0645\u062C\u0627\u0646\u064A"
       },
       "confirm": {
-        "title": "شكرًا لك. تم تقديم طلبك.",
-        "number": "رقم الطلب",
-        "copy": "نسخ رقم الطلب",
-        "sent": "أرسلنا تأكيدًا إلى {email}.",
-        "next": "ما يحدث بعد ذلك",
-        "items": "العناصر",
-        "view": "عرض طلبك",
-        "continue": "متابعة التسوق",
-        "delivery": "التسليم",
-        "method": "طريقة التسليم"
+        "title": "\u0634\u0643\u0631\u064B\u0627 \u0644\u0643. \u062A\u0645 \u062A\u0642\u062F\u064A\u0645 \u0637\u0644\u0628\u0643.",
+        "number": "\u0631\u0642\u0645 \u0627\u0644\u0637\u0644\u0628",
+        "copy": "\u0646\u0633\u062E \u0631\u0642\u0645 \u0627\u0644\u0637\u0644\u0628",
+        "sent": "\u0623\u0631\u0633\u0644\u0646\u0627 \u062A\u0623\u0643\u064A\u062F\u064B\u0627 \u0625\u0644\u0649 {email}.",
+        "next": "\u0645\u0627 \u064A\u062D\u062F\u062B \u0628\u0639\u062F \u0630\u0644\u0643",
+        "items": "\u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+        "view": "\u0639\u0631\u0636 \u0637\u0644\u0628\u0643",
+        "continue": "\u0645\u062A\u0627\u0628\u0639\u0629 \u0627\u0644\u062A\u0633\u0648\u0642",
+        "delivery": "\u0627\u0644\u062A\u0633\u0644\u064A\u0645",
+        "method": "\u0637\u0631\u064A\u0642\u0629 \u0627\u0644\u062A\u0633\u0644\u064A\u0645"
       },
       "listing": {
-        "label": "المنتجات",
-        "search": "البحث في المنتجات",
-        "count": "{n} منتجات",
-        "one": "منتج واحد",
-        "category": "الفئة",
-        "noun": "منتج",
-        "name": "الاسم",
-        "price": "السعر",
-        "rating": "التقييم",
-        "availability": "التوفر",
-        "inStock": "متوفر",
-        "outOfStock": "غير متوفر في المخزون",
-        "sale": "معروض بسعر مخفّض",
-        "yes": "نعم",
-        "no": "لا",
-        "empty": "لا توجد منتجات مطابقة",
-        "emptyText": "أزل عامل تصفية أو ابحث عن شيء آخر.",
-        "clear": "مسح عوامل التصفية والبحث",
-        "results": "تم عرض {n} منتجات",
-        "resultsOne": "تم عرض منتج واحد",
-        "none": "لا توجد منتجات معروضة"
+        "label": "\u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A",
+        "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A",
+        "count": "{n} \u0645\u0646\u062A\u062C\u0627\u062A",
+        "one": "\u0645\u0646\u062A\u062C \u0648\u0627\u062D\u062F",
+        "category": "\u0627\u0644\u0641\u0626\u0629",
+        "noun": "\u0645\u0646\u062A\u062C",
+        "name": "\u0627\u0644\u0627\u0633\u0645",
+        "price": "\u0627\u0644\u0633\u0639\u0631",
+        "rating": "\u0627\u0644\u062A\u0642\u064A\u064A\u0645",
+        "availability": "\u0627\u0644\u062A\u0648\u0641\u0631",
+        "inStock": "\u0645\u062A\u0648\u0641\u0631",
+        "outOfStock": "\u063A\u064A\u0631 \u0645\u062A\u0648\u0641\u0631 \u0641\u064A \u0627\u0644\u0645\u062E\u0632\u0648\u0646",
+        "sale": "\u0645\u0639\u0631\u0648\u0636 \u0628\u0633\u0639\u0631 \u0645\u062E\u0641\u0651\u0636",
+        "yes": "\u0646\u0639\u0645",
+        "no": "\u0644\u0627",
+        "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0646\u062A\u062C\u0627\u062A \u0645\u0637\u0627\u0628\u0642\u0629",
+        "emptyText": "\u0623\u0632\u0644 \u0639\u0627\u0645\u0644 \u062A\u0635\u0641\u064A\u0629 \u0623\u0648 \u0627\u0628\u062D\u062B \u0639\u0646 \u0634\u064A\u0621 \u0622\u062E\u0631.",
+        "clear": "\u0645\u0633\u062D \u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062A\u0635\u0641\u064A\u0629 \u0648\u0627\u0644\u0628\u062D\u062B",
+        "results": "\u062A\u0645 \u0639\u0631\u0636 {n} \u0645\u0646\u062A\u062C\u0627\u062A",
+        "resultsOne": "\u062A\u0645 \u0639\u0631\u0636 \u0645\u0646\u062A\u062C \u0648\u0627\u062D\u062F",
+        "none": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0646\u062A\u062C\u0627\u062A \u0645\u0639\u0631\u0648\u0636\u0629"
       },
       "discovery": {
-        "title": "المتجر",
-        "search": "البحث في المتجر",
-        "categories": "التسوق حسب الفئة",
-        "recommended": "موصى به لك",
-        "results": "المنتجات",
-        "resultsFor": "نتائج «{q}»",
-        "count": "{n} منتجات",
-        "one": "منتج واحد",
-        "suggestions": "جرّب أحد هذه",
-        "clear": "مسح البحث"
+        "title": "\u0627\u0644\u0645\u062A\u062C\u0631",
+        "search": "\u0627\u0644\u0628\u062D\u062B \u0641\u064A \u0627\u0644\u0645\u062A\u062C\u0631",
+        "categories": "\u0627\u0644\u062A\u0633\u0648\u0642 \u062D\u0633\u0628 \u0627\u0644\u0641\u0626\u0629",
+        "recommended": "\u0645\u0648\u0635\u0649 \u0628\u0647 \u0644\u0643",
+        "results": "\u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A",
+        "resultsFor": "\u0646\u062A\u0627\u0626\u062C \xAB{q}\xBB",
+        "count": "{n} \u0645\u0646\u062A\u062C\u0627\u062A",
+        "one": "\u0645\u0646\u062A\u062C \u0648\u0627\u062D\u062F",
+        "suggestions": "\u062C\u0631\u0651\u0628 \u0623\u062D\u062F \u0647\u0630\u0647",
+        "clear": "\u0645\u0633\u062D \u0627\u0644\u0628\u062D\u062B"
       },
       "productDetail": {
-        "gallery": "صور {title}",
-        "reviews": "{n} مراجعات",
-        "review": "مراجعة واحدة",
-        "inStock": "متوفر",
-        "lowStock": "بقي {n} فقط",
-        "outOfStock": "غير متوفر في المخزون",
-        "addToCart": "أضف إلى السلة",
-        "added": "تمت إضافة {title} إلى سلتك",
-        "viewCart": "عرض السلة",
-        "choose": "اختر {option}.",
-        "missing": "اختر خياراتك أولًا.",
-        "description": "الوصف",
-        "details": "التفاصيل",
-        "delivery": "التسليم والإرجاع",
-        "detail": "التفاصيل",
-        "value": "القيمة",
-        "related": "قد يعجبك أيضًا",
-        "rating": "التقييم"
+        "gallery": "\u0635\u0648\u0631 {title}",
+        "reviews": "{n} \u0645\u0631\u0627\u062C\u0639\u0627\u062A",
+        "review": "\u0645\u0631\u0627\u062C\u0639\u0629 \u0648\u0627\u062D\u062F\u0629",
+        "inStock": "\u0645\u062A\u0648\u0641\u0631",
+        "lowStock": "\u0628\u0642\u064A {n} \u0641\u0642\u0637",
+        "outOfStock": "\u063A\u064A\u0631 \u0645\u062A\u0648\u0641\u0631 \u0641\u064A \u0627\u0644\u0645\u062E\u0632\u0648\u0646",
+        "addToCart": "\u0623\u0636\u0641 \u0625\u0644\u0649 \u0627\u0644\u0633\u0644\u0629",
+        "added": "\u062A\u0645\u062A \u0625\u0636\u0627\u0641\u0629 {title} \u0625\u0644\u0649 \u0633\u0644\u062A\u0643",
+        "viewCart": "\u0639\u0631\u0636 \u0627\u0644\u0633\u0644\u0629",
+        "choose": "\u0627\u062E\u062A\u0631 {option}.",
+        "missing": "\u0627\u062E\u062A\u0631 \u062E\u064A\u0627\u0631\u0627\u062A\u0643 \u0623\u0648\u0644\u064B\u0627.",
+        "description": "\u0627\u0644\u0648\u0635\u0641",
+        "details": "\u0627\u0644\u062A\u0641\u0627\u0635\u064A\u0644",
+        "delivery": "\u0627\u0644\u062A\u0633\u0644\u064A\u0645 \u0648\u0627\u0644\u0625\u0631\u062C\u0627\u0639",
+        "detail": "\u0627\u0644\u062A\u0641\u0627\u0635\u064A\u0644",
+        "value": "\u0627\u0644\u0642\u064A\u0645\u0629",
+        "related": "\u0642\u062F \u064A\u0639\u062C\u0628\u0643 \u0623\u064A\u0636\u064B\u0627",
+        "rating": "\u0627\u0644\u062A\u0642\u064A\u064A\u0645"
       },
       "line": {
-        "quantity": "الكمية، {title}",
-        "qty": "الكمية {n}",
-        "each": "{price} للقطعة"
+        "quantity": "\u0627\u0644\u0643\u0645\u064A\u0629\u060C {title}",
+        "qty": "\u0627\u0644\u0643\u0645\u064A\u0629 {n}",
+        "each": "{price} \u0644\u0644\u0642\u0637\u0639\u0629"
       },
       "summary": {
-        "title": "ملخص الطلب",
-        "subtotal": "المجموع الفرعي",
-        "discount": "الخصم",
-        "shipping": "الشحن",
-        "shippingEstimated": "الشحن التقديري",
-        "tax": "الضريبة",
-        "taxEstimated": "الضريبة التقديرية",
-        "total": "الإجمالي",
-        "free": "مجاني",
-        "items": "{n} عناصر",
-        "item": "عنصر واحد",
-        "times": "× {n}"
+        "title": "\u0645\u0644\u062E\u0635 \u0627\u0644\u0637\u0644\u0628",
+        "subtotal": "\u0627\u0644\u0645\u062C\u0645\u0648\u0639 \u0627\u0644\u0641\u0631\u0639\u064A",
+        "discount": "\u0627\u0644\u062E\u0635\u0645",
+        "shipping": "\u0627\u0644\u0634\u062D\u0646",
+        "shippingEstimated": "\u0627\u0644\u0634\u062D\u0646 \u0627\u0644\u062A\u0642\u062F\u064A\u0631\u064A",
+        "tax": "\u0627\u0644\u0636\u0631\u064A\u0628\u0629",
+        "taxEstimated": "\u0627\u0644\u0636\u0631\u064A\u0628\u0629 \u0627\u0644\u062A\u0642\u062F\u064A\u0631\u064A\u0629",
+        "total": "\u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A",
+        "free": "\u0645\u062C\u0627\u0646\u064A",
+        "items": "{n} \u0639\u0646\u0627\u0635\u0631",
+        "item": "\u0639\u0646\u0635\u0631 \u0648\u0627\u062D\u062F",
+        "times": "\xD7 {n}"
       }
     },
     "dnd": {
-      "handle": "نقل {name}",
-      "instructions": "اضغط على Space أو Enter لالتقاطه. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
-      "pickedUp": "تم التقاط {name}. الموضع {position} من {total}. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
-      "moved": "{name}، الموضع {position} من {total}",
-      "movedTo": "تم نقل {name} إلى {list}، الموضع {position} من {total}",
-      "dropped": "تم إسقاط {name} في الموضع {position} من {total}",
-      "droppedIn": "تم إسقاط {name} في {list}، الموضع {position} من {total}",
-      "canceled": "أُلغي النقل. عاد {name} إلى الموضع {position} من {total}",
-      "itemPickedUp": "تم التقاط {name}. يمكن لـ {count} أماكن استقباله. مفاتيح الأسهم تختار مكانًا، وSpace أو Enter يُسقطه، وEscape يعيده.",
-      "over": "فوق {target}",
-      "overReject": "{target} لا يستقبل {name}",
-      "droppedOn": "تم إسقاط {name} على {target}",
-      "noTargets": "لا يوجد مكان يستقبل {name}",
-      "itemCanceled": "أُلغي النقل. لم يتم نقل {name}",
-      "repositionPicked": "تم التقاط {name}. مفاتيح الأسهم تحرّكه، مع Shift لمسافة أكبر؛ وSpace أو Enter يُسقطه، وEscape يعيده.",
-      "repositioned": "تم نقل {name}",
-      "repositionDropped": "تم إسقاط {name}",
-      "repositionCanceled": "أُلغي النقل. عاد {name} إلى مكانه",
-      "movable": "قابل للنقل",
-      "list": "القائمة"
+      "handle": "\u0646\u0642\u0644 {name}",
+      "instructions": "\u0627\u0636\u063A\u0637 \u0639\u0644\u0649 Space \u0623\u0648 Enter \u0644\u0627\u0644\u062A\u0642\u0627\u0637\u0647. \u0645\u0641\u0627\u062A\u064A\u062D \u0627\u0644\u0623\u0633\u0647\u0645 \u062A\u062D\u0631\u0651\u0643\u0647\u060C \u0648Space \u0623\u0648 Enter \u064A\u064F\u0633\u0642\u0637\u0647\u060C \u0648Escape \u064A\u0639\u064A\u062F\u0647.",
+      "pickedUp": "\u062A\u0645 \u0627\u0644\u062A\u0642\u0627\u0637 {name}. \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}. \u0645\u0641\u0627\u062A\u064A\u062D \u0627\u0644\u0623\u0633\u0647\u0645 \u062A\u062D\u0631\u0651\u0643\u0647\u060C \u0648Space \u0623\u0648 Enter \u064A\u064F\u0633\u0642\u0637\u0647\u060C \u0648Escape \u064A\u0639\u064A\u062F\u0647.",
+      "moved": "{name}\u060C \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "movedTo": "\u062A\u0645 \u0646\u0642\u0644 {name} \u0625\u0644\u0649 {list}\u060C \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "dropped": "\u062A\u0645 \u0625\u0633\u0642\u0627\u0637 {name} \u0641\u064A \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "droppedIn": "\u062A\u0645 \u0625\u0633\u0642\u0627\u0637 {name} \u0641\u064A {list}\u060C \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "canceled": "\u0623\u064F\u0644\u063A\u064A \u0627\u0644\u0646\u0642\u0644. \u0639\u0627\u062F {name} \u0625\u0644\u0649 \u0627\u0644\u0645\u0648\u0636\u0639 {position} \u0645\u0646 {total}",
+      "itemPickedUp": "\u062A\u0645 \u0627\u0644\u062A\u0642\u0627\u0637 {name}. \u064A\u0645\u0643\u0646 \u0644\u0640 {count} \u0623\u0645\u0627\u0643\u0646 \u0627\u0633\u062A\u0642\u0628\u0627\u0644\u0647. \u0645\u0641\u0627\u062A\u064A\u062D \u0627\u0644\u0623\u0633\u0647\u0645 \u062A\u062E\u062A\u0627\u0631 \u0645\u0643\u0627\u0646\u064B\u0627\u060C \u0648Space \u0623\u0648 Enter \u064A\u064F\u0633\u0642\u0637\u0647\u060C \u0648Escape \u064A\u0639\u064A\u062F\u0647.",
+      "over": "\u0641\u0648\u0642 {target}",
+      "overReject": "{target} \u0644\u0627 \u064A\u0633\u062A\u0642\u0628\u0644 {name}",
+      "droppedOn": "\u062A\u0645 \u0625\u0633\u0642\u0627\u0637 {name} \u0639\u0644\u0649 {target}",
+      "noTargets": "\u0644\u0627 \u064A\u0648\u062C\u062F \u0645\u0643\u0627\u0646 \u064A\u0633\u062A\u0642\u0628\u0644 {name}",
+      "itemCanceled": "\u0623\u064F\u0644\u063A\u064A \u0627\u0644\u0646\u0642\u0644. \u0644\u0645 \u064A\u062A\u0645 \u0646\u0642\u0644 {name}",
+      "repositionPicked": "\u062A\u0645 \u0627\u0644\u062A\u0642\u0627\u0637 {name}. \u0645\u0641\u0627\u062A\u064A\u062D \u0627\u0644\u0623\u0633\u0647\u0645 \u062A\u062D\u0631\u0651\u0643\u0647\u060C \u0645\u0639 Shift \u0644\u0645\u0633\u0627\u0641\u0629 \u0623\u0643\u0628\u0631\u061B \u0648Space \u0623\u0648 Enter \u064A\u064F\u0633\u0642\u0637\u0647\u060C \u0648Escape \u064A\u0639\u064A\u062F\u0647.",
+      "repositioned": "\u062A\u0645 \u0646\u0642\u0644 {name}",
+      "repositionDropped": "\u062A\u0645 \u0625\u0633\u0642\u0627\u0637 {name}",
+      "repositionCanceled": "\u0623\u064F\u0644\u063A\u064A \u0627\u0644\u0646\u0642\u0644. \u0639\u0627\u062F {name} \u0625\u0644\u0649 \u0645\u0643\u0627\u0646\u0647",
+      "movable": "\u0642\u0627\u0628\u0644 \u0644\u0644\u0646\u0642\u0644",
+      "list": "\u0627\u0644\u0642\u0627\u0626\u0645\u0629"
     },
     "collapsibleSection": {
-      "less": "عرض أقل",
-      "more": "عرض المزيد",
-      "moreCount": "عرض المزيد ({n})"
+      "less": "\u0639\u0631\u0636 \u0623\u0642\u0644",
+      "more": "\u0639\u0631\u0636 \u0627\u0644\u0645\u0632\u064A\u062F",
+      "moreCount": "\u0639\u0631\u0636 \u0627\u0644\u0645\u0632\u064A\u062F ({n})"
     },
     "fields": {
       "directions": {
         "text": [
-          "أ → ي",
-          "ي → أ"
+          "\u0623 \u2192 \u064A",
+          "\u064A \u2192 \u0623"
         ],
         "select": [
-          "الأول → الأخير",
-          "الأخير → الأول"
+          "\u0627\u0644\u0623\u0648\u0644 \u2192 \u0627\u0644\u0623\u062E\u064A\u0631",
+          "\u0627\u0644\u0623\u062E\u064A\u0631 \u2192 \u0627\u0644\u0623\u0648\u0644"
         ],
         "multi": [
-          "الأول → الأخير",
-          "الأخير → الأول"
+          "\u0627\u0644\u0623\u0648\u0644 \u2192 \u0627\u0644\u0623\u062E\u064A\u0631",
+          "\u0627\u0644\u0623\u062E\u064A\u0631 \u2192 \u0627\u0644\u0623\u0648\u0644"
         ],
         "number": [
-          "1 → 9",
-          "9 → 1"
+          "1 \u2192 9",
+          "9 \u2192 1"
         ],
         "date": [
-          "الأقدم → الأحدث",
-          "الأحدث → الأقدم"
+          "\u0627\u0644\u0623\u0642\u062F\u0645 \u2192 \u0627\u0644\u0623\u062D\u062F\u062B",
+          "\u0627\u0644\u0623\u062D\u062F\u062B \u2192 \u0627\u0644\u0623\u0642\u062F\u0645"
         ]
       },
       "operators": {
         "text": {
-          "contains": "يحتوي على",
-          "ncontains": "لا يحتوي على",
-          "is": "هو",
-          "isnot": "ليس",
-          "empty": "فارغ",
-          "nempty": "غير فارغ"
+          "contains": "\u064A\u062D\u062A\u0648\u064A \u0639\u0644\u0649",
+          "ncontains": "\u0644\u0627 \u064A\u062D\u062A\u0648\u064A \u0639\u0644\u0649",
+          "is": "\u0647\u0648",
+          "isnot": "\u0644\u064A\u0633",
+          "empty": "\u0641\u0627\u0631\u063A",
+          "nempty": "\u063A\u064A\u0631 \u0641\u0627\u0631\u063A"
         },
         "select": {
-          "any": "هو أحد",
-          "none": "ليس أيًّا من",
-          "empty": "فارغ",
-          "nempty": "غير فارغ"
+          "any": "\u0647\u0648 \u0623\u062D\u062F",
+          "none": "\u0644\u064A\u0633 \u0623\u064A\u064B\u0651\u0627 \u0645\u0646",
+          "empty": "\u0641\u0627\u0631\u063A",
+          "nempty": "\u063A\u064A\u0631 \u0641\u0627\u0631\u063A"
         },
         "multi": {
-          "any": "يحتوي على أي من",
-          "none": "لا يحتوي على أي من",
-          "empty": "فارغ",
-          "nempty": "غير فارغ"
+          "any": "\u064A\u062D\u062A\u0648\u064A \u0639\u0644\u0649 \u0623\u064A \u0645\u0646",
+          "none": "\u0644\u0627 \u064A\u062D\u062A\u0648\u064A \u0639\u0644\u0649 \u0623\u064A \u0645\u0646",
+          "empty": "\u0641\u0627\u0631\u063A",
+          "nempty": "\u063A\u064A\u0631 \u0641\u0627\u0631\u063A"
         },
         "number": {
           "eq": "=",
-          "ne": "≠",
+          "ne": "\u2260",
           "lt": "<",
           "gt": ">",
-          "empty": "فارغ",
-          "nempty": "غير فارغ"
+          "empty": "\u0641\u0627\u0631\u063A",
+          "nempty": "\u063A\u064A\u0631 \u0641\u0627\u0631\u063A"
         },
         "date": {
-          "is": "هو",
-          "before": "قبل",
-          "after": "بعد",
-          "within": "خلال",
-          "empty": "فارغ",
-          "nempty": "غير فارغ"
+          "is": "\u0647\u0648",
+          "before": "\u0642\u0628\u0644",
+          "after": "\u0628\u0639\u062F",
+          "within": "\u062E\u0644\u0627\u0644",
+          "empty": "\u0641\u0627\u0631\u063A",
+          "nempty": "\u063A\u064A\u0631 \u0641\u0627\u0631\u063A"
         }
       },
       "within": {
-        "week": "الأسبوع الماضي",
-        "month": "الشهر الماضي",
-        "year": "العام الماضي"
+        "week": "\u0627\u0644\u0623\u0633\u0628\u0648\u0639 \u0627\u0644\u0645\u0627\u0636\u064A",
+        "month": "\u0627\u0644\u0634\u0647\u0631 \u0627\u0644\u0645\u0627\u0636\u064A",
+        "year": "\u0627\u0644\u0639\u0627\u0645 \u0627\u0644\u0645\u0627\u0636\u064A"
       },
       "presets": {
-        "7": "آخر 7 أيام",
-        "30": "آخر 30 يومًا",
-        "any": "أي وقت",
-        "year": "هذا العام"
+        "7": "\u0622\u062E\u0631 7 \u0623\u064A\u0627\u0645",
+        "30": "\u0622\u062E\u0631 30 \u064A\u0648\u0645\u064B\u0627",
+        "any": "\u0623\u064A \u0648\u0642\u062A",
+        "year": "\u0647\u0630\u0627 \u0627\u0644\u0639\u0627\u0645"
       }
     },
     "dateBadge": {
-      "today": "اليوم"
+      "today": "\u0627\u0644\u064A\u0648\u0645"
     },
     "activityList": {
-      "unread": "غير مقروء"
+      "unread": "\u063A\u064A\u0631 \u0645\u0642\u0631\u0648\u0621"
     },
     "sidePanel": {
-      "expand": "توسيع اللوحة",
-      "pane": "لوحة {name}"
+      "expand": "\u062A\u0648\u0633\u064A\u0639 \u0627\u0644\u0644\u0648\u062D\u0629",
+      "pane": "\u0644\u0648\u062D\u0629 {name}"
     },
     "splitView": {
-      "firstLabel": "اللوحة الأولى",
-      "maxWidth": "تحتاج اللوحة الأخرى إلى {n} بكسل على الأقل"
+      "firstLabel": "\u0627\u0644\u0644\u0648\u062D\u0629 \u0627\u0644\u0623\u0648\u0644\u0649",
+      "maxWidth": "\u062A\u062D\u062A\u0627\u062C \u0627\u0644\u0644\u0648\u062D\u0629 \u0627\u0644\u0623\u062E\u0631\u0649 \u0625\u0644\u0649 {n} \u0628\u0643\u0633\u0644 \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644"
     }
   };
   const BUILT_IN = { ar: arabic };
@@ -6517,7 +6517,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const words2 = String(name || "").replace(/\([^)]*\)/g, " ").split(/\s+/).filter((w) => w && !/\.$/.test(w) && initialOf(w));
     if (!words2.length) return "";
     const first = initialOf(words2[0]), last = words2.length > 1 ? initialOf(words2[words2.length - 1]) : "";
-    return (first + (JOINING.test(first) && JOINING.test(last) ? "‌" : "") + last).toUpperCase();
+    return (first + (JOINING.test(first) && JOINING.test(last) ? "\u200C" : "") + last).toUpperCase();
   }
   const GENDER$1 = { male: { tone: "blue", icon: PersonMaleIcon }, female: { tone: "pink", icon: PersonFemaleIcon } };
   function Avatar({ name, src, initials, ai, logo, size = "sm", color, category, gender, label: label2, presence, strings, className, ...rest }) {
@@ -6942,9 +6942,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return registerHotkey(binding, (e) => ref.current && ref.current(e), { scope, allowInFields, label: label2, group });
     }, [binding, scope, enabled, allowInFields, label2, group]);
   }
-  const MAC_NAMES = { meta: "⌘", ctrl: "⌃", alt: "⌥", shift: "⇧" };
+  const MAC_NAMES = { meta: "\u2318", ctrl: "\u2303", alt: "\u2325", shift: "\u21E7" };
   const PC_NAMES = { meta: "Win", ctrl: "Ctrl", alt: "Alt", shift: "Shift" };
-  const KEY_NAMES = { " ": "Space", escape: "Esc", arrowup: "↑", arrowdown: "↓", arrowleft: "←", arrowright: "→", enter: "Enter", delete: "Delete", backspace: "Backspace", tab: "Tab" };
+  const KEY_NAMES = { " ": "Space", escape: "Esc", arrowup: "\u2191", arrowdown: "\u2193", arrowleft: "\u2190", arrowright: "\u2192", enter: "Enter", delete: "Delete", backspace: "Backspace", tab: "Tab" };
   function hotkeyKeys(binding, { mac = isMac() } = {}) {
     const names2 = mac ? MAC_NAMES : PC_NAMES;
     return parseHotkey(binding, mac).map((s) => (mac ? ["ctrl", "alt", "shift", "meta"] : ["ctrl", "meta", "alt", "shift"]).filter((m) => s[m]).map((m) => names2[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
@@ -7284,18 +7284,17 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = typeof max2 === "number" && Number(value) > max2 ? max2 + "+" : String(value);
     return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-count", "plx-count--" + variant, variant === "pill" ? "plx-count--" + tone : null, className), "aria-label": label2 || (typeof max2 === "number" && Number(value) > max2 ? moreThan.replace("{max}", String(max2)) : void 0), ...rest }, shown);
   }
-  const DataText$1 = Text;
   const D = "[0-9\\u0660-\\u0669]";
   const MONTH$2 = "(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?";
-  const DATUM$1 = new RegExp("(" + D + "{4}-" + D + "{2}-" + D + "{2}(?:[ T]" + D + "{1,2}:" + D + "{2})?|" + MONTH$2 + " " + D + "{1,2}(?:, " + D + "{4})?|" + D + "{1,2}:" + D + "{2}(?:\\s?[AP]M)?|[$€£]?" + D + "[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|٪|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?" + D + "[0-9\\u0660-\\u0669,.]*)?)", "g");
+  const DATUM$1 = new RegExp("(" + D + "{4}-" + D + "{2}-" + D + "{2}(?:[ T]" + D + "{1,2}:" + D + "{2})?|" + MONTH$2 + " " + D + "{1,2}(?:, " + D + "{4})?|" + D + "{1,2}:" + D + "{2}(?:\\s?[AP]M)?|[$\u20AC\xA3]?" + D + "[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|\u066A|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[\xD7x]\\s?" + D + "[0-9\\u0660-\\u0669,.]*)?)", "g");
   const HAS_DIGIT = new RegExp(D);
   function runs(text2, key) {
     if (typeof text2 !== "string" || !HAS_DIGIT.test(text2)) return [text2];
-    return text2.split(DATUM$1).map((p, i) => i % 2 ? /* @__PURE__ */ React$1.createElement(DataText$1, { key: key + "-" + i, variant: "data" }, p) : p || null);
+    return text2.split(DATUM$1).map((p, i) => i % 2 ? /* @__PURE__ */ React$1.createElement(Text, { key: key + "-" + i, variant: "data" }, p) : p || null);
   }
   function dataNumber(value, options) {
     if (value === null || value === void 0 || value === "") return null;
-    return /* @__PURE__ */ React$1.createElement(DataText$1, { variant: "data" }, typeof value === "number" ? formatNumber(value, options) : String(value));
+    return /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, typeof value === "number" ? formatNumber(value, options) : String(value));
   }
   function dataPhrase(text2, values, options) {
     if (text2 === null || text2 === void 0) return null;
@@ -7310,7 +7309,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         }
         const v = values[m[1]];
         if (v === null || v === void 0) return;
-        if (typeof v === "number") out.push(/* @__PURE__ */ React$1.createElement(DataText$1, { key: i, variant: "data" }, formatNumber(v, options)));
+        if (typeof v === "number") out.push(/* @__PURE__ */ React$1.createElement(Text, { key: i, variant: "data" }, formatNumber(v, options)));
         else if (React$1.isValidElement(v)) out.push(React$1.cloneElement(v, { key: i }));
         else out.push(...runs(String(v), i));
       });
@@ -7457,7 +7456,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const regions = {};
   const pending$1 = {};
   const waiting = { polite: [], assertive: [] };
-  const joinMessages = (list2) => list2.reduce((all, t) => !all ? t : all + (/[.!?…]$/.test(all) ? " " : ". ") + t, "");
+  const joinMessages = (list2) => list2.reduce((all, t) => !all ? t : all + (/[.!?\u2026]$/.test(all) ? " " : ". ") + t, "");
   function region(politeness) {
     if (regions[politeness] && regions[politeness].isConnected) return regions[politeness];
     const el = document.createElement("div");
@@ -9135,14 +9134,14 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "\\d{1,2} " + MONTH$1 + "(?: \\d{4})?",
     "\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\s?[AP]M)?",
     "\\d+(?:[.,]\\d+)?\\s?(?:B|KB|MB|GB|TB|kB)",
-    "\\d+\\s?[×x]\\s?\\d+(?:\\s?px)?",
+    "\\d+\\s?[\xD7x]\\s?\\d+(?:\\s?px)?",
     "v\\d+(?:\\.\\d+){1,3}(?:-[\\w.]+)?|\\d+\\.\\d+\\.\\d+(?:-[\\w.]+)?",
     "#\\d{2,}",
     "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
     "\\d+(?:[.,]\\d+)*%?"
     // a plain number, with thousands separators or decimals, or a percentage
   ];
-  const DATA = new RegExp("^(?:" + ONE.join("|") + ")(?:\\s*[·,–-]\\s*(?:" + ONE.join("|") + "))*$");
+  const DATA = new RegExp("^(?:" + ONE.join("|") + ")(?:\\s*[\xB7,\u2013-]\\s*(?:" + ONE.join("|") + "))*$");
   const EXTENSIONS = new Set("pdf png jpg jpeg gif svg webp avif heic tif tiff psd ai eps indd mp4 mov webm mp3 wav doc docx xls xlsx ppt pptx csv txt md json js jsx css html zip".split(" "));
   function isFileName(text2) {
     const m = /^(\S+)\.([A-Za-z0-9]+)$/.exec(text2);
@@ -9186,8 +9185,6 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   function Bleed({ as: As = "div", space = "md", sides = "inline", className, children, ...rest }) {
     return /* @__PURE__ */ React$1.createElement(As, { className: cx("plx-bleed", "plx-bleed--" + space, "plx-bleed--" + sides, className), ...rest }, children);
   }
-  const ReasonIcon = Icon;
-  const ReasonText = Text;
   const ReadOnlyContext = React$1.createContext(false);
   function ReadOnlyProvider({ readOnly = true, children }) {
     return /* @__PURE__ */ React$1.createElement(ReadOnlyContext.Provider, { value: !!readOnly }, children);
@@ -9341,7 +9338,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         ...rest,
         "aria-describedby": joinIds(rest["aria-describedby"], on && reason ? reasonId : null)
       },
-      on && reason ? /* @__PURE__ */ React$1.createElement(Inline$1, { gap: "xs" }, /* @__PURE__ */ React$1.createElement(ReasonIcon, { name: LockIcon, size: "sm" }), /* @__PURE__ */ React$1.createElement(ReasonText, { variant: "secondary", id: reasonId }, reason)) : null,
+      on && reason ? /* @__PURE__ */ React$1.createElement(Inline$1, { gap: "xs" }, /* @__PURE__ */ React$1.createElement(Icon, { name: LockIcon, size: "sm" }), /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary", id: reasonId }, reason)) : null,
       children
     ));
   });
@@ -9898,20 +9895,20 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }
   const PAGE_REGIONS = {
     "page-header": {
-      "use": "The page’s title and its own actions",
+      "use": "The page\u2019s title and its own actions",
       "patterns": [
         "EntityHeader",
         "PageContent"
       ]
     },
     "entity-header": {
-      "use": "One record’s context, name, facts and its own actions (three parts)",
+      "use": "One record\u2019s context, name, facts and its own actions (three parts)",
       "patterns": [
         "EntityHeader"
       ]
     },
     "command-bar": {
-      "use": "Acting on a list, and narrowing it (search, filters, sort, group, view): one bar that swaps to the selection’s commands",
+      "use": "Acting on a list, and narrowing it (search, filters, sort, group, view): one bar that swaps to the selection\u2019s commands",
       "patterns": [
         "CommandBar"
       ]
@@ -9950,7 +9947,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       ]
     },
     "record-sections": {
-      "use": "A record’s content under its header: facts, activity, related lists",
+      "use": "A record\u2019s content under its header: facts, activity, related lists",
       "patterns": [
         "RecordPage",
         "Panel",
@@ -9984,12 +9981,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     {
       "question": "Is it narrowing a list (search, filters, sort, group, view)?",
       "region": "command-bar",
-      "build": "The CommandBar’s find side"
+      "build": "The CommandBar\u2019s find side"
     },
     {
       "question": "Is it acting on a list or on its selected rows?",
       "region": "command-bar",
-      "build": "The CommandBar, swapping to the selection’s commands"
+      "build": "The CommandBar, swapping to the selection\u2019s commands"
     },
     {
       "question": "Is it a list beside the item chosen in it?",
@@ -9999,7 +9996,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     {
       "question": "Is it a set of commands with no list?",
       "region": null,
-      "build": "A Menu (or the page header’s actions)"
+      "build": "A Menu (or the page header\u2019s actions)"
     },
     {
       "question": "Is it one record?",
@@ -10934,9 +10931,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       timers.current.clear();
     }, []);
     const mark = React$1.useCallback((items, value) => {
-      const { keys: keys2, props: props2, keyOf: keyOf3 } = current2.current, next = new Set(keys2), changes = [];
+      const { keys: keys2, props: props2, keyOf: keyOf22 } = current2.current, next = new Set(keys2), changes = [];
       for (const record of items) {
-        const key = keyOf3(record);
+        const key = keyOf22(record);
         clearTimeout(timers.current.get(key));
         timers.current.delete(key);
         if (next.has(key) === value) continue;
@@ -10952,7 +10949,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       props2.onUnreadChange?.([...next], { unreadCount: next.size });
     }, []);
     const open = React$1.useCallback((record) => {
-      const { keys: keys2, props: props2, keyOf: keyOf3 } = current2.current, key = keyOf3(record);
+      const { keys: keys2, props: props2, keyOf: keyOf22 } = current2.current, key = keyOf22(record);
       if (props2.markReadOnOpen === false || !keys2.has(key) || timers.current.has(key)) return;
       const delay = Math.max(0, Number(props2.readDelay) || 0);
       if (delay) timers.current.set(key, setTimeout(() => {
@@ -11836,7 +11833,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const d1$12 = "M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z";
   const AddIcon = { "name": "add", "set": "plenix", "symbol": "add", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$13 }, "fill": { "viewBox": "0 -960 960 960", "d": d0$13 } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$12 }, "fill": { "viewBox": "0 -960 960 960", "d": d1$12 } } } };
   function RemoveButton({ label: label2, onClick }) {
-    return /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-tag__remove", "aria-label": label2, onClick }, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "×"));
+    return /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-tag__remove", "aria-label": label2, onClick }, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "\xD7"));
   }
   function Tag({ category, onRemove, removeLabel, onRename, renameLabel, className, children, ...rest }) {
     const tw = useStrings("tag");
@@ -14498,7 +14495,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
             }
             return str;
           };
-          console.info(`%c⏱ ${pad3(resultEndTime, 5)} /${pad3(depEndTime, 5)} ms`, `
+          console.info(`%c\u23F1 ${pad3(resultEndTime, 5)} /${pad3(depEndTime, 5)} ms`, `
             font-size: .6rem;
             font-weight: bold;
             color: hsl(${Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120))}deg 100% 31%);`, opts == null ? void 0 : opts.key);
@@ -19214,8 +19211,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const locked = useReadOnly(readOnly);
     return /* @__PURE__ */ React$1.createElement("label", { className: cx("plx-switch", className), dir, lang }, /* @__PURE__ */ React$1.createElement("input", { ref, type: "checkbox", role: "switch", className: "plx-switch__input", "aria-label": labelHidden ? label2 : void 0, ...readOnlyProps(locked, rest) }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__track", "aria-hidden": "true" }), label2 && !labelHidden ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-switch__label" }, label2) : null);
   });
-  const IGNORED = /[ـً-ٰٟ]/;
-  const JOINED = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+  const IGNORED = /[\u0640\u064B-\u065F\u0670]/;
+  const JOINED = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
   function fold$1(source) {
     let text2 = "";
     const start2 = [];
@@ -20112,7 +20109,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       ), /* @__PURE__ */ React$1.createElement("div", { className: "plx-find-panel__range" }, /* @__PURE__ */ React$1.createElement(Field, { label: t.from }, /* @__PURE__ */ React$1.createElement(Input, { type: "date", data: true, value: d.from, onChange: (e) => range("from", e.target.value) })), /* @__PURE__ */ React$1.createElement(Field, { label: t.to }, /* @__PURE__ */ React$1.createElement(Input, { type: "date", data: true, value: d.to, onChange: (e) => range("to", e.target.value) }))));
       const footer2 = /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", icon: FilterOffIcon, disabled: !on, onClick: () => onChange({ preset: "any", from: "", to: "" }) }, t.clear);
       const preset = t.presets.find((x) => x.value === d.preset);
-      const current2 = !on ? void 0 : d.preset === "custom" ? [d.from, d.to].filter(Boolean).join(" – ") || t.custom : preset ? preset.label : void 0;
+      const current2 = !on ? void 0 : d.preset === "custom" ? [d.from, d.to].filter(Boolean).join(" \u2013 ") || t.custom : preset ? preset.label : void 0;
       return /* @__PURE__ */ React$1.createElement(PanelTrigger, { icon: icon || CalendarIcon, label: label2, current: current2, title: label2, count: on ? 1 : 0, caret: true, size: "sm", footer: footer2, inline }, body2);
     }
     const list2 = asOptions(options);
@@ -20187,7 +20184,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const finding = !!find || quick.length > 0;
     const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
     const [searchOpen, setSearchOpen] = React$1.useState(false);
-    const key = [shape, narrow, selecting ? "sel" : "rest", shown.map((a) => a.label + (a.disabled ? "0" : "") + (a.loading ? "busy" : "")).join("|"), quickFilters.map((q2) => q2.label + (q2.value && q2.value.length ? q2.value.length : "")).join("|"), endFold && endFold.label].join("§");
+    const key = [shape, narrow, selecting ? "sel" : "rest", shown.map((a) => a.label + (a.disabled ? "0" : "") + (a.loading ? "busy" : "")).join("|"), quickFilters.map((q2) => q2.label + (q2.value && q2.value.length ? q2.value.length : "")).join("|"), endFold && endFold.label].join("\xA7");
     const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ":scope > .plx-command-bar__bar > [data-plx-bar-row]", searchOpen);
     const ctx = React$1.useMemo(() => ({ iconOnly: step >= ICONS$2, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
     const foldAll = Math.max(0, step - SEARCH);
@@ -20573,7 +20570,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const first = total ? (page - 1) * (perPage || 0) + 1 : null;
     const last = total ? Math.min(total, page * (perPage || total)) : null;
-    return /* @__PURE__ */ React$1.createElement("nav", { className: cx("plx-pagination", className), "aria-label": label2 || t.label, ...rest }, total ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__info" }, dataPhrase(t.range, { first, last, total })) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__pages" }, /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.previous, disabled: page <= 1, onClick: () => go(page - 1) }, "‹"), pagesToShow(page, pageCount).map((p) => typeof p === "string" ? /* @__PURE__ */ React$1.createElement("span", { key: p, className: "plx-pagination__gap", "aria-hidden": "true" }, "…") : /* @__PURE__ */ React$1.createElement("button", { type: "button", key: p, className: "plx-pagination__page", "aria-current": p === page ? "page" : void 0, "aria-label": fill(t.page, { n: p }), onClick: () => go(p) }, p)), /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.next, disabled: page >= pageCount, onClick: () => go(page + 1) }, "›")), perPageOptions && onPerPageChange ? /* @__PURE__ */ React$1.createElement("label", { className: "plx-pagination__per-page" }, /* @__PURE__ */ React$1.createElement("span", null, t.perPage), /* @__PURE__ */ React$1.createElement("select", { className: "plx-pagination__select", value: perPage, onChange: (e) => onPerPageChange(Number(e.target.value)) }, perPageOptions.map((n) => /* @__PURE__ */ React$1.createElement("option", { key: n, value: n }, n)))) : null);
+    return /* @__PURE__ */ React$1.createElement("nav", { className: cx("plx-pagination", className), "aria-label": label2 || t.label, ...rest }, total ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__info" }, dataPhrase(t.range, { first, last, total })) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-pagination__pages" }, /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.previous, disabled: page <= 1, onClick: () => go(page - 1) }, "\u2039"), pagesToShow(page, pageCount).map((p) => typeof p === "string" ? /* @__PURE__ */ React$1.createElement("span", { key: p, className: "plx-pagination__gap", "aria-hidden": "true" }, "\u2026") : /* @__PURE__ */ React$1.createElement("button", { type: "button", key: p, className: "plx-pagination__page", "aria-current": p === page ? "page" : void 0, "aria-label": fill(t.page, { n: p }), onClick: () => go(p) }, p)), /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-pagination__page plx-pagination__page--step", "aria-label": t.next, disabled: page >= pageCount, onClick: () => go(page + 1) }, "\u203A")), perPageOptions && onPerPageChange ? /* @__PURE__ */ React$1.createElement("label", { className: "plx-pagination__per-page" }, /* @__PURE__ */ React$1.createElement("span", null, t.perPage), /* @__PURE__ */ React$1.createElement("select", { className: "plx-pagination__select", value: perPage, onChange: (e) => onPerPageChange(Number(e.target.value)) }, perPageOptions.map((n) => /* @__PURE__ */ React$1.createElement("option", { key: n, value: n }, n)))) : null);
   }
   function manageDialog({
     headerMenu,
@@ -21997,7 +21994,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const key = legend === false ? null : /* @__PURE__ */ React$1.createElement(ChartLegend, { items: legendItems(slices, (d) => formatPercent(d.share)), orientation: legendPosition === "end" ? "vertical" : "horizontal" });
     const center = v === "pie" ? null : { value: centerValue === void 0 ? fmt(total) : centerValue, label: centerLabel === void 0 ? t.total : centerLabel };
-    const tipOf = (i) => ({ title: slices[i].label, items: [{ label: t.value, value: fmt(slices[i].value) + " · " + formatPercent(slices[i].share), color: slices[i].color }] });
+    const tipOf = (i) => ({ title: slices[i].label, items: [{ label: t.value, value: fmt(slices[i].value) + " \xB7 " + formatPercent(slices[i].share), color: slices[i].color }] });
     const ia = useChartInteraction({
       rows: 1,
       columns: slices.length,
@@ -22122,7 +22119,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }
   function Figure$1({ value, unit, target, status, inlineContext, empty }) {
     const none = empty || value === void 0 || value === null || value === "";
-    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-metric-card__figure" }, /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__value", none && "plx-metric-card__value--empty") }, none ? "–" : value), unit ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, unit) : null, target ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, "/ " + target) : null, inlineContext ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, inlineContext) : null, status ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__status" }, /* @__PURE__ */ React$1.createElement(Badge, { tone: status.tone, icon: status.icon }, status.label)) : null);
+    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-metric-card__figure" }, /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__value", none && "plx-metric-card__value--empty") }, none ? "\u2013" : value), unit ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, unit) : null, target ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, "/ " + target) : null, inlineContext ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, inlineContext) : null, status ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__status" }, /* @__PURE__ */ React$1.createElement(Badge, { tone: status.tone, icon: status.icon }, status.label)) : null);
   }
   function SplitBar({ parts, label: label2 }) {
     const total = parts.reduce((s, p) => s + (p.value > 0 ? p.value : 0), 0) || 1;
@@ -22154,12 +22151,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }));
   }
   function Summary({ metrics = [] }) {
-    return /* @__PURE__ */ React$1.createElement("ul", { className: "plx-metric-card__summary" }, metrics.map((m, i) => /* @__PURE__ */ React$1.createElement("li", { key: m.id || i, className: "plx-metric-card__summary-item" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__summary-figure" }, /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__summary-value", (m.value === void 0 || m.value === null || m.value === "") && "plx-metric-card__value--empty") }, m.value === void 0 || m.value === null || m.value === "" ? "–" : m.value), m.unit ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, m.unit) : null), /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__label" }, m.label))));
+    return /* @__PURE__ */ React$1.createElement("ul", { className: "plx-metric-card__summary" }, metrics.map((m, i) => /* @__PURE__ */ React$1.createElement("li", { key: m.id || i, className: "plx-metric-card__summary-item" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__summary-figure" }, /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__summary-value", (m.value === void 0 || m.value === null || m.value === "") && "plx-metric-card__value--empty") }, m.value === void 0 || m.value === null || m.value === "" ? "\u2013" : m.value), m.unit ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__unit" }, m.unit) : null), /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__label" }, m.label))));
   }
   function Week({ days = [], variant, max: max2, t }) {
     const top = max2 || Math.max(1, ...days.filter((d) => typeof d === "number"));
     const said = days.map((d, i) => t.weekdayNames[i] + " " + (d === null || d === void 0 ? t.toCome : d === true ? t.hit : d === false ? t.missed : d)).join(", ");
-    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-metric-card__week", role: "img", "aria-label": said }, days.map((d, i) => /* @__PURE__ */ React$1.createElement("span", { key: i, className: "plx-metric-card__day-cell" }, variant === "marks" ? d === null || d === void 0 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__mark plx-metric-card__mark--none" }, "–") : /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__mark", d ? "plx-metric-card__delta--good" : "plx-metric-card__delta--bad") }, /* @__PURE__ */ React$1.createElement(Icon, { name: d ? CheckIcon : CloseIcon })) : /* @__PURE__ */ React$1.createElement("svg", { className: "plx-metric-card__day-bar", viewBox: "0 0 12 40", preserveAspectRatio: "none", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement("rect", { className: "plx-metric-card__day-track", x: "0", y: "0", width: "12", height: "40" }), typeof d === "number" && d > 0 ? /* @__PURE__ */ React$1.createElement("rect", { className: "plx-metric-card__day-fill", x: "0", y: 40 - Math.min(1, d / top) * 40, width: "12", height: Math.min(1, d / top) * 40 }) : null), /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__day-letter", "aria-hidden": "true" }, t.weekdays[i]))));
+    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-metric-card__week", role: "img", "aria-label": said }, days.map((d, i) => /* @__PURE__ */ React$1.createElement("span", { key: i, className: "plx-metric-card__day-cell" }, variant === "marks" ? d === null || d === void 0 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__mark plx-metric-card__mark--none" }, "\u2013") : /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__mark", d ? "plx-metric-card__delta--good" : "plx-metric-card__delta--bad") }, /* @__PURE__ */ React$1.createElement(Icon, { name: d ? CheckIcon : CloseIcon })) : /* @__PURE__ */ React$1.createElement("svg", { className: "plx-metric-card__day-bar", viewBox: "0 0 12 40", preserveAspectRatio: "none", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement("rect", { className: "plx-metric-card__day-track", x: "0", y: "0", width: "12", height: "40" }), typeof d === "number" && d > 0 ? /* @__PURE__ */ React$1.createElement("rect", { className: "plx-metric-card__day-fill", x: "0", y: 40 - Math.min(1, d / top) * 40, width: "12", height: Math.min(1, d / top) * 40 }) : null), /* @__PURE__ */ React$1.createElement("span", { className: "plx-metric-card__day-letter", "aria-hidden": "true" }, t.weekdays[i]))));
   }
   function Month({ month, t }) {
     if (!month) return null;
@@ -22260,7 +22257,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       ...rest
     };
     if (layout2 === "tile" || layout2 === "icon-start") {
-      return /* @__PURE__ */ React$1.createElement("article", { ...rootProps }, layout2 === "icon-start" && icon ? /* @__PURE__ */ React$1.createElement(IconTile, { icon: typeof icon === "string" || isIconModule(icon) ? icon : void 0, hue, size: "lg" }) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-metric-card__compact" }, /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__value", empty && "plx-metric-card__value--empty") }, empty || value === void 0 ? "–" : value), /* @__PURE__ */ React$1.createElement(H2, { id, className: "plx-metric-card__title" }, titleText)));
+      return /* @__PURE__ */ React$1.createElement("article", { ...rootProps }, layout2 === "icon-start" && icon ? /* @__PURE__ */ React$1.createElement(IconTile, { icon: typeof icon === "string" || isIconModule(icon) ? icon : void 0, hue, size: "lg" }) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-metric-card__compact" }, /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-metric-card__value", empty && "plx-metric-card__value--empty") }, empty || value === void 0 ? "\u2013" : value), /* @__PURE__ */ React$1.createElement(H2, { id, className: "plx-metric-card__title" }, titleText)));
     }
     let visual = null;
     let showFigure = type !== "gauge" && type !== "comparison" && type !== "summary" && !(type === "list" && value === void 0) && !(type === "breakdown" && (breakdown === "donut" || value === void 0));
@@ -22790,7 +22787,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const keyCommit = (next) => (e) => {
       if (/Arrow|Page|Home|End/.test(e.key)) commit(next(Number(e.currentTarget.value)));
     };
-    const shown = range ? low + "–" + high + unit : value + unit;
+    const shown = range ? low + "\u2013" + high + unit : value + unit;
     if (!custom) {
       return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-slider", className) }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-slider__head" }, /* @__PURE__ */ React$1.createElement("label", { htmlFor: id, className: "plx-slider__label" }, label2), /* @__PURE__ */ React$1.createElement("output", { htmlFor: id, className: "plx-slider__value" }, value + unit)), /* @__PURE__ */ React$1.createElement(
         "input",
@@ -22970,7 +22967,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       tracks.map((a, i) => /* @__PURE__ */ React$1.createElement("track", { key: a.src + i, src: a.src, kind: a.kind || "captions", srcLang: a.language, label: a.label, default: !!a.default })),
       src ? /* @__PURE__ */ React$1.createElement(Link, { href: src }, t.fallback) : null
-    ), kind !== "audio" && audio ? /* @__PURE__ */ React$1.createElement("audio", { ref: sound, src: audio, crossOrigin, preload: "metadata", hidden: true, "aria-hidden": "true" }) : null, /* @__PURE__ */ React$1.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React$1.createElement(Field, { label: t.rate }, /* @__PURE__ */ React$1.createElement(Select, { value: String(rate), options: speeds.map((n) => ({ value: String(n), label: n + "×" })), onChange: (e) => {
+    ), kind !== "audio" && audio ? /* @__PURE__ */ React$1.createElement("audio", { ref: sound, src: audio, crossOrigin, preload: "metadata", hidden: true, "aria-hidden": "true" }) : null, /* @__PURE__ */ React$1.createElement(Inline$1, { wrap: true }, /* @__PURE__ */ React$1.createElement(Field, { label: t.rate }, /* @__PURE__ */ React$1.createElement(Select, { value: String(rate), options: speeds.map((n) => ({ value: String(n), label: n + "\xD7" })), onChange: (e) => {
       const next = Number(e.target.value);
       if (media.current) {
         media.current.playbackRate = next;
@@ -23188,9 +23185,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onFocus: (e) => setFocus(e.target.matches(":focus-visible")),
         onBlur: () => setFocus(false)
       }
-    )), /* @__PURE__ */ React$1.createElement("span", { className: "plx-chat__voice-time", dir: "ltr" }, on || time ? shown(time) + " / " + shown(total) : shown(total)), /* @__PURE__ */ React$1.createElement(Button, { variant: "secondary", size: "sm", "aria-label": fill(t.voiceSpeed, { rate: speed }), onClick: cycle }, speed, "×"), failed ? /* @__PURE__ */ React$1.createElement(Text, { variant: "caption" }, t.voiceFailed) : null);
+    )), /* @__PURE__ */ React$1.createElement("span", { className: "plx-chat__voice-time", dir: "ltr" }, on || time ? shown(time) + " / " + shown(total) : shown(total)), /* @__PURE__ */ React$1.createElement(Button, { variant: "secondary", size: "sm", "aria-label": fill(t.voiceSpeed, { rate: speed }), onClick: cycle }, speed, "\xD7"), failed ? /* @__PURE__ */ React$1.createElement(Text, { variant: "caption" }, t.voiceFailed) : null);
   }
-  const STRINGS$1 = { copied: "Copied", failed: "Couldn’t copy. Select the text and copy it by hand." };
+  const STRINGS$1 = { copied: "Copied", failed: "Couldn\u2019t copy. Select the text and copy it by hand." };
   function legacyCopy(text2) {
     if (typeof document === "undefined" || !document.body) return false;
     const area = document.createElement("textarea");
@@ -23278,7 +23275,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const PencilIcon = { "name": "pencil", "set": "plenix", "symbol": "edit", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M216-216h44.46l393.46-393.46-44.46-44.46L216-260.46V-216Zm-52 52v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm580-534.77L698.77-744 744-698.77ZM631.3-631.3l-21.84-22.62 44.46 44.46-22.62-21.84Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M164-164v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm527.08-482.23L744-698.77 698.77-744l-52.54 52.92 44.85 44.85Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M200-200h50.46l409.46-409.46-50.46-50.46L200-250.46V-200Zm-60 60v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm620-569.77L709.77-760 760-709.77Zm-125.75 75.52-24.79-25.67 50.46 50.46-25.67-24.79Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M140-140v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm562.08-512.23L760-709.77 709.77-760l-57.54 57.92 49.85 49.85Z" } } } };
   const TrashIcon = { "name": "trash", "set": "plenix", "symbol": "delete", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Zm52-52h336v-480H312v480Zm88.16-72h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM312-696v480-480Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M400.16-288h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Zm60-60h400v-520H280v520Zm96.16-80h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Z" } } } };
   const AddReactionIcon = { "name": "add-reaction", "set": "material", "symbol": "add_reaction", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M480-480Zm.34 364q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.43-141.25 28.42-65.87 78.22-115.68t115.96-78.25Q404.77-844 480-844q35.46 0 70.81 6.31 35.34 6.31 67.8 20.5v57.11q-33.23-15.84-67.73-23.88Q516.38-792 480-792q-129.67 0-220.84 91.23-91.16 91.23-91.16 221Q168-350 259.23-259t221 91Q610-168 701-259.16q91-91.17 91-220.84 0-36.72-8.23-71.25-8.23-34.52-24.46-67.36h58.46q13.61 33.46 19.92 68.21Q844-515.65 844-480q0 75.23-28.42 141.39-28.42 66.16-78.21 115.96-49.79 49.8-115.85 78.22Q555.45-116 480.34-116ZM778-706v-72h-72v-52h72v-72h52v72h72v52h-72v72h-52ZM608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q55.18 0 101.74-27.54 46.57-27.54 75.18-75.15H303.08q28.61 47.61 75.18 75.15 46.56 27.54 101.74 27.54Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M778-706v-72h-72v-52h72v-72h52v72h72v52h-72v72h-52ZM608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q55.18 0 101.74-27.54 46.57-27.54 75.18-75.15H303.08q28.61 47.61 75.18 75.15 46.56 27.54 101.74 27.54Zm.34 184.31q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.43-141.25 28.42-65.87 78.22-115.68t115.96-78.25Q404.77-844 480-844q35.46 0 70.81 6.31 35.34 6.31 67.8 19.86V-706h87.01v87.39h112.15q13.61 33.46 19.92 68.21Q844-515.65 844-480q0 75.23-28.42 141.39-28.42 66.16-78.21 115.96-49.79 49.8-115.85 78.22Q555.45-116 480.34-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M480-480Zm.07 380q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.93-148.21 29.92-69.37 81.22-120.68t120.65-81.25Q401.15-860 480-860q41.46 0 80.31 8.31 38.84 8.31 74.3 24.31v67.3q-34.23-18.84-73.23-29.38Q522.38-800 480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-30.46-5.73-59.12-5.73-28.65-15.96-55.49h64.46q8.61 27.46 12.92 55.71Q860-510.65 860-480q0 78.85-29.92 148.2t-81.21 120.65q-51.29 51.3-120.63 81.22Q558.9-100 480.07-100ZM810-690v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q63.18 0 114.74-35.04 51.57-35.04 76.18-92.65H289.08q24.61 57.61 76.18 92.65 51.56 35.04 114.74 35.04Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M810-690v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q63.18 0 114.74-35.04 51.57-35.04 76.18-92.65H289.08q24.61 57.61 76.18 92.65 51.56 35.04 114.74 35.04Zm.07 172.31q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.93-148.21 29.92-69.37 81.22-120.68t120.65-81.25Q401.15-860 480-860q41.46 0 80.31 8.31 38.84 8.31 74.3 24.31V-690h95.01v95.39h113.15q8.61 27.46 12.92 55.71Q860-510.65 860-480q0 78.85-29.92 148.2t-81.21 120.65q-51.29 51.3-120.63 81.22Q558.9-100 480.07-100Z" } } } };
-  const QUICK_REACTIONS = [["👍", "thumbsUp"], ["❤️", "heart"], ["😂", "laugh"], ["😮", "wow"], ["😢", "sad"], ["🙏", "thanks"]];
+  const QUICK_REACTIONS = [["\u{1F44D}", "thumbsUp"], ["\u2764\uFE0F", "heart"], ["\u{1F602}", "laugh"], ["\u{1F62E}", "wow"], ["\u{1F622}", "sad"], ["\u{1F64F}", "thanks"]];
   const nameOf$1 = (emoji, t) => {
     const q2 = QUICK_REACTIONS.find((r) => r[0] === emoji);
     return q2 ? t[q2[1]] : emoji;
@@ -23358,7 +23355,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   function Footer({ status, time, dateTime, readTime, readDateTime, edited, t }) {
     const sending = status === "sending", read2 = status === "read" && readTime;
     const said = sending || status === "sent" && time || read2;
-    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-chat__footer" }, sending ? /* @__PURE__ */ React$1.createElement("span", null, t.sending) : time ? /* @__PURE__ */ React$1.createElement("span", null, t.sent, " ", /* @__PURE__ */ React$1.createElement("time", { className: "plx-chat__time", dateTime }, time)) : null, edited ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "·"), /* @__PURE__ */ React$1.createElement("span", null, t.edited)) : null, read2 ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "|"), /* @__PURE__ */ React$1.createElement("span", null, t.read, " ", /* @__PURE__ */ React$1.createElement("time", { className: "plx-chat__time", dateTime: readDateTime }, readTime))) : null, STATUS_ICON[status] ? /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-chat__status", status === "read" && "plx-chat__status--read") }, /* @__PURE__ */ React$1.createElement(Icon, { name: STATUS_ICON[status], size: "xs", label: said ? void 0 : t[status] })) : null);
+    return /* @__PURE__ */ React$1.createElement("div", { className: "plx-chat__footer" }, sending ? /* @__PURE__ */ React$1.createElement("span", null, t.sending) : time ? /* @__PURE__ */ React$1.createElement("span", null, t.sent, " ", /* @__PURE__ */ React$1.createElement("time", { className: "plx-chat__time", dateTime }, time)) : null, edited ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React$1.createElement("span", null, t.edited)) : null, read2 ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, "|"), /* @__PURE__ */ React$1.createElement("span", null, t.read, " ", /* @__PURE__ */ React$1.createElement("time", { className: "plx-chat__time", dateTime: readDateTime }, readTime))) : null, STATUS_ICON[status] ? /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-chat__status", status === "read" && "plx-chat__status--read") }, /* @__PURE__ */ React$1.createElement(Icon, { name: STATUS_ICON[status], size: "xs", label: said ? void 0 : t[status] })) : null);
   }
   function Message({
     mine = false,
@@ -23644,7 +23641,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       focusNext.current = 0;
     }, [value]);
     if (readOnly) {
-      return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-rating", "plx-rating--read-only", className), role: "img", "aria-label": tw.value.replace("{label}", label2).replace("{value}", value).replace("{max}", max2), ...rest }, stars.map((n) => /* @__PURE__ */ React$1.createElement("span", { key: n, className: cx("plx-rating__star", n <= value && "plx-rating__star--on"), "aria-hidden": "true" }, "★")));
+      return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-rating", "plx-rating--read-only", className), role: "img", "aria-label": tw.value.replace("{label}", label2).replace("{value}", value).replace("{max}", max2), ...rest }, stars.map((n) => /* @__PURE__ */ React$1.createElement("span", { key: n, className: cx("plx-rating__star", n <= value && "plx-rating__star--on"), "aria-hidden": "true" }, "\u2605")));
     }
     const choose = (n) => onChange && onChange(n === value ? 0 : n);
     const onKey = (e, n) => {
@@ -23671,7 +23668,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onClick: () => choose(n),
         onKeyDown: (e) => onKey(e, n)
       },
-      "★"
+      "\u2605"
     )));
   }
   const RowButton = React$1.forwardRef(function RowButton2({
@@ -24023,9 +24020,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onClick: () => choose(it),
         onMouseEnter: () => setActive(i)
       },
-      "Create “",
+      "Create \u201C",
       text2.trim(),
-      "”"
+      "\u201D"
     ) : [
       it.o.group && (i === 0 || !items[i - 1].o || items[i - 1].o.group !== it.o.group) ? /* @__PURE__ */ React$1.createElement("li", { key: "g-" + it.o.group, className: "plx-combobox__group", role: "presentation" }, it.o.group) : null,
       /* @__PURE__ */ React$1.createElement(
@@ -24074,7 +24071,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         announced.current.add(t.id);
         const el = texts.current.get(t.id);
         const shown = el ? el.textContent : String(t.message);
-        const text2 = t.action && t.action.label ? shown + (/[.!?…]$/.test(shown) ? " " : ". ") + t.action.label : shown;
+        const text2 = t.action && t.action.label ? shown + (/[.!?\u2026]$/.test(shown) ? " " : ". ") + t.action.label : shown;
         announce(text2, { politeness: t.tone === "danger" ? "assertive" : "polite", queue: true });
       });
     }, [toasts]);
@@ -24747,7 +24744,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     account: { name: "Alex Morgan", firstName: "Alex", lastName: "Morgan", email: "alex.morgan@example.com" },
     notifications: [
       { id: 1, text: "Jordan Lee uploaded 12 new assets to Brand", time: "5 min ago", unread: true },
-      { id: 2, text: "Maya Chen sent a message: Round 3 concepts — confirm Thursday?", time: "10:24 AM", unread: true },
+      { id: 2, text: "Maya Chen sent a message: Round 3 concepts \u2014 confirm Thursday?", time: "10:24 AM", unread: true },
       { id: 3, text: "Sam Rivera approved your batch download request", time: "22 min ago", unread: true },
       { id: 4, text: "Task due Mar 8: Deliver logo concepts round 3", time: "Yesterday", unread: false },
       { id: 5, text: "Version 3 of Banner Icon Set is now live", time: "Yesterday", unread: false }
@@ -25364,7 +25361,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const words2 = { noun: noun ?? t.noun, plural: plural || (noun ? noun + "s" : t.plural) };
     const root = React$1.useRef(null);
     const folds = foldOrder(actions).length;
-    const step = useBarFit(root, actions.map((a) => a.label).join("|") + "§" + count2, 1 + folds, 0, ":scope > [data-plx-bar-row]");
+    const step = useBarFit(root, actions.map((a) => a.label).join("|") + "\xA7" + count2, 1 + folds, 0, ":scope > [data-plx-bar-row]");
     const why = (a) => a.why || fill(count2 && a.single && count2 > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words2));
     return /* @__PURE__ */ React$1.createElement("div", { ref: root, className: cx("plx-bulk-actions", !count2 && "plx-bulk-actions--empty", className) }, /* @__PURE__ */ React$1.createElement(Toolbar, { variant: "bar", label: label2 || t.label, className: "plx-bulk-actions__row", "data-plx-bar-row": "" }, /* @__PURE__ */ React$1.createElement(Toolbar.Group, { className: "plx-bulk-actions__actions" }, actions.length ? /* @__PURE__ */ React$1.createElement(
       BarActions,
@@ -25512,7 +25509,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }))));
   }
   const MONTH = "(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?";
-  const DATUM = new RegExp("(\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{1,2}:\\d{2})?|" + MONTH + " \\d{1,2}(?:, \\d{4})?|\\d{1,2}:\\d{2}(?:\\s?[AP]M)?|[$€£]?\\d[\\d,.]*(?:\\s?(?:%|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?\\d[\\d,.]*)?)", "g");
+  const DATUM = new RegExp("(\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{1,2}:\\d{2})?|" + MONTH + " \\d{1,2}(?:, \\d{4})?|\\d{1,2}:\\d{2}(?:\\s?[AP]M)?|[$\u20AC\xA3]?\\d[\\d,.]*(?:\\s?(?:%|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[\xD7x]\\s?\\d[\\d,.]*)?)", "g");
   function dataText(value) {
     if (typeof value === "number") return /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, value);
     if (typeof value !== "string" || !/\d/.test(value)) return value;
@@ -25639,7 +25636,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const aside = !!(next && !section) || !!hasActions || !!control;
     const root = React$1.useRef(null);
     const fitted = !section && ((facts || []).some((f) => f && f.action) || !!states);
-    const fitKey = (facts || []).map((f) => f && (f.label || "") + (f.value || "") + (f.action ? f.action.label : "")).join("|") + "§" + (states ? states.value + (states.options || []).map((o) => o.label).join(",") : "");
+    const fitKey = (facts || []).map((f) => f && (f.label || "") + (f.value || "") + (f.action ? f.action.label : "")).join("|") + "\xA7" + (states ? states.value + (states.options || []).map((o) => o.label).join(",") : "");
     const step = useBarFit(root, fitKey, fitted ? 2 : 0, 0, ".plx-entity-header__details");
     const mediaEl = /* @__PURE__ */ React$1.createElement(Media, { media: media || { icon: DocTextIcon }, section, layout: lay });
     const lead = /* @__PURE__ */ React$1.createElement("div", { className: "plx-entity-header__lead" }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-entity-header__heading" }, top ? mediaEl : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-entity-header__text" }, /* @__PURE__ */ React$1.createElement(H2, { className: "plx-entity-header__title" }, title), sub && !section ? /* @__PURE__ */ React$1.createElement("p", { className: "plx-entity-header__subtitle" }, sub) : null)), /* @__PURE__ */ React$1.createElement("div", { className: "plx-entity-header__rule", "aria-hidden": "true" }), section ? summary2 || sub ? /* @__PURE__ */ React$1.createElement("p", { className: "plx-entity-header__summary" }, summary2 || sub) : null : /* @__PURE__ */ React$1.createElement(Details, { status: st, states, facts, strings: s, step }));
@@ -26818,7 +26815,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const copy = (node, into, task) => {
       node.childNodes.forEach((n) => {
         if (n.nodeType === 3) {
-          const text2 = n.nodeValue.replace(/​/g, "");
+          const text2 = n.nodeValue.replace(/\u200B/g, "");
           if (text2) into.appendChild(document.createTextNode(text2));
           return;
         }
@@ -27285,10 +27282,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const path = code.bars.map(([x, w]) => "M" + (x + BARCODE_QUIET_ZONE) + " 0h" + w + "v" + HEIGHT_MODULES + "h-" + w + "z").join("");
     return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-barcode", "plx-barcode--" + size, className), role: "img", "aria-label": label2 || fill(t.label, { format: name, value: code.value }), ...rest }, /* @__PURE__ */ React$1.createElement("svg", { className: "plx-barcode__svg", viewBox: "0 0 " + width + " " + HEIGHT_MODULES, preserveAspectRatio: "xMidYMid meet", shapeRendering: "crispEdges", "aria-hidden": "true", focusable: "false" }, /* @__PURE__ */ React$1.createElement("rect", { className: "plx-barcode__background", x: "0", y: "0", width, height: HEIGHT_MODULES }), /* @__PURE__ */ React$1.createElement("path", { className: "plx-barcode__bars", d: path })), showText ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-barcode__text", "aria-hidden": "true" }, code.text) : null);
   }
-  const DataText = Text;
   const fillNodes = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
     const m = /^\{(\w+)\}$/.exec(part);
-    return m && values[m[1]] !== void 0 ? /* @__PURE__ */ React$1.createElement(DataText, { key: i, variant: "data" }, values[m[1]]) : part;
+    return m && values[m[1]] !== void 0 ? /* @__PURE__ */ React$1.createElement(Text, { key: i, variant: "data" }, values[m[1]]) : part;
   });
   function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, immediate = true } = {}) {
     const [state, setState] = React$1.useState({ status: immediate ? "running" : "idle", attempt: immediate ? 1 : 0, seconds: 0, error: null, result: void 0 });
@@ -28453,7 +28449,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onClick,
         ...rest
       },
-      busy ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, t.downloading, percent ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__percent" }, percent) : null) : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, label2, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__meta" }, facts.join(" · ")) : null)
+      busy ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, t.downloading, percent ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__percent" }, percent) : null) : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, label2, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__meta" }, facts.join(" \xB7 ")) : null)
     );
   });
   const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -28534,7 +28530,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const i = s.indexOf(".");
     return i < 0 ? 0 : s.length - i - 1;
   };
-  const SPACES = /[\s  ]/g;
+  const SPACES = /[\s\u00A0\u202F]/g;
   function marks(locale) {
     const parts = new Intl.NumberFormat(locale).formatToParts(-12345.6);
     const of = (type, d) => (parts.find((p) => p.type === type) || { value: d }).value;
@@ -28545,7 +28541,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     let s = String(text2 == null ? "" : text2).replace(SPACES, "");
     if (!s) return null;
     if (m.group.replace(SPACES, "")) s = s.split(m.group).join("");
-    s = s.split(m.decimal).join(".").split(m.minus).join("-").replace(/−/g, "-");
+    s = s.split(m.decimal).join(".").split(m.minus).join("-").replace(/\u2212/g, "-");
     return /^-?(\d+\.?\d*|\.\d+)$/.test(s) ? Number(s) : NaN;
   }
   function affix(format, currency, display2, locale) {
@@ -30301,7 +30297,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       /* @__PURE__ */ React$1.createElement("div", { className: "plx-calendar__months" }, Array.from({ length: count2 }, (_, i) => monthGrid(shiftMonth(shown, i), i)))
     );
   });
-  const DASH$1 = " – ";
+  const DASH$1 = " \u2013 ";
   function numericForm(locale) {
     const f = new Intl.DateTimeFormat(locale, { year: "numeric", month: "2-digit", day: "2-digit" });
     const parts = f.formatToParts(new Date(2026, 9, 15, 12));
@@ -30413,7 +30409,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         return;
       }
       if (range) {
-        const two = s.split(/\s*(?:–|—|\s-\s|\bto\b)\s*/);
+        const two = s.split(/\s*(?:\u2013|\u2014|\s-\s|\bto\b)\s*/);
         const a = readDate(two[0], form.order), b = two[1] ? readDate(two[1], form.order) : null;
         if (!a || two[1] && !b || !allowed(a) || b && !allowed(b)) {
           setBad(true);
@@ -30625,7 +30621,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     return list2.map((code) => {
       const name = own2 ? nameOf(names(code, kind), code) : nameOf(dn, code);
       const local = nameOf(dn, code);
-      const shown = name + (own2 && local !== name ? " · " + local : "") + (codes ? " (" + code + ")" : "");
+      const shown = name + (own2 && local !== name ? " \xB7 " + local : "") + (codes ? " (" + code + ")" : "");
       const flag = flags && type !== "language" ? flagOf(code) + " " : "";
       return { value: code, label: flag + shown, sort: name, match: [name, local, nameOf(en, code), code].join(" ").toLowerCase() };
     }).sort((a, b) => collator.compare(a.sort, b.sort));
@@ -32144,16 +32140,16 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     "Australia/Sydney",
     "Pacific/Auckland"
   ];
-  const MINUS = "−";
+  const MINUS = "\u2212";
   function offsetOf(zone, date) {
     try {
       const part = new Intl.DateTimeFormat("en-US", { timeZone: zone, timeZoneName: "longOffset" }).formatToParts(date).find((p) => p.type === "timeZoneName");
       const m = /GMT([+-])(\d{2}):(\d{2})/.exec(part ? part.value : "");
-      if (!m) return { minutes: 0, text: "UTC±00:00" };
+      if (!m) return { minutes: 0, text: "UTC\xB100:00" };
       const minutes = (m[1] === "-" ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]));
       return { minutes, text: "UTC" + (m[1] === "-" ? MINUS : "+") + m[2] + ":" + m[3] };
     } catch (e) {
-      return { minutes: 0, text: "UTC±00:00" };
+      return { minutes: 0, text: "UTC\xB100:00" };
     }
   }
   function longName(zone, date, locale) {
@@ -32179,7 +32175,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return { value: zone, label: label2, region: region2, offset: off2.text, minutes: off2.minutes, name: longName(zone, date, lang) };
     });
   }
-  const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[−–]/g, "-").replace(/_/g, " ");
+  const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[\u2212\u2013]/g, "-").replace(/_/g, " ");
   const offsetKeys = (o) => {
     const sign = o.minutes < 0 ? "-" : "+", a = Math.abs(o.minutes), h2 = Math.floor(a / 60), m = a % 60;
     return [fold(o.offset), sign + h2, sign + String(h2).padStart(2, "0"), sign + h2 + ":" + String(m).padStart(2, "0"), "utc" + sign + h2, "gmt" + sign + h2].join(" ");
@@ -33486,7 +33482,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const group = kind === "group";
     const kindWord = group ? t.group : t.team;
     const showAvatars = !group && members && members.length;
-    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-people-group", "plx-people-group--" + (group ? "group" : "team"), className), ...rest }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__media", "aria-hidden": "true" }, group ? /* @__PURE__ */ React$1.createElement(IconTile, { icon: SettingsUsersIcon, size: "md" }) : /* @__PURE__ */ React$1.createElement(Avatar, { name, src, size: "lg" })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__body" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__name", title: name }, /* @__PURE__ */ React$1.createElement(VisuallyHidden, null, kindWord + ", "), href ? /* @__PURE__ */ React$1.createElement(Link, { href }, name) : name), /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__meta" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__kind", "aria-hidden": "true" }, kindWord), typeof count2 === "number" ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__separator", "aria-hidden": "true" }, "·"), /* @__PURE__ */ React$1.createElement(Members, { n: count2, t })) : null, source ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__separator", "aria-hidden": "true" }, "·"), /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__source", title: source }, source)) : null), description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__description", title: description }, description) : null), showAvatars ? /* @__PURE__ */ React$1.createElement(AvatarGroup, { className: "plx-people-group__members", label: fill(t.membersOf, { name }), people: members, max: max2, onMore: onShowMembers }) : null, group && onShowMembers ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", className: "plx-people-group__show", onClick: onShowMembers }, t.showMembers) : null);
+    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-people-group", "plx-people-group--" + (group ? "group" : "team"), className), ...rest }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__media", "aria-hidden": "true" }, group ? /* @__PURE__ */ React$1.createElement(IconTile, { icon: SettingsUsersIcon, size: "md" }) : /* @__PURE__ */ React$1.createElement(Avatar, { name, src, size: "lg" })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__body" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__name", title: name }, /* @__PURE__ */ React$1.createElement(VisuallyHidden, null, kindWord + ", "), href ? /* @__PURE__ */ React$1.createElement(Link, { href }, name) : name), /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__meta" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__kind", "aria-hidden": "true" }, kindWord), typeof count2 === "number" ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__separator", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React$1.createElement(Members, { n: count2, t })) : null, source ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__separator", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__source", title: source }, source)) : null), description ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-people-group__description", title: description }, description) : null), showAvatars ? /* @__PURE__ */ React$1.createElement(AvatarGroup, { className: "plx-people-group__members", label: fill(t.membersOf, { name }), people: members, max: max2, onMore: onShowMembers }) : null, group && onShowMembers ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", className: "plx-people-group__show", onClick: onShowMembers }, t.showMembers) : null);
   }
   const lower = (x) => String(x).charAt(0).toLowerCase() + String(x).slice(1);
   function PermissionSummary({ access, icon = "lock", detail, can = [], cannot = [], variant = "list", onManage, manageHref, live = false, strings, className, ...rest }) {
@@ -33504,7 +33500,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }
   const blank = (x) => x === null || x === void 0 || x === "" || Array.isArray(x) && !x.length;
   const NO_VALUE = { empty: true, nempty: true };
-  const quote = (s) => "“" + s + "”";
+  const quote = (s) => "\u201C" + s + "\u201D";
   function formatQuery(node, fields = [], strings) {
     const t = Object.assign({}, createTranslator(formatLocale()).section("queryBuilder"), strings);
     const fw = createTranslator(formatLocale()).section("fields");
@@ -33777,7 +33773,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     )) : null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-resource-list__count", "aria-live": "polite", "data-plx-text-follow": "size" }, selectable && sel.count ? phrase(t.selected, { n: String(sel.count), total: String(total) }) : phrase(t.count, { n: String(total), nouns: total === 1 ? one : nouns }))) : null;
     return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-resource-list", className) }, bar ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-resource-list__bar" }, bar) : null, header, !total && emptyState ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-resource-list__empty" }, emptyState) : grouped ? groups.map((g, i) => /* @__PURE__ */ React$1.createElement("div", { key: g.heading || i, className: "plx-resource-list__group" }, /* @__PURE__ */ React$1.createElement(SectionHeading, { level: headingLevel, id: uid2 + "-" + i, className: "plx-resource-list__heading" }, g.heading, /* @__PURE__ */ React$1.createElement(Count$2, { value: g.items.length, className: "plx-resource-list__group-count" })), /* @__PURE__ */ React$1.createElement("ul", { className: "plx-resource-list__list", "aria-labelledby": uid2 + "-" + i }, g.items.map(row)))) : /* @__PURE__ */ React$1.createElement("ul", { className: "plx-resource-list__list", "aria-label": label2 }, items.map(row)));
   }
-  const DASH = "—";
+  const DASH = "\u2014";
   const NONE$2 = Object.freeze([]);
   const TICK_ROOM = 64;
   const isNum = (v) => typeof v === "number" && isFinite(v);
@@ -34273,7 +34269,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }) {
     const t = useStrings("chart.waterfallChart", strings);
     const fmt = typeof format === "function" ? format : (v) => formatNumber(v);
-    const signed = (v) => v > 0 ? "+" + fmt(v) : v < 0 ? "−" + fmt(-v) : fmt(0);
+    const signed = (v) => v > 0 ? "+" + fmt(v) : v < 0 ? "\u2212" + fmt(-v) : fmt(0);
     const bars = waterfallSteps(data, endLabel === void 0 ? t.end : endLabel);
     const items = (b) => b.kind === "total" ? [{ label: t.total, value: fmt(b.to), color: COLORS.total }] : [{ label: t.change, value: signed(b.change), color: COLORS[b.kind] }, { label: t.running, value: fmt(b.to) }];
     const ia = useChartInteraction({
@@ -35093,7 +35089,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const x = Number(list2[si].values[ci]);
       return list2[si].values[ci] !== null && list2[si].values[ci] !== void 0 && isFinite(x) ? x : null;
     };
-    const rangeText = (b) => edgeFmt(b.x0) + "–" + edgeFmt(b.x1);
+    const rangeText = (b) => edgeFmt(b.x0) + "\u2013" + edgeFmt(b.x1);
     const catName = (ci) => bins ? rangeText(bins[ci]) : String(cats[ci]);
     const showLegend = legend === void 0 ? !bins && list2.length > 1 : !!legend && !bins;
     const ia = useChartInteraction({
@@ -35122,15 +35118,15 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }
     function tip(ci, si) {
       if (bins) return { title: rangeText(bins[ci]), titleKind: "data", items: [{ label: valueLabel || t.count, value: fmt(bins[ci].count), color: list2[0].color }] };
-      if (mode === "grouped") return { title: String(cats[ci]), items: [{ label: list2[si].label, value: val(si, ci) === null ? "–" : fmt(val(si, ci)), color: list2[si].color }] };
+      if (mode === "grouped") return { title: String(cats[ci]), items: [{ label: list2[si].label, value: val(si, ci) === null ? "\u2013" : fmt(val(si, ci)), color: list2[si].color }] };
       const items = [];
       list2.forEach((s, i) => {
         if (!shown(i)) return;
         const v = val(i, ci);
-        items.push({ label: s.label, value: v === null ? "–" : mode === "percent" && total(ci) ? formatPercent(share2(i, ci)) : fmt(v), color: s.color, i });
+        items.push({ label: s.label, value: v === null ? "\u2013" : mode === "percent" && total(ci) ? formatPercent(share2(i, ci)) : fmt(v), color: s.color, i });
       });
       items.sort((a, b) => a.i === si ? -1 : b.i === si ? 1 : 0);
-      return { title: String(cats[ci]) + " · " + fmt(total(ci)), items };
+      return { title: String(cats[ci]) + " \xB7 " + fmt(total(ci)), items };
     }
     const table = bins ? {
       columns: [{ title: categoryLabel || t.range, field: "range", kind: "data", rowLabel: true }, { title: valueLabel || t.count, field: "count", kind: "data", align: "right" }],
@@ -35416,7 +35412,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
               x: scalePosition(x, categories[ci]),
               inner,
               title: String(categories[ci]),
-              items: cols.map((s) => ({ label: s.label, value: s.values[ci] === void 0 || s.values[ci] === null ? "–" : fb(s.values[ci]), color: s.color })).concat(lns.map((s) => ({ label: s.label, value: s.values[ci] === void 0 || s.values[ci] === null ? "–" : fl(s.values[ci]), color: s.color })))
+              items: cols.map((s) => ({ label: s.label, value: s.values[ci] === void 0 || s.values[ci] === null ? "\u2013" : fb(s.values[ci]), color: s.color })).concat(lns.map((s) => ({ label: s.label, value: s.values[ci] === void 0 || s.values[ci] === null ? "\u2013" : fl(s.values[ci]), color: s.color })))
             }
           );
         }
@@ -35494,7 +35490,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         measure: it.label,
         value: fmt(finite(it.value)),
         target: it.target === void 0 || it.target === null ? "" : fmt(it.target),
-        ranges: it.ranges.map(fmt).join(" · ") + (it.ranges.length ? " (" + rangeOf(it) + ")" : "")
+        ranges: it.ranges.map(fmt).join(" \xB7 ") + (it.ranges.length ? " (" + rangeOf(it) + ")" : "")
       }))
     };
     return /* @__PURE__ */ React$1.createElement(
@@ -35524,14 +35520,14 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           const it = list2.filter((x) => x.id === active)[0];
           if (it) {
             const mid = band2(it.id) + band2.bandwidth() / 2, end = vs(finite(it.value));
-            const shown = fmt(finite(it.value)) + (it.target === void 0 || it.target === null ? "" : " · " + t.target + " " + fmt(it.target));
+            const shown = fmt(finite(it.value)) + (it.target === void 0 || it.target === null ? "" : " \xB7 " + t.target + " " + fmt(it.target));
             tip = /* @__PURE__ */ React$1.createElement(
               ChartTooltip,
               {
                 x: across ? end : mid,
                 y: across ? mid : end,
                 inner,
-                title: it.label + (it.ranges.length ? " · " + rangeOf(it) : ""),
+                title: it.label + (it.ranges.length ? " \xB7 " + rangeOf(it) : ""),
                 items: [{ label: t.value, value: shown, color: "categorical-1" }]
               }
             );
@@ -35937,7 +35933,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
               x: (l.source.x1 + l.target.x0) / 2,
               y: (l.y0 + l.y1) / 2,
               inner,
-              title: l.source.label + " → " + l.target.label,
+              title: l.source.label + " \u2192 " + l.target.label,
               items: [{ label: t.value, value: fmt(l.value), color: l.source.color }]
             }
           );
@@ -36041,7 +36037,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
                 y: markY(it.lane),
                 inner,
                 title: it.label,
-                items: [{ label: one ? it.t1 === null ? t.date : t.dates : lane.label, value: it.t1 === null ? fd(it.t0) : fd(it.t0) + " – " + fd(it.t1), color: it.color || lane.color }]
+                items: [{ label: one ? it.t1 === null ? t.date : t.dates : lane.label, value: it.t1 === null ? fd(it.t0) : fd(it.t0) + " \u2013 " + fd(it.t1), color: it.color || lane.color }]
               }
             );
           }
@@ -36148,7 +36144,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const [before, after] = items.filter((it) => it.image && it.image.src).slice(0, 2);
       const box = RATIOS$1[ratio] || RATIOS$1["16-9"];
       const x = box[0] * pos / 100;
-      body = before && after ? /* @__PURE__ */ React$1.createElement("figure", { className: "plx-comparison-view__slider" }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-comparison-view__slider-head" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__side" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__title" }, before.title), before.meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__meta" }, before.meta) : null), /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__side plx-comparison-view__side--end" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__title" }, after.title), after.meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__meta" }, after.meta) : null)), /* @__PURE__ */ React$1.createElement("svg", { className: "plx-comparison-view__stage", viewBox: "0 0 " + box[0] + " " + box[1], role: "img", "aria-label": before.image.alt + " · " + after.image.alt, focusable: "false" }, /* @__PURE__ */ React$1.createElement("defs", null, /* @__PURE__ */ React$1.createElement("clipPath", { id: uid2 + "-clip" }, /* @__PURE__ */ React$1.createElement("rect", { x: 0, y: 0, width: x, height: box[1] }))), /* @__PURE__ */ React$1.createElement("image", { href: after.image.src, x: 0, y: 0, width: box[0], height: box[1], preserveAspectRatio: "xMidYMid slice" }), /* @__PURE__ */ React$1.createElement("image", { href: before.image.src, x: 0, y: 0, width: box[0], height: box[1], preserveAspectRatio: "xMidYMid slice", clipPath: "url(#" + uid2 + "-clip)" }), /* @__PURE__ */ React$1.createElement("line", { className: "plx-comparison-view__divider", x1: x, x2: x, y1: 0, y2: box[1], vectorEffect: "non-scaling-stroke" })), /* @__PURE__ */ React$1.createElement(Slider, { className: "plx-comparison-view__position", label: t.position, value: pos, min: 0, max: 100, unit: "%", onChange: setPos })) : null;
+      body = before && after ? /* @__PURE__ */ React$1.createElement("figure", { className: "plx-comparison-view__slider" }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-comparison-view__slider-head" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__side" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__title" }, before.title), before.meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__meta" }, before.meta) : null), /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__side plx-comparison-view__side--end" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__title" }, after.title), after.meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__meta" }, after.meta) : null)), /* @__PURE__ */ React$1.createElement("svg", { className: "plx-comparison-view__stage", viewBox: "0 0 " + box[0] + " " + box[1], role: "img", "aria-label": before.image.alt + " \xB7 " + after.image.alt, focusable: "false" }, /* @__PURE__ */ React$1.createElement("defs", null, /* @__PURE__ */ React$1.createElement("clipPath", { id: uid2 + "-clip" }, /* @__PURE__ */ React$1.createElement("rect", { x: 0, y: 0, width: x, height: box[1] }))), /* @__PURE__ */ React$1.createElement("image", { href: after.image.src, x: 0, y: 0, width: box[0], height: box[1], preserveAspectRatio: "xMidYMid slice" }), /* @__PURE__ */ React$1.createElement("image", { href: before.image.src, x: 0, y: 0, width: box[0], height: box[1], preserveAspectRatio: "xMidYMid slice", clipPath: "url(#" + uid2 + "-clip)" }), /* @__PURE__ */ React$1.createElement("line", { className: "plx-comparison-view__divider", x1: x, x2: x, y1: 0, y2: box[1], vectorEffect: "non-scaling-stroke" })), /* @__PURE__ */ React$1.createElement(Slider, { className: "plx-comparison-view__position", label: t.position, value: pos, min: 0, max: 100, unit: "%", onChange: setPos })) : null;
     } else {
       body = /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-comparison-view__panes", "plx-comparison-view__panes--" + Math.min(4, Math.max(1, items.length))) }, items.map((it, i) => /* @__PURE__ */ React$1.createElement("article", { key: it.id === void 0 ? i : it.id, className: "plx-comparison-view__pane", "aria-labelledby": uid2 + "-t" + i }, /* @__PURE__ */ React$1.createElement("header", { className: "plx-comparison-view__head" }, React$1.createElement(H2, { id: uid2 + "-t" + i, className: "plx-comparison-view__title" }, it.title), it.meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-comparison-view__meta" }, it.meta) : null), /* @__PURE__ */ React$1.createElement(
         "div",
@@ -36359,7 +36355,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const band2 = scaleBand({ domain: stages, range: o === "vertical" ? [0, inner.height] : [0, inner.width], paddingInner: 0.24 });
       const val = scaleLinear({ domain: [0, Math.max(1, first, ...rows.map((r) => r.value))], range: o === "vertical" ? [0, inner.width] : [inner.height, 0], nice: true });
       const bar = (r, v) => o === "vertical" ? { x: 0, y: band2(r.label), width: val(v), height: band2.bandwidth() } : { x: band2(r.label), y: val(v), width: band2.bandwidth(), height: inner.height - val(v) };
-      const label2 = (r) => fmt(r.value) + (r.kept !== null ? " · " + pct(r.kept) : "");
+      const label2 = (r) => fmt(r.value) + (r.kept !== null ? " \xB7 " + pct(r.kept) : "");
       const a = keys.index !== null && keys.index !== void 0 && rows[keys.index] ? keys.index : null;
       const end = (r) => o === "vertical" ? { x: val(r.value), y: scalePosition(band2, r.label) } : { x: scalePosition(band2, r.label), y: val(r.value) };
       return /* @__PURE__ */ React$1.createElement("g", null, o === "vertical" ? /* @__PURE__ */ React$1.createElement("line", { className: "plx-chart__axis-line", x1: 0, x2: 0, y1: 0, y2: inner.height }) : /* @__PURE__ */ React$1.createElement("line", { className: "plx-chart__axis-line", x1: 0, x2: inner.width, y1: inner.height, y2: inner.height }), rows.map((r, i) => i ? /* @__PURE__ */ React$1.createElement("rect", { key: "p" + r.id, className: "plx-funnel__drop", ...bar(r, rows[i - 1].value) }) : null), rows.map((r) => /* @__PURE__ */ React$1.createElement("rect", { key: "b" + r.id, className: "plx-chart__mark plx-funnel__bar", "data-plx-dataviz": mark, ...bar(r, r.value) })), rows.map((r) => /* @__PURE__ */ React$1.createElement(DataLabel, { key: "l" + r.id, x: end(r).x, y: end(r).y, value: label2(r), position: o === "vertical" ? "end" : "top" })), o === "vertical" ? /* @__PURE__ */ React$1.createElement(Axis, { scale: band2, orient: "left", inner, margin, line: false }) : /* @__PURE__ */ React$1.createElement("g", { className: "plx-chart-axis plx-chart-axis--bottom" }, rows.map((r) => {
@@ -36486,7 +36482,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           x: a.rect.x + a.rect.width / 2,
           y: a.rect.y + a.rect.height / 2,
           inner,
-          title: (nested ? a.tile.group.label + " · " : "") + a.tile.label,
+          title: (nested ? a.tile.group.label + " \xB7 " : "") + a.tile.label,
           items: [{ label: valueTitle || t.value, value: fmt(a.tile.value), color: a.tile.group.color }, { label: t.share, value: pct(a.tile.share) }]
         }
       ) : null);
@@ -36519,7 +36515,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const mark = color || seriesColor(0);
     const date = (d) => formatDate(d);
     const waits = (r) => formatList(r.dependsOn.filter((k) => byKey[k]).map((k) => byKey[k].label));
-    const say = (r) => r.label + ": " + (r.milestone ? t.milestone + ", " + date(r.start) : date(r.start) + " – " + date(r.end)) + (r.progress !== null ? ", " + formatPercent(r.progress, { decimals: 0 }) + " " + t.progress.toLowerCase() : "") + (r.status ? ", " + r.status : "") + (r.dependsOn.length ? ", " + t.dependsOn.toLowerCase() + " " + waits(r) : "");
+    const say = (r) => r.label + ": " + (r.milestone ? t.milestone + ", " + date(r.start) : date(r.start) + " \u2013 " + date(r.end)) + (r.progress !== null ? ", " + formatPercent(r.progress, { decimals: 0 }) + " " + t.progress.toLowerCase() : "") + (r.status ? ", " + r.status : "") + (r.dependsOn.length ? ", " + t.dependsOn.toLowerCase() + " " + waits(r) : "");
     const keys = useChartPoints({ count: rows.length, describe: (i) => say(rows[i]) });
     const table = {
       columns: [
@@ -36637,7 +36633,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       columns: [{ title: t.place, field: "label", kind: "name", rowLabel: true }, { title: t.latitude, field: "lat", kind: "data", align: "right" }, { title: t.longitude, field: "lon", kind: "data", align: "right" }],
       data: places.map((m, i) => ({ id: i + 1, label: m.label, lat: formatNumber(m.lat, { decimals: 4 }), lon: formatNumber(m.lon, { decimals: 4 }) }))
     };
-    const legend = choropleth && nums.length ? /* @__PURE__ */ React$1.createElement(ChartLegend, { label: valueTitle || t.value, items: Array.from({ length: STEPS }, (x, k) => ({ id: k, label: "", color: sc + "-" + (k + 1), value: fmt(lo + (hi - lo) * k / STEPS) + " – " + fmt(lo + (hi - lo) * (k + 1) / STEPS) })) }) : void 0;
+    const legend = choropleth && nums.length ? /* @__PURE__ */ React$1.createElement(ChartLegend, { label: valueTitle || t.value, items: Array.from({ length: STEPS }, (x, k) => ({ id: k, label: "", color: sc + "-" + (k + 1), value: fmt(lo + (hi - lo) * k / STEPS) + " \u2013 " + fmt(lo + (hi - lo) * (k + 1) / STEPS) })) }) : void 0;
     const zoomBy = (f) => setView((v) => Object.assign({}, v, { z: Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, v.z * f)) }));
     return /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, zoom ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-geo-map__controls" }, /* @__PURE__ */ React$1.createElement(ButtonGroup, { label: t.zoom }, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", iconOnly: true, icon: EdZoomInIcon, label: t.zoomIn, disabled: view.z >= ZOOM_MAX, onClick: () => zoomBy(2) }), /* @__PURE__ */ React$1.createElement(Button, { size: "sm", iconOnly: true, icon: EdZoomOutIcon, label: t.zoomOut, disabled: view.z <= ZOOM_MIN, onClick: () => zoomBy(0.5) }), /* @__PURE__ */ React$1.createElement(Button, { size: "sm", iconOnly: true, icon: EdRecenterIcon, label: t.reset, disabled: view.z === 1 && view.cx === null, onClick: () => setView({ z: 1, cx: null, cy: null }) }))) : null, /* @__PURE__ */ React$1.createElement(ChartFrame, { interaction: keys.interaction, title, description, size, table, legend, margin: { top: 0, end: 0, bottom: 0, start: 0 }, className: cx("plx-geo-map", className) }, ({ inner }) => {
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
@@ -36969,7 +36965,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     noun = noun ?? t.noun;
     const counted = (m) => builtIn ? loc2.t("deleteFlow.items", { count: m, n: formatNumber(m) }) : formatNumber(m) + " " + many;
     const n = items.length;
-    const name = n === 1 ? "“" + items[0].label + "”" : "";
+    const name = n === 1 ? "\u201C" + items[0].label + "\u201D" : "";
     const what = n === 1 ? name : counted(n);
     const [shown, setShown] = React$1.useState(false);
     const [typed, setTyped] = React$1.useState("");
@@ -37073,7 +37069,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       ) : null)
     ) : null);
   }
-  const q$1 = (x) => "“" + x + "”";
+  const q$1 = (x) => "\u201C" + x + "\u201D";
   function copyName(name, taken2 = [], strings) {
     const t = Object.assign({}, createTranslator(formatLocale()).section("duplicateAction"), strings);
     const used = new Set((taken2 || []).map((x) => String(x).trim().toLowerCase()));
@@ -37171,7 +37167,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       /* @__PURE__ */ React$1.createElement("form", { id: formId, noValidate: true, onSubmit: submit, className: cx("plx-duplicate-action", options.length && "plx-duplicate-action--options", className) }, /* @__PURE__ */ React$1.createElement(Field, { label: t.name, error: error || void 0 }, /* @__PURE__ */ React$1.createElement(Input, { ref: input, value, onChange: (e) => {
         setValue(e.target.value);
         if (error) setError("");
-      } })), /* @__PURE__ */ React$1.createElement("p", { className: "plx-duplicate-action__source" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-duplicate-action__icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: EdCopyIcon })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-duplicate-action__from" }, fill(t.from, { name: q$1(name) }) + (source ? " · " + source : ""))), options.length ? /* @__PURE__ */ React$1.createElement(Fieldset, { legend: t.also }, options.map((o) => /* @__PURE__ */ React$1.createElement(
+      } })), /* @__PURE__ */ React$1.createElement("p", { className: "plx-duplicate-action__source" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-duplicate-action__icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: EdCopyIcon })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-duplicate-action__from" }, fill(t.from, { name: q$1(name) }) + (source ? " \xB7 " + source : ""))), options.length ? /* @__PURE__ */ React$1.createElement(Fieldset, { legend: t.also }, options.map((o) => /* @__PURE__ */ React$1.createElement(
         Checkbox,
         {
           key: o.id,
@@ -37182,7 +37178,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       ))) : null)
     ) : null);
   }
-  const q = (x) => "“" + x + "”";
+  const q = (x) => "\u201C" + x + "\u201D";
   function Line({ text: text2, at: at2 }) {
     const parts = String(text2).split("{at}");
     return /* @__PURE__ */ React$1.createElement("span", { className: "plx-publish__detail" }, parts[0], parts.length > 1 ? /* @__PURE__ */ React$1.createElement(Text, { variant: "data" }, at2) : null, parts.slice(1).join(""));
@@ -37907,7 +37903,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const text2 = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__base" }, base2), ext ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__ext" }, "." + ext) : null, folder ? /* @__PURE__ */ React$1.createElement(VisuallyHidden, null, ", " + t.folder) : null);
     const nameCls = cx("plx-file__name", !folder && "plx-file__name--data");
     const nameEl = href ? /* @__PURE__ */ React$1.createElement("a", { className: nameCls, href, title: name }, text2) : onOpen ? /* @__PURE__ */ React$1.createElement("button", { type: "button", className: nameCls, title: name, onClick: onOpen }, text2) : /* @__PURE__ */ React$1.createElement("span", { className: nameCls, title: name }, text2);
-    return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-file", "plx-file--" + (folder ? "folder" : "file"), "plx-file--" + (appearance === "chip" ? "chip" : "line"), className), ...rest }, /* @__PURE__ */ React$1.createElement(Picture, { src: folder ? null : src, icon: glyph }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__text" }, nameEl, facts.length || meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__meta" }, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__facts" }, facts.join(" · ")) : null, meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__more" }, meta) : null) : null));
+    return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-file", "plx-file--" + (folder ? "folder" : "file"), "plx-file--" + (appearance === "chip" ? "chip" : "line"), className), ...rest }, /* @__PURE__ */ React$1.createElement(Picture, { src: folder ? null : src, icon: glyph }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__text" }, nameEl, facts.length || meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__meta" }, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__facts" }, facts.join(" \xB7 ")) : null, meta ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-file__more" }, meta) : null) : null));
   }
   const d0$2 = "M480-344.46 317.23-507.23l37.16-36.38L454-444v-352h52v352l99.61-99.61 37.16 36.38L480-344.46ZM212-212v-124.77h52V-264h432v-72.77h52V-212H212Z";
   const d1$2 = "M480-328.46 309.23-499.23l42.16-43.38L450-444v-336h60v336l98.61-98.61 42.16 43.38L480-328.46ZM180-180v-180.77h60V-240h480v-120.77h60V-180H180Z";
@@ -38100,7 +38096,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     password: "Password",
     show: "Show password",
     hide: "Hide password",
-    rule: "At least {n} characters. A few words you’ll remember work well.",
+    rule: "At least {n} characters. A few words you\u2019ll remember work well.",
     submit: "Create account",
     signIn: "Already have an account? Sign in",
     or: "or",
@@ -38155,7 +38151,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     show: "Show password",
     hide: "Hide password",
     save: "Reset password",
-    others: "You’ll be signed out on your other devices.",
+    others: "You\u2019ll be signed out on your other devices.",
     done: "Your password is reset. Sign in with the new one.",
     signIn: "Back to sign in",
     signInNow: "Sign in",
@@ -38189,7 +38185,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const refs = { email: React$1.useRef(null), password: React$1.useRef(null) };
     const [errors, check, clear] = useCheck(refs);
     React$1.useEffect(() => {
-      if (now === "sent" || now === "done") announce(now === "sent" ? fill(t.sent, { email: email || "…", expires: expires || t.expires }) : t.done);
+      if (now === "sent" || now === "done") announce(now === "sent" ? fill(t.sent, { email: email || "\u2026", expires: expires || t.expires }) : t.done);
     }, [now]);
     const request = (e) => {
       e.preventDefault();
@@ -38320,9 +38316,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     provider: "Continue with {name}",
     organization: "Continue with single sign-on (SSO)",
     email: "Work email",
-    emailHint: "We’ll find your organization’s sign-in from it.",
+    emailHint: "We\u2019ll find your organization\u2019s sign-in from it.",
     next: "Continue",
-    redirecting: "Taking you to {name}…",
+    redirecting: "Taking you to {name}\u2026",
     needEmail: "Enter your work email, like name@example.org.",
     back: "Back"
   };
@@ -38357,14 +38353,14 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     factor: "Use another sign-in method",
     factorHint: "A security key, or the authenticator app on another device.",
     help: "Ask your administrator",
-    helpHint: "They confirm it’s you and reset your two-step verification.",
+    helpHint: "They confirm it\u2019s you and reset your two-step verification.",
     next: "Continue",
     backupCode: "Backup code",
     verify: "Use code",
     needCode: "Enter a backup code.",
-    contact: "Contact {admin}. Tell them you can’t use your two-step verification; they’ll check it’s you before they reset it.",
-    contactShort: "Contact your administrator. Tell them you can’t use your two-step verification; they’ll check it’s you before they reset it.",
-    done: "You’re back in. We emailed every address on your account to say a backup code was used.",
+    contact: "Contact {admin}. Tell them you can\u2019t use your two-step verification; they\u2019ll check it\u2019s you before they reset it.",
+    contactShort: "Contact your administrator. Tell them you can\u2019t use your two-step verification; they\u2019ll check it\u2019s you before they reset it.",
+    done: "You\u2019re back in. We emailed every address on your account to say a backup code was used.",
     setUp: "Set up a new sign-in method",
     back: "Back to sign in",
     otherWays: "Other ways to get back in"
@@ -38665,7 +38661,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const submit = (e) => {
       e.preventDefault();
       const n = name.trim();
-      const problem = !n ? t.empty : roles.some((r) => r.name.toLowerCase() === n.toLowerCase()) ? fill(t.taken, { name: "“" + n + "”" }) : "";
+      const problem = !n ? t.empty : roles.some((r) => r.name.toLowerCase() === n.toLowerCase()) ? fill(t.taken, { name: "\u201C" + n + "\u201D" }) : "";
       setError(problem);
       if (problem) {
         if (field.current) field.current.focus();
@@ -39775,7 +39771,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       content = cards.length ? /* @__PURE__ */ React$1.createElement(ContentGrid, { label: nameOf2(current2), size: CARD_SIZE[viewValue.size] || "md", className: "plx-file-browser__grid" }, cards.map((x) => {
         const isFolder = x.kind === "folder";
         const ext = fileExtension(x.name);
-        const facts = isFolder ? fill(x.count === 1 ? t.item : t.items, { n: formatNumber(x.count || 0) }) : [ext ? ext.toUpperCase() : null, typeof x.size === "number" ? formatBytes(x.size) : null].filter(Boolean).join(" · ");
+        const facts = isFolder ? fill(x.count === 1 ? t.item : t.items, { n: formatNumber(x.count || 0) }) : [ext ? ext.toUpperCase() : null, typeof x.size === "number" ? formatBytes(x.size) : null].filter(Boolean).join(" \xB7 ");
         return /* @__PURE__ */ React$1.createElement(GridItem, { key: x.id, item: x, onMove: move2 }, /* @__PURE__ */ React$1.createElement(
           MediaCard,
           {
@@ -40131,7 +40127,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       );
     };
     const list2 = rows.length ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-upload-manager__queue", tabIndex: 0, role: "region", "aria-label": t.queue }, /* @__PURE__ */ React$1.createElement(FileRowList, { label: t.queue }, rows.map(row))) : null;
-    const summary2 = total ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-upload-manager__summary" }, /* @__PURE__ */ React$1.createElement(ProgressBar, { className: "plx-upload-manager__bar", size: "sm", value: Math.round(overall), label: t.overall, labelHidden: true, tone: failed && !moving ? "danger" : moving ? "info" : "success" }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-upload-manager__counts" }, dataPhrase(t.progress, { done, total: live.length }), " · ", dataNumber(formatPercent(overall / 100)))) : null;
+    const summary2 = total ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-upload-manager__summary" }, /* @__PURE__ */ React$1.createElement(ProgressBar, { className: "plx-upload-manager__bar", size: "sm", value: Math.round(overall), label: t.overall, labelHidden: true, tone: failed && !moving ? "danger" : moving ? "info" : "success" }), /* @__PURE__ */ React$1.createElement("span", { className: "plx-upload-manager__counts" }, dataPhrase(t.progress, { done, total: live.length }), " \xB7 ", dataNumber(formatPercent(overall / 100)))) : null;
     const finishing = total && !moving;
     const bulk = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, moving && q2.cancelAll ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", onClick: q2.cancelAll }, t.cancelAll) : null, finishing && q2.clear ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", variant: "ghost", onClick: q2.clear }, t.clear) : null);
     if (dialog) {
@@ -40246,7 +40242,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         },
         /* @__PURE__ */ React$1.createElement("span", { className: "plx-version-compare__number", "aria-hidden": "true" }, x.a || ""),
         /* @__PURE__ */ React$1.createElement("span", { className: "plx-version-compare__number", "aria-hidden": "true" }, x.b || ""),
-        /* @__PURE__ */ React$1.createElement("span", { className: "plx-version-compare__sign", "aria-hidden": "true" }, x.kind === "add" ? "+" : x.kind === "del" ? "−" : ""),
+        /* @__PURE__ */ React$1.createElement("span", { className: "plx-version-compare__sign", "aria-hidden": "true" }, x.kind === "add" ? "+" : x.kind === "del" ? "\u2212" : ""),
         /* @__PURE__ */ React$1.createElement("span", { className: "plx-version-compare__text" }, x.kind === "add" ? /* @__PURE__ */ React$1.createElement(VisuallyHidden, null, t.added + ": ") : x.kind === "del" ? /* @__PURE__ */ React$1.createElement(VisuallyHidden, null, t.removed + ": ") : null, x.text || " ")
       );
     }))));
@@ -40289,8 +40285,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (mode === void 0) setOwnMode(m);
       if (onModeChange) onModeChange(m);
     };
-    const metaOf = (v) => [v.date ? formatDate(v.date, { dateStyle: "medium" }) : null, v.author ? fill(t.by, { author: v.author }) : null].filter(Boolean).join(" · ");
-    const optionLabel = (v) => [v.label, v.date ? formatDate(v.date, { dateStyle: "medium" }) : null].filter(Boolean).join(" · ");
+    const metaOf = (v) => [v.date ? formatDate(v.date, { dateStyle: "medium" }) : null, v.author ? fill(t.by, { author: v.author }) : null].filter(Boolean).join(" \xB7 ");
+    const optionLabel = (v) => [v.label, v.date ? formatDate(v.date, { dateStyle: "medium" }) : null].filter(Boolean).join(" \xB7 ");
     const pick = (which, other) => versions.filter((v) => v.id !== pair2[other]).map((v) => ({ value: v.id, label: optionLabel(v) }));
     const item = (v) => ({ id: v.id, title: v.label, meta: metaOf(v), image: v.image, media: v.media, values: v.values || {} });
     const body = !a || !b ? /* @__PURE__ */ React$1.createElement(EmptyState, { icon: DocSearchIcon, title: t.empty }) : current2 === "text" ? /* @__PURE__ */ React$1.createElement(TextDiff, { base: a, target: b, context, t, uid: uid2 }) : /* @__PURE__ */ React$1.createElement(ComparisonView, { label: label2 || t.label, items: [item(a), item(b)], attributes: attributes2, mode: current2, modes: [current2], ratio, scroll });
@@ -40522,7 +40518,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const t = useStrings("renditionList", strings);
     const download = (r) => /* @__PURE__ */ React$1.createElement(DownloadButton, { href: r.href, fileName: r.fileName || r.name, format: r.format, size: r.size, onDownload: r.onDownload, progress: r.progress, strings: { download: t.download }, disabled: !r.href && !r.onDownload });
     if (!items.length) return /* @__PURE__ */ React$1.createElement(Text, { className: cx("plx-rendition-list", className) }, t.empty);
-    return /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-rendition-list", className) }, variant === "menu" ? /* @__PURE__ */ React$1.createElement(Menu, { label: t.label, trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: DownloadTrayIcon }, t.label) }, items.map((r) => /* @__PURE__ */ React$1.createElement(MenuItem, { className: "plx-rendition-list__item", key: r.id, disabled: r.progress !== void 0 || !r.href && !r.onDownload, href: r.href, download: r.fileName || r.name, onSelect: r.onDownload }, [r.name, r.format, typeof r.size === "number" ? formatBytes(r.size) : ""].filter(Boolean).join(" · ")))) : /* @__PURE__ */ React$1.createElement(DataGrid, { label: t.label, data: items, columns: [{ field: "name", title: t.name, kind: "data" }, { field: "format", title: t.format, kind: "data" }, { field: "size", title: t.size, kind: "data", render: (r) => typeof r.size === "number" ? formatBytes(r.size) : "" }, { field: "_download", title: t.download, kind: "center", render: download }] }));
+    return /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-rendition-list", className) }, variant === "menu" ? /* @__PURE__ */ React$1.createElement(Menu, { label: t.label, trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: DownloadTrayIcon }, t.label) }, items.map((r) => /* @__PURE__ */ React$1.createElement(MenuItem, { className: "plx-rendition-list__item", key: r.id, disabled: r.progress !== void 0 || !r.href && !r.onDownload, href: r.href, download: r.fileName || r.name, onSelect: r.onDownload }, [r.name, r.format, typeof r.size === "number" ? formatBytes(r.size) : ""].filter(Boolean).join(" \xB7 ")))) : /* @__PURE__ */ React$1.createElement(DataGrid, { label: t.label, data: items, columns: [{ field: "name", title: t.name, kind: "data" }, { field: "format", title: t.format, kind: "data" }, { field: "size", title: t.size, kind: "data", render: (r) => typeof r.size === "number" ? formatBytes(r.size) : "" }, { field: "_download", title: t.download, kind: "center", render: download }] }));
   }
   const ZOOMS = [50, 75, 100, 125, 150, 200];
   const pdfEngine = () => engine("pdf");
@@ -40690,7 +40686,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     };
     const viewing = preview && versions.find((v) => v.id === preview.id);
-    return /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-version-history", className) }, error ? /* @__PURE__ */ React$1.createElement(Notice, { tone: "danger" }, error) : null, done ? /* @__PURE__ */ React$1.createElement(Badge, { tone: "success", icon: CheckIcon }, t.restored) : null, !versions.length ? /* @__PURE__ */ React$1.createElement(Text, null, t.empty) : /* @__PURE__ */ React$1.createElement(Timeline, { label: t.label, items: versions.map((v) => ({ id: v.id, time: v.date, dateTime: v.dateTime, title: /* @__PURE__ */ React$1.createElement(VersionLabel, { version: v.version, status: v.id === currentId ? "latest" : void 0 }), icon: ClockIcon, description: [v.author, v.description].filter(Boolean).join(" · "), content: /* @__PURE__ */ React$1.createElement(Inline$1, null, variant === "preview" || onPreview ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", onClick: () => {
+    return /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-version-history", className) }, error ? /* @__PURE__ */ React$1.createElement(Notice, { tone: "danger" }, error) : null, done ? /* @__PURE__ */ React$1.createElement(Badge, { tone: "success", icon: CheckIcon }, t.restored) : null, !versions.length ? /* @__PURE__ */ React$1.createElement(Text, null, t.empty) : /* @__PURE__ */ React$1.createElement(Timeline, { label: t.label, items: versions.map((v) => ({ id: v.id, time: v.date, dateTime: v.dateTime, title: /* @__PURE__ */ React$1.createElement(VersionLabel, { version: v.version, status: v.id === currentId ? "latest" : void 0 }), icon: ClockIcon, description: [v.author, v.description].filter(Boolean).join(" \xB7 "), content: /* @__PURE__ */ React$1.createElement(Inline$1, null, variant === "preview" || onPreview ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", onClick: () => {
       setPreview(v);
       onPreview?.(v);
     } }, t.preview) : null, variant !== "list" && onRestore && v.id !== currentId ? /* @__PURE__ */ React$1.createElement(Button, { size: "sm", disabled: busy, onClick: () => {
@@ -41413,7 +41409,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           label: t.method,
           value: d.delivery,
           onChange: (v) => setD(Object.assign({}, d, { delivery: v })),
-          options: deliveryOptions.map((o) => ({ value: o.value, label: o.label + " · " + (o.price ? money(o.price, currency) : t.free), description: o.description }))
+          options: deliveryOptions.map((o) => ({ value: o.value, label: o.label + " \xB7 " + (o.price ? money(o.price, currency) : t.free), description: o.description }))
         }
       ) : null) },
       { id: "payment", label: t.payment, content: /* @__PURE__ */ React$1.createElement(PaymentFields, { value: d.payment, onChange: (p) => setD(Object.assign({}, d, { payment: p })), savedMethods, strings }) }
@@ -41601,7 +41597,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const diff = (p) => {
       if (!current2.price || p.id === current2.id || p.period !== current2.period) return "";
       const d = p.price - current2.price;
-      return d ? " · " + fill(d > 0 ? t.more : t.less, { amount: money(Math.abs(d), currency) }) : "";
+      return d ? " \xB7 " + fill(d > 0 ? t.more : t.less, { amount: money(Math.abs(d), currency) }) : "";
     };
     const confirm = async () => {
       const kind = asking;
@@ -41643,7 +41639,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         legendHidden: true,
         value: pick,
         onChange: setPick,
-        options: plans.map((p) => ({ value: p.id, label: p.name, description: (p.id === s.plan ? t.current + " · " : "") + per(p) + diff(p) }))
+        options: plans.map((p) => ({ value: p.id, label: p.name, description: (p.id === s.plan ? t.current + " \xB7 " : "") + per(p) + diff(p) }))
       }
     ), /* @__PURE__ */ React$1.createElement("span", { className: "plx-commerce__row-actions" }, /* @__PURE__ */ React$1.createElement(Button, { variant: "primary", disabled: !target || pick === s.plan, onClick: () => setAsking("change") }, t.change))) : null, s.paymentMethod ? /* @__PURE__ */ React$1.createElement(SettingsSection, { title: t.method }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-commerce__method" }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-commerce__method-text" }, /* @__PURE__ */ React$1.createElement(Text, null, s.paymentMethod.label), s.paymentMethod.description ? /* @__PURE__ */ React$1.createElement(Text, { variant: "secondary" }, s.paymentMethod.description) : null), onUpdatePayment ? /* @__PURE__ */ React$1.createElement(Button, { onClick: onUpdatePayment }, t.update) : null)) : null, s.status !== "canceled" && (onPause || onResume || onCancel) ? /* @__PURE__ */ React$1.createElement(SettingsSection, { title: t.manage }, /* @__PURE__ */ React$1.createElement(Text, { as: "p", variant: "secondary" }, fill(t.manageText, { date: day(s.nextBilling) })), /* @__PURE__ */ React$1.createElement("span", { className: "plx-commerce__row-actions" }, s.status === "paused" ? onResume ? /* @__PURE__ */ React$1.createElement(Button, { onClick: onResume }, t.resume) : null : onPause ? /* @__PURE__ */ React$1.createElement(Button, { onClick: () => setAsking("pause") }, t.pause) : null, onCancel ? /* @__PURE__ */ React$1.createElement(Button, { variant: "danger-secondary", onClick: () => setAsking("cancel") }, t.cancel) : null)) : null, history2.length ? /* @__PURE__ */ React$1.createElement(SettingsSection, { title: t.history }, /* @__PURE__ */ React$1.createElement(DataGrid, { label: t.history, data: history2, columns })) : null, /* @__PURE__ */ React$1.createElement(
       ConfirmDialog,
@@ -41708,7 +41704,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       { id: "reason", label: t.reason, validate: () => reason ? "" : t.whyRequired, content: /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(RadioGroup, { label: t.why, value: reason, onChange: setReason, options: reasons }), /* @__PURE__ */ React$1.createElement(Field, { label: t.note }, /* @__PURE__ */ React$1.createElement(Textarea, { rows: 3, value: note, onChange: (e) => setNote(e.target.value) }))) },
       { id: "resolution", label: t.resolution, validate: () => !resolution ? t.wantRequired : methods.length && !method ? t.sendRequired : "", content: /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(RadioGroup, { label: t.want, value: resolution, onChange: setResolution, options: resolutions }), methods.length ? /* @__PURE__ */ React$1.createElement(RadioGroup, { label: t.send, value: method, onChange: setMethod, options: methods }) : null) }
     ];
-    const review = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(PropertyList, null, /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.items }, lines.map((x) => x.title + (x.quantity > 1 ? " × " + formatNumber(x.quantity) : "")).join(", ")), /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.reason }, label2(reasons, reason), note ? " · " + note : ""), /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.resolution }, label2(resolutions, resolution)), methods.length ? /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.send }, label2(methods, method)) : null, /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.refund, data: true }, money(refund, cur))), /* @__PURE__ */ React$1.createElement(Text, { as: "p", variant: "secondary" }, t.refundTiming));
+    const review = /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement(PropertyList, null, /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.items }, lines.map((x) => x.title + (x.quantity > 1 ? " \xD7 " + formatNumber(x.quantity) : "")).join(", ")), /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.reason }, label2(reasons, reason), note ? " \xB7 " + note : ""), /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.resolution }, label2(resolutions, resolution)), methods.length ? /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.send }, label2(methods, method)) : null, /* @__PURE__ */ React$1.createElement(PropertyList.Item, { label: t.refund, data: true }, money(refund, cur))), /* @__PURE__ */ React$1.createElement(Text, { as: "p", variant: "secondary" }, t.refundTiming));
     const H2 = "h" + Math.min(6, Math.max(1, headingLevel));
     if (done || status) {
       return /* @__PURE__ */ React$1.createElement("section", { className: cx("plx-commerce", "plx-commerce--returns", className), "aria-label": t.status }, /* @__PURE__ */ React$1.createElement(Notice, { tone: "success", title: t.requested }, t.requestedText), /* @__PURE__ */ React$1.createElement(H2, { className: "plx-commerce__subtitle" }, t.status), /* @__PURE__ */ React$1.createElement(Timeline, { label: t.status, items: status || [] }));
@@ -42191,7 +42187,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const t = { label: "AI response", streaming: "Generating response", done: "Response complete", stopped: "Generation stopped", ...strings }, status = ["streaming", "stopped"].includes(state) ? state : "done";
     const [announcement, setAnnouncement] = React$1.useState("");
     React$1.useEffect(() => {
-      setAnnouncement(status === "streaming" ? t.streaming : t[status] + (text2 ? " — " + text2 : ""));
+      setAnnouncement(status === "streaming" ? t.streaming : t[status] + (text2 ? " \u2014 " + text2 : ""));
     }, [text2, status, t.streaming, t.done, t.stopped]);
     return /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-streaming-text", className), role: "group", "aria-label": t.label }, /* @__PURE__ */ React$1.createElement(Badge, { icon: status === "done" ? CheckIcon : SparkleIcon }, t[status]), /* @__PURE__ */ React$1.createElement(Text, { className: "plx-streaming-text__content" }, text2), announce2 ? /* @__PURE__ */ React$1.createElement(LiveRegion, { kind: "status" }, announcement) : null);
   }
@@ -42400,7 +42396,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }, [latest?.text, messages2.length, threadId]);
     React$1.useEffect(() => {
       const a = { streaming: "Generating response", done: "Response complete", stopped: "Generation stopped", ...t.response }, state = latest?.state || "done";
-      setAnnouncement(latest ? (a[state] || a.done) + (state === "streaming" ? "" : latest.text ? " — " + latest.text : "") : "");
+      setAnnouncement(latest ? (a[state] || a.done) + (state === "streaming" ? "" : latest.text ? " \u2014 " + latest.text : "") : "");
     }, [latest?.id, latest?.text, latest?.state, t.response?.streaming, t.response?.done, t.response?.stopped]);
     const change = (next) => {
       if (prompt === void 0) setOwn(next);
@@ -42546,7 +42542,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }
   function AIExplanation({ summary: summary2, factors = [], confidence, label: label2, title, open, onOpenChange, strings, className }) {
     const t = useStrings("aiExplanation", strings);
-    return /* @__PURE__ */ React$1.createElement(Popover, { title: title || t.title, open, onOpenChange, closeButton: true, strings: { close: t.close }, trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: SparkleIcon }, label2 || t.label) }, /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-ai-explanation", className) }, /* @__PURE__ */ React$1.createElement(Text, { as: "p" }, summary2), factors.length ? /* @__PURE__ */ React$1.createElement(Stack, { as: "ul" }, factors.map((f) => /* @__PURE__ */ React$1.createElement(Text, { as: "li", key: f.id }, /* @__PURE__ */ React$1.createElement(Text, { variant: "strong" }, f.label), f.detail ? " — " + f.detail : null))) : null, confidence ? /* @__PURE__ */ React$1.createElement(ConfidenceIndicator, { ...confidence }) : null));
+    return /* @__PURE__ */ React$1.createElement(Popover, { title: title || t.title, open, onOpenChange, closeButton: true, strings: { close: t.close }, trigger: /* @__PURE__ */ React$1.createElement(Button, { icon: SparkleIcon }, label2 || t.label) }, /* @__PURE__ */ React$1.createElement(Stack, { className: cx("plx-ai-explanation", className) }, /* @__PURE__ */ React$1.createElement(Text, { as: "p" }, summary2), factors.length ? /* @__PURE__ */ React$1.createElement(Stack, { as: "ul" }, factors.map((f) => /* @__PURE__ */ React$1.createElement(Text, { as: "li", key: f.id }, /* @__PURE__ */ React$1.createElement(Text, { variant: "strong" }, f.label), f.detail ? " \u2014 " + f.detail : null))) : null, confidence ? /* @__PURE__ */ React$1.createElement(ConfidenceIndicator, { ...confidence }) : null));
   }
   const version = (e) => JSON.stringify([e.id, e.before, e.after]);
   function SuggestedEdit({ edits = [], variant = "diff", onDecision, disabled = false, strings, className }) {
@@ -42960,7 +42956,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const T2 = tk.tree, gap = T2.gap, line = (f) => f.fontSize + 4;
       rtl.current = tk.rtl;
       const W = dims.width, H2 = dims.height;
-      const ellipsis = (f, w) => ({ width: Math.max(gap, Math.floor(w)), overflow: "truncate", ellipsis: "…" });
+      const ellipsis = (f, w) => ({ width: Math.max(gap, Math.floor(w)), overflow: "truncate", ellipsis: "\u2026" });
       const fits = (n, f) => Math.max(measure(n.label, f), measure(n.detail, T2.detail)) + gap;
       let box, labelFor;
       if (!down) {

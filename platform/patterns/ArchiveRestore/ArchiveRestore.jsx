@@ -13,9 +13,9 @@
 import React from 'react';
 import { Banner } from '../../components/Banner/Banner.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ArchiveIcon from 'plenix-platform/icons/plenix/archive';

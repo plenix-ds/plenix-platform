@@ -42,8 +42,8 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AlertIcon from 'plenix-platform/icons/plenix/alert';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

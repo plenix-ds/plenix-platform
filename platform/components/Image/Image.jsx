@@ -40,7 +40,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ImageAN2Icon from 'plenix-platform/icons/plenix/image-a-2';
 

@@ -51,8 +51,9 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { useStrings, useDigits } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { localDigits } from '../../utils/digits.ts';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
@@ -60,13 +61,25 @@ import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 const LINES = [2, 3, 4];
 
 // a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
-const textClass = (variant, truncate, clamp, open, tabular, className) => cx('plx-text', 'plx-text--' + variant,
+const textClass = (variant: string, truncate: boolean, clamp: number | null, open: boolean, tabular: boolean, className: string | undefined) => cx('plx-text', 'plx-text--' + variant,
   truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
 
 // the digits of a text's strings: Arabic-Indic in an Arabic page, emails and web addresses kept (owner, arabic-digits-35)
-const shownDigits = (children, digits) => (digits === 'arab' ? React.Children.map(children, (c) => (typeof c === 'string' || typeof c === 'number' ? localDigits(String(c), { digits }) : c)) : children);
+const shownDigits = (children: React.ReactNode, digits: string | undefined) => (digits === 'arab' ? React.Children.map(children, (c) => (typeof c === 'string' || typeof c === 'number' ? localDigits(String(c), { digits }) : c)) : children);
 
-export function Text({ as: As = 'span', variant = 'body', truncate = false, lines, expandable = false, defaultExpanded = false, tabular = false, strings, className, children, ...rest }) {
+export type TextVariant = 'body' | 'secondary' | 'caption' | 'data' | 'label' | 'strong' | 'heading' | 'accent' | 'success' | 'eyebrow' | 'danger' | 'link' | 'title' | 'display' | 'lead';
+export type TextProps = React.HTMLAttributes<HTMLElement> & {
+  as?: React.ElementType;
+  variant?: TextVariant;
+  truncate?: boolean;
+  /** at most this many lines (2, 3 or 4) */
+  lines?: number | string;
+  expandable?: boolean;
+  defaultExpanded?: boolean;
+  tabular?: boolean;
+  strings?: Catalog | null;
+};
+export function Text({ as: As = 'span', variant = 'body', truncate = false, lines, expandable = false, defaultExpanded = false, tabular = false, strings, className, children, ...rest }: TextProps) {
   devWarn('Text', { variant }, { variant: ['body','secondary','caption','data','label','strong','heading','accent','success','eyebrow','danger','link','title','display','lead'] });
   const digits = useDigits();
   const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
@@ -77,10 +90,11 @@ export function Text({ as: As = 'span', variant = 'body', truncate = false, line
 }
 
 // a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
-function ExpandableText({ As, variant, clamp, defaultExpanded, tabular, strings, className, rest, children }) {
+type ExpandableTextProps = { As: React.ElementType; variant: string; clamp: number; defaultExpanded: boolean; tabular: boolean; strings?: Catalog | null; className?: string; rest: React.HTMLAttributes<HTMLElement>; children?: React.ReactNode };
+function ExpandableText({ As, variant, clamp, defaultExpanded, tabular, strings, className, rest, children }: ExpandableTextProps) {
   const own = useUid('plx-text');
   const id = rest.id || own;
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLElement>(null);
   const [open, setOpen] = React.useState(defaultExpanded);
   const [cut, setCut] = React.useState(false);
   React.useLayoutEffect(() => {
@@ -99,7 +113,7 @@ function ExpandableText({ As, variant, clamp, defaultExpanded, tabular, strings,
       <As dir="auto" {...rest} ref={ref} id={id} className={textClass(variant, false, clamp, open, tabular, className)}>{children}</As>
       {open || cut ? (
         <Button size="2xs" iconEnd={open ? ChevronUpIcon : ChevronDownIcon} aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
-          {open ? words.less : words.more}
+          {(open ? words.less : words.more) as React.ReactNode}
         </Button>
       ) : null}
     </div>

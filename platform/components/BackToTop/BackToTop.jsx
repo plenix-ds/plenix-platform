@@ -28,7 +28,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { useIntersection } from '../../hooks/useIntersection.ts';
 import ArrowUpIcon from 'plenix-platform/icons/plenix/arrow-up';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

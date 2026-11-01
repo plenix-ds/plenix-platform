@@ -36,7 +36,7 @@ import { cx } from '../../utils/cx.ts';
 import { isRtl } from '../../utils/direction.ts';
 import { tokenMs } from '../../utils/tokenTime.ts';
 import { useGesture } from '../../hooks/useGesture.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';

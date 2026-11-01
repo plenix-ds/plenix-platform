@@ -37,8 +37,8 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useLayer } from '../../utils/layer.ts';
-import { Button } from '../../components/Button/Button.jsx';
-import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.tsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';

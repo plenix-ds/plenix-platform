@@ -30,9 +30,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Scrim } from '../Scrim/Scrim.jsx';
-import { Spinner } from '../Loading/Loading.jsx';
+import { Spinner } from '../Loading/Loading.tsx';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 export function LoadingOverlay({ active = true, fullPage = false, message, progress, delay = 0, onCancel, strings, children, className, ...rest }) {
