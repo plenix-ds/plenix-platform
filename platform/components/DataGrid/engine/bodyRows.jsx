@@ -75,6 +75,7 @@ export function bodyRows({
   emit,
   setOwnOpen,
   focusCell,
+  chunked,
   cellRange,
   pickCheckbox,
   kindsOf,
@@ -294,13 +295,13 @@ export function bodyRows({
             emit('rowDblClick', e, rowApi);
           }
         }}
-        onKeyDown={rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model })}
+        onKeyDown={rowKeys({ chooseRow, row, emit, rowApi, props, record, on, unread, setOwnOpen, focusCell, model, chunked })}
       >
         {selectable ? (
           <div
             className={cx(
               `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
-              card && B + '__grid-cell--template-check',
+              card && B + '__grid-cell--template-check ' + B + '__grid-cell--card',
               leadFrozen && B + '__grid-frozen',
               modes,
               selection[row.id] && B + '__grid-cell--selected-start'
@@ -309,6 +310,7 @@ export function bodyRows({
           >
             <Check
               label={S.selectRow + ' ' + record[index]}
+              card={card}
               checked={selection[row.id]}
               onChange={(e) => pickCheckbox(row, e)}
             />
@@ -327,7 +329,13 @@ export function bodyRows({
             handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
             actions = k.includes('actions');
           // in the row card (narrow, #679) every visible field that is not a key value shows as a labeled detail
-          const detail = isNarrow && !tpl && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes('icon');
+          // the plain card (no template): every field that is not a key value; the default template card: the fields no slot took, as labeled details under its last line
+          const detail =
+            isNarrow &&
+            (tpl ? card && tpl.implicit && !tpl.slotOf[c.field] : !keys.includes(c.field)) &&
+            !actions &&
+            !c.rowHandle &&
+            !k.includes('icon');
           const mods =
               cx(
                 isStatic && B + '__value--static',
@@ -396,6 +404,7 @@ export function bodyRows({
                 column,
                 frame,
                 focusCell,
+                chunked,
                 cellRange,
                 kept: card ? tpl.keep : undefined,
               })}
@@ -434,9 +443,11 @@ export function bodyRows({
                 k.includes('icon') && B + '__w-lead',
                 slotted && tpl.slotOf[c.field] && B + '__cell--slot ' + B + '__cell--slot-' + tpl.slotOf[c.field],
                 card && tpl.slotOf[c.field] && B + '__cell--place-' + tpl.layout.toLowerCase() + '-' + tpl.slotOf[c.field],
-                keys.includes(c.field) && B + '__cell--key',
+                card && B + '__grid-cell--card',
+                !card && keys.includes(c.field) && B + '__cell--key',
                 detail && B + '__cell--list-detail',
-                keys[0] === c.field && B + '__cell--key-first',
+                detail && card && B + '__cell--detail-line',
+                !card && keys[0] === c.field && B + '__cell--key-first',
                 (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right')
               )}
             >
@@ -543,7 +554,7 @@ export function bodyRows({
         })}
         {props.viewMenu ? <div className={cx(`${B}__grid-cell ${B}__w-view`, modes)} role="gridcell" /> : null}
         {rowMenu && rowMenuButton ? (
-          <Width width={metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + '__grid-cell--template-menu', modes)} role="gridcell">
+          <Width width={card ? null : metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + '__grid-cell--template-menu ' + B + '__grid-cell--card', modes)} role="gridcell">
             <Menu
               label={S.rowActions}
               trigger={

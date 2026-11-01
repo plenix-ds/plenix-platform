@@ -5,7 +5,8 @@
    Props:
      label: the toolbar's accessible name
      start: a group of controls at the start of the row
-     end: a group of controls at the end of the row
+     end: a group of controls at the end of the row; it may shrink in a narrow row (issue 880), so a count or summary there
+       is a <Text truncate> that ends in an ellipsis rather than running past the toolbar
      children: controls after the start group
      className: more classes
    Behavior:
@@ -22,7 +23,7 @@ export function DataToolbar({ label, start, end, className, children }) {
       {start ? <Toolbar.Group className="plx-data-toolbar__group">{start}</Toolbar.Group> : null}
       {children}
       <Toolbar.Spacer />
-      {end ? <Toolbar.Group className="plx-data-toolbar__group">{end}</Toolbar.Group> : null}
+      {end ? <Toolbar.Group className="plx-data-toolbar__group plx-data-toolbar__group--end">{end}</Toolbar.Group> : null}
     </Toolbar>
   );
 }

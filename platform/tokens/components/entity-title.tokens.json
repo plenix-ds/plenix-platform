@@ -1,0 +1,55 @@
+{
+  "$description": "EntityTitle (platform/components/EntityTitle, issue 803): its component tokens. The icon uses Icon’s, the tag Tag’s or Badge’s, the placeholder Skeleton’s.",
+  "plx-comp": {
+    "entity-title-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "EntityTitle: the gap after the icon."
+    },
+    "entity-title-tag-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityTitle: the gap between the title and the tag."
+    },
+    "entity-title-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityTitle: the icon before the text."
+    },
+    "entity-title-title-color": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "EntityTitle: the title."
+    },
+    "entity-title-title-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "EntityTitle: the title (13px, the list row text)."
+    },
+    "entity-title-title-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "EntityTitle: the title’s weight."
+    },
+    "entity-title-subtitle-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityTitle: the subtitle under the title."
+    },
+    "entity-title-subtitle-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "EntityTitle: the subtitle (12px)."
+    },
+    "entity-title-title-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "EntityTitle: the title’s line (20px, a list row’s text line and a badge’s height), on the 4px grid."
+    },
+    "entity-title-subtitle-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "EntityTitle: the subtitle’s line (16px): with the title, 36px on the 4px grid."
+    }
+  }
+}

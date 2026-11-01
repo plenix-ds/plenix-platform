@@ -141,6 +141,7 @@ export { encodeBarcode, barcodeCheckDigit, BARCODE_QUIET_ZONE } from './utils/ba
 export { useRetry, RetryNotice } from './patterns/Retry/Retry.jsx';
 export { AvatarGroup } from './components/AvatarGroup/AvatarGroup.jsx';
 export { Persona } from './components/Persona/Persona.jsx';
+export { EntityTitle } from './components/EntityTitle/EntityTitle.jsx';
 export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.tsx';
 export { QRCode } from './components/QRCode/QRCode.jsx';
 export { qrEncode } from './utils/qr.ts';
@@ -347,7 +348,7 @@ export { RefineMenu } from './components/RefineMenu/RefineMenu.jsx';
 export { AnalyticsProvider, useAnalytics, track } from './providers/AnalyticsProvider.tsx';
 export { ListingPage, ContentManagementPage, LandingPage, HomePage, CreatePage, EditPage, MasterDetailPage, SplitWorkspace, SinglePaneWorkspace, FullScreenWorkspace, FullScreenExperience, DetailPage, SearchResultsPage, AuthenticationPage, ErrorPage } from './templates/templates/Templates.jsx';
 export { browserSupport } from './utils/browserSupport.ts';
-export { LocaleProvider, useLocale, useStrings, createTranslator } from './providers/LocaleProvider.tsx';
+export { LocaleProvider, useLocale, useStrings, useTimeZone, createTranslator } from './providers/LocaleProvider.tsx';
 export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
 export { Heading } from './components/Heading/Heading.tsx';
 export { TreeChart } from './charts/TreeChart.jsx';

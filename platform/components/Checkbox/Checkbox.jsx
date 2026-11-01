@@ -23,11 +23,15 @@
      RadioGroup.options: the choices: [{ value, label, description, disabled }]
      RadioGroup.layout: "column" (default) | "row"
      RadioGroup.className: more classes on the <fieldset>
-     ChoiceList.legend: the legend of the list
-     ChoiceList.name: the radio name (default a generated one)
-     ChoiceList.value: the selected option value
-     ChoiceList.onChange(value): runs with the chosen option value
-     ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden }]
+     ChoiceList.legend: the legend of the list (the group's name, for every kind)
+     ChoiceList.control: the control in each card (issue 804, control cards): "radio" (default: one choice) | "checkbox"
+       (several choices) | "switch" (each option on or off; the switch at the card's end, as in a settings row)
+     ChoiceList.name: the inputs' name (default a generated one)
+     ChoiceList.value: the selected option value (radio)
+     ChoiceList.values: an array: the checked option values (checkbox and switch)
+     ChoiceList.onChange(value | values): runs with the chosen option value (radio), or the new array of values (checkbox and
+       switch)
+     ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden, disabled }]
      ChoiceList.className: more classes on the <fieldset>
      Switch.label: the text beside the switch
      Switch.labelHidden: true hides the label and uses it as the accessible name (default false)
@@ -40,6 +44,11 @@
        invisibly past the 16px box (Platforms Standard 3.1).
      Switch is a checkbox with role="switch".
      The selected ChoiceList card shows the selected state.
+     ChoiceList cards (issue 804): each card is the label of its native control, so the whole card is the target and the
+       control is the one focus stop, named by the card's label alone (aria-labelledby) and described by its description
+       (aria-describedby), so neither is read twice. A radio card is a native radio group (the arrow keys move the choice,
+       Space chooses); a checkbox card and a switch card toggle with Space or a click and have no arrow keys; a switch is
+       the native checkbox with role="switch", announced on or off. The fieldset's legend names the group for every kind. A disabled card is dimmed, has no hover, and is skipped by the keys.
    Notes:
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
@@ -90,18 +99,40 @@ export function RadioGroup({ label, name, value, onChange, options, layout = 'co
   );
 }
 
-export function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
+export function ChoiceList({ legend, name, value, values, onChange, options, control = 'radio', className, readOnly, ...rest }) {
   const locked = useReadOnly(readOnly);
   const auto = 'plx-c' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const kind = control === 'checkbox' || control === 'switch' ? control : 'radio';
+  const several = kind !== 'radio';
+  const list = Array.isArray(values) ? values : [];
+  const on = (o) => (several ? list.indexOf(o.value) >= 0 : o.value === value);
+  const change = (o) => {
+    if (!onChange) return;
+    if (!several) { onChange(o.value); return; }
+    onChange(on(o) ? list.filter((v) => v !== o.value) : list.concat([o.value]));
+  };
   return (
-    <fieldset className={cx('plx-choice-list', className)} {...rest}>
+    <fieldset className={cx('plx-choice-list', several && 'plx-choice-list--' + kind, className)} {...rest}>
       {legend ? <legend className="plx-choice-list__legend">{legend}</legend> : null}
-      {options.map((o) => (
-        <label key={o.value} className={cx('plx-choice', o.value === value && 'is-selected')} hidden={o.hidden || undefined}>
-          <input type="radio" className="plx-choice__input" {...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false })} />
-          <span className="plx-choice__text"><span className="plx-choice__label">{o.label}</span>{o.description ? <span className="plx-choice__description">{o.description}</span> : null}</span>
-        </label>
-      ))}
+      {options.map((o) => {
+        // the name is the card's label alone and the description its hint, so neither is read twice
+        const key = String(o.value).replace(/[^a-zA-Z0-9_-]/g, '_');
+        const labelId = auto + '-l-' + key;
+        const descId = o.description ? auto + '-d-' + key : undefined;
+        const input = readOnlyProps(locked, { name: name || auto, value: o.value, checked: on(o), disabled: o.disabled || undefined, onChange: () => change(o), 'aria-labelledby': labelId, 'aria-describedby': descId },
+          { aria: kind !== 'radio' });
+        const text = <span className="plx-choice__text"><span id={labelId} className="plx-choice__label">{o.label}</span>{o.description ? <span id={descId} className="plx-choice__description">{o.description}</span> : null}</span>;
+        return (
+          <label key={o.value} className={cx('plx-choice', 'plx-choice--' + kind, on(o) && 'is-selected', o.disabled && 'is-disabled')} hidden={o.hidden || undefined}>
+            {kind === 'switch' ? (
+              // the text first, the switch at the card's end (a settings row); the label's first control is the switch
+              <>{text}<span className="plx-switch plx-choice__switch"><input type="checkbox" role="switch" className="plx-switch__input plx-choice__input" {...input} /><span className="plx-switch__track" aria-hidden="true" /></span></>
+            ) : (
+              <><input type={kind} className="plx-choice__input" {...input} />{text}</>
+            )}
+          </label>
+        );
+      })}
     </fieldset>
   );
 }

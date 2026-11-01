@@ -704,8 +704,9 @@
       "$type": "color"
     },
     "nav-bar-item-min-width": {
-      "$value": "{plx-ref.size-64px}",
-      "$type": "dimension"
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension",
+      "$description": "The bottom bar's item: never narrower than the touch target (issue 880: 64px pushed the fifth item out of a 310px bar); the items share the width equally above it."
     },
     "nav-bar-item-target": {
       "$value": "{plx-sys.control-target-min}",
@@ -1270,6 +1271,11 @@
     "choice-description-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
+    },
+    "choice-disabled-opacity": {
+      "$value": "{plx-sys.opacity-mid}",
+      "$type": "number",
+      "$description": "ChoiceList: a disabled card (issue 804), as a disabled radio tile."
     },
     "switch-gap": {
       "$value": "{plx-sys.space-inline-sm}",

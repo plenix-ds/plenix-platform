@@ -1,14 +1,110 @@
 {
   "$description": "DataGrid row template (issue 839): the card layouts A and B and the wide row. Existing roles only; no new color.",
   "plx-comp": {
-    "data-grid-template-line-height": { "$value": "{plx-ref.size-24px}", "$type": "dimension", "$description": "The height of one line of a template record." },
-    "data-grid-template-gap": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "The space between the pieces of a template record." },
-    "data-grid-template-end-width": { "$value": "{plx-ref.size-100px}", "$type": "dimension", "$description": "Layout A: the width of the column that holds the date, the primary and the tertiary value." },
-    "data-grid-template-b-end-width": { "$value": "{plx-ref.size-96px}", "$type": "dimension", "$description": "Layout B: the width of the date." },
-    "data-grid-template-b-mid-width": { "$value": "{plx-ref.size-112px}", "$type": "dimension", "$description": "Layout B: the width of the tertiary value; the primary value sits above it and the date." },
-    "data-grid-template-divider-color": { "$value": "{plx-sys.data-grid-line}", "$type": "color", "$description": "The vertical line between the pieces of a template record." },
-    "data-grid-template-muted-text": { "$value": "{plx-sys.data-grid-text-muted}", "$type": "color", "$description": "Subtitle, secondary and date text." },
-    "data-grid-template-subtle-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Tertiary text." },
-    "data-grid-template-title-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Title and primary value weight." }
+    "data-grid-template-line-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "The height of one line of a template record."
+    },
+    "data-grid-template-gap": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension",
+      "$description": "The space between the pieces of a template record."
+    },
+    "data-grid-template-end-width": {
+      "$value": "{plx-ref.size-100px}",
+      "$type": "dimension",
+      "$description": "Layout A: the width of the column that holds the date, the primary and the tertiary value."
+    },
+    "data-grid-template-b-end-width": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "Layout B: the width of the date."
+    },
+    "data-grid-template-b-mid-width": {
+      "$value": "{plx-ref.size-100px}",
+      "$type": "dimension",
+      "$description": "Layout B: the width of the tertiary value; the primary value sits above it and the date."
+    },
+    "data-grid-template-divider-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "The vertical line between the pieces of a template record (the Divider color)."
+    },
+    "data-grid-template-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "A card: the space above its first line and below its last."
+    },
+    "data-grid-template-padding-start": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "A card: the space before its first column (after the selected bar)."
+    },
+    "data-grid-template-padding-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "A card: the space after its last column."
+    },
+    "data-grid-template-check-width": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "A card: the width of the checkbox column."
+    },
+    "data-grid-template-menu-width": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "A card: the width of the row menu column."
+    },
+    "data-grid-template-bar-height": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension",
+      "$description": "The bar over the cards: its least height."
+    },
+    "data-grid-template-bar-padding": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "The bar over the cards: the space at its start and end."
+    },
+    "data-grid-template-bar-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "The bar over the cards: the space between the checkbox and the count."
+    },
+    "data-grid-template-menu-button-size": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "A card: the row menu button (square), the sample's xs icon button at the standard density, whatever the grid's density."
+    },
+    "data-grid-template-menu-icon-size": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "A card: the icon in the row menu button."
+    },
+    "data-grid-template-bar-background": {
+      "$value": "{plx-sys.data-grid-header-background}",
+      "$type": "color",
+      "$description": "The bar over the cards: a flat fill (the header role without its gradient)."
+    },
+    "data-grid-template-bar-line": {
+      "$value": "{plx-sys.data-grid-header-bottom}",
+      "$type": "color",
+      "$description": "The bar over the cards: the thin line below it."
+    },
+    "data-grid-template-check-accent-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "A card: the checkbox fill, the Checkbox's own role (the table's checkboxes keep the grid accent)."
+    },
+    "data-grid-template-check-target": {
+      "$value": "{plx-ref.control-size-28px}",
+      "$type": "dimension",
+      "$description": "A card: the height the checkbox is placed in, the Checkbox's target at the regular density (the sample's). The box sits at its top, past the padding, not at its center."
+    },
+    "data-grid-template-check-padding": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "A card: the space above the checkbox inside its target, the Checkbox's padding at the regular density (the sample's)."
+    }
   }
 }
