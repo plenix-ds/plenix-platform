@@ -15,6 +15,7 @@
      Moved out of DataGridEngine.jsx without any change to the code (issue 714, the header): the parts were lines of the engine
      function, in the same order with the same values. The engine is documented in DataGridEngine.jsx.
 */
+import React from 'react';
 import { typeOf, kinds, interactive, typeIcons } from './helpers.jsx';
 import { MenuDivider, MenuItem, Menu, ContextMenu } from '../../Menu/Menu.jsx';
 import SortAscendingIcon from 'plenix-platform/icons/plenix/sort-ascending';

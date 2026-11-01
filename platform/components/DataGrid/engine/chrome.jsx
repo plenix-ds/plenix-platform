@@ -13,6 +13,7 @@
      Moved out of DataGridEngine.jsx without any change to the code (issue 714, the toolbar and menus): each part is the same
      element as it was inline in the engine's return, in the same place.
 */
+import React from 'react';
 import { ManageColumnsDialog } from '../../../patterns/ColumnsMenu/ColumnsMenu.jsx';
 import { EmptyState } from '../../EmptyState/EmptyState.jsx';
 import { Button } from '../../Button/Button.jsx';
