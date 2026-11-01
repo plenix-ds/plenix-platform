@@ -197,7 +197,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
                 {marks ? <input type={marks === 'radio' ? 'radio' : 'checkbox'} className="plx-check__input plx-combobox__mark" tabIndex={-1} aria-hidden="true"
                   checked={chosen.indexOf(it.o.value) >= 0} readOnly /> : null}
-                {marks ? <span className="plx-combobox__option-label">{highlightMatch(it.o.label, text)}</span> : highlightMatch(it.o.label, text)}</li>])
+                <span className="plx-combobox__option-label">{highlightMatch(it.o.label, text)}</span></li>])
             : isLoading ? <li className="plx-combobox__loading" role="presentation"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></li>
             : failed ? <li className="plx-combobox__empty plx-combobox__error" role="presentation">{t.error}</li>
             : <li className="plx-combobox__empty" role="presentation">{emptyText}</li>}
