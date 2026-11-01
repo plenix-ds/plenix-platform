@@ -11,14 +11,16 @@
        them (i18n/ar.js: Arabic, owner arabic-batch4-36), and English is always the last fallback
      messages: the current locale's catalog, as a convenience
      fallbackLocale: locale searched after the requested locale and its language; default "en"
-     timeZone: optional Intl time zone for this provider's date/time formatters
+     timeZone: optional IANA time zone of the region ("Europe/Lisbon"; issue 813): its date/time formatters, and DatePicker and
+       TimePicker show and save dates and times in it, so people in several countries see the same; default the computer's
      dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
      digits: "auto" (default: Arabic-Indic ٠-٩ for an Arabic locale, Latin for every other) | "arab" | "latn" (owner, arabic-digits-35):
        every format helper writes its digits so, and Isolate and Text write the digits of their text so; emails and web addresses keep Latin
      root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
      children: the region's content
      useDigits(): "arab" or "latn", the digits of the nearest LocaleProvider (the page's language when there is none)
-     useLocale(): { locale, dir, digits, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+     useTimeZone(): the nearest LocaleProvider's timeZone, or undefined (the computer's zone)
+     useLocale(): { locale, dir, digits, timeZone, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
        time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
      createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React, plus section(name): a
        whole section merged across the catalogs
@@ -56,7 +58,7 @@ export type Translator = {
 };
 // the bound format helpers: each takes the helper's own arguments, then its options (the locale and time zone are set)
 export type BoundFormat = Record<keyof typeof FORMATTERS, (...args: unknown[]) => string>;
-export type LocaleValue = Translator & { digits?: Digits; format: BoundFormat };
+export type LocaleValue = Translator & { digits?: Digits; timeZone?: string; format: BoundFormat };
 export type LocaleProviderProps = {
   locale?: string; catalogs?: Record<string, Catalog>; messages?: Catalog; fallbackLocale?: string; timeZone?: string;
   dir?: Direction; digits?: 'auto' | Digits; root?: boolean; children?: React.ReactNode;
@@ -130,7 +132,7 @@ export function LocaleProvider({ locale, catalogs, messages, fallbackLocale = 'e
   const language = canonical(locale || F.formatLocale());
   const value = React.useMemo((): LocaleValue => {
     const sources = Object.assign({}, catalogs, messages ? { [language]: messages } : {});
-    return Object.assign(createTranslator(language, sources, fallbackLocale), { dir: dir || directionOf(language), digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)), format: bind(language, timeZone, digits === 'auto' ? undefined : digits) });
+    return Object.assign(createTranslator(language, sources, fallbackLocale), { timeZone: timeZone || undefined, dir: dir || directionOf(language), digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)), format: bind(language, timeZone, digits === 'auto' ? undefined : digits) });
   }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
   return <LocaleContext.Provider value={value}><DirectionProvider locale={language} dir={value.dir} root={root}>{children}</DirectionProvider></LocaleContext.Provider>;
 }
@@ -162,4 +164,10 @@ export function useLocale(): LocaleValue {
 export function useDigits(): Digits | undefined {
   const value = React.useContext(LocaleContext);
   return value ? value.digits : F.digitsOf(F.formatLocale());
+}
+
+// the time zone of the nearest LocaleProvider (issue 813), or undefined: the computer's zone
+export function useTimeZone() {
+  const value = React.useContext(LocaleContext);
+  return value ? value.timeZone : undefined;
 }
