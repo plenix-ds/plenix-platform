@@ -1,5 +1,5 @@
 /* Plenix tests · RichTextEditor inserts an image (issue 884).
-   Summary: the editor's Insert image (toolbar Image, an address and a description, Add image or Enter) puts the picture in
+   Summary: the editor's Insert image (toolbar="full": Image, an address and a description, Add image or Enter) puts the picture in
      the text, in a left-to-right and in a right-to-left page, with no script error. Before #884 it threw a ReferenceError
      (SAFE_SRC was not defined in RichTextEditor.jsx after #178 moved it into utils/richTextClean.ts) and inserted nothing.
    Checks, in each direction:
@@ -12,7 +12,7 @@
    The probe is proved able to see a failure: on the code before #884, check 1 finds no img and the page error list holds
      "SAFE_SRC is not defined".
    Usage: node tests/rte-insert-image-884.test.js   → RTE_INSERT_IMAGE_884_OK */
-const assert = require('assert/strict'), fs = require('fs'), path = require('path'), { serve, launch } = require('./lib');
+const assert = require('assert/strict'), fs = require('fs'), path = require('path'), { pathToFileURL } = require('url'), { serve, launch } = require('./lib');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const ROOT = path.join(__dirname, '..');
 
@@ -24,6 +24,10 @@ assert.ok(/import \{[^}]*\bSAFE_SRC\b[^}]*\} from '\.\.\/\.\.\/utils\/richTextCl
 assert.ok(!/const SAFE_SRC\s*=/.test(editor), 'RichTextEditor has no SAFE_SRC of its own');
 
 (async () => {
+  // the editor's words in each direction's page language (the right-to-left page is Arabic: platform/i18n/ar.js)
+  const words = async (file) => (await import(pathToFileURL(path.join(ROOT, 'platform/i18n', file)).href)).default.richTextEditor;
+  const WORDS = { ltr: await words('en.js'), rtl: await words('ar.js') };
+  let w = WORDS.ltr;
   const PORT = +process.env.TEST_PORT || 9684, server = await serve(PORT); let browser;
   try {
     browser = await launch(); const page = await browser.newPage(); const errors = [];
@@ -36,30 +40,30 @@ assert.ok(!/const SAFE_SRC\s*=/.test(editor), 'RichTextEditor has no SAFE_SRC of
       document.documentElement.setAttribute('dir', dir); document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
       const h = React.createElement, P = window.Plenix;
       document.getElementById('main').innerHTML = '<div id="c"></div>';
-      ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'rte' }, h(P.RichTextEditor, { label: 'Notes', defaultValue: '<p>Text before the picture.</p>' })));
+      ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'rte' }, h(P.RichTextEditor, { label: 'Notes', toolbar: 'full', defaultValue: '<p>Text before the picture.</p>' })));
       await new Promise((r) => setTimeout(r, 2000));
     }, dir);
-    // the toolbar's Image button, or the same item in its More formatting menu when the toolbar folds
+    // the toolbar's Image button, or the same item in its More formatting menu when the toolbar folds; pressed through the
+    // element (a pointer click lands on the button's tooltip trigger while the tooltip is opening)
     const openImage = async () => {
-      const direct = await page.$('#rte [role="toolbar"] button[aria-label="Image"]');
-      if (direct && await direct.boundingBox()) await direct.click();
-      else {
-        await page.click('#rte [role="toolbar"] button[aria-label="More formatting"]'); await sleep(300);
-        const item = await page.evaluateHandle(() => [...document.querySelectorAll('[role="menuitem"]')].find((m) => m.textContent.trim() === 'Image'));
-        await item.asElement().click();
+      const shown = await page.evaluate((w) => { const b = [...document.querySelectorAll('#rte [role="toolbar"] button')].find((x) => x.getAttribute('aria-label') === w.image && x.getClientRects().length); if (b) { b.click(); return true; } return false; }, w);
+      if (!shown) {
+        await page.evaluate((w) => [...document.querySelectorAll('#rte [role="toolbar"] button')].find((x) => x.getAttribute('aria-label') === w.more).click(), w); await sleep(300);
+        await page.evaluate((w) => [...document.querySelectorAll('[role="menuitem"]')].find((m) => m.textContent.trim() === w.image).click(), w);
       }
-      await page.waitForSelector('#rte input[aria-label="Image address"]', { timeout: 5000 });
+      await page.waitForSelector('#rte input[type="url"]', { timeout: 5000 });
     };
     const insert = async (address, description) => {
-      await page.click('#rte [role="textbox"]'); await page.keyboard.press('End');
+      await page.click('#rte [role="textbox"] p'); await page.keyboard.down('Control'); await page.keyboard.press('End'); await page.keyboard.up('Control');   // the caret at the end of the text
       await openImage();
-      await page.type('#rte input[aria-label="Image address"]', address);
-      if (description) await page.type('#rte input[aria-label="Description"]', description);
+      await page.type('#rte input[type="url"]', address);
+      if (description) await page.type('#rte input[aria-label="' + w.imageAlt + '"]', description);
       await page.keyboard.press('Enter'); await sleep(400);
     };
     const images = () => page.evaluate(() => [...document.querySelectorAll('#rte [role="textbox"] img')].map((i) => ({ src: i.getAttribute('src'), alt: i.getAttribute('alt') })));
 
     for (const dir of ['ltr', 'rtl']) {
+      w = WORDS[dir];
       await render(dir);
       await insert('https://example.com/a.png', 'A picture');
       assert.deepEqual(await images(), [{ src: 'https://example.com/a.png', alt: 'A picture' }], dir + ': an https address inserts the picture');
