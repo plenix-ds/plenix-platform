@@ -29,6 +29,8 @@ child({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell
 // a pane or a table column is never dragged wider than 90% of the window (of the table): when Resizable, SplitView, a pane
 // of the shell or the DataGrid changed (issue 463, option C, step 1)
 child({ units: ['components/Resizable', 'components/DataGrid', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-limit.test.js');
+// a split view resizes as far as its room allows, within 90% of the window; maxSize no longer caps it (issue 873)
+child({ units: ['patterns/SplitView', 'components/Resizable', 'utils/paneLimit.ts'] }, 'splitview-resize-873.test.js');
 // the panes start wider on larger windows (issue 463, option C, step 2): when AppShell or a pane of the shell changed
 child({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-defaults.test.js');
 // the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): when AppShell or the side panel changed
@@ -92,6 +94,7 @@ child({ units: ['components/CommandMenu', 'components/EntityPicker', 'components
 child({ units: ['components/DataGrid'] }, 'data-grid-row-template-839.test.js');   // the row template: layouts A, B and wide, the slots, the defaults, left to right and right to left (issue 839)
 child({ units: ['components/Rating', 'components/Divider'] }, 'rating-divider-808.test.js');   // Rating half stars (clicks, keys, read-only) and Divider with a text, left to right and right to left (issue 808)
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
+child({ units: ['components/DataGrid'] }, 'data-grid-default-cards-679.test.js');   // every grid's narrow cards are the row template by default; plain stays reachable; wide unchanged (issue 679)
 child({ units: ['components/DataGrid'] }, 'data-grid-edit-keys-737.test.js');   // F2 and typing start editing; not read-only, IME, Ctrl/Alt/Meta, Space; Shift+arrows keep working (issue 737)
 child({ units: ['components/MenuBar', 'components/Menu'] }, 'menubar-805.test.js');   // the MenuBar: one Tab stop, the arrows, open and switch, Escape, hover, type-ahead, More (issue 805)
 child({ units: ['components/DataGrid'] }, 'data-grid-cell-range-465.test.js');   // cell range selection: Shift with the arrows, the border, copy, announcement, 600 rows (issue 465)
@@ -114,6 +117,8 @@ child({ units: ['components/DatePicker', 'components/TimePicker', 'components/Ca
 child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.ts'] }, 'branch-loader-814.test.js');
 // EntityTitle, a short title line for list rows and cards (issue 803)
 child({ units: ['components/EntityTitle', 'components/RowButton', 'components/Card'] }, 'entity-title-803.test.js');
+// control cards: ChoiceList with a radio, a checkbox or a switch in each card (issue 804)
+child({ units: ['components/Checkbox'] }, 'control-cards-804.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
 child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.ts'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)

@@ -18,9 +18,14 @@
 .plx-choice-list__legend{color:var(--plx-comp-choice-list-legend-text);font-size:var(--plx-comp-choice-list-legend-font-size);font-weight:var(--plx-comp-choice-list-legend-font-weight);margin-block-end:var(--plx-comp-field-label-control-gap);padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-choice{align-items:flex-start;border-bottom-color:var(--plx-comp-choice-border-color);border-bottom-left-radius:var(--plx-comp-choice-radius);border-bottom-right-radius:var(--plx-comp-choice-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-choice-border-width);border-left-color:var(--plx-comp-choice-border-color);border-left-style:solid;border-left-width:var(--plx-comp-choice-border-width);border-right-color:var(--plx-comp-choice-border-color);border-right-style:solid;border-right-width:var(--plx-comp-choice-border-width);border-top-color:var(--plx-comp-choice-border-color);border-top-left-radius:var(--plx-comp-choice-radius);border-top-right-radius:var(--plx-comp-choice-radius);border-top-style:solid;border-top-width:var(--plx-comp-choice-border-width);column-gap:var(--plx-comp-choice-gap);cursor:pointer;display:flex;min-block-size:var(--plx-comp-choice-min-height);padding-block-end:var(--plx-comp-choice-padding-block);padding-block-start:var(--plx-comp-choice-padding-block);padding-inline-end:var(--plx-comp-choice-padding-inline);padding-inline-start:var(--plx-comp-choice-padding-inline);}
 .plx-choice[hidden]{display:none;}
-.plx-choice:hover,
+.plx-choice:where(:not(.is-disabled)):hover,
 .plx-choice.is-hover{background-color:var(--plx-comp-choice-hover-background);}
 .plx-choice.is-selected{background-color:var(--plx-comp-choice-selected-background);border-bottom-color:var(--plx-comp-choice-selected-border-color);border-left-color:var(--plx-comp-choice-selected-border-color);border-right-color:var(--plx-comp-choice-selected-border-color);border-top-color:var(--plx-comp-choice-selected-border-color);}
+/* control cards (issue 804): a disabled card is dimmed and has no hover; a switch card's switch sits at the card's end */
+.plx-choice.is-disabled{cursor:not-allowed;opacity:var(--plx-comp-choice-disabled-opacity);}
+.plx-choice__switch{flex-shrink:0;margin-inline-start:auto;}
+/* in a switch card the card's outline is the one focus mark: the switch's own ring is off */
+.plx-choice--switch{--plx-comp-switch-input-focus-track-outline-width:0;}
 .plx-choice:has(.plx-choice__input:focus-visible),
 .plx-choice:has(.plx-choice__input.is-focus-visible){outline-color:var(--plx-comp-choice-input-focus-outline-color);outline-offset:var(--plx-comp-choice-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-choice-input-focus-outline-width);}
 .plx-choice__input{accent-color:var(--plx-comp-choice-input-accent-color);block-size:var(--plx-comp-choice-input-height);flex-shrink:0;font-family:inherit;inline-size:var(--plx-comp-choice-input-width);margin-block-end:0;margin-block-start:0;margin-block-start:var(--plx-comp-choice-input-margin-block-start);margin-inline-end:0;margin-inline-start:0;}
