@@ -162,8 +162,10 @@ import { DataGridEngine } from './DataGridEngine.jsx';
 import { useRowTemplate } from './engine/rowTemplate.js';
 import { useDataGridActions } from './actions.jsx';
 import { unreadCommands } from './unread-commands.js';
-import { ToastProvider } from '../Toast/Toast.jsx';
-import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
+import { ToastProvider, useToast } from '../Toast/Toast.jsx';
+
+// a toast when the page has a ToastProvider; nothing otherwise. Toast's own hook, not ReviewFlow's: ReviewFlow would pull the command bar, the quick filter, the avatar and a dialog into every grid (issue 807)
+function useOptionalToast() { try { return useToast(); } catch (e) { return null; } }
 
 // the row menu's actions with Undo, as the CommandBar's selection commands
 function ActionTable(props) { const rowMenu = useDataGridActions(props.rowMenu, undefined, props.strings), shaped = useRowTemplate(props); return <DataGridEngine {...shaped} rowMenu={rowMenu} />; }
