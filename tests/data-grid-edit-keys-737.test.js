@@ -73,7 +73,7 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       await check(T + 'Enter and a double click still start editing', async () => {
         await mount(); await focus(0, 'name'); await key('Enter'); assert.equal(await editor(), 'Person 1'); await key('Escape');
         const c = await page.evaluate(() => { const b = document.querySelectorAll('[role=row][data-plx-record]')[1].querySelector('[data-plx-field="name"]').getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; });
-        await page.mouse.click(c.x, c.y, { clickCount: 2 }); await wait(250); assert.equal(await editor(), 'Person 2');
+        await page.mouse.click(c.x, c.y, { count: 2 }); await wait(250); assert.equal(await editor(), 'Person 2');
       });
       await check(T + 'with cellSelection Shift and an arrow still extend a block, and a typed character ends it and starts editing', async () => {
         await mount({ cellSelection: true }); await focus(0, 'name'); await key('ArrowDown', ['Shift']); await key('ArrowDown', ['Shift']);
