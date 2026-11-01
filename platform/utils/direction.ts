@@ -20,6 +20,8 @@
        the presentation forms): a phone number, an IBAN, a date, a version. A value like that is shown left to right as written (a left-to-right island),
        because with no strong letter the digit groups of a spaced value ("(617) 555-0142") would otherwise take the page's direction and swap places
        (Unicode rule N1, issue 838); a value with an Arabic letter in it keeps dir="auto"
+       Digits count as letters of their script here: a value whose source already has Arabic-Indic digits (U+0660 to U+0669, in the range above) keeps
+       dir="auto". The fix covers the usual case: the source has Latin digits and the page shows them as Arabic-Indic digits (shownDigits)
      RTL_LANGUAGES: the language subtags written right to left
    Behavior:
      The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):

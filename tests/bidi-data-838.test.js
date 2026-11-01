@@ -20,7 +20,7 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
     browser = await launch(); const page = await browser.newPage(); await page.setViewport({ width: 760, height: 700 });
     await page.goto('http://127.0.0.1:' + PORT + '/Plenix/tests/fixtures/platform-host.html', { waitUntil: 'load' });
     await page.waitForFunction(() => window.Plenix && window.ReactDOM);
-    // the digit groups of one sample, left to right as drawn (Latin and Arabic-Indic digits and the letters of the IBAN's first groups); also its dir attribute
+    // the digit groups of one sample, left to right as drawn, read in the DataGrid's data row or PropertyList's value element (dd) only, so a label ("Phone") is not read with it (Latin and Arabic-Indic digits and the letters of the IBAN's first groups); also its dir attribute
     const orderOf = async (lang, make) => page.evaluate(async (lang, src) => {
       const rtl = lang === 'ar';
       document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr'); document.documentElement.setAttribute('lang', lang);
@@ -28,7 +28,7 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       const h = React.createElement, P = Plenix, PHONE = '(617) 555-0142', IBAN = 'GB82 WEST 1234 5698 7654 32';
       const el = new Function('h', 'P', 'PHONE', 'IBAN', 'return ' + src)(h, P, PHONE, IBAN);
       window.__root = ReactDOM.createRoot(document.getElementById('c')); window.__root.render(h('div', { id: 'box' }, el)); await new Promise((r) => setTimeout(r, 900));
-      const box = document.getElementById('box'), scope = box.querySelector('[role=row][data-plx-record]') || box, w = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT), parts = [];
+      const box = document.getElementById('box'), scope = box.querySelector('[role=row][data-plx-record]') || box.querySelector('.plx-property-list__value') || box, w = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT), parts = [];
       let n; while ((n = w.nextNode())) { const re = /[0-9٠-٩A-Z]+/g; let m; while ((m = re.exec(n.textContent))) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); parts.push([rg.getBoundingClientRect().x, m[0]]); } }
       const marked = box.querySelector('[dir]');
       return { order: parts.sort((a, b) => a[0] - b[0]).map((x) => x[1]).join(' '), dir: marked && marked.getAttribute('dir'), text: scope.textContent };
