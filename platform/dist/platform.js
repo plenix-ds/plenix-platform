@@ -163,6 +163,16 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const CircleCheckIcon = { "name": "circle-check", "set": "plenix", "symbol": "check_circle", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "m428.23-349.85 224.92-223.92L616-610.92 428.23-424.15l-85-84L306.08-471l122.15 121.15ZM480.07-116q-74.84 0-141.21-28.42t-116.18-78.21q-49.81-49.79-78.25-116.13Q116-405.1 116-479.93q0-75.84 28.42-141.71t78.21-115.68q49.79-49.81 116.13-78.25Q405.1-844 479.93-844q75.84 0 141.71 28.42t115.68 78.21q49.81 49.79 78.25 115.63Q844-555.9 844-480.07q0 74.84-28.42 141.21t-78.21 116.18q-49.79 49.81-115.63 78.25Q555.9-116 480.07-116Zm-.07-52q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Zm0-312Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m428.23-349.85 224.92-223.92L616-610.92 428.23-424.15l-85-84L306.08-471l122.15 121.15ZM480.07-116q-74.84 0-141.21-28.42t-116.18-78.21q-49.81-49.79-78.25-116.13Q116-405.1 116-479.93q0-75.84 28.42-141.71t78.21-115.68q49.79-49.81 116.13-78.25Q405.1-844 479.93-844q75.84 0 141.71 28.42t115.68 78.21q49.81 49.79 78.25 115.63Q844-555.9 844-480.07q0 74.84-28.42 141.21t-78.21 116.18q-49.79 49.81-115.63 78.25Q555.9-116 480.07-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "m423.23-309.85 268.92-268.92L650-620.92 423.23-394.15l-114-114L267.08-466l156.15 156.15ZM480.07-100q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Zm-.07-60q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "m423.23-309.85 268.92-268.92L650-620.92 423.23-394.15l-114-114L267.08-466l156.15 156.15ZM480.07-100q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z" } } } };
   const CircleInfoIcon = { "name": "circle-info", "set": "plenix", "symbol": "info", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M454-298h52v-230h-52v230Zm25.79-290.46q11.94 0 20.23-8.08 8.29-8.08 8.29-20.02t-8.08-20.23q-8.08-8.28-20.02-8.28T459.98-637q-8.29 8.08-8.29 20.02t8.08 20.23q8.08 8.29 20.02 8.29Zm.55 472.46q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Zm-.34-52q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Zm0-312Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M454-298h52v-230h-52v230Zm25.79-290.46q11.94 0 20.23-8.08 8.29-8.08 8.29-20.02t-8.08-20.23q-8.08-8.28-20.02-8.28T459.98-637q-8.29 8.08-8.29 20.02t8.08 20.23q8.08 8.29 20.02 8.29Zm.55 472.46q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.42-141.25t78.21-115.68q49.79-49.81 116.09-78.25Q405.01-844 480.39-844q75.38 0 141.25 28.42t115.68 78.21q49.81 49.79 78.25 115.85Q844-555.45 844-480.34q0 75.11-28.42 141.48-28.42 66.37-78.21 116.18-49.79 49.81-115.85 78.25Q555.45-116 480.34-116Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M450-290h60v-230h-60v230Zm30-298.46q13.73 0 23.02-9.29t9.29-23.02q0-13.73-9.29-23.02-9.29-9.28-23.02-9.28t-23.02 9.28q-9.29 9.29-9.29 23.02t9.29 23.02q9.29 9.29 23.02 9.29Zm.07 488.46q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Zm-.07-60q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M450-290h60v-230h-60v230Zm30-298.46q13.73 0 23.02-9.29t9.29-23.02q0-13.73-9.29-23.02-9.29-9.28-23.02-9.28t-23.02 9.28q-9.29 9.29-9.29 23.02t9.29 23.02q9.29 9.29 23.02 9.29Zm.07 488.46q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z" } } } };
   const WarningIcon = { "name": "warning", "set": "plenix", "symbol": "warning", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M82.62-164 480-824l397.38 660H82.62ZM175-216h610L480-724 175-216Zm304.79-55.69q11.94 0 20.23-8.08 8.29-8.08 8.29-20.02t-8.08-20.23q-8.08-8.29-20.02-8.29t-20.23 8.08q-8.29 8.08-8.29 20.02t8.08 20.23q8.08 8.29 20.02 8.29ZM454-376.31h52v-192h-52v192ZM480-470Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M82.62-164 480-824l397.38 660H82.62Zm397.17-107.69q11.94 0 20.23-8.08 8.29-8.08 8.29-20.02t-8.08-20.23q-8.08-8.29-20.02-8.29t-20.23 8.08q-8.29 8.08-8.29 20.02t8.08 20.23q8.08 8.29 20.02 8.29ZM454-376.31h52v-192h-52v192Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M74.62-140 480-840l405.38 700H74.62ZM178-200h604L480-720 178-200Zm302-47.69q13.73 0 23.02-9.29t9.29-23.02q0-13.73-9.29-23.02T480-312.31q-13.73 0-23.02 9.29T447.69-280q0 13.73 9.29 23.02t23.02 9.29Zm-30-104.62h60v-200h-60v200ZM480-460Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M74.62-140 480-840l405.38 700H74.62ZM480-247.69q13.73 0 23.02-9.29t9.29-23.02q0-13.73-9.29-23.02T480-312.31q-13.73 0-23.02 9.29T447.69-280q0 13.73 9.29 23.02t23.02 9.29Zm-30-104.62h60v-200h-60v200Z" } } } };
+  const RTL_LETTER = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
+  function readsLeftToRight(children) {
+    let plain = true;
+    React2.Children.forEach(children, (c) => {
+      if (typeof c === "string" || typeof c === "number") {
+        if (RTL_LETTER.test(String(c))) plain = false;
+      } else if (c != null && typeof c !== "boolean") plain = false;
+    });
+    return plain;
+  }
   const RTL_LANGUAGES = ["ar", "arc", "ckb", "dv", "fa", "he", "iw", "ps", "sd", "syr", "ug", "ur", "yi"];
   function isRtl$2(el) {
     return !!el && typeof window !== "undefined" && window.getComputedStyle(el).direction === "rtl";
@@ -6496,7 +6506,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const shown = React2.Children.map(children, (child) => typeof child === "string" || typeof child === "number" ? kind === "id" ? pieces(child) : text2(child) : child);
     const Tag2 = as || (kind === "id" ? "span" : "bdi");
-    const own_dir = kind === "id" ? dir : dir || "ltr";
+    const own_dir = kind === "id" ? dir : dir === "auto" && readsLeftToRight(children) ? "ltr" : dir || "ltr";
     return /* @__PURE__ */ React2.createElement(Tag2, { className: cx("plx-isolate", className), dir: own_dir, ...rest }, shown);
   }
   const d0$1l = "M400-315.23 254.23-461 291-497.77l109 109 269-269L705.77-621 400-315.23Z";
@@ -7217,7 +7227,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     if (expandable && clamp2) {
       return /* @__PURE__ */ React2.createElement(ExpandableText, { As, variant, clamp: clamp2, defaultExpanded, tabular, strings, className, rest }, children);
     }
-    return /* @__PURE__ */ React2.createElement(As, { dir: "auto", className: textClass(variant, truncate, clamp2, false, tabular, className), ...rest }, shownDigits(children, digits2));
+    const dir = variant === "data" && readsLeftToRight(children) ? "ltr" : "auto";
+    return /* @__PURE__ */ React2.createElement(As, { dir, className: textClass(variant, truncate, clamp2, false, tabular, className), ...rest }, shownDigits(children, digits2));
   }
   function ExpandableText({ As, variant, clamp: clamp2, defaultExpanded, tabular, strings, className, rest, children }) {
     const own2 = useUid("plx-text");
@@ -26904,6 +26915,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
   };
+  const version$1 = "0.79.1";
   function marginOf(value) {
     if (!value || typeof document === "undefined") return "0px";
     const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
@@ -44237,9 +44249,18 @@ var Plenix = (function(exports, React2, reactDom, client) {
   exports.useUploadQueue = useUploadQueue;
   exports.useViewState = useViewState;
   exports.useVirtualizer = useVirtualizer;
+  exports.version = version$1;
   exports.waterfallSteps = waterfallSteps;
   exports.wordCloudLayout = wordCloudLayout;
   Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
   return exports;
 })({}, React, ReactDOM, ReactDOM);
 window.Plenix = Object.freeze(Object.assign({}, Plenix));
+(function () {
+  function check() {
+    var css = getComputedStyle(document.documentElement).getPropertyValue('--plx-version').trim().replace(/^["']|["']$/g, '');
+    if (css && css !== window.Plenix.version) console.warn('Plenix: the script and the stylesheet come from different releases (script ' + window.Plenix.version + ', styles ' + css + '). Load every Plenix file from the same release folder.');
+  }
+  if (typeof window.addEventListener !== 'function') return;
+  if (document.readyState === 'complete') check(); else window.addEventListener('load', check, { once: true });
+})();
