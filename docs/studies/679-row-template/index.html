@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataGrid row template study (#679)</title>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/providers/theme-boot.js"></script>
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<style>
+/* #679 study (owner, 2026-11-01): the DataGrid narrow view as several aligned rows per record, thin lines between records,
+   a vertical Divider between pieces, and one row template (title, subtitle, date, primary, secondary, tertiary).
+   Samples only: nothing here is product code. Tokens only, 4px grid, corners 4px. */
+body{background:var(--plx-sys-surface-canvas);margin:0;}
+.study{display:grid;gap:var(--plx-ref-space-40px);margin-inline:auto;max-inline-size:var(--plx-ref-size-1200px);padding:var(--plx-ref-space-32px) var(--plx-ref-space-16px);}
+.study__intro{display:grid;gap:var(--plx-ref-space-8px);max-inline-size:var(--plx-ref-size-860px);}
+.study__shot{display:grid;gap:var(--plx-ref-space-16px);inline-size:var(--plx-ref-size-860px);padding:var(--plx-ref-space-20px);background:var(--plx-sys-surface-canvas);}
+.study__shot--wide{inline-size:var(--plx-ref-size-1200px);}
+.study__head{display:grid;gap:var(--plx-ref-space-4px);}
+.study__pair{align-items:start;display:grid;gap:var(--plx-ref-space-32px);grid-template-columns:var(--plx-ref-size-400px) minmax(0,1fr);}
+.study__legend{display:grid;gap:var(--plx-ref-space-12px);margin:0;}
+.study__legend div{display:grid;gap:var(--plx-ref-space-4px);}
+.study__legend dd{margin:0;}
+
+/* the list: one surface, thin lines between records */
+.rt{background:var(--plx-sys-data-grid-surface);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-data-grid-border);border-radius:var(--plx-ref-radius-4px);overflow:hidden;}
+.rt__bar{align-items:center;background:var(--plx-sys-data-grid-header-background);border-block-end:var(--plx-sys-border-width-thin) solid var(--plx-sys-data-grid-header-bottom);display:flex;gap:var(--plx-ref-space-12px);min-block-size:var(--plx-ref-size-32px);padding-inline:var(--plx-ref-space-12px);}
+.rt__record{border-block-end:var(--plx-sys-border-width-thin) solid var(--plx-sys-data-grid-line);border-inline-start:var(--plx-sys-border-width-thick) solid transparent;column-gap:var(--plx-ref-space-8px);display:grid;grid-auto-rows:var(--plx-ref-size-24px);padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-8px) var(--plx-ref-space-4px);row-gap:0;}
+.rt__record:last-child{border-block-end:0;}
+.rt__record--selected{background:var(--plx-sys-data-grid-row-selected);border-inline-start-color:var(--plx-sys-data-grid-row-selected-bar);}
+.rt__record > *{align-items:center;display:flex;min-inline-size:0;}
+.rt__check{grid-column:check;grid-row:1;}
+.rt__menu{grid-column:menu;grid-row:1;justify-content:center;}
+.rt__record .plx-divider--vertical{align-self:stretch;}
+
+/* A: date on row 1; a Divider in every row, all on one line down the list */
+.rt--a .rt__record{grid-template-columns:[check] var(--plx-ref-size-20px) [main] minmax(0,1fr) [line] auto [end] var(--plx-ref-size-100px) [menu] var(--plx-ref-size-24px);}
+.rt--a .rt__title{grid-column:main;grid-row:1;}
+.rt--a .rt__line1{grid-column:line;grid-row:1;}
+.rt--a .rt__date{grid-column:end;grid-row:1;}
+.rt--a .rt__subtitle{grid-column:main;grid-row:2;}
+.rt--a .rt__line2{grid-column:line;grid-row:2;}
+.rt--a .rt__primary{grid-column:end / -1;grid-row:2;}
+.rt--a .rt__secondary{grid-column:main;grid-row:3;}
+.rt--a .rt__line3{grid-column:line;grid-row:3;}
+.rt--a .rt__tertiary{grid-column:end / -1;grid-row:3;}
+
+/* B: primary on row 1, subtitle alone on row 2; the date moves to row 3, Dividers only between the row-3 pieces */
+.rt--b .rt__record{grid-template-columns:[check] var(--plx-ref-size-20px) [main] minmax(0,1fr) [line] auto [mid] var(--plx-ref-size-100px) [line2] auto [end] var(--plx-ref-size-48px) [menu] var(--plx-ref-size-24px);}
+.rt--b .rt__title{grid-column:main / mid;grid-row:1;}
+.rt--b .rt__primary{grid-column:mid / menu;grid-row:1;justify-content:flex-end;}
+.rt--b .rt__subtitle{grid-column:main / -1;grid-row:2;}
+.rt--b .rt__secondary{grid-column:main;grid-row:3;}
+.rt--b .rt__line1{grid-column:line;grid-row:3;}
+.rt--b .rt__tertiary{grid-column:mid;grid-row:3;}
+.rt--b .rt__line2{grid-column:line2;grid-row:3;}
+.rt--b .rt__date{grid-column:end / -1;grid-row:3;}
+
+/* Wide: the same pieces on one row, a column each, under a header; the Dividers run the full row height, as table lines */
+.rt--wide .rt__record,.rt--wide .rt__header{align-items:stretch;column-gap:0;grid-auto-rows:auto;grid-template-columns:[check] var(--plx-ref-size-40px) [main] minmax(0,1.2fr) [line] auto [sub] minmax(0,1fr) [line2] auto [end] var(--plx-ref-size-112px) [line3] auto [primary] var(--plx-ref-size-120px) [line4] auto [secondary] minmax(0,1.3fr) [line5] auto [tertiary] var(--plx-ref-size-140px) [menu] var(--plx-ref-size-40px);padding-block:0;padding-inline:0;row-gap:0;}
+.rt--wide .rt__header{background:var(--plx-sys-data-grid-header-background);border-block-end:var(--plx-sys-border-width-thin) solid var(--plx-sys-data-grid-header-bottom);border-inline-start:var(--plx-sys-border-width-thick) solid transparent;display:grid;}
+.rt--wide .rt__header > *{align-items:center;display:flex;min-block-size:var(--plx-ref-size-32px);min-inline-size:0;}
+.rt--wide .rt__record > *,.rt--wide .rt__header > *{grid-row:1;}
+.rt--wide .rt__cell{min-block-size:var(--plx-ref-size-40px);padding-inline:var(--plx-ref-space-12px);}
+.rt--wide .rt__check{justify-content:center;}
+.rt--wide .rt__header .plx-divider--vertical{border-inline-start-color:var(--plx-sys-data-grid-header-line);}
+.rt--wide .rt__title{grid-column:main;}
+.rt--wide .rt__line1{grid-column:line;}
+.rt--wide .rt__subtitle{grid-column:sub;}
+.rt--wide .rt__line2{grid-column:line2;}
+.rt--wide .rt__date{grid-column:end;}
+.rt--wide .rt__line3{grid-column:line3;}
+.rt--wide .rt__primary{grid-column:primary;}
+.rt--wide .rt__line4{grid-column:line4;}
+.rt--wide .rt__secondary{grid-column:secondary;}
+.rt--wide .rt__line5{grid-column:line5;}
+.rt--wide .rt__tertiary{grid-column:tertiary;}
+</style>
+</head><body><div class="study" id="root"></div>
+<script>
+const h = React.createElement, P = window.Plenix;
+const { Text, Divider, Checkbox, Menu, MenuItem, Button, LocaleProvider, formatCurrency, formatDate } = P;
+
+// one record shape for every sample: title, subtitle, date, primary, secondary, tertiary
+const people = {
+  en: [
+    { title: 'Michael Hanna', subtitle: 'Deacon · Sunday School', date: '2026-10-28', amount: 1240, email: 'm.hanna@stjohn.org', phone: '(617) 555-0142' },
+    { title: 'Marina Abdel-Malik', subtitle: 'Youth servant', date: '2026-10-21', amount: 860.5, email: 'marina.am@stjohn.org', phone: '(617) 555-0187' },
+    { title: 'Peter Tawfik', subtitle: 'Church council · Treasurer', date: '2026-10-09', amount: 3150, email: 'p.tawfik@stjohn.org', phone: '(781) 555-0110' },
+    { title: 'Irene Boulos', subtitle: 'Librarian', date: '2026-09-30', amount: 420, email: 'irene.b@stjohn.org', phone: '(617) 555-0123' },
+    { title: 'Samuel Saad', subtitle: 'Choir · Hymns', date: '2026-08-17', amount: 95, email: 's.saad@stjohn.org', phone: '(508) 555-0199' },
+    { title: 'Martha Girgis', subtitle: 'New member', date: '2026-07-05', amount: 0, email: 'martha.g@stjohn.org', phone: '(617) 555-0165' },
+  ],
+  ar: [
+    { title: 'مينا حنا', subtitle: 'شماس · مدارس الأحد', date: '2026-10-28', amount: 12400, email: 'm.hanna@stjohn.org', phone: '0100 123 4567' },
+    { title: 'مارينا عبد الملك', subtitle: 'خادمة اجتماع الشباب', date: '2026-10-21', amount: 8605, email: 'marina.am@stjohn.org', phone: '0122 987 6543' },
+    { title: 'بطرس توفيق', subtitle: 'مجلس الكنيسة · أمين الصندوق', date: '2026-10-09', amount: 31500, email: 'p.tawfik@stjohn.org', phone: '0111 456 7890' },
+    { title: 'إيريني بولس', subtitle: 'أمينة المكتبة', date: '2026-09-30', amount: 4200, email: 'irene.b@stjohn.org', phone: '0155 222 3344' },
+    { title: 'صموئيل سعد', subtitle: 'الكورال · الألحان', date: '2026-08-17', amount: 950, email: 's.saad@stjohn.org', phone: '0106 333 2211' },
+  ],
+};
+const L = {
+  en: { locale: 'en-US', currency: 'USD', select: 'Select ', all: 'Select all', count: '6 members', actions: 'Row actions', open: 'Open', email: 'Send an email', remove: 'Remove' },
+  ar: { locale: 'ar-EG', currency: 'EGP', select: 'تحديد ', all: 'تحديد الكل', count: '٥ أعضاء', actions: 'إجراءات الصف', open: 'فتح', email: 'إرسال بريد', remove: 'إزالة' },
+};
+
+// the typography of each piece
+const title = (r) => h(Text, { variant: 'strong', truncate: true }, r.title);
+const subtitle = (r) => h(Text, { variant: 'secondary', truncate: true }, r.subtitle);
+const date = (r, t) => h(Text, { variant: 'secondary' }, h(Text, { variant: 'data', tabular: true }, formatDate(r.date, { locale: t.locale, dateStyle: 'short' })));
+const primary = (r, t) => h(Text, { variant: 'strong' }, h(Text, { variant: 'data', tabular: true }, formatCurrency(r.amount, t.currency, { locale: t.locale })));
+const secondary = (r) => h(Text, { variant: 'secondary', truncate: true, dir: 'ltr' }, r.email);
+// Arabic-Indic digit groups split by spaces read right to left even inside dir="ltr" (bidi rule N1); a left-to-right mark after
+// each group keeps the number in its written order
+const tertiary = (r) => h(Text, { variant: 'caption', dir: 'ltr' }, h(Text, { variant: 'data', tabular: true, dir: 'ltr' }, r.phone.replace(/ /g, '\u200E ')));
+
+const line = (cls) => h('div', { className: cls }, h(Divider, { orientation: 'vertical' }));
+const cell = (cls, child) => h('div', { className: 'rt__cell ' + cls }, child);
+const menu = (t) => h('div', { className: 'rt__menu' }, h(Menu, { label: t.actions, trigger: h(Button, { variant: 'ghost', size: 'xs', iconOnly: true, icon: 'more', label: t.actions }) },
+  h(MenuItem, { icon: 'open' }, t.open), h(MenuItem, { icon: 'mail' }, t.email), h(MenuItem, { icon: 'delete', danger: true }, t.remove)));
+const check = (r, t, on) => h('div', { className: 'rt__check' }, h(Checkbox, { 'aria-label': t.select + r.title, defaultChecked: on }));
+
+function record(r, i, t, shape) {
+  const on = i === 1;
+  const parts = [check(r, t, on),
+    cell('rt__title', title(r)), line('rt__line1'), cell('rt__date', date(r, t)),
+    cell('rt__subtitle', subtitle(r)), line('rt__line2'), cell('rt__primary', primary(r, t)),
+    cell('rt__secondary', secondary(r)), line('rt__line3'), cell('rt__tertiary', tertiary(r)), menu(t)];
+  if (shape === 'b') parts.splice(0, parts.length, check(r, t, on),
+    cell('rt__title', title(r)), cell('rt__primary', primary(r, t)), cell('rt__subtitle', subtitle(r)),
+    cell('rt__secondary', secondary(r)), line('rt__line1'), cell('rt__tertiary', tertiary(r)), line('rt__line2'), cell('rt__date', date(r, t)), menu(t));
+  if (shape === 'wide') parts.splice(0, parts.length, check(r, t, on),
+    cell('rt__title', title(r)), line('rt__line1'), cell('rt__subtitle', subtitle(r)), line('rt__line2'), cell('rt__date', date(r, t)), line('rt__line3'),
+    cell('rt__primary', primary(r, t)), line('rt__line4'), cell('rt__secondary', secondary(r)), line('rt__line5'), cell('rt__tertiary', tertiary(r)), menu(t));
+  return h('div', { key: i, role: 'row', className: 'rt__record' + (on ? ' rt__record--selected' : '') }, parts);
+}
+
+function list(lang, shape) {
+  const t = L[lang];
+  const head = shape === 'wide'
+    ? h('div', { className: 'rt__header', role: 'row' }, h('div', { className: 'rt__check' }, h(Checkbox, { 'aria-label': t.all })),
+        ...[['rt__title', 'Name'], ['rt__line1'], ['rt__subtitle', 'Role'], ['rt__line2'], ['rt__date', 'Last gift'], ['rt__line3'], ['rt__primary', 'Given in 2026'], ['rt__line4'], ['rt__secondary', 'Email'], ['rt__line5'], ['rt__tertiary', 'Phone']]
+          .map(([c, label]) => (label ? cell(c, h(Text, { variant: 'label' }, label)) : line(c))))
+    : h('div', { className: 'rt__bar' }, h(Checkbox, { 'aria-label': t.all }), h(Text, { variant: 'label' }, t.count));
+  const body = h('div', { className: 'rt rt--' + (shape === 'wide' ? 'wide' : shape), role: 'grid' }, head, people[lang].map((r, i) => record(r, i, t, shape)));
+  return lang === 'ar' ? h(LocaleProvider, { locale: 'ar-EG' }, h('div', { dir: 'rtl', lang: 'ar' }, body)) : body;
+}
+
+const legend = (rows) => h('dl', { className: 'study__legend' }, rows.map(([k, v]) => h('div', { key: k }, h(Text, { as: 'dt', variant: 'label' }, k), h(Text, { as: 'dd', variant: 'secondary' }, v))));
+const legendA = [
+  ['Row 1 · Title | Date', 'Title: body, semibold. Date: the data font, muted, at the end.'],
+  ['Row 2 · Subtitle | Primary', 'Subtitle: 12px, muted. Primary: the data font, semibold, the strongest value of the record.'],
+  ['Row 3 · Secondary | Tertiary', 'Secondary: 12px, muted. Tertiary: 11px, subtle, in the data font.'],
+  ['Lines', 'One thin vertical Divider in every row, all on one line down the list; a thin line between records.'],
+  ['Controls', 'Checkbox at the start of row 1, the row menu (…) at its end. The selected record keeps the grid’s fill and bar.'],
+];
+const legendB = [
+  ['Row 1 · Title  ·  Primary', 'The value sits beside the name, at the end, with no line.'],
+  ['Row 2 · Subtitle', 'On its own: a long role or company never gets cut early.'],
+  ['Row 3 · Secondary | Tertiary | Date', 'The three small facts share one row, with a thin Divider between each.'],
+  ['Lines', 'Dividers only in row 3; the date and the value line up at the end of every record.'],
+  ['Controls', 'As in A.'],
+];
+
+const shot = (id, heading, note, content, wide) => h('section', { id, className: 'study__shot' + (wide ? ' study__shot--wide' : '') },
+  h('div', { className: 'study__head' }, h(Text, { as: 'h2', variant: 'heading' }, heading), h(Text, { as: 'p', variant: 'secondary' }, note)), content);
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h('div', { className: 'study__intro' }, h(Text, { as: 'h1', variant: 'title' }, 'DataGrid row template (#679)'),
+    h(Text, { as: 'p', variant: 'secondary' }, 'One row template, six pieces: title, subtitle, date, primary, secondary, tertiary. Narrow, each record is two or three aligned rows; wide, the same pieces form one table row. Samples for the owner’s choice: nothing is built yet.')),
+  shot('narrow-a', 'A · Narrow (400px): date on row 1, a Divider in every row', 'Three rows per record; every piece sits on the same grid in every record.', h('div', { className: 'study__pair' }, list('en', 'a'), legend(legendA))),
+  shot('narrow-b', 'B · Narrow (400px): value on row 1, date on row 3, Dividers only in row 3', 'The same six pieces, the same grid; only the order and the lines change.', h('div', { className: 'study__pair' }, list('en', 'b'), legend(legendB))),
+  shot('wide', 'Wide (1100px): the same template as one table row', 'Each piece becomes a column in the same order; the Dividers become the column lines.', list('en', 'wide'), true),
+  shot('rtl', 'Arabic, narrow (A): right to left, Arabic-Indic digits, ar-EG dates and pounds', 'Emails stay in Latin letters and run left to right; the phone numbers stay left to right in Arabic-Indic digits.', h('div', { className: 'study__pair' }, list('ar', 'a'), legend(legendA)))
+));
+</script>
+</body></html>
