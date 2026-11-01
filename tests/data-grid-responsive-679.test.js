@@ -57,7 +57,8 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     });
     const log = () => page.evaluate(() => window.__log.slice());
     const press = async (key, n) => { for (let i = 0; i < (n || 1); i++) { await page.keyboard.press(key); await wait(40); } await wait(400); };
-    const divider = '[role=separator][aria-orientation=vertical]';
+    // the SplitView's own divider (a direct child of its first panel), never a separator inside the DataGrid (its column resize handles)
+    const divider = '.plx-split-view > .plx-split-view__panels > .plx-split-view__first > .plx-resizable__edge--divider';
 
     for (const dir of ['ltr', 'rtl']) {
       const d = dir + ': ';
