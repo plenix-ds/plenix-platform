@@ -31,6 +31,8 @@ child({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell
 child({ units: ['components/Resizable', 'components/DataGrid', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-limit.test.js');
 // a split view resizes as far as its room allows, within 90% of the window; maxSize no longer caps it (issue 873)
 child({ units: ['patterns/SplitView', 'components/Resizable', 'utils/paneLimit.ts'] }, 'splitview-resize-873.test.js');
+// narrow fit (issue 880): a DataToolbar's end summary truncates inside its row; the bottom bar's five items fit a 310px bar
+child({ units: ['patterns/DataToolbar', 'patterns/NavPane', 'components/Text', 'components/Toolbar'] }, 'narrow-fit-880.test.js');
 // the panes start wider on larger windows (issue 463, option C, step 2): when AppShell or a pane of the shell changed
 child({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-defaults.test.js');
 // the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): when AppShell or the side panel changed
