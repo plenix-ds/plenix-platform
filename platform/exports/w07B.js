@@ -1,7 +1,9 @@
 // Library part w07B (wave 7, lane B): MillerColumns, Cascader, EntityPicker (also the people picker), TimePicker,
-// RelativeDateInput, LoadMore, and the patterns ImageUpload (with ImageCrop) and AvatarUpload.
+// RelativeDateInput, LoadMore, and the patterns ImageUpload (with ImageCrop) and AvatarUpload; useBranchLoader, the branch
+// that loads when first opened, shared by Tree, TreeSelect and Cascader (issue 814).
 export { MillerColumns } from '../components/MillerColumns/MillerColumns.jsx';
 export { Cascader } from '../components/Cascader/Cascader.jsx';
+export { useBranchLoader, BranchStatus } from '../hooks/useBranchLoader.js';
 export { EntityPicker } from '../components/EntityPicker/EntityPicker.jsx';
 export { TimePicker } from '../components/TimePicker/TimePicker.jsx';
 export { parseTime } from '../components/TimePicker/TimePicker.jsx';

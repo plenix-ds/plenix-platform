@@ -7,7 +7,12 @@
      <MillerColumns label="Regions" items={regions} resizable />
    Props:
      items: the top level: [{ id, label, icon, description, children, disabled }]; an item with children (an array, empty
-       when it has none yet) is a parent and shows a chevron; an item without children is a leaf
+       when it has none yet) is a parent and shows a chevron; an item without children is a leaf; with loadChildren, an item
+       with hasChildren: true and no children array is a parent whose children load when it is first chosen
+     loadChildren(item): returns the item's children (an array or a promise of one) the first time it is chosen (issue 814,
+       useBranchLoader): its column shows a spinner and "Loading…", a failure says so with Try again, never asked twice
+     loader: a useBranchLoader result to share instead (Cascader passes its own, so its search and path see the same
+       loaded children)
      path: the chosen item of each column, by id from the left ([] for none), for a controlled view
      defaultPath: the path it starts with, uncontrolled
      onPathChange(path, item): runs when the path changes, with the item chosen last (undefined when a column is left)
@@ -32,6 +37,8 @@
        typing a letter moves to the next item that starts with it. The active item is the column's aria-activedescendant.
      Choosing a parent clears the columns to its right; the newest column scrolls into view.
      A column with no children says so (strings.empty). Long columns scroll on their own (each list is focusable).
+     A parent to load (hasChildren) is chosen like any other; its column is aria-busy and its spinner announces "Loading
+       {label}" while the children arrive; a failure is announced, and Arrow Right on the parent (or Try again) asks again.
      In a right-to-left page the columns run from the right and Arrow Left and Right swap.
    Notes:
      For narrow windows, show one level at a time instead (drilldown navigation); for a value in a form, Cascader.
@@ -46,13 +53,19 @@ import { tokenPx } from '../../patterns/AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { fill } from '../../utils/fill.ts';
+import { useBranchLoader, BranchStatus } from '../../hooks/useBranchLoader.js';
 
 const MIN_STEP = 1, MAX_STEP = 6, DEFAULT_STEP = 3;
-const hasKids = (it) => !!(it && Array.isArray(it.children));
+const EMPTY = [];
 
-export const MillerColumns = React.forwardRef(function MillerColumns({ items = [], path, defaultPath = [], onPathChange, onOpen, renderPreview,
+export const MillerColumns = React.forwardRef(function MillerColumns({ items: given = EMPTY, loadChildren, loader: shared, path, defaultPath = [], onPathChange, onOpen, renderPreview,
   checked, expandOnHover = false, openOnClick = false, resizable = false, columnWidths, onColumnWidthsChange, label, strings, className, ...rest }, ref) {
   const t = useStrings('millerColumns', strings);
+  const own = useBranchLoader(shared ? undefined : loadChildren);
+  const loader = shared || own;
+  const items = loader.merge(given);   // each loaded parent's children in place (issue 814)
+  // a parent: children here (an array, maybe empty), or children to load
+  const hasKids = (it) => !!(it && (Array.isArray(it.children) || loader.needs(it)));
   const auto = 'plx-mc' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [ownPath, setOwnPath] = React.useState(defaultPath);
   const ids = path !== undefined ? path : ownPath;
@@ -68,9 +81,11 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items = [
     const it = cols[i].items.find((x) => x.id === ids[i]);
     if (!it) break;
     chosen.push(it);
-    if (hasKids(it)) cols.push({ items: it.children, parent: it });
+    if (hasKids(it)) cols.push({ items: it.children || [], parent: it });
     else break;
   }
+  // each chosen parent that has not loaded asks for its children once
+  React.useEffect(() => { loader.ensure(chosen.filter((it) => loader.needs(it))); });
   const last = chosen[chosen.length - 1];
   const preview = renderPreview && last && !hasKids(last) ? last : null;
 
@@ -112,7 +127,8 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items = [
       if (!here) { e.preventDefault(); choose(level, usable[0]); return; }
       if (hasKids(here)) {
         e.preventDefault();
-        const first = enabled(here.children)[0];
+        if (loader.needs(here) && loader.statusOf(here) === 'failed') loader.retry(here);   // a parent that failed to load asks again
+        const first = enabled(here.children || [])[0];
         if (first) { setPath(chosen.slice(0, level + 1).map((x) => x.id).concat([first.id]), first); }
         focusList(level + 1);
       }
@@ -160,6 +176,7 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items = [
           <React.Fragment key={level + '-' + (col.parent ? col.parent.id : 'root')}>
             <div ref={(el) => { columns.current[level] = el; }} className="plx-miller-columns__column" data-plx-width={widthOf(level)}>
               <ul ref={(el) => { lists.current[level] = el; }} className="plx-miller-columns__list" role="listbox" tabIndex={0} aria-label={name}
+                aria-busy={col.parent && loader.needs(col.parent) && loader.statusOf(col.parent) !== 'failed' ? true : undefined}
                 aria-activedescendant={here ? optId(level, here.id) : undefined} onKeyDown={onKey(level)}
                 onFocus={() => { if (!here && col.items.length) choose(level, enabled(col.items)[0]); }}>
                 {col.items.length ? col.items.map((it) => {
@@ -182,7 +199,9 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items = [
                       {parent ? <span className="plx-miller-columns__chevron" aria-hidden="true"><Icon icon={ChevronRightIcon} filled={false} /></span> : null}
                     </li>
                   );
-                }) : <li className="plx-miller-columns__empty" role="presentation">{t.empty}</li>}
+                }) : col.parent && loader.needs(col.parent)
+                  ? <li className="plx-miller-columns__empty" role="presentation"><BranchStatus loader={loader} node={col.parent} className="plx-miller-columns__status" /></li>
+                  : <li className="plx-miller-columns__empty" role="presentation">{t.empty}</li>}
               </ul>
             </div>
             {resizable ? <div className="plx-miller-columns__resizer" role="separator" aria-orientation="vertical" tabIndex={0} aria-label={fill(t.resize, { label: name })}

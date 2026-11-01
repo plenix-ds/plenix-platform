@@ -244,6 +244,13 @@ export default {
     "title": "Navigation",
     "close": "Close"
   },
+  "branch": {
+    "loading": "Loading…",
+    "loadingName": "Loading {label}",
+    "failed": "Couldn’t load these items",
+    "failedName": "Couldn’t load {label}",
+    "retry": "Try again"
+  },
   "brand": {
     "name": "Plenix"
   },

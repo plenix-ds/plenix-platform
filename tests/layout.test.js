@@ -96,6 +96,8 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 // platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
 // a date with no time is that calendar day in every time zone (issue 342)
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
+// a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)
+child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.js'] }, 'branch-loader-814.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
 child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.js'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)

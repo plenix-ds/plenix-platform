@@ -7,7 +7,10 @@
      <Cascader options={regions} searchable value={v} onChange={setV} label="Office" />
      <Cascader options={regions} multiple values={offices} onChange={setOffices} label="Offices" />
    Props:
-     options: the hierarchy: [{ id, label, children, disabled }] (MillerColumns' items); only leaves can be chosen
+     options: the hierarchy: [{ id, label, children, disabled }] (MillerColumns' items); only leaves can be chosen;
+       hasChildren: true marks a parent whose children load when it is first opened (with loadChildren)
+     loadChildren(option): returns the parent's children (an array or a promise of one) the first time it opens (issue 814,
+       useBranchLoader, shared with its columns): its column shows a spinner and "Loading…", a failure Try again
      value: the chosen leaf's id, for a single choice; onChange(id, path) runs with it and its path of ids
      values: the chosen leaves' ids, with multiple; onChange(ids) runs with the new array
      multiple: several leaves, each a checkbox in the columns; the field shows them as tags (default false)
@@ -34,6 +37,9 @@
      With searchable the search field is first in the list: typing lists every leaf whose name matches, with its path,
        as one listbox (Arrow Down and Up move, Enter chooses); the number of matches is announced; clearing it brings the
        columns back.
+     A parent to load is opened like any other (click, hover, Arrow Right); search lists the leaves loaded so far and never
+       loads a parent by itself; the field shows a chosen leaf's path once its parents are loaded (pass the chosen path's
+       options loaded).
      The path in the field and in each match uses strings.separator; a path too long for the field ends in an ellipsis; the
        whole path is read as the field’s description.
    Notes:
@@ -48,6 +54,7 @@ import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
+import { useBranchLoader } from '../../hooks/useBranchLoader.js';
 
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { formatNumber } from '../../utils/format.ts';
@@ -58,13 +65,17 @@ import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 // every leaf of the hierarchy with its path of items
 // the columns of the list take the narrowest width step (160px), so three levels fit under a form field
 const NARROW = [1, 1, 1, 1, 1, 1];
-const leavesOf = (items, trail = []) => items.reduce((all, it) => (Array.isArray(it.children)
-  ? all.concat(leavesOf(it.children, trail.concat([it]))) : all.concat([{ item: it, trail: trail.concat([it]) }])), []);
-const pathTo = (items, id) => { const hit = leavesOf(items).find((l) => l.item.id === id); return hit ? hit.trail : null; };
+// (a parent still to load, pending, is neither: it has no leaves yet and is never one)
+const leavesOf = (items, trail = [], pending = () => false) => items.reduce((all, it) => (Array.isArray(it.children)
+  ? all.concat(leavesOf(it.children, trail.concat([it]), pending)) : pending(it) ? all : all.concat([{ item: it, trail: trail.concat([it]) }])), []);
+const EMPTY = [];
 
-export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
+export const Cascader = React.forwardRef(function Cascader({ options: given = EMPTY, loadChildren, value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
   placeholder, label, invalid, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('cascader', strings);
+  const loader = useBranchLoader(loadChildren);
+  const options = loader.merge(given);   // each loaded parent's children in place (issue 814), shared with the columns
+  const pathTo = (items, leafId) => { const hit = leavesOf(items, [], loader.needs).find((l) => l.item.id === leafId); return hit ? hit.trail : null; };
   const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const describedAt = useDescribedBy(auto + '-value', describedBy);   // the chosen value first, then what its owner (a Field) described
@@ -102,7 +113,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   }, [open]);
 
   const q = text.trim().toLowerCase();
-  const matches = q ? leavesOf(options).filter((l) => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q) >= 0) : [];
+  const matches = q ? leavesOf(options, [], loader.needs).filter((l) => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q) >= 0) : [];
   React.useEffect(() => { setActive(0); if (q) announce(typeof t.results === 'function' ? t.results(matches.length) : loc.t('cascader.results', { count: matches.length, n: formatNumber(matches.length) })); }, [q]);
 
   const pick = (item, trail) => {
@@ -158,7 +169,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
             </ul>
           ) : (
             <div ref={cols}>
-              <MillerColumns className="plx-cascader__columns" label={label || t.columns} items={options} path={browse} expandOnHover={expandTrigger === 'hover'}
+              <MillerColumns className="plx-cascader__columns" label={label || t.columns} items={options} loader={loader} path={browse} expandOnHover={expandTrigger === 'hover'}
                 checked={multiple ? chosen : undefined} strings={{ empty: t.empty }}
                 openOnClick columnWidths={NARROW} onPathChange={(p) => setBrowse(p)} onOpen={(item) => pick(item, pathTo(options, item.id) || [item])} />
             </div>

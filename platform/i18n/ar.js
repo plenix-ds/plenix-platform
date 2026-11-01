@@ -206,6 +206,13 @@ export default {
       "upca": "UPC-A"
     }
   },
+  "branch": {
+    "loading": "جارٍ التحميل…",
+    "loadingName": "جارٍ تحميل {label}",
+    "failed": "تعذّر تحميل هذه العناصر",
+    "failedName": "تعذّر تحميل {label}",
+    "retry": "إعادة المحاولة"
+  },
   "brand": {
     "name": "Plenix"
   },
