@@ -47,7 +47,7 @@ export const CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'mag
 export const fieldOf = (fields: Field[], key: unknown): Field => fields.find((f) => f.value === key) || fields[0];
 export const valueOf = (f: Field, row: object): unknown => (f.get ? f.get(row) : (row as Record<string, unknown>)[f.value]);
 export const kindOf = (f: Field | null | undefined): string => (OPERATORS[(f && f.kind) as string] ? f!.kind as string : 'text');
-// a field as a choice in a panel's field menu: its key, its name and its kind's icon (FilterPanel, SortPanel, GroupPanel; one copy, #882)
+// a field as a choice in a panel's field menu: its key, its name and its kind's icon (FilterPanel, SortPanel, GroupPanel; one copy, issue 882)
 export const fieldOption = (f: Field) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f) as keyof typeof KIND_ICONS] });
 // a field's options, each with its color (given, or the next category color)
 export const optionsOf = (f: Field | null | undefined): FieldOption[] => ((f && f.options) || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o: FieldOption, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));

@@ -5,7 +5,7 @@
    Props: fillNodes(template, values): a placeholder whose value is undefined stays as written.
    Notes: Shared by TeachingBubble and RetryNotice (issue 693: one copy of the same function in each).
      around(text, key, node) (below) puts one element in place of one {key}, for Auth, ConnectedAccounts, RoleManager and
-     SessionTimeout (#882). */
+     SessionTimeout (issue 882). */
 import React from 'react';
 import { Text } from '../components/Text/Text.tsx';
 
@@ -21,5 +21,5 @@ export const fillNodes = (template: string, values: Record<string, React.ReactNo
 
 // one {key} placeholder of a catalog text replaced by an element (a link, a button, a field): the words before it, the
 // element, the words after it; without the placeholder the text alone. Shared by Auth, ConnectedAccounts, RoleManager and
-// SessionTimeout (one copy, #882)
+// SessionTimeout (one copy, issue 882)
 export const around = (s: unknown, key: string, node: React.ReactNode) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };

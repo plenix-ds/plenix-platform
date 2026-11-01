@@ -126,7 +126,7 @@ export function useToast() {
   return api;
 }
 
-// a toast when the page has a ToastProvider; nothing otherwise (DataGrid, ReviewFlow and the flows built on it; one copy, #882)
+// a toast when the page has a ToastProvider; nothing otherwise (DataGrid, ReviewFlow and the flows built on it; one copy, issue 882)
 export function useOptionalToast() {
   try { return useToast(); } catch (e) { return null; }
 }
