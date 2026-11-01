@@ -12,7 +12,9 @@
      data: true forces the technical-value font on the field, false keeps the interface font; when not set, a chosen option whose label is wholly
        a number, a date or another technical value ("10", "Oct 25, 2026") shows in the data font, as a Select does
      size: "sm" | "md" (default): "sm" uses the existing toolbar control height; "md" keeps the standard field; multiple values can grow.
-     options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
+     options: the choices: [{ value, label, group, icon, description }]; options with a group are listed under its heading, in the order the groups first appear;
+       icon (an icon name) shows before the label and description is a second line under it (as EntityPicker's options do; the label and the description
+       are both searched); no other drawing of the row
      value: a string or a number: the chosen value, for a single choice
      values: an array: the chosen values, with multiple
      onChange(value): runs with the chosen value; with multiple it runs with the new array of values
@@ -26,6 +28,10 @@
      readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
        default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on
      emptyText: a string: the text when nothing matches (default "No matches")
+     emptyAction: { label, onSelect(text), icon }: one action below "No matches" (for example "Add new"): a row the arrow keys reach and Enter
+       or a click chooses; onSelect runs with the typed text and the list closes. Only when nothing matches (not while loading or after a failed load)
+     clearable: a Clear button at the end of the field, shown while there is text or a chosen value: it empties the text and the chosen values
+       (onChange with '' or, with multiple, []) and returns focus to the field, as SearchField's does (default false; not in a read-only or disabled field)
      loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
        the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
      loadDelay: the pause after typing before loadOptions runs, in milliseconds (default 300; 0 when the field is empty)
@@ -33,7 +39,7 @@
      loading: shows the loading row whatever loadOptions does (for options the caller loads itself) (default false)
      marks: a mark before each option: "checkbox" (several, with multiple) | "radio" (one choice) | none (default)
      strings: the words it shows and announces, for other languages: { loading: "Loading…", error: "The options could not
-       be loaded", results: (n) => n + " options" } (results is announced after each load)
+       be loaded", clear: "Clear", results: (n) => n + " options" } (results is announced after each load)
      id: the id of the input (a Field sets it)
      className: more classes on the combobox
      ref: forwarded to the <input>
@@ -65,6 +71,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
+import { Button } from '../Button/Button.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
@@ -76,10 +83,11 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.ts';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 
 export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate, width,
-  placeholder, label, invalid, disabled, readOnly: readOnlyOwn, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
+  placeholder, label, invalid, disabled, readOnly: readOnlyOwn, emptyText, emptyAction, clearable = false, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
   className, id, size, data, ...rest }, ref) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows; the list does not open, nothing is chosen, created or removed
   const t = useStrings('combobox', strings), words = t;
@@ -130,12 +138,14 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)
   const tags = multiple && !marks;
   const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
-  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
+  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || String(o.label).toLowerCase().indexOf(q) >= 0 || (o.description && String(o.description).toLowerCase().indexOf(q) >= 0));
   // grouped options stay together under their group's heading (groups in the order they first appear)
   const groupOrder = []; matching.forEach((o) => { if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group); });
   const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
   const canCreate = creatable && q && !isLoading && !(async ? loaded : options).some((o) => String(o.label).toLowerCase() === q);
-  const items = filtered.map((o) => ({ kind: 'option', o })).concat(canCreate ? [{ kind: 'create' }] : []);
+  // nothing matches: the empty text, and under it the one action the caller offers (it is an item, so the keys reach it)
+  const noMatch = !isLoading && !failed && !filtered.length && !canCreate, showAction = noMatch && !!emptyAction;
+  const items = filtered.map((o) => ({ kind: 'option', o })).concat(canCreate ? [{ kind: 'create' }] : []).concat(showAction ? [{ kind: 'action' }] : []);
   React.useEffect(() => {
     if (!open) return undefined;
     const off = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
@@ -147,6 +157,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const choose = (item) => {
     if (!item || locked) return;
     if (item.kind === 'create') { if (onCreate) onCreate(text.trim()); setText(''); return; }
+    if (item.kind === 'action') { const typed = text.trim(); setText(''); setOpen(false); if (emptyAction.onSelect) emptyAction.onSelect(typed); return; }
     const v = item.o.value;
     if (tags) { if (chosen.indexOf(v) < 0) onChange(chosen.concat([v])); setText(''); }
     else if (multiple) { onChange(chosen.indexOf(v) >= 0 ? chosen.filter((x) => x !== v) : chosen.concat([v])); setText(''); }
@@ -161,6 +172,8 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
     else if (e.key === 'Escape') { if (open) { e.preventDefault(); setOpen(false); } }
     else if (e.key === 'Backspace' && multiple && !text && chosen.length) { onChange(chosen.slice(0, -1)); }
   };
+  const clear = () => { if (locked || disabled) return; setText(''); onChange(multiple ? [] : ''); if (input.current) input.current.focus(); };
+  const canClear = clearable && !locked && !disabled && (chosen.length > 0 || !!text);
   const optId = (i) => auto + '-o' + i;
   // a single choice whose label is cut (the box is narrower than it, issue 558): its full text goes in a Tooltip on hover and focus. While the list is
   // open the field shows the typed text, so the cut measured while it was closed stays; the Tooltip then sits above the field, clear of the list
@@ -180,11 +193,16 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={locked ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={words.removeItem.replace('{label}', t)}>{t}</Tag>; }) : null}
         {multiple ? field : <Tooltip content={label1} disabled={!cut} describe={false} placement={open ? 'top' : 'bottom'} className="plx-combobox__tip">{field}</Tooltip>}
+        {canClear ? <Button variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.clear} className="plx-combobox__clear" onMouseDown={(e) => e.preventDefault()} onClick={clear} /> : null}
         <span className="plx-combobox__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       </div>
       {open ? (
         <ul ref={list} className="plx-combobox__list" id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-multiselectable={multiple || undefined} aria-busy={isLoading || undefined}>
-          {items.length ? items.map((it, i) => it.kind === 'create'
+          {items.length ? [showAction ? <li key="empty" className="plx-combobox__empty" role="presentation">{emptyText}</li> : null].concat(items.map((it, i) => it.kind === 'action'
+            ? <li key="action" id={optId(i)} role="option" aria-selected={false} className={cx('plx-combobox__option', 'plx-combobox__action', i === active && 'is-active')}
+                onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
+                {emptyAction.icon ? <span className="plx-combobox__option-icon" aria-hidden="true"><Icon name={emptyAction.icon} /></span> : null}{emptyAction.label}</li>
+            : it.kind === 'create'
             ? <li key="create" id={optId(i)} role="option" aria-selected={false} className={cx('plx-combobox__option', 'plx-combobox__create', i === active && 'is-active')}
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>Create “{text.trim()}”</li>
             : [it.o.group && (i === 0 || !items[i - 1].o || items[i - 1].o.group !== it.o.group) ? <li key={'g-' + it.o.group} className="plx-combobox__group" role="presentation">{it.o.group}</li> : null,
@@ -193,7 +211,8 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
                 {marks ? <input type={marks === 'radio' ? 'radio' : 'checkbox'} className="plx-check__input plx-combobox__mark" tabIndex={-1} aria-hidden="true"
                   checked={chosen.indexOf(it.o.value) >= 0} readOnly /> : null}
-                {marks ? <span className="plx-combobox__option-label">{it.o.label}</span> : it.o.label}</li>])
+                {it.o.icon ? <span className="plx-combobox__option-icon" aria-hidden="true"><Icon name={it.o.icon} /></span> : null}
+                {marks || it.o.description ? <span className="plx-combobox__option-text"><span className="plx-combobox__option-label">{it.o.label}</span>{it.o.description ? <span className="plx-combobox__option-description">{it.o.description}</span> : null}</span> : it.o.label}</li>]))
             : isLoading ? <li className="plx-combobox__loading" role="presentation"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></li>
             : failed ? <li className="plx-combobox__empty plx-combobox__error" role="presentation">{t.error}</li>
             : <li className="plx-combobox__empty" role="presentation">{emptyText}</li>}
