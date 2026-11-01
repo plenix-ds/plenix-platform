@@ -46,12 +46,16 @@
        label, down to show more and up to show less.
      Writing direction (owner, ctm-needs-34): the element is dir="auto" (its first strong letter decides); dir="rtl" or "ltr" and
        lang override it, for text in the other direction than the page (an Arabic question in an English page).
+     Data (issue 838): a data value with no letter of a right-to-left script (a phone number, an IBAN, a date, a version) is dir="ltr" and a left-to-right
+       island (unicode-bidi: isolate-override, as Isolate), so its spaced digit groups keep their order in an Arabic page; with an Arabic letter in it the
+       element stays dir="auto". An explicit dir="ltr" is an island too.
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { Button } from '../Button/Button.tsx';
+import { readsLeftToRight } from '../../utils/direction.ts';
 import { useStrings, useDigits } from '../../providers/LocaleProvider.tsx';
 import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { localDigits } from '../../utils/digits.ts';
@@ -86,7 +90,9 @@ export function Text({ as: As = 'span', variant = 'body', truncate = false, line
   if (expandable && clamp) {
     return <ExpandableText As={As} variant={variant} clamp={clamp} defaultExpanded={defaultExpanded} tabular={tabular} strings={strings} className={className} rest={rest}>{children}</ExpandableText>;
   }
-  return <As dir="auto" className={textClass(variant, truncate, clamp, false, tabular, className)} {...rest}>{shownDigits(children, digits)}</As>;
+  // a data value with no letter of a right-to-left script is a left-to-right island: its spaced digit groups keep their order in an Arabic page (issue 838)
+  const dir = variant === 'data' && readsLeftToRight(children) ? 'ltr' : 'auto';
+  return <As dir={dir} className={textClass(variant, truncate, clamp, false, tabular, className)} {...rest}>{shownDigits(children, digits)}</As>;
 }
 
 // a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
