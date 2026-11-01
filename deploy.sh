@@ -4,8 +4,11 @@
 #   design-system.lighthouseway.org  -> /Plenix/platform/design-system/
 #     /cdn/<version>/  the release's CDN files (kept for good: a published version never changes)
 #     /api/v1/         the read-only JSON API (replaced on every deploy)
-# The deployed apps run on the release, not on the source: their pages load the Platform from /cdn/<version>/ (the version
-# in package.json), so a broken release shows in our own apps first. Platform changes reach them only through a new version.
+# The deployed apps run on a release, not on the source (#842): each page loads only the page loader
+# (platform/loader/loader.js), which reads /cdn/latest.json once and loads every Plenix file of the page, the app's own
+# script included, from one /cdn/<version>/ folder: the app's pin if the owner set one (tools/cdn-pin.sh), else the latest
+# release. Each deploy makes this version the latest and keeps the pins. Platform changes reach the apps only through a
+# new version, and a broken release shows in our own apps first.
 # Both names serve /srv/plenix/www on the publish host (Nginx, site file /etc/nginx/sites-available/plenix); the reverse
 # proxy gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
 # The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study, docs/page-headers, and the DataGrid studies docs/grid-header-study, docs/grid-row-hover-study, docs/grid-row-selection-study) are published too, at /Plenix/docs/<study>/.
@@ -22,6 +25,11 @@ if [ -n "$(git status --porcelain)" ]; then echo "STOPPED: the working tree has 
 node check-system.js >/dev/null 2>&1 || { echo "check-system failed: fix it before publishing"; exit 1; }
 node build-packages.js >/dev/null || { echo "build-packages failed: run node build-packages.js"; exit 1; }
 VERSION=$(node -p "require('./package.json').version")
+# the release holds every app's own files (#842: apps/<app>/), since the page loader loads them from it
+node -e "
+const fs = require('fs'), { pages } = require('./check-system.rules/one-source.js'), dir = 'release/cdn/$VERSION/apps/';
+const missing = [...new Set(pages().map((p) => p.app))].map((a) => dir + a + '/' + (a === 'dam' ? 'assets.js' : 'app.js')).concat(dir + 'suite/plenix-app-data.js').filter((f) => !fs.existsSync(f));
+if (missing.length) { console.log('STOPPED: the release lacks app files: ' + missing.join(', ') + '. Run node build-packages.js, then deploy again.'); process.exit(1); }" || exit 1
 # the design spec runs on this release from the CDN (platform/design-system/plenix-source.js): it must name this version
 [ ! -f platform/design-system/plenix-source.js ] || grep -q "var VERSION = '$VERSION'" platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
 # the Material Symbols library, shared by every release (the Icon component loads a Material name from it): copied once per pinned commit
@@ -69,13 +77,10 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
     fi
     rm -f /tmp/plenix-cdn-diff.txt
   fi
-  # the apps load the released Platform (the same four files other projects use) instead of the source
-  CDN=https://design-system.lighthouseway.org/cdn/$VERSION
+  # the apps load Plenix from the CDN (#842): the page loader reads /cdn/latest.json (the app's pin, else the latest
+  # release) and loads every file from that one release; if latest.json cannot be read, this release
   for f in /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html; do
-    sudo sed -i -e \"s|<link rel=\\\"stylesheet\\\" href=\\\"../platform/platform.css\\\">|<link rel=\\\"stylesheet\\\" href=\\\"\$CDN/plenix.css\\\">|\" \
-      -e \"s|<script src=\\\"../platform/providers/theme-boot.js\\\"></script>|<script src=\\\"\$CDN/theme-boot.js\\\"></script>|\" \
-      -e \"s|<script src=\\\"../platform/vendor/react-loader.js\\\"></script>|<script src=\\\"\$CDN/vendor/react.production.min.js\\\"></script><script src=\\\"\$CDN/vendor/react-dom.production.min.js\\\"></script>|\" \
-      -e \"s|<script src=\\\"../platform/dist/platform.js\\\"></script>|<script src=\\\"\$CDN/plenix.js\\\"></script>|\" \"\$f\"
+    sudo sed -i -e 's|<script src=\"../platform/loader/loader.js\" data-plenix-app=\"\\([a-z]*\\)\">|<script src=\"../platform/loader/loader.js\" data-plenix-app=\"\\1\" data-plenix-cdn=\"https://design-system.lighthouseway.org/cdn/\" data-plenix-fallback=\"$VERSION\">|' \"\$f\"
   done
   # live app pages leave out the development audits and open the connection to the CDN first thing (batch 237)
   for f in /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html; do
@@ -92,16 +97,20 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
     sudo sed -i \"s|href=\\\"../../platform/platform.css\\\"|href=\\\"../../platform/dist/platform.bundle.css?v=\$B\\\"|\" \"\$f\"
   done
   grep -l platform.bundle.css /srv/plenix/www.new/Plenix/docs/*/*.html | wc -l | xargs -I{} echo 'Study pages on one stylesheet: {}'
-  # every app page points at the release (#842): a page left on the source copy would mix versions
+  # every app page loads Plenix from the CDN through the loader, and nothing from the source copy (#842): a page left on
+  # the source copy, or naming a release of its own, would mix versions
   pages=\$(ls /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | sort -u)
   total=\$(echo \"\$pages\" | wc -l)
-  pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" \$pages | wc -l)
-  if [ \"\$pinned\" != \"\$total\" ]; then
-    echo \"STOPPED: \$pinned of \$total app pages point at release $VERSION. These do not:\"; grep -L \"cdn/$VERSION/plenix.js\" \$pages
-    echo 'Fix the page so it loads the Platform exactly as the other app pages do (the four rewrites above), then deploy again. Nothing was changed on the site.'
+  onCdn=\$(grep -l 'data-plenix-cdn=\"https://design-system.lighthouseway.org/cdn/\" data-plenix-fallback=\"$VERSION\"' \$pages | wc -l)
+  mixed=\$(grep -l -E '(src|href)=\"[^\"]*(\.\./platform/(dist|vendor|providers|engines|system|fonts|dev)/|\.\./platform/platform\.css|/cdn/[0-9]|plenix-icons-|plenix-app-data|app\.js|app/assets\.js)' \$pages || true)
+  if [ \"\$onCdn\" != \"\$total\" ] || [ -n \"\$mixed\" ]; then
+    echo \"STOPPED: \$onCdn of \$total app pages load Plenix through the loader from the CDN.\"
+    grep -L 'data-plenix-fallback=\"$VERSION\"' \$pages | sed 's|^|  no loader on the CDN: |'
+    for m in \$mixed; do echo \"  loads a Plenix file itself: \$m\"; done
+    echo 'Put the page on the page loader (check-system rule one-source), then deploy again. Nothing was changed on the site.'
     sudo rm -rf /srv/plenix/www.new; exit 1
   fi
-  echo \"Apps on release $VERSION: \$pinned of \$total pages\"
+  echo \"Apps on the page loader, CDN latest.json, fallback $VERSION: \$onCdn of \$total pages\"
   # every check passed: the API, the Material library and the CDN version go live, then the site is swapped
   # the API is replaced; a CDN version is added once and never overwritten
   sudo rm -rf /srv/plenix/api.new && sudo mv /srv/plenix/www.new/Plenix/release/api /srv/plenix/api.new
@@ -111,6 +120,9 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
   if [ -d /srv/plenix/cdn/$VERSION ]; then echo 'CDN $VERSION is already published, and this build is identical to it: kept as it was'
   else sudo mv /srv/plenix/www.new/Plenix/release/cdn/$VERSION /srv/plenix/cdn/$VERSION; echo 'CDN $VERSION published'; fi
   sudo rm -rf /srv/plenix/www.new/Plenix/release
+  # /cdn/latest.json (#842): this release is the latest; the owner's pins (tools/cdn-pin.sh) are kept
+  sudo python3 -c 'import json,os,sys; p=\"/srv/plenix/cdn/latest.json\"; old=json.load(open(p)) if os.path.exists(p) else {}; json.dump({\"latest\": sys.argv[1], \"pins\": old.get(\"pins\", {})}, open(p + \".new\", \"w\"), indent=1); os.chmod(p + \".new\", 0o644); os.replace(p + \".new\", p)' $VERSION
+  echo \"CDN latest.json: latest $VERSION, pins \$(python3 -c 'import json; print(json.load(open(\"/srv/plenix/cdn/latest.json\"))[\"pins\"] or \"none\")')\"
   ls /srv/plenix/cdn | grep -E '^[0-9]+[.][0-9]+[.][0-9]+' | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null
   # /version.json on each site (owner, version-json-33): name, version, commit and time only. Each name serves its own
   # folder (the header above): plenix.lighthouseway.org is Plenix/dashboard/, design-system.lighthouseway.org is Plenix/platform/design-system/
