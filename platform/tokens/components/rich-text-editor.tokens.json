@@ -230,6 +230,11 @@
       "$value": "{plx-comp.link-focus-outline-width}",
       "$type": "dimension",
       "$description": "RichTextEditor image: the width of a selected image's outline (the focus outline width)."
+    },
+    "rich-text-editor-warning-border-color": {
+      "$value": "{plx-comp.input-warning-border-color}",
+      "$type": "color",
+      "$description": "RichTextEditor: the border of an editor with a warning."
     }
   }
 }

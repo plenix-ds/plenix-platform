@@ -18,6 +18,7 @@ const MAP = path.join(ROOT, 'platform', 'system', 'layers.json');
 // a sheet that may hold unlayered rules, and why
 const UNLAYERED = {
   'services/auth/brand.css': 'pasted into Authentik, whose own CSS is unlayered: a layer would lose to it, so it wins by specificity (no !important)',
+  'platform/loader/loader.css': 'the page loader\'s one rule (issue 842), linked before plenix.css: a layer named here would be the first layer the page declares and so come before Plenix\'s own order statement; unlayered, it changes no layer order',
 };
 const SKIP_DIR = /^(node_modules|\.git|vendor|dist|design-system|exports|docs|tests|release|packages|dev)$/;
 

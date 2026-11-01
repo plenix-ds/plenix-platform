@@ -56,7 +56,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { arrowStep } from '../../utils/direction.ts';
 import { formatLocale, numeralLocale } from '../../utils/format.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

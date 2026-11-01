@@ -1,0 +1,14 @@
+{
+  "$description": "DataGrid row template (issue 839): the card layouts A and B and the wide row. Existing roles only; no new color.",
+  "plx-comp": {
+    "data-grid-template-line-height": { "$value": "{plx-ref.size-24px}", "$type": "dimension", "$description": "The height of one line of a template record." },
+    "data-grid-template-gap": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "The space between the pieces of a template record." },
+    "data-grid-template-end-width": { "$value": "{plx-ref.size-100px}", "$type": "dimension", "$description": "Layout A: the width of the column that holds the date, the primary and the tertiary value." },
+    "data-grid-template-b-end-width": { "$value": "{plx-ref.size-96px}", "$type": "dimension", "$description": "Layout B: the width of the date." },
+    "data-grid-template-b-mid-width": { "$value": "{plx-ref.size-112px}", "$type": "dimension", "$description": "Layout B: the width of the tertiary value; the primary value sits above it and the date." },
+    "data-grid-template-divider-color": { "$value": "{plx-sys.data-grid-line}", "$type": "color", "$description": "The vertical line between the pieces of a template record." },
+    "data-grid-template-muted-text": { "$value": "{plx-sys.data-grid-text-muted}", "$type": "color", "$description": "Subtitle, secondary and date text." },
+    "data-grid-template-subtle-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Tertiary text." },
+    "data-grid-template-title-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Title and primary value weight." }
+  }
+}

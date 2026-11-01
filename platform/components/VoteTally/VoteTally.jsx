@@ -42,9 +42,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { Badge } from '../Badge/Badge.jsx';
-import { Button } from '../Button/Button.jsx';
-import { Text } from '../Text/Text.jsx';
+import { Badge } from '../Badge/Badge.tsx';
+import { Button } from '../Button/Button.tsx';
+import { Text } from '../Text/Text.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';

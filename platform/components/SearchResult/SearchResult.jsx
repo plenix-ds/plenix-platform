@@ -56,13 +56,13 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { Thumbnail } from '../Thumbnail/Thumbnail.jsx';
-import { SectionHeading } from '../SectionHeading/SectionHeading.jsx';
-import { Count } from '../Count/Count.jsx';
-import { Link } from '../Link/Link.jsx';
-import { Button } from '../Button/Button.jsx';
+import { SectionHeading } from '../SectionHeading/SectionHeading.tsx';
+import { Count } from '../Count/Count.tsx';
+import { Link } from '../Link/Link.tsx';
+import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';

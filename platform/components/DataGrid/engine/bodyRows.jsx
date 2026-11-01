@@ -20,11 +20,11 @@ import { words, kinds, interactive, typeOf, typeIcons, cellDirection } from './h
 import { valueText, CellValue } from '../cells.jsx';
 import { groupKeys, rowKeys, cellKeys } from './keys.js';
 import { Width, RowTarget, Check, CellEditor, CustomCell, RowMenuContent } from './parts.jsx';
-import { Icon } from '../../Icon/Icon.jsx';
+import { Icon } from '../../Icon/Icon.tsx';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import { formatNumber } from '../../../utils/format.ts';
-import { Button } from '../../Button/Button.jsx';
+import { Button } from '../../Button/Button.tsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 import { valueAt } from '../state.js';
 import { Menu, MenuItem, ContextMenu } from '../../Menu/Menu.jsx';
@@ -75,6 +75,7 @@ export function bodyRows({
   emit,
   setOwnOpen,
   focusCell,
+  cellRange,
   pickCheckbox,
   kindsOf,
   pinStart,
@@ -229,6 +230,11 @@ export function bodyRows({
       );
     const rowApi = api.row(row.id),
       record = row.original;
+    // a row template (issue 839): a card (A or B, narrow) draws only the columns that fill a slot, each placed in the card's grid; wide keeps every column of the table
+    const tpl = props.rowTemplate,
+      card = !!tpl && isNarrow && tpl.layout !== 'wide',
+      slotted = !!tpl && (card || tpl.layout === 'wide'),
+      cellList = card ? ordered.filter((column) => tpl.keep.has(column.id)) : ordered;
     const step = !isStatic && !isNarrow ? effectiveStep : undefined,
       sized = step != null,
       lines = sized && step !== 'short',
@@ -267,6 +273,8 @@ export function bodyRows({
           isStatic && B + '__grid-row--static',
           anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap',
           isNarrow && B + '__grid-row--narrow',
+          card && B + '__grid-row--template ' + B + '__grid-row--template-' + tpl.layout.toLowerCase(),
+          slotted && !card && B + '__grid-row--template-wide',
           virtualized && B + '__grid-row--virtual',
           row === model[0] && B + '__grid-row--first'
         )}
@@ -292,6 +300,7 @@ export function bodyRows({
           <div
             className={cx(
               `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
+              card && B + '__grid-cell--template-check',
               leadFrozen && B + '__grid-frozen',
               modes,
               selection[row.id] && B + '__grid-cell--selected-start'
@@ -305,7 +314,7 @@ export function bodyRows({
             />
           </div>
         ) : null}
-        {ordered.map((column) => {
+        {cellList.map((column) => {
           const c = column.columnDef.meta,
             k = kindsOf(c),
             pinned = column.getIsPinned() === 'left',
@@ -318,7 +327,7 @@ export function bodyRows({
             handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
             actions = k.includes('actions');
           // in the row card (narrow, #679) every visible field that is not a key value shows as a labeled detail
-          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes('icon');
+          const detail = isNarrow && !tpl && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes('icon');
           const mods =
               cx(
                 isStatic && B + '__value--static',
@@ -338,6 +347,8 @@ export function bodyRows({
               icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
               mods,
             }); // a pill carries a type icon only when it says something (a date, a number)
+          // a cell inside the selected block (the option cellSelection): its place in the block, null outside it or without the option
+          const inRange = cellRange.rect ? cellRange.cellClasses(cellRange.rowAt.get(row.id), ordered.indexOf(column)) : null;
           const bare =
             !isEditing &&
             !handled &&
@@ -365,6 +376,8 @@ export function bodyRows({
                     onPointerLeave: () => leaveCut(row.id + '|' + c.field),
                   }
                 : null)}
+              aria-selected={inRange ? true : undefined}
+              onMouseDown={cellRange.enabled ? (e) => { if (!e.target.closest(interactive)) cellRange.press({ e, row, c, focusCell }); } : undefined}
               // a card's lines line up at the card's start edge in both directions (#679), so a card cell takes the grid's
               // direction; a table cell keeps its value's own direction (dir="auto")
               dir={(pinned && !isStatic) || kinds(c).includes('id') || isNarrow ? undefined : 'auto'}
@@ -383,6 +396,8 @@ export function bodyRows({
                 column,
                 frame,
                 focusCell,
+                cellRange,
+                kept: card ? tpl.keep : undefined,
               })}
               data-plx-sticky={pinned && sticky ? sticky + 'px' : undefined}
               data-plx-label={detail ? c.title || c.field : undefined}
@@ -391,11 +406,11 @@ export function bodyRows({
               className={cx(
                 '' + B + '__grid-cell',
                 modes,
-                !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start',
+                !selectable && marked(row.id) && cellList.indexOf(column) === 0 && B + '__grid-cell--selected-start',
                 bare && B + '__grid-cell--bare',
-                selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead',
-                ordered.indexOf(column) > 0 &&
-                  ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' &&
+                selectable && cellList.indexOf(column) === 0 && B + '__grid-cell--after-lead',
+                cellList.indexOf(column) > 0 &&
+                  cellList[cellList.indexOf(column) - 1].getIsPinned() === 'left' &&
                   column.getIsPinned() !== 'left' &&
                   B + '__grid-cell--after-frozen',
                 isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth),
@@ -407,11 +422,18 @@ export function bodyRows({
                   .some((level) => (typeof level === 'object' ? level.field : level) === c.field) &&
                   B + '__cell--grouped',
                 c.type === 'bytes' && B + '__cell--data',
+                inRange && B + '__grid-cell--range',
+                inRange && inRange.top && B + '__grid-cell--range-top',
+                inRange && inRange.bottom && B + '__grid-cell--range-bottom',
+                inRange && inRange.start && B + '__grid-cell--range-start',
+                inRange && inRange.end && B + '__grid-cell--range-end',
                 c.rowHandle && B + '__cell--handle',
                 childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell',
                 pinned && '' + B + '__grid-frozen',
                 (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label',
                 k.includes('icon') && B + '__w-lead',
+                slotted && tpl.slotOf[c.field] && B + '__cell--slot ' + B + '__cell--slot-' + tpl.slotOf[c.field],
+                card && tpl.slotOf[c.field] && B + '__cell--place-' + tpl.layout.toLowerCase() + '-' + tpl.slotOf[c.field],
                 keys.includes(c.field) && B + '__cell--key',
                 detail && B + '__cell--list-detail',
                 keys[0] === c.field && B + '__cell--key-first',
@@ -521,7 +543,7 @@ export function bodyRows({
         })}
         {props.viewMenu ? <div className={cx(`${B}__grid-cell ${B}__w-view`, modes)} role="gridcell" /> : null}
         {rowMenu && rowMenuButton ? (
-          <Width width={metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, modes)} role="gridcell">
+          <Width width={metrics.menu} className={cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + '__grid-cell--template-menu', modes)} role="gridcell">
             <Menu
               label={S.rowActions}
               trigger={

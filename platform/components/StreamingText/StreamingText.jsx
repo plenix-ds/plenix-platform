@@ -11,9 +11,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { LiveRegion } from '../../utils/announce.tsx';
-import { Stack } from '../Stack/Stack.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Badge } from '../Badge/Badge.jsx';
+import { Stack } from '../Stack/Stack.tsx';
+import { Text } from '../Text/Text.tsx';
+import { Badge } from '../Badge/Badge.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function StreamingText({text='',state='done',announce=true,strings,className}){

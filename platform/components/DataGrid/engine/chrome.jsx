@@ -1,10 +1,11 @@
 /* Plenix · DataGrid engine · chrome (the parts around the rows)
-   Summary: What the grid draws besides its header cells and rows: the manage-columns dialog, the failure state with Retry, the view
+   Summary: What the grid draws besides its header cells and rows: the failure state with Retry, the line shown when the
+     manage-columns dialog could not load (the dialog itself is in chromeRare.jsx, loaded on first use), the view
      menu at the end of the header (row height and wrapped headers), the empty and loading row, the "more rows are coming or failed"
      row of a fill grid, and the footers of the paged and load-more modes (range, page size, pagination, Load more). Render
      functions over the engine's state, not components: one element tree, no extra React layer.
    Usage:
-     import { manageDialog, failureState, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
+     import { failureState, manageFailed, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
      {viewMenu({ props, B, S, effectiveStep, effectiveWrap, setRowHeight, setWrapHeaders })}
    Props:
      Each function takes the engine's values it draws from (the block class B, the strings S, props, the table, the model, the paging
@@ -13,46 +14,17 @@
      Moved out of DataGridEngine.jsx without any change to the code (issue 714, the toolbar and menus): each part is the same
      element as it was inline in the engine's return, in the same place.
 */
-import { ManageColumnsDialog } from '../../../patterns/ColumnsMenu/ColumnsMenu.jsx';
-import { EmptyState } from '../../EmptyState/EmptyState.jsx';
-import { Button } from '../../Button/Button.jsx';
+import React from 'react';
+import { EmptyState } from '../../EmptyState/EmptyState.tsx';
+import { Button } from '../../Button/Button.tsx';
 import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
 import { Menu, MenuItem, MenuDivider } from '../../Menu/Menu.jsx';
 import { cx } from '../../../utils/cx.ts';
-import { Inline } from '../../Stack/Stack.jsx';
+import { Inline } from '../../Stack/Stack.tsx';
 import { words } from './helpers.jsx';
-import { Text } from '../../Text/Text.jsx';
+import { Text } from '../../Text/Text.tsx';
 import { Select } from '../../Input/Input.jsx';
 import { Pagination } from '../../Pagination/Pagination.jsx';
-
-export function manageDialog({
-  headerMenu,
-  isStatic,
-  managing,
-  setManaging,
-  chooserColumns,
-  changeOrder,
-  changeVisibility,
-}) {
-  return headerMenu && !isStatic && managing ? (
-    <ManageColumnsDialog
-      trigger={null}
-      open={managing}
-      onOpenChange={setManaging}
-      fields={chooserColumns().map((col) => ({ value: col.id, label: col.columnDef.meta.title || col.id }))}
-      value={{
-        order: chooserColumns().map((col) => col.id),
-        hidden: chooserColumns()
-          .filter((col) => !col.getIsVisible())
-          .map((col) => col.id),
-      }}
-      onChange={(next) => {
-        changeOrder(next.order);
-        changeVisibility(Object.fromEntries((next.hidden || []).map((field) => [field, false])));
-      }}
-    />
-  ) : null;
-}
 
 export function failureState({ failed, B, S, onRetry, remoteError, setRetry }) {
   return failed ? (
@@ -77,6 +49,30 @@ export function failureState({ failed, B, S, onRetry, remoteError, setRetry }) {
       {String(failed === true ? '' : failed.message || failed)}
     </EmptyState>
   ) : null;
+}
+
+// drawn in place of the manage-columns dialog when its file could not load (issue 807): Retry loads it again, Close ends the request
+// and returns focus to where "Manage columns" was chosen (the header menu's trigger or the column header), or to the grid if that is gone
+export function manageFailed({ B, S, retry, close, from, frame }) {
+  const closeAndReturn = () => {
+    const back =
+      from && from !== document.body && from.isConnected
+        ? from
+        : frame.current && frame.current.querySelector('[tabindex="0"]');
+    close();
+    if (back && back.focus) back.focus();
+  };
+  return (
+    <Inline role="alert">
+      <span className={B + '__empty'}>{S.columnsFailed}</span>
+      <Button size="sm" onClick={retry}>
+        {S.retry}
+      </Button>
+      <Button size="sm" variant="ghost" onClick={closeAndReturn}>
+        {S.close}
+      </Button>
+    </Inline>
+  );
 }
 
 export function viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders }) {

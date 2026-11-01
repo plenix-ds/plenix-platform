@@ -27,6 +27,7 @@
        short centered count: carts, copies, seats)
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
      invalid: the danger border and aria-invalid (a Field with an error sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: turns the field and its buttons off
      readOnly: the value can be read and copied, not changed; the buttons turn off; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the field (a Field sets it)
@@ -51,7 +52,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.ts';
 import { Input } from '../Input/Input.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
@@ -59,7 +60,7 @@ import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 
 const decimalsOf = (n) => { const s = String(n); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; };
-const SPACES = /[\s  ]/g;
+const SPACES = /[\s\u00A0\u202F]/g;
 
 // the locale's marks: group, decimal and minus, read from its own formatter
 function marks(locale) {
@@ -74,7 +75,7 @@ function parseNumber(text, locale) {
   let s = String(text == null ? '' : text).replace(SPACES, '');
   if (!s) return null;
   if (m.group.replace(SPACES, '')) s = s.split(m.group).join('');
-  s = s.split(m.decimal).join('.').split(m.minus).join('-').replace(/−/g, '-');
+  s = s.split(m.decimal).join('.').split(m.minus).join('-').replace(/\u2212/g, '-');
   return /^-?(\d+\.?\d*|\.\d+)$/.test(s) ? Number(s) : NaN;
 }
 
@@ -93,7 +94,7 @@ function affix(format, currency, display, locale) {
 }
 
 export const NumberInput = React.forwardRef(function NumberInput({ value, defaultValue = null, onChange, min, max, step = 1, bigStep = 10, decimals,
-  format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, disabled, readOnly: readOnlyOwn, required, id,
+  format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, warning, disabled, readOnly: readOnlyOwn, required, id,
   'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }, ref) {
   const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the step buttons and the keys follow either
   const t = useStrings('numberInput', strings);
@@ -155,7 +156,7 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
     <InputGroup className={cx('plx-number-input', stepper !== 'none' && 'plx-number-input--' + stepper, className)} width={quantity ? undefined : width} compact={quantity} data
       prefix={aff && aff.before ? aff.text : undefined} suffix={aff && !aff.before ? aff.text : unit || undefined}
       start={quantity ? minus : undefined} end={quantity ? plus : stepper === 'buttons' ? [minus, plus] : undefined}
-      invalid={invalid} disabled={disabled} readOnly={readOnly} required={required} id={id} aria-describedby={describedBy}>
+      invalid={invalid} warning={warning} disabled={disabled} readOnly={readOnly} required={required} id={id} aria-describedby={describedBy}>
       <Input ref={ref} data role="spinbutton" inputMode={places === 0 || (decimalsOf(step) === 0 && places === undefined && format !== 'currency') ? 'numeric' : 'decimal'}
         autoComplete="off" value={text} onChange={typed} onKeyDown={keys} onFocus={focused} onBlur={left}
         aria-valuenow={num == null ? undefined : num} aria-valuemin={min} aria-valuemax={max} aria-valuetext={full} {...rest} />

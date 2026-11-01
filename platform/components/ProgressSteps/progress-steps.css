@@ -1,4 +1,4 @@
-/* Plenix · ProgressSteps (platform/components/ProgressSteps). Anatomy and API: ProgressSteps.jsx. Each step is a head (the
+/* Plenix · ProgressSteps (platform/components/ProgressSteps). Anatomy and API: ProgressSteps.tsx. Each step is a head (the
    marker and the name), an optional second line, and the connector to the next step: beside it in a row (horizontal: the
    connector grows to share the row) or under it (vertical: down the middle of the marker column). The step's state sets
    its marker, its name and the connector after it. The compact form is the Step 2 of 5 text over a bar of segments. */

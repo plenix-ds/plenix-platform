@@ -23,7 +23,7 @@ const MARK = /plx-icons:\s*([a-z0-9_\- ]+)/;
 let parser = null;
 function parse(code, rel = '') {
   if (!parser) parser = require('@babel/standalone');
-  return parser.transform(code, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: /\.ts$/.test(rel) ? ['typescript'] : /\.tsx$/.test(rel) ? ['jsx', 'typescript'] : ['jsx'] } }).ast;
+  return parser.transform(code, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: /\.[mc]?ts$/.test(rel) ? ['typescript'] : /\.tsx$/.test(rel) ? ['jsx', 'typescript'] : ['jsx'] } }).ast;
 }
 const jsxName = (n) => (!n ? '' : n.type === 'JSXIdentifier' ? n.name : n.type === 'JSXMemberExpression' ? jsxName(n.object) + '.' + n.property.name : '');
 const exprName = (n) => (!n ? '' : n.type === 'Identifier' ? n.name : n.type === 'MemberExpression' && !n.computed ? exprName(n.object) + '.' + n.property.name : '');
@@ -105,6 +105,8 @@ function scanText(text, rel, report, opts = {}) {
   function value(v, at, depth = 0) {
     if (!v || depth > 30) return;
     switch (v.type) {
+      // TypeScript's wrappers around a value change its type, not its value: 'folder' as const, x!, <T>x, x satisfies T (issue 682)
+      case 'TSAsExpression': case 'TSSatisfiesExpression': case 'TSNonNullExpression': case 'TSTypeAssertion': case 'TSInstantiationExpression': value(v.expression, at, depth + 1); return;
       case 'StringLiteral': report.name(v.value, where(at), v, rel); return;
       case 'TemplateLiteral': if (!v.expressions.length) { report.name(v.quasis[0].value.cooked, where(at), v, rel); return; } break;
       case 'ConditionalExpression': value(v.consequent, at, depth + 1); value(v.alternate, at, depth + 1); return;
@@ -206,7 +208,7 @@ function scan(root, folders, { names, withIcon = false }) {
   for (const folder of folders) for (const f of files(path.join(root, folder))) if (!/[\\/]components[\\/]Icon[\\/]/.test(f)) scanFile(f, path.relative(root, f).split(path.sep).join('/'), report);
   // the Icon component itself: its icon slots and tables (StatusIcon's tone icons), not the returns of its resolver
   // functions (resolveIcon, asIcon, stateIcon: they pass on what they are given)
-  if (withIcon && folders.includes('platform/components')) { const f = path.join(root, 'platform', 'components', 'Icon', 'Icon.jsx'); if (fs.existsSync(f)) scanFile(f, 'platform/components/Icon/Icon.jsx', report, { fnReturns: false }); }
+  if (withIcon && folders.includes('platform/components')) { const f = path.join(root, 'platform', 'components', 'Icon', 'Icon.tsx'); if (fs.existsSync(f)) scanFile(f, 'platform/components/Icon/Icon.tsx', report, { fnReturns: false }); }
   return { found, unresolved, unknown, literals: [...literals.values()] };
 }
 

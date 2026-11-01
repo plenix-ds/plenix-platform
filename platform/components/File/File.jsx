@@ -40,8 +40,8 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatBytes, formatDate, formatNumber } from '../../utils/format.ts';
-import { Icon } from '../Icon/Icon.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { development } from '../../utils/devWarn.ts';
 import CodeIcon from 'plenix-platform/icons/plenix/code';

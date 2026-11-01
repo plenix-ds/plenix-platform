@@ -12,6 +12,7 @@
 const EXEMPT_FILES = {
   'platform/platform.css': 'the Platform\'s one stylesheet: it imports the foundations, components and patterns that sites use',
   'platform/plenix-system.css': 'the Platform\'s foundations stylesheet (tokens, theme, layout layers)',
+  'platform/loader/loader.css': 'the page loader\'s one rule hides the page until plenix.css arrives; it must load before Plenix (issue 842)',
   'docs/font-study/playground.css': 'a published study page (deploy.sh publishes it); the owner decides',
   'docs/reading-pane-study/study.css': 'a published study page (deploy.sh publishes it); the owner decides',
   'services/auth/brand.css': 'generated from the tokens by services/auth/brand-css.js and pasted into the SSO service, whose custom CSS field cannot import the release (issue 365); removed at the login cutover; owner decision pending (#381)',
