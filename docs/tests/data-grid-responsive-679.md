@@ -22,7 +22,7 @@ A table shows as a full table while it fits its space and turns into readable ro
 - The npm and release-page step of 0.79.0 waited on this fix (owner decision on #679, 2026-11-01).
 
 ## How it checks
-- Opens `tests/fixtures/platform-host.html` in headless Chrome and draws a SplitView whose first panel holds a DataGrid with five 160px columns, selection, a row menu and an action column.
+- Opens `tests/fixtures/platform-host.html` in headless Chrome and draws a SplitView whose first panel (up to 1200px wide by its maxSize; the default limit is 720px) holds a DataGrid with five 160px columns, selection, a row menu and an action column.
 - Moves the divider with the keyboard, reads the grid's mode, its sideways overflow and each card's parts, clicks and presses keys, and records what the app receives.
 
 ## What a failure means

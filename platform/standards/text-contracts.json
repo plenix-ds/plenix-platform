@@ -2983,6 +2983,11 @@
     "line-height"
    ]
   },
+  "plx-table__grid-cell--narrow": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
+  },
   "plx-table__grid-col-content--icon": {
    "contract": "adjusts",
    "props": [

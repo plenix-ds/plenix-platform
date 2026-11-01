@@ -23,7 +23,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   try {
     browser = await launch(); const errors = [];
     const page = await browser.newPage(); page.on('pageerror', (e) => errors.push(e.message));
-    await page.setViewport({ width: 1400, height: 900 });
+    await page.setViewport({ width: 1600, height: 900 });
     await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.Plenix && window.ReactDOM, { timeout: 60000 });
     const draw = (opts) => page.evaluate(async (opts) => {
@@ -37,7 +37,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
         { field: 'act', title: 'Actions', kind: 'actions', width: 120, render: (r) => h(P.Button, { size: 'xs', onClick: () => window.__log.push('act ' + r.id) }, 'Act') }];
       function App() {
         const [sel, setSel] = React.useState([]), [open, setOpen] = React.useState(null);
-        return h(P.SplitView, { label: 'Layout', firstLabel: 'List', defaultSize: opts.size, first: h(P.DataGrid, { label: 'Records', data, columns, index: 'id', selectable: true, selected: sel, narrow: opts.narrow,
+        return h(P.SplitView, { label: 'Layout', firstLabel: 'List', defaultSize: opts.size, maxSize: 1200, first: h(P.DataGrid, { label: 'Records', data, columns, index: 'id', selectable: true, selected: sel, narrow: opts.narrow,
           onSelectionChange: (keys) => { window.__log.push('select ' + keys.join(',')); setSel(keys); }, openKey: open, onRowClick: (r) => { window.__log.push('open ' + r.id); setOpen(r.id); },
           rowMenu: [{ label: 'Rename', onSelect: (r) => window.__log.push('rename ' + r.id) }] }), second: h('p', null, open || 'Nothing open') });
       }
@@ -61,7 +61,9 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
     for (const dir of ['ltr', 'rtl']) {
       const d = dir + ': ';
-      // wide: the columns (5 x 160 + 120 + the selection and row menu columns) fit a 1100px panel
+      // wide: the columns (5 x 160 + 120 + the selection and row menu columns, about 1,000px) fit a 1100px panel. SplitView limits
+      // its first panel to 360-720px side by side unless maxSize says more, so the fixture passes maxSize 1200; the 1600px
+      // viewport leaves room for it (the panels, less the 8px gap and the second panel's 320px minimum, about 1240px)
       await draw({ dir, size: 1100 });
       let s = await state();
       assert.equal(s.cards, false, d + 'wide panel: a table');
@@ -71,7 +73,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       await sortName(); await wait(300); await sortName(); await wait(300);
       const sortedFirst = (await state()).first;
       await page.click('.plx-data-grid__grid-row input[type=checkbox]'); await wait(200);
-      // the divider moved by the keyboard (Home: its minimum) so the columns no longer fit
+      // the divider moved by the keyboard (Home: its minimum, 360px) so the columns (about 1,000px) no longer fit
       await page.focus(divider); await press('Home');
       s = await state();
       assert.equal(s.cards, true, d + 'a narrow pane (the columns do not fit): the row cards');
@@ -93,7 +95,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       await page.evaluate(() => { window.__log = []; const r = document.querySelectorAll('.plx-data-grid__grid-row')[2]; r.focus(); });
       await press('Enter');
       assert.ok((await log()).some((l) => l.startsWith('open ')), d + 'Enter on a card opens the row');
-      // back across the threshold
+      // back across the threshold (End: maxSize, 1200px, above the columns' 1,000px)
       await page.focus(divider); await press('End');
       s = await state();
       assert.equal(s.cards, false, d + 'the divider dragged back: the table again');
