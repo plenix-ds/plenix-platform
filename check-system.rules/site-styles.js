@@ -15,6 +15,7 @@ const EXEMPT_FILES = {
   'platform/loader/loader.css': 'the page loader\'s one rule hides the page until plenix.css arrives; it must load before Plenix (issue 842)',
   'docs/font-study/playground.css': 'a published study page (deploy.sh publishes it); the owner decides',
   'docs/reading-pane-study/study.css': 'a published study page (deploy.sh publishes it); the owner decides',
+  'docs/dashboard-study/dashboard-spec.css': 'a published study page (deploy.sh publishes it; the dashboard study, #861); the owner decides',
   'services/auth/brand.css': 'generated from the tokens by services/auth/brand-css.js and pasted into the SSO service, whose custom CSS field cannot import the release (issue 365); removed at the login cutover; owner decision pending (#381)',
 };
 // markup exempt from the style-block and style-attribute scan (path from the site's own folder; the St. John site is read beside this repository)
@@ -36,7 +37,7 @@ const EXEMPT_PREFIXES = {
   'packages/': 'built packages (generated)',
 };
 // Everything else under platform/ (the design spec is a submodule, not tracked here; dev/, brand/, vendor/ and the rest) holds no sheet: a
-// new folder or file there fails until it is added to a list on purpose. The published studies in docs/ have only the two files above.
+// new folder or file there fails until it is added to a list on purpose. The published studies in docs/ have only the three files above.
 // The design spec (platform/design-system) is its own repository and project (a submodule: its 60 sheets are a separate plan, #381).
 // Alone: node check-system.rules/site-styles.js     -> SITE_STYLES_OK, or the findings and exit 1
 const fs = require('fs');

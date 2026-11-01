@@ -104,6 +104,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 ### Languages and right to left
 
 - [arabic-catalog-427](arabic-catalog-427.md): This test makes sure every word Plenix writes on its own (buttons, labels, messages) has an Arabic translation, so Arabic pages do not show stray English.
+- [branch-loader-814](branch-loader-814.md): This test makes sure a big folder or category list opens at once, because each branch loads only when someone opens it, with a loading state and a retry after a failure.
 - [date-only](date-only.md): This test makes sure a date with no time, such as a due date of October 18, shows as October 18 for everyone, wherever they are in the world.
 - [picker-timezone-813](picker-timezone-813.md): This test makes sure the date and time pickers show and save dates and times in the app's time zone, so a team in several countries sees the same thing.
 - [formats](formats.md): This test makes sure numbers, dates, times, money, sizes, names, addresses and phone numbers are written the same correct way everywhere in Plenix, for American and German readers.
