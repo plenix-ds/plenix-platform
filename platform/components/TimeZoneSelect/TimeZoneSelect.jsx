@@ -19,6 +19,7 @@
      placeholder: the hint in the empty field (default "Choose a time zone")
      label: the accessible name when there is no Field
      invalid: shows the invalid state
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      readOnly: shows the chosen zone and does not open the list or change it; default the nearest ReadOnly region's (useReadOnly)
      disabled: the field cannot be used
      locale: the language of the zone names (default the page's language)
@@ -96,7 +97,7 @@ const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs
   return [fold(o.offset), sign + h, sign + String(h).padStart(2, '0'), sign + h + ':' + String(m).padStart(2, '0'), 'utc' + sign + h, 'gmt' + sign + h].join(' '); };
 
 export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, onChange, grouped = true, showOffset = true, zones, date, placeholder,
-  label, invalid, disabled, readOnly, locale, strings, id, className, ...rest }, ref) {
+  label, invalid, warning, disabled, readOnly, locale, strings, id, className, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
   const t = useStrings('timeZoneSelect', strings);
   const loc = useLocale();
@@ -163,7 +164,7 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
   };
   return (
     <div ref={wrap} className={cx('plx-combobox', 'plx-time-zone-select', open && 'is-open', disabled && 'is-disabled', className)}>
-      <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined}>
+      <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}>
         <input ref={input} id={id} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
           aria-activedescendant={open && shown[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
           aria-description={current && showOffset ? localDigits(current.offset, { digits }) : undefined}
