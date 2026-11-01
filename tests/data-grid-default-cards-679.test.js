@@ -3,6 +3,8 @@
 // Written first (proof first): on the code before the change a grid without `layout` drew the old plain cards (label and value stacked), so the template lines below fail there and pass after it.
 // The owner's two choices are constants here, so the test follows his answer: DEFAULT_LAYOUT ("A" or "B": the layout of a grid that names none) and EXTRA ("details": a column no slot
 // takes stays as a labeled detail under the card's last line; "hidden": it is not drawn in the card, as with an explicit layout).
+// The card is drawn as the owner's approved sample (the study of PR #837): a bar over the cards with the select-all checkbox and the count, no line beside the checkbox, one vertical line per
+//   line, the row menu's dots 28px with a 20px icon, the values the columns' own cells show (their render), the primary value the strongest.
 // Cases, in left to right and right to left: a narrow grid with no layout (narrow "auto") draws template cards in the default layout with the slots filled by the fixed rule; a wide grid is the
 //   table it was (no template class on any row, and the key classes of the old cards still on its cells); keyColumns become title, subtitle and primary; layout "B" and layout "A" override the
 //   default; layout "plain" is the old plain card (every other field a labeled detail); narrow="table" keeps a table at a narrow width; a grid whose fields all fit the slots draws no extra cell;
@@ -26,19 +28,20 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
     for (const dir of ['ltr', 'rtl']) {
       const T = dir + ': ';
       // six columns that fill the slots (name, role, date, amount, email, phone), or eight (notes and team are the extras)
-      const mount = async (width, extra, wide8, table) => {
+      const mount = async (width, extra, wide8, table, formatted) => {
         await page.setViewport({ width: width + 40, height: 600 });
-        await page.evaluate(async (dir, width, extra, wide8, table) => {
+        await page.evaluate(async (dir, width, extra, wide8, table, formatted) => {
           window.__root && window.__root.unmount(); document.documentElement.setAttribute('dir', dir); document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
           document.querySelector('main').innerHTML = '<div id="c"></div>'; const h = React.createElement;
           const data = [1, 2, 3].map((i) => ({ id: 'r' + i, name: 'Person ' + i, role: 'Role ' + i, seen: '2026-10-0' + i, amount: i * 100, email: 'p' + i + '@x.org', phone: '555-010' + i, notes: 'Note ' + i, team: 'Team ' + i }));
           const six = [{ title: 'Name', field: 'name' }, { title: 'Role', field: 'role' }, { title: 'Last seen', field: 'seen', type: 'date' }, { title: 'Amount', field: 'amount', type: 'number' }, { title: 'Email', field: 'email' }, { title: 'Phone', field: 'phone' }];
+          if (formatted) { six[2] = Object.assign({}, six[2], { render: (r) => 'Oct ' + r.seen.slice(-2) }); six[3] = Object.assign({}, six[3], { render: (r) => '$' + r.amount + '.00' }); }
           const columns = wide8 ? six.concat([{ title: 'Notes', field: 'notes' }, { title: 'Team', field: 'team' }]) : six;
           const Grid = table ? Plenix.Table : Plenix.DataGrid;
           window.__root = ReactDOM.createRoot(document.getElementById('c'));
           window.__root.render(h('div', { style: { width, height: 480 } }, h(Grid, Object.assign({ label: 'People', data, columns, selectable: !table, rowMenu: table ? undefined : [{ label: 'Open', onSelect() {} }] }, extra))));
           await new Promise((r) => setTimeout(r, 1200));
-        }, dir, width, extra, wide8, table);
+        }, dir, width, extra, wide8, table, formatted);
       };
       // the slot of each drawn cell of the first record, its line (top) and which fields are drawn; plus the row's classes and the labeled details
       const shape = () => page.evaluate(() => {
@@ -78,6 +81,30 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       });
       await check(T + 'the static Table keeps its own plain list', async () => {
         await mount(NARROW, {}, false, true); const s = await shape(); assert.ok(!/template/.test(s.cls), s.cls);
+      });
+      await check(T + 'the card shows the values the columns\' own cells show (their render), not the raw data', async () => {
+        await mount(NARROW, {}, false, false, true);
+        const t = await page.evaluate(() => [...document.querySelector('[role=row][data-plx-record]').querySelectorAll('[data-plx-field="seen"], [data-plx-field="amount"]')].map((e) => e.textContent.trim()));
+        assert.deepEqual(t, ['Oct 01', '$100.00']);
+      });
+      await check(T + 'a bar over the cards holds the select-all checkbox and the count of records; no line sits beside the checkbox', async () => {
+        await mount(NARROW, {});
+        const bar = await page.evaluate(() => { const h = document.querySelector('.plx-data-grid__grid-header'), r = h.getBoundingClientRect(), c = h.querySelector('.plx-data-grid__card-count'), k = h.querySelector('input[type=checkbox]'), lead = h.querySelector('.plx-data-grid__grid-row-header'), row = document.querySelector('[role=row][data-plx-record] .plx-data-grid__grid-row-header');
+          return { shown: r.height > 20, count: c && c.textContent.trim(), checkbox: !!k, headerCells: h.querySelectorAll('[role=columnheader]').length, afterBar: getComputedStyle(lead, '::after').content, afterRow: getComputedStyle(row, '::after').content }; });
+        assert.ok(bar.shown); assert.equal(bar.count, '3 records'); assert.ok(bar.checkbox); assert.equal(bar.headerCells, 1, 'only the select-all cell, no column headers');
+        assert.equal(bar.afterBar, 'none'); assert.equal(bar.afterRow, 'none');
+      });
+      await check(T + 'the row menu button is 28px with a 20px icon, and the select-all in the bar selects every record', async () => {
+        await mount(NARROW, {});
+        const m = await page.evaluate(() => { const b = document.querySelector('[role=row][data-plx-record] .plx-data-grid__cell--row-menu [aria-haspopup]').getBoundingClientRect(), i = document.querySelector('[role=row][data-plx-record] .plx-data-grid__cell--row-menu .plx-icon').getBoundingClientRect(); return [Math.round(b.width), Math.round(b.height), Math.round(i.width)]; });
+        assert.deepEqual(m, [28, 28, 20]);
+        await page.evaluate(() => document.querySelector('.plx-data-grid__grid-header input[type=checkbox]').click()); await wait(250);
+        assert.equal(await page.evaluate(() => document.querySelectorAll('[role=row][data-plx-record][aria-selected=true]').length), 3);
+      });
+      await check(T + 'one vertical line per line, all at the same distance from the start, and the title column is as wide as the rest allows', async () => {
+        await mount(NARROW, {}); const s = await shape();
+        const x = await page.evaluate(() => { const row = document.querySelector('[role=row][data-plx-record]'), r = row.getBoundingClientRect(), rtl = document.documentElement.dir === 'rtl'; return ['date', 'primary', 'tertiary'].map((k) => { const b = row.querySelector('.plx-data-grid__cell--slot-' + k).getBoundingClientRect(); return Math.round(rtl ? r.right - b.right : b.left - r.left); }); });
+        assert.equal(x[0], x[1]); assert.equal(x[1], x[2]); assert.ok(s.slot.title.top < s.slot.subtitle.top);
       });
       await check(T + 'in the default card a click selects, an arrow moves, Shift + F10 opens the row menu', async () => {
         await mount(NARROW, {});

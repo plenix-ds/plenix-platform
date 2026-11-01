@@ -3836,6 +3836,7 @@
   "plx-data-grid__cell--slot-title": {
    "contract": "adjusts",
    "props": [
+    "font-size",
     "font-weight"
    ]
   },
@@ -3869,7 +3870,6 @@
    "role": "body",
    "font": "mono",
    "adjusts": [
-    "font-size",
     "font-weight",
     "line-height"
    ]
@@ -3885,6 +3885,7 @@
   "plx-table__cell--slot-title": {
    "contract": "adjusts",
    "props": [
+    "font-size",
     "font-weight"
    ]
   },
@@ -3918,7 +3919,6 @@
    "role": "body",
    "font": "mono",
    "adjusts": [
-    "font-size",
     "font-weight",
     "line-height"
    ]
@@ -3930,6 +3930,32 @@
    "adjusts": [
     "line-height"
    ]
+  },
+  "plx-data-grid__cell--detail-line": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-data-grid__card-count": {
+   "contract": "establishes",
+   "role": "label",
+   "font": "sans"
+  },
+  "plx-table__cell--detail-line": {
+   "contract": "establishes",
+   "role": "secondary",
+   "font": "sans",
+   "adjusts": [
+    "line-height"
+   ]
+  },
+  "plx-table__card-count": {
+   "contract": "establishes",
+   "role": "label",
+   "font": "sans"
   }
  }
 }

@@ -314,6 +314,14 @@ export default {
     "all": "الكل"
   },
   "dataGrid": {
+    "cardCount": {
+      "zero": "لا توجد سجلات",
+      "one": "سجل واحد",
+      "two": "سجلان",
+      "few": "{n} سجلات",
+      "many": "{n} سجلًا",
+      "other": "{n} سجل"
+    },
     "cellsSelected": {
       "zero": "لا توجد خلايا محددة",
       "one": "خلية واحدة محددة",
