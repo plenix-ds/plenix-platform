@@ -1868,6 +1868,11 @@
     "line-height"
    ]
   },
+  "plx-menu": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
+  },
   "plx-menu__group-label": {
    "contract": "adjusts",
    "props": [
@@ -1878,7 +1883,8 @@
   "plx-menu__item": {
    "contract": "adjusts",
    "props": [
-    "font-size"
+    "font-size",
+    "line-height"
    ]
   },
   "plx-metric-card__change": {
