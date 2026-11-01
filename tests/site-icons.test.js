@@ -172,6 +172,17 @@ check('Generator: with literals, a quoted Plenix name in data is registered and 
   assert.deepStrictEqual(run(wide.text).registered.map((m) => m.name), ['trash']);
   assert.deepStrictEqual(wide.unknown, []);
 });
+check('Generator: TypeScript source is read like JavaScript: .ts, .tsx, .mts and .cts #682', () => {
+  write('ts/a.ts', 'const label: string = "x"; export const A = { icon: "folder" as const, label };\n');
+  write('ts/b.tsx', 'export const B = (p: { n: string }) => <Icon name="mail" aria-label={p.n} />;\n');
+  write('ts/c.mts', 'export const C: Record<string, string> = { icon: "search" };\n');
+  write('ts/d.cts', 'const D = <const T extends string>(x: T): T => x;\nmodule.exports = { icon: "trash", D };\n');
+  const r = tool(['tsdemo', 'ts', '--out', 'out']);
+  assert.strictEqual(r.code, 0, r.out);
+  const { registered } = run(fs.readFileSync(path.join(tmp, 'out', 'plenix-icons-tsdemo.js'), 'utf8'));
+  assert.deepStrictEqual(registered.map((m) => m.set + ':' + m.name).sort(), ['plenix:folder', 'plenix:mail', 'plenix:search', 'plenix:trash']);
+  allDrawingsSafe(registered);
+});
 check('Generator: the site name "plenix" and a bad name are refused #553', () => {
   assert.strictEqual(tool(['plenix', 'site']).code, 2);
   assert.strictEqual(tool(['Bad Name', 'site']).code, 2);
