@@ -75,6 +75,7 @@ object PlenixColors {
     val messageText = Pair(Color(0xFF253442), Color(0xFFE8E9EC))
     val messageRead = Pair(Color(0xFF107C10), Color(0xFF9BD39B))
     val contentDefault = Pair(Color(0xFF34363B), Color(0xFFE8E9EC))
+    val contentStrong = Pair(Color(0xFF1E1F22), Color(0xFFF3F3F3))
     val contentMuted = Pair(Color(0xFF56585E), Color(0xFFD0D0D0))
     val contentSubtle = Pair(Color(0xFF56585E), Color(0xFF8E9094))
     val contentDisabled = Pair(Color(0xFF8E9094), Color(0xFF56585E))

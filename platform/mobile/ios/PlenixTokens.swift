@@ -79,6 +79,7 @@ public enum Plenix {
         public static let messageText = Plenix.color(light: 0xFF253442, dark: 0xFFE8E9EC)
         public static let messageRead = Plenix.color(light: 0xFF107C10, dark: 0xFF9BD39B)
         public static let contentDefault = Plenix.color(light: 0xFF34363B, dark: 0xFFE8E9EC)
+        public static let contentStrong = Plenix.color(light: 0xFF1E1F22, dark: 0xFFF3F3F3)
         public static let contentMuted = Plenix.color(light: 0xFF56585E, dark: 0xFFD0D0D0)
         public static let contentSubtle = Plenix.color(light: 0xFF56585E, dark: 0xFF8E9094)
         public static let contentDisabled = Plenix.color(light: 0xFF8E9094, dark: 0xFF56585E)

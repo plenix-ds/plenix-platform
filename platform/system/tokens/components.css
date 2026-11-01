@@ -221,9 +221,9 @@
   --plx-comp-select-option-selected-text: var(--plx-sys-content-link);
   --plx-comp-select-option-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-select-option-disabled-text: var(--plx-comp-menu-item-disabled-text);
-  --plx-comp-select-group-text: var(--plx-comp-menu-group-label-text);
-  --plx-comp-select-group-font-size: var(--plx-comp-menu-group-label-font-size);
-  --plx-comp-select-group-font-weight: var(--plx-comp-menu-group-label-font-weight);
+  --plx-comp-select-group-text: var(--plx-sys-content-muted);
+  --plx-comp-select-group-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-select-group-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-select-group-padding-block: var(--plx-comp-menu-group-label-padding-block);
   --plx-comp-select-group-padding-inline: var(--plx-comp-menu-group-label-padding-inline);
   --plx-comp-input-width-xs-width: var(--plx-sys-field-width-xs);
@@ -836,15 +836,19 @@
   --plx-comp-menu-max-width: var(--plx-ref-size-320px);
   --plx-comp-menu-min-width: var(--plx-ref-size-220px);
   --plx-comp-menu-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-menu-font-family: var(--plx-sys-font-body);
   --plx-comp-menu-padding-inline: var(--plx-sys-space-inset-xs);
   --plx-comp-menu-z-index: var(--plx-sys-layer-menu);
   --plx-comp-menu-fallback-bottom-start-inset-block-start: calc(100% + var(--plx-sys-space-inset-xs));
   --plx-comp-menu-fallback-bottom-end-inset-block-start: calc(100% + var(--plx-sys-space-inset-xs));
   --plx-comp-menu-fallback-top-start-inset-block-end: calc(100% + var(--plx-sys-space-inset-xs));
   --plx-comp-menu-fallback-top-end-inset-block-end: calc(100% + var(--plx-sys-space-inset-xs));
-  --plx-comp-menu-item-text: var(--plx-sys-content-default);
+  --plx-comp-menu-item-text: var(--plx-sys-content-strong);
   --plx-comp-menu-item-gap: var(--plx-sys-space-inline-sm);
-  --plx-comp-menu-item-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-menu-item-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-menu-item-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-menu-item-line-height: var(--plx-ref-size-24px);
+  --plx-comp-menu-item-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-menu-item-min-height: var(--plx-sys-control-height-standard);
   --plx-comp-menu-item-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-menu-item-hover-background: var(--plx-sys-state-hover);
@@ -854,14 +858,17 @@
   --plx-comp-menu-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-menu-item-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-menu-item-danger-text: var(--plx-sys-feedback-danger-solid);
-  --plx-comp-menu-check-height: var(--plx-ref-size-16px);
+  --plx-comp-menu-check-height: var(--plx-ref-size-24px);
   --plx-comp-menu-check-width: var(--plx-ref-size-16px);
-  --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-divider);
+  --plx-comp-menu-check-icon-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-menu-divider-border-top-color: var(--plx-sys-border-default);
   --plx-comp-menu-divider-border-top-width: var(--plx-sys-border-width-thin);
   --plx-comp-menu-divider-margin-block: var(--plx-sys-space-stack-xs);
-  --plx-comp-menu-group-label-text: var(--plx-sys-content-muted);
-  --plx-comp-menu-group-label-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-menu-group-label-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-menu-divider-margin-inline: calc(var(--plx-comp-menu-padding-inline) * -1);
+  --plx-comp-menu-group-label-text: var(--plx-sys-content-strong);
+  --plx-comp-menu-group-label-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-menu-group-label-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-menu-group-label-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-menu-group-label-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-menu-group-label-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-app-header-accent-brand: var(--plx-sys-accent-content);
@@ -4612,11 +4619,19 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-menu-sub-open-background: var(--plx-sys-state-hover);
-  --plx-comp-menu-sub-arrow-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-menu-sub-arrow-size: var(--plx-sys-icon-size-lg);
   --plx-comp-menu-sub-arrow-color: var(--plx-sys-content-muted);
   --plx-comp-menu-sub-offset: calc(var(--plx-sys-space-inset-xs) + var(--plx-sys-border-width-thin));
   --plx-comp-menu-sub-fallback-inset-block-start: 0;
   --plx-comp-menu-sub-fallback-inset-inline-start: 100%;
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-menubar-background: var(--plx-comp-menu-background);
+  --plx-comp-menubar-border-color: var(--plx-sys-border-subtle);
+  --plx-comp-menubar-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-menubar-radius: var(--plx-comp-menu-radius);
+  --plx-comp-menubar-padding: var(--plx-sys-space-inset-xs);
+  --plx-comp-menubar-gap: var(--plx-sys-space-inline-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-metadata-editor-gap: var(--plx-sys-space-stack-md);
