@@ -34,7 +34,8 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
           h(P.MenuBarMenu, { label: 'Help' }, h(P.MenuItem, { onSelect: noop }, 'About')))));
         await new Promise((r) => setTimeout(r, 900));
       }, dir, width);
-      const state = () => page.evaluate(() => { const a = document.activeElement; return { focus: a && (a.getAttribute('data-plx-menubar-item') !== null ? 'top:' + a.textContent.trim() : a.id || (a.textContent || '').trim().slice(0, 14)), open: [...document.querySelectorAll('[role=menubar] [aria-expanded=true]')].map((e) => e.textContent.trim()).join(','), stops: [...document.querySelectorAll('[data-plx-menubar-item]')].filter((e) => e.tabIndex === 0).length, buttons: [...document.querySelectorAll('[data-plx-menubar-item]')].map((e) => e.textContent.trim() || 'more') }; });
+      // open: the bar's menus that are open (its menu buttons with aria-expanded), not a sub menu inside one
+      const state = () => page.evaluate(() => { const a = document.activeElement; return { focus: a && (a.getAttribute('data-plx-menubar-item') !== null ? 'top:' + a.textContent.trim() : a.id || (a.textContent || '').trim().slice(0, 14)), open: [...document.querySelectorAll('[data-plx-menubar-item][aria-expanded=true]')].map((e) => e.textContent.trim()).join(','), stops: [...document.querySelectorAll('[data-plx-menubar-item]')].filter((e) => e.tabIndex === 0).length, buttons: [...document.querySelectorAll('[data-plx-menubar-item]')].map((e) => e.textContent.trim() || 'more') }; });
       const key = async (k) => { await page.keyboard.press(k); await wait(250); };
       const box = (i) => page.evaluate((i) => { const r = document.querySelectorAll('[data-plx-menubar-item]')[i].getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }, i);
       const enter = async () => { await mount(600); await page.focus('#before'); await key('Tab'); };
@@ -74,7 +75,8 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       });
       await check(T + 'a check item and a plain item behave as in the Menu: choosing runs onSelect and closes the menu', async () => {
         await enter(); await key('ArrowDown'); await key('Enter'); assert.deepEqual(await page.evaluate(() => window.__log), ['new']); const s = await state(); assert.equal(s.open, ''); assert.equal(s.focus, 'top:File');
-        assert.equal(await page.evaluate(() => { document.querySelector('[data-plx-menubar-item]').click(); return document.querySelector('[role=menuitemcheckbox]').getAttribute('aria-checked'); }), 'true');
+        // React draws the opened menu after the click's task (a microtask later), so the check waits before it reads the item
+        assert.equal(await page.evaluate(async () => { document.querySelector('[data-plx-menubar-item]').click(); await new Promise((r) => setTimeout(r, 250)); const c = document.querySelector('[role=menu] [role=menuitemcheckbox]'); return c ? c.getAttribute('aria-checked') : 'no check item; menus open: ' + document.querySelectorAll('[role=menu]').length; }), 'true');
       });
       await check(T + 'a narrow bar folds the last menus into More menus on one row, listed as groups', async () => {
         await mount(190); let s = await state(); assert.deepEqual(s.buttons, ['File', 'Edit', 'more']);
