@@ -19,7 +19,7 @@ const path = require('path');
 
 const NAME = 'semantic-html';
 // generated bundles and copies are checked through their sources
-const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs)[\\/]|(^|[\\/])(app|assets|spec-parts|native-guidance)\.js$|\.min\.js$/;
+const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs|spec-chunks)[\\/]|(^|[\\/])(app|assets|spec-index|spec-parts|native-guidance)\.js$|\.min\.js$/;
 const PLAIN = 'div|span|p|li|td|section|article|img|i';
 // containers whose click handler reacts to the controls inside them (the controls are buttons and links, so the
 // keyboard reaches each one): file (from platform/) and the element's class, with the reason

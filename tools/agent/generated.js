@@ -18,7 +18,7 @@ const GENERATED = [
   /^CHANGELOG\.md$/, /^package\.json$/,                    // written by release.sh
   /^platform\/design-system$/, /^node_modules$/,           // the submodule pointer and the dependency junction
   // inside platform/design-system (its own repo)
-  /^spec-parts\.js$/, /^ds-sample-parts\.css$/, /^native-guidance\.js$/, /^usage\.js$/,
+  /^spec-parts\.js$/, /^spec-index\.js$/, /^spec-chunks\//, /^ds-sample-parts\.css$/, /^native-guidance\.js$/, /^usage\.js$/,
 ];
 const PARTIAL = ['platform/index.js', 'platform/platform.css'];
 const BLOCK = /\/\* BEGIN library parts[^]*?\/\* END library parts \*\//;

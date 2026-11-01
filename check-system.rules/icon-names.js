@@ -16,7 +16,7 @@ const path = require('path');
 const NAME = 'icon-names';
 const ROOT = path.join(__dirname, '..');
 // generated bundles and copies are checked through their sources; the capability records name other drawings
-const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs)[\\/]|(^|[\\/])(app|assets|spec-parts|native-guidance|plenix-app-data)\.js$|\.min\.js$/;
+const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs|spec-chunks)[\\/]|(^|[\\/])(app|assets|spec-index|spec-parts|native-guidance|plenix-app-data)\.js$|\.min\.js$/;
 const PATTERNS = [
   /<Icon\b[^>]*?\bname=["'{]{1,2}([a-z0-9-]+)["'](?!\s*\+)/g,                                   // <Icon name="x"> <Icon name={'x'}>
   /\bIcon\s*,\s*\{[^}]*?\bname:\s*["']([a-z0-9-]+)["'](?!\s*\+)/g,                                // h(P.Icon, { name: 'x' })
