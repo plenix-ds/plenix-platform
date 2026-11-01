@@ -29,6 +29,8 @@ child({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell
 // a pane or a table column is never dragged wider than 90% of the window (of the table): when Resizable, SplitView, a pane
 // of the shell or the DataGrid changed (issue 463, option C, step 1)
 child({ units: ['components/Resizable', 'components/DataGrid', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-limit.test.js');
+// a split view resizes as far as its room allows, within 90% of the window; maxSize no longer caps it (issue 873)
+child({ units: ['patterns/SplitView', 'components/Resizable', 'utils/paneLimit.ts'] }, 'splitview-resize-873.test.js');
 // the panes start wider on larger windows (issue 463, option C, step 2): when AppShell or a pane of the shell changed
 child({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] }, 'pane-defaults.test.js');
 // the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): when AppShell or the side panel changed
@@ -112,6 +114,8 @@ child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }
 child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.ts'] }, 'branch-loader-814.test.js');
 // EntityTitle, a short title line for list rows and cards (issue 803)
 child({ units: ['components/EntityTitle', 'components/RowButton', 'components/Card'] }, 'entity-title-803.test.js');
+// control cards: ChoiceList with a radio, a checkbox or a switch in each card (issue 804)
+child({ units: ['components/Checkbox'] }, 'control-cards-804.test.js');
 // Tree and TreeSelect draw only the rows in view above 200 rows (issue 815, part 1)
 child({ units: ['components/Tree', 'components/TreeSelect', 'hooks/useVirtualizer.ts'] }, 'tree-virtual-815.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
