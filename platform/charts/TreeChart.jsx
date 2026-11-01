@@ -97,7 +97,7 @@ export function TreeChart({ title, description, hideCaption, data, orientation =
   // the nodes shown, in reading order (a folded branch's children are not)
   const shown = React.useMemo(() => { const out = []; (function walk(n) { if (!n) return; out.push(n); if (!folded.has(n.id)) n.children.forEach(walk); })(nodes[0]); return out; },
     [nodes, [...folded].sort().join('|')]);
-  const leafNodes = shown.filter((n) => !n.children.length || folded.has(n.id)), leaves = leafNodes.length;
+  const leafNodes = shown.filter((n) => !n.children.length || folded.has(n.id));
   // the engine's tree layout keeps one unit between two leaves of the same parent and two between cousins: the breadth
   // the leaves take is counted in those units, so each unit gets a whole leaf's room
   const units = leafNodes.reduce((u, n, i) => u + (i === 0 ? 0 : (n.parent === leafNodes[i - 1].parent ? 1 : 2)), 0);

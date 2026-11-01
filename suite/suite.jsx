@@ -17,7 +17,7 @@
    view state, plenix.<app>.view, recentSearches; the last five) and, while a query is typed, its results; choosing one
    leaves the view (its history entry) and opens the result's screen. */
 import { SUITE_SESSION } from './session.js';
-import { ActivityList, AppHeader, AppShell, DirectionProvider, Icon, SearchField, SectionHeading, SessionProvider, StatusBar, Text, PLENIX_APPS, useScreenLocation, useViewState, leavePage } from 'plenix-platform';
+import { ActivityList, AppHeader, AppShell, DirectionProvider, Icon, SearchField, SectionHeading, SessionProvider, StatusBar, Text, useScreenLocation, useViewState, leavePage } from 'plenix-platform';
 import { CaptureUI } from './capture.jsx';
 import { LeftNav } from './leftnav.jsx';
 import { SearchScreen } from './search.jsx';

@@ -12,7 +12,7 @@
    Props:
      SelectionSummary.count: how many are selected
      SelectionSummary.total: how many can be selected
-     SelectionSummary.noun: the word for one item, for the tooltips (default "item")
+     SelectionSummary.noun: a string: the word for one item, for the tooltips (default "item")
      SelectionSummary.plural: the word for several (default: noun + "s")
      SelectionSummary.onSelectAll(): runs from Select all; without it there is no Select all
      SelectionSummary.onClear(): runs from Clear; without it there is no Clear

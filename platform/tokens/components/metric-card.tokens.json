@@ -61,6 +61,7 @@
     "metric-card-link-hover-border-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "MetricCard with a link: the border while the pointer is over it." },
     "metric-card-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "MetricCard with a link: the focus outline." },
     "metric-card-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "MetricCard with a link: the focus outline's width." },
-    "metric-card-focus-outline-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "MetricCard with a link: the focus outline's offset." }
+    "metric-card-focus-outline-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "MetricCard with a link: the focus outline's offset." },
+    "metric-card-icon-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "MetricCard: the plain icon of icon-start and of a list row, gray or with no hue (no tile, #882). A data hue colors it with its data color." }
   }
 }

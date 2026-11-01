@@ -59,7 +59,7 @@ import { Checkbox, RadioGroup } from '../../components/Checkbox/Checkbox.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Fieldset } from '../../components/Fieldset/Fieldset.jsx';
-import { IconTile } from '../../components/IconTile/IconTile.tsx';
+import { Icon } from '../../components/Icon/Icon.tsx';
 import { Input, Textarea } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.tsx';
 import { RoleLabel } from '../../components/RoleLabel/RoleLabel.jsx';
@@ -133,7 +133,7 @@ function RoleList({ roles, t, label, editable, focusId, change, onOpen }) {
     const n = (r.members || []).length;
     return {
       id: r.id, name: r.name, description: r.description, onOpen: () => onOpen(r.id),
-      media: <IconTile icon={ROLE_ICONS[r.builtIn] || PersonIcon} size="sm" />,
+      media: <Icon name={ROLE_ICONS[r.builtIn] || PersonIcon} size="sm" className="plx-role-manager__icon" />,
       meta: <span className="plx-role-manager__meta"><span>{around(n === 1 ? t.memberCount : t.membersCount, 'n', <Text variant="data">{formatNumber(n)}</Text>)}</span>
         <span className="plx-role-manager__kind">{r.builtIn ? t.builtIn : t.custom}</span></span>,
     };

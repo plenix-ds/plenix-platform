@@ -50,7 +50,7 @@ export const kindOf = (f: Field | null | undefined): string => (OPERATORS[(f && 
 // a field as a choice in a panel's field menu: its key, its name and its kind's icon (FilterPanel, SortPanel, GroupPanel; one copy, issue 882)
 export const fieldOption = (f: Field) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f) as keyof typeof KIND_ICONS] });
 // a field's options, each with its color (given, or the next category color)
-export const optionsOf = (f: Field | null | undefined): FieldOption[] => ((f && f.options) || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o: FieldOption, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
+export const optionsOf = (f: Field | null | undefined): FieldOption[] => ((f && f.options) || []).map((o) => (typeof o === 'string' ? { value: o } : o)).map((o: FieldOption, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 export const blank = (x: unknown) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 // days are calendar days where the reader is (the owner, issue 342 option A): today and "N days before" from local dates,
 // never from toISOString (the UTC day, which is the day before east of UTC around midnight)
