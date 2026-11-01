@@ -366,7 +366,7 @@ function DocsPanel({docSection,setDocSection}){
           const fieldCount=fields.length;
           return(
             <Section key={key} title={type.label} stateKey={"type-"+key} collapsible defaultExpanded={false}
-              description={<Inline as="span" gap="sm" wrap><Icon name={type.icon||"description"}/>{/* plx-icons: analytics article auto_awesome bolt bug_report calculate calendar_month campaign cell_tower change_circle contacts contract dashboard description edit_calendar edit_note event_available event_repeat explore fact_check groups handshake home home_repair_service hub image info key link local_shipping mail palette payments pending_actions person_search photo_camera price_change receipt receipt_long request_quote schedule search sell settings share shopping_cart signpost slideshow sticky_note_2 target task_alt text_snippet timeline translate trending_up voice_selection warning web */}<Text>{type.desc}</Text><Text variant="data">{fieldCount} own field{fieldCount!==1?"s":""}</Text><Tag>{type.capability}</Tag></Inline>}>
+              description={<Inline as="span" gap="sm" wrap><Icon name={type.icon||"doc-text"}/>{}<Text>{type.desc}</Text><Text variant="data">{fieldCount} own field{fieldCount!==1?"s":""}</Text><Tag>{type.capability}</Tag></Inline>}>
               <Table label={type.label+" fields"} empty="No own fields" data={fields.map(([n,d])=>({id:n,name:n+(d.required?" *":""),type:d.type,detail:d.enum?"enum: "+d.enum.join(", "):d.desc||d.unit?"unit: "+d.unit:""}))} columns={[
                 {title:"Field",field:"name",kind:"name",rowLabel:true,width:"--plx-ref-size-240px"},
                 {title:"Type",field:"type",kind:"data"},

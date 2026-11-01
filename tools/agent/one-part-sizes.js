@@ -19,7 +19,7 @@ const PKG = path.join(ROOT, 'packages', 'react');
 // (Arabic opt-in, the icon names loaded when needed): Button 317.5 -> 101.4, Badge 79.0 -> 25.0, DataGrid 645.0 -> 428.9,
 // * as P 1608.5 -> 1392.4 (Button's start is now mostly the English words, 53 KB, and Icon, 24 KB)
 const CASES = [
-  { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 105 },
+  { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 107 }, // 107: the 42 icon names of the project icons (#882, owner 2026-11-01) add 2.3 KB to the name table every first import carries (#11 loads it only when needed)
   { name: '{ Badge }', code: 'import { Badge } from "plenix"; console.log(Badge);', limit: 30 },
   { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 450 }, // 450: #714's module split (call objects, about 1.6 KB) and room for #465 cell selection (opt-in)
   { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1430 }, // 1,430: the owner-approved #775 and #769 parts add about 1 to 2 KB each (1,420 for the branch loader #814, Anchor, Cascader extras; 1,430 for the visible rows #815, the pickers' time zone #813, EntityTitle #803 and the control cards #804, which measure about 1,424 together)

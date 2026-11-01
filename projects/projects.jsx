@@ -69,7 +69,7 @@ function ProjectNav({ proj, active, onNav, caps }) {
   const [view, updateView] = useViewState('projects');
   const pCaps = caps || window.DEFAULT_CAPS;
   const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project home', icon: <Icon name="home" /> }] }]
-    .concat(window.CAPABILITY_GROUPS.map((grp) => ({ heading: grp.group, items: grp.items.filter((it) => pCaps.has(it.id)).map((it) => ({ id: it.id, label: it.label, icon: <Icon name={it.icon} />/* plx-icons: analytics article auto_awesome bolt bug_report calculate calendar_month campaign cell_tower change_circle contacts contract dashboard description edit_calendar edit_note event_available event_repeat explore fact_check groups handshake home home_repair_service hub image info key link local_shipping mail palette payments pending_actions person_search photo_camera price_change receipt receipt_long request_quote schedule search sell settings share shopping_cart signpost slideshow sticky_note_2 target task_alt text_snippet timeline translate trending_up voice_selection warning web */ })) })).filter((g) => g.items.length));
+    .concat(window.CAPABILITY_GROUPS.map((grp) => ({ heading: grp.group, items: grp.items.filter((it) => pCaps.has(it.id)).map((it) => ({ id: it.id, label: it.label, icon: <Icon name={it.icon} /> })) })).filter((g) => g.items.length));
   return (
     <SecondaryPane title={proj.name} width="md" collapsible resizable size={view.paneWidth} onSizeChange={(w) => updateView({ paneWidth: w })}
       actions={<Button size="xs" variant="ghost" iconOnly icon="gear" label="Project settings" onClick={() => onNav('settings')} />}
@@ -180,16 +180,16 @@ function ProjectContent({ proj, panel }) {
 
   /* ── CAPABILITIES TO COME ── */
   const placeholders = {
-    roadmap: ['Roadmap', 'Gantt-style timeline planning with drag-and-drop tasks and milestones. Coming soon.', 'roadmap'],
+    roadmap: ['Roadmap', 'Gantt-style timeline planning with drag-and-drop tasks and milestones. Coming soon.', 'signpost'],
     contacts: ['Contacts', 'People linked to this project with roles — Owner, Client, Consultant, Reviewer. Coming soon.', 'contacts'],
     bookmarks: ['Bookmarks', 'Save, organize, and retrieve links with folder hierarchy, smart rules, and sharing. Coming soon.', 'link'],
-    images: ['Images', 'Image gallery — upload, paste URL, or search Unsplash. Source for mood boards. Coming soon.', 'images'],
-    mood_boards: ['Mood boards', 'Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.', 'mood'],
-    time_tracking: ['Time tracking', 'Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.', 'time'],
-    activity: ['Activity feed', 'Every event logged — task changes, files, comments, status updates. Coming soon.', 'activity'],
-    bookkeeping: ['Financials', 'Budget tracking, milestone payments, invoices, and payment history. Coming soon.', 'finance'],
-    risks: ['Risks', 'RIAC log — Risks, Issues, Assumptions, Constraints with owner and priority. Coming soon.', 'risks'],
-    changes: ['Changes', 'Formal change request workflow with timeline and cost impact. Coming soon.', 'changes'],
+    images: ['Images', 'Image gallery — upload, paste URL, or search Unsplash. Source for mood boards. Coming soon.', 'image-a-2'],
+    mood_boards: ['Mood boards', 'Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.', 'palette'],
+    time_tracking: ['Time tracking', 'Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.', 'clock'],
+    activity: ['Activity feed', 'Every event logged — task changes, files, comments, status updates. Coming soon.', 'timeline'],
+    bookkeeping: ['Financials', 'Budget tracking, milestone payments, invoices, and payment history. Coming soon.', 'payments'],
+    risks: ['Risks', 'RIAC log — Risks, Issues, Assumptions, Constraints with owner and priority. Coming soon.', 'warning'],
+    changes: ['Changes', 'Formal change request workflow with timeline and cost impact. Coming soon.', 'change-circle'],
   };
   if (placeholders[panel]) {
     const [title, desc, icon] = placeholders[panel];
