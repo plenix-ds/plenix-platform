@@ -349,5 +349,6 @@ export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
 export { Heading } from './components/Heading/Heading.tsx';
 export { TreeChart } from './charts/TreeChart.jsx';
 export { Anchor } from './components/Anchor/Anchor.jsx';
+export { OverflowList } from './components/OverflowList/OverflowList.jsx';
 export { DataGridEngine } from './components/DataGrid/DataGridEngine.jsx';
 /* END library parts */
