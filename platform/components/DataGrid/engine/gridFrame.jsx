@@ -24,6 +24,7 @@ import { Scrollbars } from '../scrollbars.jsx';
 import { Rare } from './rare.jsx';
 
 export function gridFrame({
+  cardBar,
   widthPixels,
   headerMenu,
   isStatic,
@@ -89,6 +90,7 @@ export function gridFrame({
   groupNode,
   model,
   shown,
+  cardMore,
   renderRow,
   last,
   empty,
@@ -156,7 +158,7 @@ export function gridFrame({
           <div
             className={cx(
               B + '__grid-header',
-              isNarrow && B + '__grid-header--narrow',
+              cardBar != null ? B + '__grid-header--card' : isNarrow && B + '__grid-header--narrow',
               isStatic && B + '__grid-header--static'
             )}
             ref={header}
@@ -165,20 +167,22 @@ export function gridFrame({
             <div className={`${B}__grid-header-contents`}>
               <div
                 {...columnDnd.listProps}
-                className={cx(`${B}__grid-headers`, isStatic && B + '__grid-headers--static')}
+                className={cx(`${B}__grid-headers`, isStatic && B + '__grid-headers--static', cardBar != null && B + '__grid-headers--card')}
                 role="row"
               >
                 {selectable ? (
                   <div
                     className={cx(
                       `${B}__grid-col ${B}__grid-row-header ${B}__w-lead`,
+                      cardBar != null && B + '__grid-col--card',
                       leadFrozen && B + '__grid-frozen'
                     )}
                     role="columnheader"
                   >
-                    <div className={`${B}__grid-col-content ${B}__grid-col-content--row-header`}>
+                    <div className={cx(`${B}__grid-col-content ${B}__grid-col-content--row-header`, cardBar != null && B + '__grid-col-content--card')}>
                       <Check
                         label={S.selectAll}
+                        card={cardBar != null}
                         checked={allVisible}
                         mixed={selectedVisible.length > 0 && !allVisible}
                         onChange={(e) => selectAll(e.target.checked)}
@@ -186,9 +190,10 @@ export function gridFrame({
                     </div>
                   </div>
                 ) : null}
-                {ordered.map(headerCell)}
-                {viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders })}
-                {rowMenu && rowMenuButton ? (
+                {cardBar != null ? <span className={B + '__card-count'}>{cardBar}</span> : null}
+                {cardBar != null ? null : ordered.map(headerCell)}
+                {cardBar != null ? null : viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders })}
+                {cardBar == null && rowMenu && rowMenuButton ? (
                   <Width
                     width={metrics.menu}
                     className={`${B}__grid-col`}
@@ -255,6 +260,7 @@ export function gridFrame({
               ) : null}
               <RowGap rows={model.slice(0, first)} />
               {shown.map(renderRow)}
+              {cardMore}
               <RowGap rows={model.slice(last)} />
             </div>
             {emptyRow({ model, B, isStatic, ordered, remoteMode, remoteBusy, S, empty })}

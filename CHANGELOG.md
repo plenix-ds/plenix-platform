@@ -6,6 +6,78 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.82.0] - 2026-11-01
+
+**In short.** Every DataGrid that doesn't fit its width now shows the owner's row template card (layout A) by default, built to match the approved sample, and a grid with thousands of rows stays responsive as cards (they draw 100 at a time). Split views resize as far as the window allows, up to 90%. New: EntityTitle, and control cards (a checkbox, radio or switch inside a clickable card). Trees load a branch when it's first opened and draw only the rows in view. The date and time pickers follow the app's time zone. Two pages no longer overflow at phone width. 0.81.0 was released to the CDN and the apps only; its contents are part of this release on npm and GitHub.
+
+### Upgrading from 0.81.0
+1. **Narrow grids look different on purpose:** a grid that doesn't fit shows the template card (title, date, subtitle, the primary value and two more lines; extra fields as "Label: value" lines). An app that needs the old plain card passes `layout="plain"`; one that must stay a table passes `narrow="table"`.
+2. **SplitView `maxSize` no longer limits dragging side by side** (it still limits the stacked form). Nothing to change; remove it when convenient.
+3. **Time zone:** an app with a `timeZone` on LocaleProvider now gets moments in UTC from a date-time DatePicker: store them as they are. A picker that must keep the computer's zone inside such a region passes `timeZone={null}`. Apps without a `timeZone` are unchanged.
+4. **Long trees:** a Tree with over 200 visible rows now scrolls itself: give its container a height, or pass `virtualized={false}` to keep the old layout.
+5. **Nothing else to change.** ChoiceList without `control` is a radio group of cards as before (now named by each card's label alone); a hierarchy without `hasChildren` and `loadChildren` works as before. Apps on the CDN loader follow this release by themselves; npm apps update the version as usual.
+
+### Added
+- EntityTitle (#803, idea 3 of the component study #767): a short title line for list rows and cards, where EntityHeader is too big.
+  - An icon (plain, decorative), the title on one line cut with "…" (its whole text in a tooltip while it is cut), a subtitle under it and a tag after it. Each part but the title is optional.
+  - `tag`: a string is a Tag; `{ label, tone, icon }` is a status Badge with its icon; `{ label, category }` is a category Tag; an element is drawn as given.
+  - `level` (1 to 6) makes the title a heading, for a card.
+  - `loading` shows bars in place of the text and marks the item `aria-busy`.
+  - Its lines are 20px and 16px: one line is as tall as plain row text and two lines 36px, on the 4px grid, the same while loading. It adds no padding, so list rows and cards keep their height rules.
+- The design spec has its page (03 Content › Identity › Entity title), with examples in a list row and a card.
+- Control cards (#804, idea 4 of the component study #767): ChoiceList takes `control`: "radio" (the default, one choice), "checkbox" (several) or "switch" (each option on or off).
+  - Each card is the label of its native control. A click anywhere on the card changes it. The keyboard and screen readers meet one control, named by the card's label alone (`aria-labelledby`) and described by its description (`aria-describedby`), so neither is read twice. A switch is the native checkbox with `role="switch"`.
+  - A checkbox or switch card takes `values` and gives `onChange(values)`. A radio card keeps `value` and `onChange(value)`.
+  - Keys: radio cards are a native radio group (the arrows move the choice); checkbox and switch cards toggle with Space, with no arrow keys.
+  - An option can be `disabled`: the card is dimmed, has no hover fill and is skipped by the keys.
+  - The switch sits at the card's end, as in a settings row. Inside a switch card the card's outline is the one focus mark.
+- The design spec's Choice card page shows one example of each kind.
+- DatePicker and TimePicker follow the app's time zone (#813, from the Semi study #767): with a `timeZone` on LocaleProvider (or their own `timeZone` prop), they show and save dates and times in that zone instead of each computer's.
+  - DatePicker: today, the calendar's today mark and the presets are the zone's today. A date-time value is one moment: it reads an ISO string ending in Z or an offset, shows its date and time in the zone, names the zone for that moment (EST or EDT), and saves the moment chosen as UTC (`2026-03-08T07:30:00.000Z`). A date or a range stays a calendar date.
+  - TimePicker: a moment value shows its time in the zone and saves the moment on the same day there. An `"HH:MM"` value stays a time of day.
+  - Clock changes: a time the zone skips reads as the time after the change (02:30 is 03:30). A time it repeats is the earlier moment.
+  - Without a time zone both work exactly as before.
+- `useTimeZone()`: the nearest LocaleProvider's time zone, or undefined (the computer's). `useLocale()` also gives `timeZone`.
+- A branch loads only when it is first opened (#814, from the Semi study #767): `useBranchLoader`, one mechanism shared by Tree, TreeSelect and Cascader (through MillerColumns). Big hierarchies open at once.
+  - Mark a branch with `hasChildren: true` and no `children` array, and pass `loadChildren(node)` (it returns an array or a promise of one). It is asked for once, the first time the branch opens.
+  - While the children load, the row shows a spinner and "Loading…", the item (or column) is `aria-busy`, and "Loading {label}" is announced. A failure shows "Couldn’t load these items" with Try again and is announced. Arrow Right on the branch, or closing and opening it, also asks again.
+  - Choosing, searching and the keys work the same on loaded and not-yet-loaded branches. Search finds the items loaded so far and never loads a branch by itself. With TreeSelect `multiple`, checking a branch that has not loaded loads it, then checks everything under it.
+  - The words are in the catalog's new `branch` section, in English and Arabic.
+  - `useBranchLoader` and `BranchStatus` are exported for other hierarchies. MillerColumns takes `loadChildren` too, or a shared `loader`.
+- Tree and TreeSelect draw only the rows in view (#815 part 1, from the Semi study #767), with the existing `useVirtualizer`. Long folder lists open and scroll fast.
+  - It switches on by itself above 200 visible rows (`TREE_AUTO_VIRTUAL`). Short trees are unchanged. `virtualized` (true or false) decides.
+  - The rows are flat, each with its `aria-level` and its `aria-posinset` of `aria-setsize` among its siblings, so a screen reader says "12 of 5,000".
+  - The keys move through every row, drawn or not. The active row scrolls into view only as far as needed. No row animates.
+  - A virtualized Tree scrolls itself: give it a height (its container's block size). In TreeSelect it is the popover's scroll area.
+  - The loading row of a branch that loads when opened (#814) works the same.
+- `useVirtualizer`: `scrollToIndex(index, { align: 'nearest' })` scrolls only as far as brings the item into view.
+
+### Changed
+- Every DataGrid's narrow cards are the row template by default, drawn as the owner's approved sample (#679, reopened by the owner: "every grid, by default"). A grid that names no `layout` and no `template` (and is not `narrow="table"`) draws layout A when its columns do not fit: a bar over the cards with the select-all checkbox and the count of records, then each record as three aligned lines (title and date, subtitle and primary value, secondary and tertiary), one thin vertical line per line at the same place down the list, the checkbox at the start and the row menu at the end, 8px padding (4px at the end), 24px lines, the selected record's fill and its 3px start bar. The slots are filled by the fixed rule of #839 from `columns` (the first date column is the date, the first number column the primary value, then title, subtitle, primary, secondary and tertiary in column order); `keyColumns`, if an app gives them, are the title, the subtitle and the primary value. The values are the columns' own cells' (their `render` or formatter), so the card says "Oct 28" and "$1,240.00" where the table does. The fields no slot takes stay, as "Label: value" lines under the third line, so no field disappears from an existing grid's narrow view. Type as the sample's Text roles: the title in body size semibold, the subtitle and secondary 12px muted, the date in the data font 12px muted, the primary value in the data font at body size semibold (the strongest value), the tertiary in the data font 11px; the row menu's dots are the 28px button with the 20px icon at any density; no line beside the checkbox. A wide grid is unchanged (a table while its columns fit). `layout` still overrides (A, B, wide), `narrow="table"` still keeps a table, and the new `layout="plain"` is the card of before (key values, then every other field as a labeled detail). The static Table keeps its plain list. New words: `dataGrid.cardCount` (English and Arabic); new tokens (`data-grid-template-*`: padding, check and menu widths, the menu button and icon sizes, the bar's height, padding and gap) name existing roles; no new color. Test: `tests/data-grid-default-cards-679.test.js` (written, not run).
+- SplitView resizes as far as its room allows (#873, P1; the owner: "I need to be able to resize any split view screen"). Side by side, the first panel drags until the second panel keeps only its minimum width, and never past 90% of the window (`--plx-sys-shell-pane-window-share`, as Resizable's side panels read it). The fixed 720px ceiling is gone.
+  - `defaultSize` stays the starting width, and a remembered `size` comes back up to the new ceiling. `minSize` stays a floor, capped at the ceiling so both panels stay usable.
+  - The keyboard's End, the separator's `aria-valuemax` and the words at the limit follow the same ceiling. A smaller window lowers it at once, and under 900px the panels still stack.
+  - In Arabic, the "other pane needs at least …" words write their number in Arabic-Indic digits.
+- Side panels (Resizable detail drawers) are unchanged (the owner, 2026-11-01).
+- The size limit for importing the whole npm package (`* as P`) is 1,430 KB (was 1,420), for the parts added in this release: visible rows only in Tree and TreeSelect (#815), the pickers' time zone (#813), EntityTitle (#803) and the control cards (#804). The one-part limits (`{ Button }` 105, `{ Badge }` 30, `{ DataGrid }` 450 KB) are unchanged.
+
+### Fixed
+- The cards of #839 (layout A) matched the owner's sample in layout but not in type or spacing: the title and the primary value were 12px, the checkbox column and the menu column were wider than the sample's, the divider sat 12px too far toward the start, a second vertical line stood beside the checkbox, the selected card had a line above it, and the row menu's dots were small. All measured against the sample's page and made equal (the table is in the pull request).
+- DataGrid: the card form of a big table no longer freezes the page (#809, first step). In the narrow card list the grid now draws the first 100 cards, then the next 100 each time the end of the list nears the view (the grid's own scroll area, or the window when the grid grows with the page). Before, it drew every card at once: 10,000 rows took about 20 seconds at 320px.
+  - End (or Ctrl or Command with End) on a card draws every card and goes to the last. Arrow Down past the drawn cards draws the next chunk first.
+  - Select-all, the counts, find and filters work on all the rows. `aria-rowcount` is the full count.
+  - A list of 100 cards or fewer, the wide table and remote grids are unchanged.
+  - Full virtualization of the variable-height cards is #809's later step.
+- MillerColumns (and so Cascader): right to left, a parent's chevron points left, toward its children.
+- `useVirtualizer` no longer queues a state update when nothing moved. In a tree whose rows re-render on focus, that update never settled ("Maximum update depth exceeded") while the keys moved through rows not drawn yet.
+- Two narrow-width overflows the reflow job found on the test site (#880):
+  - DataToolbar: the end group (a count or a summary) may now shrink, so a `<Text truncate>` there ends in an ellipsis inside the row instead of running past it. The Directory was 390px wide at 320.
+  - NavPane's bottom bar: an item's minimum width is the 44px touch target (`--plx-comp-nav-bar-item-min-width`, was 64px). Five items now fit a bar narrowed by a page scrollbar (the Document page cut off "Browse"). The items still share the width equally.
+- The test site's Directory summary uses `truncate` (site PR #22, pinned in CI).
+
+### Deprecated
+- SplitView `maxSize` side by side: it no longer caps the drag (a larger one is the room anyway; a smaller one is ignored, with no error). Stacked, `maxSize` is still the first panel's ceiling.
+
 ## [0.81.0] - 2026-11-01
 
 **In short.** The dashboard design system study is in the design spec: the owner's specification rebuilt on Plenix, with the original kept beside it. DataGrid: drag with the mouse to select a block of cells, and F2 or typing starts editing a cell. The Manage-columns dialog loads on first use in npm apps, so the npm DataGrid is about 25 KB lighter. Rating can show half stars, Divider can show a short text, and the spec has a Suggest page. A plain right arrow joins the icons, and the site icon tool reads TypeScript apps.

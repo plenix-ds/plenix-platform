@@ -89,7 +89,7 @@ export function CellEditor({ column, value, onCommit, onCancel }) {
   );
 }
 
-export function Check({ checked, mixed, label, onChange }) {
+export function Check({ checked, mixed, label, onChange, card }) {
   const ref = React.useRef(null);
   React.useLayoutEffect(() => {
     if (ref.current) ref.current.indeterminate = !!mixed;
@@ -98,7 +98,7 @@ export function Check({ checked, mixed, label, onChange }) {
     <label className={GRID + '__check'} onClick={(e) => e.stopPropagation()}>
       <input
         ref={ref}
-        className={GRID + '__check-input'}
+        className={GRID + '__check-input' + (card ? ' ' + GRID + '__check-input--card' : '')}
         type="checkbox"
         checked={!!checked}
         aria-label={label}
