@@ -15,22 +15,20 @@
 //
 // The stylesheets (platform/system/tokens/reference.css, semantic.css, components.css, and one per theme in
 // platform/system/themes/ — the themes are listed in platform/standards/themes.json)
-// are generated: edit the JSON, never the CSS. platform/tokens/tokens.index.json is written for the design spec: every
-// token with its tier, set values, references, the values it resolves to in light and dark at each density, where it
-// is written (file and line), what uses it and, for a color role, its group and purpose ($extensions.plenix).
+// are generated: edit the JSON, never the CSS. After the stylesheets it has tools/token-index.js write
+// platform/tokens/tokens.index.json (plain Style Dictionary reads the tokens; issue 372 step 8), then build-mobile.js the
+// native files.
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
 const SRC = path.join(ROOT, 'platform', 'tokens');
 const EXT = 'com.plenix';
-const DEFAULT_THEME = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'platform', 'standards', 'themes.json'), 'utf8')).default; } catch (e) { return 'default'; } })();
 const TIERS = ['plx-ref', 'plx-sys', 'plx-comp'];
 
 // "{plx-ref.color-gray-800}" <-> "var(--plx-ref-color-gray-800)"
 const toCss = (v) => String(v).replace(/\{(plx-(?:ref|sys|comp))\.([a-z0-9-]+)\}/g, 'var(--$1-$2)');
 const toJson = (v) => String(v).replace(/var\(--(plx-(?:ref|sys|comp))-([a-z0-9-]+)\)/g, '{$1.$2}');
-const refsOf = (v) => [...String(v).matchAll(/\{(plx-(?:ref|sys|comp))\.([a-z0-9-]+)\}/g)].map((m) => '--' + m[1] + '-' + m[2]);
 
 // a set's tokens in order: [{ name: '--plx-…', token }]
 // a text role (Styling Standard 6) is six separate tokens in semantic/typography.tokens.json, --plx-sys-text-<role>-font-family
@@ -262,99 +260,6 @@ function generate(manifest) {
   return { files, written };
 }
 
-// the selector items a set is written under, as conditions: an item applies when every attribute it names has that value
-function applies(selector, ctx) {
-  return selector.split(',').some((item) => {
-    if (/data-plx-density-policy/.test(item)) return false;
-    if (/:not\(\[data-plx-interaction\]\)/.test(item) && ctx.interaction) return false;
-    for (const m of item.matchAll(/data-plx-([a-z-]+)="([^"]+)"/g)) {
-      const k = m[1], v = m[2];
-      if (k === 'theme') { if (v !== (ctx.theme || DEFAULT_THEME)) return false; continue; }
-      if (ctx[k] !== v) return false;
-    }
-    return true;
-  });
-}
-
-function index(manifest, written) {
-  const sets = [];
-  for (const o of manifest.outputs) for (const s of o.sets) sets.push({ file: s.tokens, output: o.file, selector: s.data.$extensions[EXT].selector, tokens: tokensOf(s.data) });
-  const byName = {};
-  for (const s of sets) for (const { name, token } of s.tokens) {
-    const t = byName[name] = byName[name] || { name, tier: name.slice(2).split('-').slice(0, 2).join('-'), type: token.$type, description: token.$description || '', sets: [], refs: [], usedBy: [], referencedBy: [] };
-    t.sets.push({ file: s.file, output: s.output, selector: s.selector, value: toCss(token.$value) });
-    for (const r of refsOf(token.$value)) if (!t.refs.includes(r)) t.refs.push(r);
-    if (!t.type && token.$type) t.type = token.$type;
-    // a color role's group and purpose ($extensions.plenix, the color groups of 2026-10-13; check-system rule color-groups)
-    const px = token.$extensions && token.$extensions.plenix;
-    if (px && px.group && !t.group) { t.group = px.group; t.purpose = px.purpose || ''; }
-  }
-  for (const w of written) { const t = byName[w.name]; (t.written = t.written || []).push({ file: w.file, line: w.line, selector: w.selector }); }
-  for (const t of Object.values(byName)) for (const r of t.refs) if (byName[r] && !byName[r].referencedBy.includes(t.name)) byName[r].referencedBy.push(t.name);
-  // the value in a context: the last set that applies wins; references resolve in the same context
-  const CONTEXTS = [];
-  for (const mode of ['light', 'dark']) for (const density of ['compact', 'standard', 'comfortable']) CONTEXTS.push({ mode, density, interaction: null });
-  const raw = (name, ctx) => { let v = null; for (const s of sets) if (applies(s.selector, ctx)) for (const x of s.tokens) if (x.name === name) v = toCss(x.token.$value); return v; };
-  const resolve = (name, ctx, seen = new Set(), rawFn = raw) => {
-    if (seen.has(name)) return null; seen.add(name);
-    const v = rawFn(name, ctx); if (v == null) return null;
-    return v.replace(/var\((--plx-[a-z0-9-]+)\)/g, (m, n) => { const r = resolve(n, ctx, new Set(seen), rawFn); return r == null ? m : r; });
-  };
-  // component settings a component's own stylesheet declares (.plx-button{--plx-comp-button-height:…}): indexed with the
-  // stylesheet as their source (the icon glyphs, generated data URIs, are left out)
-  const local = (dir) => { if (!fs.existsSync(dir)) return; for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, f.name);
-    if (f.isDirectory()) { local(p); continue; }
-    if (!f.name.endsWith('.css') || f.name === 'icon.css') continue;
-    const rel = path.relative(ROOT, p).replace(/\\/g, '/'), css = fs.readFileSync(p, 'utf8').replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
-    for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) for (const d of m[2].matchAll(/(--plx-[a-z0-9-]+)\s*:\s*([^;]+)/g)) {
-      const name = d[1], value = d[2].trim(), selector = m[1].trim().replace(/\s+/g, ' ');
-      if (byName[name] && !byName[name].local) continue;
-      const t = byName[name] = byName[name] || { name, tier: name.slice(2).split('-').slice(0, 2).join('-'), type: null, description: 'Declared by its component’s stylesheet (' + rel + ').', local: true, sets: [], refs: [], usedBy: [], referencedBy: [], written: [] };
-      t.sets.push({ file: rel, output: rel, selector, value });
-      t.written.push({ file: rel, line: css.slice(0, m.index + m[0].indexOf(d[0])).split('\n').length, selector });
-      for (const r of value.matchAll(/var\((--plx-[a-z0-9-]+)/g)) if (!t.refs.includes(r[1])) t.refs.push(r[1]);
-    }
-  } };
-  for (const k of ['components', 'patterns', 'system']) local(path.join(ROOT, 'platform', k));
-  for (const t of Object.values(byName)) if (t.local) for (const r of t.refs) if (byName[r] && !byName[r].referencedBy.includes(t.name)) byName[r].referencedBy.push(t.name);
-  const rawLocal = raw;
-  const raw2 = (name, ctx) => { const v = rawLocal(name, ctx); if (v != null) return v; const t = byName[name]; return t && t.local ? t.sets[0].value : null; };
-  for (const t of Object.values(byName)) {
-    const vals = {}; for (const c of CONTEXTS) vals[c.mode + '/' + c.density] = resolve(t.name, c, undefined, raw2);
-    const uniq = [...new Set(Object.values(vals))];
-    t.resolved = uniq.length === 1 ? { all: uniq[0] } : vals;
-  }
-  // what uses each token: the Platform's stylesheets other than the token files
-  const used = (dir) => { if (!fs.existsSync(dir)) return; for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, f.name);
-    if (f.isDirectory()) { if (!/^(dist|vendor|tokens|design-system|icons)$/.test(f.name)) used(p); continue; }
-    if (!f.name.endsWith('.css') || /themes[\\/]plenix\.css$/.test(p)) continue;
-    const rel = path.relative(ROOT, p).replace(/\\/g, '/'), css = fs.readFileSync(p, 'utf8');
-    for (const m of new Set([...css.matchAll(/var\((--plx-[a-z0-9-]+)/g)].map((x) => x[1]))) if (byName[m]) byName[m].usedBy.push(rel);
-  } };
-  used(path.join(ROOT, 'platform'));
-  // the native values (Platforms Standard 7.1: one set of names, values per platform): each value of the iOS and Android
-  // sets joins the web token it maps to as platforms.<platform>; a value with no web role is listed under platformOnly
-  const platformOnly = [];
-  for (const [plat, file, key] of [['ios', 'platform-ios.tokens.json', 'plx-platform-ios'], ['android', 'platform-android.tokens.json', 'plx-platform-android']]) {
-    const p = path.join(SRC, file); if (!fs.existsSync(p)) continue;
-    const walk = (obj, pre) => { for (const k of Object.keys(obj)) {
-      if (k.charAt(0) === '$') continue;
-      const v = obj[k], seg = /^plx-/.test(k) ? '' : k, name = !seg ? pre : pre ? pre + '.' + seg : seg;
-      if (!v || typeof v !== 'object') continue;
-      if (v.$value === undefined) { walk(v, name); continue; }
-      const x = (v.$extensions && v.$extensions.plenix) || {}, web = x.web && typeof x.web === 'object' ? x.web.token : x.web;
-      const rec = { name, value: v.$value, type: v.$type, description: v.$description || '', source: x.source || null };
-      if (x.web && typeof x.web === 'object') rec.role = x.web.class;
-      if (web && byName[web]) { const t = byName[web]; t.platforms = t.platforms || {}; (t.platforms[plat] = t.platforms[plat] || []).push(rec); }
-      else platformOnly.push(Object.assign({ platform: plat }, rec, web ? { web } : {}));
-    } };
-    walk(JSON.parse(fs.readFileSync(p, 'utf8'))[key], '');
-  }
-  return { $description: 'Generated by build-tokens.js from platform/tokens (do not edit). One record per token; platforms holds a token\'s iOS and Android values (platform-ios/android.tokens.json), platformOnly the native values with no web token.', count: Object.keys(byName).length, tokens: Object.values(byName), platformOnly };
-}
-
 function build(root = ROOT, { check = false } = {}) {
   const manifest = load(root);
   const { files, written } = generate(manifest);
@@ -364,17 +269,21 @@ function build(root = ROOT, { check = false } = {}) {
     const now = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : null;
     if (now !== text) { stale.push(rel); if (!check) fs.writeFileSync(p, text); }
   }
-  if (!check) fs.writeFileSync(path.join(SRC, 'tokens.index.json'), JSON.stringify(index(manifest, written)) + '\n');
-  // the native outputs from the same tokens (Platforms Standard 7.2): Swift, Kotlin and Dart in platform/mobile (build-mobile.js).
-  // They need the whole token set, the component tokens kept beside their components included (a partial copy, such as the
-  // theme test's, builds only the stylesheets)
+  // the token index (tools/token-index.js: plain Style Dictionary reads the tokens, issue 372 step 8) and the native outputs
+  // from the same tokens (Platforms Standard 7.2): Swift, Kotlin and Dart in platform/mobile (build-mobile.js). They need the
+  // whole token set, the component tokens kept beside their components included (a partial copy, such as the theme test's,
+  // builds only the stylesheets)
   const whole = fs.existsSync(path.join(root, 'platform', 'components')) && fs.existsSync(path.join(root, 'build-mobile.js'));
+  if (!check && whole) require('./tools/token-index.js').writeIndex(root, written);
   const mobile = check || !whole ? null : require('./build-mobile.js')(root);
   return { files: Object.keys(files), stale, count: written.length, mobile };
 }
 
 module.exports = build;
 module.exports.toCss = toCss; module.exports.toJson = toJson;
+// TEMPORARY until issue 372 step 10 (Style Dictionary writes the stylesheets, and tools/token-index.js reads where each token
+// is written from them): where this build writes each token, [{ name, file, line, selector }], for the token index
+module.exports.writtenForIndex = (root = ROOT) => generate(load(root)).written;
 if (require.main === module) {
   const check = process.argv.includes('--check');
   const r = build(ROOT, { check });

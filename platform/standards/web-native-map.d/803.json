@@ -1,0 +1,6 @@
+{
+  "$description": "Issue 803 (EntityTitle): the iOS and Android counterparts of the Entity title page, a title line in a list row or a card: Lists and tables (the row's title and subtitle) and Labels on iOS; List (its headline and supporting text) and Card on Android.",
+  "map": {
+    "content|Entity title": { "ios": ["ios-data-display|Lists and tables", "ios-content|Labels"], "android": ["android-data-display|List", "android-data-display|Card"] }
+  }
+}
