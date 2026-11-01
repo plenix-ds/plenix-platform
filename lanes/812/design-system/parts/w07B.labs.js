@@ -135,7 +135,7 @@ if (window.DS && DS.registerLab) {
     DS.registerLab('cascader', {
       name: 'Cascader', title: 'Plenix cascader', file: 'platform/components/Cascader/cascader.css', compPrefix: /^plx-comp-cascader-/,
       store: 'plenix-cascader-lab-tokens', sizes: [['default', 'Default', '.plx-cascader']],
-      variants: [['click', 'Click (default)'], ['hover', 'Hover'], ['search', 'Search'], ['multiple', 'Multiple'], ['parent', 'Choose a parent'], ['tags', 'Many choices (+N)'], ['limit', 'Limit reached'], ['server', 'Server search']],
+      variants: [['click', 'Click (default)'], ['hover', 'Hover'], ['search', 'Search'], ['multiple', 'Multiple'], ['parent', 'Choose a parent'], ['tags', 'Many choices (+N, maxTags 3)'], ['limit', 'Limit reached'], ['server', 'Server search']],
       states: [['default', 'Default'], ['focus', 'Focus'], ['invalid', 'Invalid'], ['disabled', 'Disabled']],
       content: [['open', 'The list open'], ['loading', 'Server search: loading'], ['failed', 'Server search: failed']],
       labels: { size: 'Size', variant: 'Trigger', state: 'State', content: 'Content' },

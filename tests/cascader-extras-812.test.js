@@ -2,7 +2,7 @@
 //   node tests/cascader-extras-812.test.js   → CASCADER_EXTRAS_812_OK
 // Cases, in left to right and right to left: choosableParents lists "All of …" first in a parent's column and Enter on it chooses the parent (value, path in the field, the
 //   list closes); without the flag the column has only the children; a search lists a choosable parent too; with multiple a chosen parent becomes a tag; maxTags shows
-//   that many tags then one "+N" tag (a Tab stop named "N more", its tooltip lists the others on focus, Enter opens the list), 0 shows all; maxChoices refuses the choice past
+//   that many tags then one "+N" tag (a Tab stop named "N more", its tooltip lists the others on focus, Enter opens the list); by default every tag shows ("+N" is opt-in); maxChoices refuses the choice past
 //   the limit, shows the message in the list and announces it; loadOptions waits for a pause in typing (one call), waits for minChars (fewer letters show the columns), drops a
 //   late answer, shows a loading row, lists the matches with their paths and the typed text marked, announces the count, names the chosen result in the field, and a failed load
 //   shows and announces its message.
@@ -65,7 +65,7 @@ const W = {
         await page.focus('.plx-cascader__more'); await wait(500); assert.deepEqual(await texts('[role=tooltip]'), [w.milan + ', ' + w.tokyo]);
         await page.keyboard.press('Enter'); await wait(400); assert.ok(await page.$('.plx-cascader__popup'), 'Enter opens the list');
       });
-      await check(T + 'maxTags 0 shows every tag', async () => { await mount({ multiple: true, rest: { maxTags: 0 } }, 'multi'); assert.equal((await texts('.plx-cascader__field .plx-tag')).length, 5); });
+      await check(T + 'by default (maxTags 0) every tag shows and there is no "+N"', async () => { await mount({ multiple: true }, 'multi'); assert.equal((await texts('.plx-cascader__field .plx-tag')).length, 5); assert.equal(await page.$('.plx-cascader__more'), null); });
       await check(T + 'maxChoices refuses the choice past the limit, says so and announces it', async () => {
         await mount({ multiple: true, rest: { maxChoices: 2 } }); await open(); await page.keyboard.press(into); await page.keyboard.press(into); await wait(200);
         await page.keyboard.press('Enter'); await wait(150); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter'); await wait(150);
