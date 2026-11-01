@@ -6,6 +6,9 @@
 //   collapse it, and keys that repeat fast build one block and one announcement; Ctrl or Command with C copies the block as tab-separated text (a cell with a tab, a line break or a
 //   quote is quoted), group rows are skipped, one cell copies as before; the block is independent of the checkboxes; Enter edits the active cell and ends the block; in a grid of 600
 //   rows the block grows past the drawn rows and still copies whole; onCellSelectionChange hears the block and its end.
+//   The pointer (part 2): a drag from one cell to another selects the block between them (also on the first press, before the lazily loaded operations arrive), it ends with focus
+//   on the last cell so the keyboard goes on from there, no text is selected; Shift with a click makes the block from its anchor or the focused cell; the grid scrolls under a drag near
+//   its edge; a plain click ends the block; with the option off a drag selects nothing; with it on the grid is aria-multiselectable.
 const assert = require('assert/strict');
 const shared = require('./check.js');
 const { serve, launch } = require('./lib');
@@ -103,6 +106,44 @@ const check = async (name, fn) => { if (!shared.wanted(name)) return; try { awai
       await check(T + 'in 600 rows the block grows past the drawn rows and copies whole', async () => {
         await fresh(); await mount('big'); await focusAt(0, 'name'); for (let i = 0; i < 40; i++) { await page.keyboard.down('Shift'); await page.keyboard.press('ArrowDown'); await page.keyboard.up('Shift'); }
         await wait(600); await key('c', ['Control']); assert.equal((await page.evaluate(() => window.__copied.slice(-1)[0])).split('\n').length, 41);
+      });
+      // the pointer (part 2): a drag, Shift with a click, the grid scrolling under a drag; no text selection, nothing without the option
+      const cellXY = (r, f) => page.evaluate((r, f) => { const row = [...document.querySelectorAll('[role=row][data-plx-record]')][r], b = row.querySelector('[data-plx-field="' + f + '"]').getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; }, r, f);
+      const dragTo = async (a, z) => { await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.move(z.x, z.y, { steps: 8 }); await wait(200); };
+      await check(T + 'a drag from one cell to another selects the block between them, and ends with focus on the last cell', async () => {
+        await fresh(); await mount('on'); await focusAt(0, 'name'); await key('ArrowRight', ['Shift']); await key('Escape');   // the operations are loaded
+        const a = await cellXY(1, 'role'), z = await cellXY(3, 'amount'); await dragTo(a, z);
+        let s = await state(); assert.equal(s.cells, 9); assert.equal(s.rows, 3); assert.equal(await page.evaluate(() => window.getSelection().toString()), '', 'no text is selected');
+        await page.mouse.up(); await wait(200); s = await state(); assert.equal(s.cells, 9); assert.equal(s.active, 'amount');
+        await key('ArrowDown', ['Shift']); assert.equal((await state()).cells, 12, 'the keyboard goes on from the drag end');
+      });
+      await check(T + 'a drag on the very first press (the operations not loaded yet) still selects', async () => {
+        await fresh(); await mount('on'); const a = await cellXY(1, 'role'), z = await cellXY(2, 'city'); await dragTo(a, z); await page.mouse.up(); await wait(400);
+        assert.equal((await state()).cells, 4);
+      });
+      await check(T + 'Shift with a click makes the block from the focused cell, and again from the same anchor', async () => {
+        await fresh(); await mount('on'); const a = await cellXY(2, 'city'); await page.mouse.click(a.x, a.y); await wait(200);
+        const z = await cellXY(5, 'amount'); await page.keyboard.down('Shift'); await page.mouse.click(z.x, z.y); await page.keyboard.up('Shift'); await wait(300);
+        let s = await state(); assert.equal(s.cells, 8); assert.equal(s.rows, 4);
+        const y = await cellXY(7, 'role'); await page.keyboard.down('Shift'); await page.mouse.click(y.x, y.y); await page.keyboard.up('Shift'); await wait(300);
+        s = await state(); assert.equal(s.rows, 6); assert.equal(await page.evaluate(() => window.__log.slice(-1)[0].split(' ')[1].split('>')[0]), 'r3.role', 'the anchor is where the block began');
+      });
+      await check(T + 'a plain click ends the block', async () => {
+        const k2 = await cellXY(6, 'name'); await page.mouse.click(k2.x, k2.y); await wait(250); assert.equal((await state()).cells, 0);
+      });
+      await check(T + 'dragging past the bottom edge scrolls the grid and the block grows with it', async () => {
+        await fresh(); await mount('big'); await focusAt(0, 'name'); await key('ArrowRight', ['Shift']); await key('Escape');
+        const a = await cellXY(1, 'name'), edge = await page.evaluate(() => { const r = document.querySelector('.plx-data-grid__grid-tableholder').getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.bottom - 6 }; });
+        await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.move(edge.x, edge.y, { steps: 6 }); await wait(1500);
+        assert.ok(await page.evaluate(() => document.querySelector('.plx-data-grid__grid-tableholder').scrollTop) > 100, 'the grid scrolled'); await page.mouse.up(); await wait(300);
+        await key('c', ['Control']); assert.ok((await page.evaluate(() => window.__copied.slice(-1)[0])).split('\n').length > 30, 'the copy has every row of the block');
+      });
+      await check(T + 'with the option off a drag selects nothing and the grid is not multiselectable', async () => {
+        await fresh(); await mount('off'); const a = await cellXY(1, 'role'), z = await cellXY(3, 'amount'); await dragTo(a, z); await page.mouse.up(); await wait(200);
+        assert.equal((await state()).cells, 0); assert.equal(await page.evaluate(() => document.querySelectorAll('[aria-multiselectable]').length), 0);
+      });
+      await check(T + 'with the option on the grid is aria-multiselectable', async () => {
+        await fresh(); await mount('on'); assert.equal(await page.evaluate(() => document.querySelector('[role=grid]').getAttribute('aria-multiselectable')), 'true');
       });
     }
   } finally { if (browser) await browser.close(); server.close(); }

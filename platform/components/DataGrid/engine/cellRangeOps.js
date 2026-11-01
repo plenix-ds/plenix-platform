@@ -78,3 +78,50 @@ export const extendTo = ({ range, trail, row, c, key, rtl, rowAt, model, ordered
   reached.add(model[nr].id + '|' + ordered[nc].id);
   return { range: { anchor: cont ? cont.anchor : here, focus: { key: model[nr].id, field: ordered[nc].id } }, nr, nc, step, trail: reached };
 };
+
+// ---- the pointer (issue 465, part 2): Shift with a click, and a drag
+// the cell under a point of the page: { key: the row's id, field: the column's id }, or null when it is not a cell of this grid
+export const cellAt = (x, y, frame) => {
+  const el = document.elementFromPoint(x, y), cell = el && el.closest('[role="gridcell"][data-plx-field]'), row = cell && cell.closest('[data-plx-record]');
+  if (!cell || !row || !frame || !frame.contains(cell)) return null;
+  return { key: row.getAttribute('data-plx-record'), field: cell.getAttribute('data-plx-field') };
+};
+// the cell that has keyboard focus: where a Shift with a click starts a block when there is none
+export const focusedCell = (frame) => {
+  const cell = document.activeElement && document.activeElement.closest && document.activeElement.closest('[role="gridcell"][data-plx-field]'), row = cell && cell.closest('[data-plx-record]');
+  return cell && row && frame && frame.contains(cell) ? { key: row.getAttribute('data-plx-record'), field: cell.getAttribute('data-plx-field') } : null;
+};
+
+const EDGE = 32;   // how near a scroll edge the pointer has to be, in pixels, before the grid scrolls under it
+const MOST = 24;   // the most it scrolls in one frame
+const toward = (v, lo, hi) => (v < lo + EDGE ? Math.max(-MOST, (v - lo - EDGE) / 2) : v > hi - EDGE ? Math.min(MOST, (v - hi + EDGE) / 2) : 0);
+
+// A drag from a cell with the primary mouse button: the block follows the pointer over the cells, the grid scrolls when the pointer is near its edge
+// (the rows and columns drawn change under it: the cell under the pointer is read again each frame), and a release ends it. isDown says whether the
+// button is still pressed (the operations may load after a quick release: then there is no drag). onMove(range, cell) on each new cell, onEnd(cell) once.
+// Returns a function that stops it.
+export const beginDrag = ({ anchor, frame, scroller, rowAt, ordered, isDown, onMove, onEnd }) => {
+  if (!isDown()) return () => {};
+  let last = anchor, frameId = 0, x = 0, y = 0, moved = false;
+  const hit = () => {
+    const c = cellAt(x, y, frame);
+    if (!c || !rowAt.has(c.key) || !ordered.some((col) => col.id === c.field) || (c.key === last.key && c.field === last.field)) return;
+    last = c; moved = true; onMove({ anchor, focus: c }, c);
+  };
+  const edge = () => {
+    if (!scroller) return;
+    const r = scroller.getBoundingClientRect(), dy = toward(y, r.top, r.bottom), dx = toward(x, r.left, r.right);
+    if (!dx && !dy) { frameId = 0; return; }
+    scroller.scrollTop += dy; scroller.scrollLeft += dx; hit();
+    frameId = requestAnimationFrame(edge);
+  };
+  const move = (e) => { x = e.clientX; y = e.clientY; hit(); if (!frameId) edge(); };
+  const nothing = (e) => e.preventDefault();   // no text selection while dragging
+  const stop = () => {
+    window.removeEventListener('mousemove', move, true); window.removeEventListener('mouseup', up, true); document.removeEventListener('selectstart', nothing, true);
+    if (frameId) cancelAnimationFrame(frameId);
+  };
+  const up = () => { stop(); onEnd(last, moved); };
+  window.addEventListener('mousemove', move, true); window.addEventListener('mouseup', up, true); document.addEventListener('selectstart', nothing, true);
+  return stop;
+};
