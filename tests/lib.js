@@ -66,9 +66,31 @@ const launch = async (options = {}) => {
   }
   if (!browser) throw last;
   const newPage = browser.newPage.bind(browser);
-  browser.newPage = async (...a) => { const p = await newPage(...a); await p.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]); return p; };
+  browser.newPage = async (...a) => { const p = await newPage(...a); await p.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]); return loaderAware(p); };
   return browser;
 };
+// the page loader (platform/loader/loader.js, #842) adds the application's script only after the stylesheet has loaded, and
+// hides the page until then: after page.goto or page.reload, a page that has the loader is awaited until it says it is ready
+// (window.PlenixLoader.ready resolves once the application's script has run), so a test's own waits start from a running
+// application, as before the loader. A page without the loader returns at once. It changes no test's checks, only the waiting.
+const LOADER_TIMEOUT = 15000;
+const loaderReady = async (page, url) => {
+  let timer;
+  const wait = page.evaluate(() => (window.PlenixLoader && window.PlenixLoader.ready ? window.PlenixLoader.ready.then(() => true) : false));
+  const late = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('The page loader did not report ready within ' + LOADER_TIMEOUT / 1000 + ' seconds (window.PlenixLoader.ready): ' + url)), LOADER_TIMEOUT); });
+  try { await Promise.race([wait, late]); }
+  catch (e) {
+    // the page navigated on during the wait (a test that moves on at once): nothing to wait for here
+    if (/Execution context was destroyed|Cannot find context|Target closed|Session closed/i.test(String(e && e.message))) return;
+    throw new Error(/did not report ready/.test(String(e && e.message)) ? e.message : 'The page loader failed on ' + url + ': ' + String(e && e.message).split('\n')[0]);
+  } finally { clearTimeout(timer); }
+};
+function loaderAware(page) {
+  const goto = page.goto.bind(page), reload = page.reload.bind(page);
+  page.goto = async (url, ...rest) => { const res = await goto(url, ...rest); await loaderReady(page, url); return res; };
+  page.reload = async (...rest) => { const res = await reload(...rest); await loaderReady(page, page.url()); return res; };
+  return page;
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // a page is ready when it has loaded, its fonts have loaded and its main region shows its content, then two frames for the
 // last render (#382 F8: an observable condition, not a fixed wait); a page with no main region: its body's content

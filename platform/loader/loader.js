@@ -23,7 +23,12 @@
    Until plenix.css has loaded, the page is hidden (data-plx-page-loading on <html>, loader.css), at most 3 seconds; then
    it shows anyway, with a warning. Every script is added with async = false, so they run in the order above.
    After plenix.js runs, Plenix.version must be the release picked; a difference is one console warning (plenix.js itself
-   compares its stylesheet's --plx-version). window.PlenixLoader: { mode: 'cdn' | 'local', version, base, app }.
+   compares its stylesheet's --plx-version). window.PlenixLoader: { mode: 'cdn' | 'local', version, base, app, ready, done }.
+   The ready signal: window.PlenixLoader.ready is a promise, there as soon as the loader has run, that resolves once the
+     application's own script has run (and the page is shown), with window.PlenixLoader; then PlenixLoader.done is true and
+     document fires the event plenix:ready. It rejects when the application's script cannot load, or when no release can
+     be read and there is no fallback. Wait for it, not for a fixed time: the application's script runs only after the
+     stylesheet has loaded (the tests wait for it in tests/lib.js).
    Notes: Plain script, no build: it is the one Plenix file a published page loads from the site itself, because it is
      what picks the release. Never an inline style or a style block: loader.css holds its one rule. */
 (function () {
@@ -43,6 +48,18 @@
   var page = new URL('./', location.href).href; // the page's own folder
   var warned = {};
   function warn(key, text) { if (warned[key]) return; warned[key] = true; console.warn('Plenix loader: ' + text); }
+
+  // the ready signal (see the header): there from the start, so a page or a test can wait for it before a release is picked
+  var settle = {};
+  var state = window.PlenixLoader = { mode: null, version: null, base: null, app: app, done: false };
+  state.ready = new Promise(function (resolve, reject) { settle.resolve = resolve; settle.reject = reject; });
+  state.ready.catch(function () { /* the warning says why; a page that waits sees the rejection */ });
+  function isReady() {
+    state.done = true;
+    settle.resolve(state);
+    document.dispatchEvent(new CustomEvent('plenix:ready', { detail: state }));
+  }
+  function failed(text) { warn('failed', text); settle.reject(new Error('Plenix loader: ' + text)); }
 
   // the files of one place: a release folder on the CDN, or this checkout
   function filesOf(mode, version) {
@@ -90,7 +107,7 @@
 
   function load(mode, version) {
     var f = filesOf(mode, version);
-    window.PlenixLoader = { mode: mode, version: mode === 'local' ? 'local' : version, base: f.base, app: app };
+    state.mode = mode; state.version = mode === 'local' ? 'local' : version; state.base = f.base;
     root.setAttribute('data-plenix-source', mode === 'local' ? 'local' : version);
     add('link', { rel: 'icon', type: 'image/svg+xml', href: f.favicon });
     // the theme first, so the page never shows the other mode
@@ -101,7 +118,11 @@
     function late() {
       if (lateAdded || !styled || !ready) return;
       lateAdded = true;
-      f.late.concat(f.audits).forEach(function (src) { script(src); });
+      var appScript = f.late[f.late.length - 1];
+      f.late.concat(f.audits).forEach(function (src) {
+        var el = script(src, src === appScript ? isReady : null);
+        if (src === appScript) el.addEventListener('error', function () { failed('could not load the application\'s script ' + src); });
+      });
     }
     var sheets = f.css.length;
     f.css.forEach(function (href) {
@@ -142,6 +163,6 @@
     load('cdn', v);
   }).catch(function (e) {
     if (RELEASE.test(fallback)) { warn('latest', 'could not read ' + cdn + 'latest.json (' + e.message + '): release ' + fallback); load('cdn', fallback); }
-    else { warn('latest', 'could not read ' + cdn + 'latest.json (' + e.message + ') and no fallback release: the page shows unstyled'); root.removeAttribute('data-plx-page-loading'); }
+    else { warn('latest', 'could not read ' + cdn + 'latest.json (' + e.message + ') and no fallback release: the page shows unstyled'); root.removeAttribute('data-plx-page-loading'); failed('no release could be read for ' + app); }
   });
 })();
