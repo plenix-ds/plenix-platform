@@ -4,8 +4,9 @@
    right and right to left:
      wide panel (the columns fit): a table; no column, selection cell or row menu cell is sticky (position: sticky) by default
      the divider dragged (keyboard) so the columns no longer fit: the row cards (plx-data-grid--narrow), no sideways overflow in the
-       body (scrollWidth <= clientWidth), every card shows the key values first and the other fields as labeled details,
-       its checkbox, its actions and its row menu button
+       body (scrollWidth <= clientWidth); a grid with no layout draws the default A card (issue 679, owner 2026-11-01): every field
+       in a slot (here five fields, so no "Label: value" line is left over), its checkbox, its actions and its row menu button
+     layout="plain": the plain card of before, the key values first and the other fields as labeled details
      a card's checkbox selects the row (onSelectionChange); its row menu opens; the row opens with a click and with Enter
      the sort chosen in the table is kept in the cards (the same first row), and the selection is kept across the switch
      the divider dragged back: the table again
@@ -37,7 +38,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
         { field: 'act', title: 'Actions', kind: 'actions', width: 120, render: (r) => h(P.Button, { size: 'xs', onClick: () => window.__log.push('act ' + r.id) }, 'Act') }];
       function App() {
         const [sel, setSel] = React.useState([]), [open, setOpen] = React.useState(null);
-        return h(P.SplitView, { label: 'Layout', firstLabel: 'List', defaultSize: opts.size, maxSize: 1200, first: h(P.DataGrid, { label: 'Records', data, columns, index: 'id', selectable: true, selected: sel, narrow: opts.narrow,
+        return h(P.SplitView, { label: 'Layout', firstLabel: 'List', defaultSize: opts.size, maxSize: 1200, first: h(P.DataGrid, { label: 'Records', data, columns, index: 'id', selectable: true, selected: sel, narrow: opts.narrow, layout: opts.layout,
           onSelectionChange: (keys) => { window.__log.push('select ' + keys.join(',')); setSel(keys); }, openKey: open, onRowClick: (r) => { window.__log.push('open ' + r.id); setOpen(r.id); },
           rowMenu: [{ label: 'Rename', onSelect: (r) => window.__log.push('rename ' + r.id) }] }), second: h('p', null, open || 'Nothing open') });
       }
@@ -50,6 +51,8 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const row = g.querySelector('.plx-data-grid__grid-row');
       return { cards: g.classList.contains('plx-data-grid--narrow'), sideways: body.scrollWidth > body.clientWidth + 1, sticky: [...new Set(sticky)],
         details: row ? [...row.querySelectorAll('.plx-data-grid__cell--list-detail')].filter((c) => c.getClientRects().length).map((c) => c.getAttribute('data-plx-label')) : [],
+        template: !!(row && row.classList.contains('plx-data-grid__grid-row--template-a')),
+        slots: row ? Object.fromEntries([...row.querySelectorAll('.plx-data-grid__cell--slot')].filter((c) => c.getClientRects().length).map((c) => [c.getAttribute('data-plx-field'), [...c.classList].find((x) => x.startsWith('plx-data-grid__cell--slot-')).slice(26)])) : {},
         check: !!(row && row.querySelector('input[type=checkbox]') && row.querySelector('input[type=checkbox]').getClientRects().length),
         menu: !!(row && row.querySelector('button[aria-label="Row actions"]') && row.querySelector('button[aria-label="Row actions"]').getClientRects().length),
         act: !!(row && [...row.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Act' && b.getClientRects().length)),
@@ -79,7 +82,9 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       s = await state();
       assert.equal(s.cards, true, d + 'a narrow pane (the columns do not fit): the row cards');
       assert.equal(s.sideways, false, d + 'the cards never scroll sideways');
-      assert.ok(s.details.length >= 2, d + 'the other fields show as labeled details: ' + JSON.stringify(s.details));
+      assert.equal(s.template, true, d + 'a grid with no layout draws the default A card');
+      assert.deepEqual(s.slots, { name: 'title', owner: 'subtitle', status: 'primary', size: 'secondary', place: 'tertiary' }, d + 'every field fills a slot, in the order of the columns: ' + JSON.stringify(s.slots));
+      assert.deepEqual(s.details, [], d + 'five fields fit the six slots, so no "Label: value" line is left over: ' + JSON.stringify(s.details));
       assert.ok(s.check && s.menu && s.act, d + 'a card keeps its checkbox, its row menu and its actions: ' + JSON.stringify(s));
       assert.equal(s.first, sortedFirst, d + 'the sort chosen in the table is kept in the cards');
       assert.ok(await page.evaluate(() => document.querySelector('.plx-data-grid__grid-row input[type=checkbox]').checked), d + 'the selection is kept across the switch');
@@ -91,7 +96,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       assert.equal(await page.evaluate(() => document.querySelectorAll('[role=menu]').length), 1, d + 'a card\'s row menu opens');
       await page.keyboard.press('Escape'); await wait(200);
       await page.evaluate(() => { window.__log = []; });
-      await page.click('.plx-data-grid__grid-row .plx-data-grid__cell--key-first'); await wait(300);
+      await page.click('.plx-data-grid__grid-row .plx-data-grid__cell--slot-title'); await wait(300);
       assert.ok((await log()).some((l) => l.startsWith('open ')), d + 'a click on a card opens the row');
       await page.evaluate(() => { window.__log = []; const r = document.querySelectorAll('.plx-data-grid__grid-row')[2]; r.focus(); });
       await press('Enter');
@@ -100,6 +105,12 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       await page.focus(divider); await press('End');
       s = await state();
       assert.equal(s.cards, false, d + 'the divider dragged back: the table again');
+      // layout="plain": the plain card of before, the key values first and the other fields as labeled details
+      await draw({ dir, size: 360, layout: 'plain' });
+      s = await state();
+      assert.equal(s.cards, true, d + 'layout="plain" in a narrow pane: the row cards');
+      assert.equal(s.template, false, d + 'layout="plain": no template card');
+      assert.ok(s.details.length >= 2, d + 'layout="plain": the other fields show as labeled details: ' + JSON.stringify(s.details));
       // the escape hatch and the opt-in pin
       await draw({ dir, size: 360, narrow: 'table' });
       s = await state();

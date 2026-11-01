@@ -753,6 +753,10 @@ export default {
     "all": "All"
   },
   "dataGrid": {
+    "cardCount": {
+      "one": "{n} record",
+      "other": "{n} records"
+    },
     "cellsSelected": {
       "one": "{n} cell selected",
       "other": "{n} cells selected"
