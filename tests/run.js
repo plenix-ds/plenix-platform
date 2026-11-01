@@ -37,33 +37,45 @@ const ALL = AUTOMATIC.concat(ON_DEMAND, SPEC_ONLY, RELEASE);
 // flag after a name stops the run, so a typo never records a baseline silently
 const FLAGS = {
   'visual': ['--update'], 'typography': ['--update'], 'component-tokens': ['--update'], 'reflow': ['--update'],
-  'focus-order': ['--update'], 'zero-overlap': ['--record'],
+  'focus-order': ['--update'], 'a11y': ['--update'], 'zero-overlap': ['--record'],
 };
+// site-coverage reads --list too, but it only prints a table and writes nothing, so it is left out of FLAGS on purpose
 const RUN_FLAGS = ['--full', '--on-demand', '--release'];
-// one argument may hold a name and its flags ("zero-overlap --record", as the owner's runner passes a whole line)
-const args = process.argv.slice(2).reduce((a, x) => a.concat(String(x).trim().split(/\s+/).filter(Boolean)), []);
-const full = args.includes('--full');
-const onDemand = args.includes('--on-demand');
-const release = args.includes('--release');
-// a name may carry its parts: keyboard:Toolbar,Tabs (the parts are passed to that test only, as TEST_ONLY)
-const parts = {}, flags = {}, names = [];
-let last = null;
-for (const a of args) {
-  if (RUN_FLAGS.includes(a)) continue;
-  if (/^--/.test(a)) {
-    if (!last) { console.error('Flag ' + a + ' has no test name before it (for example: zero-overlap --record)'); process.exit(2); }
-    if (ALL.indexOf(last) < 0) continue; // the unknown name stops the run below, as "No such test"
-    const ok = FLAGS[last] || [];
-    if (!ok.includes(a)) { console.error('Flag ' + a + ' is not allowed for ' + last + (ok.length ? ' (allowed: ' + ok.join(', ') + ')' : ' (it takes no flags)')); process.exit(2); }
-    if (!flags[last].includes(a)) flags[last].push(a);
-    continue;
+// reads the arguments; returns { full, onDemand, release, parts, flags, names } or { error }. One argument may hold a name
+// and its flags ("zero-overlap --record", as the owner's runner passes a whole line): only the "--" words after the name are
+// split off, so a name with its parts keeps its spaces ("keyboard:Toolbar, Tabs"). A flag with no name before it stops the run
+function readArgs(argv) {
+  const words = [];
+  for (const x of argv) {
+    String(x).trim().split(/\s+(?=--)/).filter(Boolean).forEach((piece) => {
+      if (/^--/.test(piece)) words.push(...piece.split(/\s+/)); else words.push(piece);
+    });
   }
-  const i = a.indexOf(':');
-  const n = i < 0 ? a : a.slice(0, i);
-  if (i >= 0) parts[n] = a.slice(i + 1).split(',').map((x) => x.trim()).filter(Boolean);
-  if (ALL.indexOf(n) >= 0) flags[n] = flags[n] || [];
-  names.push(n); last = n;
+  const out = { full: words.includes('--full'), onDemand: words.includes('--on-demand'), release: words.includes('--release'),
+    parts: {}, flags: {}, names: [] };
+  let last = null;
+  for (const a of words) {
+    if (RUN_FLAGS.includes(a)) continue;
+    if (/^--/.test(a)) {
+      if (!last) return { error: 'Flag ' + a + ' has no test name before it (for example: zero-overlap --record)' };
+      if (ALL.indexOf(last) < 0) continue; // the unknown name stops the run below, as "No such test"
+      const ok = FLAGS[last] || [];
+      if (!ok.includes(a)) return { error: 'Flag ' + a + ' is not allowed for ' + last + (ok.length ? ' (allowed: ' + ok.join(', ') + ')' : ' (it takes no flags)') };
+      if (!out.flags[last].includes(a)) out.flags[last].push(a);
+      continue;
+    }
+    // a name may carry its parts: keyboard:Toolbar,Tabs (the parts are passed to that test only, as TEST_ONLY)
+    const i = a.indexOf(':');
+    const n = (i < 0 ? a : a.slice(0, i)).trim();
+    if (i >= 0) out.parts[n] = a.slice(i + 1).split(',').map((x) => x.trim()).filter(Boolean);
+    if (ALL.indexOf(n) >= 0) out.flags[n] = out.flags[n] || [];
+    out.names.push(n); last = n;
+  }
+  return out;
 }
+const read = readArgs(process.argv.slice(2));
+if (read.error) { console.error(read.error); process.exit(2); }
+const { full, onDemand, release, parts, flags, names } = read;
 const bad = names.filter((n) => ALL.indexOf(n) < 0);
 if (bad.length) { console.error('No such test: ' + bad.join(', ') + ' (tests: ' + ALL.join(', ') + ')'); process.exit(2); }
 const env = Object.assign({}, process.env, full ? { TEST_SCOPE: 'full' } : {});
