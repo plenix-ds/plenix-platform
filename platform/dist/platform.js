@@ -778,6 +778,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
       "title": "Navigation",
       "close": "Close"
     },
+    "branch": {
+      "loading": "Loading\u2026",
+      "loadingName": "Loading {label}",
+      "failed": "Couldn\u2019t load these items",
+      "failedName": "Couldn\u2019t load {label}",
+      "retry": "Try again"
+    },
     "brand": {
       "name": "Plenix"
     },
@@ -3445,6 +3452,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
         "ean13": "EAN-13",
         "upca": "UPC-A"
       }
+    },
+    "branch": {
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "loadingName": "\u062C\u0627\u0631\u064D \u062A\u062D\u0645\u064A\u0644 {label}",
+      "failed": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0647\u0630\u0647 \u0627\u0644\u0639\u0646\u0627\u0635\u0631",
+      "failedName": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 {label}",
+      "retry": "\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629"
     },
     "brand": {
       "name": "Plenix"
@@ -7806,7 +7820,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const a = Math.min(x0, x1), b = Math.max(x0, x1);
     return React2.createElement("rect", { className: cx("plx-chart-brush", className), x: a, y: 0, width: Math.max(0, b - a), height: inner.height });
   }
-  const h = React2.createElement;
+  const h$1 = React2.createElement;
   const SUMMARY = { up: "Up {change}", down: "Down {change}", flat: "Flat", range: "from {first} to {last}", low: "lowest {value}", high: "highest {value}", at: "{value} ({label})", empty: "No data" };
   function summarizeSeries(values, { labels, format, strings } = {}) {
     const t = Object.assign({}, SUMMARY, strings);
@@ -7843,10 +7857,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
   };
   function ChartPatterns({ id }) {
     if (!id) return null;
-    return h("defs", { className: "plx-chart-patterns" }, CHART_PATTERNS.map((name) => h(
+    return h$1("defs", { className: "plx-chart-patterns" }, CHART_PATTERNS.map((name) => h$1(
       "pattern",
       { key: name, id: id + "-" + name, width: TILE, height: TILE, patternUnits: "userSpaceOnUse" },
-      SHAPES$1[name].map(([tag2, geo], k) => h(tag2, Object.assign({ key: k, className: tag2 === "circle" ? "plx-chart-pattern__dot" : "plx-chart-pattern__stroke" }, geo)))
+      SHAPES$1[name].map(([tag2, geo], k) => h$1(tag2, Object.assign({ key: k, className: tag2 === "circle" ? "plx-chart-pattern__dot" : "plx-chart-pattern__stroke" }, geo)))
     )));
   }
   function useChartPoints({ count: count2 = 0, describe, select = false, onSelect, strings } = {}) {
@@ -24442,17 +24456,141 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const all = groups || [{ heading: null, items: items || [] }];
     return /* @__PURE__ */ React2.createElement("nav", { "aria-label": label2, className: cx("plx-nav-list", className) }, all.map((g, i) => /* @__PURE__ */ React2.createElement(Group$1, { key: g.heading || i, heading: g.heading, items: g.items, collapsible: g.collapsible, icon: g.icon, defaultExpanded: g.defaultExpanded, current: value, onSelect, t, loc: loc2 })));
   }
+  const h = React2.createElement;
+  const RetryButton = Button;
+  const LoadingSpinner = Spinner;
+  function useBranchLoader(loadChildren, options = {}) {
+    const t = useStrings("branch", options.strings || null);
+    const [entries2, setEntries] = React2.useState({});
+    const live = React2.useRef(entries2);
+    live.current = entries2;
+    const promises = React2.useRef({});
+    const mounted = React2.useRef(true);
+    React2.useEffect(() => {
+      mounted.current = true;
+      return () => {
+        mounted.current = false;
+      };
+    }, []);
+    const set2 = (id, entry) => {
+      live.current = Object.assign({}, live.current, { [id]: entry });
+      if (mounted.current) setEntries(live.current);
+    };
+    const childrenOf = (n) => Array.isArray(n.children) ? n.children : null;
+    const needs = (n) => !!(loadChildren && n && n.hasChildren && !Array.isArray(n.children));
+    const statusOf2 = (n) => {
+      if (!n) return "done";
+      if (Array.isArray(n.children)) return "done";
+      const e = live.current[n.id];
+      return e ? e.status : needs(n) ? "idle" : "done";
+    };
+    const load2 = (n) => {
+      if (!needs(n) || !loadChildren) return Promise.resolve(n ? childrenOf(n) : null);
+      const e = live.current[n.id];
+      if (e && e.status === "done") return Promise.resolve(e.children);
+      const pending2 = promises.current[n.id];
+      if (e && e.status === "loading" && pending2) return pending2;
+      set2(n.id, { status: "loading" });
+      const p = Promise.resolve().then(() => loadChildren(n)).then(
+        (kids) => {
+          const children = Array.isArray(kids) ? kids : [];
+          set2(n.id, { status: "done", children });
+          delete promises.current[n.id];
+          return children;
+        },
+        () => {
+          set2(n.id, { status: "failed" });
+          delete promises.current[n.id];
+          announce(fill(t.failedName, { label: n.label }));
+          return null;
+        }
+      );
+      promises.current[n.id] = p;
+      return p;
+    };
+    const retry = (n) => {
+      const e = n ? live.current[n.id] : void 0;
+      if (e && e.status === "failed") {
+        const next = Object.assign({}, live.current);
+        delete next[n.id];
+        live.current = next;
+      }
+      return load2(n);
+    };
+    const wasOpen = React2.useRef(/* @__PURE__ */ new Set());
+    const ensure = (list2) => {
+      const now = /* @__PURE__ */ new Set();
+      (list2 || []).forEach((n) => {
+        if (!n) return;
+        now.add(n.id);
+        const e = live.current[n.id];
+        if (!needs(n)) return;
+        if (!e) load2(n);
+        else if (e.status === "failed" && !wasOpen.current.has(n.id)) retry(n);
+      });
+      wasOpen.current = now;
+    };
+    const cache = React2.useRef(/* @__PURE__ */ new WeakMap());
+    const merge = (nodes) => {
+      if (!nodes || typeof nodes !== "object") return nodes;
+      const c = cache.current.get(nodes);
+      if (c && c.entries === entries2) return c.out;
+      const done = Object.keys(entries2).filter((id) => entries2[id].status === "done");
+      const walk = (list2) => {
+        let changed = false;
+        const out2 = list2.map((n) => {
+          let kids = childrenOf(n);
+          const e = kids ? void 0 : entries2[n.id];
+          if (e && e.status === "done") kids = e.children;
+          if (!kids) return n;
+          const merged = walk(kids);
+          if (merged === n.children) return n;
+          changed = true;
+          return Object.assign({}, n, { children: merged });
+        });
+        return changed ? out2 : list2;
+      };
+      const out = done.length ? walk(nodes) : nodes;
+      cache.current.set(nodes, { entries: entries2, out });
+      return out;
+    };
+    return { needs, statusOf: statusOf2, load: load2, retry, ensure, merge, strings: t };
+  }
+  function BranchStatus({ loader, node, className }) {
+    const status = loader.statusOf(node), t = loader.strings;
+    if (status === "failed") {
+      return h(
+        "span",
+        { className: className + " is-failed" },
+        h("span", { className: className + "-text" }, t.failed),
+        h(RetryButton, { variant: "ghost", size: "sm", onClick: (e) => {
+          e.stopPropagation();
+          loader.retry(node);
+        } }, t.retry)
+      );
+    }
+    if (status === "loading" || status === "idle") {
+      return h(
+        "span",
+        { className: className + " is-loading" },
+        h(LoadingSpinner, { size: "sm", label: fill(t.loadingName, { label: node.label }) }),
+        h("span", { className: className + "-text", "aria-hidden": "true" }, t.loading)
+      );
+    }
+    return null;
+  }
   const SquarePlusIcon = { "name": "square-plus", "set": "plenix", "symbol": "add_box", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M454-298h52v-156h156v-52H506v-156h-52v156H298v52h156v156ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M454-298h52v-156h156v-52H506v-156h-52v156H298v52h156v156ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M450-290h60v-160h160v-60H510v-160h-60v160H290v60h160v160ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M450-290h60v-160h160v-60H510v-160h-60v160H290v60h160v160ZM140-140v-680h680v680H140Z" } } } };
   const SquareMinusIcon = { "name": "square-minus", "set": "plenix", "symbol": "indeterminate_check_box", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": "M346-454h268v-52H346v52ZM164-164v-632h632v632H164Zm52-52h528v-528H216v528Zm0 0v-528 528Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M346-454h268v-52H346v52ZM164-164v-632h632v632H164Z" } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": "M290-450h380v-60H290v60ZM140-140v-680h680v680H140Zm60-60h560v-560H200v560Zm0 0v-560 560Z" }, "fill": { "viewBox": "0 -960 960 960", "d": "M290-450h380v-60H290v60ZM140-140v-680h680v680H140Z" } } } };
   const treeIcon = (i, filled) => typeof i === "string" || isIconModule(i) ? asIcon(i, { filled }) : React2.isValidElement(i) && i.type === Icon ? React2.cloneElement(i, { filled: filled || i.props.filled }) : i;
   const OPEN_ICONS$1 = { folder: FolderOpenIcon };
   const iconOf$1 = (n, isOpen) => isOpen ? n.openIcon || OPEN_ICONS$1[iconKey(n.icon)] || n.icon : n.icon;
   function TreeItem({ n, level, tree }) {
-    const { base: base2, selected, active, open, refs, moveTo: moveTo2, toggle: toggle2, onSelect, setFocusId } = tree;
+    const { base: base2, selected, active, open, refs, moveTo: moveTo2, toggle: toggle2, onSelect, setFocusId, loader } = tree;
     const { focusVisible, focusProps } = useFocusable({ tabStop: "none", handlers: { onFocus: (e) => {
       if (e.target === e.currentTarget) setFocusId(n.id);
     } } });
-    const kids = n.children && n.children.length;
+    const pending2 = loader.needs(n);
+    const kids = n.children && n.children.length || pending2;
     const isOpen = kids && open.has(n.id);
     return /* @__PURE__ */ React2.createElement(
       "li",
@@ -24463,6 +24601,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         id: base2 + "-" + n.id,
         role: "treeitem",
         "aria-level": level,
+        "aria-busy": pending2 && isOpen && loader.statusOf(n) === "loading" ? true : void 0,
         "aria-expanded": kids ? !!isOpen : void 0,
         "aria-selected": n.id === selected,
         tabIndex: n.id === active ? 0 : -1,
@@ -24485,7 +24624,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         },
         kids ? /* @__PURE__ */ React2.createElement(Icon, { icon: isOpen ? SquareMinusIcon : SquarePlusIcon, filled: false }) : null
       ), n.icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__icon" }, treeIcon(iconOf$1(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__label" }, n.label), n.meta !== void 0 ? /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__meta" }, n.meta) : null),
-      isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, n.children.map((c) => /* @__PURE__ */ React2.createElement(TreeItem, { key: c.id, n: c, level: level + 1, tree }))) : null
+      isOpen && pending2 ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, /* @__PURE__ */ React2.createElement("li", { role: "none", className: "plx-tree__item" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-tree__row plx-tree__row--status", "data-plx-level": Math.min(level + 1, 12) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__toggle is-leaf", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node: n, className: "plx-tree__status" })))) : isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, n.children.map((c) => /* @__PURE__ */ React2.createElement(TreeItem, { key: c.id, n: c, level: level + 1, tree }))) : null
     );
   }
   function visible(nodes, open, parent, out) {
@@ -24495,8 +24634,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     });
     return out;
   }
-  function Tree({ label: label2, nodes, selected, onSelect, expanded, defaultExpanded = [], onExpandedChange, className }) {
+  function Tree({ label: label2, nodes: given, loadChildren, selected, onSelect, expanded, defaultExpanded = [], onExpandedChange, className }) {
     const base2 = useUid("plx-tree");
+    const loader = useBranchLoader(loadChildren);
+    const nodes = loader.merge(given);
     const [ownOpen, setOwnOpen] = React2.useState(defaultExpanded);
     const open = new Set(expanded !== void 0 ? expanded : ownOpen);
     const setOpen = (next) => {
@@ -24505,6 +24646,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (onExpandedChange) onExpandedChange(list2);
     };
     const flat = visible(nodes, open, null, []);
+    React2.useEffect(() => {
+      loader.ensure(flat.filter((v) => open.has(v.node.id)).map((v) => v.node));
+    });
     const [focusId, setFocusId] = React2.useState(null);
     const active = flat.some((v) => v.node.id === focusId) ? focusId : flat.some((v) => v.node.id === selected) ? selected : flat[0] && flat[0].node.id;
     const refs = React2.useRef({});
@@ -24522,7 +24666,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const at2 = flat.findIndex((v) => v.node.id === active);
       const cur = flat[at2];
       if (!cur) return;
-      const kids = cur.node.children && cur.node.children.length;
+      const pending2 = loader.needs(cur.node);
+      const kids = cur.node.children && cur.node.children.length || pending2;
       if (e.key === "ArrowDown") {
         if (flat[at2 + 1]) moveTo2(flat[at2 + 1].node.id);
       } else if (e.key === "ArrowUp") {
@@ -24531,7 +24676,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       else if (e.key === "End") moveTo2(flat[flat.length - 1].node.id);
       else if (e.key === (isRtl$2(e.currentTarget) ? "ArrowLeft" : "ArrowRight")) {
         if (kids && !open.has(cur.node.id)) toggle2(cur.node.id);
-        else if (kids) moveTo2(cur.node.children[0].id);
+        else if (pending2) {
+          if (loader.statusOf(cur.node) === "failed") loader.retry(cur.node);
+        } else if (kids) moveTo2(cur.node.children[0].id);
       } else if (e.key === (isRtl$2(e.currentTarget) ? "ArrowRight" : "ArrowLeft")) {
         if (kids && open.has(cur.node.id)) toggle2(cur.node.id);
         else if (cur.parent !== null) moveTo2(cur.parent);
@@ -24540,7 +24687,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       } else return;
       e.preventDefault();
     };
-    const tree = { base: base2, selected, active, open, refs, moveTo: moveTo2, toggle: toggle2, onSelect, setFocusId };
+    const tree = { base: base2, selected, active, open, refs, moveTo: moveTo2, toggle: toggle2, onSelect, setFocusId, loader };
     return /* @__PURE__ */ React2.createElement("ul", { role: "tree", "aria-label": label2, className: cx("plx-tree", className), onKeyDown: onKeyDown2 }, nodes.map((n) => /* @__PURE__ */ React2.createElement(TreeItem, { key: n.id, n, level: 1, tree })));
   }
   const DEMO_SESSION = {
@@ -31060,9 +31207,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
     );
   });
   const MIN_STEP = 1, MAX_STEP = 6, DEFAULT_STEP = 3;
-  const hasKids = (it) => !!(it && Array.isArray(it.children));
+  const EMPTY$2 = [];
   const MillerColumns = React2.forwardRef(function MillerColumns2({
-    items = [],
+    items: given = EMPTY$2,
+    loadChildren,
+    loader: shared,
     path,
     defaultPath = [],
     onPathChange,
@@ -31080,6 +31229,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ...rest
   }, ref) {
     const t = useStrings("millerColumns", strings);
+    const own2 = useBranchLoader(shared ? void 0 : loadChildren);
+    const loader = shared || own2;
+    const items = loader.merge(given);
+    const hasKids = (it) => !!(it && (Array.isArray(it.children) || loader.needs(it)));
     const auto = "plx-mc" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
     const [ownPath, setOwnPath] = React2.useState(defaultPath);
     const ids = path !== void 0 ? path : ownPath;
@@ -31087,15 +31240,19 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const widths = columnWidths || ownWidths;
     const lists2 = React2.useRef([]), columns = React2.useRef([]);
     const focusAt = React2.useRef(null);
+    const pressing = React2.useRef(false);
     const cols = [{ items, parent: null }];
     const chosen = [];
     for (let i = 0; i < ids.length; i++) {
       const it = cols[i].items.find((x) => x.id === ids[i]);
       if (!it) break;
       chosen.push(it);
-      if (hasKids(it)) cols.push({ items: it.children, parent: it });
+      if (hasKids(it)) cols.push({ items: it.children || [], parent: it });
       else break;
     }
+    React2.useEffect(() => {
+      loader.ensure(chosen.filter((it) => loader.needs(it)));
+    });
     const last = chosen[chosen.length - 1];
     const preview = renderPreview && last && !hasKids(last) ? last : null;
     const setPath = (next, item) => {
@@ -31154,7 +31311,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
         }
         if (hasKids(here)) {
           e.preventDefault();
-          const first = enabled(here.children)[0];
+          if (loader.needs(here) && loader.statusOf(here) === "failed") loader.retry(here);
+          const first = enabled(here.children || [])[0];
           if (first) {
             setPath(chosen.slice(0, level + 1).map((x) => x.id).concat([first.id]), first);
           }
@@ -31231,10 +31389,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
           role: "listbox",
           tabIndex: 0,
           "aria-label": name,
+          "aria-busy": col.parent && loader.needs(col.parent) && loader.statusOf(col.parent) !== "failed" ? true : void 0,
           "aria-activedescendant": here ? optId(level, here.id) : void 0,
           onKeyDown: onKey(level),
           onFocus: () => {
-            if (!here && col.items.length) choose(level, enabled(col.items)[0]);
+            if (!pressing.current && !here && col.items.length) choose(level, enabled(col.items)[0]);
           }
         },
         col.items.length ? col.items.map((it) => {
@@ -31253,7 +31412,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
               onClick: () => {
                 choose(level, it);
                 const el = lists2.current[level];
+                pressing.current = true;
                 if (el) el.focus();
+                pressing.current = false;
                 if (openOnClick && !parent && !it.disabled && onOpen) onOpen(it, chosen.slice(0, level).map((x) => x.id).concat([it.id]));
               },
               onDoubleClick: () => {
@@ -31266,7 +31427,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             /* @__PURE__ */ React2.createElement("span", { className: "plx-miller-columns__text" }, /* @__PURE__ */ React2.createElement("span", { className: "plx-miller-columns__label" }, it.label), it.description ? /* @__PURE__ */ React2.createElement("span", { className: "plx-miller-columns__description" }, it.description) : null),
             parent ? /* @__PURE__ */ React2.createElement("span", { className: "plx-miller-columns__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React2.createElement(Icon, { icon: ChevronRightIcon, filled: false })) : null
           );
-        }) : /* @__PURE__ */ React2.createElement("li", { className: "plx-miller-columns__empty", role: "presentation" }, t.empty)
+        }) : col.parent && loader.needs(col.parent) ? /* @__PURE__ */ React2.createElement("li", { className: "plx-miller-columns__empty", role: "presentation" }, /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node: col.parent, className: "plx-miller-columns__status" })) : /* @__PURE__ */ React2.createElement("li", { className: "plx-miller-columns__empty", role: "presentation" }, t.empty)
       )), resizable ? /* @__PURE__ */ React2.createElement(
         "div",
         {
@@ -31287,15 +31448,17 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }, className: "plx-miller-columns__preview", role: "region", tabIndex: 0, "aria-label": fill(t.preview, { label: preview.label }) }, renderPreview(preview)) : null);
   });
   const NARROW = [1, 1, 1, 1, 1, 1];
-  const leavesOf = (items, trail2 = [], choosable = () => false) => items.reduce((all, it) => {
+  const leavesOf = (items, trail2 = [], choosable = () => false, pending2 = () => false) => items.reduce((all, it) => {
     const here = trail2.concat([it]);
-    if (!Array.isArray(it.children)) return all.concat([{ item: it, trail: here }]);
-    return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable));
+    if (!Array.isArray(it.children)) return pending2(it) ? all : all.concat([{ item: it, trail: here }]);
+    return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable, pending2));
   }, []);
   const SELF = "__plx-self:";
   const withSelf = (items, choosable, label2) => items.map((it) => Array.isArray(it.children) ? Object.assign({}, it, { children: (choosable(it) ? [{ id: SELF + it.id, self: it.id, label: label2(it), disabled: it.disabled }] : []).concat(withSelf(it.children, choosable, label2)) }) : it);
+  const EMPTY$1 = [];
   const Cascader = React2.forwardRef(function Cascader2({
-    options = [],
+    options: given = EMPTY$1,
+    loadChildren,
     value,
     values,
     onChange,
@@ -31321,6 +31484,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ...rest
   }, ref) {
     const t = useStrings("cascader", strings);
+    const branches = useBranchLoader(loadChildren);
+    const options = branches.merge(given);
     const loc2 = useLocale();
     const auto = "plx-cs" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
     const describedAt = useDescribedBy(auto + "-value", describedBy);
@@ -31345,7 +31510,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const pathLabel = (trail2) => trail2.map((x) => x.label).join(t.separator);
     const choosable = (it) => Array.isArray(it.children) && (it.choosable !== void 0 ? !!it.choosable : choosableParents);
-    const leaves = React2.useMemo(() => leavesOf(options, [], choosable), [options, choosableParents]);
+    const leaves = React2.useMemo(() => leavesOf(options, [], choosable, branches.needs), [options, choosableParents, !!loadChildren]);
     const columnsItems = React2.useMemo(() => withSelf(options, choosable, (it) => fill(t.allOf, { label: it.label })), [options, choosableParents, t.allOf]);
     const pathFor = (v) => {
       const hit = leaves.find((l) => l.item.id === v) || seen.current.get(v);
@@ -31556,6 +31721,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         className: "plx-cascader__columns",
         label: label2 || t.columns,
         items: columnsItems,
+        loader: branches,
         path: browse,
         expandOnHover: expandTrigger === "hover",
         checked: multiple ? checkedIds : void 0,
@@ -32846,14 +33012,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const OPEN_ICONS = { folder: FolderOpenIcon };
   const iconOf = (n, isOpen) => isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon;
   const kidsOf = (n) => n.children && n.children.length ? n.children : null;
-  function index(nodes) {
+  function index(nodes, pending2) {
     const byId = /* @__PURE__ */ new Map();
     const walk = (list2, parent) => list2.forEach((n) => {
       byId.set(n.id, { node: n, parent });
       if (kidsOf(n)) walk(n.children, n.id);
     });
     walk(nodes, null);
-    const leaves = (n) => kidsOf(n) ? n.children.reduce((all, c) => all.concat(leaves(c)), []) : [n.id];
+    const leaves = (n) => kidsOf(n) ? n.children.reduce((all, c) => all.concat(leaves(c)), []) : pending2(n) ? [] : [n.id];
     return { byId, leaves };
   }
   const ancestors = (byId, id) => {
@@ -32880,8 +33046,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     });
     return out;
   }
+  const EMPTY = [];
   function TreeSelect({
-    nodes = [],
+    nodes: given = EMPTY,
+    loadChildren,
     value,
     values,
     onChange,
@@ -32904,8 +33072,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const locked = useReadOnly(readOnlyOwn);
     const t = useStrings("treeSelect", strings);
     const base2 = "plx-ts" + React2.useId().replace(/[^a-zA-Z0-9]/g, "");
-    const { byId, leaves } = React2.useMemo(() => index(nodes), [nodes]);
+    const loader = useBranchLoader(loadChildren);
+    const nodes = loader.merge(given);
+    const { byId, leaves } = React2.useMemo(() => index(nodes, loader.needs), [nodes, !!loadChildren]);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
+    const chosenRef = React2.useRef(chosen);
+    chosenRef.current = chosen;
     const [open, setOpen] = React2.useState(false);
     const valueRef = React2.useRef(null), cut = useTruncated(valueRef);
     const [text2, setText] = React2.useState("");
@@ -32922,6 +33094,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const shownNodes = q2 ? filterNodes(nodes, q2) : nodes;
     const openSet = q2 ? new Set(Array.from(byId.keys())) : new Set(expanded);
     const flat = flatten$2(shownNodes, openSet, null, []);
+    React2.useEffect(() => {
+      if (open && !q2) loader.ensure(flat.filter((v) => openSet.has(v.node.id)).map((v) => v.node));
+    });
     const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.find((v) => chosen.indexOf(v.node.id) >= 0) || flat[0] || { node: {} }).node.id;
     const activeRef = React2.useRef(active);
     activeRef.current = active;
@@ -32952,13 +33127,21 @@ var Plenix = (function(exports, React2, reactDom, client) {
         setText("");
         return;
       }
+      if (loader.needs(n)) {
+        loader.load(n).then((kids) => {
+          if (!kids) return;
+          const now = chosenRef.current, ls2 = index([Object.assign({}, n, { children: kids })], loader.needs).leaves(Object.assign({}, n, { children: kids }));
+          if (ls2.length) onChange(now.concat(ls2.filter((l) => now.indexOf(l) < 0)));
+        });
+        return;
+      }
       const ls = leaves(n), all = ls.every((l) => chosen.indexOf(l) >= 0);
       onChange(all ? chosen.filter((c) => ls.indexOf(c) < 0) : chosen.concat(ls.filter((l) => chosen.indexOf(l) < 0)));
     };
     const onKeyDown2 = (e) => {
       const at2 = flat.findIndex((v) => v.node.id === active), cur = flat[at2];
       if (!cur) return;
-      const kids = kidsOf(cur.node), isOpen = kids && openSet.has(cur.node.id);
+      const pending2 = !q2 && loader.needs(cur.node), kids = !!kidsOf(cur.node) || pending2, isOpen = kids && openSet.has(cur.node.id);
       const rtl = isRtl$2(e.currentTarget);
       if (e.key === "ArrowDown") {
         if (flat[at2 + 1]) moveTo2(flat[at2 + 1].node.id);
@@ -32969,7 +33152,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       else if (e.key === "End") moveTo2(flat[flat.length - 1].node.id);
       else if (e.key === (rtl ? "ArrowLeft" : "ArrowRight")) {
         if (kids && !isOpen) toggleOpen(cur.node.id);
-        else if (kids) moveTo2(cur.node.children[0].id);
+        else if (pending2) {
+          if (loader.statusOf(cur.node) === "failed") loader.retry(cur.node);
+        } else if (kids) moveTo2(cur.node.children[0].id);
       } else if (e.key === (rtl ? "ArrowRight" : "ArrowLeft")) {
         if (kids && isOpen && !q2) toggleOpen(cur.node.id);
         else if (cur.parent !== null) moveTo2(cur.parent);
@@ -32978,7 +33163,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       e.preventDefault();
     };
     const renderNodes = (list2, level) => list2.map((n) => {
-      const kids = kidsOf(n), isOpen = kids && openSet.has(n.id), state = stateOf(n);
+      const pending2 = !q2 && loader.needs(n), kids = !!kidsOf(n) || pending2, isOpen = kids && openSet.has(n.id), state = stateOf(n);
       return /* @__PURE__ */ React2.createElement(
         "li",
         {
@@ -32989,6 +33174,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           id: base2 + "-" + n.id,
           role: "treeitem",
           "aria-level": level,
+          "aria-busy": pending2 && isOpen && loader.statusOf(n) === "loading" ? true : void 0,
           "aria-expanded": kids ? !!isOpen : void 0,
           "aria-selected": multiple ? void 0 : state === "true",
           "aria-checked": multiple ? state : void 0,
@@ -33004,7 +33190,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             if (e.target === e.currentTarget) setRingId(null);
           },
           onClick: (e) => {
-            if (e.target.closest('[role="treeitem"]') !== e.currentTarget) return;
+            if (e.target.closest('[role="treeitem"]') !== e.currentTarget || e.target.closest(".plx-tree__row--status")) return;
             moveTo2(n.id);
             choose(n);
           }
@@ -33036,7 +33222,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
             }
           }
         ) : null, n.icon ? /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__icon" }, asIcon(iconOf(n, isOpen || state === "true"))) : null, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__label" }, q2 ? highlightMatch(n.label, q2) : n.label)),
-        isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, renderNodes(n.children, level + 1)) : null
+        isOpen && pending2 ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, /* @__PURE__ */ React2.createElement("li", { role: "none", className: "plx-tree__item" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-tree__row plx-tree__row--status", "data-plx-level": Math.min(level + 1, 12) }, /* @__PURE__ */ React2.createElement("span", { className: "plx-tree__toggle is-leaf", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement(BranchStatus, { loader, node: n, className: "plx-tree__status" })))) : isOpen ? /* @__PURE__ */ React2.createElement("ul", { role: "group", className: "plx-tree__group" }, renderNodes(n.children, level + 1)) : null
       );
     });
     const names2 = chosen.map((c) => byId.get(c) ? byId.get(c).node.label : c);
@@ -44312,6 +44498,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   exports.Blockquote = Blockquote;
   exports.BottomSheetNav = BottomSheetNav;
   exports.BoxPlot = BoxPlot;
+  exports.BranchStatus = BranchStatus;
   exports.BrandMark = BrandMark;
   exports.Breadcrumbs = Breadcrumbs;
   exports.BulkActions = BulkActions;
@@ -44823,6 +45010,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   exports.useAnalytics = useAnalytics;
   exports.useAppLayout = useAppLayout;
   exports.useAutosave = useAutosave;
+  exports.useBranchLoader = useBranchLoader;
   exports.useChartInteraction = useChartInteraction;
   exports.useChartPoints = useChartPoints;
   exports.useClipboard = useClipboard;
