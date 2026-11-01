@@ -92,6 +92,7 @@ child({ units: ['components/CommandMenu', 'components/EntityPicker', 'components
 child({ units: ['components/DataGrid'] }, 'data-grid-row-template-839.test.js');   // the row template: layouts A, B and wide, the slots, the defaults, left to right and right to left (issue 839)
 child({ units: ['components/Rating', 'components/Divider'] }, 'rating-divider-808.test.js');   // Rating half stars (clicks, keys, read-only) and Divider with a text, left to right and right to left (issue 808)
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
+child({ units: ['components/DataGrid'] }, 'data-grid-default-cards-679.test.js');   // every grid's narrow cards are the row template by default; plain stays reachable; wide unchanged (issue 679)
 child({ units: ['components/MenuBar', 'components/Menu'] }, 'menubar-805.test.js');   // the MenuBar: one Tab stop, the arrows, open and switch, Escape, hover, type-ahead, More (issue 805)
 child({ units: ['components/DataGrid'] }, 'data-grid-cell-range-465.test.js');   // cell range selection: Shift with the arrows, the border, copy, announcement, 600 rows (issue 465)
 child({ units: ['components/Text', 'components/Isolate', 'components/DataGrid'] }, 'bidi-data-838.test.js');   // a spaced phone number and IBAN keep their digit groups in order in an Arabic page (issue 838)
