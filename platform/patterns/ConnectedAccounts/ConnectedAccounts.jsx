@@ -57,7 +57,7 @@ import { formatDate, dateTimeAttr } from '../../utils/format.ts';
 import { Badge } from '../../components/Badge/Badge.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
-import { IconTile } from '../../components/IconTile/IconTile.tsx';
+import { Icon } from '../../components/Icon/Icon.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import LinkIcon from 'plenix-platform/icons/plenix/link';
@@ -89,7 +89,7 @@ export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect
 
   return (
     <Tag className={cx('plx-connected-accounts__item', className)} data-plx-state={status} {...rest}>
-      <IconTile className="plx-connected-accounts__tile" icon={a.icon || LinkIcon} size="md" />
+      <Icon className="plx-connected-accounts__icon" name={a.icon || LinkIcon} size="md" />
       <div className="plx-connected-accounts__body">
         <div className="plx-connected-accounts__head">
           <H level={headingLevel} className="plx-connected-accounts__service">{a.service}</H>

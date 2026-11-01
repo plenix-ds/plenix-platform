@@ -115,6 +115,11 @@
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension",
       "$description": "ConnectedAccounts: gap between the scopes (space-stack-xs)."
+    },
+    "connected-accounts-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ConnectedAccounts: the service's plain icon (content-muted; no tile, #882)."
     }
   }
 }
