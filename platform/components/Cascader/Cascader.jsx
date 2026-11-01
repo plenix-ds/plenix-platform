@@ -15,7 +15,7 @@
      multiple: several leaves, each a checkbox in the columns; the field shows them as tags (default false)
      maxTags: with multiple, how many tags the field shows; the others are one "+N" tag (a Tag you can Tab to and press: it opens the list) whose
        tooltip lists their names on hover and focus, as TreeSelect's "… and N more" does; default 0: every tag shows (the field as it was), so "+N" is opt-in
-     maxChoices: with multiple, the most that can be chosen; past it a click or Enter chooses nothing and says so (strings.limit), shown in the list and announced politely
+     maxChoices: a number: with multiple, the most that can be chosen; past it a click or Enter chooses nothing and says so (strings.limit), shown in the list and announced politely
      expandTrigger: "click" (default: a parent opens when chosen) | "hover" (pointing at a parent opens it)
      searchable: a search field at the top of the list finds leaves at every level by name and lists their paths
        (default false)
