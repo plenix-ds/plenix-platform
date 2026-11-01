@@ -22,6 +22,7 @@
     "platform/providers/theme-boot.js",
     // loaded by script tags in pages; check-system.rules/icon-names.js reads it
     "suite/plenix-app-data.js",
+    "suite/settings-data.js",
     // loaded by script tags in the pages: each app's icon file, the engines and the icon uses
     "*/plenix-icons-*.js",
     "platform/engines/plenix-engines.js",
