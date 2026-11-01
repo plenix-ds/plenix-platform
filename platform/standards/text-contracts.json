@@ -955,6 +955,11 @@
     "line-height"
    ]
   },
+  "plx-data-grid__grid-cell--narrow": {
+   "contract": "establishes",
+   "role": "body",
+   "font": "sans"
+  },
   "plx-data-grid__grid-cell--data": {
    "contract": "establishes",
    "role": "body",

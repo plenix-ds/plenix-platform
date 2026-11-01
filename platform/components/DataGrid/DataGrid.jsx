@@ -35,8 +35,9 @@
          "max" in each group header; empty: the text for a missing value (zero and false are values)
        width: a CSS length or a size token ("--plx-ref-size-240px"; numbers snap to a size token); without it the column
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
-         text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
-         the columns before it are the row header (pinned and shaded)
+         text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start, on request
+         only (nothing is pinned by default; the selection column pins beside a frozen column); rowLabel: this and the columns before it are the row
+         header (shaded and emphasized, not pinned; issue 679)
        align: "left" | "center" | "right" (the cells); every header label starts at the start edge, whatever the column's
          align (owner rule), and headerAlign is ignored; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
@@ -102,14 +103,22 @@
        Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
        reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
        control it from outside; the saved view keeps it (owner, 2026-10-24)
-     narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
+     narrow: "auto" (default, a SplitView's grid too; issue 679): a table while its visible columns fit the grid's measured width (their widths
+       plus the selection, row menu and view columns), else the row cards | "table" (a fixed table that may scroll sideways: the
+       escape hatch for a dense specialized grid) | "list" (the row cards under narrowAt, 600px). Row cards: the keyColumns (default the
+       first three text columns) first, as the primary and secondary lines, then every other visible field as a labeled detail; the
+       selection checkbox, the row actions and the row menu stay on the card; nothing scrolls sideways
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
      A column is dragged no wider than --plx-sys-shell-pane-window-share (90%) of the table, down to the 4px grid; a smaller maxWidth still applies.
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
-     Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
+     By default the grid switches to row cards before it would need to scroll sideways, and back to the table when it fits again
+       (a resize, a pane drag, a column shown or hidden). The cards keep the sort, filter, groups, selection, the open row and
+       the saved view; they are drawn in full, not windowed (virtualization stays on for the table). In the cards the column
+       headers are hidden: sorting and filtering come from the command bar's panels and the saved view.
+     In a table (narrow="table", or one that fits), horizontal body scrolling moves the column headers by the same amount; only frozen headers and cells stay pinned.
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
