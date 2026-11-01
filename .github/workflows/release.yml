@@ -42,7 +42,7 @@ jobs:
           [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "\"$TAG\" is not a version tag (v<major>.<minor>.<patch>)"; exit 1; }
           if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo "$TAG already has a GitHub release"; exit 1; fi
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: refs/tags/${{ env.TAG }}
 
@@ -82,7 +82,7 @@ jobs:
       # the live-CDN check from this workflow's own commit (on a tag push that is the tag; on a hand run, the branch's fixed
       # check), so an older tag is checked by the bounded check, not by the full crawl its tree may still carry
       - name: The live-CDN check from this workflow's commit
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           path: .release-tools
