@@ -740,6 +740,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "notImage": "Choose an image file",
       "picture": "{name}\u2019s photo"
     },
+    "anchor": {
+      "label": "On this page"
+    },
     "backToTop": {
       "label": "Back to top"
     },
@@ -810,6 +813,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "No items",
       "remove": "Remove {label}",
       "columns": "Options",
+      "allOf": "All of {label}",
+      "more": "+{n}",
+      "moreLabel": "{n} more",
+      "limit": "You can choose up to {n}.",
+      "loading": "Loading\u2026",
+      "error": "The matches could not be loaded",
       "results": {
         "one": "{n} match",
         "other": "{n} matches"
@@ -3390,6 +3399,9 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "more": "+{n}",
       "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629"
     },
+    "anchor": {
+      "label": "\u0641\u064A \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629"
+    },
     "backToTop": {
       "label": "\u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0623\u0639\u0644\u0649"
     },
@@ -3437,6 +3449,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       "empty": "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0646\u0627\u0635\u0631",
       "remove": "\u0625\u0632\u0627\u0644\u0629 {label}",
       "columns": "\u0627\u0644\u062E\u064A\u0627\u0631\u0627\u062A",
+      "allOf": "\u0643\u0644 {label}",
+      "more": "+{n}",
+      "moreLabel": "{n} \u0625\u0636\u0627\u0641\u064A\u0629",
+      "limit": "\u064A\u0645\u0643\u0646\u0643 \u0627\u062E\u062A\u064A\u0627\u0631 {n} \u0643\u062D\u062F \u0623\u0642\u0635\u0649.",
+      "loading": "\u062C\u0627\u0631\u064D \u0627\u0644\u062A\u062D\u0645\u064A\u0644\u2026",
+      "error": "\u062A\u0639\u0630\u0651\u0631 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0646\u062A\u0627\u0626\u062C",
       "results": {
         "zero": "\u0644\u0627 \u062A\u0648\u062C\u062F \u062A\u0637\u0627\u0628\u0642\u0627\u062A",
         "one": "\u062A\u0637\u0627\u0628\u0642 \u0648\u0627\u062D\u062F",
@@ -11073,7 +11091,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     ));
   }
   const DND_STRINGS = english.dnd;
-  const reduced$2 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$3 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function moveItem(list2, from, to) {
     const next = list2.slice();
     if (from < 0 || from >= next.length) return next;
@@ -11152,7 +11170,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const a = el && offsets.get(el);
     if (!a) return;
     offsets.delete(el);
-    if (opts && opts.settle && !reduced$2() && el.animate) {
+    if (opts && opts.settle && !reduced$3() && el.animate) {
       const ms2 = tokenMs("--plx-sys-gesture-settle-duration", 0, el);
       const easing = getComputedStyle(el).getPropertyValue("--plx-sys-gesture-settle-easing").trim() || "ease";
       const from = a.effect && a.effect.getKeyframes ? a.effect.getKeyframes()[0] : null;
@@ -11340,7 +11358,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (!now || now.kind !== "sortable" || now.mode !== "keyboard" || now.list !== listId || ids.indexOf(now.id) < 0) return;
       const el = handleOf(now.id);
       if (el && document.activeElement !== el) el.focus({ preventScroll: true });
-      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$2() ? "auto" : "smooth" });
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$3() ? "auto" : "smooth" });
     }, [now, ids.join("\n")]);
     const say = (s, vars) => announce(fill(s, vars));
     const reorder = (from, to) => {
@@ -11606,7 +11624,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const next = list2[(at2 + step + list2.length) % list2.length];
       if (!next) return;
       patchSession({ over: next.id });
-      if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$2() ? "auto" : "smooth" });
+      if (next.el && next.el.scrollIntoView) next.el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduced$3() ? "auto" : "smooth" });
       announce(fill(t.over, { target: next.o.name }));
     };
     const pointerDown = (e) => {
@@ -28593,7 +28611,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       busy ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, t.downloading, percent ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__percent" }, percent) : null) : /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, label2, facts.length ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-download-button__meta" }, facts.join(" \xB7 ")) : null)
     );
   });
-  const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$2 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function BackToTop({ variant = "floating", scrollRef, focusRef, strings, className }) {
     devWarn("BackToTop", { variant }, { variant: ["floating", "inline"] });
     const t = useStrings("backToTop", strings);
@@ -28603,7 +28621,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const shown = floating && !!entry && !atTop;
     const goTop = () => {
       const area = scrollRef && scrollRef.current;
-      const behavior = reduced$1() ? "auto" : "smooth";
+      const behavior = reduced$2() ? "auto" : "smooth";
       if (area) area.scrollTo({ top: 0, behavior });
       else window.scrollTo({ top: 0, behavior });
       const root = area || document;
@@ -31047,11 +31065,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     }, className: "plx-miller-columns__preview", role: "region", tabIndex: 0, "aria-label": fill(t.preview, { label: preview.label }) }, renderPreview(preview)) : null);
   });
   const NARROW = [1, 1, 1, 1, 1, 1];
-  const leavesOf = (items, trail2 = []) => items.reduce((all, it) => Array.isArray(it.children) ? all.concat(leavesOf(it.children, trail2.concat([it]))) : all.concat([{ item: it, trail: trail2.concat([it]) }]), []);
-  const pathTo = (items, id) => {
-    const hit = leavesOf(items).find((l) => l.item.id === id);
-    return hit ? hit.trail : null;
-  };
+  const leavesOf = (items, trail2 = [], choosable = () => false) => items.reduce((all, it) => {
+    const here = trail2.concat([it]);
+    if (!Array.isArray(it.children)) return all.concat([{ item: it, trail: here }]);
+    return all.concat(choosable(it) ? [{ item: it, trail: here }] : [], leavesOf(it.children, here, choosable));
+  }, []);
+  const SELF = "__plx-self:";
+  const withSelf = (items, choosable, label2) => items.map((it) => Array.isArray(it.children) ? Object.assign({}, it, { children: (choosable(it) ? [{ id: SELF + it.id, self: it.id, label: label2(it), disabled: it.disabled }] : []).concat(withSelf(it.children, choosable, label2)) }) : it);
   const Cascader = React$1.forwardRef(function Cascader2({
     options = [],
     value,
@@ -31060,6 +31080,12 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     multiple = false,
     expandTrigger = "click",
     searchable = false,
+    choosableParents = false,
+    maxTags = 0,
+    maxChoices,
+    loadOptions,
+    loadDelay = 300,
+    minChars = 0,
     placeholder,
     label: label2,
     invalid,
@@ -31080,6 +31106,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const [text2, setText] = React$1.useState("");
     const [active, setActive] = React$1.useState(0);
     const [browse, setBrowse] = React$1.useState([]);
+    const [limitShown, setLimitShown] = React$1.useState(false);
+    const [loaded, setLoaded] = React$1.useState([]);
+    const [busy, setBusy] = React$1.useState(false);
+    const [failed, setFailed] = React$1.useState(false);
+    const loader = React$1.useRef(loadOptions), request = React$1.useRef(0), seen = React$1.useRef(/* @__PURE__ */ new Map());
+    loader.current = loadOptions;
+    const remote = !!loadOptions && searchable;
     const wrap = React$1.useRef(null), button = React$1.useRef(null), search = React$1.useRef(null), cols = React$1.useRef(null), popup = React$1.useRef(null);
     useFloating(wrap, popup, { open, placement: "bottom-start" });
     React$1.useLayoutEffect(() => {
@@ -31089,17 +31122,27 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     React$1.useImperativeHandle(ref, () => button.current);
     const chosen = multiple ? values || [] : value !== void 0 && value !== null && value !== "" ? [value] : [];
     const pathLabel = (trail2) => trail2.map((x) => x.label).join(t.separator);
-    const current2 = !multiple && chosen.length ? pathTo(options, chosen[0]) : null;
+    const choosable = (it) => Array.isArray(it.children) && (it.choosable !== void 0 ? !!it.choosable : choosableParents);
+    const leaves = React$1.useMemo(() => leavesOf(options, [], choosable), [options, choosableParents]);
+    const columnsItems = React$1.useMemo(() => withSelf(options, choosable, (it) => fill(t.allOf, { label: it.label })), [options, choosableParents, t.allOf]);
+    const pathFor = (v) => {
+      const hit = leaves.find((l) => l.item.id === v) || seen.current.get(v);
+      return hit ? hit.trail : null;
+    };
+    const checkedIds = chosen.map((v) => leaves.some((l) => l.item.id === v && Array.isArray(l.item.children)) ? SELF + v : v);
+    const current2 = !multiple && chosen.length ? pathFor(chosen[0]) : null;
     const locked = useReadOnly(readOnlyOwn);
     const openList = () => {
       if (disabled || locked) return;
       setBrowse(current2 ? current2.map((x) => x.id) : []);
       setText("");
+      setLimitShown(false);
       setOpen(true);
     };
     const close = (refocus) => {
       setOpen(false);
       setText("");
+      setLimitShown(false);
       if (refocus && button.current) button.current.focus();
     };
     React$1.useEffect(() => {
@@ -31116,16 +31159,60 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return () => document.removeEventListener("mousedown", off2);
     }, [open]);
     const q2 = text2.trim().toLowerCase();
-    const matches = q2 ? leavesOf(options).filter((l) => !l.item.disabled && matchesText(l.item.label, text2)) : [];
+    const said = (n) => announce(typeof t.results === "function" ? t.results(n) : loc2.t("cascader.results", { count: n, n: formatNumber(n) }));
+    const searching = !!q2 && (!remote || q2.length >= minChars);
+    const matches = !searching ? [] : remote ? loaded : leaves.filter((l) => !l.item.disabled && matchesText(l.item.label, text2));
     React$1.useEffect(() => {
       setActive(0);
-      if (q2) announce(typeof t.results === "function" ? t.results(matches.length) : loc2.t("cascader.results", { count: matches.length, n: formatNumber(matches.length) }));
+      if (searching && !remote) said(matches.length);
     }, [q2]);
+    React$1.useEffect(() => {
+      if (!remote || !open) return void 0;
+      const query = text2.trim();
+      if (query.length < Math.max(1, minChars)) {
+        request.current++;
+        setLoaded([]);
+        setBusy(false);
+        setFailed(false);
+        return void 0;
+      }
+      const n = ++request.current;
+      setBusy(true);
+      setFailed(false);
+      const timer = setTimeout(() => {
+        Promise.resolve().then(() => loader.current(query)).then((list2) => {
+          if (n !== request.current) return;
+          const got = (Array.isArray(list2) ? list2 : []).map((r) => {
+            const ups = (r.path || []).map((x) => typeof x === "string" ? { label: x } : { id: x.id, label: x.label });
+            return { item: { id: r.id, label: r.label, disabled: r.disabled }, trail: ups.concat([{ id: r.id, label: r.label }]) };
+          });
+          got.forEach((m) => seen.current.set(m.item.id, m));
+          setLoaded(got);
+          setBusy(false);
+          said(got.length);
+        }, () => {
+          if (n !== request.current) return;
+          setLoaded([]);
+          setBusy(false);
+          setFailed(true);
+          announce(t.error);
+        });
+      }, loadDelay);
+      return () => clearTimeout(timer);
+    }, [remote, open, text2, minChars, loadDelay]);
     const pick = (item, trail2) => {
       if (locked) return;
-      if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
-      else {
-        onChange(item.id, trail2.map((x) => x.id));
+      if (multiple) {
+        const on = chosen.indexOf(item.id) >= 0;
+        if (!on && maxChoices && chosen.length >= maxChoices) {
+          setLimitShown(true);
+          announce(fill(t.limit, { n: formatNumber(maxChoices) }));
+          return;
+        }
+        setLimitShown(false);
+        onChange(on ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
+      } else {
+        onChange(item.id, trail2.map((x) => x.id).filter((x) => x !== void 0));
         close(true);
       }
     };
@@ -31137,7 +31224,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     };
     const onSearchKey = (e) => {
-      if (!q2) {
+      if (!searching) {
         if (e.key === "ArrowDown") {
           e.preventDefault();
           const l = cols.current && cols.current.querySelector(".plx-miller-columns__list");
@@ -31152,7 +31239,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         e.preventDefault();
         setActive((a) => Math.max(0, a - 1));
       } else if (e.key === "Enter") {
-        if (matches[active]) {
+        if (matches[active] && !busy) {
           e.preventDefault();
           pick(matches[active].item, matches[active].trail);
         }
@@ -31160,11 +31247,32 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const optId = (i) => auto + "-m" + i;
     const shown = multiple ? null : current2 ? pathLabel(current2) : null;
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? chosen.map((v) => {
-      const trail2 = pathTo(options, v);
-      const name = trail2 ? trail2[trail2.length - 1].label : String(v);
-      return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: t.remove.replace("{label}", name) }, name);
-    }) : null, /* @__PURE__ */ React$1.createElement(
+    const nameOf2 = (v) => {
+      const trail2 = pathFor(v);
+      return trail2 ? trail2[trail2.length - 1].label : String(v);
+    };
+    const capped = maxTags > 0 ? maxTags : chosen.length, shownTags = chosen.slice(0, capped), hiddenTags = chosen.slice(capped);
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? shownTags.map((v) => /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => {
+      setLimitShown(false);
+      onChange(chosen.filter((x) => x !== v));
+    }, removeLabel: t.remove.replace("{label}", nameOf2(v)) }, nameOf2(v))) : null, multiple && hiddenTags.length ? /* @__PURE__ */ React$1.createElement(Tooltip, { content: hiddenTags.map(nameOf2).join(", "), placement: "bottom", className: "plx-cascader__more-tip" }, /* @__PURE__ */ React$1.createElement(
+      Tag,
+      {
+        className: "plx-cascader__more",
+        tabIndex: 0,
+        role: "button",
+        "aria-label": fill(t.moreLabel, { n: formatNumber(hiddenTags.length) }),
+        onClick: openList,
+        onKeyDown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            openList();
+          }
+        }
+      },
+      dataPhrase(t.more, { n: hiddenTags.length })
+    )) : null, /* @__PURE__ */ React$1.createElement(
       "button",
       {
         ref: button,
@@ -31195,10 +31303,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         type: "search",
         className: "plx-input plx-cascader__search-input",
         role: "combobox",
-        "aria-expanded": !!q2,
+        "aria-expanded": searching,
         "aria-controls": auto + "-matches",
         "aria-autocomplete": "list",
-        "aria-activedescendant": q2 && matches[active] ? optId(active) : void 0,
+        "aria-activedescendant": searching && matches[active] ? optId(active) : void 0,
         "aria-label": t.search,
         placeholder: t.search,
         value: text2,
@@ -31206,7 +31314,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         onKeyDown: onSearchKey,
         autoComplete: "off"
       }
-    )) : null, q2 ? /* @__PURE__ */ React$1.createElement("ul", { className: "plx-cascader__matches", id: auto + "-matches", role: "listbox", "aria-label": t.search, "aria-multiselectable": multiple || void 0 }, matches.length ? matches.map((m, i) => /* @__PURE__ */ React$1.createElement(
+    )) : null, searching ? /* @__PURE__ */ React$1.createElement("ul", { className: "plx-cascader__matches", id: auto + "-matches", role: "listbox", "aria-label": t.search, "aria-multiselectable": multiple || void 0 }, matches.length ? matches.map((m, i) => /* @__PURE__ */ React$1.createElement(
       "li",
       {
         key: m.item.id,
@@ -31220,22 +31328,25 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       },
       /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-label" }, highlightMatch(m.item.label, text2)),
       m.trail.length > 1 ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-cascader__match-path" }, pathLabel(m.trail.slice(0, -1))) : null
-    )) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
+    )) : remote && busy ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty plx-cascader__loading", role: "presentation" }, /* @__PURE__ */ React$1.createElement(Spinner, { size: "sm", label: t.loading }), /* @__PURE__ */ React$1.createElement("span", { "aria-hidden": "true" }, t.loading)) : remote && failed ? /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty plx-cascader__error", role: "presentation" }, t.error) : /* @__PURE__ */ React$1.createElement("li", { className: "plx-cascader__empty", role: "presentation" }, t.noMatches)) : /* @__PURE__ */ React$1.createElement("div", { ref: cols }, /* @__PURE__ */ React$1.createElement(
       MillerColumns,
       {
         className: "plx-cascader__columns",
         label: label2 || t.columns,
-        items: options,
+        items: columnsItems,
         path: browse,
         expandOnHover: expandTrigger === "hover",
-        checked: multiple ? chosen : void 0,
+        checked: multiple ? checkedIds : void 0,
         strings: { empty: t.empty },
         openOnClick: true,
         columnWidths: NARROW,
         onPathChange: (p) => setBrowse(p),
-        onOpen: (item) => pick(item, pathTo(options, item.id) || [item])
+        onOpen: (item) => {
+          const real = item.self !== void 0 ? item.self : item.id, hit = leaves.find((l) => l.item.id === real);
+          pick(hit ? hit.item : item, hit ? hit.trail : [item]);
+        }
       }
-    ))) : null);
+    )), multiple && limitShown ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__limit", "aria-hidden": "true" }, dataPhrase(t.limit, { n: maxChoices })) : null) : null);
   });
   const NAMES = { people: "people", teams: "teams", records: "records" };
   const EntityPicker = React$1.forwardRef(function EntityPicker2({
@@ -32540,10 +32651,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       return out;
     }, []);
   }
-  function flatten$1(nodes, open, parent, out) {
+  function flatten$2(nodes, open, parent, out) {
     nodes.forEach((n) => {
       out.push({ node: n, parent });
-      if (kidsOf(n) && open.has(n.id)) flatten$1(n.children, open, n.id, out);
+      if (kidsOf(n) && open.has(n.id)) flatten$2(n.children, open, n.id, out);
     });
     return out;
   }
@@ -32588,7 +32699,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const q2 = text2.trim().toLowerCase();
     const shownNodes = q2 ? filterNodes(nodes, q2) : nodes;
     const openSet = q2 ? new Set(Array.from(byId.keys())) : new Set(expanded);
-    const flat = flatten$1(shownNodes, openSet, null, []);
+    const flat = flatten$2(shownNodes, openSet, null, []);
     const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.find((v) => chosen.indexOf(v.node.id) >= 0) || flat[0] || { node: {} }).node.id;
     const activeRef = React$1.useRef(active);
     activeRef.current = active;
@@ -33533,7 +33644,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       !total && !loading ? /* @__PURE__ */ React$1.createElement("p", { className: "plx-virtual-list__empty" }, t.empty) : null
     ));
   });
-  const reduced = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced$1 = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const clamp$1 = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   function Carousel({ label: label2, children, perView = 1, controls = "both", autoplay = false, page: pageProp, onPageChange, strings, className, ...rest }) {
     const t = useStrings("carousel", strings);
@@ -33543,7 +33654,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const pages = Math.max(1, Math.ceil(n / per));
     const [own2, setOwn] = React$1.useState(0);
     const page = clamp$1(pageProp !== void 0 ? pageProp : own2, 0, pages - 1);
-    const [playing2, setPlaying] = React$1.useState(() => !!autoplay && !reduced());
+    const [playing2, setPlaying] = React$1.useState(() => !!autoplay && !reduced$1());
     const [held, setHeld] = React$1.useState(false);
     const root = React$1.useRef(null), track2 = React$1.useRef(null);
     const setPage = (p) => {
@@ -33556,7 +33667,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const slide = el.children[clamp$1(p * per, 0, Math.max(0, n - per))];
       const a = slide.getBoundingClientRect(), b = el.getBoundingClientRect();
       const delta = isRtl$2(el) ? a.right - b.right : a.left - b.left;
-      el.scrollBy({ left: delta, behavior: reduced() ? "auto" : "smooth" });
+      el.scrollBy({ left: delta, behavior: reduced$1() ? "auto" : "smooth" });
     }, [per, n]);
     const go = (p) => {
       const q2 = clamp$1(p, 0, pages - 1);
@@ -39846,7 +39957,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     });
     const kids = (id) => items.filter((x) => keyOf(x.parent) === id);
     const nameOf2 = (id) => id === ROOT ? top.name : byId[id] ? byId[id].name : top.name;
-    const pathTo2 = (id) => {
+    const pathTo = (id) => {
       const out = [];
       let at2 = id;
       const seen = {};
@@ -39866,7 +39977,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       walk(id);
       return out;
     };
-    const path = pathTo2(current2);
+    const path = pathTo(current2);
     const go = (id) => {
       const k = keyOf(id);
       if (folder === void 0) setOwnFolder(k === ROOT ? top.id : k);
@@ -42985,7 +43096,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const INTERACTION = { hint: "Use the arrow keys to move through the tree.", hintSelect: " Enter folds or opens a branch.", selected: "{text}" };
   const ORIENTATIONS = ["left-to-right", "top-to-bottom"];
   const NONE = Object.freeze([]);
-  function flatten(root) {
+  function flatten$1(root) {
     const nodes = [], byId = /* @__PURE__ */ new Map();
     (function walk(n, parent, depth2) {
       if (!n) return;
@@ -43026,7 +43137,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }) {
     const t = useStrings("chart.treeChart", strings);
     const down = orientation === "top-to-bottom";
-    const { nodes, byId } = React$1.useMemo(() => flatten(data), [data]);
+    const { nodes, byId } = React$1.useMemo(() => flatten$1(data), [data]);
     const [own2, setOwn] = React$1.useState(() => new Set(defaultFolded));
     const folded = foldedProp ? new Set(foldedProp) : own2;
     const foldedRef = React$1.useRef(folded);
@@ -43254,6 +43365,84 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       draw
     );
   }
+  const reduced = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const flatten = (items, out = []) => {
+    items.forEach((it) => {
+      out.push(it);
+      if (it.children) flatten(it.children, out);
+    });
+    return out;
+  };
+  const HOLD = 900;
+  function Anchor({ items = [], label: label2, scrollRef, value, onChange, strings, className, ...rest }) {
+    const t = useStrings("anchor", strings);
+    const nav = React$1.useRef(null);
+    const [own2, setOwn] = React$1.useState(null);
+    const controlled = value !== void 0;
+    const current2 = controlled ? value : own2;
+    const now = React$1.useRef(current2), change = React$1.useRef(onChange), until = React$1.useRef(0), measureNow = React$1.useRef(null), mounted = React$1.useRef(false);
+    now.current = current2;
+    change.current = onChange;
+    const set2 = (id, quiet) => {
+      if (id === now.current) return;
+      now.current = id;
+      if (!controlled) setOwn(id);
+      if (change.current && !quiet) change.current(id);
+    };
+    const flat = flatten(items), ids = flat.map((i) => i.id).join("|");
+    const pageOf2 = () => nav.current && nav.current.ownerDocument || document;
+    React$1.useEffect(() => {
+      const area = scrollRef && scrollRef.current, doc = pageOf2(), view = doc.defaultView || window;
+      const scroller = area || view;
+      let frame = 0;
+      const measure2 = (quiet) => {
+        frame = 0;
+        if (performance.now() < until.current) return;
+        const top = area ? area.getBoundingClientRect().top : 0;
+        const there = flat.map((i) => ({ id: i.id, el: doc.getElementById(i.id) })).filter((x) => x.el);
+        if (!there.length) return;
+        let found = there[0].id;
+        there.forEach((x) => {
+          const margin = parseFloat(view.getComputedStyle(x.el).scrollMarginTop) || 0;
+          if (x.el.getBoundingClientRect().top <= top + margin + 1) found = x.id;
+        });
+        const atEnd = area ? area.scrollTop + area.clientHeight >= area.scrollHeight - 1 : view.innerHeight + view.scrollY >= doc.documentElement.scrollHeight - 1;
+        const scrolled = area ? area.scrollTop > 0 : view.scrollY > 0;
+        set2(atEnd && scrolled ? there[there.length - 1].id : found, quiet === true);
+      };
+      measureNow.current = () => measure2();
+      const onScroll = () => {
+        if (!frame) frame = view.requestAnimationFrame(measure2);
+      };
+      scroller.addEventListener("scroll", onScroll, { passive: true });
+      view.addEventListener("resize", onScroll);
+      if (!mounted.current) {
+        mounted.current = true;
+        measure2(true);
+      } else measure2();
+      return () => {
+        scroller.removeEventListener("scroll", onScroll);
+        view.removeEventListener("resize", onScroll);
+        if (frame) view.cancelAnimationFrame(frame);
+        measureNow.current = null;
+      };
+    }, [ids, scrollRef]);
+    const go = (e, id) => {
+      const el = pageOf2().getElementById(id);
+      e.preventDefault();
+      if (!el) return;
+      until.current = performance.now() + HOLD;
+      el.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+      if (!el.matches("a[href],button,input,select,textarea,[tabindex]")) el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+      set2(id);
+      setTimeout(() => {
+        if (measureNow.current) measureNow.current();
+      }, HOLD + 50);
+    };
+    const list2 = (rows, nested) => /* @__PURE__ */ React$1.createElement("ul", { className: cx("plx-anchor__list", nested && "plx-anchor__list--nested") }, rows.map((it) => /* @__PURE__ */ React$1.createElement("li", { key: it.id, className: "plx-anchor__item" }, /* @__PURE__ */ React$1.createElement("a", { href: "#" + it.id, className: cx("plx-anchor__link", it.id === current2 && "is-current"), "aria-current": it.id === current2 ? "location" : void 0, onClick: (e) => go(e, it.id) }, it.label), it.children && it.children.length ? list2(it.children, true) : null)));
+    return /* @__PURE__ */ React$1.createElement("nav", { ref: nav, "aria-label": label2 || t.label, className: cx("plx-anchor", className), ...rest }, list2(items, false));
+  }
   exports.AIButton = AIButton;
   exports.AIChat = AIChat;
   exports.AIDisclaimer = AIDisclaimer;
@@ -43265,6 +43454,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   exports.ActionBar = ActionBar;
   exports.ActivityList = ActivityList;
   exports.AnalyticsProvider = AnalyticsProvider;
+  exports.Anchor = Anchor;
   exports.Announcement = Announcement;
   exports.AppHeader = AppHeader;
   exports.AppShell = AppShell;
