@@ -98,6 +98,8 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
 // a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)
 child({ units: ['components/Tree', 'components/TreeSelect', 'components/Cascader', 'components/MillerColumns', 'hooks/useBranchLoader.js'] }, 'branch-loader-814.test.js');
+// Tree and TreeSelect draw only the rows in view above 200 rows (issue 815, part 1)
+child({ units: ['components/Tree', 'components/TreeSelect', 'hooks/useVirtualizer.js'] }, 'tree-virtual-815.test.js');
 // ToolRail on the shared focus group: one Tab stop, the arrows inside (issue 262, PR 6a)
 child({ units: ['patterns/ToolRail', 'patterns/SecondaryPane', 'hooks/useFocusable.js'] }, 'focus-group-6a.test.js');
 // charts of whole days get day ticks, never "12:00 AM" (issue 593)

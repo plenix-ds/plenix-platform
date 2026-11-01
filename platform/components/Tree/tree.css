@@ -29,3 +29,8 @@
 /* a branch loading its children, or failed to (issue 814, useBranchLoader): a row at the children's level, not a target */
 .plx-tree__row.plx-tree__row--status{--plx-state-tree-row-background:transparent;--plx-state-tree-row-shadow:none;color:var(--plx-comp-tree-meta-text);cursor:default;}
 .plx-tree__status{align-items:center;column-gap:var(--plx-comp-tree-row-gap);display:inline-flex;flex-wrap:wrap;min-inline-size:0;}
+/* virtualized (issue 815, useVirtualizer): the tree scrolls itself, in its container's height; every row is the fixed row
+   height, which the gaps standing for the rows out of view are measured in */
+@property --plx-state-tree-block-size{syntax:"*";inherits:false;}
+.plx-tree--virtual{--plx-sys-virtual-item-size:var(--plx-comp-tree-row-min-height);block-size:var(--plx-state-tree-block-size,100%);overflow-x:hidden;overflow-y:auto;position:relative;}
+.plx-tree__row--fixed{block-size:var(--plx-comp-tree-row-min-height);}

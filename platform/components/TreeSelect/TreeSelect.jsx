@@ -12,6 +12,8 @@
        children load when it is first opened (with loadChildren)
      loadChildren(node): returns the item's children (an array or a promise of one) the first time it opens (issue 814,
        useBranchLoader, as Tree): a spinner and "Loading…" while they arrive, a failure with Try again, never asked twice
+     virtualized: the tree draws only the rows in view (useVirtualizer; issue 815), as Tree: default on above 200 visible
+       rows (TREE_AUTO_VIRTUAL), while searching too; true or false decides
      value: the chosen item's id (one choice)
      values: the checked items' ids, with multiple (the leaves: items without children)
      onChange(id | ids): runs with the chosen item's id, or with multiple the new list of checked ids
@@ -39,6 +41,8 @@
        Space or a click checks or clears it and the popover stays open; a parent's checkbox is checked when every item
        under it is, mixed when some are, and checks or clears them all.
      Search keeps the matching items and their parents, opened; ↓ from the search field moves into the tree.
+     Virtualized, the rows are flat (aria-level, aria-posinset of aria-setsize among the siblings); the keys reach every row,
+       drawn or not, and the active row scrolls into view only as far as needed.
      A branch to load opens like any other (click or key) and is aria-busy while it loads; search finds it by its own label
        and its children once they have loaded, and never loads a branch by itself. With multiple, checking a branch that
        has not loaded loads it, then checks everything under it.
@@ -58,6 +62,8 @@ import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { useBranchLoader, BranchStatus } from '../../hooks/useBranchLoader.js';
+import { useVirtualizer, VirtualGap, VirtualProbe } from '../../hooks/useVirtualizer.js';
+import { TREE_AUTO_VIRTUAL } from '../Tree/Tree.jsx';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
@@ -94,7 +100,7 @@ function flatten(nodes, open, parent, out) {
 
 const EMPTY = [];
 
-export function TreeSelect({ nodes: given = EMPTY, loadChildren, value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
+export function TreeSelect({ nodes: given = EMPTY, loadChildren, virtualized, value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
   invalid, disabled, readOnly: readOnlyOwn, required, strings, id, className, ...rest }) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the choice shows and the tree does not open
   const t = useStrings('treeSelect', strings);
@@ -134,7 +140,13 @@ export function TreeSelect({ nodes: given = EMPTY, loadChildren, value, values, 
     return on === 0 ? 'false' : on === ls.length ? 'true' : 'mixed';
   };
   const toggleOpen = (nid) => { if (q) return; const next = new Set(expanded); if (next.has(nid)) next.delete(nid); else next.add(nid); setExpanded(Array.from(next)); };
-  const moveTo = (nid) => { setFocusId(nid); if (refs.current[nid]) refs.current[nid].focus(); };
+  const focusNext = React.useRef(null);   // a row the keys moved to before it was drawn (virtualized): focused once it is
+  React.useEffect(() => { const nid = focusNext.current; if (nid !== null && refs.current[nid]) { focusNext.current = null; refs.current[nid].focus(); } });
+  const moveTo = (nid) => {
+    setFocusId(nid);
+    if (virtual) { const i = rows.findIndex((r) => r.node && r.node.id === nid); if (i >= 0) v.scrollToIndex(i, { align: 'nearest' }); }
+    if (refs.current[nid] && refs.current[nid].isConnected) refs.current[nid].focus(); else focusNext.current = nid;
+  };
   const choose = (n) => {
     if (!onChange) return;
     if (!multiple) { onChange(n.id); setOpen(false); setText(''); return; }
@@ -169,17 +181,20 @@ export function TreeSelect({ nodes: given = EMPTY, loadChildren, value, values, 
     else return;
     e.preventDefault();
   };
-  const renderNodes = (list, level) => list.map((n) => {
+  // one item; flatRow (a virtualized tree, issue 815): drawn alone, its children as rows after it, with its place among its
+  // siblings and the virtual index
+  const renderNode = (n, level, flatRow) => {
     const pending = !q && loader.needs(n), kids = !!kidsOf(n) || pending, isOpen = kids && openSet.has(n.id), state = stateOf(n);
     return (
       <li key={n.id} ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
+        {...(flatRow ? Object.assign({}, flatRow.vprops, { 'aria-posinset': flatRow.pos, 'aria-setsize': flatRow.setsize }) : null)}
         aria-busy={pending && isOpen && loader.statusOf(n) === 'loading' ? true : undefined}
         aria-expanded={kids ? !!isOpen : undefined} aria-selected={multiple ? undefined : state === 'true'} aria-checked={multiple ? state : undefined}
         tabIndex={n.id === active ? 0 : -1} className={cx('plx-tree__item', !multiple && state === 'true' && 'is-selected')}
         onFocus={(e) => { if (e.target === e.currentTarget) { setFocusId(n.id); setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null); } }}
         onBlur={(e) => { if (e.target === e.currentTarget) setRingId(null); }}
         onClick={(e) => { if (e.target.closest('[role="treeitem"]') !== e.currentTarget || e.target.closest('.plx-tree__row--status')) return; moveTo(n.id); choose(n); }}>
-        <div className={cx('plx-tree__row', !multiple && state === 'true' && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)}>
+        <div className={cx('plx-tree__row', flatRow && 'plx-tree__row--fixed', !multiple && state === 'true' && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggleOpen(n.id); moveTo(n.id); } : undefined}>{kids ? <Icon icon={isOpen ? SquareMinusIcon : SquarePlusIcon} filled={false} /> : null}</span>
           {multiple ? <input type="checkbox" className="plx-check__input plx-tree-select__mark" tabIndex={-1} aria-hidden="true" inert="" readOnly checked={state === 'true'}
@@ -187,16 +202,33 @@ export function TreeSelect({ nodes: given = EMPTY, loadChildren, value, values, 
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || state === 'true'))}</span> : null}
           <span className="plx-tree__label">{n.label}</span>
         </div>
-        {isOpen && pending ? (
+        {flatRow ? null : isOpen && pending ? (
           <ul role="group" className="plx-tree__group">
-            <li role="none" className="plx-tree__item"><div className="plx-tree__row plx-tree__row--status" data-plx-level={Math.min(level + 1, 12)}>
-              <span className="plx-tree__toggle is-leaf" aria-hidden="true" /><BranchStatus loader={loader} node={n} className="plx-tree__status" />
-            </div></li>
+            <li role="none" className="plx-tree__item">{statusRow(n, level + 1)}</li>
           </ul>
         ) : isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
       </li>
     );
+  };
+  const renderNodes = (list, level) => list.map((n) => renderNode(n, level));
+  // the row under a branch that is loading its children, or failed to (issue 814)
+  const statusRow = (n, level, fixed) => (
+    <div className={cx('plx-tree__row', 'plx-tree__row--status', fixed && 'plx-tree__row--fixed')} data-plx-level={Math.min(level, 12)}>
+      <span className="plx-tree__toggle is-leaf" aria-hidden="true" /><BranchStatus loader={loader} node={n} className="plx-tree__status" />
+    </div>
+  );
+  // a virtualized tree (issue 815): every row in order, each item with its level and place among its siblings, and the
+  // status row under an open branch still loading
+  const rows = [];
+  const addRows = (list, level) => list.forEach((n, i) => {
+    rows.push({ node: n, level, pos: i + 1, setsize: list.length });
+    if (!openSet.has(n.id)) return;
+    if (!q && loader.needs(n)) rows.push({ status: n, level: level + 1 });
+    else if (kidsOf(n)) addRows(n.children, level + 1);
   });
+  addRows(shownNodes, 1);
+  const virtual = virtualized !== undefined ? !!virtualized : rows.length > TREE_AUTO_VIRTUAL;
+  const v = useVirtualizer({ count: virtual ? rows.length : 0 });
 
   // what the field shows: the chosen labels, the first two and how many more
   const names = chosen.map((c) => (byId.get(c) ? byId.get(c).node.label : c));
@@ -216,9 +248,20 @@ export function TreeSelect({ nodes: given = EMPTY, loadChildren, value, values, 
         <div className="plx-tree-select__panel">
           {search ? <SearchField ref={searchRef} value={text} label={t.search + ': ' + name} placeholder={t.search} onChange={(e) => setText(e.target.value)} onClear={() => setText('')}
             onKeyDown={(e) => { if (e.key === 'ArrowDown' && flat.length) { e.preventDefault(); moveTo(flat[0].node.id); } }} /> : null}
-          <div className="plx-tree-select__scroll">
-            {flat.length ? <ul role="tree" aria-label={name} aria-multiselectable={multiple || undefined} className="plx-tree plx-tree-select__tree" onKeyDown={onKeyDown}>{renderNodes(shownNodes, 1)}</ul>
-              : <p className="plx-tree-select__empty" role="status">{t.empty}</p>}
+          <div className={cx('plx-tree-select__scroll', virtual && flat.length && 'plx-tree-select__scroll--virtual')}>
+            {!flat.length ? <p className="plx-tree-select__empty" role="status">{t.empty}</p>
+              : virtual ? (
+                <ul ref={v.viewportRef} role="tree" aria-label={name} aria-multiselectable={multiple || undefined} className="plx-tree plx-tree--virtual plx-tree-select__tree plx-tree-select__tree--virtual" onKeyDown={onKeyDown}>
+                  <VirtualProbe />
+                  {v.segments.map((s) => {
+                    if (s.gap) return <VirtualGap key={s.key} count={s.count} />;
+                    const r = rows[s.index];
+                    return r.status
+                      ? <li key={'status-' + r.status.id} role="none" className="plx-tree__item" {...v.itemProps(s.index)} aria-posinset={undefined} aria-setsize={undefined}>{statusRow(r.status, r.level, true)}</li>
+                      : renderNode(r.node, r.level, { pos: r.pos, setsize: r.setsize, vprops: v.itemProps(s.index) });
+                  })}
+                </ul>
+              ) : <ul role="tree" aria-label={name} aria-multiselectable={multiple || undefined} className="plx-tree plx-tree-select__tree" onKeyDown={onKeyDown}>{renderNodes(shownNodes, 1)}</ul>}
           </div>
         </div>
       </Popover>
