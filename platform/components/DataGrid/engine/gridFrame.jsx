@@ -134,6 +134,7 @@ export function gridFrame({
           )}
           role={isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid'}
           aria-label={label}
+          aria-multiselectable={props.cellSelection && !isStatic ? true : undefined}
           aria-busy={remoteMode && remoteBusy ? true : undefined}
           aria-rowcount={
             groups.length || childField

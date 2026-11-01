@@ -17682,10 +17682,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return ops = m;
   }));
   const run = (fn) => ops ? fn(ops) : load().then(fn);
-  function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange }) {
+  function useCellRange({ enabled, model, ordered: ordered2, index: index2, onChange, frame, scroller }) {
     const loc2 = useLocale();
     const [range, setRangeState] = React2.useState(null);
     const told2 = React2.useRef(false);
+    const down = React2.useRef(false);
     const latest = React2.useRef({}), rangeRef = React2.useRef(null), trail2 = React2.useRef(null);
     const setRange = (next) => {
       rangeRef.current = typeof next === "function" ? next(rangeRef.current) : next;
@@ -17725,7 +17726,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const timer = setTimeout(() => ops.said(loc2, "dataGrid.cellsSelected", ops.countOf(rect, model)), 400);
       return () => clearTimeout(timer);
     }, [rect]);
-    const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, collapse: () => {
+    const none = { rect: null, enabled: false, range: null, cellClasses: () => null, extend: () => false, press: () => {
+    }, collapse: () => {
     }, copy: () => false, read: () => null };
     if (!enabled) return none;
     const collapse = () => setRange((old) => old ? null : old);
@@ -17754,6 +17756,51 @@ var Plenix = (function(exports, React2, reactDom, client) {
       });
       return true;
     };
+    const press = ({ e, row, c, focusCell }) => {
+      if (e.button !== 0) return;
+      const cell = { key: row.id, field: c.field };
+      const reach = (range2, to, from) => {
+        const now = latest.current;
+        if (from || !trail2.current) trail2.current = /* @__PURE__ */ new Set([range2.anchor.key + "|" + range2.anchor.field]);
+        trail2.current.add(to.key + "|" + to.field);
+        setRange(range2);
+        return [now.rowAt.get(to.key), now.ordered.findIndex((x) => x.id === to.field)];
+      };
+      if (e.shiftKey) {
+        e.preventDefault();
+        run((o) => {
+          const anchor = rangeRef.current && rangeRef.current.anchor || o.focusedCell(frame && frame.current) || cell;
+          const [r, k] = reach({ anchor, focus: cell }, cell, true);
+          if (r !== void 0 && k >= 0) focusCell(r, k);
+        });
+        return;
+      }
+      collapse();
+      down.current = true;
+      const release2 = () => {
+        down.current = false;
+        window.removeEventListener("mouseup", release2, true);
+      };
+      window.addEventListener("mouseup", release2, true);
+      let began = false;
+      run((o) => o.beginDrag({
+        anchor: cell,
+        frame: frame && frame.current,
+        scroller: scroller && scroller.current,
+        rowAt: latest.current.rowAt,
+        ordered: latest.current.ordered,
+        isDown: () => down.current,
+        onMove: (range2, to) => {
+          reach(range2, to, !began);
+          began = true;
+        },
+        onEnd: (last, moved) => {
+          if (!moved) return;
+          const now = latest.current, r = now.rowAt.get(last.key), k = now.ordered.findIndex((x) => x.id === last.field);
+          if (r !== void 0 && k >= 0) focusCell(r, k);
+        }
+      }));
+    };
     const cellClasses = (rowIndex, columnIndex) => {
       if (!rect || rowIndex < rect.r0 || rowIndex > rect.r1 || columnIndex < rect.c0 || columnIndex > rect.c1) return null;
       return { inside: true, top: rowIndex === rect.r0, bottom: rowIndex === rect.r1, start: columnIndex === rect.c0, end: columnIndex === rect.c1 };
@@ -17764,7 +17811,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       for (let i = rect.r0; i <= rect.r1; i += 1) if (model[i] && model[i].original) rows.push(model[i].original);
       return { rows, fields: ordered2.slice(rect.c0, rect.c1 + 1).map((c) => c.id), text: text2() };
     };
-    return { enabled: true, rect, range, rowAt, cellClasses, extend, collapse, copy, read: read2 };
+    return { enabled: true, rect, range, rowAt, cellClasses, extend, press, collapse, copy, read: read2 };
   }
   const PROBE = "0123456789 ABCDEFGHIJ abcdefghij";
   function pillFont(at2, ctx, data) {
@@ -18670,7 +18717,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
   Toolbar.Spacer = function ToolbarSpacer() {
     return /* @__PURE__ */ React2.createElement("div", { className: "plx-toolbar__spacer", "aria-hidden": "true" });
   };
-  function Divider$1({ orientation = "horizontal", className, ...rest }) {
+  function Divider$1({ orientation = "horizontal", className, children, ...rest }) {
+    if (orientation === "horizontal" && children !== void 0 && children !== null && children !== false && children !== "") {
+      return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": "horizontal", "aria-label": typeof children === "string" || typeof children === "number" ? String(children) : void 0, className: cx("plx-divider", "plx-divider--labeled", className), ...rest }, /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__text" }, children), /* @__PURE__ */ React2.createElement("span", { className: "plx-divider__line", "aria-hidden": "true" }));
+    }
     return /* @__PURE__ */ React2.createElement("div", { role: "separator", "aria-orientation": orientation, className: cx("plx-divider", "plx-divider--" + orientation, className), ...rest });
   }
   function HintTarget({ children, "aria-describedby": description }) {
@@ -20352,6 +20402,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           ),
           role: isStatic ? "table" : groups.length || childField ? "treegrid" : "grid",
           "aria-label": label2,
+          "aria-multiselectable": props.cellSelection && !isStatic ? true : void 0,
           "aria-busy": remoteMode && remoteBusy ? true : void 0,
           "aria-rowcount": groups.length || childField ? semanticRows.length + 1 : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1,
           "aria-colcount": ordered2.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0),
@@ -21077,7 +21128,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 onPointerLeave: () => leaveCut(row.id + "|" + c.field)
               } : null,
               "aria-selected": inRange ? true : void 0,
-              onMouseDown: cellRange.enabled ? cellRange.collapse : void 0,
+              onMouseDown: cellRange.enabled ? (e) => {
+                if (!e.target.closest(interactive)) cellRange.press({ e, row, c, focusCell });
+              } : void 0,
               dir: pinned && !isStatic || kinds(c).includes("id") || isNarrow ? void 0 : "auto",
               onDoubleClick: () => {
                 if (canEdit) setEditing({ key: row.id, field: c.field, value });
@@ -21983,7 +22036,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       model,
       ordered: ordered2,
       index: index2,
-      onChange: props.onCellSelectionChange
+      onChange: props.onCellSelectionChange,
+      frame,
+      scroller: holder
     });
     live.current.cellRange = cellRange;
     const focusCell = makeFocusCell({ model, ordered: ordered2, virtualized, virtual, displayElements });
@@ -24125,10 +24180,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ));
   }
   const Chat = { Header: Header$1, Thread, Group: Group$2, Divider, Message, Attachments, Attachment, Voice, Composer, Typing };
-  function Rating({ value = 0, onChange, max: max2 = 5, label: label2, readOnly = false, className, ...rest }) {
+  function Rating({ value = 0, onChange, max: max2 = 5, half = false, label: label2, readOnly = false, className, ...rest }) {
     const tw = useStrings("rating"), loc2 = useLocale();
     if (label2 === void 0) label2 = tw.label;
     const stars = Array.from({ length: max2 }, (_, i) => i + 1);
+    const shown = half ? Math.round(value * 2) / 2 : value;
+    const state = (n) => n <= shown ? "plx-rating__star--on" : half && n - 0.5 === shown ? "plx-rating__star--half" : false;
+    const at2 = half ? Math.ceil(shown) : value;
     const starRefs = React2.useRef({});
     const focusNext = React2.useRef(0);
     React2.useEffect(() => {
@@ -24137,15 +24195,22 @@ var Plenix = (function(exports, React2, reactDom, client) {
       focusNext.current = 0;
     }, [value]);
     if (readOnly) {
-      return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-rating", "plx-rating--read-only", className), role: "img", "aria-label": tw.value.replace("{label}", label2).replace("{value}", value).replace("{max}", max2), ...rest }, stars.map((n) => /* @__PURE__ */ React2.createElement("span", { key: n, className: cx("plx-rating__star", n <= value && "plx-rating__star--on"), "aria-hidden": "true" }, "\u2605")));
+      return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-rating", "plx-rating--read-only", className), role: "img", "aria-label": tw.value.replace("{label}", label2).replace("{value}", shown).replace("{max}", max2), ...rest }, stars.map((n) => /* @__PURE__ */ React2.createElement("span", { key: n, className: cx("plx-rating__star", state(n)), "aria-hidden": "true" }, "\u2605")));
     }
-    const choose = (n) => onChange && onChange(n === value ? 0 : n);
+    const choose = (n, e) => {
+      let next = n;
+      if (half && e && e.clientX) {
+        const r = e.currentTarget.getBoundingClientRect(), early = isRtl$2(e.currentTarget) ? e.clientX > r.left + r.width / 2 : e.clientX < r.left + r.width / 2;
+        if (early) next = n - 0.5;
+      }
+      if (onChange) onChange(next === shown ? 0 : next);
+    };
     const onKey = (e, n) => {
       const step = e.key === "ArrowUp" ? 1 : e.key === "ArrowDown" ? -1 : arrowStep(e, e.currentTarget, { vertical: false });
       if (!step) return;
       e.preventDefault();
-      const next = Math.min(max2, Math.max(1, n + step));
-      focusNext.current = next;
+      const unit = half ? 0.5 : 1, next = Math.min(max2, Math.max(unit, (half ? shown : n) + step * unit));
+      focusNext.current = Math.ceil(next);
       if (onChange) onChange(next);
     };
     return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-rating", className), role: "radiogroup", "aria-label": label2, ...rest }, stars.map((n) => /* @__PURE__ */ React2.createElement(
@@ -24157,11 +24222,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
           starRefs.current[n] = el;
         },
         role: "radio",
-        "aria-checked": n === value,
-        "aria-label": loc2.t("rating.stars", { count: n }),
-        tabIndex: (value ? n === value : n === 1) ? 0 : -1,
-        className: cx("plx-rating__star", n <= value && "plx-rating__star--on"),
-        onClick: () => choose(n),
+        "aria-checked": n === at2,
+        "aria-label": loc2.t("rating.stars", { count: n === at2 ? shown : n }),
+        tabIndex: (shown ? n === at2 : n === 1) ? 0 : -1,
+        className: cx("plx-rating__star", state(n)),
+        onClick: (e) => choose(n, e),
         onKeyDown: (e) => onKey(e, n)
       },
       "\u2605"
@@ -27014,7 +27079,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }
     }
   };
-  const version$1 = "0.79.1";
+  const version$1 = "0.80.0";
   function marginOf(value) {
     if (!value || typeof document === "undefined") return "0px";
     const root = document.documentElement, size = parseFloat(getComputedStyle(root).fontSize);
@@ -34651,10 +34716,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const weekday = (r) => new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(2026, 0, 4 + r));
     const rowNames = calendar ? [0, 1, 2, 3, 4, 5, 6].map(weekday) : rows;
     const nCols = calendar ? cal.weeks : columns.length;
-    const cellAt = (r, c) => calendar ? cal.cells[c * 7 + r] : { r, c, inside: true, value: values[r] && typeof values[r][c] === "number" && isFinite(values[r][c]) ? values[r][c] : null };
+    const cellAt2 = (r, c) => calendar ? cal.cells[c * 7 + r] : { r, c, inside: true, value: values[r] && typeof values[r][c] === "number" && isFinite(values[r][c]) ? values[r][c] : null };
     const all = [];
     for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) {
-      const x = cellAt(r, c);
+      const x = cellAt2(r, c);
       if (x && x.inside && x.value !== null) all.push(x.value);
     }
     let lo = min2 !== void 0 ? min2 : all.length ? Math.min.apply(null, all) : 0;
@@ -34668,7 +34733,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const titleOf = (cell) => calendar ? formatDate(cell.date) : rowNames[cell.r] + ", " + columns[cell.c];
     const valueOf2 = (cell) => cell.value === null ? t.missing : fmt(cell.value);
     const insideAt = (r, c) => {
-      const x = cellAt(r, c);
+      const x = cellAt2(r, c);
       return !!(x && x.inside);
     };
     const ia = useChartInteraction({
@@ -34677,9 +34742,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
       mode: "point",
       select: typeof onSelect === "function",
       strings: interactionStrings,
-      onSelect: (cell) => onSelect && onSelect(Object.assign({ value: cellAt(cell.r, cell.c).value }, cell)),
+      onSelect: (cell) => onSelect && onSelect(Object.assign({ value: cellAt2(cell.r, cell.c).value }, cell)),
       describe: (cell) => {
-        const x = cellAt(cell.r, cell.c);
+        const x = cellAt2(cell.r, cell.c);
         return chartTooltipText({ title: titleOf(x), items: [{ label: vLabel, value: valueOf2(x) }] });
       },
       labelOf: (c) => calendar ? formatDate(cal.cells[c * 7].date) : columns[c],
@@ -34705,11 +34770,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
       data: cal.cells.filter((x) => x.inside).map((x, i) => ({ id: i + 1, d: formatDate(x.date), v: valueOf2(x) }))
     } : {
       columns: [{ title: t.row, field: "r", kind: "name", rowLabel: true }, { title: t.column, field: "c", kind: "name" }, { title: vLabel, field: "v", kind: "data", align: "right" }],
-      data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({ id: r * columns.length + c + 1, r: rn, c: cn, v: valueOf2(cellAt(r, c)) }))))
+      data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({ id: r * columns.length + c + 1, r: rn, c: cn, v: valueOf2(cellAt2(r, c)) }))))
     };
     const hasMissing = (() => {
       for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) {
-        const x = cellAt(r, c);
+        const x = cellAt2(r, c);
         if (x && x.inside && x.value === null) return true;
       }
       return false;
@@ -34744,7 +34809,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       }) : [];
       const monthTicks = calendar ? starts.filter((c, k) => k === starts.length - 1 || starts[k + 1] - c >= 3) : null;
       return /* @__PURE__ */ React2.createElement("g", { className: "plx-heat-map__plot" }, cols.map((c) => rs.map((r) => {
-        const cell = cellAt(r, c);
+        const cell = cellAt2(r, c);
         if (!cell || !cell.inside) return null;
         const empty = cell.value === null;
         return /* @__PURE__ */ React2.createElement(
@@ -34765,9 +34830,9 @@ var Plenix = (function(exports, React2, reactDom, client) {
           x: scalePosition(x, a.c),
           y: y(a.r),
           inner: { width: w, height: h2 },
-          title: titleOf(cellAt(a.r, a.c)),
+          title: titleOf(cellAt2(a.r, a.c)),
           titleKind: calendar ? "data" : "text",
-          items: [{ label: vLabel, value: valueOf2(cellAt(a.r, a.c)), color: cellAt(a.r, a.c).value === null ? void 0 : datavizStep(sc, cellAt(a.r, a.c).value, lo, hi) }]
+          items: [{ label: vLabel, value: valueOf2(cellAt2(a.r, a.c)), color: cellAt2(a.r, a.c).value === null ? void 0 : datavizStep(sc, cellAt2(a.r, a.c).value, lo, hi) }]
         }
       ) : null);
     };
@@ -44078,11 +44143,75 @@ var Plenix = (function(exports, React2, reactDom, client) {
     reached.add(model[nr].id + "|" + ordered2[nc].id);
     return { range: { anchor: cont ? cont.anchor : here, focus: { key: model[nr].id, field: ordered2[nc].id } }, nr, nc, step, trail: reached };
   };
+  const cellAt = (x, y, frame) => {
+    const el = document.elementFromPoint(x, y), cell = el && el.closest('[role="gridcell"][data-plx-field]'), row = cell && cell.closest("[data-plx-record]");
+    if (!cell || !row || !frame || !frame.contains(cell)) return null;
+    return { key: row.getAttribute("data-plx-record"), field: cell.getAttribute("data-plx-field") };
+  };
+  const focusedCell = (frame) => {
+    const cell = document.activeElement && document.activeElement.closest && document.activeElement.closest('[role="gridcell"][data-plx-field]'), row = cell && cell.closest("[data-plx-record]");
+    return cell && row && frame && frame.contains(cell) ? { key: row.getAttribute("data-plx-record"), field: cell.getAttribute("data-plx-field") } : null;
+  };
+  const EDGE = 32;
+  const MOST = 24;
+  const toward = (v, lo, hi) => v < lo + EDGE ? Math.max(-MOST, (v - lo - EDGE) / 2) : v > hi - EDGE ? Math.min(MOST, (v - hi + EDGE) / 2) : 0;
+  const beginDrag = ({ anchor, frame, scroller, rowAt, ordered: ordered2, isDown, onMove, onEnd }) => {
+    if (!isDown()) return () => {
+    };
+    let last = anchor, frameId = 0, x = 0, y = 0, moved = false;
+    const hit = () => {
+      const c = cellAt(x, y, frame);
+      if (!c || !rowAt.has(c.key) || !ordered2.some((col) => col.id === c.field) || c.key === last.key && c.field === last.field) return;
+      last = c;
+      moved = true;
+      onMove({ anchor, focus: c }, c);
+    };
+    const edge = () => {
+      if (!scroller) return;
+      const r = scroller.getBoundingClientRect(), dy = toward(y, r.top, r.bottom), dx = toward(x, r.left, r.right);
+      if (!dx && !dy) {
+        frameId = 0;
+        return;
+      }
+      scroller.scrollTop += dy;
+      scroller.scrollLeft += dx;
+      hit();
+      frameId = requestAnimationFrame(edge);
+    };
+    const move2 = (e) => {
+      if (e.buttons === 0) {
+        up();
+        return;
+      }
+      x = e.clientX;
+      y = e.clientY;
+      hit();
+      if (!frameId) edge();
+    };
+    const nothing = (e) => e.preventDefault();
+    const stop2 = () => {
+      window.removeEventListener("mousemove", move2, true);
+      window.removeEventListener("mouseup", up, true);
+      document.removeEventListener("selectstart", nothing, true);
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+    const up = () => {
+      stop2();
+      onEnd(last, moved);
+    };
+    window.addEventListener("mousemove", move2, true);
+    window.addEventListener("mouseup", up, true);
+    document.addEventListener("selectstart", nothing, true);
+    return stop2;
+  };
   const cellRangeOps = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
+    beginDrag,
+    cellAt,
     countOf,
     detailsOf,
     extendTo,
+    focusedCell,
     rowsIn,
     said,
     textOf,

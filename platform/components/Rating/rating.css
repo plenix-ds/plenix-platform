@@ -10,3 +10,8 @@ button.plx-rating__star{cursor:pointer;min-block-size:var(--plx-comp-rating-star
 @container (max-width: 320px){
 .plx-rating{column-gap:0;}
 }
+/* half a star (issue 808, the half option): the star in the off color with the same star in the on color over its first half (the start side: the
+   left in left to right, the right in right to left), clipped; the overlay is a pseudo-element, so the button and its focus ring stay one box */
+.plx-rating__star--half{position:relative;}
+.plx-rating__star--half::before{align-items:center;clip-path:inset(0 50% 0 0);color:var(--plx-comp-rating-star-on-text);content:"\2605";display:inline-flex;inset-block:0;inset-inline:0;justify-content:center;pointer-events:none;position:absolute;}
+.plx-rating__star--half:dir(rtl)::before{clip-path:inset(0 0 0 50%);}

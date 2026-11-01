@@ -377,7 +377,7 @@ export function bodyRows({
                   }
                 : null)}
               aria-selected={inRange ? true : undefined}
-              onMouseDown={cellRange.enabled ? cellRange.collapse : undefined}
+              onMouseDown={cellRange.enabled ? (e) => { if (!e.target.closest(interactive)) cellRange.press({ e, row, c, focusCell }); } : undefined}
               // a card's lines line up at the card's start edge in both directions (#679), so a card cell takes the grid's
               // direction; a table cell keeps its value's own direction (dir="auto")
               dir={(pinned && !isStatic) || kinds(c).includes('id') || isNarrow ? undefined : 'auto'}
