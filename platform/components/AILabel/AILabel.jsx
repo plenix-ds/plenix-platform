@@ -14,10 +14,10 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { Badge } from '../Badge/Badge.jsx';
-import { Inline } from '../Stack/Stack.jsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Text } from '../Text/Text.jsx';
-import { Button } from '../Button/Button.jsx';
+import { Inline } from '../Stack/Stack.tsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Text } from '../Text/Text.tsx';
+import { Button } from '../Button/Button.tsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { cx } from '../../utils/cx.ts';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';

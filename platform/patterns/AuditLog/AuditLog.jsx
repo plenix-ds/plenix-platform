@@ -13,9 +13,9 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Time } from '../../components/Time/Time.jsx';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

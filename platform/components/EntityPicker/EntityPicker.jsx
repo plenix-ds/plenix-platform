@@ -50,8 +50,8 @@ import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { IconTile } from '../IconTile/IconTile.jsx';
-import { Icon } from '../Icon/Icon.jsx';
-import { Spinner } from '../Loading/Loading.jsx';
+import { Icon } from '../Icon/Icon.tsx';
+import { Spinner } from '../Loading/Loading.tsx';
 import { announce } from '../../utils/announce.tsx';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 

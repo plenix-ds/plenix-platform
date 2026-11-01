@@ -37,7 +37,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Button } from '../Button/Button.jsx';
+import { Button } from '../Button/Button.tsx';
 import { ProgressCircle } from '../ProgressCircle/ProgressCircle.jsx';
 import { formatBytes, formatPercent } from '../../utils/format.ts';
 import { announce } from '../../utils/announce.tsx';

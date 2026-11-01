@@ -25,10 +25,10 @@
    Notes:
      The panel holds the levels; the page applies them (DataGrid groupBy, nested with several levels). */
 import React from 'react';
-import { Button } from '../../components/Button/Button.jsx';
+import { Button } from '../../components/Button/Button.tsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
-import { Text } from '../../components/Text/Text.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Text } from '../../components/Text/Text.tsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
 import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.ts';

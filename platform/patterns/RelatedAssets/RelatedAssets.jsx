@@ -11,7 +11,7 @@ import { Carousel } from '../../components/Carousel/Carousel.jsx';
 import { MediaCard } from '../../components/Card/Card.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

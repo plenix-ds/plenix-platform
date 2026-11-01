@@ -56,7 +56,7 @@ import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 
 import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon } from '../Icon/Icon.tsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 

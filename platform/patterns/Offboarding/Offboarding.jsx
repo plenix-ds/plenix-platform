@@ -12,11 +12,11 @@
      The caller must authorize cancellation/deletion and supply consequences in children.
 */
 import React from 'react';
-import { Stack } from '../../components/Stack/Stack.jsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input, Textarea } from '../../components/Input/Input.jsx';
-import { Button } from '../../components/Button/Button.jsx';
-import { Text } from '../../components/Text/Text.jsx';
+import { Button } from '../../components/Button/Button.tsx';
+import { Text } from '../../components/Text/Text.tsx';
 import { WizardDialog } from '../WizardDialog/WizardDialog.jsx';
 import { ExportDialog } from '../ExportDialog/ExportDialog.jsx';
 import { cx } from '../../utils/cx.ts';

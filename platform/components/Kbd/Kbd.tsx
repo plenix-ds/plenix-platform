@@ -15,6 +15,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export function Kbd({ onAccent = false, className, children, ...rest }) {
+export type KbdProps = React.HTMLAttributes<HTMLElement> & { onAccent?: boolean };
+export function Kbd({ onAccent = false, className, children, ...rest }: KbdProps) {
   return <kbd className={cx('plx-kbd', onAccent && 'plx-kbd--on-accent', className)} dir="ltr" {...rest}>{children}</kbd>;
 }

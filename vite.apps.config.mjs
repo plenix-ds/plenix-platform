@@ -64,7 +64,7 @@ export function appConfig(id, overrides = {}) {
     logLevel: 'warn',
     plugins: [approved, plenixIcons, finish(target)],
     define: { 'process.env.NODE_ENV': JSON.stringify('production') },
-    esbuild: { jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },
+    esbuild: { include: /\.[cm]?[jt]sx?$/, exclude: [], charset: 'ascii', jsx: 'transform', jsxFactory: 'React.createElement', jsxFragment: 'React.Fragment' },   // charset ascii: no non-ASCII byte in the output (a page loaded without a charset still runs)
     build: {
       outDir: path.join(ROOT, 'build', 'vite'),
       emptyOutDir: false,

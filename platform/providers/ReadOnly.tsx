@@ -36,14 +36,11 @@
 */
 import React from 'react';
 import { useDescriptionId, joinIds } from '../utils/describedBy.ts';
-import { Icon } from '../components/Icon/Icon.jsx';
-import { Text } from '../components/Text/Text.jsx';
-import { Inline } from '../components/Stack/Stack.jsx';
+import { Icon } from '../components/Icon/Icon.tsx';
+import { Text } from '../components/Text/Text.tsx';
+import { Inline } from '../components/Stack/Stack.tsx';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
 
-// Icon and Text as this file draws them (Icon.jsx and Text.jsx are not typed yet: their inferred props would all be required)
-const ReasonIcon = Icon as React.ComponentType<{ name: unknown; size?: string }>;
-const ReasonText = Text as React.ComponentType<{ variant?: string; id?: string; children?: React.ReactNode }>;
 
 export type ReadOnlyProps = {
   as?: 'div' | 'section' | 'form' | 'fieldset'; readOnly?: boolean; reason?: React.ReactNode; className?: string;
@@ -178,8 +175,8 @@ export const ReadOnly = React.forwardRef(function ReadOnly({ as = 'div', readOnl
         aria-describedby={joinIds(rest['aria-describedby'], on && reason ? reasonId : null)}>
         {on && reason ? (
           <Inline gap="xs">
-            <ReasonIcon name={LockIcon} size="sm" />
-            <ReasonText variant="secondary" id={reasonId}>{reason}</ReasonText>
+            <Icon name={LockIcon} size="sm" />
+            <Text variant="secondary" id={reasonId}>{reason}</Text>
           </Inline>
         ) : null}
         {children}
