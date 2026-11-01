@@ -3528,6 +3528,17 @@
   --plx-comp-data-grid-scroll-layer: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-grid-template-line-height: var(--plx-ref-size-24px);
+  --plx-comp-data-grid-template-gap: var(--plx-ref-space-8px);
+  --plx-comp-data-grid-template-end-width: var(--plx-ref-size-100px);
+  --plx-comp-data-grid-template-b-end-width: var(--plx-ref-size-96px);
+  --plx-comp-data-grid-template-b-mid-width: var(--plx-ref-size-112px);
+  --plx-comp-data-grid-template-divider-color: var(--plx-sys-data-grid-line);
+  --plx-comp-data-grid-template-muted-text: var(--plx-sys-data-grid-text-muted);
+  --plx-comp-data-grid-template-subtle-text: var(--plx-sys-content-subtle);
+  --plx-comp-data-grid-template-title-weight: var(--plx-sys-font-weight-semibold);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-data-pill-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-data-pill-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-data-pill-md-height: var(--plx-ref-size-24px);

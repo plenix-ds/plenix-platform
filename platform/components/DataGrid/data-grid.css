@@ -103,6 +103,7 @@
    menu (the row's own fill) > none. The checkbox column ends in its own line and the next column's line steps aside
    (RedSave DT-26); the row-menu column pinned at the end is solid, with a line at its start (DT-25). */
 @property --plx-state-data-grid-row-display{syntax:"*";inherits:false;}
+@property --plx-state-data-grid-row-columns{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-cell-bg{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-cell-fill{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-cell-display{syntax:"*";inherits:false;}
@@ -139,7 +140,7 @@
 .plx-data-grid__grid-row.plx-data-grid__grid-selected{--plx-comp-data-grid-context-label-name-color:var(--plx-comp-data-grid-row-label-name-text);color:var(--plx-comp-data-grid-row-selected-color);}
 .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover{cursor:default;}
 .plx-data-grid__grid-row:is(:hover, .plx-data-grid__grid-selected){--plx-comp-data-grid-context-row-actions:1;}
-.plx-data-grid__grid-row--narrow{--plx-state-data-grid-row-display:grid;align-items:center;grid-template-columns:auto auto minmax(0,1fr) auto;padding-block-end:var(--plx-comp-data-grid-list-padding-block);padding-block-start:var(--plx-comp-data-grid-list-padding-block);}
+.plx-data-grid__grid-row--narrow{--plx-state-data-grid-row-display:grid;align-items:center;grid-template-columns:var(--plx-state-data-grid-row-columns,auto auto minmax(0,1fr) auto);padding-block-end:var(--plx-comp-data-grid-list-padding-block);padding-block-start:var(--plx-comp-data-grid-list-padding-block);}
 .plx-data-grid__grid-row--virtual{block-size:calc(var(--plx-comp-data-grid-record-height) + var(--plx-comp-data-grid-line-width));overflow:clip;}
 .plx-data-grid__grid-cell{align-items:var(--plx-comp-data-grid-context-cell-align,center);align-self:stretch;background-color:var(--plx-state-data-grid-cell-fill,var(--plx-state-data-grid-cell-bg,transparent));block-size:auto;display:var(--plx-state-data-grid-cell-display,flex);flex-grow:0;flex-shrink:var(--plx-state-data-grid-cell-shrink,0);line-height:var(--plx-state-data-grid-cell-line-height,var(--plx-comp-data-grid-context-cell-line-height,var(--plx-comp-data-grid-line-height)));min-block-size:var(--plx-state-data-grid-cell-min-block,var(--plx-comp-data-grid-min-height));overflow:hidden;padding-block-end:var(--plx-state-data-grid-cell-pad-end,var(--plx-comp-data-grid-context-cell-pad-end,0));padding-block-start:var(--plx-state-data-grid-cell-pad-start,var(--plx-comp-data-grid-context-cell-pad-start,0));padding-inline-end:var(--plx-state-data-grid-cell-pad-inline-end,var(--plx-comp-data-grid-cell-padding-inline));padding-inline-start:var(--plx-state-data-grid-cell-pad-inline-start,var(--plx-comp-data-grid-cell-padding-inline));position:var(--plx-state-data-grid-cell-position,var(--plx-state-data-grid-position,relative));text-overflow:ellipsis;white-space:var(--plx-state-data-grid-cell-space,nowrap);}
 .plx-data-grid__grid-cell:not(:first-child, .plx-data-grid__grid-cell--after-lead, .plx-data-grid__grid-cell--narrow)::before{border-inline-start-color:var(--plx-comp-data-grid-context-cell-edge,var(--plx-comp-data-grid-context-row-line,var(--plx-comp-data-grid-column-line)));border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-data-grid-line-width);box-sizing:border-box;content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:var(--plx-comp-data-grid-column-line-inset);inset-block-start:var(--plx-comp-data-grid-column-line-inset);inset-inline-start:0;position:absolute;}
@@ -151,7 +152,7 @@
 .plx-data-grid__grid-cell.plx-data-grid__grid-editing:where(:not(.plx-data-grid__cell--grouped, .plx-data-grid__cell--row-label)){--plx-state-data-grid-cell-bg:var(--plx-comp-data-grid-background);}
 .plx-data-grid__grid-cell:is(.plx-data-grid__grid-frozen, .plx-data-grid__grid-row-header, .plx-data-grid__cell--row-menu):where(:not(.plx-data-grid__cell--grouped, .plx-data-grid__cell--row-label, .plx-data-grid__grid-editing)){--plx-state-data-grid-cell-bg:var(--plx-comp-data-grid-context-row-fill,var(--plx-comp-data-grid-background));}
 /* display, line height, white space */
-.plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow:not(.plx-data-grid__cell--key, .plx-data-grid__cell--list-detail, .plx-data-grid__grid-row-header, .plx-data-grid__cell--handle, .plx-data-grid__cell--actions, .plx-data-grid__cell--row-menu){--plx-state-data-grid-cell-display:none;}
+.plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow:not(.plx-data-grid__cell--key, .plx-data-grid__cell--slot, .plx-data-grid__cell--list-detail, .plx-data-grid__grid-row-header, .plx-data-grid__cell--handle, .plx-data-grid__cell--actions, .plx-data-grid__cell--row-menu){--plx-state-data-grid-cell-display:none;}
 .plx-data-grid__grid-cell.plx-data-grid__grid-cell--lines{--plx-comp-thumbnail-context-fit:contain;--plx-comp-thumbnail-context-height:calc(var(--plx-comp-data-grid-record-height) - var(--plx-comp-data-grid-cell-padding-block) * 2);--plx-comp-thumbnail-context-max-width:100%;--plx-comp-thumbnail-context-width:auto;--plx-state-data-grid-cell-display:grid;--plx-state-data-grid-cell-line-height:var(--plx-comp-data-grid-text-line-height);--plx-state-data-grid-cell-pad-end:var(--plx-comp-data-grid-cell-padding-block);--plx-state-data-grid-cell-pad-start:var(--plx-comp-data-grid-cell-padding-block);align-content:start;grid-auto-columns:minmax(0,max-content);grid-auto-flow:column;grid-template-rows:minmax(var(--plx-comp-data-grid-text-line-height),auto);}
 .plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow.plx-data-grid__cell--key{--plx-state-data-grid-cell-display:block;--plx-state-data-grid-cell-line-height:var(--plx-comp-data-grid-list-line-height);--plx-state-data-grid-cell-min-block:0;--plx-state-data-grid-cell-position:relative;--plx-state-data-grid-cell-space:normal;grid-column:3;inline-size:auto;max-inline-size:none;min-inline-size:0;text-align:start;}
 /* the card (narrow, #679): every other visible field under the key values, its column title above its value, wrapped, never cut sideways */
@@ -193,6 +194,37 @@
 .plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow.plx-data-grid__cell--handle{grid-column:2;grid-row:1;}
 .plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow.plx-data-grid__cell--actions{--plx-state-data-grid-cell-space:normal;flex-wrap:wrap;grid-column:3 / -1;inline-size:auto;max-inline-size:none;min-inline-size:0;}
 .plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow.plx-data-grid__cell--row-menu{--plx-state-data-grid-cell-display:inline-flex;grid-column:4;grid-row:1;}
+/* ---- row templates (issue 839, owner 2026-11-01): the card layouts A and B (narrow) and the wide row. A card is the grid's own row with its
+   cells placed in a grid (selection, the open row, the keyboard, the row menu and editing are unchanged); the layout sets the row's columns, each cell its
+   place (a class of its own: layout and slot). A: three aligned lines, one vertical line down the list; B: the value beside the title, the three small facts
+   on the third line. Wide: the table, with every slot as a column in slot order and the table's own column lines. */
+.plx-data-grid__grid-row--template{--plx-state-data-grid-row-columns:auto minmax(0,1fr) var(--plx-comp-data-grid-template-end-width) auto;column-gap:0;grid-auto-rows:var(--plx-comp-data-grid-template-line-height);row-gap:0;}
+.plx-data-grid__grid-row--template-b{--plx-state-data-grid-row-columns:auto minmax(0,1fr) var(--plx-comp-data-grid-template-b-mid-width) var(--plx-comp-data-grid-template-b-end-width) auto;}
+.plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow.plx-data-grid__cell--slot{--plx-state-data-grid-cell-line-height:var(--plx-comp-data-grid-template-line-height);--plx-state-data-grid-cell-min-block:0;--plx-state-data-grid-cell-pad-end:0;--plx-state-data-grid-cell-pad-start:0;--plx-state-data-grid-cell-space:nowrap;align-self:stretch;inline-size:auto;max-inline-size:none;min-inline-size:0;position:relative;text-align:start;}
+.plx-data-grid__grid-cell.plx-data-grid__grid-cell--template-check{grid-column:1;grid-row:1;}
+.plx-data-grid__grid-cell.plx-data-grid__grid-cell--narrow.plx-data-grid__cell--row-menu.plx-data-grid__grid-cell--template-menu{grid-column:-2 / -1;grid-row:1;}
+.plx-data-grid__cell--place-a-title{grid-column:2;grid-row:1;}
+.plx-data-grid__cell--place-a-date{grid-column:3;grid-row:1;}
+.plx-data-grid__cell--place-a-subtitle{grid-column:2;grid-row:2;}
+.plx-data-grid__cell--place-a-primary{grid-column:3;grid-row:2;}
+.plx-data-grid__cell--place-a-secondary{grid-column:2;grid-row:3;}
+.plx-data-grid__cell--place-a-tertiary{grid-column:3;grid-row:3;}
+.plx-data-grid__cell--place-b-title{grid-column:2 / 3;grid-row:1;}
+.plx-data-grid__cell--place-b-primary{grid-column:3 / 5;grid-row:1;justify-content:flex-end;}
+.plx-data-grid__cell--place-b-subtitle{grid-column:2 / 5;grid-row:2;}
+.plx-data-grid__cell--place-b-secondary{grid-column:2;grid-row:3;}
+.plx-data-grid__cell--place-b-tertiary{grid-column:3;grid-row:3;}
+.plx-data-grid__cell--place-b-date{grid-column:4;grid-row:3;}
+/* the vertical lines: A one on the start edge of every cell of the second column, all on one line down the list; B only between the pieces of the third line */
+.plx-data-grid__cell--place-a-date::before,.plx-data-grid__cell--place-a-primary::before,.plx-data-grid__cell--place-a-tertiary::before,.plx-data-grid__cell--place-b-tertiary::before,.plx-data-grid__cell--place-b-date::before{border-inline-start-color:var(--plx-comp-data-grid-template-divider-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-data-grid-line-width);box-sizing:border-box;content:"";inline-size:var(--plx-comp-data-grid-line-width);inset-block-end:0;inset-block-start:0;inset-inline-start:0;position:absolute;}
+.plx-data-grid__cell--place-a-date,.plx-data-grid__cell--place-a-primary,.plx-data-grid__cell--place-a-tertiary,.plx-data-grid__cell--place-b-tertiary,.plx-data-grid__cell--place-b-date{--plx-state-data-grid-cell-pad-inline-start:var(--plx-comp-data-grid-template-gap);}
+.plx-data-grid__cell--slot-title,.plx-data-grid__cell--slot-subtitle,.plx-data-grid__cell--slot-secondary{--plx-state-data-grid-cell-pad-inline-end:var(--plx-comp-data-grid-template-gap);}
+/* the slots' type, in the card and the wide row: title body semibold; subtitle and secondary 12px muted; date and tertiary in the data font, muted and subtle (tertiary 11px); primary in the data font, semibold */
+.plx-data-grid__cell--slot-title{font-weight:var(--plx-comp-data-grid-template-title-weight);}
+.plx-data-grid__cell--slot-subtitle,.plx-data-grid__cell--slot-secondary{color:var(--plx-comp-data-grid-template-muted-text);font-family:var(--plx-sys-text-secondary-font-family);font-size:var(--plx-sys-text-secondary-font-size);font-weight:var(--plx-sys-text-secondary-font-weight);line-height:var(--plx-comp-data-grid-template-line-height);letter-spacing:var(--plx-sys-text-secondary-letter-spacing);word-spacing:var(--plx-sys-text-secondary-word-spacing);}
+.plx-data-grid__cell--slot-date{color:var(--plx-comp-data-grid-template-muted-text);font-family:var(--plx-comp-data-grid-data-font-family);font-size:var(--plx-comp-data-grid-data-font-size);font-weight:var(--plx-sys-text-body-font-weight);line-height:var(--plx-comp-data-grid-template-line-height);letter-spacing:var(--plx-sys-text-body-letter-spacing);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-data-grid__cell--slot-primary{font-family:var(--plx-comp-data-grid-data-font-family);font-size:var(--plx-comp-data-grid-data-font-size);font-weight:var(--plx-comp-data-grid-template-title-weight);line-height:var(--plx-comp-data-grid-template-line-height);letter-spacing:var(--plx-sys-text-body-letter-spacing);word-spacing:var(--plx-sys-font-data-word-spacing);}
+.plx-data-grid__cell--slot-tertiary{color:var(--plx-comp-data-grid-template-subtle-text);font-family:var(--plx-comp-data-grid-data-font-family);font-size:var(--plx-sys-text-caption-font-size);font-weight:var(--plx-sys-text-caption-font-weight);line-height:var(--plx-comp-data-grid-template-line-height);letter-spacing:var(--plx-sys-text-caption-letter-spacing);word-spacing:var(--plx-sys-font-data-word-spacing);}
 /* layers, text, outlines */
 .plx-data-grid__grid-cell.plx-data-grid__grid-frozen{z-index:var(--plx-sys-layer-raised);}
 .plx-data-grid__cell--name{font-weight:var(--plx-state-data-grid-unread-weight,var(--plx-comp-data-grid-name-font-weight));}

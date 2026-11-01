@@ -8,5 +8,7 @@ declare global {
   }
   /** plenix.esm.js only: the module's own URL (`const __plenixModuleUrl = import.meta.url` in the build's banner) */
   const __plenixModuleUrl: string | undefined;
+  /** the release, from package.json (Vite's define in vite.platform.config.mjs and vite.packages.config.mjs; platform/version.ts) */
+  const __PLENIX_VERSION__: string | undefined;
 }
 export {};
