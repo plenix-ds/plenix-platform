@@ -20,7 +20,8 @@ const CASES = [
   { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 105 },
   { name: '{ Badge }', code: 'import { Badge } from "plenix"; console.log(Badge);', limit: 30 },
   { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 440 },
-  { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1400 },
+  // 1,410: #814 adds the branch loader (1.3 KB)
+  { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1410 },
 ];
 // the module the application imports: the package's ES module entry, as a bundler reads it (package.json "module")
 const entryOf = () => path.join(PKG, JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf8')).module);

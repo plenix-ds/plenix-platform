@@ -26,9 +26,10 @@ const ROOT = path.join(__dirname, '..');
   // ── Node: the words in both catalogs
   const section = (file) => {
     const text = fs.readFileSync(path.join(ROOT, 'platform', 'i18n', file), 'utf8');
-    const m = /"branch": \{([^}]*)\}/.exec(text);
+    // the section runs to its own closing brace at its indent; the words hold braces ("Loading {label}")
+    const m = /^(\s*)"branch": \{\n([^]*?)\n\1\}/m.exec(text);
     assert.ok(m, file + ' has the "branch" section');
-    return Object.fromEntries([...m[1].matchAll(/"(\w+)": "([^"]*)"/g)].map((x) => [x[1], x[2]]));
+    return Object.fromEntries([...m[2].matchAll(/"(\w+)": "([^"]*)"/g)].map((x) => [x[1], x[2]]));
   };
   const en = section('en.js'), enJson = section('en.json'), ar = section('ar.js');
   assert.deepEqual(Object.keys(en).sort(), ['failed', 'failedName', 'loading', 'loadingName', 'retry'], 'the English words');

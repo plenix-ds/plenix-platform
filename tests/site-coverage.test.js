@@ -23,9 +23,10 @@ for (const m of read(path.join(ROOT, 'platform', 'index.js')).matchAll(/export\s
 // not drawn by an application: an old name kept for one release, the providers the site gets from the page, data
 // and the building blocks the components draw with, which their own documentation keeps out of application code:
 // DataGridEngine ("Applications use the public DataGrid entry point"; it draws every DataGrid and Table on the site) and
-// Portal (every dialog, menu, popover and toast on the site draws through it)
+// Portal (every dialog, menu, popover and toast on the site draws through it), and BranchStatus (#814: what Tree and
+// TreeSelect draw inside a branch that loads; the site's trees draw it through them)
 const NOT_REQUIRED = new Set(['DataTable', 'SurfaceContext', 'FieldLayoutContext', 'DirectionContext', 'ReadOnlyContext', 'ChartPatterns', 'VirtualProbe', 'VirtualGap', 'ChartFocusMark',
-  'DataGridEngine', 'Portal']);
+  'DataGridEngine', 'Portal', 'BranchStatus']);
 // the hooks an application calls itself; the building hooks (useFloating, usePressable…) run inside the components
 const APP_HOOKS = new Set(['useToast', 'useUndo', 'useHotkey', 'useSession', 'useTheme', 'useDensity', 'useScreenLocation', 'useViewState', 'useUnsavedGuard',
   'useClipboard', 'useSearchHistory', 'useCollectionView', 'useCommandBar', 'useAutosave', 'useUploadQueue', 'useAnalytics', 'useLocale', 'useRetry', 'usePrint',
