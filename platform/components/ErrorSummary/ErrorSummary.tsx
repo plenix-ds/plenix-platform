@@ -26,8 +26,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Notice } from '../Notice/Notice.jsx';
-import { Link } from '../Link/Link.jsx';
+import { Notice } from '../Notice/Notice.tsx';
+import { Link } from '../Link/Link.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 
 

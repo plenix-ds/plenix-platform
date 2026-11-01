@@ -15,9 +15,9 @@ import { SidePanel } from '../SidePanel/SidePanel.jsx';
 import { Stack } from '../../components/Stack/Stack.tsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Button } from '../../components/Button/Button.tsx';
-import { Link } from '../../components/Link/Link.jsx';
+import { Link } from '../../components/Link/Link.tsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { EmptyState } from '../../components/EmptyState/EmptyState.tsx';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

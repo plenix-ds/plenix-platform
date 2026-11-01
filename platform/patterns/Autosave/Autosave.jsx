@@ -16,7 +16,7 @@
      No backend is assumed. Use immutable values. Public or costly changes need explicit submission.
 */
 import React from 'react';
-import { Badge } from '../../components/Badge/Badge.jsx';
+import { Badge } from '../../components/Badge/Badge.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Inline } from '../../components/Stack/Stack.tsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.tsx';
