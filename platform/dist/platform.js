@@ -6599,10 +6599,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
     return /* @__PURE__ */ React2.createElement("span", { className: cx("plx-spinner", "plx-spinner--" + size, className), role: "status", ...rest }, /* @__PURE__ */ React2.createElement(VisuallyHidden, null, label2 ?? t.label));
   }
   const SurfaceContext = React2.createContext(null);
-  const SLOTS = 16;
-  const taken = new Array(SLOTS + 1).fill(false);
+  const SLOTS$1 = 16;
+  const taken = new Array(SLOTS$1 + 1).fill(false);
   const take = () => {
-    for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    for (let i = 1; i <= SLOTS$1; i++) if (!taken[i]) {
       taken[i] = true;
       return i;
     }
@@ -9103,8 +9103,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const cut = useTruncated(labelRef);
     const child = React2.Children.only(children);
     const max2 = counter ? typeof counter === "number" ? counter : Number(child.props.maxLength) || 0 : 0;
-    const [typed, setTyped] = React2.useState(() => String(child.props.defaultValue == null ? "" : child.props.defaultValue).length);
-    const length = child.props.value != null ? String(child.props.value).length : typed;
+    const [typed2, setTyped] = React2.useState(() => String(child.props.defaultValue == null ? "" : child.props.defaultValue).length);
+    const length = child.props.value != null ? String(child.props.value).length : typed2;
     const over2 = max2 > 0 && length > max2;
     const t = useStrings("field.counter", strings);
     const about = useStrings("field").about;
@@ -10479,7 +10479,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const lo = min2 ? min2() : 0, hi = max2 ? paneMax(max2(), lo) : Infinity;
     return [raw && raw >= lo && raw <= hi ? raw : null, set2];
   }
-  const LAYOUTS$4 = ["fluid", "contained", "hybrid", "multi-pane", "focus"];
+  const LAYOUTS$5 = ["fluid", "contained", "hybrid", "multi-pane", "focus"];
   const LayoutContext = React2.createContext(null);
   const useAppLayout = () => React2.useContext(LayoutContext);
   const tokenValue = (name) => typeof document === "undefined" ? "" : getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -10613,7 +10613,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         claimBack
       ]
     );
-    return /* @__PURE__ */ React2.createElement(LayoutContext.Provider, { value: ctx }, /* @__PURE__ */ React2.createElement("div", { className: cx("plx-app-shell", className), "data-plx-layout": LAYOUTS$4.indexOf(layout2) >= 0 ? layout2 : "fluid" }, /* @__PURE__ */ React2.createElement("a", { className: "plx-app-shell__skip", href: "#" + mainId }, t.skip), header, narrow && hasSide ? /* @__PURE__ */ React2.createElement("div", { ref: setParentEl, className: "plx-app-shell__parent-slot" }) : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-app-shell__body" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-app-shell__side plx-app-shell__side--start" }, sideNav || /* @__PURE__ */ React2.createElement("div", { ref: setSlotEl, className: "plx-app-shell__slot" })), /* @__PURE__ */ React2.createElement("main", { id: mainId, tabIndex: -1, className: cx("plx-app-shell__main", mainClassName), "data-plx-layout": LAYOUTS$4.indexOf(layout2) >= 0 ? layout2 : "fluid" }, children), /* @__PURE__ */ React2.createElement("div", { className: "plx-app-shell__side plx-app-shell__side--end" }, panel)), footer, narrow && hasSide ? /* @__PURE__ */ React2.createElement("div", { ref: setBarEl, className: "plx-app-shell__bar-slot" }) : null));
+    return /* @__PURE__ */ React2.createElement(LayoutContext.Provider, { value: ctx }, /* @__PURE__ */ React2.createElement("div", { className: cx("plx-app-shell", className), "data-plx-layout": LAYOUTS$5.indexOf(layout2) >= 0 ? layout2 : "fluid" }, /* @__PURE__ */ React2.createElement("a", { className: "plx-app-shell__skip", href: "#" + mainId }, t.skip), header, narrow && hasSide ? /* @__PURE__ */ React2.createElement("div", { ref: setParentEl, className: "plx-app-shell__parent-slot" }) : null, /* @__PURE__ */ React2.createElement("div", { className: "plx-app-shell__body" }, /* @__PURE__ */ React2.createElement("div", { className: "plx-app-shell__side plx-app-shell__side--start" }, sideNav || /* @__PURE__ */ React2.createElement("div", { ref: setSlotEl, className: "plx-app-shell__slot" })), /* @__PURE__ */ React2.createElement("main", { id: mainId, tabIndex: -1, className: cx("plx-app-shell__main", mainClassName), "data-plx-layout": LAYOUTS$5.indexOf(layout2) >= 0 ? layout2 : "fluid" }, children), /* @__PURE__ */ React2.createElement("div", { className: "plx-app-shell__side plx-app-shell__side--end" }, panel)), footer, narrow && hasSide ? /* @__PURE__ */ React2.createElement("div", { ref: setBarEl, className: "plx-app-shell__bar-slot" }) : null));
   }
   function SideNavPortal({ children }) {
     const layout2 = useAppLayout();
@@ -17941,8 +17941,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }
     return { text: text2, start: start2, end };
   }
-  function ranges(label2, typed) {
-    const query = fold$1(String(typed ?? "").trim()).text;
+  function ranges(label2, typed2) {
+    const query = fold$1(String(typed2 ?? "").trim()).text;
     if (!query) return [];
     const folded = fold$1(label2);
     const found = [];
@@ -17956,13 +17956,13 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }
     return found;
   }
-  function matchesText(label2, typed) {
-    const query = fold$1(String(typed ?? "").trim()).text;
+  function matchesText(label2, typed2) {
+    const query = fold$1(String(typed2 ?? "").trim()).text;
     return !query || fold$1(String(label2 ?? "")).text.indexOf(query) >= 0;
   }
-  function highlightMatch(label2, typed) {
+  function highlightMatch(label2, typed2) {
     const text2 = String(label2 ?? "");
-    const found = ranges(text2, typed);
+    const found = ranges(text2, typed2);
     if (!found.length) return text2;
     const pieces = [];
     let at2 = 0;
@@ -19523,7 +19523,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       focusCell(model.indexOf(row) + step, null, step);
     }
   };
-  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell }) => (event) => {
+  const cellKeys = ({ isStatic, value, canEdit, setEditing, row, c, model, ordered: ordered2, column, frame, focusCell, kept }) => (event) => {
     if (isStatic || event.target !== event.currentTarget) return;
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
       if (document.getSelection()?.toString()) return;
@@ -19542,6 +19542,12 @@ var Plenix = (function(exports, React2, reactDom, client) {
       ArrowLeft: [index2, at2 + (isRtl$2(frame.current) ? 1 : -1)],
       ArrowRight: [index2, at2 + (isRtl$2(frame.current) ? -1 : 1)]
     };
+    if (kept && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+      const step = keys[event.key][1] - at2;
+      let to = at2 + step;
+      while (ordered2[to] && !kept.has(ordered2[to].id)) to += step;
+      keys[event.key] = [index2, ordered2[to] ? to : at2];
+    }
     if (keys[event.key]) {
       event.preventDefault();
       focusCell(...keys[event.key], event.key === "ArrowUp" ? -1 : 1);
@@ -20787,6 +20793,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       if (row.__gap)
         return /* @__PURE__ */ React2.createElement("div", { key: row.id, className: B + "__group--gap" }, /* @__PURE__ */ React2.createElement("div", { className: B + "__group-band" }));
       const rowApi = api.row(row.id), record = row.original;
+      const tpl = props.rowTemplate, card = !!tpl && isNarrow && tpl.layout !== "wide", slotted = !!tpl && (card || tpl.layout === "wide"), cellList = card ? ordered2.filter((column) => tpl.keep.has(column.id)) : ordered2;
       const step = !isStatic && !isNarrow ? effectiveStep : void 0, sized = step != null, lines = sized && step !== "short", modes = cx(
         isStatic && B + "__grid-cell--static",
         isNarrow && B + "__grid-cell--narrow",
@@ -20817,6 +20824,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
             isStatic && B + "__grid-row--static",
             anyWrap && !isNarrow && (isStatic || (effectiveStep || "short") !== "short") && B + "__grid-row--wrap",
             isNarrow && B + "__grid-row--narrow",
+            card && B + "__grid-row--template " + B + "__grid-row--template-" + tpl.layout.toLowerCase(),
+            slotted && !card && B + "__grid-row--template-wide",
             virtualized && B + "__grid-row--virtual",
             row === model[0] && B + "__grid-row--first"
           ),
@@ -20843,6 +20852,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           {
             className: cx(
               `${B}__grid-cell ${B}__grid-row-header ${B}__w-lead`,
+              card && B + "__grid-cell--template-check",
               leadFrozen && B + "__grid-frozen",
               modes,
               selection[row.id] && B + "__grid-cell--selected-start"
@@ -20858,11 +20868,11 @@ var Plenix = (function(exports, React2, reactDom, client) {
             }
           )
         ) : null,
-        ordered2.map((column) => {
+        cellList.map((column) => {
           const c = column.columnDef.meta, k = kindsOf(c), pinned = column.getIsPinned() === "left", sticky = pinned ? pinStart(column) : 0;
           const cell = api.cell(row.id, c.field), canEdit = !!c.editor && (typeof c.editable === "function" ? c.editable(cell) : c.editable !== false);
           const value = valueAt(record, c.field), isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field), isEditing = editing?.key === row.id && editing.field === c.field, handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0, actions = k.includes("actions");
-          const detail = isNarrow && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes("icon");
+          const detail = isNarrow && !tpl && !keys.includes(c.field) && !actions && !c.rowHandle && !k.includes("icon");
           const mods = cx(
             isStatic && B + "__value--static",
             k.includes("wrap") && B + "__value--wrap",
@@ -20911,7 +20921,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 ordered: ordered2,
                 column,
                 frame,
-                focusCell
+                focusCell,
+                kept: card ? tpl.keep : void 0
               }),
               "data-plx-sticky": pinned && sticky ? sticky + "px" : void 0,
               "data-plx-label": detail ? c.title || c.field : void 0,
@@ -20920,10 +20931,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
               className: cx(
                 "" + B + "__grid-cell",
                 modes,
-                !selectable && marked(row.id) && ordered2.indexOf(column) === 0 && B + "__grid-cell--selected-start",
+                !selectable && marked(row.id) && cellList.indexOf(column) === 0 && B + "__grid-cell--selected-start",
                 bare && B + "__grid-cell--bare",
-                selectable && ordered2.indexOf(column) === 0 && B + "__grid-cell--after-lead",
-                ordered2.indexOf(column) > 0 && ordered2[ordered2.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
+                selectable && cellList.indexOf(column) === 0 && B + "__grid-cell--after-lead",
+                cellList.indexOf(column) > 0 && cellList[cellList.indexOf(column) - 1].getIsPinned() === "left" && column.getIsPinned() !== "left" && B + "__grid-cell--after-frozen",
                 isTree && row.depth > 0 && B + "__tree-cell--level-" + Math.min(12, row.depth),
                 editing?.key === row.id && editing.field === c.field && "" + B + "__grid-editing",
                 k.map((kind) => B + "__cell--" + kind).join(" "),
@@ -20935,6 +20946,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
                 pinned && "" + B + "__grid-frozen",
                 (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + "__cell--row-label",
                 k.includes("icon") && B + "__w-lead",
+                slotted && tpl.slotOf[c.field] && B + "__cell--slot " + B + "__cell--slot-" + tpl.slotOf[c.field],
+                card && tpl.slotOf[c.field] && B + "__cell--place-" + tpl.layout.toLowerCase() + "-" + tpl.slotOf[c.field],
                 keys.includes(c.field) && B + "__cell--key",
                 detail && B + "__cell--list-detail",
                 keys[0] === c.field && B + "__cell--key-first",
@@ -21036,7 +21049,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           );
         }),
         props.viewMenu ? /* @__PURE__ */ React2.createElement("div", { className: cx(`${B}__grid-cell ${B}__w-view`, modes), role: "gridcell" }) : null,
-        rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, modes), role: "gridcell" }, /* @__PURE__ */ React2.createElement(
+        rowMenu && rowMenuButton ? /* @__PURE__ */ React2.createElement(Width, { width: metrics.menu, className: cx(`${B}__grid-cell ${B}__cell--row-menu`, card && B + "__grid-cell--template-menu", modes), role: "gridcell" }, /* @__PURE__ */ React2.createElement(
           Menu,
           {
             label: S2.rowActions,
@@ -21538,8 +21551,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const leadFrozen = frozen.size > 0 && !isNarrow;
     const widths = Object.fromEntries(ordered2.map((column) => [column.id, column.getSize()]));
     const listable = (column) => !column.rowHandle && !kinds(column).some((kind) => ["icon", "actions"].includes(kind));
-    const keys = keyColumns?.length ? keyColumns : columns.filter((c) => !kinds(c).some((k) => ["icon", "actions"].includes(k)) && !c.rowHandle).slice(0, 3).map((c) => c.field);
-    const listed = narrow === "auto" ? columns.some(listable) : narrow === "list" && columns.some((column) => listable(column) && !keys.includes(column.field));
+    const keys = props.rowTemplate ? [] : keyColumns?.length ? keyColumns : columns.filter((c) => !kinds(c).some((k) => ["icon", "actions"].includes(k)) && !c.rowHandle).slice(0, 3).map((c) => c.field);
+    const listed = props.rowTemplate ? narrow !== "table" && columns.some(listable) : narrow === "auto" ? columns.some(listable) : narrow === "list" && columns.some((column) => listable(column) && !keys.includes(column.field));
     const columnDnd = useSortable({
       items: ordered2,
       getId: (column) => column.id,
@@ -22398,7 +22411,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
   const d1$P = "M450-180v-485.08L222.15-437.23 180-480l300-300 300 300-42.15 42.77L510-665.08V-180h-60Z";
   const ArrowUpIcon = { "name": "arrow-up", "set": "plenix", "symbol": "arrow_upward", "fillOutline": false, "mirrored": false, "drawings": { "20": { "outline": { "viewBox": "0 -960 960 960", "d": d0$P }, "fill": { "viewBox": "0 -960 960 960", "d": d0$P } }, "24": { "outline": { "viewBox": "0 -960 960 960", "d": d1$P }, "fill": { "viewBox": "0 -960 960 960", "d": d1$P } } } };
   const TYPES = ["value", "trend", "progress", "gauge", "breakdown", "comparison", "list", "summary", "person", "week", "month", "table"];
-  const LAYOUTS$3 = ["stacked", "beside", "inline", "tile", "icon-start"];
+  const LAYOUTS$4 = ["stacked", "beside", "inline", "tile", "icon-start"];
   const APPEARANCES = ["plain", "edge", "soft", "filled", "gradient"];
   const HUES$1 = ["blue", "green", "purple", "red", "brown", "gray"];
   const ORDER = ["blue", "purple", "brown", "green", "red", "gray"];
@@ -22529,7 +22542,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     className,
     ...rest
   }) {
-    devWarn("MetricCard", { type, layout: layout2, appearance, size }, { type: TYPES, layout: LAYOUTS$3, appearance: APPEARANCES, size: ["sm", "md", "lg"] });
+    devWarn("MetricCard", { type, layout: layout2, appearance, size }, { type: TYPES, layout: LAYOUTS$4, appearance: APPEARANCES, size: ["sm", "md", "lg"] });
     if ((appearance === "filled" || appearance === "gradient") && type !== "value" && type !== "summary") devWarn("MetricCard", { appearance: appearance + " with type " + type }, { appearance: ["plain", "edge", "soft"] });
     const t = useStrings("metricCard", strings);
     const id = useUid("plx-metric-card");
@@ -23850,7 +23863,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         announce(t.micStopped, { politeness: "assertive" });
       }
     };
-    const typed = (text2) => {
+    const typed2 = (text2) => {
       if (recognition.current) {
         spoken.current.open = false;
         stopListening();
@@ -23896,7 +23909,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           placeholder,
           "aria-label": label2,
           disabled,
-          onChange: (e) => typed(e.target.value),
+          onChange: (e) => typed2(e.target.value),
           onPaste: hasFiles ? (e) => {
             const files2 = e.clipboardData && e.clipboardData.files;
             if (files2 && files2.length) {
@@ -24228,10 +24241,10 @@ var Plenix = (function(exports, React2, reactDom, client) {
         return;
       }
       if (item.kind === "action") {
-        const typed = text2.trim();
+        const typed2 = text2.trim();
         setText("");
         setOpen(false);
-        if (emptyAction.onSelect) emptyAction.onSelect(typed);
+        if (emptyAction.onSelect) emptyAction.onSelect(typed2);
         return;
       }
       const v = item.o.value;
@@ -24607,6 +24620,54 @@ var Plenix = (function(exports, React2, reactDom, client) {
       t.value === current2 ? t.content : null
     )) : null);
   }
+  const SLOTS = ["title", "subtitle", "date", "primary", "secondary", "tertiary"];
+  const FILL = ["title", "subtitle", "primary", "secondary", "tertiary", "date"];
+  const LAYOUTS$3 = { A: "A", B: "B", WIDE: "wide" };
+  const DATES = ["date", "datetime"], NUMBERS = ["number", "currency", "percent"];
+  const showable = (c) => !c.rowHandle && !kinds(c).some((k) => k === "icon" || k === "actions");
+  const typed = (c) => c.type || (c.sorter === "number" ? "number" : c.sorter === "date" ? "date" : "text");
+  function resolveRowTemplate({ columns, layout: layout2, template }) {
+    if (layout2 === void 0 && !template) return null;
+    const kind = LAYOUTS$3[String(layout2 === void 0 ? "A" : layout2).toUpperCase()];
+    if (!kind) return null;
+    const list2 = columns.filter(showable), known = new Set(list2.map((c) => c.field));
+    const slots = {}, used = /* @__PURE__ */ new Set();
+    for (const slot of SLOTS) {
+      const field = template && template[slot];
+      if (field !== void 0 && known.has(field) && !used.has(field)) {
+        slots[slot] = field;
+        used.add(field);
+      }
+    }
+    const take2 = (slot, test) => {
+      if (slots[slot] !== void 0) return;
+      const column = list2.find((c) => !used.has(c.field) && test(c));
+      if (column) {
+        slots[slot] = column.field;
+        used.add(column.field);
+      }
+    };
+    take2("date", (c) => DATES.includes(typed(c)));
+    take2("primary", (c) => NUMBERS.includes(typed(c)));
+    for (const slot of FILL) take2(slot, () => true);
+    const slotOf = {};
+    for (const slot of SLOTS) if (slots[slot] !== void 0) slotOf[slots[slot]] = slot;
+    const keep2 = new Set(columns.filter((c) => !showable(c) || slotOf[c.field]).map((c) => c.field));
+    return { layout: kind, slots, slotOf, keep: keep2 };
+  }
+  const wideColumns = (columns, resolved) => {
+    const first = columns.filter((c) => !showable(c) && !kinds(c).includes("actions")), last = columns.filter((c) => kinds(c).includes("actions")), byField = new Map(columns.map((c) => [c.field, c]));
+    return first.concat(SLOTS.filter((s) => resolved.slots[s] !== void 0).map((s) => byField.get(resolved.slots[s])), last);
+  };
+  function useRowTemplate(props) {
+    const { columns, layout: layout2, template, narrow } = props;
+    const signal = JSON.stringify(template || null);
+    return React2.useMemo(() => {
+      const resolved = resolveRowTemplate({ columns, layout: layout2, template });
+      if (!resolved) return props;
+      return Object.assign({}, props, { rowTemplate: resolved }, resolved.layout === "wide" ? { columns: wideColumns(columns, resolved), narrow: "table" } : null);
+    }, [props, columns, layout2, signal, narrow]);
+  }
   function useDataGridActions(actions, selection, strings) {
     const undoable = useUndo(), toast = useToast(), pending2 = React2.useRef(/* @__PURE__ */ new Set()), t = {
       undo: "Undo",
@@ -24861,8 +24922,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     ));
   }
   function ActionTable(props) {
-    const rowMenu = useDataGridActions(props.rowMenu, void 0, props.strings);
-    return /* @__PURE__ */ React2.createElement(DataGridEngine, { ...props, rowMenu });
+    const rowMenu = useDataGridActions(props.rowMenu, void 0, props.strings), shaped = useRowTemplate(props);
+    return /* @__PURE__ */ React2.createElement(DataGridEngine, { ...shaped, rowMenu });
   }
   function DataGrid(props) {
     const toast = useOptionalToast();
@@ -28940,8 +29001,8 @@ var Plenix = (function(exports, React2, reactDom, client) {
     };
     const stepBy = (count2, e) => {
       if (disabled || readOnly) return;
-      const typed2 = parseNumber(text2, locale);
-      const from = typed2 != null && !isNaN(typed2) ? typed2 : num2 != null ? num2 : min2 !== void 0 && min2 > 0 ? min2 - step * Math.sign(count2 || 1) : 0;
+      const typed22 = parseNumber(text2, locale);
+      const from = typed22 != null && !isNaN(typed22) ? typed22 : num2 != null ? num2 : min2 !== void 0 && min2 > 0 ? min2 - step * Math.sign(count2 || 1) : 0;
       const prec = Math.max(decimalsOf(step), decimalsOf(from));
       const next = clamp2(Number((from + count2 * step).toFixed(prec)));
       setText(show2(next));
@@ -28968,7 +29029,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         commit(max2, e);
       }
     };
-    const typed = (e) => {
+    const typed2 = (e) => {
       setText(e.target.value);
       const n = parseNumber(e.target.value, locale);
       if (n === null || !isNaN(n)) commit(n, e);
@@ -29021,7 +29082,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           inputMode: places === 0 || decimalsOf(step) === 0 && places === void 0 && format !== "currency" ? "numeric" : "decimal",
           autoComplete: "off",
           value: text2,
-          onChange: typed,
+          onChange: typed2,
           onKeyDown: keys,
           onFocus: focused,
           onBlur: left,
@@ -29317,14 +29378,14 @@ var Plenix = (function(exports, React2, reactDom, client) {
       return empty >= 0 ? empty : n - 1;
     };
     const onBoxChange = (i) => (e) => {
-      const typed = e.target.value, cur = chars[i];
-      if (!typed) {
+      const typed2 = e.target.value, cur = chars[i];
+      if (!typed2) {
         const next = chars.slice();
         next[i] = "";
         commit(next);
         return;
       }
-      const added = cur && typed.length === cur.length + 1 ? typed.indexOf(cur) === 0 ? typed.slice(cur.length) : typed.slice(0, 1) : typed;
+      const added = cur && typed2.length === cur.length + 1 ? typed2.indexOf(cur) === 0 ? typed2.slice(cur.length) : typed2.slice(0, 1) : typed2;
       const ok2 = clean(added);
       if (!ok2) return;
       const after = fillFrom(i, ok2);
@@ -31950,7 +32011,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const mins = toMin(current2);
     const fromValue = () => mins === null ? { h: null, m: null, p: null } : { h: cycle === "12" ? Math.floor(mins / 60) % 12 || 12 : Math.floor(mins / 60), m: mins % 60, p: Math.floor(mins / 60) < 12 ? "am" : "pm" };
     const [parts, setParts] = React2.useState(fromValue);
-    const typed = React2.useRef("");
+    const typed2 = React2.useRef("");
     React2.useEffect(() => {
       setParts(fromValue());
     }, [current2, cycle]);
@@ -32010,7 +32071,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
       const [a, b] = range[k], s = k === "m" ? step : 1;
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         e.preventDefault();
-        typed.current = "";
+        typed2.current = "";
         n[k] = wrapAround(n[k], e.key === "ArrowUp" ? 1 : -1, a, b, s);
         if (k === "m") n.m = Math.floor(n.m / s) * s;
         update(n);
@@ -32024,21 +32085,21 @@ var Plenix = (function(exports, React2, reactDom, client) {
         update(n);
       } else if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
-        typed.current = "";
+        typed2.current = "";
         n[k] = null;
         update(n);
       } else if (/^\d$/.test(e.key)) {
         e.preventDefault();
-        const tryText = typed.current + e.key;
+        const tryText = typed2.current + e.key;
         let v = +tryText;
         if (v > b) {
           v = +e.key;
-          typed.current = e.key;
-        } else typed.current = tryText;
+          typed2.current = e.key;
+        } else typed2.current = tryText;
         n[k] = v;
         update(n);
-        if (typed.current.length >= 2 || v * 10 > b) {
-          typed.current = "";
+        if (typed2.current.length >= 2 || v * 10 > b) {
+          typed2.current = "";
           move2(i + 1);
         }
       }
@@ -32064,7 +32125,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
         className: cx("plx-time-picker__segment", k === "p" && "plx-time-picker__segment--period", parts[k] === null && "is-empty"),
         onKeyDown: onKey(k, i),
         onBlur: () => {
-          typed.current = "";
+          typed2.current = "";
         }
       },
       text2(k)
@@ -37414,7 +37475,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     const name = n === 1 ? "\u201C" + items[0].label + "\u201D" : "";
     const what = n === 1 ? name : counted(n);
     const [shown, setShown] = React2.useState(false);
-    const [typed, setTyped] = React2.useState("");
+    const [typed2, setTyped] = React2.useState("");
     const [error, setError] = React2.useState("");
     const field = React2.useRef(null);
     const phrase2 = confirmPhrase || (n === 1 ? items[0].label : builtIn ? loc2.t("deleteFlow.phraseItems", { count: n, n: formatNumber(n) }) : fill(t.phraseMany, { count: formatNumber(n), plural: many }));
@@ -37466,7 +37527,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
     }, [open]);
     const confirm = (e) => {
       if (e) e.preventDefault();
-      if (variant === "type" && typed.trim() !== phrase2) {
+      if (variant === "type" && typed2.trim() !== phrase2) {
         setError(fill(t.typeError, { phrase: phrase2 }));
         if (field.current) field.current.focus();
         return;
@@ -37508,7 +37569,7 @@ var Plenix = (function(exports, React2, reactDom, client) {
           label: /* @__PURE__ */ React2.createElement(React2.Fragment, null, label2[0], /* @__PURE__ */ React2.createElement(Text, { variant: "data" }, phrase2), label2.slice(1).join("")),
           error: error || void 0
         },
-        /* @__PURE__ */ React2.createElement(Input, { ref: field, value: typed, autoComplete: "off", spellCheck: false, onChange: (e) => {
+        /* @__PURE__ */ React2.createElement(Input, { ref: field, value: typed2, autoComplete: "off", spellCheck: false, onChange: (e) => {
           setTyped(e.target.value);
           if (error) setError("");
         } })
