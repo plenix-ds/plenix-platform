@@ -2768,7 +2768,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "left": "{n} characters left",
         "over": "{n} characters too many"
       },
-      "about": "About {label}"
+      "about": "About {label}",
+      "warning": "Warning"
     },
     "icon": {
       "status": {
@@ -5526,7 +5527,8 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "left": "\u0628\u0642\u064A {n} \u062D\u0631\u0641\u064B\u0627",
         "over": "\u0632\u0627\u062F {n} \u062D\u0631\u0641\u064B\u0627"
       },
-      "about": "\u0645\u0639\u0644\u0648\u0645\u0627\u062A \u0639\u0646 {label}"
+      "about": "\u0645\u0639\u0644\u0648\u0645\u0627\u062A \u0639\u0646 {label}",
+      "warning": "\u062A\u062D\u0630\u064A\u0631"
     },
     "icon": {
       "status": {
@@ -9052,12 +9054,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   }
   const FieldLayoutContext = React$1.createContext(null);
   const countText = (t, n) => String(t).replace("{n}", formatNumber(n));
-  function Field({ label: label2, hideLabel = false, description, error, required = false, info, infoLabel, layout: layout2, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
+  function Field({ label: label2, hideLabel = false, description, error, warning, required = false, info, infoLabel, layout: layout2, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
     const id = React$1.useId();
     const formLayout = React$1.useContext(FieldLayoutContext);
     const lay = layout2 || formLayout || "stacked";
     const controlId = "plx-f" + id.replace(/[^a-zA-Z0-9]/g, "");
     const descId = description ? controlId + "-d" : void 0, errId = error ? controlId + "-e" : void 0;
+    const showWarning = !!warning && !error, warnId = showWarning ? controlId + "-w" : void 0;
     const [showInfo, setShowInfo] = React$1.useState(false);
     const labelRef = React$1.useRef(null);
     const cut = useTruncated(labelRef);
@@ -9068,6 +9071,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const over2 = max2 > 0 && length > max2;
     const t = useStrings("field.counter", strings);
     const about = useStrings("field").about;
+    const warnWord = useStrings("field").warning;
     const countId = max2 ? controlId + "-c" : void 0;
     const near = max2 > 0 && max2 - length <= Math.ceil(max2 / 10);
     const said = React$1.useRef(null);
@@ -9081,13 +9085,15 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         announce(over2 ? countText(t.over, length - max2) : countText(t.left, max2 - length));
       }
     }, [length, max2, near, over2, t.over, t.left]);
-    const describedBy = useDescribedBy(child.props["aria-describedby"], descId, countId, errId);
+    const describedBy = useDescribedBy(child.props["aria-describedby"], descId, countId, errId, warnId);
     const props = {
       id: child.props.id || controlId,
       "aria-describedby": describedBy,
       invalid: child.props.invalid !== void 0 ? child.props.invalid : error || over2 ? true : void 0,
       required: child.props.required !== void 0 ? child.props.required : required || void 0
     };
+    if (child.props.warning !== void 0) props.warning = child.props.warning;
+    else if (showWarning) props.warning = true;
     if (max2) {
       props.maxLength = void 0;
       props.onChange = (e) => {
@@ -9100,7 +9106,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       if (hints[k] !== void 0 && child.props[k] === void 0) props[k] = hints[k];
     });
     const control = React$1.cloneElement(child, props);
-    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-field", "plx-field--" + lay, labelWidth && "plx-field--label-" + labelWidth, error && "is-invalid", className), ...rest }, /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-field__head", hideLabel && "plx-visually-hidden") }, /* @__PURE__ */ React$1.createElement(Tooltip, { content: label2, disabled: !cut, describe: false, className: "plx-field__label-tip" }, /* @__PURE__ */ React$1.createElement("label", { ref: labelRef, className: "plx-field__label", htmlFor: child.props.id || controlId }, label2, required ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-field__required", "aria-hidden": "true" }, " *") : null)), info ? /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-field__info", "aria-label": infoLabel || about.replace("{label}", label2), "aria-expanded": showInfo, onClick: () => setShowInfo(!showInfo) }, "i") : null, lay === "row" && description ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__description", id: descId }, dataWhenText(description)) : null), /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__control" }, control, max2 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__foot" }, lay !== "row" && description ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__description", id: descId }, dataWhenText(description)) : null, /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-field__counter", over2 && "is-over") }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-field__count", "aria-hidden": "true" }, formatNumber(length) + "/" + formatNumber(max2)), /* @__PURE__ */ React$1.createElement("span", { className: "plx-visually-hidden", id: countId }, over2 ? countText(t.over, length - max2) : countText(t.left, max2 - length)))) : lay !== "row" && description ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__description", id: descId }, dataWhenText(description)) : null, error ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__error", id: errId, role: "alert" }, error) : null, info && showInfo ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__info-text" }, info) : null));
+    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-field", "plx-field--" + lay, labelWidth && "plx-field--label-" + labelWidth, error && "is-invalid", showWarning && "is-warning", className), ...rest }, /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-field__head", hideLabel && "plx-visually-hidden") }, /* @__PURE__ */ React$1.createElement(Tooltip, { content: label2, disabled: !cut, describe: false, className: "plx-field__label-tip" }, /* @__PURE__ */ React$1.createElement("label", { ref: labelRef, className: "plx-field__label", htmlFor: child.props.id || controlId }, label2, required ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-field__required", "aria-hidden": "true" }, " *") : null)), info ? /* @__PURE__ */ React$1.createElement("button", { type: "button", className: "plx-field__info", "aria-label": infoLabel || about.replace("{label}", label2), "aria-expanded": showInfo, onClick: () => setShowInfo(!showInfo) }, "i") : null, lay === "row" && description ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__description", id: descId }, dataWhenText(description)) : null), /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__control" }, control, max2 ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__foot" }, lay !== "row" && description ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__description", id: descId }, dataWhenText(description)) : null, /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-field__counter", over2 && "is-over") }, /* @__PURE__ */ React$1.createElement("span", { className: "plx-field__count", "aria-hidden": "true" }, formatNumber(length) + "/" + formatNumber(max2)), /* @__PURE__ */ React$1.createElement("span", { className: "plx-visually-hidden", id: countId }, over2 ? countText(t.over, length - max2) : countText(t.left, max2 - length)))) : lay !== "row" && description ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__description", id: descId }, dataWhenText(description)) : null, error ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__error", id: errId, role: "alert" }, error) : null, showWarning ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__warning", id: warnId, role: "status" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: WarningIcon, "aria-hidden": "true" }), /* @__PURE__ */ React$1.createElement("span", null, /* @__PURE__ */ React$1.createElement("span", { className: "plx-visually-hidden" }, warnWord + ": "), warning)) : null, info && showInfo ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-field__info-text" }, info) : null));
   }
   const GRID_TOKEN = "--plx-ref-space-4px";
   function gridStep(el) {
@@ -9354,7 +9360,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const look = (appearance) => appearance === "filled" && "plx-input--filled";
   const TEXT_TYPES = { text: 1, search: 1, email: 1, url: 1, tel: 1 };
   const tipWidth = (width) => width === "xs" || width === "sm" || width === "md" ? "plx-input__tip--fixed" : width === "lg" || width === "fill" ? "plx-input__tip--" + width : null;
-  const Input = React$1.forwardRef(function Input2({ invalid, width, data = false, emphasis = false, appearance, size, className, type = "text", readOnly, onInput, ...rest }, ref) {
+  const Input = React$1.forwardRef(function Input2({ invalid, warning, width, data = false, emphasis = false, appearance, size, className, type = "text", readOnly, onInput, ...rest }, ref) {
     const locked = useReadOnly(readOnly);
     const own2 = React$1.useRef(null);
     const setRef = React$1.useCallback((el) => {
@@ -9374,6 +9380,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         size: size === "sm" || size === "md" ? void 0 : size,
         className: cx("plx-input", size === "sm" && "plx-input--size-sm", width && "plx-input--width-" + width, data && "plx-input--data", emphasis && "plx-input--emphasis", bar && "plx-input__bar-text", look(appearance), className),
         "aria-invalid": invalid || void 0,
+        "data-plx-warning": warning || void 0,
         onInput: bar ? (e) => {
           redraw();
           if (onInput) onInput(e);
@@ -9387,7 +9394,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     return /* @__PURE__ */ React$1.createElement(Tooltip, { content: text2, disabled: !cut || !text2, describe: false, className: cx("plx-input__tip", tipWidth(width)) }, field);
   });
   const SIZES_ITSELF = typeof CSS !== "undefined" && !!CSS.supports && CSS.supports("field-sizing", "content");
-  const Textarea = React$1.forwardRef(function Textarea2({ invalid, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }, ref) {
+  const Textarea = React$1.forwardRef(function Textarea2({ invalid, warning, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }, ref) {
     const locked = useReadOnly(readOnly);
     const own2 = React$1.useRef(null);
     const setRef = React$1.useCallback((el) => {
@@ -9413,6 +9420,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         readOnly: locked || void 0,
         className: cx("plx-input", "plx-input--textarea", data && "plx-input--data", autoGrow && "plx-input--auto-grow", look(appearance), className),
         "aria-invalid": invalid || void 0,
+        "data-plx-warning": warning || void 0,
         onInput: (e) => {
           fit2();
           if (onInput) onInput(e);
@@ -9421,12 +9429,13 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       }
     );
   });
-  const SelectNative = React$1.forwardRef(function SelectNative2({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }, ref) {
+  const SelectNative = React$1.forwardRef(function SelectNative2({ invalid, warning, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }, ref) {
     const locked = useReadOnly(readOnly);
-    return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-select", size === "sm" && "plx-select--size-sm", width && "plx-select--width-" + width, block && "plx-select--block", joined && joined.start && "plx-select--joined-start-" + joined.start, joined && joined.end && "plx-select--joined-end-" + joined.end, joined && (joined.start || joined.end) && "plx-select--joined", className) }, /* @__PURE__ */ React$1.createElement("select", { ref, size: size === "sm" || size === "md" ? void 0 : size, className: cx("plx-input", "plx-select__control", data && "plx-input--data", look(appearance)), "aria-invalid": invalid || void 0, ...readOnlyProps(locked, rest, { pointer: true }) }, options ? options.map((o) => /* @__PURE__ */ React$1.createElement("option", { key: o.value, value: o.value, disabled: o.disabled }, o.label)) : children), /* @__PURE__ */ React$1.createElement("span", { className: "plx-select__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: SelectChevronIcon, filled: false })));
+    return /* @__PURE__ */ React$1.createElement("span", { className: cx("plx-select", size === "sm" && "plx-select--size-sm", width && "plx-select--width-" + width, block && "plx-select--block", joined && joined.start && "plx-select--joined-start-" + joined.start, joined && joined.end && "plx-select--joined-end-" + joined.end, joined && (joined.start || joined.end) && "plx-select--joined", className) }, /* @__PURE__ */ React$1.createElement("select", { ref, size: size === "sm" || size === "md" ? void 0 : size, className: cx("plx-input", "plx-select__control", data && "plx-input--data", look(appearance)), "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0, ...readOnlyProps(locked, rest, { pointer: true }) }, options ? options.map((o) => /* @__PURE__ */ React$1.createElement("option", { key: o.value, value: o.value, disabled: o.disabled }, o.label)) : children), /* @__PURE__ */ React$1.createElement("span", { className: "plx-select__chevron", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { icon: SelectChevronIcon, filled: false })));
   });
   const SelectList = React$1.forwardRef(function SelectList2({
     invalid,
+    warning,
     options,
     appearance,
     size,
@@ -9610,6 +9619,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "aria-describedby": describedBy,
         "aria-errormessage": errorMessage,
         "aria-invalid": invalid || void 0,
+        "data-plx-warning": warning || void 0,
         "aria-required": rest.required || void 0,
         "aria-disabled": disabled || void 0,
         className: cx("plx-input", "plx-select__field", asData && "plx-input--data", look(appearance), disabled && "is-disabled"),
@@ -23821,6 +23831,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     placeholder,
     label: label2,
     invalid,
+    warning,
     disabled,
     readOnly: readOnlyOwn,
     emptyText,
@@ -24002,7 +24013,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         ...rest
       }
     );
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-combobox", size === "sm" && "plx-combobox--size-sm", width && "plx-combobox--width-" + width, multiple && "plx-combobox--multiple", marks2 && "plx-combobox--marks", open && "is-open", disabled && "is-disabled", className) }, /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-combobox__field", "plx-input", asData && "plx-input--data", disabled && "is-disabled"), "aria-invalid": invalid || void 0, onClick: () => {
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-combobox", size === "sm" && "plx-combobox--size-sm", width && "plx-combobox--width-" + width, multiple && "plx-combobox--multiple", marks2 && "plx-combobox--marks", open && "is-open", disabled && "is-disabled", className) }, /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-combobox__field", "plx-input", asData && "plx-input--data", disabled && "is-disabled"), "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0, onClick: () => {
       if (!disabled && input.current) input.current.focus();
     } }, multiple ? chosen.map((v) => {
       const o = optionOf(v);
@@ -28479,7 +28490,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
   const REACT_19 = parseInt(String(React$1.version || "18").split(".")[0], 10) >= 19;
   const childRef = (child) => REACT_19 ? child.props.ref : child.ref;
   const list = (x) => x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x];
-  function InputGroup({ prefix, suffix, icon, start: start2, end, width, compact = false, data = false, invalid, disabled, readOnly, required, id, "aria-describedby": describedBy, className, children, ...rest }) {
+  function InputGroup({ prefix, suffix, icon, start: start2, end, width, compact = false, data = false, invalid, warning, disabled, readOnly, required, id, "aria-describedby": describedBy, className, children, ...rest }) {
     const uid2 = React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
     const preId = prefix != null ? "plx-ig" + uid2 + "-p" : void 0, sufId = suffix != null ? "plx-ig" + uid2 + "-s" : void 0;
     const child = React$1.Children.only(children);
@@ -28491,6 +28502,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       id: own2.id || id,
       "aria-describedby": describedAt,
       invalid: own2.invalid !== void 0 ? own2.invalid : invalid,
+      warning: own2.warning !== void 0 ? own2.warning : warning,
       disabled: own2.disabled !== void 0 ? own2.disabled : disabled,
       readOnly: own2.readOnly !== void 0 ? own2.readOnly : readOnly,
       required: own2.required !== void 0 ? own2.required : required,
@@ -28502,7 +28514,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         else if (r) r.current = node;
       }
     };
-    const isInvalid = pass.invalid, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
+    const isInvalid = pass.invalid, isWarning = pass.warning, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
     const focusField = (e) => {
       if (e.target !== inputRef.current && inputRef.current && !isDisabled) {
         e.preventDefault();
@@ -28520,7 +28532,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       isInvalid && "is-invalid",
       isDisabled && "is-disabled",
       isReadOnly && "is-readonly"
-    ), onMouseDown: focusField }, icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-input-group__icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: icon })) : null, prefix != null ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-input-group__affix plx-input-group__affix--prefix", id: preId }, prefix) : null, React$1.cloneElement(child, pass), suffix != null ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-input-group__affix plx-input-group__affix--suffix", id: sufId }, suffix) : null), ends.map((el, i) => attach(el, i, ends, "end")));
+    ), "data-plx-warning": isWarning || void 0, onMouseDown: focusField }, icon ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-input-group__icon", "aria-hidden": "true" }, /* @__PURE__ */ React$1.createElement(Icon, { name: icon })) : null, prefix != null ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-input-group__affix plx-input-group__affix--prefix", id: preId }, prefix) : null, React$1.cloneElement(child, pass), suffix != null ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-input-group__affix plx-input-group__affix--suffix", id: sufId }, suffix) : null), ends.map((el, i) => attach(el, i, ends, "end")));
   }
   const d0$r = "M454-454H260v-52h194v-194h52v194h194v52H506v194h-52v-194Z";
   const d1$r = "M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z";
@@ -28572,6 +28584,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     stepper = "none",
     width,
     invalid,
+    warning,
     disabled,
     readOnly: readOnlyOwn,
     required,
@@ -28670,6 +28683,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         start: quantity ? minus : void 0,
         end: quantity ? plus : stepper === "buttons" ? [minus, plus] : void 0,
         invalid,
+        warning,
         disabled,
         readOnly,
         required,
@@ -28809,6 +28823,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     tabSize = 2,
     label: label2,
     invalid,
+    warning,
     disabled = false,
     required,
     id,
@@ -28886,7 +28901,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       invalid && "is-invalid",
       disabled && "is-disabled",
       className
-    ) }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-code-editor__scroller" }, lineNumbers ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-code-editor__gutter", "aria-hidden": "true" }, Array.from({ length: lines }, (_, i) => /* @__PURE__ */ React$1.createElement("span", { key: i, className: "plx-code-editor__number" }, i + 1))) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-code-editor__code" }, /* @__PURE__ */ React$1.createElement(
+    ), "data-plx-warning": warning || void 0 }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-code-editor__scroller" }, lineNumbers ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-code-editor__gutter", "aria-hidden": "true" }, Array.from({ length: lines }, (_, i) => /* @__PURE__ */ React$1.createElement("span", { key: i, className: "plx-code-editor__number" }, i + 1))) : null, /* @__PURE__ */ React$1.createElement("div", { className: "plx-code-editor__code" }, /* @__PURE__ */ React$1.createElement(
       "textarea",
       {
         ref: setRef,
@@ -28937,6 +28952,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     masked = false,
     label: label2,
     invalid,
+    warning,
     disabled,
     required,
     autoFocus,
@@ -29037,6 +29053,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         enterKeyHint: i === n - 1 ? "done" : "next",
         "aria-label": boxName(i),
         "aria-invalid": invalid || void 0,
+        "data-plx-warning": warning || void 0,
         required,
         disabled,
         autoFocus: autoFocus && i === 0,
@@ -29565,6 +29582,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     placeholder,
     readOnly: readOnlyOwn,
     invalid,
+    warning,
     disabled = false,
     strings,
     className,
@@ -30021,7 +30039,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         /* @__PURE__ */ React$1.createElement(Button, { key: "rm", size: "sm", onClick: removeColor }, t.remove)
       ];
     }
-    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-rich-text-editor", readOnly && "is-read-only", disabled && "is-disabled", className), ...rest }, showToolbar ? /* @__PURE__ */ React$1.createElement(Toolbar, { label: t.toolbar, className: "plx-rich-text-editor__toolbar" }, /* @__PURE__ */ React$1.createElement("div", { ref: groupsRef, className: "plx-rich-text-editor__groups" }, splitAt(GROUPS.map(groupEl), fit2, more))) : null, bar ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-rich-text-editor__bar", role: "group", "aria-label": t[bar.kind === "font" ? "customFont" : bar.kind === "size" ? "customSize" : bar.kind] }, barContent, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", onClick: closeBar }, t.cancel)) : null, /* @__PURE__ */ React$1.createElement("div", { ref: area }), mentionOpen ? /* @__PURE__ */ React$1.createElement("ul", { ref: list2, id: auto + "-mentions", role: "listbox", "aria-label": t.mentions, popover: TOP_LAYER$1 ? "manual" : void 0, className: "plx-rich-text-editor__mentions" }, mention.items.map((o, i) => /* @__PURE__ */ React$1.createElement(
+    return /* @__PURE__ */ React$1.createElement("div", { className: cx("plx-rich-text-editor", readOnly && "is-read-only", disabled && "is-disabled", className), "data-plx-warning": warning || void 0, ...rest }, showToolbar ? /* @__PURE__ */ React$1.createElement(Toolbar, { label: t.toolbar, className: "plx-rich-text-editor__toolbar" }, /* @__PURE__ */ React$1.createElement("div", { ref: groupsRef, className: "plx-rich-text-editor__groups" }, splitAt(GROUPS.map(groupEl), fit2, more))) : null, bar ? /* @__PURE__ */ React$1.createElement("div", { className: "plx-rich-text-editor__bar", role: "group", "aria-label": t[bar.kind === "font" ? "customFont" : bar.kind === "size" ? "customSize" : bar.kind] }, barContent, /* @__PURE__ */ React$1.createElement(Button, { size: "sm", onClick: closeBar }, t.cancel)) : null, /* @__PURE__ */ React$1.createElement("div", { ref: area }), mentionOpen ? /* @__PURE__ */ React$1.createElement("ul", { ref: list2, id: auto + "-mentions", role: "listbox", "aria-label": t.mentions, popover: TOP_LAYER$1 ? "manual" : void 0, className: "plx-rich-text-editor__mentions" }, mention.items.map((o, i) => /* @__PURE__ */ React$1.createElement(
       "li",
       {
         key: o.value,
@@ -30358,6 +30376,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     defaultTime = "09:00",
     timeZoneName = "short",
     invalid,
+    warning,
     disabled,
     readOnly: readOnlyOwn,
     required,
@@ -30498,6 +30517,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       {
         className: cx("plx-date-picker__date", range && "plx-date-picker__date--range", "plx-input", "plx-input--data", disabled && "is-disabled"),
         "aria-invalid": invalid || bad || void 0,
+        "data-plx-warning": warning || void 0,
         onMouseDown: (e) => {
           if (!disabled && input.current && e.target !== input.current && !e.target.closest("button")) {
             e.preventDefault();
@@ -30517,6 +30537,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
           required,
           "aria-describedby": describedBy,
           "aria-invalid": invalid || bad || void 0,
+          "data-plx-warning": warning || void 0,
           disabled,
           readOnly: locked || void 0,
           autoComplete: "off",
@@ -30537,7 +30558,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         }
       )),
       locked ? null : /* @__PURE__ */ React$1.createElement(Button, { variant: "ghost", size: "2xs", iconOnly: true, icon: CalendarIcon, className: "plx-date-picker__button", label: t.open, expanded: open, "aria-haspopup": "dialog", disabled, onClick: toggle2 })
-    ), dateTime ? /* @__PURE__ */ React$1.createElement(InputGroup, { data: true, suffix: zone || void 0, disabled, invalid, className: "plx-date-picker__time" }, /* @__PURE__ */ React$1.createElement(
+    ), dateTime ? /* @__PURE__ */ React$1.createElement(InputGroup, { data: true, suffix: zone || void 0, disabled, invalid, warning, className: "plx-date-picker__time" }, /* @__PURE__ */ React$1.createElement(
       Input,
       {
         type: "time",
@@ -30912,6 +30933,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     placeholder,
     label: label2,
     invalid,
+    warning,
     disabled,
     readOnly: readOnlyOwn,
     id,
@@ -31008,7 +31030,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const optId = (i) => auto + "-m" + i;
     const shown = multiple ? null : current2 ? pathLabel(current2) : null;
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0 }, multiple ? chosen.map((v) => {
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-cascader", multiple && "plx-cascader--multiple", open && "is-open", disabled && "is-disabled", className), onKeyDown: onListKey }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-cascader__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? chosen.map((v) => {
       const trail2 = pathTo(options, v);
       const name = trail2 ? trail2[trail2.length - 1].label : String(v);
       return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled || locked ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: t.remove.replace("{label}", name) }, name);
@@ -31101,6 +31123,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     onBrowse,
     label: label2,
     invalid,
+    warning,
     disabled,
     id,
     strings,
@@ -31229,7 +31252,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       const el = list2.current;
       if (showList && TOP_LAYER$1 && el && el.showPopover && !el.matches(":popover-open")) el.showPopover();
     }, [showList]);
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-entity-picker", "plx-entity-picker--" + kind, multiple && "plx-entity-picker--multiple", open && "is-open", disabled && "is-disabled", className) }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-entity-picker__field plx-input", "aria-invalid": invalid || void 0 }, multiple ? chosen.map((v) => {
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-entity-picker", "plx-entity-picker--" + kind, multiple && "plx-entity-picker--multiple", open && "is-open", disabled && "is-disabled", className) }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-entity-picker__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, multiple ? chosen.map((v) => {
       const o = optionOf(v);
       const name = o ? o.label : String(v);
       return /* @__PURE__ */ React$1.createElement(Tag, { key: v, onRemove: disabled ? void 0 : () => onChange(chosen.filter((x) => x !== v)), removeLabel: fill(t.remove, { label: name }) }, name);
@@ -31339,6 +31362,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     label: label2,
     width,
     invalid,
+    warning,
     disabled,
     readOnly: readOnlyOwn,
     id,
@@ -31364,10 +31388,10 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     useDigits();
     const cls = cx("plx-time-picker", "plx-time-picker--" + variant, width && "plx-time-picker--width-" + width, disabled && "is-disabled", className);
     const hidden = name ? /* @__PURE__ */ React$1.createElement("input", { type: "hidden", name, value: current2 || "" }) : null;
-    if (variant === "segments") return /* @__PURE__ */ React$1.createElement(Segments, { ref, ...{ t, cycle, step: step || 1, current: current2, commit, lo, hi, label: label2, invalid, disabled, locked, id, cls, hidden, rest } });
-    return /* @__PURE__ */ React$1.createElement(ListPicker, { ref, ...{ t, cycle, step: step || 15, current: current2, commit, lo, hi, label: label2, invalid, disabled, locked, id, cls, hidden, rest } });
+    if (variant === "segments") return /* @__PURE__ */ React$1.createElement(Segments, { ref, ...{ t, cycle, step: step || 1, current: current2, commit, lo, hi, label: label2, invalid, warning, disabled, locked, id, cls, hidden, rest } });
+    return /* @__PURE__ */ React$1.createElement(ListPicker, { ref, ...{ t, cycle, step: step || 15, current: current2, commit, lo, hi, label: label2, invalid, warning, disabled, locked, id, cls, hidden, rest } });
   });
-  const ListPicker = React$1.forwardRef(function ListPicker2({ t, cycle, step, current: current2, commit, lo, hi, label: label2, invalid, disabled, locked, id, cls, hidden, rest }, ref) {
+  const ListPicker = React$1.forwardRef(function ListPicker2({ t, cycle, step, current: current2, commit, lo, hi, label: label2, invalid, warning, disabled, locked, id, cls, hidden, rest }, ref) {
     const digits2 = useDigits();
     const auto = "plx-tp" + React$1.useId().replace(/[^a-zA-Z0-9]/g, "");
     const [open, setOpen] = React$1.useState(false);
@@ -31457,7 +31481,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     const optId = (i) => auto + "-o" + i;
     const shownText = text2 !== null ? text2 : show(mins, cycle, t, digits2);
     const cut = useTruncated(input, shownText);
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cls }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-time-picker__field plx-input", "aria-invalid": invalid || void 0 }, /* @__PURE__ */ React$1.createElement(Tooltip, { content: shownText, disabled: !cut || !shownText || open, describe: false, className: "plx-time-picker__tip" }, /* @__PURE__ */ React$1.createElement(
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cls }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-time-picker__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, /* @__PURE__ */ React$1.createElement(Tooltip, { content: shownText, disabled: !cut || !shownText || open, describe: false, className: "plx-time-picker__tip" }, /* @__PURE__ */ React$1.createElement(
       "input",
       {
         ref: input,
@@ -31506,7 +31530,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
       show(n, cycle, t, digits2)
     ))) : null, hidden);
   });
-  const Segments = React$1.forwardRef(function Segments2({ t, cycle, step, current: current2, commit, lo, hi, label: label2, invalid, disabled, locked, id, cls, hidden, rest }, ref) {
+  const Segments = React$1.forwardRef(function Segments2({ t, cycle, step, current: current2, commit, lo, hi, label: label2, invalid, warning, disabled, locked, id, cls, hidden, rest }, ref) {
     const digits2 = useDigits();
     const mins = toMin(current2);
     const fromValue = () => mins === null ? { h: null, m: null, p: null } : { h: cycle === "12" ? Math.floor(mins / 60) % 12 || 12 : Math.floor(mins / 60), m: mins % 60, p: Math.floor(mins / 60) < 12 ? "am" : "pm" };
@@ -31606,7 +31630,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     };
     const lbl = { h: t.hour, m: t.minute, p: t.period };
     const text2 = (k) => parts[k] === null ? t.empty : k === "p" ? parts.p === "am" ? t.am : t.pm : localDigits(k === "h" && cycle === "12" ? String(parts.h) : pad(parts[k]), { digits: digits2 });
-    return /* @__PURE__ */ React$1.createElement("div", { className: cls }, /* @__PURE__ */ React$1.createElement("div", { role: "group", "aria-label": label2, className: "plx-time-picker__field plx-time-picker__segments plx-input", "aria-invalid": invalid || void 0, ...rest }, segs.map((k, i) => /* @__PURE__ */ React$1.createElement(React$1.Fragment, { key: k }, k === "m" ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-time-picker__separator", "aria-hidden": "true" }, ":") : null, /* @__PURE__ */ React$1.createElement(
+    return /* @__PURE__ */ React$1.createElement("div", { className: cls }, /* @__PURE__ */ React$1.createElement("div", { role: "group", "aria-label": label2, className: "plx-time-picker__field plx-time-picker__segments plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0, ...rest }, segs.map((k, i) => /* @__PURE__ */ React$1.createElement(React$1.Fragment, { key: k }, k === "m" ? /* @__PURE__ */ React$1.createElement("span", { className: "plx-time-picker__separator", "aria-hidden": "true" }, ":") : null, /* @__PURE__ */ React$1.createElement(
       "span",
       {
         ref: refs[i],
@@ -31617,6 +31641,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "aria-disabled": disabled || void 0,
         "aria-readonly": locked || void 0,
         "aria-invalid": invalid || void 0,
+        "data-plx-warning": warning || void 0,
         "aria-valuemin": k === "p" ? void 0 : range[k][0],
         "aria-valuemax": k === "p" ? void 0 : range[k][1],
         "aria-valuenow": k === "p" || parts[k] === null ? void 0 : parts[k],
@@ -31689,6 +31714,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     now,
     label: label2,
     invalid,
+    warning,
     disabled,
     id,
     strings,
@@ -31729,6 +31755,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         options,
         "aria-label": label2,
         invalid,
+        warning,
         disabled,
         "aria-describedby": descr,
         ...rest
@@ -31756,6 +31783,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         "aria-label": t.amount,
         disabled,
         invalid,
+        warning,
         "aria-describedby": descr,
         onChange: (n) => {
           if (n !== null && n >= 1) part("amount", Math.min(999, Math.round(n)));
@@ -32190,6 +32218,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     placeholder,
     label: label2,
     invalid,
+    warning,
     disabled,
     readOnly,
     locale,
@@ -32302,7 +32331,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         }
       }
     };
-    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-combobox", "plx-time-zone-select", open && "is-open", disabled && "is-disabled", className) }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-combobox__field plx-input", "aria-invalid": invalid || void 0 }, /* @__PURE__ */ React$1.createElement(
+    return /* @__PURE__ */ React$1.createElement("div", { ref: wrap, className: cx("plx-combobox", "plx-time-zone-select", open && "is-open", disabled && "is-disabled", className) }, /* @__PURE__ */ React$1.createElement("div", { className: "plx-combobox__field plx-input", "aria-invalid": invalid || void 0, "data-plx-warning": warning || void 0 }, /* @__PURE__ */ React$1.createElement(
       "input",
       {
         ref: input,
@@ -32400,6 +32429,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
     defaultExpanded,
     width,
     invalid,
+    warning,
     disabled,
     readOnly: readOnlyOwn,
     required,
@@ -32557,6 +32587,7 @@ var Plenix = (function(exports, React$1, reactDom, client) {
         role: "combobox",
         "aria-label": label2,
         "aria-invalid": invalid || void 0,
+        "data-plx-warning": warning || void 0,
         "aria-required": required || void 0,
         "aria-readonly": locked || void 0,
         disabled,
