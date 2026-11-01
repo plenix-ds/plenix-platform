@@ -108,6 +108,17 @@
        escape hatch for a dense specialized grid) | "list" (the row cards under narrowAt, 600px). Row cards: the keyColumns (default the
        first three text columns) first, as the primary and secondary lines, then every other visible field as a labeled detail; the
        selection checkbox, the row actions and the row menu stay on the card; nothing scrolls sideways
+     layout: "A" | "B" | "wide" (issue 839; the row template, an option: unset, and without template, the grid is exactly as before). A and B are the narrow
+       view's card (the table while the columns fit, else every record as a card; the switch is #679's, measured): A is three aligned lines
+       (title | date, subtitle | primary, secondary | tertiary) with one vertical line down the list, for records with many fields that must line up and
+       scan down; B has the primary value beside the title, the subtitle on its own line and the three small facts (secondary | tertiary | date) on the
+       third, for short lists where the primary value matters most. "wide" draws the same slots as one aligned row at any width, a column each in the
+       order title, subtitle, date, primary, secondary, tertiary, for when the room always fits. With only template set, the layout is "A"
+     template: { title, subtitle, date, primary, secondary, tertiary }: the row template's slots, each a column's field, every slot optional. Slots left
+       out are filled by one fixed rule (engine/rowTemplate.js): the first date column is the date, the first number column the primary value, then
+       title, subtitle, primary, secondary, tertiary and date take the next columns in the order of `columns`. A column that fills no slot is not drawn
+       in a card: map every field a person needs while scanning; the rest shows when the row is opened. Selection, the open row, the keyboard and the
+       row menu work in every layout
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
@@ -138,13 +149,14 @@
 */
 import React from 'react';
 import { DataGridEngine } from './DataGridEngine.jsx';
+import { useRowTemplate } from './engine/rowTemplate.js';
 import { useDataGridActions } from './actions.jsx';
 import { unreadCommands } from './unread-commands.js';
 import { ToastProvider } from '../Toast/Toast.jsx';
 import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
 
 // the row menu's actions with Undo, as the CommandBar's selection commands
-function ActionTable(props) { const rowMenu = useDataGridActions(props.rowMenu, undefined, props.strings); return <DataGridEngine {...props} rowMenu={rowMenu} />; }
+function ActionTable(props) { const rowMenu = useDataGridActions(props.rowMenu, undefined, props.strings), shaped = useRowTemplate(props); return <DataGridEngine {...shaped} rowMenu={rowMenu} />; }
 
 export function DataGrid(props) { const toast = useOptionalToast(); return toast ? <ActionTable {...props} /> : <ToastProvider><ActionTable {...props} /></ToastProvider>; }
 DataGrid.useActions = useDataGridActions;
