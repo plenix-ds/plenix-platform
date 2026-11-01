@@ -23,13 +23,10 @@ import React from 'react';
 import { useUnread } from './unread.js';
 import { GridPane } from './room.js';
 import { flushSync } from 'react-dom';
-import { Scrollbars } from './scrollbars.jsx';
+
 import { useSortable } from '../../utils/dnd.ts';
 
-import { cx } from '../../utils/cx.ts';
 import { gridPx } from '../../utils/grid.ts';
-
-import { tokenPixels } from './environment.js';
 
 import { MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 
@@ -38,7 +35,7 @@ import { createAdapter } from './adapter.js';
 
 import { recordsOf } from './records.js';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
-import { EMPTY_ROWS, GRID, kinds, lengthName } from './engine/helpers.jsx';
+import { EMPTY_ROWS, GRID, kinds } from './engine/helpers.jsx';
 
 import { useVirtualizer } from './engine/useVirtualizer.js';
 import { useSelection, selectionActions } from './engine/useSelection.js';
@@ -52,15 +49,16 @@ import { useRowModel } from './engine/useRowModel.js';
 import { useViewSync } from './engine/useViewSync.js';
 import { usePillWidths } from './engine/usePillWidths.js';
 import { useGridMetrics } from './engine/useGridMetrics.js';
+import { gridFrame } from './engine/gridFrame.jsx';
 import { columnSizing } from './engine/columnSizing.js';
 import { syncLive } from './engine/liveState.js';
 import { useRemoteRows } from './engine/useRemoteRows.js';
 import { useTableModel } from './engine/useTableModel.js';
 import { bodyRows } from './engine/bodyRows.jsx';
 import { headerRows } from './engine/headerRows.jsx';
-import { manageDialog, failureState, viewMenu, emptyRow, moreRow, pagesFooter, loadMoreFooter } from './engine/chrome.jsx';
-import { makeFocusCell, tableKeys } from './engine/keys.js';
-import { Check, MemoGridRow, RowGap, Width, WidthPixels } from './engine/parts.jsx';
+
+import { makeFocusCell } from './engine/keys.js';
+import { MemoGridRow } from './engine/parts.jsx';
 
 function NextEngine(props) {
   const inPane = React.useContext(GridPane);
@@ -820,178 +818,82 @@ function NextEngine(props) {
   // a fill grid that already shows rows says a failed next page in its last row (with Retry), not over the table
   const moreFailed = scrollFill && remoteError && model.length > 0,
     failed = error || (moreFailed ? null : remoteError);
-  return (
-    <WidthPixels.Provider value={widthPixels}>
-      {manageDialog({ headerMenu, isStatic, managing, setManaging, chooserColumns, changeOrder, changeVisibility })}
-      <div
-        ref={frame}
-        className={cx(
-          B,
-          isStatic && B + '--static',
-          pinnedAt >= 0 && B + '--row-header',
-          listed && B + '--list',
-          isNarrow && B + '--narrow',
-          height === '100%' && B + '--fill',
-          mode === 'pages' && B + '--pages',
-          mode === 'load-more' && B + '--load-more',
-          className
-        )}
-        data-plx-engine="next"
-        data-plx-grid-key={cells === 'pill' ? gridKey : undefined}
-        data-plx-density={density === 'page' ? undefined : density}
-        data-plx-render={virtualized ? 'virtual' : undefined}
-        data-plx-row-height={!isStatic && !isNarrow ? effectiveStep : undefined}
-        data-plx-wrap-headers={effectiveWrap ? '' : undefined}
-        data-plx-height={lengthName(height)}
-        data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
-      >
-        {failureState({ failed, B, S, onRetry, remoteError, setRetry })}
-
-        <div
-          className={cx(
-            B + '__table',
-            B + '__grid',
-            height === '100%' && B + '__grid--fill',
-            isStatic && B + '__grid--static'
-          )}
-          role={isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid'}
-          aria-label={label}
-          aria-busy={remoteMode && remoteBusy ? true : undefined}
-          aria-rowcount={
-            groups.length || childField
-              ? semanticRows.length + 1
-              : (remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length) + 1
-          }
-          aria-colcount={
-            ordered.length + (selectable ? 1 : 0) + (rowMenu && rowMenuButton ? 1 : 0) + (props.viewMenu ? 1 : 0)
-          }
-          hidden={!!failed}
-        >
-          <div
-            className={cx(
-              B + '__grid-header',
-              isNarrow && B + '__grid-header--narrow',
-              isStatic && B + '__grid-header--static'
-            )}
-            ref={header}
-            hidden={isStatic && props.headerVisible === false}
-          >
-            <div className={`${B}__grid-header-contents`}>
-              <div
-                {...columnDnd.listProps}
-                className={cx(`${B}__grid-headers`, isStatic && B + '__grid-headers--static')}
-                role="row"
-              >
-                {selectable ? (
-                  <div
-                    className={cx(`${B}__grid-col ${B}__grid-row-header ${B}__w-lead`, leadFrozen && B + '__grid-frozen')}
-                    role="columnheader"
-                  >
-                    <div className={`${B}__grid-col-content ${B}__grid-col-content--row-header`}>
-                      <Check
-                        label={S.selectAll}
-                        checked={allVisible}
-                        mixed={selectedVisible.length > 0 && !allVisible}
-                        onChange={(e) => selectAll(e.target.checked)}
-                      />
-                    </div>
-                  </div>
-                ) : null}
-                {ordered.map(headerCell)}
-                {viewMenu({ props, B, S, effectiveStep, setRowHeight, effectiveWrap, setWrapHeaders })}
-                {rowMenu && rowMenuButton ? (
-                  <Width
-                    width={metrics.menu}
-                    className={`${B}__grid-col`}
-                    role="columnheader"
-                    aria-label={S.rowActions}
-                  />
-                ) : null}
-              </div>
-            </div>
-          </div>
-          <div
-            id={viewportId}
-            ref={holder}
-            className={cx(
-              `${B}__grid-tableholder`,
-              height === '100%' && B + '__grid-tableholder--fill',
-              isNarrow && B + '__grid-tableholder--narrow',
-              isStatic && B + '__grid-tableholder--static'
-            )}
-            data-plx-height={lengthName(height)}
-            data-plx-fit={!isStatic && !height && mode !== 'pages' ? '' : undefined}
-            role="rowgroup"
-            tabIndex={isStatic ? undefined : 0}
-            onKeyDown={tableKeys({ focusCell, first })}
-            onScroll={(e) => {
-              if (header.current) header.current.scrollLeft = e.currentTarget.scrollLeft;
-              if (
-                mode === 'load-more' &&
-                e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight <
-                  tokenPixels('--plx-ref-size-200px', frame.current)
-              ) {
-                if (remoteMode && !fetching.current && source.length < (remote?.total || 0)) {
-                  fetching.current = true;
-                  setPage((n) => n + 1);
-                } else if (!remoteMode) setLoaded((n) => Math.min(allRows.length, n + pageSize));
-              }
-            }}
-          >
-            <div
-              {...rowDnd.listProps}
-              className={cx(
-                `${B}__grid-table`,
-                virtualized && B + '__grid-table--virtual',
-                isNarrow && B + '__grid-table--narrow',
-                isStatic && B + '__grid-table--static'
-              )}
-              role="presentation"
-            >
-              {stickyGroups.length ? (
-                <div className={B + '__sticky-groups'} aria-hidden="true" inert="">
-                  {stickyGroups.map((group) =>
-                    React.cloneElement(groupNode(group, true), {
-                      key: 'sticky:' + group.id,
-                      className: B + '__sticky-group ' + B + '__grid-group-level-' + group.depth,
-                      role: undefined,
-                      tabIndex: -1,
-                      'aria-expanded': undefined,
-                      'aria-rowindex': undefined,
-                      'aria-level': undefined,
-                      onKeyDown: undefined
-                    })
-                  )}
-                </div>
-              ) : null}
-              <RowGap rows={model.slice(0, first)} />
-              {shown.map(renderRow)}
-              <RowGap rows={model.slice(last)} />
-            </div>
-            {emptyRow({ model, B, isStatic, ordered, remoteMode, remoteBusy, S, empty })}
-            {moreRow({ scrollFill, model, remoteBusy, moreFailed, B, semanticRows, ordered, S, setRetry })}
-          </div>
-        </div>
-        {!isStatic ? <Scrollbars holder={holder} viewportId={viewportId} hideX={isNarrow} /> : null}
-        {pagesFooter({ mode, failed, B, S, displayedTotal, page, pageSize, props, setPage, setPageSize, label })}
-        {loadMoreFooter({
-          mode,
-          failed,
-          B,
-          S,
-          loadedRows,
-          displayedTotal,
-          remoteMode,
-          remoteBusy,
-          fetching,
-          setPage,
-          setLoaded,
-          allRows,
-          pageSize
-        })}
-      </div>
-    </WidthPixels.Provider>
-  );
+  return gridFrame({
+    widthPixels,
+    headerMenu,
+    isStatic,
+    managing,
+    setManaging,
+    chooserColumns,
+    changeOrder,
+    changeVisibility,
+    frame,
+    B,
+    pinnedAt,
+    listed,
+    isNarrow,
+    height,
+    mode,
+    className,
+    cells,
+    gridKey,
+    density,
+    virtualized,
+    effectiveStep,
+    effectiveWrap,
+    failed,
+    S,
+    onRetry,
+    remoteError,
+    setRetry,
+    groups,
+    childField,
+    label,
+    remoteMode,
+    remoteBusy,
+    semanticRows,
+    remote,
+    table,
+    ordered,
+    selectable,
+    rowMenu,
+    rowMenuButton,
+    props,
+    header,
+    columnDnd,
+    leadFrozen,
+    allVisible,
+    selectedVisible,
+    selectAll,
+    headerCell,
+    setRowHeight,
+    setWrapHeaders,
+    metrics,
+    viewportId,
+    holder,
+    focusCell,
+    first,
+    fetching,
+    source,
+    setPage,
+    setLoaded,
+    allRows,
+    pageSize,
+    rowDnd,
+    stickyGroups,
+    groupNode,
+    model,
+    shown,
+    renderRow,
+    last,
+    empty,
+    scrollFill,
+    moreFailed,
+    displayedTotal,
+    page,
+    setPageSize,
+    loadedRows
+  });
 }
 
 export function DataGridEngine(props) {

@@ -19,7 +19,7 @@ const PKG = path.join(ROOT, 'packages', 'react');
 const CASES = [
   { name: '{ Button }', code: 'import { Button } from "plenix"; console.log(Button);', limit: 105 },
   { name: '{ Badge }', code: 'import { Badge } from "plenix"; console.log(Badge);', limit: 30 },
-  { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 440 },
+  { name: '{ DataGrid }', code: 'import { DataGrid } from "plenix"; console.log(DataGrid);', limit: 450 }, // 450: #714's module split (call objects, about 1.6 KB) and room for #465 cell selection (opt-in)
   { name: '* as P', code: 'import * as P from "plenix"; console.log(P);', limit: 1420 }, // 1,420: the owner-approved #775 and #769 parts (branch loader #814, Anchor, Cascader extras) add about 1 to 2 KB each
 ];
 // the module the application imports: the package's ES module entry, as a bundler reads it (package.json "module")
