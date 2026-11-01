@@ -98,7 +98,7 @@ jobs:
           if [ "${{ matrix.kind }}" = ds ]; then node tests/clash-audit.js --ds --check --pages "${{ matrix.pages }}" | tee ../proof.txt; else node tests/clash-audit.js --check --pages "${{ matrix.pages }}" | tee ../proof.txt; fi
 
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: proof-${{ strategy.job-index }}
           path: proof.txt
