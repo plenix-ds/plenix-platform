@@ -52,25 +52,27 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.ts';
 import { Input } from '../Input/Input.tsx';
+import type { FieldWidth } from '../Input/Input.tsx';
 import { Button } from '../Button/Button.tsx';
 import { InputGroup } from '../InputGroup/InputGroup.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 
-const decimalsOf = (n) => { const s = String(n); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; };
+const decimalsOf = (n: number) => { const s = String(n); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; };
 const SPACES = /[\s\u00A0\u202F]/g;
 
 // the locale's marks: group, decimal and minus, read from its own formatter
-function marks(locale) {
+function marks(locale: string) {
   const parts = new Intl.NumberFormat(locale).formatToParts(-12345.6);
-  const of = (type, d) => (parts.find((p) => p.type === type) || { value: d }).value;
+  const of = (type: string, d: string) => (parts.find((p) => p.type === type) || { value: d }).value;
   return { group: of('group', ','), decimal: of('decimal', '.'), minus: of('minusSign', '-') };
 }
 
 // the text a person typed as a number: null when empty, NaN when it is not a number
-function parseNumber(text, locale) {
+function parseNumber(text: unknown, locale?: string): number | null {
   const m = marks(locale || formatLocale());
   let s = String(text == null ? '' : text).replace(SPACES, '');
   if (!s) return null;
@@ -80,7 +82,8 @@ function parseNumber(text, locale) {
 }
 
 // where the locale writes a currency's symbol or code, or the percent sign: before or after the number
-function affix(format, currency, display, locale) {
+type Affix = { text: string; before: boolean; decimals?: number };
+function affix(format: string, currency: string | undefined, display: Intl.NumberFormatOptions['currencyDisplay'], locale: string): Affix | null {
   if (format === 'currency' && currency) {
     const nf = new Intl.NumberFormat(locale, { style: 'currency', currency, currencyDisplay: display });
     const parts = nf.formatToParts(1), c = parts.findIndex((p) => p.type === 'currency'), n = parts.findIndex((p) => p.type === 'integer');
@@ -93,25 +96,48 @@ function affix(format, currency, display, locale) {
   return null;
 }
 
+export type NumberInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange' | 'min' | 'max' | 'step' | 'width' | 'size'> & {
+  /** the number; null when empty */
+  value?: number | null;
+  defaultValue?: number | null;
+  /** the number (null when empty) and the event that changed it */
+  onChange?: (value: number | null, event: React.SyntheticEvent) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  /** the step of Page Up and Page Down */
+  bigStep?: number;
+  decimals?: number;
+  format?: 'number' | 'currency' | 'percent';
+  /** an ISO 4217 code, with format "currency" */
+  currency?: string;
+  currencyDisplay?: Intl.NumberFormatOptions['currencyDisplay'];
+  unit?: string;
+  stepper?: 'none' | 'buttons' | 'quantity';
+  width?: FieldWidth;
+  invalid?: boolean;
+  warning?: boolean;
+  strings?: Catalog | null;
+};
 export const NumberInput = React.forwardRef(function NumberInput({ value, defaultValue = null, onChange, min, max, step = 1, bigStep = 10, decimals,
   format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, warning, disabled, readOnly: readOnlyOwn, required, id,
-  'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }, ref) {
+  'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }: NumberInputProps, ref: React.ForwardedRef<HTMLInputElement>) {
   const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the step buttons and the keys follow either
-  const t = useStrings('numberInput', strings);
+  const t = useStrings('numberInput', strings) as { decrease: string; increase: string };
   const locale = numeralLocale(formatLocale());
   const aff = React.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
   const controlled = value !== undefined;
-  const [inner, setInner] = React.useState(defaultValue);
+  const [inner, setInner] = React.useState<number | null>(defaultValue);
   const num = controlled ? value : inner;
-  const show = React.useCallback((n) => (n == null || !isFinite(n) ? '' : formatNumber(n, { decimals: places })), [places]);
+  const show = React.useCallback((n: number | null | undefined) => (n == null || !isFinite(n) ? '' : formatNumber(n, { decimals: places })), [places]);
   const [text, setText] = React.useState(() => show(num));
   const [editing, setEditing] = React.useState(false);
   React.useEffect(() => { if (!editing) setText(show(num)); }, [num, editing, show]);
 
-  const clamp = (n) => (n == null ? n : Math.min(max !== undefined ? max : Infinity, Math.max(min !== undefined ? min : -Infinity, n)));
-  const commit = (n, e) => { if (!controlled) setInner(n); if (onChange && n !== num) onChange(n, e); };
-  const stepBy = (count, e) => {
+  const clamp = (n: number | null) => (n == null ? n : Math.min(max !== undefined ? max : Infinity, Math.max(min !== undefined ? min : -Infinity, n)));
+  const commit = (n: number | null, e: React.SyntheticEvent) => { if (!controlled) setInner(n); if (onChange && n !== num) onChange(n, e); };
+  const stepBy = (count: number, e: React.SyntheticEvent) => {
     if (disabled || readOnly) return;
     const typed = parseNumber(text, locale);
     const from = typed != null && !isNaN(typed) ? typed : num != null ? num : min !== undefined && min > 0 ? min - step * Math.sign(count || 1) : 0;
@@ -122,7 +148,7 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
   };
   const atMin = num != null && min !== undefined && num <= min, atMax = num != null && max !== undefined && num >= max;
 
-  const keys = (e) => {
+  const keys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented) return;
     const k = e.key;
@@ -131,23 +157,23 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
     else if (k === 'Home' && min !== undefined && !readOnly) { e.preventDefault(); setText(show(min)); commit(min, e); }
     else if (k === 'End' && max !== undefined && !readOnly) { e.preventDefault(); setText(show(max)); commit(max, e); }
   };
-  const typed = (e) => {
+  const typed = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
     const n = parseNumber(e.target.value, locale);
     if (n === null || !isNaN(n)) commit(n, e);
   };
-  const left = (e) => {
+  const left = (e: React.FocusEvent<HTMLInputElement>) => {
     setEditing(false);
     const n = parseNumber(text, locale);
     if (n !== null && isNaN(n)) setText(show(num));
     else { const c = clamp(n == null ? n : places !== undefined ? Number(n.toFixed(places)) : n); setText(show(c)); commit(c, e); }
     if (onBlur) onBlur(e);
   };
-  const focused = (e) => { setEditing(true); if (onFocus) onFocus(e); };
+  const focused = (e: React.FocusEvent<HTMLInputElement>) => { setEditing(true); if (onFocus) onFocus(e); };
 
-  const full = num == null ? undefined : format === 'currency' && currency ? formatCurrency(num, currency, { display: currencyDisplay, decimals: places })
+  const full = num == null ? undefined : format === 'currency' && currency ? formatCurrency(num, currency, { display: currencyDisplay as string, decimals: places })
     : (show(num) + (aff ? aff.text : unit ? ' ' + unit : ''));
-  const keep = (e) => e.preventDefault();   // a press on a stepper button keeps focus where it was
+  const keep = (e: React.MouseEvent) => e.preventDefault();   // a press on a stepper button keeps focus where it was
   const minus = <Button key="minus" iconOnly icon={RemoveIcon} label={t.decrease} tabIndex={-1} disabled={disabled || readOnly || atMin} onMouseDown={keep} onClick={(e) => stepBy(-1, e)} />;
   const plus = <Button key="plus" iconOnly icon={PlusIcon} label={t.increase} tabIndex={-1} disabled={disabled || readOnly || atMax} onMouseDown={keep} onClick={(e) => stepBy(1, e)} />;
   const quantity = stepper === 'quantity';

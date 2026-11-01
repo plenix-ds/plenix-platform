@@ -80,6 +80,7 @@ import { gridPx } from '../../utils/grid.ts';
 import { isDataValue } from '../../utils/dataValue.ts';
 import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
+import type { ControlProps } from '../../providers/ReadOnly.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useTruncated, useInBar } from '../../utils/overflow.ts';
@@ -87,7 +88,7 @@ import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
-const TYPE_HINTS = {
+const TYPE_HINTS: Record<string, React.InputHTMLAttributes<HTMLInputElement>> = {
   email: { inputMode: 'email', autoCapitalize: 'off', spellCheck: false },
   url: { inputMode: 'url', autoCapitalize: 'off', spellCheck: false },
   tel: { inputMode: 'tel' },
@@ -95,24 +96,38 @@ const TYPE_HINTS = {
 };
 
 // the appearance class (outline is the base look: no class)
-const look = (appearance) => appearance === 'filled' && 'plx-input--filled';
+export type FieldAppearance = 'outline' | 'filled';
+export type FieldWidth = 'xs' | 'sm' | 'md' | 'lg' | 'fill';
+// "sm", "md", or a number: the native size attribute
+export type FieldSize = 'sm' | 'md' | number;
+const look = (appearance: FieldAppearance | undefined) => appearance === 'filled' && 'plx-input--filled';
 
 // the types whose value is text that a bar can cut (issue 558); never a password
-const TEXT_TYPES = { text: 1, search: 1, email: 1, url: 1, tel: 1 };
+const TEXT_TYPES: Record<string, number> = { text: 1, search: 1, email: 1, url: 1, tel: 1 };
 // the Tooltip around a text Input in a bar: its width class follows the Input's (fixed: xs, sm, md)
-const tipWidth = (width) => (width === 'xs' || width === 'sm' || width === 'md' ? 'plx-input__tip--fixed' : width === 'lg' || width === 'fill' ? 'plx-input__tip--' + width : null);
+const tipWidth = (width: FieldWidth | undefined) => (width === 'xs' || width === 'sm' || width === 'md' ? 'plx-input__tip--fixed' : width === 'lg' || width === 'fill' ? 'plx-input__tip--' + width : null);
 
-export const Input = React.forwardRef(function Input({ invalid, warning, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, onInput, ...rest }, ref) {
+export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'width'> & {
+  invalid?: boolean;
+  /** true marks the field with a warning */
+  warning?: boolean;
+  width?: FieldWidth;
+  data?: boolean;
+  emphasis?: boolean;
+  appearance?: FieldAppearance;
+  size?: FieldSize;
+};
+export const Input = React.forwardRef(function Input({ invalid, warning, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, onInput, ...rest }: InputProps, ref: React.ForwardedRef<HTMLInputElement>) {
   // its own readOnly, else the nearest read-only region's (providers/ReadOnly.tsx)
   const locked = useReadOnly(readOnly);
-  const own = React.useRef(null);
-  const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
+  const own = React.useRef<HTMLInputElement | null>(null);
+  const setRef = React.useCallback((el: HTMLInputElement | null) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   // in a bar (issue 558) a text Input whose value is cut shows its whole value in a Tooltip on hover and focus; it is wrapped once it is known to sit in one
   const bar = useInBar(own, '.plx-input-group') && !!TEXT_TYPES[type];
-  const [, redraw] = React.useReducer((n) => n + 1, 0);
+  const [, redraw] = React.useReducer((n: number) => n + 1, 0);
   const cut = useTruncated(own, bar ? 'bar|' + rest.value : '', bar);
-  const field = <input ref={setRef} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', bar && 'plx-input__bar-text', look(appearance), className)} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}
-    onInput={bar ? (e) => { redraw(); if (onInput) onInput(e); } : onInput} {...TYPE_HINTS[type]} {...rest} />;
+  const field = <input ref={setRef} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size as number | undefined} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', bar && 'plx-input__bar-text', look(appearance), className)} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}
+    onInput={bar ? (e: React.FormEvent<HTMLInputElement>) => { redraw(); if (onInput) onInput(e); } : onInput} {...TYPE_HINTS[type]} {...rest} />;
   if (!bar) return field;
   const text = rest.value !== undefined && rest.value !== null ? String(rest.value) : own.current ? own.current.value : String(rest.defaultValue || '');
   return <Tooltip content={text} disabled={!cut || !text} describe={false} className={cx('plx-input__tip', tipWidth(width))}>{field}</Tooltip>;
@@ -121,10 +136,18 @@ export const Input = React.forwardRef(function Input({ invalid, warning, width, 
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
 const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
 
-export const Textarea = React.forwardRef(function Textarea({ invalid, warning, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }, ref) {
+export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  invalid?: boolean;
+  warning?: boolean;
+  appearance?: FieldAppearance;
+  /** grows with its text, a line at a time, up to its maximum */
+  autoGrow?: boolean;
+  data?: boolean;
+};
+export const Textarea = React.forwardRef(function Textarea({ invalid, warning, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }: TextareaProps, ref: React.ForwardedRef<HTMLTextAreaElement>) {
   const locked = useReadOnly(readOnly);   // its own readOnly, else the nearest read-only region's
-  const own = React.useRef(null);
-  const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
+  const own = React.useRef<HTMLTextAreaElement | null>(null);
+  const setRef = React.useCallback((el: HTMLTextAreaElement | null) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
   const fit = React.useCallback(() => {
     const el = own.current;
@@ -139,11 +162,29 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, warning, a
 });
 
 /* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
-const SelectNative = React.forwardRef(function SelectNative({ invalid, warning, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }, ref) {
+export type SelectOption = { value: string | number; label?: React.ReactNode; disabled?: boolean };
+export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size' | 'width'> & {
+  invalid?: boolean;
+  warning?: boolean;
+  /** the choices; or <option>s (and <optgroup>s) as children */
+  options?: SelectOption[];
+  appearance?: FieldAppearance;
+  /** a number above 1 (or multiple) keeps the browser's own list box */
+  size?: FieldSize;
+  /** its corners square where it meets a neighbor (InputGroup sets it) */
+  joined?: { start?: 'square' | 'seam'; end?: 'square' | 'seam' };
+  /** true forces the data font, false keeps the interface font; unset, it follows the chosen value */
+  data?: boolean;
+  block?: boolean;
+  width?: FieldWidth;
+  /** the choice shows and takes focus but cannot change */
+  readOnly?: boolean;
+};
+const SelectNative = React.forwardRef(function SelectNative({ invalid, warning, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }: SelectProps, ref: React.ForwardedRef<HTMLSelectElement>) {
   const locked = useReadOnly(readOnly);
   return (
     <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
-      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} {...readOnlyProps(locked, rest, { pointer: true })}>
+      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size as number | undefined} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} {...(readOnlyProps(locked, rest as ControlProps, { pointer: true }) as React.SelectHTMLAttributes<HTMLSelectElement>)}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
       <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
@@ -151,32 +192,34 @@ const SelectNative = React.forwardRef(function SelectNative({ invalid, warning, 
   );
 });
 
+// one row of the drawn list, read from the native select's options
+type ListItem = { value: string; label: string; disabled: boolean | null; group: string | null };
 /* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
    hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
    come from it, so a form posts, a reset resets and e.target.value works as before. */
 const SelectList = React.forwardRef(function SelectList({ invalid, warning, options, appearance, size, joined, data, block = false, width, className, children, id, onFocus, onBlur, onKeyDown,
-  'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, readOnly, ...rest }, ref) {
+  'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, readOnly, ...rest }: SelectProps, ref: React.ForwardedRef<HTMLSelectElement>) {
   const locked = useReadOnly(readOnly);   // keeps the value and focus; a press, Space, the arrows or typing do not open or change it
-  const native = React.useRef(null), field = React.useRef(null), wrap = React.useRef(null), list = React.useRef(null), last = React.useRef(null), buffer = React.useRef(''), timer = React.useRef(0);
-  const setNative = React.useCallback((el) => { native.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
+  const native = React.useRef<HTMLSelectElement | null>(null), field = React.useRef<HTMLDivElement>(null), wrap = React.useRef<HTMLSpanElement>(null), list = React.useRef<HTMLUListElement>(null), last = React.useRef<ListItem[] | null>(null), buffer = React.useRef(''), timer = React.useRef<ReturnType<typeof setTimeout> | 0>(0);
+  const setNative = React.useCallback((el: HTMLSelectElement | null) => { native.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   const auto = React.useId();
-  const [items, setItems] = React.useState([]);
+  const [items, setItems] = React.useState<ListItem[]>([]);
   const [chosen, setChosen] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(-1);
-  const [labelId, setLabelId] = React.useState(null);
-  const [, redraw] = React.useReducer((n) => n + 1, 0);
-  const valueRef = React.useRef(null), cut = useTruncated(valueRef);   // the chosen text is cut (its box is narrower than the text): its full text goes in a Tooltip
+  const [labelId, setLabelId] = React.useState<string | null>(null);
+  const [, redraw] = React.useReducer((n: number) => n + 1, 0);
+  const valueRef = React.useRef<HTMLSpanElement>(null), cut = useTruncated(valueRef);   // the chosen text is cut (its box is narrower than the text): its full text goes in a Tooltip
   const disabled = !!rest.disabled;
   // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
   useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
   React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
-  const listId = auto + '-list', optId = (i) => auto + '-o' + i;
+  const listId = auto + '-list', optId = (i: number) => auto + '-o' + i;
   // read the native select (its options, in order, and its chosen one) after every render
   const read = React.useCallback(() => {
     const el = native.current;
     if (!el) return;
-    const next = Array.from(el.options).map((o) => ({ value: o.value, label: o.text, disabled: o.disabled || (o.parentElement && o.parentElement.disabled === true), group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null }));
+    const next: ListItem[] = Array.from(el.options).map((o) => ({ value: o.value, label: o.text, disabled: o.disabled || (o.parentElement && (o.parentElement as HTMLOptGroupElement).disabled === true), group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? (o.parentElement as HTMLOptGroupElement).label : null }));
     const prev = last.current;   // the same options? a length and field-by-field comparison, cheap for a long list
     if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) { last.current = next; setItems(next); }
     setChosen(el.selectedIndex);
@@ -204,9 +247,9 @@ const SelectList = React.forwardRef(function SelectList({ invalid, warning, opti
     const el = document.getElementById(optId(active));
     if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
   }, [open, active]);
-  const step = (from, dir) => { for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i; return -1; };
-  const show = (at) => { setActive(at !== undefined ? at : (chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1))); setOpen(true); };
-  const choose = (i) => {
+  const step = (from: number, dir: number) => { for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i; return -1; };
+  const show = (at?: number) => { setActive(at !== undefined ? at : (chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1))); setOpen(true); };
+  const choose = (i: number) => {
     const el = native.current, it = items[i];
     if (!el || !it || it.disabled) return;
     setOpen(false);
@@ -218,8 +261,8 @@ const SelectList = React.forwardRef(function SelectList({ invalid, warning, opti
     redraw();
     setTimeout(read, 0);
   };
-  const onKey = (e) => {
-    if (onKeyDown) onKeyDown(e);
+  const onKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (onKeyDown) onKeyDown(e as unknown as React.KeyboardEvent<HTMLSelectElement>);
     if (e.defaultPrevented || disabled) return;
     const k = e.key;
     if (k === 'ArrowDown' || k === 'ArrowUp') {
@@ -241,7 +284,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, warning, opti
       if (open && active >= 0) choose(active);
       else setOpen(false);
     } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {   // type-ahead: the next row that starts with what was typed
-      clearTimeout(timer.current);
+      clearTimeout(timer.current as ReturnType<typeof setTimeout>);
       buffer.current += k.toLowerCase();
       timer.current = setTimeout(() => { buffer.current = ''; }, 700);
       const from = (open ? active : chosen) + (buffer.current.length === 1 ? 1 : 0);
@@ -253,12 +296,12 @@ const SelectList = React.forwardRef(function SelectList({ invalid, warning, opti
   const current = items[chosen];
   // the data font: forced by data (true or false); otherwise when the chosen label is wholly a number, a date or another technical value
   const asData = data === undefined ? !!(current && isDataValue(current.label)) : !!data;
-  const grouped = [];   // the rows in order, a group's rows together (an <optgroup>)
+  const grouped: Array<{ name: string | null; rows: Array<{ it: ListItem; i: number }> }> = [];   // the rows in order, a group's rows together (an <optgroup>)
   items.forEach((it, i) => { const g = grouped[grouped.length - 1]; if (g && g.name === it.group && it.group != null) g.rows.push({ it, i }); else grouped.push({ name: it.group, rows: [{ it, i }] }); });
   return (
     <span ref={wrap} className={cx('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)}>
       <select ref={setNative} tabIndex={-1} aria-hidden="true" className={cx('plx-input', 'plx-select__control', 'plx-select__native', asData && 'plx-input--data', look(appearance))}
-        {...readOnlyProps(locked, Object.assign({ onFocus: () => { if (field.current) field.current.focus(); } }, rest), { pointer: true })}>
+        {...(readOnlyProps(locked, Object.assign({ onFocus: () => { if (field.current) field.current.focus(); } }, rest) as ControlProps, { pointer: true }) as React.SelectHTMLAttributes<HTMLSelectElement>)}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
       {/* the Tooltip wraps the part that takes focus, so the whole chosen text shows on keyboard focus as on hover while it is cut (issue 577);
@@ -268,8 +311,8 @@ const SelectList = React.forwardRef(function SelectList({ invalid, warning, opti
         aria-activedescendant={open && active >= 0 ? optId(active) : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)}
         aria-describedby={describedBy} aria-errormessage={errorMessage} aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} aria-required={rest.required || undefined} aria-disabled={disabled || undefined}
         className={cx('plx-input', 'plx-select__field', asData && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
-        {...readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey }, { pointer: true })}
-        onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
+        {...(readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey } as unknown as ControlProps, { pointer: true }) as React.HTMLAttributes<HTMLDivElement>)}
+        onFocus={onFocus as unknown as React.FocusEventHandler<HTMLDivElement>} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e as unknown as React.FocusEvent<HTMLSelectElement>); }}>
         <span ref={valueRef} className="plx-select__value">{current ? current.label : ''}</span>
       </div>
       </Tooltip>
@@ -293,7 +336,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, warning, opti
 });
 
 /* options: [{ value, label }] or children <option>s */
-export const Select = React.forwardRef(function Select(props, ref) {
+export const Select = React.forwardRef(function Select(props: SelectProps, ref: React.ForwardedRef<HTMLSelectElement>) {
   const listBox = props.multiple || (typeof props.size === 'number' && props.size > 1);
   return listBox ? <SelectNative {...props} ref={ref} /> : <SelectList {...props} ref={ref} />;
 });

@@ -28,7 +28,18 @@ import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
-export function RadioTiles({ legend, legendHidden = false, options = [], value, onChange, name, size = 'md', className, readOnly, ...rest }) {
+export type RadioTileOption = { value: string | number; label?: React.ReactNode; description?: React.ReactNode; preview?: React.ReactNode; disabled?: boolean };
+export type RadioTilesProps = Omit<React.FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> & {
+  legend?: React.ReactNode;
+  legendHidden?: boolean;
+  options?: RadioTileOption[];
+  value?: string | number;
+  onChange?: (value: string | number) => void;
+  name?: string;
+  size?: 'sm' | 'md' | 'lg';
+  readOnly?: boolean;
+};
+export function RadioTiles({ legend, legendHidden = false, options = [], value, onChange, name, size = 'md', className, readOnly, ...rest }: RadioTilesProps) {
   const locked = useReadOnly(readOnly);
   devWarn('RadioTiles', { size }, { size: ['sm','md','lg'] });
   const auto = 'plx-rt' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -41,7 +52,7 @@ export function RadioTiles({ legend, legendHidden = false, options = [], value, 
           return (
             <label key={o.value} className={cx('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')}>
               <input className="plx-radio-tile__input plx-visually-hidden" type="radio"
-                {...readOnlyProps(locked, { name: name || auto, value: o.value, checked: on, disabled: o.disabled, onChange: () => { if (onChange) onChange(o.value); } }, { aria: false })} />
+                {...(readOnlyProps(locked, { name: name || auto, value: o.value, checked: on, disabled: o.disabled, onChange: () => { if (onChange) onChange(o.value); } }, { aria: false }) as React.InputHTMLAttributes<HTMLInputElement>)} />
               {o.preview ? <span className="plx-radio-tile__preview" aria-hidden="true">{o.preview}</span> : null}
               <span className="plx-radio-tile__text">
                 <span className="plx-radio-tile__label">{o.label}</span>

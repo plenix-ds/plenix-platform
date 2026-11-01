@@ -33,8 +33,21 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useDropTarget } from '../../utils/dnd.ts';
+import type { DropTargetOptions } from '../../utils/dnd.ts';
 
-export function DropZone({ as: As = 'div', active = false, reject = false, rejectContent, overlay = false, onDropItem, accepts, name, className, children, ...rest }) {
+export type DropZoneProps = React.HTMLAttributes<HTMLElement> & {
+  as?: React.ElementType;
+  active?: boolean;
+  reject?: boolean;
+  /** what it shows while it refuses the thing dragged over it */
+  rejectContent?: React.ReactNode;
+  overlay?: boolean;
+  /** makes it a drop target of the Platform's drag and drop (utils/dnd.ts) */
+  onDropItem?: DropTargetOptions['onDrop'];
+  accepts?: DropTargetOptions['accepts'];
+  name?: string;
+};
+export function DropZone({ as: As = 'div', active = false, reject = false, rejectContent, overlay = false, onDropItem, accepts, name, className, children, ...rest }: DropZoneProps) {
   const target = useDropTarget({ name, accepts, onDrop: onDropItem, disabled: !onDropItem });
   const st = onDropItem ? target.state : null;
   const refused = reject || st === 'reject';

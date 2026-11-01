@@ -40,26 +40,50 @@ import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { Input, Textarea, Select } from '../Input/Input.tsx';
+import type { SelectOption } from '../Input/Input.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
+type InlineEditWords = { empty: string; edit: string; save: string; cancel: string; saved: string; failed: string };
+export type InlineEditProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onBlur'> & {
+  /** the accessible name of the value and of its field */
+  label: string;
+  value?: string;
+  /** the new value; a Promise keeps the field open (saving) until it settles; a rejection shows its message */
+  onConfirm?: (value: string) => unknown;
+  onCancel?: () => void;
+  type?: 'text' | 'textarea' | 'select';
+  /** the choices of a select */
+  options?: SelectOption[];
+  placeholder?: string;
+  confirmButtons?: boolean;
+  /** a message when the draft is not acceptable, else nothing */
+  validate?: (value: string) => React.ReactNode;
+  data?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  /** how the value shows while it is not being edited */
+  readView?: (value: string) => React.ReactNode;
+  strings?: Catalog | null;
+};
 export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'text', options = [], placeholder, confirmButtons = false, validate,
-  data = false, disabled = false, readOnly: readOnlyOwn, readView, strings, className, ...rest }) {
+  data = false, disabled = false, readOnly: readOnlyOwn, readView, strings, className, ...rest }: InlineEditProps) {
   const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows, stays focusable, and does not open for editing
-  const t = useStrings('inlineEdit', strings);
+  const t = useStrings('inlineEdit', strings) as InlineEditWords;
   const id = useUid('plx-inline-edit');
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(value);
-  const [error, setError] = React.useState(null);
+  const [error, setError] = React.useState<React.ReactNode>(null);
   const [saving, setSaving] = React.useState(false);
-  const root = React.useRef(null), read = React.useRef(null), field = React.useRef(null), refocus = React.useRef(false);
-  const shownValue = type === 'select' ? ((options.find((o) => o.value === value) || {}).label || '') : value;
+  const root = React.useRef<HTMLDivElement>(null), read = React.useRef<HTMLButtonElement>(null), field = React.useRef<HTMLInputElement & HTMLTextAreaElement & HTMLSelectElement>(null), refocus = React.useRef(false);
+  const shownValue = type === 'select' ? ((options.find((o) => o.value === value) || {} as Partial<SelectOption>).label || '') : value;
   const empty = shownValue === '' || shownValue == null;
   const hint = placeholder || t.empty;
 
@@ -69,25 +93,25 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
   }, [editing, type]);
 
   const open = () => { if (disabled || locked) return; setDraft(value); setError(null); setEditing(true); };
-  const close = (back) => { refocus.current = back; setEditing(false); setSaving(false); };
-  const cancel = (back) => { setDraft(value); setError(null); close(back); if (onCancel) onCancel(); };
-  const save = (back) => {
+  const close = (back: boolean) => { refocus.current = back; setEditing(false); setSaving(false); };
+  const cancel = (back: boolean) => { setDraft(value); setError(null); close(back); if (onCancel) onCancel(); };
+  const save = (back: boolean) => {
     if (saving) return;
     if (draft === value) { close(back); return; }
     const problem = validate ? validate(draft) : null;
     if (problem) { setError(problem); return; }
-    const done = onConfirm ? onConfirm(draft) : null;
+    const done = (onConfirm ? onConfirm(draft) : null) as Promise<unknown> | null;
     if (done && typeof done.then === 'function') {
       setSaving(true);
-      done.then(() => { close(back); announce(t.saved); }, (e) => { setSaving(false); setError((e && e.message) || t.failed); });
+      done.then(() => { close(back); announce(t.saved); }, (e: { message?: string } | null) => { setSaving(false); setError((e && e.message) || t.failed); });
     } else { close(back); announce(t.saved); }
   };
-  const onKey = (e) => {
+  const onKey = (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cancel(true); }
     else if (e.key === 'Enter' && (type !== 'textarea' || e.ctrlKey || e.metaKey)) { e.preventDefault(); save(true); }
   };
   // leaving the inline edit saves; moving between the field and its buttons does not
-  const onBlur = (e) => { if (root.current && e.relatedTarget && root.current.contains(e.relatedTarget)) return; if (editing && !saving) save(false); };
+  const onBlur = (e: React.FocusEvent<HTMLDivElement>) => { if (root.current && e.relatedTarget && root.current.contains(e.relatedTarget as Node)) return; if (editing && !saving) save(false); };
 
   if (!editing) {
     return (
@@ -103,7 +127,7 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
   }
   const errId = id + '-error';
   const common = { ref: field, 'aria-label': label, value: draft, invalid: !!error, readOnly: saving || undefined, onKeyDown: onKey,
-    'aria-describedby': error ? errId : undefined, onChange: (e) => { setDraft(e.target.value); if (error) setError(null); } };
+    'aria-describedby': error ? errId : undefined, onChange: (e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement & HTMLSelectElement>) => { setDraft(e.target.value); if (error) setError(null); } };
   const control = type === 'textarea' ? <Textarea {...common} autoGrow placeholder={hint} />
     : type === 'select' ? <Select {...common} block options={options} disabled={saving || undefined} />
     : <Input {...common} data={data} placeholder={hint} />;
