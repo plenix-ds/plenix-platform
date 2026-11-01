@@ -56,7 +56,7 @@ import React from 'react';
 import { cx } from '../utils/cx.ts';
 import { dataWhenText } from '../utils/dataText.tsx';
 import { isRtl } from '../utils/direction.ts';
-import { Details } from '../components/Details/Details.jsx';
+import { Details } from '../components/Details/Details.tsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Button } from '../components/Button/Button.tsx';
 import { snapToGrid } from '../utils/grid.ts';

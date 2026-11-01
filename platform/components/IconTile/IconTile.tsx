@@ -26,19 +26,30 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconValue } from '../Icon/Icon.tsx';
 
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
 const SIZES = ['sm', 'md', 'lg'];
 
-export function IconTile({ icon, hue = 'gray', tone, size = 'md', filled = false, label, className, ...rest }) {
+export type IconTileProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  /** an icon name or an imported icon module */
+  icon?: IconValue | null;
+  hue?: 'blue' | 'green' | 'purple' | 'red' | 'brown' | 'gray' | 'surface';
+  tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  filled?: boolean;
+  /** the accessible name; without it the tile is decorative */
+  label?: string;
+};
+export function IconTile({ icon, hue = 'gray', tone, size = 'md', filled = false, label, className, ...rest }: IconTileProps) {
   devWarn('IconTile', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md','lg'] });
-  const look = TONES.indexOf(tone) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
+  const look = TONES.indexOf(tone as string) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   return (
     <span className={cx('plx-icon-tile', 'plx-icon-tile--' + s, 'plx-icon-tile--' + look, className)}
       role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest}>
-      <Icon name={icon} size={s} filled={filled} />
+      <Icon name={icon} size={s as 'sm' | 'md' | 'lg'} filled={filled} />
     </span>
   );
 }

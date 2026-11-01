@@ -19,6 +19,7 @@
      data: the prefix and suffix in the data font (Reddit Mono), for technical values: units, currency codes, addresses
        (default false); give the Input data too
      invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: handed to the Input; the box takes the disabled fill
      readOnly: handed to the Input; the box takes the read-only fill
      required: handed to the Input (a Field sets it)
@@ -46,7 +47,7 @@ const childRef = (child) => (REACT_19 ? child.props.ref : child.ref);
 
 const list = (x) => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
 
-export function InputGroup({ prefix, suffix, icon, start, end, width, compact = false, data = false, invalid, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
+export function InputGroup({ prefix, suffix, icon, start, end, width, compact = false, data = false, invalid, warning, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const preId = prefix != null ? 'plx-ig' + uid + '-p' : undefined, sufId = suffix != null ? 'plx-ig' + uid + '-s' : undefined;
   const child = React.Children.only(children);
@@ -58,13 +59,14 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, compact = 
     id: own.id || id,
     'aria-describedby': describedAt,
     invalid: own.invalid !== undefined ? own.invalid : invalid,
+    warning: own.warning !== undefined ? own.warning : warning,
     disabled: own.disabled !== undefined ? own.disabled : disabled,
     readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,
     required: own.required !== undefined ? own.required : required,
     className: cx(own.className, 'plx-input-group__input', (icon || prefix != null) && 'plx-input-group__input--after-affix', suffix != null && 'plx-input-group__input--before-affix'),
     ref: (node) => { inputRef.current = node; const r = childRef(child); if (typeof r === 'function') r(node); else if (r) r.current = node; },
   };
-  const isInvalid = pass.invalid, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
+  const isInvalid = pass.invalid, isWarning = pass.warning, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
   // a press on the box outside the field (an affix, the icon) focuses the field
   const focusField = (e) => { if (e.target !== inputRef.current && inputRef.current && !isDisabled) { e.preventDefault(); inputRef.current.focus(); } };
   // an attached Button or Select joins the box: the side facing the box is a seam (the box's edge is shared); between two
@@ -77,7 +79,7 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, compact = 
     <div className={cx('plx-input-group', width && 'plx-input-group--width-' + width, compact && 'plx-input-group--compact', data && 'plx-input-group--data', className)} {...rest}>
       {starts.map((el, i) => attach(el, i, starts, 'start'))}
       <div className={cx('plx-input-group__box', starts.length && 'plx-input-group__box--joined-start', ends.length && 'plx-input-group__box--joined-end',
-        isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly')} onMouseDown={focusField}>
+        isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly')} data-plx-warning={isWarning || undefined} onMouseDown={focusField}>
         {icon ? <span className="plx-input-group__icon" aria-hidden="true"><Icon name={icon} /></span> : null}
         {prefix != null ? <span className="plx-input-group__affix plx-input-group__affix--prefix" id={preId}>{prefix}</span> : null}
         {React.cloneElement(child, pass)}

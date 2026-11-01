@@ -1,4 +1,4 @@
-/* Plenix · Timeline (platform/components/Timeline). Anatomy and API: Timeline.jsx.
+/* Plenix · Timeline (platform/components/Timeline). Anatomy and API: Timeline.tsx.
    Each event is a grid: the marker in its own column (or row, horizontal), the content beside it (under it). The line
    runs from the bottom (end) of a marker to the next event's marker; the first line of the content is as tall as the
    marker, so the time or title sits centered on it. */

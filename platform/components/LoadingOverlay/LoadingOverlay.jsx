@@ -31,7 +31,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Scrim } from '../Scrim/Scrim.jsx';
 import { Spinner } from '../Loading/Loading.tsx';
-import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
+import { ProgressBar } from '../ProgressBar/ProgressBar.tsx';
 import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 

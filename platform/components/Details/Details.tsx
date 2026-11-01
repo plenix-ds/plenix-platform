@@ -35,14 +35,21 @@ import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 
 const VARIANTS = ['default', 'bordered', 'inline'];
 
-export function Details({ summary, children, variant = 'default', open: openProp, defaultOpen = false, onToggle, name, className, ...rest }) {
+export type DetailsProps = Omit<React.DetailsHTMLAttributes<HTMLDetailsElement>, 'onToggle'> & {
+  summary?: React.ReactNode;
+  variant?: 'default' | 'bordered' | 'inline';
+  defaultOpen?: boolean;
+  /** called with the new open state */
+  onToggle?: (open: boolean) => void;
+};
+export function Details({ summary, children, variant = 'default', open: openProp, defaultOpen = false, onToggle, name, className, ...rest }: DetailsProps) {
   devWarn('Details', { variant }, { variant: ['default','bordered','inline'] });
   const controlled = openProp !== undefined;
   const [own, setOwn] = React.useState(!!defaultOpen);
   const open = controlled ? !!openProp : own;
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'default';
   // the native element toggles itself; the state follows it (and a controlled value is put back if the caller keeps it)
-  const toggled = (e) => {
+  const toggled = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
     const now = e.currentTarget.open;
     if (now === open) return;
     if (!controlled) setOwn(now);

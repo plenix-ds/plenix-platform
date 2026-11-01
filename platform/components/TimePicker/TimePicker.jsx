@@ -23,6 +23,7 @@
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
      label: the accessible name when there is no Field (the group's name with segments)
      invalid: the invalid state (the border in the danger color); a Field with an error sets it
+     warning: true shows a warning state beside invalid (a Field with a warning sets it): a warning border and fill; the Field draws its icon and message
      disabled: the field cannot be used
      readOnly: shows the time and does not change it: the list does not open, the segments take no digits or arrows that change a value; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the input, or of the first segment (a Field sets it)
@@ -87,7 +88,7 @@ const show = (mins, cycle, t, digits) => {
 };
 
 export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label, width,
-  invalid, disabled, readOnly: readOnlyOwn, id, name, strings, className, ...rest }, ref) {
+  invalid, warning, disabled, readOnly: readOnlyOwn, id, name, strings, className, ...rest }, ref) {
   devWarn('TimePicker', { variant }, { variant: ['list','segments'] });
   const t = useStrings('timePicker', strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
@@ -105,11 +106,11 @@ export const TimePicker = React.forwardRef(function TimePicker({ value, defaultV
   const digits = useDigits();
   const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? <input type="hidden" name={name} value={current || ''} /> : null;
-  if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }} />;
-  return <ListPicker ref={ref} {...{ t, cycle, step: step || 15, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }} />;
+  if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }} />;
+  return <ListPicker ref={ref} {...{ t, cycle, step: step || 15, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }} />;
 });
 
-const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }, ref) {
+const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }, ref) {
   const digits = useDigits();
   const auto = 'plx-tp' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = React.useState(false);
@@ -157,7 +158,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
   const cut = useTruncated(input, shownText);   // the time is cut (issue 558): its full text goes in a Tooltip on hover and focus
   return (
     <div ref={wrap} className={cls}>
-      <div className="plx-time-picker__field plx-input" aria-invalid={invalid || undefined}>
+      <div className="plx-time-picker__field plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}>
         <Tooltip content={shownText} disabled={!cut || !shownText || open} describe={false} className="plx-time-picker__tip">
           <input ref={input} id={id} className="plx-time-picker__input" role="combobox" aria-expanded={open} aria-controls={auto + '-list'} aria-autocomplete="none"
             aria-activedescendant={open && times[active] !== undefined ? optId(active) : undefined} aria-label={label} disabled={disabled} readOnly={locked || undefined} aria-readonly={locked || undefined} autoComplete="off" inputMode="text"
@@ -181,7 +182,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
   );
 });
 
-const Segments = React.forwardRef(function Segments({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }, ref) {
+const Segments = React.forwardRef(function Segments({ t, cycle, step, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }, ref) {
   const digits = useDigits();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
@@ -232,12 +233,12 @@ const Segments = React.forwardRef(function Segments({ t, cycle, step, current, c
   const text = (k) => (parts[k] === null ? t.empty : k === 'p' ? (parts.p === 'am' ? t.am : t.pm) : localDigits(k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]), { digits }));
   return (
     <div className={cls}>
-      <div role="group" aria-label={label} className="plx-time-picker__field plx-time-picker__segments plx-input" aria-invalid={invalid || undefined} {...rest}>
+      <div role="group" aria-label={label} className="plx-time-picker__field plx-time-picker__segments plx-input" aria-invalid={invalid || undefined} data-plx-warning={warning || undefined} {...rest}>
         {segs.map((k, i) => (
           <React.Fragment key={k}>
             {k === 'm' ? <span className="plx-time-picker__separator" aria-hidden="true">:</span> : null}
             <span ref={refs[i]} id={i === 0 ? id : undefined} role="spinbutton" tabIndex={disabled ? -1 : 0} aria-label={lbl[k]} aria-disabled={disabled || undefined} aria-readonly={locked || undefined}
-              aria-invalid={invalid || undefined}
+              aria-invalid={invalid || undefined} data-plx-warning={warning || undefined}
               aria-valuemin={k === 'p' ? undefined : range[k][0]} aria-valuemax={k === 'p' ? undefined : range[k][1]}
               aria-valuenow={k === 'p' || parts[k] === null ? undefined : parts[k]} aria-valuetext={parts[k] === null ? undefined : text(k)}
               className={cx('plx-time-picker__segment', k === 'p' && 'plx-time-picker__segment--period', parts[k] === null && 'is-empty')}

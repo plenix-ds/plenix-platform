@@ -106,7 +106,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.tsx';
-import { Badge } from '../Badge/Badge.jsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { development } from '../../utils/devWarn.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
