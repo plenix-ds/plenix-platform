@@ -267,7 +267,7 @@ function build(root = ROOT, { check = false } = {}) {
   for (const [rel, text] of Object.entries(files)) {
     const p = path.join(root, rel);
     const now = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : null;
-    if (now !== text) { stale.push(rel); if (!check) fs.writeFileSync(p, text); }
+    if (now !== text) { stale.push(rel); if (!check) { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, text); } }
   }
   // the token index (tools/token-index.js: plain Style Dictionary reads the tokens, issue 372 step 8) and the native outputs
   // from the same tokens (Platforms Standard 7.2): Swift, Kotlin and Dart in platform/mobile (build-mobile.js). They need the
