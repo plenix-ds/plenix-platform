@@ -55,6 +55,9 @@ export default {
       "text": "There’s nothing left to do here."
     }
   },
+  "overflowList": {
+    "more": "More items"
+  },
   "pagination": {
     "label": "Pages",
     "range": "{first}–{last} of {total}",
