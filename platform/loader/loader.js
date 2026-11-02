@@ -112,7 +112,12 @@
   function script(src, onload) {
     var el = add('script', { src: src, async: false });
     if (onload) el.addEventListener('load', onload);
+    if (/plenix-[a-z]{2}\.js$/.test(src)) languageFailed(el, src);
     return el;
+  }
+  // a language's words that cannot load (issue 882): the page still works, in English, and the console says why, once
+  function languageFailed(el, src) {
+    el.addEventListener('error', function () { warn('language-' + src, 'could not load ' + src + ': Plenix\'s own words show in English on this page'); });
   }
 
   function load(mode, version) {
@@ -124,7 +129,7 @@
     state.loadLanguage = function (code) {
       if (mode === 'local' || code !== 'ar' || languages[code]) return;
       languages[code] = true;
-      add('script', { src: f.base + 'plenix-' + code + '.js' });
+      languageFailed(add('script', { src: f.base + 'plenix-' + code + '.js' }), f.base + 'plenix-' + code + '.js');
     };
     root.setAttribute('data-plenix-source', mode === 'local' ? 'local' : version);
     add('link', { rel: 'icon', type: 'image/svg+xml', href: f.favicon });
