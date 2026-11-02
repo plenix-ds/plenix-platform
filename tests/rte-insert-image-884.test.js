@@ -77,7 +77,9 @@ assert.ok(!/const SAFE_SRC\s*=/.test(editor), 'RichTextEditor has no SAFE_SRC of
       await insert('example.com/b.png', '');
       const two = await images();
       assert.equal(two.length, 2, dir + ': a second picture is inserted: ' + JSON.stringify(two));
-      assert.equal(two[1].src, 'https://example.com/b.png', dir + ': an address without a scheme is taken as https');
+      // where the second picture lands is the editor's caret rule (the end of the text, before a picture block), not this
+      // test's subject: it checks the address only
+      assert.deepEqual(two.map((x) => x.src).sort(), ['https://example.com/a.png', 'https://example.com/b.png'], dir + ': an address without a scheme is taken as https: ' + JSON.stringify(two));
       await insert('javascript:alert(1)', 'bad');
       assert.equal((await images()).length, 2, dir + ': a javascript: address inserts nothing');
       assert.deepEqual(errors, [], dir + ': no page error');
