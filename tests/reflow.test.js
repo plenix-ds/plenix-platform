@@ -5,7 +5,7 @@
 //   cut-off       visible text or a control reaches past the window's edge where nothing scrolls to it (lost content)
 // Content that needs two dimensions is exempt, as WCAG allows: data grids (the DataGrid and Table), the
 // calendar's time grid, maps and diagrams (svg, canvas), images and the image editor's canvas, preformatted code (the
-// CodeBlock), and the design system's specimen stages. Each exempt sideways scroller is listed under "exempt" so it stays visible in the report.
+// CodeBlock), a carousel's strip (its Previous and Next buttons and page dots move it, so nothing is lost), and the design system's specimen stages. Each exempt sideways scroller is listed under "exempt" so it stays visible in the report.
 // Known findings are kept in tests/baselines/reflow.json (page -> finding -> number of elements); the test fails only on a
 // finding that is new on a page or affects more elements than recorded, so they can only go down.
 //   node tests/reflow.test.js            compare
@@ -40,7 +40,7 @@ changed.noPartialUpdate();
 if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('REFLOW_OK 0 known findings on 0 pages at 320px (0 exempt two-dimensional scrollers)');
 // the two-dimensional content WCAG exempts (Understanding 1.4.10: data grids, maps, diagrams, images, editors' canvases),
 // and preformatted code (the CodeBlock's pre: code keeps its lines, Understanding 1.4.10 "Content exceptions")
-const EXEMPT = '.plx-data-grid, .plx-data-grid__grid, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
+const EXEMPT = '.plx-data-grid, .plx-data-grid__grid, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre, .plx-carousel__track';
 
 // runs in the page: the findings at the current width
 function measure(EXEMPT) {
