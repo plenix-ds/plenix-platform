@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { dataPhrase, CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataGrid, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { dataPhrase, CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataGrid, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -160,7 +160,6 @@ export function HomePage() {
   };
   const toggle = (list, setList, id) => setList(list.indexOf(id) >= 0 ? list.filter((x) => x !== id) : list.concat(id));
 
-  const assetsSel = D.ASSETS.filter((a) => selAssets.indexOf(a.id) >= 0);
   const current = asset === null ? null : D.ASSETS[asset];
 
 
@@ -269,7 +268,7 @@ export function HomePage() {
       <DataGrid label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} onRowClick={(record) => openAsset(record.id)} {...tableProps} columns={[
         { title: 'Name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Category', field: 'cat', kind: 'center', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
-        { title: 'Type', field: 'badge', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right', sorter: bySize },
+        { title: 'Type', field: 'badge', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', align: 'right', sorter: bySize },
         { title: 'Date added', field: 'date', kind: 'data', sorter: byDate },
         { title: 'Status', field: 'status', kind: 'center', render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
     );

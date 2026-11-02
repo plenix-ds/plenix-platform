@@ -49,7 +49,7 @@ import { Input } from '../../components/Input/Input.jsx';
 import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Fieldset } from '../../components/Fieldset/Fieldset.jsx';
 import { Icon } from '../../components/Icon/Icon.tsx';
-import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useOptionalToast } from '../../components/Toast/Toast.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { createTranslator } from '../../providers/LocaleProvider.tsx';
 import { formatLocale } from '../../utils/format.ts';

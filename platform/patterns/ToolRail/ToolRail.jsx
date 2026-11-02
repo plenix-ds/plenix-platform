@@ -28,7 +28,7 @@
 import React from 'react';
 import { useFocusGroup } from '../../hooks/useFocusable.ts';
 import { cx } from '../../utils/cx.ts';
-import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.tsx';
+import { stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.tsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 
 const LabelsContext = React.createContext(false);

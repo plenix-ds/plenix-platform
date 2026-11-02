@@ -55,7 +55,7 @@ export type PressProps = Record<string, Handler | undefined>;
 const PRIMARY = 0;
 
 export function usePressable(options: PressableOptions = {}): { pressed: boolean; pressProps: PressProps } {
-  const { onPress, onPressStart, onPressEnd, onPressChange, disabled = false, handlers = {}, native = false } = options;
+  const { onPress, onPressStart, onPressEnd, disabled = false, handlers = {}, native = false } = options;
   const [pressed, setPressedState] = React.useState(false);
   // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
   const hold = React.useRef<{ pointerType: PointerKind; left?: boolean } | null>(null);

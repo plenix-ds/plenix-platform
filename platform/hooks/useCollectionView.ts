@@ -33,7 +33,7 @@
      other quick filter, excluding only their own selection. Repeated values in one row count that record once. */
 import React from 'react';
 import { singleChoice } from '../patterns/QuickFilter/single-choice.js';
-import { matchesFilter, matchesDate, valueOf, fieldOf, DATE_PRESETS } from '../utils/fields.ts';
+import { matchesFilter, matchesDate, valueOf, fieldOf, DATE_PRESETS, blank } from '../utils/fields.ts';
 import type { Field, Filter, FilterItem, SortLevel, DateRange } from '../utils/fields.ts';
 
 type Row = Record<string, unknown>;
@@ -60,7 +60,6 @@ type ViewPatch = {
   rowHeight?: string; wrapHeaders?: boolean; widths?: unknown; collapsed?: unknown;
 };
 
-const blank = (x: unknown) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 
 export function useCollectionView(fields: Field[], options: CollectionViewOptions = {}) {
   const config = (key: string): QuickConfig => typeof (options.quick || {})[key] === 'string' ? { kind: options.quick![key] as QuickKind } : (options.quick || {})[key] as QuickConfig || {};

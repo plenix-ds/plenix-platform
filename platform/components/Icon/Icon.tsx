@@ -20,7 +20,7 @@
      icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
        import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
        classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
-     filled: the filled version (default false)
+     filled: true draws the filled version (default false)
      label: the accessible name, when the icon alone carries meaning
      className: more classes on the icon
      StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares

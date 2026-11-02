@@ -71,7 +71,7 @@ import React from 'react';
 import { announce } from './announce.tsx';
 import { snapToGrid, gridPx } from './grid.ts';
 import { arrowStep, isRtl } from './direction.ts';
-import { tokenMs } from './tokenTime.ts';
+import { tokenMs, reducedMotion as reduced } from './tokenTime.ts';
 import { gestureTokens } from '../hooks/useGesture.ts';
 import { useStrings } from '../providers/LocaleProvider.tsx';
 import english from '../i18n/en.js';
@@ -115,7 +115,6 @@ export type DraggableOptions = { data?: unknown; type?: string; name?: string; h
 export type Position = { x: number; y: number };
 export type RepositionOptions = { position?: Position; onMove?: (next: Position) => void; bounds?: React.RefObject<Element | null>; name?: string; disabled?: boolean; strings?: Partial<DndStrings> };
 
-const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ── list helpers ── */
 export function moveItem<T>(list: T[], from: number, to: number): T[] {

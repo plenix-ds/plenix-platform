@@ -20,7 +20,7 @@
      Chat.Header.avatar: an Avatar before the title
      Chat.Header.actions: buttons at the end
      Chat.Thread.label: the accessible name of the thread (default "Conversation")
-     Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
+     Chat.Thread.follow: true opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
        to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
      Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
