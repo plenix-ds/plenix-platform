@@ -2,7 +2,7 @@
 
 70 canonical colors in 12 families, including Black and White. Applied from the owner’s revised 70-color chart; no new hex values. Transparent tokens are separate.
 
-Higher numbered shades are darker by Oklab L. System and category role names are preserved; reused names carry only their new meaning. The retired palette aliases (deprecated in 0.48.0) were removed in issue 882: the changelog's upgrade note names each one's replacement.
+Higher numbered shades are darker by Oklab L. System and category role names are preserved; reused names carry only their new meaning. The retired palette aliases (deprecated in 0.48.0) were removed in issue 882 (the changelog's upgrade note names each one's replacement), except `--plx-ref-color-orange-700`, which CTM still uses: it stays Deprecated until CTM moves off it.
 
 | Family | Colors |
 |---|---|
@@ -157,3 +157,9 @@ Higher numbered shades are darker by Oklab L. System and category role names are
 | `--plx-ref-color-black-alpha-14` | `#00000024` |
 | `--plx-ref-color-black-alpha-20` | `#00000033` |
 | `--plx-ref-color-black-alpha-12` | `#0000001f` |
+
+## Deprecated aliases
+
+| Alias | Destination |
+|---|---|
+| `--plx-ref-color-orange-700` | `{plx-ref.color-brown-500}` |

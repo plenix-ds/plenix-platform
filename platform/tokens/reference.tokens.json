@@ -1215,6 +1215,12 @@
       "$value": "#f6f0fe",
       "$type": "color",
       "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-orange-700": {
+      "$value": "{plx-ref.color-brown-500}",
+      "$type": "color",
+      "$description": "Deprecated alias; migrated by original token identity.",
+      "$deprecated": "Retired palette alias: use --plx-ref-color-brown-500. Kept until CTM moves off it (issue 882), then removed."
     }
   }
 }

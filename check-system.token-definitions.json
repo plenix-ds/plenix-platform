@@ -88,7 +88,8 @@
     "color-purple-700": "#6a2e7f",
     "color-purple-500": "#911eb4",
     "color-purple-300": "#d7aefb",
-    "color-purple-100": "#f6f0fe"
+    "color-purple-100": "#f6f0fe",
+    "color-orange-700": "{plx-ref.color-brown-500}"
   },
   "grid": {
     "space-6px": "0.375rem",
