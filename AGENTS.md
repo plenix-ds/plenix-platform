@@ -71,6 +71,10 @@ changes inside `platform/design-system/` at `lanes/<task>/design-system/<the sam
   `platform/tokens/components/<name>.tokens.json`); the build generates the CSS. Tiers: `--plx-ref-` (the palette),
   `--plx-sys-` (theme roles), `--plx-comp-<component>-<role>` (pointing to plx-sys roles). Never add a palette color;
   a component reads a color by its token name, never a hex.
+- Token values follow the W3C Design Tokens format (2025.10, #872): a reference stays `"{plx-sys.space-inset-md}"`; a
+  plain size is `{ "value": 16, "unit": "px" }`, a duration `{ "value": 0.2, "unit": "s" }`, a number a JSON number.
+  A value only CSS can write (calc(), a keyword, a mixed string) stays text with `"$extensions": { "com.plenix":
+  { "webOnly": true } }`. `tools/token-value.js` turns either form into CSS.
 - No inline styles anywhere: no `style` attribute, not even a custom property. A value from data reaches CSS as a class
   or a data attribute with one rule per step.
 - Every size on the 4px grid; logical properties; never a 1px or 2px nudge to make something fit.
