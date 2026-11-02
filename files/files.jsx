@@ -43,7 +43,7 @@ export function FilesScreen({ screen }) {
             onRowClick={(record) => { const i = record.id; setSel(sel === i ? null : i); }} columns={[
               { title: 'Name', field: 'name', kind: ['name', 'data'], width: '--plx-ref-size-320px' },
               { title: 'Type', field: 't', kind: 'data' },
-              { title: 'Size', field: 's', kind: 'data', align: 'right', headerAlign: 'right' },
+              { title: 'Size', field: 's', kind: 'data', align: 'right' },
               { title: 'Modified', field: 'd', kind: 'data' },
             ]} />
         </Stack>

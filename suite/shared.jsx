@@ -1,6 +1,5 @@
 /* Plenix suite · shared (suite/shared.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
 import { Avatar, Inline, StatusIcon, Text } from 'plenix-platform';
-const {useState,useRef,useEffect,useCallback}=React;
 
 
 /* ─── Icons ─────────────────────────────────────────────────────── */

@@ -1,6 +1,15 @@
 /* Plenix · FeatureCard (platform/patterns/FeatureCard): a Card whose body (the media) comes first. Card draws the
    surface, the title (its opener covers the card) and the description (its meta line); this sheet places the media. */
 .plx-feature-card__media{display:flex;min-inline-size:0;}
+/* the plain icon (no tile, #882): gray by default; a data hue (data-plx-color) its data color; a tone its content color */
+.plx-feature-card__icon{color:var(--plx-comp-feature-card-icon-color);}
+.plx-feature-card__icon[data-plx-color]{color:var(--plx-comp-data-color);}
+.plx-feature-card__icon--surface{color:var(--plx-comp-feature-card-icon-surface-color);}
+.plx-feature-card__icon--neutral{color:var(--plx-comp-feature-card-icon-neutral-color);}
+.plx-feature-card__icon--info{color:var(--plx-comp-feature-card-icon-info-color);}
+.plx-feature-card__icon--success{color:var(--plx-comp-feature-card-icon-success-color);}
+.plx-feature-card__icon--warning{color:var(--plx-comp-feature-card-icon-warning-color);}
+.plx-feature-card__icon--danger{color:var(--plx-comp-feature-card-icon-danger-color);}
 /* a picture across the top: out to the card's edges, in its top corners */
 .plx-feature-card--image .plx-feature-card__media--image{border-start-end-radius:var(--plx-comp-feature-card-media-radius);border-start-start-radius:var(--plx-comp-feature-card-media-radius);flex-grow:1;margin-block-start:var(--plx-comp-feature-card-media-bleed-block);margin-inline-end:var(--plx-comp-feature-card-media-bleed-inline);margin-inline-start:var(--plx-comp-feature-card-media-bleed-inline);overflow-x:hidden;overflow-y:hidden;}
 .plx-feature-card--image .plx-feature-card__image{flex-grow:1;}

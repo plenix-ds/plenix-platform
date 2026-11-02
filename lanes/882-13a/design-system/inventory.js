@@ -157,8 +157,8 @@
   var STOCK_TONE = { Active: 'success', Review: 'info', Draft: 'neutral' };
   var STOCK_COLUMNS = [{ title: 'Item', field: 'item', kind: 'name', filter: true, width: '--plx-ref-size-200px' }, { title: 'Vendor', field: 'vendor', filter: 'list' }, { title: 'Kind', field: 'kind', type: 'select' },
     { title: 'Status', field: 'status', kind: 'center', type: 'select', filter: 'list', render: function (r) { return h(P.Badge, { tone: STOCK_TONE[r.status], size: 'sm' }, r.status); } },
-    { title: 'Quantity', field: 'qty', kind: 'data', sorter: 'number', align: 'right', headerAlign: 'right' },
-    { title: 'Price', field: 'price', kind: 'data', type: 'currency', sorter: 'number', align: 'right', headerAlign: 'right' },
+    { title: 'Quantity', field: 'qty', kind: 'data', sorter: 'number', align: 'right' },
+    { title: 'Price', field: 'price', kind: 'data', type: 'currency', sorter: 'number', align: 'right' },
     { title: 'Received', field: 'received', kind: 'data', sorter: 'date' }, { title: 'Notes', field: 'notes', kind: 'wrap' }];
   var TREE = [{ id: 'a', label: 'Liturgical', icon: 'folder', meta: 120, children: [{ id: 'a1', label: 'Crosses', icon: 'folder', meta: 40 }, { id: 'a2', label: 'Borders', icon: 'folder', meta: 80, children: [{ id: 'a21', label: 'Gold', icon: 'folder', meta: 12 }] }] }, { id: 'b', label: 'Bookshelf', icon: 'folder', meta: 7 }];
   var FOPTS = function (l) { return l.map(function (x, i) { return { value: x.toLowerCase(), label: x, count: (i + 1) * 7 }; }); };
@@ -1154,12 +1154,12 @@
             { title: 'Name', field: 'name', kind: ['name', 'data'], filter: true, editor: 'input', width: '--plx-ref-size-240px' },
             { title: 'Type', field: 'type', kind: 'data', filter: 'list' },
             { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: function (r) { return h(P.Badge, { tone: tone[r.status], size: 'sm' }, r.status); } },
-            { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right', sorter: function (a, b) { return bytes(a) - bytes(b); } },
+            { title: 'Size', field: 'size', kind: 'data', align: 'right', sorter: function (a, b) { return bytes(a) - bytes(b); } },
             { title: 'Modified', field: 'modified', kind: 'data' },
             { title: 'Actions', field: 'actions', kind: 'actions', render: function (r) { return h(P.Button, { size: 'xs', variant: 'ghost', iconOnly: true, icon: 'more', label: 'More actions for ' + r.name }); } }] })); }],
         ['Narrow, moves without dragging, and the error state', [['Narrow: under 600px of its own width, a list of the key columns (the first is the title line)', function () {
           return box(360, h(P.DataGrid, { label: 'Files', keyColumns: ['name', 'type', 'size'], data: [{ id: 1, name: 'Letterhead.pdf', type: 'PDF', size: '412 KB', modified: '2026-09-20' }, { id: 2, name: 'Logo primary.svg', type: 'SVG', size: '22 KB', modified: '2026-09-12' }],
-            columns: [{ title: 'Name', field: 'name', kind: ['name', 'data'] }, { title: 'Type', field: 'type', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right' }, { title: 'Modified', field: 'modified', kind: 'data' }] })); }, 'plx-data-grid--list', 'keyColumns={["name", "type", "size"]}'],
+            columns: [{ title: 'Name', field: 'name', kind: ['name', 'data'] }, { title: 'Type', field: 'type', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', align: 'right' }, { title: 'Modified', field: 'modified', kind: 'data' }] })); }, 'plx-data-grid--list', 'keyColumns={["name", "type", "size"]}'],
         ['Rows moved without dragging: click a handle (or the row menu) for Move up, Move down, Move to top and Move to bottom; Alt + the arrow keys on a focused handle', function () {
           return box(420, h(P.DataGrid, { label: 'Field order', headerMenu: false, movableRows: true, data: [{ id: 1, name: 'Title', type: 'Text' }, { id: 2, name: 'Created', type: 'Date' }, { id: 3, name: 'Owner', type: 'Person' }],
             columns: [{ title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, sortable: false, render: function () { return h(P.Icon, { name: 'menu-lines', size: 'sm' }); } }, { title: 'Field', field: 'name', kind: 'name', sortable: false }, { title: 'Type', field: 'type', kind: 'data', sortable: false }] })); }, 'plx-data-grid__cell--handle', 'options={{ movableRows: true }}'],
@@ -1417,7 +1417,7 @@
       use: ['Acting on many records at once'], avoid: ['Selection that changes the page (navigation)'], related: ['bulk-action-bar', 'data-grid', 'media-card', 'checkbox', 'confirmation-dialog'],
       map: [m(C, 'Data table batch actions', 'Composite'), ['PatternFly', 'Bulk selection', 'Composite']],
       examples: [['Select rows, then act', function () { var se = use([1, 3]); return stack(520)(h(P.BulkActions, { count: se[0].length, total: 3, noun: 'asset', onSelectAll: function () { se[1]([1, 2, 3]); }, onClear: function () { se[1]([]); }, actions: [{ id: 'move', label: 'Move', onClick: noop }, { id: 'del', label: 'Delete', danger: true, onClick: noop }] }),
-        h(P.DataGrid, { label: 'Assets', data: ROWS, selectable: true, selected: se[0], onSelectionChange: se[1], columns: [{ title: 'Name', field: 'name', kind: 'name' }, { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right' }] })); }]] },
+        h(P.DataGrid, { label: 'Assets', data: ROWS, selectable: true, selected: se[0], onSelectionChange: se[1], columns: [{ title: 'Name', field: 'name', kind: 'name' }, { title: 'Size', field: 'size', kind: 'data', align: 'right' }] })); }]] },
     { id: 'filter-and-sort-workflow', statesFrom: ['filter-bar'], sec: 'patterns', sub: 'Data-management workflows', leaf: 'Filter and sort workflow', level: 'Pattern', interaction: 'Filter',
       aliases: ['Filtering', 'Refine results'], plenix: 'CommandBar, FilterPanel, SortPanel + Pagination',
       text: 'Filtering and sorting live in the command bar (owner, 2026-10-14). The find side holds the search first, then Filter (its panel holds every possibility) and the app’s quick filters; the view side holds Sort, Group, Columns and View, each its own button. The panels drive the DataGrid (filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight), and the count at the end of the bar updates with every change.',

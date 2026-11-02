@@ -21,7 +21,7 @@
      trend: the recent values, oldest first: a Sparkline under the figure, the width of the metric (library wave 9)
      trendVariant: the sparkline's form: "line" (default) | "area" | "bar"
      trendLabel: what the trend shows ("Assets added per day"), its accessible name with its summary (default the label)
-     trendColor: the sparkline's data-viz step (default "categorical-1")
+     trendColor: a string: the sparkline's data-viz step (default "categorical-1")
      card: (deprecated: use MetricCard, one anatomy for every metric card) shows the metric as a card (Card): the label is its title, the description its line, the figure and the trend
        its body (default false; Metric card, library wave 9)
      href: with card, makes the card's title a link to the detailed view

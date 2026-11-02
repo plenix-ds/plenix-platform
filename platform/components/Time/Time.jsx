@@ -68,9 +68,9 @@ export function Time({ value, format = 'datetime', dateStyle, seconds = false, t
     const t = setInterval(() => tick((n) => n + 1), tokenMs('--plx-comp-time-refresh-interval', 60000));
     return () => clearInterval(t);
   }, [ticking, now]);
+  const words = useStrings('time', strings);   // every hook before the return below (issue 885)
   const d = toDate(value);
   if (!d) return null;
-  const words = useStrings('time', strings);
   const o = { locale, timeZone, timeZoneName, dateStyle, seconds };
   const at = toDate(now) || new Date();
   let text;

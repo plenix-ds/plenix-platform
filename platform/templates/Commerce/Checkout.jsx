@@ -20,7 +20,7 @@ import { cx } from '../../utils/cx.ts';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
+import { useOptionalToast } from '../../components/Toast/Toast.jsx';
 import { DeleteFlow } from '../../patterns/DeleteFlow/DeleteFlow.jsx';
 import { Wizard } from '../../patterns/Wizard/Wizard.jsx';
 import { Form, FormSection, FormActions } from '../../patterns/Form/Form.jsx';

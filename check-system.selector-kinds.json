@@ -782,7 +782,6 @@
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-example-head": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-code": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-specimens code": 1,
-   "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-code-inline": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-status": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-specimen": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-table-card": 1,
@@ -790,8 +789,7 @@
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-space-val": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-space-bar": 1,
    "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-op-sw": 1,
-   "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-op-used": 1,
-   "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-op-note": 1
+   "combinator | :where(:root[data-plx-mode=\"dark\"]) .ds-op-used": 1
   },
   "platform/design-system/spec-layout.css": {
    "combinator | .ds-group>h3": 1,

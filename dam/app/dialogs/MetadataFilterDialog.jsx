@@ -167,7 +167,7 @@ function groupVisible(group, types) {
   return active.some((t) => group.types.includes(t));
 }
 
-function MetaGroup({ group, index, fields, onField, collapsed, onToggle, expanded, onShowMore }) {
+function MetaGroup({ group, fields, onField, collapsed, onToggle, expanded, onShowMore }) {
   const extra = group.fields.length - group.shown;
   const list = expanded ? group.fields : group.fields.slice(0, group.shown);
   return (

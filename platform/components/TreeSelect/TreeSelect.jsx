@@ -112,7 +112,6 @@ export function TreeSelect({ nodes: given = EMPTY, loadChildren, virtualized, va
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const loader = useBranchLoader(loadChildren);
   const nodes = loader.merge(given);   // each loaded branch's children in place (issue 814)
-  const branchy = (n) => !!kidsOf(n) || loader.needs(n);   // a branch: children here, or children to load
   const { byId, leaves } = React.useMemo(() => index(nodes, loader.needs), [nodes, !!loadChildren]);
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
   const chosenRef = React.useRef(chosen); chosenRef.current = chosen;

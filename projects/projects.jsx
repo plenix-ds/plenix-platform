@@ -177,7 +177,7 @@ function ProjectContent({ proj, panel }) {
         <DataGrid label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
           { title: 'Name', field: 'name', kind: ['name', 'data'], filter: true, width: '--plx-ref-size-320px' },
           { title: 'Type', field: 't', kind: 'data', filter: 'list' },
-          { title: 'Size', field: 's', kind: 'data', align: 'right', headerAlign: 'right' },
+          { title: 'Size', field: 's', kind: 'data', align: 'right' },
           { title: 'Modified', field: 'd', kind: 'data' },
         ]} />
       </Stack>
