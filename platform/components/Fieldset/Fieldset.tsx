@@ -27,7 +27,13 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 
-export function Fieldset({ legend, layout = 'stack', gap = 'xs', hideLegend = false, className, children, ...rest }) {
+export type FieldsetProps = React.FieldsetHTMLAttributes<HTMLFieldSetElement> & {
+  legend?: React.ReactNode;
+  layout?: 'stack' | 'row';
+  gap?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  hideLegend?: boolean;
+};
+export function Fieldset({ legend, layout = 'stack', gap = 'xs', hideLegend = false, className, children, ...rest }: FieldsetProps) {
   const row = layout === 'row';
   return (
     <fieldset className={cx('plx-fieldset', row ? 'plx-fieldset--row' : 'plx-stack plx-stack--gap-' + gap, className)} {...rest}>

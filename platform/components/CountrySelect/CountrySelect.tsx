@@ -43,8 +43,10 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { formatLocale } from '../../utils/format.ts';
-import { Combobox } from '../Combobox/Combobox.jsx';
+import { Combobox } from '../Combobox/Combobox.tsx';
+import type { ComboboxProps } from '../Combobox/Combobox.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 
 // ISO 3166-1 alpha-2: every assigned country and region code
 const REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG '
@@ -62,15 +64,17 @@ const LOCALE_CODES = ('ar-EG ar-SA bg-BG cs-CZ da-DK de-AT de-CH de-DE el-GR en-
   + 'pt-PT ro-RO ru-RU sk-SK sl-SI sr-RS sv-SE th-TH tr-TR uk-UA vi-VN zh-CN zh-HK zh-TW').split(' ');
 
 // a region code to its flag emoji: the two regional indicator letters
-function flagOf(code) {
-  const r = String(code || '').split('-').pop().toUpperCase();
+function flagOf(code: unknown) {
+  const r = (String(code || '').split('-').pop() as string).toUpperCase();
   return /^[A-Z]{2}$/.test(r) ? String.fromCodePoint(...Array.from(r).map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : '';
 }
-const names = (locale, type) => { try { return new Intl.DisplayNames(locale, { type, fallback: 'code' }); } catch (e) { return null; } };
-const nameOf = (dn, code) => { try { return (dn && dn.of(code)) || code; } catch (e) { return code; } };
+const names = (locale: string, type: Intl.DisplayNamesType): Intl.DisplayNames | null => { try { return new Intl.DisplayNames(locale, { type, fallback: 'code' }); } catch (e) { return null; } };
+const nameOf = (dn: Intl.DisplayNames | null, code: string): string => { try { return (dn && dn.of(code)) || code; } catch (e) { return code; } };
 
 // the options of a type: { value, label, match } sorted by label in the reader's language
-function countryOptions({ type = 'country', locale, only, ownNames, flags = false, codes = false } = {}) {
+export type CountrySelectType = 'country' | 'language' | 'locale';
+type CountryOption = { value: string; label: string; sort: string; match: string; group?: string };
+function countryOptions({ type = 'country', locale, only, ownNames, flags = false, codes = false }: { type?: CountrySelectType; locale?: string; only?: string[]; ownNames?: boolean; flags?: boolean; codes?: boolean } = {}): CountryOption[] {
   const loc = locale || formatLocale();
   const kind = type === 'country' ? 'region' : 'language';
   const list = only || (type === 'language' ? LANGUAGE_CODES : type === 'locale' ? LOCALE_CODES : REGION_CODES);
@@ -86,19 +90,35 @@ function countryOptions({ type = 'country', locale, only, ownNames, flags = fals
   }).sort((a, b) => collator.compare(a.sort, b.sort));
 }
 
+export type CountrySelectProps = Omit<ComboboxProps, 'options' | 'loadOptions' | 'loadDelay' | 'value' | 'values' | 'multiple' | 'strings'> & {
+  /** what it lists: countries and regions, languages, or locales */
+  type?: CountrySelectType;
+  /** a code ("PT", "pt", "pt-PT") */
+  value?: string | null;
+  /** only these codes */
+  only?: string[];
+  /** these codes first, under Suggested */
+  priority?: string[];
+  /** each name in its own language (default for languages and locales) */
+  ownNames?: boolean;
+  flags?: boolean;
+  codes?: boolean;
+  locale?: string;
+  strings?: Catalog | null;
+};
 export const CountrySelect = React.forwardRef(function CountrySelect({ type = 'country', value, onChange, only, priority, ownNames, flags = false,
-  codes = false, locale, placeholder, strings, className, ...rest }, ref) {
-  const t = useStrings('countrySelect', strings);
+  codes = false, locale, placeholder, strings, className, ...rest }: CountrySelectProps, ref: React.ForwardedRef<HTMLInputElement>) {
+  const t = useStrings('countrySelect', strings) as Record<string, string>;
   const loc = locale || formatLocale();
   const options = React.useMemo(() => {
     const all = countryOptions({ type, locale: loc, only, ownNames, flags, codes });
     if (!priority || !priority.length) return all;
-    const first = priority.map((c) => all.find((o) => o.value === c)).filter(Boolean).map((o) => Object.assign({}, o, { group: t.suggested }));
+    const first = (priority.map((c) => all.find((o) => o.value === c)).filter(Boolean) as CountryOption[]).map((o) => Object.assign({}, o, { group: t.suggested }));
     return first.concat(all.filter((o) => priority.indexOf(o.value) < 0).map((o) => Object.assign({}, o, { group: t.all })));
   }, [type, loc, (only || []).join(), (priority || []).join(), ownNames, flags, codes, t.suggested, t.all]);
   // the list is filtered here, not by Combobox, so the English name and the code match too (Combobox shows a loader's
   // options as they are); the full list still names the chosen value
-  const find = React.useCallback((text) => { const q = String(text || '').trim().toLowerCase(); return q ? options.filter((o) => o.match.indexOf(q) >= 0) : options; }, [options]);
+  const find = React.useCallback((text: string) => { const q = String(text || '').trim().toLowerCase(); return q ? options.filter((o) => o.match.indexOf(q) >= 0) : options; }, [options]);
   return (
     <Combobox ref={ref} className={cx('plx-country-select', className)} options={options} loadOptions={find} loadDelay={0} value={value}
       onChange={onChange} placeholder={placeholder || t[type] || t.country} {...rest} />

@@ -179,6 +179,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 
 - [icon-fetch-642](icon-fetch-642.md): A page with many icons loads them all without overwhelming the server, so no icon is left blank.
 - [icon-module-url-284](icon-module-url-284.md): Icons still show when a website renames the Plenix files while bundling them.
+- [icon-names-lazy-882](icon-names-lazy-882.md): An app built from the Plenix package loads the list of icon names only when it draws an icon by name, so small parts stay small.
 - [icon-mv3-284](icon-mv3-284.md): Plenix icons work inside a Chrome extension, which may not load any code from the internet.
 - [icon-offline-archive-284](icon-offline-archive-284.md): A website that hosts its own copy of Plenix shows every icon with no internet connection.
 - [icon-package-assets-284](icon-package-assets-284.md): The downloadable Plenix package holds the files for every documented icon, so no icon is missing for a site that hosts Plenix itself.
@@ -192,5 +193,6 @@ Each line links to the test's page. A test that a group test starts is listed un
 - [cdn-devx](cdn-devx.md): The files Plenix publishes for developers (change notes, token list, component documentation, the token checker) are complete and correct.
 - [login](login.md): Signing in to Plenix is safe: only the right password works, sessions cannot be forged, and attackers are slowed down and cannot redirect people elsewhere.
 - [rich-text-clean-689](rich-text-clean-689.md): Formatted text that people write (notes, comments, descriptions) cannot carry harmful code into Plenix, while bold, links, lists and tables still work.
+- [rte-insert-image-884](rte-insert-image-884.md): The text editor's Insert image puts the picture in the text, on left-to-right and right-to-left pages.
 - [types](types.md): Developers who write Plenix apps in TypeScript can write correct code without false errors from Plenix's type descriptions.
 - [w15c-packages](w15c-packages.md): The Plenix add-on packages (the AI assistant connector, web components) work, stay within their size budgets, and dates show the same day in every time zone.

@@ -71,23 +71,58 @@ import { Kbd } from '../Kbd/Kbd.tsx';
 import { Spinner } from '../Loading/Loading.tsx';
 import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { useTruncated, useInBar } from '../../utils/overflow.ts';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 
-const asItem = (kind) => (x) => (typeof x === 'string' ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind }));
+// a suggestion as the caller gives it: a string, or { value, label, description }
+export type SearchSuggestion = string | { value: string; label?: React.ReactNode; description?: React.ReactNode; [field: string]: unknown };
+// a row of the list: a suggestion or a recent search
+export type SearchItem = { value: string; label: React.ReactNode; description?: React.ReactNode; kind: 'recent' | 'suggestion'; [field: string]: unknown };
+// the field's change: the input's change event, or the same shape when a choice fills it
+export type SearchChange = { target: HTMLInputElement; currentTarget: HTMLInputElement };
+type SearchWords = { placeholder: string; label: string; results: string; removed: string; searching: string; clear: string; recent: string; clearRecent: string; remove: string; suggestions: string };
+export type SearchFieldProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'size' | 'width'> & {
+  value?: string;
+  onChange?: (event: SearchChange) => void;
+  /** shows the clear button while there is text */
+  onClear?: React.MouseEventHandler<HTMLButtonElement>;
+  placeholder?: string;
+  /** the accessible name */
+  label?: string;
+  /** a keyboard shortcut hint ("Ctrl K") */
+  shortcut?: string;
+  loading?: boolean;
+  onAccent?: boolean;
+  suggestions?: SearchSuggestion[];
+  /** the recent searches, newest first, offered while the field is empty */
+  recent?: string[];
+  onSelect?: (item: SearchItem) => void;
+  onSubmitSearch?: (query: string) => void;
+  onRemoveRecent?: (query: string) => void;
+  onClearRecent?: () => void;
+  strings?: Catalog | null;
+  width?: 'auto' | 'xs' | 'sm' | 'md' | 'lg' | 'bar' | 'fill';
+  size?: 'sm' | 'md' | number;
+  /** the narrow bar's search: an icon-only button that opens the field */
+  collapsed?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+};
+const asItem = (kind: SearchItem['kind']) => (x: SearchSuggestion): SearchItem => (typeof x === 'string' ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind }));
 
 // the field itself (width "auto", "bar" or "fill")
 const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onClear, placeholder, label, shortcut, loading = false,
-  onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, width = 'auto', size, ...rest }, ref) {
-  const t = useStrings('searchField', strings);
+  onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, width = 'auto', size, ...rest }: SearchFieldProps, ref: React.ForwardedRef<HTMLInputElement>) {
+  const t = useStrings('searchField', strings) as SearchWords;
   if (placeholder === undefined) placeholder = t.placeholder;
   if (label === undefined) label = t.label;
   const auto = 'plx-sf' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
-  const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
-  React.useImperativeHandle(ref, () => input.current);
+  const wrap = React.useRef<HTMLDivElement>(null), input = React.useRef<HTMLInputElement>(null), list = React.useRef<HTMLElement>(null);
+  React.useImperativeHandle(ref, () => input.current as HTMLInputElement);
   const hasList = !!(suggestions || recent);
   const text = value == null ? '' : String(value);
   const showRecent = !text;
@@ -101,7 +136,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
   React.useEffect(() => { setActive(-1); setCell(0); }, [text, showRecent]);
   React.useEffect(() => {
     if (!open) return undefined;
-    const off = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
+    const off = (e: MouseEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener('mousedown', off);
     return () => document.removeEventListener('mousedown', off);
   }, [open]);
@@ -112,21 +147,21 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
     const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
     if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
   }, [active, auto]);
-  const setText = (v) => { if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current }); };
-  const choose = (item) => {
+  const setText = (v: string) => { if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current }); };
+  const choose = (item: SearchItem) => {
     setOpen(false);
     if (onSelect) onSelect(item);
     else { setText(item.value); if (onSubmitSearch) onSubmitSearch(item.value); }
   };
   // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
-  const removeRecent = (i) => {
+  const removeRecent = (i: number) => {
     const it = items[i]; if (!it || !onRemoveRecent) return;
     onRemoveRecent(it.value);
     if (active >= 0) setActive((a) => Math.min(a, items.length - 2));
     if (items.length <= 1) setCell(0);
     announce(t.removed.replace('{query}', it.value));
   };
-  const keys = (e) => {
+  const keys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented || !hasList) { if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text); return; }
     if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); else if (items.length) setActive((a) => (a + 1) % items.length); }
@@ -149,16 +184,16 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
   // in a bar (issue 558) search text that is cut shows in full in a Tooltip on hover and focus (not while the list is open under it)
   const bar = useInBar(input);
   const cut = useTruncated(input, text, bar) && !!text;
-  const optId = (i) => auto + '-o' + i;
-  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
-  const comboProps = hasList ? { role: 'combobox', 'aria-expanded': shown, 'aria-controls': listId, 'aria-autocomplete': 'list',
+  const optId = (i: number) => auto + '-o' + i;
+  const cellId = (i: number, c: number) => auto + '-o' + i + (c ? '-x' : '');
+  const comboProps: React.InputHTMLAttributes<HTMLInputElement> = hasList ? { role: 'combobox', 'aria-expanded': shown, 'aria-controls': listId, 'aria-autocomplete': 'list',
     'aria-haspopup': grid ? 'grid' : undefined,
     'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
     <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label={t.searching} /> : <Icon name={SearchIcon} />}</span>
       <Tooltip content={text} disabled={!cut || shown} describe={false} className="plx-search__tip">
-        <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
+        <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size as number | undefined} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
           onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
           onFocus={(e) => { if (hasList) setOpen(true); if (onFocus) onFocus(e); }} {...comboProps} {...rest} />
       </Tooltip>
@@ -174,7 +209,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
             </div>
           ) : null}
           {grid ? (
-            <div ref={list} id={listId} role="grid" className="plx-search__list plx-search__grid" aria-labelledby={listId + '-t'}>
+            <div ref={list as React.RefObject<HTMLDivElement>} id={listId} role="grid" className="plx-search__list plx-search__grid" aria-labelledby={listId + '-t'}>
               {items.map((it, i) => (
                 <div key={it.kind + ':' + it.value} id={auto + '-r' + i} role="row"
                   className={cx('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active')}
@@ -191,7 +226,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
                 </div>
               ))}
             </div>
-          ) : <ul ref={list} id={listId} role="listbox" className="plx-search__list" aria-label={showRecent ? undefined : t.suggestions} aria-labelledby={showRecent ? listId + '-t' : undefined}>
+          ) : <ul ref={list as React.RefObject<HTMLUListElement>} id={listId} role="listbox" className="plx-search__list" aria-label={showRecent ? undefined : t.suggestions} aria-labelledby={showRecent ? listId + '-t' : undefined}>
             {items.map((it, i) => (
               <li key={it.kind + ':' + it.value} id={optId(i)} role="option" aria-selected={i === active}
                 className={cx('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active')}
@@ -211,16 +246,16 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
 });
 
 // the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
-function CollapsedSearch({ value, label, onKeyDown, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
-  const tw = useStrings('searchField');
+function CollapsedSearch({ value, label, onKeyDown, onBlur, className, open: openProp, onOpenChange, ...rest }: SearchFieldProps, ref: React.ForwardedRef<HTMLElement>) {
+  const tw = useStrings('searchField') as SearchWords;
   if (label === undefined) label = tw.label;
   const [own, setOwn] = React.useState(false);
   const open = openProp === undefined ? own : openProp;
-  const setOpen = (v) => { setOwn(v); if (onOpenChange) onOpenChange(v); };
-  const field = React.useRef(null), button = React.useRef(null);
-  React.useImperativeHandle(ref, () => (open ? field.current : button.current));
+  const setOpen = (v: boolean) => { setOwn(v); if (onOpenChange) onOpenChange(v); };
+  const field = React.useRef<HTMLInputElement>(null), button = React.useRef<HTMLElement>(null);
+  React.useImperativeHandle(ref, () => (open ? field.current : button.current) as HTMLElement);
   React.useEffect(() => { if (open && field.current) field.current.focus(); }, [open]);
-  const close = (refocus) => { setOpen(false); if (refocus) setTimeout(() => { if (button.current) button.current.focus(); }, 0); };
+  const close = (refocus: boolean) => { setOpen(false); if (refocus) setTimeout(() => { if (button.current) button.current.focus(); }, 0); };
   return (
     <>
       <Tooltip content={label}>
@@ -239,6 +274,6 @@ function CollapsedSearch({ value, label, onKeyDown, onBlur, className, open: ope
 }
 const Collapsed = React.forwardRef(CollapsedSearch);
 
-export const SearchField = React.forwardRef(function SearchField({ collapsed = false, ...props }, ref) {
-  return collapsed ? <Collapsed ref={ref} {...props} /> : <SearchInput ref={ref} {...props} />;
+export const SearchField = React.forwardRef(function SearchField({ collapsed = false, ...props }: SearchFieldProps, ref: React.ForwardedRef<HTMLElement>) {
+  return collapsed ? <Collapsed ref={ref} {...props} /> : <SearchInput ref={ref as React.Ref<HTMLInputElement>} {...props} />;
 });

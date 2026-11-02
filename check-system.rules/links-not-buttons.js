@@ -20,7 +20,7 @@ const path = require('path');
 
 const NAME = 'links-not-buttons';
 // generated bundles and copies are checked through their sources
-const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs)[\\/]|(^|[\\/])(app|assets|spec-parts|native-guidance)\.js$|\.min\.js$/;
+const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs|spec-chunks)[\\/]|(^|[\\/])(app|assets|spec-index|spec-parts|native-guidance)\.js$|\.min\.js$/;
 // a click handler that still navigates (a router link)
 const NAVIGATES = /\b(navigate|go|pushState|replaceState|location|onNavigate|onOpen\w*|setRoute|route|open)\b/;
 
