@@ -70,6 +70,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { around } from '../../utils/fillNodes.tsx';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { Button } from '../../components/Button/Button.tsx';
@@ -88,7 +89,6 @@ import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
 import { dataPhrase } from '../../utils/dataText.tsx';
 import { fill } from '../../utils/fill.ts';
 
-const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const H = ({ level, ...props }) => React.createElement('h' + Math.min(6, Math.max(1, level || 1)), props);
 

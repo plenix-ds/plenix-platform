@@ -12,6 +12,7 @@
 import React from 'react';
 import { ActivityList, AppHeader, Icon, SearchField, SectionHeading, StatusIcon, StatusBar, AppShell, Text, Thumbnail, navigate, screenHref, useViewState, dataPhrase } from 'plenix-platform';
 import { FIND_EMPTY, findAssets } from '../pages/home/findAssets.js';
+import { afterSearchView } from '../../../suite/searchView.js';
 
 // DATA: the library totals come from the back end; this is the sample record the pages show until then. Who is signed in
 // and their notifications come from the Platform session (SessionProvider, mounted in app/assets.jsx).
@@ -19,15 +20,6 @@ import { FIND_EMPTY, findAssets } from '../pages/home/findAssets.js';
 const LIBRARY = { assets: 4546, size: '12.4 GB', owner: 'Lighthouse Way' };
 
 const RECENT_MAX = 5;
-// the full-screen search view (AppHeader at Narrow) is a history entry of its own: leave it (Back, which closes it) before
-// opening a screen, so the screen's entry replaces it in the history instead of following it
-const afterSearchView = (open) => {
-  const st = window.history.state;
-  if (!(st && st.plxSearch)) { open(); return; }
-  const go = () => { window.removeEventListener('popstate', go); open(); };
-  window.addEventListener('popstate', go);
-  window.history.back();
-};
 
 function AssetHeader({ current, query = '', onSearch, onUpload }) {
   const [q, setQ] = React.useState(query);

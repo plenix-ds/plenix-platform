@@ -28,12 +28,12 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
+import { reducedMotion as reduced } from '../../utils/tokenTime.ts';
 import { Button } from '../Button/Button.tsx';
 import { useIntersection } from '../../hooks/useIntersection.ts';
 import ArrowUpIcon from 'plenix-platform/icons/plenix/arrow-up';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 
-const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function BackToTop({ variant = 'floating', scrollRef, focusRef, strings, className }) {
   devWarn('BackToTop', { variant }, { variant: ['floating','inline'] });
