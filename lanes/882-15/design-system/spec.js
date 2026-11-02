@@ -1310,7 +1310,7 @@ function sheetText(url) {
         ['Kept true by', 'tests/data-grid-reference.js (every part against the reference, light and dark, each density) and tests/data-grid.test.js (every grid in the apps: built, axe, no inline styles, row height)']]),
       head('How to apply it'),
       h(P.List, { label: 'How to apply it', items: STEPS.map(function (x, i) { return { children: (i + 1) + '. ' + x }; }) }),
-      h(P.CodeBlock, { language: 'jsx' }, "import { DataGrid, Badge } from 'plenix-platform';\n\n<DataGrid label=\"Assets\" data={assets} selectable selected={keys} onSelectionChange={setKeys}\n  columns={[\n    { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-240px' },\n    { title: 'Type', field: 'type', kind: 'data', filter: 'list' },\n    { title: 'Status', field: 'status', kind: 'center', render: (a) => <Badge tone=\"success\">{a.status}</Badge> },\n    { title: 'Size', field: 'size', kind: 'data', align: 'right', headerAlign: 'right', sorter: bySize },\n  ]}\n  rowMenu={[{ label: 'Open', icon: 'open', onSelect: open }, { label: 'Delete', icon: 'trash', danger: true, onSelect: remove }]}\n  onRowClick={open} />"),
+      h(P.CodeBlock, { language: 'jsx' }, "import { DataGrid, Badge } from 'plenix-platform';\n\n<DataGrid label=\"Assets\" data={assets} selectable selected={keys} onSelectionChange={setKeys}\n  columns={[\n    { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-240px' },\n    { title: 'Type', field: 'type', kind: 'data', filter: 'list' },\n    { title: 'Status', field: 'status', kind: 'center', render: (a) => <Badge tone=\"success\">{a.status}</Badge> },\n    { title: 'Size', field: 'size', kind: 'data', align: 'right', sorter: bySize },\n  ]}\n  rowMenu={[{ label: 'Open', icon: 'open', onSelect: open }, { label: 'Delete', icon: 'trash', danger: true, onSelect: remove }]}\n  onRowClick={open} />"),
       head('The style, part by part'),
       table('The style, part by part', ['Part', 'Looks', 'Tokens'], PARTS),
       head('Density'),
@@ -1625,7 +1625,7 @@ function sheetText(url) {
     css.files.forEach(function (f, i) { tabs.push({ value: 'css' + i, label: f.split('/').pop(), content: h(P.CodeBlock, { title: 'platform/' + f, maxHeight: 'tall' }, css.texts[i]) }); });
     if (css.files.length) {
       tabs.push({ value: 'classes', label: 'Classes', count: Object.keys(cl.all).length, content: h(P.Table, { label: 'Classes', index: 'cls', data: Object.keys(cl.all).sort().map(function (c) { return { cls: c, name: '.' + c, kind: /^is-/.test(c) ? 'state' : /--/.test(c) ? 'modifier (variant)' : /__/.test(c) ? 'element (anatomy)' : 'block', rules: String(cl.all[c]) }; }),
-        columns: [{ title: 'Class', field: 'name', kind: 'data', rowLabel: true, width: '--plx-ref-size-240px' }, { title: 'Kind', field: 'kind', filter: 'list' }, { title: 'Rules', field: 'rules', kind: 'data', align: 'right', headerAlign: 'right', sorter: 'number' }] }) });
+        columns: [{ title: 'Class', field: 'name', kind: 'data', rowLabel: true, width: '--plx-ref-size-240px' }, { title: 'Kind', field: 'kind', filter: 'list' }, { title: 'Rules', field: 'rules', kind: 'data', align: 'right', sorter: 'number' }] }) });
       tabs.push({ value: 'tokens', label: 'Tokens', count: tk.used.length, content: props([['Declares', lines(tk.declared, '—', 'token', 'Declares')], ['Uses', lines(tk.used, '—', 'token', 'Uses')]]) });
     }
     tabs.unshift({ value: 'use', label: 'Use in code', content: props([
