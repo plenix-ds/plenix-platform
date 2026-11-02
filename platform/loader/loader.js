@@ -47,7 +47,8 @@
   var pinned = me.getAttribute('data-plenix-version') || '';
   var fallback = me.getAttribute('data-plenix-fallback') || '';
   // an Arabic page: <html lang="ar…">, or a page that may switch to Arabic and says so (data-plenix-languages="ar")
-  var arabic = /^ar(-|$)/i.test(document.documentElement.getAttribute('lang') || '') || /(^|\s)ar(\s|$)/.test(me.getAttribute('data-plenix-languages') || '');
+  var html = document.documentElement, lang = (html && typeof html.getAttribute === 'function' ? html.getAttribute('lang') : html && html.lang) || '';
+  var arabic = /^ar(-|$)/i.test(lang) || /(^|\s)ar(\s|$)/.test(me.getAttribute('data-plenix-languages') || '');
   var pick = (/[?&]plenix=([\w.-]+)/.exec(location.search) || [])[1] || '';
   var RELEASE = /^\d+\.\d+\.\d+$/;
   var checkout = new URL('../', me.src).href;   // this checkout's platform/ folder
