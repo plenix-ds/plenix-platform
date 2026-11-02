@@ -39,7 +39,7 @@ if (!fs.existsSync(path.join(DIST, 'index.js'))) { console.log('icon-names-lazy-
       const page = await browser.newPage(); await page.setRequestInterception(true);
       const asked = [], errors = [], warnings = []; let shims = null;
       page.on('pageerror', (e) => errors.push(String(e).slice(0, 160)));
-      page.on('console', (m) => { if (m.type() === 'warning' && /no icon is named/.test(m.text())) warnings.push(m.text()); });
+      page.on('console', (m) => { if (/^warn(ing)?$/.test(m.type()) && /no icon is named/.test(m.text())) warnings.push(m.text()); });
       page.on('request', (r) => {
         const u = new URL(r.url()); if (u.origin !== ORIGIN) return r.continue();
         const f = u.pathname, ok = (type, text) => r.respond({ status: 200, contentType: type, body: text });
