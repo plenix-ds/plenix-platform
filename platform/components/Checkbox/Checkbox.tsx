@@ -64,32 +64,50 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.tsx';
+import type { ControlProps } from '../../providers/ReadOnly.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 
-export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
+export type CheckboxProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+  label?: React.ReactNode;
+  description?: React.ReactNode;
+  /** the mixed state of a select-all box */
+  indeterminate?: boolean;
+};
+export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, dir, lang, ...rest }: CheckboxProps, ref: React.ForwardedRef<HTMLInputElement>) {
   const locked = useReadOnly(readOnly);
-  const inner = React.useRef(null);
-  React.useImperativeHandle(ref, () => inner.current);
+  const inner = React.useRef<HTMLInputElement>(null);
+  React.useImperativeHandle(ref, () => inner.current as HTMLInputElement);
   React.useEffect(() => { if (inner.current) inner.current.indeterminate = indeterminate; }, [indeterminate]);
   return (
     <label className={cx('plx-check', className)} dir={dir} lang={lang}>
-      <input ref={inner} type="checkbox" className="plx-check__input" {...readOnlyProps(locked, rest)} />
+      <input ref={inner} type="checkbox" className="plx-check__input" {...(readOnlyProps(locked, rest as ControlProps) as React.InputHTMLAttributes<HTMLInputElement>)} />
       {label || description ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{dataWhenText(description)}</span> : null}</span> : null}
     </label>
   );
 });
 
-export const Radio = React.forwardRef(function Radio({ label, description, className, readOnly, dir, lang, ...rest }, ref) {
+export type RadioProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & { label?: React.ReactNode; description?: React.ReactNode };
+export const Radio = React.forwardRef(function Radio({ label, description, className, readOnly, dir, lang, ...rest }: RadioProps, ref: React.ForwardedRef<HTMLInputElement>) {
   const locked = useReadOnly(readOnly);
   return (
     <label className={cx('plx-check', className)} dir={dir} lang={lang}>
-      <input ref={ref} type="radio" className="plx-check__input" {...readOnlyProps(locked, rest, { aria: false })} />
+      <input ref={ref} type="radio" className="plx-check__input" {...(readOnlyProps(locked, rest as ControlProps, { aria: false }) as React.InputHTMLAttributes<HTMLInputElement>)} />
       {label ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{dataWhenText(description)}</span> : null}</span> : null}
     </label>
   );
 });
 
-export function RadioGroup({ label, name, value, onChange, options, layout = 'column', className, readOnly, ...rest }) {
+export type ChoiceOption = { value: string | number; label?: React.ReactNode; description?: React.ReactNode; disabled?: boolean; hidden?: boolean };
+export type RadioGroupProps = Omit<React.FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> & {
+  label?: React.ReactNode;
+  name?: string;
+  value?: string | number;
+  onChange: (value: string | number) => void;
+  options: ChoiceOption[];
+  layout?: 'column' | 'row';
+  readOnly?: boolean;
+};
+export function RadioGroup({ label, name, value, onChange, options, layout = 'column', className, readOnly, ...rest }: RadioGroupProps) {
   const auto = 'plx-r' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   return (
     <fieldset className={cx('plx-radio-group', 'plx-radio-group--' + layout, className)} {...rest}>
@@ -99,14 +117,27 @@ export function RadioGroup({ label, name, value, onChange, options, layout = 'co
   );
 }
 
-export function ChoiceList({ legend, name, value, values, onChange, options, control = 'radio', className, readOnly, ...rest }) {
+export type ChoiceListProps = Omit<React.FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> & {
+  legend?: React.ReactNode;
+  name?: string;
+  /** radio: the chosen value */
+  value?: string | number;
+  /** checkbox and switch: the chosen values */
+  values?: Array<string | number>;
+  /** radio: the value; checkbox and switch: the values */
+  onChange?: (value: string | number | Array<string | number>) => void;
+  options: ChoiceOption[];
+  control?: 'radio' | 'checkbox' | 'switch';
+  readOnly?: boolean;
+};
+export function ChoiceList({ legend, name, value, values, onChange, options, control = 'radio', className, readOnly, ...rest }: ChoiceListProps) {
   const locked = useReadOnly(readOnly);
   const auto = 'plx-c' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const kind = control === 'checkbox' || control === 'switch' ? control : 'radio';
   const several = kind !== 'radio';
-  const list = Array.isArray(values) ? values : [];
-  const on = (o) => (several ? list.indexOf(o.value) >= 0 : o.value === value);
-  const change = (o) => {
+  const list: Array<string | number> = Array.isArray(values) ? values : [];
+  const on = (o: ChoiceOption) => (several ? list.indexOf(o.value) >= 0 : o.value === value);
+  const change = (o: ChoiceOption) => {
     if (!onChange) return;
     if (!several) { onChange(o.value); return; }
     onChange(on(o) ? list.filter((v) => v !== o.value) : list.concat([o.value]));
@@ -120,7 +151,7 @@ export function ChoiceList({ legend, name, value, values, onChange, options, con
         const labelId = auto + '-l-' + key;
         const descId = o.description ? auto + '-d-' + key : undefined;
         const input = readOnlyProps(locked, { name: name || auto, value: o.value, checked: on(o), disabled: o.disabled || undefined, onChange: () => change(o), 'aria-labelledby': labelId, 'aria-describedby': descId },
-          { aria: kind !== 'radio' });
+          { aria: kind !== 'radio' }) as React.InputHTMLAttributes<HTMLInputElement>;
         const text = <span className="plx-choice__text"><span id={labelId} className="plx-choice__label">{o.label}</span>{o.description ? <span id={descId} className="plx-choice__description">{o.description}</span> : null}</span>;
         return (
           <label key={o.value} className={cx('plx-choice', 'plx-choice--' + kind, on(o) && 'is-selected', o.disabled && 'is-disabled')} hidden={o.hidden || undefined}>
@@ -137,11 +168,12 @@ export function ChoiceList({ legend, name, value, values, onChange, options, con
   );
 }
 
-export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
+export type SwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & { label?: React.ReactNode; labelHidden?: boolean };
+export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, readOnly, dir, lang, ...rest }: SwitchProps, ref: React.ForwardedRef<HTMLInputElement>) {
   const locked = useReadOnly(readOnly);
   return (
     <label className={cx('plx-switch', className)} dir={dir} lang={lang}>
-      <input ref={ref} type="checkbox" role="switch" className="plx-switch__input" aria-label={labelHidden ? label : undefined} {...readOnlyProps(locked, rest)} />
+      <input ref={ref} type="checkbox" role="switch" className="plx-switch__input" aria-label={labelHidden ? label as string : undefined} {...(readOnlyProps(locked, rest as ControlProps) as React.InputHTMLAttributes<HTMLInputElement>)} />
       <span className="plx-switch__track" aria-hidden="true" />
       {label && !labelHidden ? <span className="plx-switch__label">{label}</span> : null}
     </label>

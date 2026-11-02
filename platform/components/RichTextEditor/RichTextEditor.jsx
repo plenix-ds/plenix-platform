@@ -90,7 +90,7 @@ import { useFloating, TOP_LAYER } from '../../utils/floating.ts';
 import { useOverflow, splitAt } from '../../utils/overflow.ts';
 import { Toolbar } from '../Toolbar/Toolbar.jsx';
 import { Button } from '../Button/Button.tsx';
-import { Input } from '../Input/Input.jsx';
+import { Input } from '../Input/Input.tsx';
 import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../Menu/Menu.jsx';
 import { ColorSwatch } from '../ColorSwatch/ColorSwatch.jsx';
