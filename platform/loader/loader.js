@@ -77,7 +77,7 @@
         scripts: [checkout + 'vendor/react.' + build + '.js', checkout + 'vendor/react-dom.' + build + '.js', checkout + 'dist/platform.js',
           page + 'plenix-icons-' + app + '.js', checkout + 'engines/plenix-engines.js'],
         themeBoot: checkout + 'providers/theme-boot.js',
-        late: (dam ? [] : [checkout + '../suite/plenix-app-data.js']).concat([page + (dam ? 'app/assets.js' : 'app.js')]),
+        late: (dam ? [] : [checkout + '../suite/plenix-app-data.js']).concat(app === 'settings' ? [checkout + '../suite/settings-data.js'] : []).concat([page + (dam ? 'app/assets.js' : 'app.js')]),
         audits: [checkout + 'dev/radius-audit.js', checkout + 'dev/style-audit.js']
       };
     }
@@ -89,7 +89,7 @@
       css: [r + 'fonts.css', r + 'plenix.min.css'],   // the same rules as plenix.css, minified (issue 882)
       scripts: [r + 'vendor/react.production.min.js', r + 'vendor/react-dom.production.min.js', r + 'plenix.js', a + 'plenix-icons-' + app + '.js', r + 'plenix-engines.js'],
       themeBoot: r + 'theme-boot.js',
-      late: (dam ? [] : [r + 'apps/suite/plenix-app-data.js']).concat([a + (dam ? 'assets.js' : 'app.js')]),
+      late: (dam ? [] : [r + 'apps/suite/plenix-app-data.js']).concat(app === 'settings' ? [r + 'apps/suite/settings-data.js'] : []).concat([a + (dam ? 'assets.js' : 'app.js')]),
       audits: []
     };
   }
