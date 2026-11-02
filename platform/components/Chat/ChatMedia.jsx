@@ -81,7 +81,6 @@ function Attachment(props) {
 }
 
 function Attachments({ className, children, strings, ...rest }) {
-  const t = useStrings('chat', strings);
   const [at, setAt] = React.useState(null);
   const list = React.Children.toArray(children).filter((c) => React.isValidElement(c));
   const isImage = (c) => c.type === Attachment && (c.props.type || 'image') !== 'file';

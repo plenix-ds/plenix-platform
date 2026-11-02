@@ -18,7 +18,6 @@
        window.PROJ_ICONS        — 42 SVG path strings for project nav icons
                                   consumed by ProjIco component via
                                   dangerouslySetInnerHTML to keep Babel lean
-       window.DEFAULT_TAGS      — 23 default tag keywords
        window.CAT_FLAT          — flat category strings for MetaPanel picker
      ══════════════════════════════════════════════════════════ */
 
@@ -537,8 +536,6 @@
     ]},
   ];
 
-  /* Flat list for lookups */
-  window.ALL_CAPS=window.CAPABILITY_GROUPS.flatMap(function(g){return g.items;});;
   window.DEFAULT_CAPS=new Set(["activity","calendar","roadmap","notes","bookmarks","contacts","tasks","time_tracking","files"]);
 
   window.PROJ_ICONS={
@@ -594,7 +591,6 @@
     {group:"Other",types:["Internal / Admin","Non-profit / Community","Travel"]},
   ];
   window.ALL_PROJ_TYPES=window.PROJ_TYPES.flatMap(function(g){return g.types.map(function(t){return {name:t,group:g.group};});});
-  window.DEFAULT_TAGS=["mountain","snow","lake","architecture","portrait","nature","urban","aerial","interior","product","black-and-white","supplier","VIP","strategy","Q2","inspiration","typography","branding","meeting","draft","approved","needs-review","follow-up"];
   window.CAT_FLAT=["Personal","Personal > Health","Personal > Finance","Personal > Family","Client Work","Client Work > Design","Client Work > Development","Client Work > Strategy","Research","Research > Market Research","Research > Competitive Analysis","Travel","Finance","Archive"];
   window.PV_PROBLEMS=[
     {label:"Data Duplication",desc:"The same information gets copied across tools. A note in OneNote, a reminder in a task app, a bookmark in the browser, a saved post on social media — all related to the same thing, living in different places."},
@@ -650,7 +646,6 @@
     "Not a social media app - it captures and preserves content from social platforms",
     "Not a messaging service - it aggregates and unifies existing messaging channels",
   ];
-  window.PV_DECISIONS=[];
 
   window.PV_NAME_ROWS=[
     {k:"Root",v:"Plenus (Latin) - full, complete, whole. The root of plenty, replenish, plenitude."},
@@ -664,7 +659,6 @@
     {principle:"Metadata is the fabric",meaning:"The invisible layer that fills the gaps between silos."},
     {principle:"The full view",meaning:"Files, notes, tasks, messages, contacts, media - all connected, all present, all retrievable."},
   ];
-  window.PV_NAMES=[];
   window.PV_MODEL=[
     {name:"Projects",desc:"A named container for work. The user enables capabilities (Tasks, Files, Notes, etc.). No preset types - fully user-defined."},
     {name:"Categories",desc:"Hierarchical taxonomy applied to any item. Two levels: Category and Subcategory. Example: Client Work > Design."},
@@ -985,202 +979,6 @@
     schema:"SCHEMA.types.task + SCHEMA.anchors",
   };
 
-
-  /* ══════════════════════════════════════════════════════
-     CAPABILITY DOCUMENTATION
-     Each capability documented in the 10-layer format.
-     status: "documented" = complete | "flagged" = needs definition
-     ══════════════════════════════════════════════════════ */
-  window.CAP_DOCS={
-
-    notes:{
-      name:"Notes", icon:"note", status:"documented",
-      layer1:{purpose:"Capture, organize, and retrieve written information and documentation within Plenix."},
-      layer2:{features:[
-        {name:"Create Note",desc:"User can add a new note with title and content",status:"built"},
-        {name:"Edit Note",desc:"User can update title, content, folder, or Anchors",status:"built"},
-        {name:"Delete Note",desc:"User can remove a note permanently",status:"flagged"},
-        {name:"Pin Note",desc:"User can pin a note to keep it at the top of the list",status:"built"},
-        {name:"Folder / Notebook",desc:"Notes can be grouped into named folders",status:"built"},
-        {name:"Search Notes",desc:"User can filter notes by text query",status:"flagged"},
-        {name:"Classification (Anchors)",desc:"User can assign Project Type, Projects, Categories, Tags",status:"built"},
-        {name:"Rich Text Formatting",desc:"Content supports bold, lists, headings, inline code",status:"flagged"},
-        {name:"AI Summarization",desc:"System generates a short summary of note content automatically",status:"flagged"},
-        {name:"Note History / Versions",desc:"Previous versions of a note are saved and restorable",status:"flagged"},
-        {name:"Share / Export",desc:"Note can be shared with others or exported to PDF or Markdown",status:"flagged"},
-      ]},
-      layer3:{useCases:[
-        {
-          title:"Create a new note",
-          actor:"Any user",
-          goal:"Capture a thought, meeting record, or reference document",
-          mainFlow:"User navigates to Notes → clicks Add → enters title → writes content → assigns Anchors → saves",
-          response:"Note created, stored, appears in note list sorted by date",
-          alternate:"User saves without a title → system uses first line of content or 'Untitled'",
-          scenarios:"Note has no content, note linked to multiple projects, note saved while offline",
-        },
-        {
-          title:"Find an existing note",
-          actor:"Any user",
-          goal:"Retrieve a previously saved note by text or Anchor",
-          mainFlow:"User navigates to Notes → types in search → list filters in real time → selects note",
-          response:"Note detail opens in reading pane",
-          alternate:"No matches found → show empty state with suggestion to broaden search",
-          scenarios:"User searches by tag, user searches by project name, search returns many results",
-        },
-      ]},
-      layer4:{
-        functionalities:[
-          {feature:"Create Note",fn:"Saves new note entity with id, createdAt, title, content"},
-          {feature:"Edit Note",fn:"Updates note fields, sets updatedAt timestamp"},
-          {feature:"Delete Note",fn:"Removes note entity, unlinks from all projects — Flagged"},
-          {feature:"Pin Note",fn:"Sets pinned=true, reorders list so pinned notes appear first"},
-          {feature:"Folder",fn:"Sets folder field, groups notes in sidebar by folder name"},
-          {feature:"Search",fn:"Filters note list by matching title and content text — Flagged"},
-          {feature:"Classification",fn:"Saves projectType, projects[], categories[], tags[] via ClassificationWidget"},
-        ],
-        functions:[
-          {name:"setSel(id)","purpose":"Tracks currently selected note id in NotesScreen state"},
-          {name:"setMeta(id, m)","purpose":"Updates Anchor metadata object for a specific note"},
-        ]
-      },
-      layer5:{scenarios:[
-        {scenario:"Note has no title",expected:"Display 'Untitled' or use first line of content"},
-        {scenario:"Note has no content",expected:"Save with empty body, show placeholder text in reading pane"},
-        {scenario:"Note belongs to multiple projects",expected:"Appears in each project's notes panel"},
-        {scenario:"User searches with no results",expected:"Show 'No notes found' empty state"},
-        {scenario:"Note has no Anchors set",expected:"Saves successfully, Anchors remain empty — valid state"},
-        {scenario:"User deletes a note",expected:"Note removed permanently — no effect on linked projects — Flagged"},
-        {scenario:"User pins multiple notes",expected:"All pinned notes shown at top, sorted by pinned date — Flagged"},
-      ]},
-      layer6:{
-        note:"From SCHEMA.types.note extended with SCHEMA.anchors",
-        fields:[
-          {field:"id",type:"string",required:true,notes:"UUID — auto-generated"},
-          {field:"createdAt",type:"datetime",required:true,notes:"Set on creation"},
-          {field:"updatedAt",type:"datetime",required:true,notes:"Updated on every save"},
-          {field:"title",type:"string",required:true,notes:"Note title — defaults to Untitled"},
-          {field:"content",type:"string",required:false,notes:"Rich text or markdown body"},
-          {field:"folder",type:"string",required:false,notes:"User-defined folder or notebook name"},
-          {field:"pinned",type:"boolean",required:false,notes:"Default false"},
-          {field:"projectType",type:"string",required:false,notes:"Anchor field — single select"},
-          {field:"projects[]",type:"array",required:false,notes:"Anchor field — many-to-many"},
-          {field:"categories[]",type:"array",required:false,notes:"Anchor field — many-to-many"},
-          {field:"tags[]",type:"array",required:false,notes:"Anchor field — many-to-many"},
-        ]
-      },
-      layer7:{enablers:[
-        {name:"Classification system (Anchors)",status:"built"},
-        {name:"Shared schema — SCHEMA.types.note",status:"built"},
-        {name:"Note state management — sel, meta, ALL_NOTES",status:"built"},
-        {name:"Search and filter engine",status:"flagged"},
-        {name:"Rich text editor",status:"flagged"},
-        {name:"Folder / notebook organization",status:"built"},
-        {name:"AI summarization engine",status:"flagged"},
-        {name:"Note versioning and history",status:"flagged"},
-        {name:"Share and export engine",status:"flagged"},
-      ]},
-      layer8:{
-        screen:"NotesScreen",
-        components:["Note list sidebar (230px)","Note reading and editing pane","Folder grouping in sidebar"],
-        widgets:["ClassificationWidget — on note open and edit"],
-        modals:["Add Note modal — Flagged: to be defined"],
-      },
-      layer9:{
-        module:"Notes Module",
-        includes:["NotesScreen","Note state (sel, meta)","Sample data (ALL_NOTES)"],
-        dependencies:["Classification Module (Anchors)","Search Module (Flagged)"],
-      },
-      layer10:{
-        entity:"Note",
-        schema:"SCHEMA.types.note + SCHEMA.anchors",
-        sampleFields:"title, content, folder, pinned + projectType, projects[], categories[], tags[]",
-      },
-    },
-
-    tasks:{name:"Tasks",icon:"task",status:"flagged"},
-    files:{name:"Files",icon:"file",status:"flagged"},
-    images:{name:"Images",icon:"images",status:"flagged"},
-    contacts:{name:"Contacts",icon:"contact",status:"flagged"},
-    bookmarks:{name:"Bookmarks",icon:"link",status:"flagged"},
-    calendar:{name:"Calendar",icon:"cal",status:"flagged"},
-    projects:{name:"Projects",icon:"proj",status:"flagged"},
-    invoices:{name:"Invoices",icon:"invoices",status:"flagged"},
-    payments:{name:"Payments",icon:"finance",status:"flagged"},
-    deals:{name:"Deals",icon:"deals",status:"flagged"},
-    estimates:{name:"Estimates",icon:"estimates",status:"flagged"},
-    proposals:{name:"Proposals",icon:"proposals",status:"flagged"},
-    contracts:{name:"Contracts",icon:"contracts",status:"flagged"},
-    meetings:{name:"Meetings",icon:"meetings",status:"flagged"},
-    timeTracking:{name:"Time Tracking",icon:"time",status:"flagged"},
-    timesheets:{name:"Timesheets",icon:"timesheets",status:"flagged"},
-    income:{name:"Income",icon:"income",status:"flagged"},
-    expenses:{name:"Expenses",icon:"expenses",status:"flagged"},
-    bookkeeping:{name:"Bookkeeping",icon:"bookkeeping",status:"flagged"},
-    suppliers:{name:"Suppliers",icon:"suppliers",status:"flagged"},
-    purchaseOrders:{name:"Purchase Orders",icon:"purchase_orders",status:"flagged"},
-    services:{name:"Services",icon:"services",status:"flagged"},
-    rateCards:{name:"Rate Cards",icon:"rate_cards",status:"flagged"},
-    campaigns:{name:"Campaigns",icon:"campaigns",status:"flagged"},
-    leads:{name:"Leads",icon:"leads",status:"flagged"},
-    contentCalendar:{name:"Content Calendar",icon:"content_cal",status:"flagged"},
-    channels:{name:"Channels",icon:"channels",status:"flagged"},
-    analytics:{name:"Analytics",icon:"analytics",status:"flagged"},
-    issues:{name:"Issues",icon:"issues",status:"flagged"},
-    risks:{name:"Risks",icon:"risks",status:"flagged"},
-    changes:{name:"Changes",icon:"changes",status:"flagged"},
-    wiki:{name:"Wiki",icon:"wiki",status:"flagged"},
-    forms:{name:"Forms",icon:"forms",status:"flagged"},
-    moodBoards:{name:"Mood Boards",icon:"mood",status:"flagged"},
-    roadmap:{name:"Roadmap",icon:"roadmap",status:"flagged"},
-    resourcing:{name:"Resourcing",icon:"resourcing",status:"flagged"},
-    scheduling:{name:"Scheduling",icon:"meetings",status:"flagged"},
-    clientPortal:{name:"Client Portal",icon:"proj",status:"flagged"},
-  };
-
-  /* ══ CAPABILITY TEMPLATE ═════════════════════════════════════════
-     Every capability doc follows this exact structure.
-     🔴 = not yet defined, needs documentation
-     ════════════════════════════════════════════════════════════════ */
-  window.CAP_TEMPLATE={
-    id:"",
-    label:"",
-    layer:"universal|client|project",
-    purpose:"One sentence — what the system must be able to do.",
-    baselineOps:{
-      create:"How a user creates a new item.",
-      edit:"How a user edits an existing item.",
-      delete:"How a user deletes an item.",
-      find:"How a user finds/searches for items.",
-    },
-    features:[
-      // {id, name, desc, status: "built"|"planned"|"todo"}
-    ],
-    useCases:[
-      // {id, title, actor, goal, mainFlow:[], systemResponse, alternateFlow}
-    ],
-    functionality:[
-      // {feature, behavior} — what the system does internally
-    ],
-    scenarios:[
-      // {condition, expected} — edge cases and variations
-    ],
-    specification:{
-      ownFields:[],   // from SCHEMA.types[id]
-      anchors:true,   // always true — all caps carry Classification
-      rules:[],       // business rules, constraints
-    },
-    enablers:[
-      // {name, desc} — technical work needed
-    ],
-    ui:{
-      screen:"",
-      components:[],
-      widgets:[],
-    },
-    modules:[],       // modules that implement this capability
-    entity:"",        // SCHEMA.types key
-  };
 
   /* ══ CAPABILITY DOCS ═════════════════════════════════════════════
      73 capabilities. Notes fully documented.

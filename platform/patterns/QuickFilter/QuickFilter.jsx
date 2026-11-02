@@ -43,7 +43,7 @@ import { Inline } from '../../components/Stack/Stack.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { PanelTrigger, Pill, toggle } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
-import { DATE_PRESETS, CATEGORY_ORDER, fieldWords } from '../../utils/fields.ts';
+import { CATEGORY_ORDER, fieldWords } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 import FilterOffIcon from 'plenix-platform/icons/plenix/filter-off';
@@ -54,7 +54,7 @@ const nameOf = (list, chosen) => {
   const o = list.find((x) => x.value === chosen[0]);
   return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? ' +' + (chosen.length - 1) : '');
 };
-const asOptions = (options) => (options || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
+const asOptions = (options) => (options || []).map((o) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 
 export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, counts, required = false, inline = false, strings }) {
   const fw = useStrings('fields');

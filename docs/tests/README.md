@@ -112,6 +112,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 - [data-grid-card-chunks-809](data-grid-card-chunks-809.md): This test makes sure a data table with thousands of rows stays fast on a phone: its card form draws the first 100 cards, and more as the person scrolls.
 - [narrow-fit-880](narrow-fit-880.md): This test makes sure a data toolbar's summary ends in "…" inside its row and the bottom navigation bar keeps all five destinations on a phone's width.
 - [date-only](date-only.md): This test makes sure a date with no time, such as a due date of October 18, shows as October 18 for everyone, wherever they are in the world.
+- [time-hook-order-885](time-hook-order-885.md): A date or time on the page does not crash when its value is empty at first and filled in later, or the other way around.
 - [picker-timezone-813](picker-timezone-813.md): This test makes sure the date and time pickers show and save dates and times in the app's time zone, so a team in several countries sees the same thing.
 - [formats](formats.md): This test makes sure numbers, dates, times, money, sizes, names, addresses and phone numbers are written the same correct way everywhere in Plenix, for American and German readers.
 - [ids-rtl-606](ids-rtl-606.md): This test makes sure case numbers and other computed identifiers read in the owner's chosen order, 01-20261020, on Arabic (right-to-left) pages.

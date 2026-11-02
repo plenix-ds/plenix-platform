@@ -8,10 +8,8 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../Stack/Stack.tsx';
-import { Button } from '../Button/Button.tsx';
+import { Inline } from '../Stack/Stack.tsx';
 import { Text } from '../Text/Text.tsx';
-import { Notice } from '../Notice/Notice.tsx';
 import { Badge } from '../Badge/Badge.tsx';
 import { formatPercent } from '../../utils/format.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

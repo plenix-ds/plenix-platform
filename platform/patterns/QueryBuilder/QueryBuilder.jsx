@@ -42,7 +42,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
+import { WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
 import { Button } from '../../components/Button/Button.tsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';

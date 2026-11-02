@@ -130,6 +130,11 @@
       "$value": "{plx-sys.space-stack-md}",
       "$type": "dimension",
       "$description": "RoleManager: Create role: gap between the fields (space-stack-md)."
+    },
+    "role-manager-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "RoleManager list: each role's plain icon (content-muted; no tile, #882)."
     }
   }
 }

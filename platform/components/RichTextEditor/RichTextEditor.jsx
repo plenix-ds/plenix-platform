@@ -98,7 +98,7 @@ import { CATEGORY_COLORS } from '../ColorSwatch/categoryColors.js';
 import { hotkeyLabel, isMac } from '../../utils/hotkey.ts';
 import { loadTiptap } from './tiptap.js';
 import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF, SAFE_SRC } from '../../utils/richTextClean.ts';
-import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
+import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { useReadOnly } from '../../providers/ReadOnly.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import AddColumnLeftIcon from 'plenix-platform/icons/plenix/add-column-left';

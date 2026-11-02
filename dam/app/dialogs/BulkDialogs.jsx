@@ -16,7 +16,7 @@
    plenix.js had no dialog for (the page then shows bulkComingSoon(action) as an info toast, as plenix.js did). */
 import React from 'react';
 import {
-  Dialog, ConfirmDialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, SegmentedControl, Button, Icon, Tag, TagList,
+  Dialog, ConfirmDialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, SegmentedControl, Button, Tag, TagList,
   Chip, Rating, Tree, Avatar, Badge, EmptyState, useToast, useSession, Stack, Text, Notice, Fieldset, dataPhrase
 } from 'plenix-platform';
 

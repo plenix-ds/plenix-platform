@@ -41,7 +41,7 @@ import { Text } from '../../components/Text/Text.tsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.tsx';
 import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder } from '../CommandBar/panel-parts.jsx';
 import { fill } from '../../utils/fill.ts';
-import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
+import { KIND_ICONS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import FilterIcon from 'plenix-platform/icons/plenix/filter';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
