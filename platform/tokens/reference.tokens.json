@@ -582,6 +582,7 @@
     },
     "opacity-45": {
       "$value": "0.45",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "number"
     },
     "opacity-50": {
@@ -694,6 +695,7 @@
     },
     "breakpoint-768px": {
       "$value": "768px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "breakpoint-840px": {
@@ -710,6 +712,7 @@
     },
     "breakpoint-1920px": {
       "$value": "1920px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "control-size-24px": {
@@ -746,6 +749,7 @@
     },
     "control-visual-size-16px": {
       "$value": "16px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension",
       "$extensions": {
         "com.plenix": {
@@ -757,26 +761,32 @@
     },
     "control-visual-size-20px": {
       "$value": "20px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "control-visual-size-24px": {
       "$value": "24px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "control-target-size-24px": {
       "$value": "24px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "control-target-size-28px": {
       "$value": "28px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "control-target-size-32px": {
       "$value": "32px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "control-target-size-44px": {
       "$value": "44px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "grid-columns-4": {
@@ -862,6 +872,7 @@
     },
     "content-max-2600px": {
       "$value": "2600px",
+      "$deprecated": "Not used by any page, application or the design spec (issue 882): it keeps working, and is removed no earlier than the next minor release.",
       "$type": "dimension"
     },
     "color-black": {
