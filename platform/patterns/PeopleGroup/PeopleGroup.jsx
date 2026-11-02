@@ -34,7 +34,7 @@ import { cx } from '../../utils/cx.ts';
 import { formatNumber } from '../../utils/format.ts';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
-import { IconTile } from '../../components/IconTile/IconTile.tsx';
+import { Icon } from '../../components/Icon/Icon.tsx';
 import { Link } from '../../components/Link/Link.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.tsx';
@@ -56,8 +56,8 @@ export function PeopleGroup({ name, kind = 'team', description, members, count, 
   const showAvatars = !group && members && members.length;
   return (
     <div className={cx('plx-people-group', 'plx-people-group--' + (group ? 'group' : 'team'), className)} {...rest}>
-      <span className="plx-people-group__media" aria-hidden="true">
-        {group ? <IconTile icon={SettingsUsersIcon} size="md" /> : <Avatar name={name} src={src} size="lg" />}
+      <span className={cx('plx-people-group__media', group && 'plx-people-group__media--icon')} aria-hidden="true">
+        {group ? <Icon name={SettingsUsersIcon} size="md" className="plx-people-group__icon" /> : <Avatar name={name} src={src} size="lg" />}
       </span>
       <span className="plx-people-group__body">
         <span className="plx-people-group__name" title={name}>

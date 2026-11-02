@@ -34,8 +34,8 @@ import React from 'react';
 import { kinds } from './helpers.jsx';
 
 // the layout of a grid that names none (owner, 2026-11-01: A)
-export const DEFAULT_LAYOUT = 'A';
-export const SLOTS = ['title', 'subtitle', 'date', 'primary', 'secondary', 'tertiary'];
+const DEFAULT_LAYOUT = 'A';
+const SLOTS = ['title', 'subtitle', 'date', 'primary', 'secondary', 'tertiary'];
 const FILL = ['title', 'subtitle', 'primary', 'secondary', 'tertiary', 'date'];
 const LAYOUTS = { A: 'A', B: 'B', WIDE: 'wide' };
 const DATES = ['date', 'datetime'], NUMBERS = ['number', 'currency', 'percent'];
@@ -43,7 +43,7 @@ const showable = (c) => !c.rowHandle && !kinds(c).some((k) => k === 'icon' || k 
 const typed = (c) => c.type || (c.sorter === 'number' ? 'number' : c.sorter === 'date' ? 'date' : 'text');
 
 // narrow: the grid's narrow prop; a grid that names no layout and no template gets the default layout in its narrow card (unless it is a table by choice, or layout "plain")
-export function resolveRowTemplate({ columns, layout, template, keyColumns, narrow }) {
+function resolveRowTemplate({ columns, layout, template, keyColumns, narrow }) {
   if (layout === 'plain') return null;   // the plain card of before: every other field a labeled detail
   const implicit = layout === undefined && !template;
   if (implicit && narrow !== undefined && narrow !== 'auto' && narrow !== 'list') return null;

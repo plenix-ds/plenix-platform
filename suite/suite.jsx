@@ -17,11 +17,12 @@
    view state, plenix.<app>.view, recentSearches; the last five) and, while a query is typed, its results; choosing one
    leaves the view (its history entry) and opens the result's screen. */
 import { SUITE_SESSION } from './session.js';
-import { ActivityList, AppHeader, AppShell, DirectionProvider, Icon, SearchField, SectionHeading, SessionProvider, StatusBar, Text, PLENIX_APPS, useScreenLocation, useViewState, leavePage } from 'plenix-platform';
+import { ActivityList, AppHeader, AppShell, DirectionProvider, Icon, SearchField, SectionHeading, SessionProvider, StatusBar, Text, useScreenLocation, useViewState, leavePage } from 'plenix-platform';
 import { CaptureUI } from './capture.jsx';
 import { LeftNav } from './leftnav.jsx';
 import { SearchScreen } from './search.jsx';
 import { FindWorkspace, findResults } from './findSources.jsx';
+import { afterSearchView } from './searchView.js';
 import './prefetch.js';   // the next application page is prerendered on hover (batch 237; moved here from the Platform, issue 458)
 const { useState } = React;
 
@@ -49,15 +50,6 @@ const FIRST_SUB = { messaging: 't-1', calendar: 'month' };
 
 // the recent searches kept for an application, newest first
 const RECENT_MAX = 5;
-// the full-screen search view (AppHeader at Narrow) is a history entry of its own: leave it (Back, which closes it) before
-// opening a screen, so the screen's entry replaces it in the history instead of following it
-const afterSearchView = (open) => {
-  const st = window.history.state;
-  if (!(st && st.plxSearch)) { open(); return; }
-  const go = () => { window.removeEventListener('popstate', go); open(); };
-  window.addEventListener('popstate', go);
-  window.history.back();
-};
 
 function readPrefs() { try { return JSON.parse(localStorage.getItem('plenix.prefs')) || {}; } catch (e) { return {}; } }
 function writePrefs(p) { try { localStorage.setItem('plenix.prefs', JSON.stringify(p)); } catch (e) { /* this visit only */ } }

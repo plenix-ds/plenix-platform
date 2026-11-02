@@ -1,7 +1,7 @@
 /* Plenix · FeatureCard
    Summary: A card that presents one feature, capability or entry point (07 Data Display › Cards and objects › Feature
-     card): its icon tile or picture, its name and a sentence on what it does; the whole card opens it. Built from Card,
-     IconTile and Image.
+     card): its icon or picture, its name and a sentence on what it does; the whole card opens it. Built from Card,
+     Icon and Image.
    Usage:
      <FeatureCard icon="sparkle" hue="purple" title="Smart tags" description="Tags your pictures as they upload." href="#/tags" />
      <FeatureCard variant="image" image="../dam/assets/thumb-12.svg" title="Brand kit" description="Logos, colors and fonts in one place." href="#/brand" />
@@ -9,10 +9,10 @@
    Props:
      title: the feature's name (required): the card's heading, and its link or button with href or onOpen
      description: one sentence on what the feature does for people
-     variant: "icon" (default: an IconTile above the name) | "image" (a picture across the top, 16:9) | "horizontal" (the
-       icon tile, or the picture as a square, before the name and description: lists and narrow columns)
-     icon: the icon name of the tile (platform/icons/map.json); hue: the tile's data color (IconTile hue, default "gray");
-       tone: a status tone instead (IconTile tone)
+     variant: "icon" (default: an icon above the name) | "image" (a picture across the top, 16:9) | "horizontal" (the
+       icon, or the picture as a square, before the name and description: lists and narrow columns)
+     icon: the icon name (platform/icons/map.json); hue: the icon's data color ("blue", "green", "purple", "red", "brown",
+       "surface" (the link blue) or "gray", the default); tone: a status tone instead (its content color)
      image: the picture's address (variant image, or horizontal); imageAlt: its text alternative (default "": decorative,
        the name says what the card is)
      href: the card opens this address (its title is a link that covers the card)
@@ -31,19 +31,24 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
 import { cx } from '../../utils/cx.ts';
 import { Card } from '../../components/Card/Card.jsx';
-import { IconTile } from '../../components/IconTile/IconTile.tsx';
+import { Icon } from '../../components/Icon/Icon.tsx';
 import { Image } from '../../components/Image/Image.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 
 const VARIANTS = ['icon', 'image', 'horizontal'];
+const DATA_HUES = ['blue', 'green', 'purple', 'red', 'brown'];
+const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
 
 export function FeatureCard({ title, description, variant = 'icon', icon, hue, tone, image, imageAlt = '', href, onOpen, headingLevel = 3, className, ...rest }) {
   devWarn('FeatureCard', { variant, tone }, { variant: ['icon','image','horizontal'], tone: ['info','success','warning','danger','neutral'] });
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'icon';
   const picture = v === 'image' || (v === 'horizontal' && image && !icon);
+  // the plain icon (no tile, #882): a tone's content color, a data hue's color, the link blue (surface) or gray
+  const look = TONES.indexOf(tone) >= 0 ? tone : hue === 'surface' ? 'surface' : null;
   const media = picture && image
     ? <Image src={image} alt={imageAlt} ratio={v === 'image' ? '16-9' : '1-1'} rounded={v === 'horizontal'} className="plx-feature-card__image" />
-    : <IconTile icon={icon || SparkleIcon} hue={hue} tone={tone} size="md" className="plx-feature-card__tile" />;
+    : <Icon name={icon || SparkleIcon} size="md" className={cx('plx-feature-card__icon', look && 'plx-feature-card__icon--' + look)}
+        data-plx-color={!look && DATA_HUES.indexOf(hue) >= 0 ? hue : undefined} />;
   return (
     <Card layout={v === 'horizontal' ? 'media-start' : 'media-first'} titleWrap title={title} meta={description} href={href} onOpen={onOpen} headingLevel={headingLevel}
       className={cx('plx-feature-card', 'plx-feature-card--' + v, className)} {...rest}>

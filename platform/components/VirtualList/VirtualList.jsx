@@ -24,7 +24,7 @@
      showCount: the number of items above the list ("4,000 items", in the data font); default false
      loading: a row with a spinner and Loading… at the end while more rows come; default false
      onEndReached(): runs once each time the end of the list nears the view (load the next rows)
-     overscan: rows drawn beyond each edge of the view (default 4)
+     overscan: how many rows are drawn beyond each edge of the view (default 4)
      strings: the words, for other languages: { count: (n) => "4,000 items", group: (n) => "12 items", loading:
        "Loading…", empty: "No items" }
      className: more classes on the wrapper

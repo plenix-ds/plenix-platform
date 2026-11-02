@@ -1,7 +1,8 @@
 /* Plenix · page loader (platform/loader/loader.js, issue 842): every Plenix file of an application page from one place.
    Summary: An application page (the 10 suite applications and the Asset Manager's pages) loads only this script, first in
      its <head>, after loader.css. It picks where Plenix comes from, once, then loads every Plenix file of the page from
-     there, in this order: the favicon, theme-boot.js, the font preload, fonts.css, plenix.css, React and ReactDOM,
+     there, in this order: the favicon, theme-boot.js, the font preload, fonts.css, the stylesheet (a release's
+     plenix.min.css, the same rules without comments or spaces, issue 882; this checkout's platform.css), React and ReactDOM,
      plenix.js, the application's icon file, plenix-engines.js; then, once the stylesheet has loaded and the page is read,
      the suite's data file (suite applications) and the application's own script.
    Usage: <link rel="stylesheet" href="../platform/loader/loader.css">
@@ -85,7 +86,7 @@
       base: r,
       favicon: r + 'source/platform/brand/favicon.svg',
       font: r + 'fonts/dm-sans-variable-latin.woff2',
-      css: [r + 'fonts.css', r + 'plenix.css'],
+      css: [r + 'fonts.css', r + 'plenix.min.css'],   // the same rules as plenix.css, minified (issue 882)
       scripts: [r + 'vendor/react.production.min.js', r + 'vendor/react-dom.production.min.js', r + 'plenix.js', a + 'plenix-icons-' + app + '.js', r + 'plenix-engines.js'],
       themeBoot: r + 'theme-boot.js',
       late: (dam ? [] : [r + 'apps/suite/plenix-app-data.js']).concat(app === 'settings' ? [r + 'apps/suite/settings-data.js'] : []).concat([a + (dam ? 'assets.js' : 'app.js')]),
