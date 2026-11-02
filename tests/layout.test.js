@@ -98,6 +98,7 @@ child({ units: ['components/Rating', 'components/Divider'] }, 'rating-divider-80
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
 child({ units: ['components/DataGrid'] }, 'data-grid-default-cards-679.test.js');   // every grid's narrow cards are the row template by default; plain stays reachable; wide unchanged (issue 679)
 child({ units: ['components/DataGrid'] }, 'data-grid-edit-keys-737.test.js');   // F2 and typing start editing; not read-only, IME, Ctrl/Alt/Meta, Space; Shift+arrows keep working (issue 737)
+child({ units: ['components/Carousel'] }, 'carousel-fit-883.test.js');   // perView shows fewer slides in a narrow strip (least slide width), pages follow; wider shows more; perView 1 unchanged
 child({ units: ['components/MenuBar', 'components/Menu'] }, 'menubar-805.test.js');   // the MenuBar: one Tab stop, the arrows, open and switch, Escape, hover, type-ahead, More (issue 805)
 child({ units: ['components/DataGrid'] }, 'data-grid-cell-range-465.test.js');   // cell range selection: Shift with the arrows, the border, copy, announcement, 600 rows (issue 465)
 child({ units: ['components/Text', 'components/Isolate', 'components/DataGrid'] }, 'bidi-data-838.test.js');   // a spaced phone number and IBAN keep their digit groups in order in an Arabic page (issue 838)
@@ -113,6 +114,7 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 // platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
 // a date with no time is that calendar day in every time zone (issue 342)
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
+child({ units: ['components/Time'] }, 'time-hook-order-885.test.js');   // Time keeps its hooks in order when its value comes and goes (issue 885)
 // DatePicker and TimePicker follow LocaleProvider's time zone (issue 813)
 child({ units: ['components/DatePicker', 'components/TimePicker', 'components/Calendar', 'utils/zone.ts'] }, 'picker-timezone-813.test.js');
 // a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)

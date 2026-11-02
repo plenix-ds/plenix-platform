@@ -51,7 +51,7 @@ import { DatePicker } from '../../components/DatePicker/DatePicker.jsx';
 import { EntityPicker } from '../../components/EntityPicker/EntityPicker.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useOptionalToast } from '../../components/Toast/Toast.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import ForwardIcon from 'plenix-platform/icons/plenix/forward';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';

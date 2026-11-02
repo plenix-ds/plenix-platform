@@ -78,7 +78,7 @@ export function LollipopChart({ title, description, data = [], orientation = 'ho
                 ? <line className="plx-chart__axis-line" x1={zero} x2={zero} y1={0} y2={inner.height} />
                 : <line className="plx-chart__axis-line" x1={0} x2={inner.width} y1={zero} y2={zero} />}
               {rows.map((r) => { const p = at(r); return <line key={'s' + r.id} className="plx-lollipop__stem" data-plx-dataviz={mark} x1={p.x0} y1={p.y0} x2={p.x} y2={p.y} />; })}
-              {rows.map((r, i) => { const p = at(r); return <circle key={'d' + r.id} className="plx-lollipop__dot" data-plx-dataviz={mark} cx={p.x} cy={p.y} r={RING / 2} />; })}
+              {rows.map((r) => { const p = at(r); return <circle key={'d' + r.id} className="plx-lollipop__dot" data-plx-dataviz={mark} cx={p.x} cy={p.y} r={RING / 2} />; })}
               {showValues ? rows.map((r) => { const p = at(r); return <DataLabel key={'v' + r.id} x={o === 'horizontal' ? p.x + RING / 2 : p.x} y={o === 'horizontal' ? p.y : p.y - RING / 2} value={fmt(r.value)} position={o === 'horizontal' ? 'end' : 'top'} className="plx-lollipop__value" />; }) : null}
               <Axis scale={band} orient={o === 'horizontal' ? 'left' : 'bottom'} inner={inner} margin={margin} line={false} />
               <Axis scale={val} orient={o === 'horizontal' ? 'bottom' : 'left'} inner={inner} margin={margin} format={format} line={false} />
