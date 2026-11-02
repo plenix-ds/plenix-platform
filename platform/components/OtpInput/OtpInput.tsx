@@ -41,28 +41,50 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 
-const KEEP = { numeric: /[^0-9]/g, alphanumeric: /[^0-9a-zA-Z]/g };
+const KEEP: Record<string, RegExp> = { numeric: /[^0-9]/g, alphanumeric: /[^0-9a-zA-Z]/g };
 
+export type OtpInputProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> & {
+  /** how many characters (default 6) */
+  length?: number;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (code: string) => void;
+  /** the whole code, once every box is filled */
+  onComplete?: (code: string) => void;
+  kind?: 'numeric' | 'alphanumeric';
+  masked?: boolean;
+  /** the group's name; each box adds its position */
+  label?: string;
+  invalid?: boolean;
+  warning?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  autoFocus?: boolean;
+  /** a hidden field of this name carries the code in a form */
+  name?: string;
+  strings?: Catalog | null;
+};
 export const OtpInput = React.forwardRef(function OtpInput({ length = 6, value, defaultValue = '', onChange, onComplete, kind = 'numeric', masked = false, label,
-  invalid, warning, disabled, required, autoFocus, name, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
-  const t = useStrings('otpInput', strings);
+  invalid, warning, disabled, required, autoFocus, name, id, strings, className, 'aria-describedby': describedBy, ...rest }: OtpInputProps, ref: React.ForwardedRef<HTMLInputElement>) {
+  const t = useStrings('otpInput', strings) as { cell: string };
   const n = Math.max(1, Number(length) || 6);
-  const clean = (s) => String(s == null ? '' : s).replace(KEEP[kind] || KEEP.numeric, '').toUpperCase();
+  const clean = (s: unknown) => String(s == null ? '' : s).replace(KEEP[kind] || KEEP.numeric, '').toUpperCase();
   const [own, setOwn] = React.useState(() => clean(defaultValue).slice(0, n));
   const code = value !== undefined ? clean(value).slice(0, n) : own;
-  const boxes = React.useRef([]);
-  React.useImperativeHandle(ref, () => boxes.current[0]);
+  const boxes = React.useRef<Array<HTMLInputElement | null>>([]);
+  React.useImperativeHandle(ref, () => boxes.current[0] as HTMLInputElement);
   const chars = Array.from({ length: n }, (x, i) => code[i] || '');
-  const focusBox = (i) => { const el = boxes.current[Math.max(0, Math.min(n - 1, i))]; if (el) { el.focus(); el.select(); } };
-  const commit = (next) => {
+  const focusBox = (i: number) => { const el = boxes.current[Math.max(0, Math.min(n - 1, i))]; if (el) { el.focus(); el.select(); } };
+  const commit = (next: string[]) => {
     const joined = next.join('').slice(0, n);
     if (value === undefined) setOwn(joined);
     if (onChange) onChange(joined);
     if (onComplete && next.every(Boolean) && joined.length === n) onComplete(joined);
   };
   // put text into the boxes from box i on; returns the box to focus next
-  const fillFrom = (i, text) => {
+  const fillFrom = (i: number, text: string) => {
     const next = chars.slice(), add = clean(text).split('');
     let at = i;
     add.forEach((c) => { if (at < n) next[at++] = c; });
@@ -70,7 +92,7 @@ export const OtpInput = React.forwardRef(function OtpInput({ length = 6, value, 
     const empty = next.indexOf('');
     return empty >= 0 ? empty : n - 1;
   };
-  const onBoxChange = (i) => (e) => {
+  const onBoxChange = (i: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const typed = e.target.value, cur = chars[i];
     if (!typed) { const next = chars.slice(); next[i] = ''; commit(next); return; }
     // a box that held a character gets it back with the new one: keep only what was added
@@ -80,21 +102,21 @@ export const OtpInput = React.forwardRef(function OtpInput({ length = 6, value, 
     const after = fillFrom(i, ok);
     focusBox(ok.length > 1 ? after : i + 1);
   };
-  const onKeyDown = (i) => (e) => {
+  const onKeyDown = (i: number) => (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace' && !chars[i] && i > 0) { e.preventDefault(); const next = chars.slice(); next[i - 1] = ''; commit(next); focusBox(i - 1); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); focusBox(i - 1); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); focusBox(i + 1); }
     else if (e.key === 'Home') { e.preventDefault(); focusBox(0); }
     else if (e.key === 'End') { e.preventDefault(); focusBox(n - 1); }
   };
-  const onPaste = (i) => (e) => {
+  const onPaste = (i: number) => (e: React.ClipboardEvent<HTMLInputElement>) => {
     const text = e.clipboardData ? e.clipboardData.getData('text') : '';
     if (!text) return;
     e.preventDefault();
     focusBox(fillFrom(i, text));
   };
   // without a label of its own, the first box keeps the name its Field's label gives it
-  const boxName = (i) => (!label && i === 0 && id ? undefined : (label ? label + ', ' : '') + t.cell.replace('{n}', String(i + 1)).replace('{total}', String(n)));
+  const boxName = (i: number) => (!label && i === 0 && id ? undefined : (label ? label + ', ' : '') + t.cell.replace('{n}', String(i + 1)).replace('{total}', String(n)));
   return (
     <div role="group" dir="ltr" aria-label={label} aria-describedby={describedBy} className={cx('plx-otp-input', invalid && 'is-invalid', disabled && 'is-disabled', className)} {...rest}>
       {chars.map((c, i) => (

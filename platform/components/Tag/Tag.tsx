@@ -58,16 +58,26 @@ import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import AddIcon from 'plenix-platform/icons/plenix/add';
 
-function RemoveButton({ label, onClick }) {
+type TagWords = { rename: string; renameTag: string; remove: string; removeTag: string; removeFilter: string; label: string };
+function RemoveButton({ label, onClick }: { label?: string; onClick?: React.MouseEventHandler<HTMLButtonElement> }) {
   return <button type="button" className="plx-tag__remove" aria-label={label} onClick={onClick}><span aria-hidden="true">×</span></button>;
 }
 
-export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, className, children, ...rest }) {
-  const tw = useStrings('tag');
+export type TagProps = React.HTMLAttributes<HTMLSpanElement> & {
+  /** a category color name */
+  category?: string;
+  onRemove?: React.MouseEventHandler<HTMLButtonElement>;
+  removeLabel?: string;
+  /** makes the label editable; called with the new label */
+  onRename?: (label: string) => void;
+  renameLabel?: string;
+};
+export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, className, children, ...rest }: TagProps) {
+  const tw = useStrings('tag') as TagWords;
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState('');
   const text = typeof children === 'string' ? children : '';
-  const done = (keep) => { setEditing(false); if (keep && draft.trim() && draft.trim() !== text) onRename(draft.trim()); };
+  const done = (keep: boolean) => { setEditing(false); if (keep && draft.trim() && draft.trim() !== text) (onRename as (label: string) => void)(draft.trim()); };
   return (
     <span className={cx('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)} data-plx-category={(category === 'brown' ? 'orange' : category) || undefined} {...rest}>
       {onRename && editing ? (
@@ -82,8 +92,9 @@ export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, cl
   );
 }
 
-export function Chip({ selected = false, onRemove, removeLabel, className, children, ...rest }) {
-  const tw = useStrings('tag');
+export type ChipProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean; onRemove?: React.MouseEventHandler<HTMLButtonElement>; removeLabel?: string };
+export function Chip({ selected = false, onRemove, removeLabel, className, children, ...rest }: ChipProps) {
+  const tw = useStrings('tag') as TagWords;
   if (onRemove) {
     return (
       <span className={cx('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)}>
@@ -95,18 +106,31 @@ export function Chip({ selected = false, onRemove, removeLabel, className, child
   return <button type="button" className={cx('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)} aria-pressed={selected} {...rest}>{children}</button>;
 }
 
-export function TagList({ className, children, label, ...rest }) {
+export type TagListProps = React.HTMLAttributes<HTMLDivElement> & { /** names the list as a group */ label?: string };
+export function TagList({ className, children, label, ...rest }: TagListProps) {
   return <div className={cx('plx-tag-list', className)} role={label ? 'group' : undefined} aria-label={label} {...rest}>{children}</div>;
 }
 
-export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, label, collapsible = true, id, className, onBlur, ...rest }, ref) {
-  const tw = useStrings('tag');
+// what onChange gets: the field's change event, or the same shape when the field is cleared
+type TagInputChange = { target: { value: string }; currentTarget: { value: string } };
+export type TagInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> & {
+  /** a tag typed and confirmed with Enter */
+  onAdd?: (tag: string) => void;
+  value?: string;
+  onChange?: (event: TagInputChange) => void;
+  /** its name; the placeholder too */
+  label?: string;
+  /** a + until it is used */
+  collapsible?: boolean;
+};
+export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, label, collapsible = true, id, className, onBlur, ...rest }: TagInputProps, ref: React.ForwardedRef<HTMLElement>) {
+  const tw = useStrings('tag') as TagWords;
   if (label === undefined) label = tw.label;
   const [own, setOwn] = React.useState('');
   const [open, setOpen] = React.useState(!collapsible);
   const text = value !== undefined ? value : own;
-  const inputRef = React.useRef(null), plusRef = React.useRef(null);
-  React.useImperativeHandle(ref, () => inputRef.current || plusRef.current);
+  const inputRef = React.useRef<HTMLInputElement>(null), plusRef = React.useRef<HTMLButtonElement>(null);
+  React.useImperativeHandle(ref, () => (inputRef.current || plusRef.current) as HTMLElement);
   const wasOpen = React.useRef(open);
   React.useEffect(() => {   // opening focuses the field; closing returns focus to the + (only after a change, never on mount)
     if (wasOpen.current === open) return;
@@ -114,9 +138,9 @@ export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, v
     if (open && inputRef.current) inputRef.current.focus();
     else if (!open && plusRef.current && plusRef.current.focus) plusRef.current.focus();
   }, [open]);
-  const setText = (v) => { if (value === undefined) setOwn(v); else if (onChange) onChange({ target: { value: v }, currentTarget: { value: v } }); };
-  const change = (e) => { if (value === undefined) setOwn(e.target.value); if (onChange) onChange(e); };
-  const keyDown = (e) => {
+  const setText = (v: string) => { if (value === undefined) setOwn(v); else if (onChange) onChange({ target: { value: v }, currentTarget: { value: v } }); };
+  const change = (e: React.ChangeEvent<HTMLInputElement>) => { if (value === undefined) setOwn(e.target.value); if (onChange) onChange(e); };
+  const keyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented) return;
     if (e.key === 'Escape' && collapsible) { e.preventDefault(); setText(''); setOpen(false); return; }
@@ -127,7 +151,7 @@ export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, v
     onAdd(t);
     setText('');
   };
-  const blur = (e) => { if (onBlur) onBlur(e); if (collapsible && !String(text).trim()) setOpen(false); };
+  const blur = (e: React.FocusEvent<HTMLInputElement>) => { if (onBlur) onBlur(e); if (collapsible && !String(text).trim()) setOpen(false); };
   if (!open) {
     return (
       <Tooltip content={label}>

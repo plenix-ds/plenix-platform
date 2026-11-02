@@ -25,21 +25,37 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { dataPhrase } from '../../utils/dataText.tsx';
 import { fill } from '../../utils/fill.ts';
 
-function pagesToShow(page, count) {
+function pagesToShow(page: number, count: number): Array<number | string> {
   const set = new Set([1, count, page - 1, page, page + 1].filter((p) => p >= 1 && p <= count));
-  const list = Array.from(set).sort((a, b) => a - b), out = [];
+  const list = Array.from(set).sort((a, b) => a - b), out: Array<number | string> = [];
   list.forEach((p, i) => { if (i && p - list[i - 1] > 1) out.push('gap-' + p); out.push(p); });
   return out;
 }
 
-export function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPage, perPageOptions, onPerPageChange, label, strings, className, ...rest }) {
+type PaginationWords = { label: string; range: string; previous: string; next: string; page: string; perPage: string };
+export type PaginationProps = React.HTMLAttributes<HTMLElement> & {
+  /** the current page, from 1 */
+  page?: number;
+  pageCount?: number;
+  onPageChange?: (page: number) => void;
+  /** how many items in all (shows the range) */
+  total?: number;
+  perPage?: number;
+  perPageOptions?: number[];
+  onPerPageChange?: (perPage: number) => void;
+  /** the accessible name of the navigation */
+  label?: string;
+  strings?: Catalog | null;
+};
+export function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPage, perPageOptions, onPerPageChange, label, strings, className, ...rest }: PaginationProps) {
   // the words: the catalog's for the locale (i18n/en.js, and Arabic says the range its own way: "31 إلى 60 من 120"),
   // then the strings prop
-  const t = useStrings('pagination', strings);
-  const go = (p) => { if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p); };
+  const t = useStrings('pagination', strings) as PaginationWords;
+  const go = (p: number) => { if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p); };
   const first = total ? (page - 1) * (perPage || 0) + 1 : null;
   const last = total ? Math.min(total, page * (perPage || total)) : null;
   return (

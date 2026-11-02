@@ -297,9 +297,62 @@ function colorSampleFindings(css, label) {
   if (!colorSampleFindings(read(path.join(fx, 'shrunk.css')), 'fixture shrunk.css').length) add('color-samples', 'the check does not fail on its shrunk fixture (tools/fixtures/spec-color-samples/shrunk.css): the rule is broken');
 }
 
+
+// lazy: the index and the chunks give the same records as the bundle (issue 882, item 13). Each record's group is loaded alone
+// in a fresh page of its own (spec-lazy.js against the real inventory.js, a stand-in for script loading), and the loaded record
+// must equal the bundle's: the same fields, the same values, the same example code. Then every chunk is loaded in one page
+// and the written sections must equal the bundle's.
+async function lazyCheck() {
+  const idxFile = path.join(SPEC, 'spec-index.js');
+  if (!fs.existsSync(idxFile)) return;
+  const same = (a, b) => typeof a === 'function' ? typeof b === 'function' && String(a) === String(b)
+    : Array.isArray(a) ? Array.isArray(b) && a.length === b.length && a.every((x, i) => same(x, b[i]))
+    : a && typeof a === 'object' ? b && typeof b === 'object' && Object.keys(a).length === Object.keys(b).length && Object.keys(a).every((k) => same(a[k], b[k]))
+    : a === b;
+  const page = () => {
+    const ctx = { window: {}, console: { log() {}, warn() {}, error() {} }, React: { createElement: (...a) => ({ type: a[0], props: a[1] || {}, children: a.slice(2) }), useState: (v) => [v, () => {}] } };
+    ctx.window.React = ctx.React; ctx.window.Plenix = new Proxy({}, { get: (_, k) => k }); ctx.window.window = ctx.window; ctx.window.DSDocs = {};
+    ctx.document = { currentScript: { src: 'file:///x/spec-lazy.js' }, createElement: () => ({}), head: { appendChild: (s) => { const f = path.join(SPEC, s.src.replace('file:///x/', '')); vm.runInContext(fs.readFileSync(f, 'utf8'), ctx, { filename: path.basename(f) }); } } };
+    vm.createContext(ctx);
+    for (const f of ['spec-index.js', 'spec-lazy.js', 'inventory.js']) vm.runInContext(read(path.join(SPEC, f)), ctx, { filename: f });
+    return ctx.window;
+  };
+  const eager = {}; recs.forEach((r) => { eager[r.id] = r; });
+  const w0 = page(), I = w0.DSIndex, ids = I.records.map((r) => r.id);
+  if (w0.DSInventory.length !== recs.length) add('lazy', 'the lazy page lists ' + w0.DSInventory.length + ' records, the bundle ' + recs.length);
+  w0.DSInventory.forEach((r, i) => { if (r.id !== recs[i].id) add('lazy', 'record ' + i + ' is ' + r.id + ' lazy, ' + recs[i].id + ' in the bundle (the order differs)'); });
+  const done = {};
+  for (const id of ids) {
+    const part = I.records.find((r) => r.id === id).part, key = [part].concat((w0.DSLazy.partsFor(id))).join('|');
+    if (done[key]) continue; done[key] = true;
+    const w = page(); await w.DSLazy.load(id);
+    for (const n of w.DSLazy.partsFor(id)) {
+      for (const r of w.DSInventory.filter((x) => x.part === n)) {
+        const e = eager[r.id], keys = Object.keys(e).filter((k) => k !== 'part');
+        const bad = keys.filter((k) => !same(e[k], r[k])).concat(Object.keys(r).filter((k) => k !== 'part' && !(k in e)));
+        if (bad.length) add('lazy', r.id + ' (' + n + ', loaded by ' + id + ') differs from the bundle in: ' + bad.slice(0, 6).join(', '));
+      }
+    }
+  }
+  // the records that no part owns, with the parts that add to them
+  for (const id of Object.keys(I.touch)) {
+    if (I.records.some((r) => r.id === id)) continue;
+    const w = page(); await w.DSLazy.load(id);
+    const r = w.DSInventory.find((x) => x.id === id), e = eager[id];
+    const bad = Object.keys(e).filter((k) => !same(e[k], r[k]));
+    if (bad.length) add('lazy', id + ' (loaded with ' + I.touch[id].join(', ') + ') differs from the bundle in: ' + bad.slice(0, 6).join(', '));
+  }
+  // all chunks in one page: every record equals the bundle's
+  const wa = page(); for (const id of ids.concat(Object.keys(I.touch))) await wa.DSLazy.load(id);
+  for (const r of wa.DSInventory) { const e = eager[r.id]; const bad = Object.keys(e).filter((k) => !same(e[k], r[k])); if (bad.length) add('lazy', r.id + ' (all chunks loaded) differs from the bundle in: ' + bad.slice(0, 6).join(', ')); }
+  const bundleDocs = load([path.join(SPEC, 'spec-parts.js')], 'DSParts').docs.reduce((o, d) => Object.assign(o, d), {});
+  for (const id of Object.keys(bundleDocs)) if (!same(bundleDocs[id], wa.DSDocs && wa.DSDocs[id])) add('lazy', 'the written sections of ' + id + ' differ after every chunk loads');
+}
+
+lazyCheck().then(() => {
 // report
 let failed = 0;
-for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes', 'color-samples', 'cdn']) {
+for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes', 'color-samples', 'cdn', 'lazy']) {
   const list = findings[rule] || [];
   const pending = PENDING[rule];
   if (!list.length) { console.log('ok       ' + rule); continue; }
@@ -309,3 +362,4 @@ for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'templat
 }
 console.log(failed ? '\n' + failed + ' finding(s)' : '\nSPEC_OK (' + std.reduce((n, s) => n + s.subs.reduce((m, x) => m + x[1].length, 0), 0) + ' leaves, ' + recs.length + ' records)');
 process.exit(failed ? 1 : 0);
+}).catch((e) => { console.error(e); process.exit(1); });

@@ -39,19 +39,44 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
 import { Icon } from '../Icon/Icon.tsx';
+import type { IconValue } from '../Icon/Icon.tsx';
 
 // the field's own ref, so the group's ref callback can pass the node on: React 19 keeps a ref in the element's props (reading
 // element.ref warns there, issue 686); React 18 keeps it on the element and never in its props
 const REACT_19 = parseInt(String(React.version || '18').split('.')[0], 10) >= 19;
-const childRef = (child) => (REACT_19 ? child.props.ref : child.ref);
+const childRef = (child: React.ReactElement): React.Ref<HTMLElement> | undefined => (REACT_19 ? (child.props as { ref?: React.Ref<HTMLElement> }).ref : (child as unknown as { ref?: React.Ref<HTMLElement> }).ref);
 
-const list = (x) => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
+const list = (x: React.ReactElement | React.ReactElement[] | null | undefined | false): React.ReactElement[] => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
 
-export function InputGroup({ prefix, suffix, icon, start, end, width, compact = false, data = false, invalid, warning, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
+// what the group reads from, and gives, its one field
+type GroupedFieldProps = { id?: string; 'aria-describedby'?: string; invalid?: boolean; warning?: boolean; disabled?: boolean; readOnly?: boolean; required?: boolean; className?: string };
+export type InputGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'prefix' | 'children'> & {
+  /** text before the value, inside the border */
+  prefix?: React.ReactNode;
+  /** text after the value, inside the border */
+  suffix?: React.ReactNode;
+  /** an icon name or an imported module at the start inside the border */
+  icon?: IconValue | null;
+  /** a Button or a Select (or an array of them) joined to the field's start edge */
+  start?: React.ReactElement | React.ReactElement[] | null | false;
+  /** the same at the end edge */
+  end?: React.ReactElement | React.ReactElement[] | null | false;
+  width?: 'xs' | 'sm' | 'md' | 'lg' | 'fill';
+  compact?: boolean;
+  data?: boolean;
+  invalid?: boolean;
+  warning?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  /** the field: one element */
+  children: React.ReactElement;
+};
+export function InputGroup({ prefix, suffix, icon, start, end, width, compact = false, data = false, invalid, warning, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }: InputGroupProps) {
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const preId = prefix != null ? 'plx-ig' + uid + '-p' : undefined, sufId = suffix != null ? 'plx-ig' + uid + '-s' : undefined;
-  const child = React.Children.only(children);
-  const inputRef = React.useRef(null);
+  const child = React.Children.only(children) as React.ReactElement<GroupedFieldProps>;
+  const inputRef = React.useRef<HTMLElement | null>(null);
   const starts = list(start), ends = list(end);
   const own = child.props;
   const describedAt = useDescribedBy(own['aria-describedby'], describedBy, preId, sufId);   // the child's own, then the group's (a Field's), then the prefix and the suffix
@@ -64,14 +89,14 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, compact = 
     readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,
     required: own.required !== undefined ? own.required : required,
     className: cx(own.className, 'plx-input-group__input', (icon || prefix != null) && 'plx-input-group__input--after-affix', suffix != null && 'plx-input-group__input--before-affix'),
-    ref: (node) => { inputRef.current = node; const r = childRef(child); if (typeof r === 'function') r(node); else if (r) r.current = node; },
+    ref: (node: HTMLElement | null) => { inputRef.current = node; const r = childRef(child); if (typeof r === 'function') r(node); else if (r) (r as React.MutableRefObject<HTMLElement | null>).current = node; },
   };
   const isInvalid = pass.invalid, isWarning = pass.warning, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
   // a press on the box outside the field (an affix, the icon) focuses the field
-  const focusField = (e) => { if (e.target !== inputRef.current && inputRef.current && !isDisabled) { e.preventDefault(); inputRef.current.focus(); } };
+  const focusField = (e: React.MouseEvent<HTMLDivElement>) => { if (e.target !== inputRef.current && inputRef.current && !isDisabled) { e.preventDefault(); inputRef.current.focus(); } };
   // an attached Button or Select joins the box: the side facing the box is a seam (the box's edge is shared); between two
   // attached controls the corners are square
-  const attach = (el, i, all, side) => React.cloneElement(el, {
+  const attach = (el: React.ReactElement, i: number, all: React.ReactElement[], side: 'start' | 'end') => React.cloneElement(el as React.ReactElement<{ joined?: { start?: string; end?: string } }>, {
     key: side + i,
     joined: side === 'start' ? { start: i > 0 ? 'square' : undefined, end: 'seam' } : { start: 'seam', end: i < all.length - 1 ? 'square' : undefined },
   });
@@ -82,7 +107,7 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, compact = 
         isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly')} data-plx-warning={isWarning || undefined} onMouseDown={focusField}>
         {icon ? <span className="plx-input-group__icon" aria-hidden="true"><Icon name={icon} /></span> : null}
         {prefix != null ? <span className="plx-input-group__affix plx-input-group__affix--prefix" id={preId}>{prefix}</span> : null}
-        {React.cloneElement(child, pass)}
+        {React.cloneElement(child, pass as GroupedFieldProps)}
         {suffix != null ? <span className="plx-input-group__affix plx-input-group__affix--suffix" id={sufId}>{suffix}</span> : null}
       </div>
       {ends.map((el, i) => attach(el, i, ends, 'end'))}

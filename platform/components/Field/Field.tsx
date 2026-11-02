@@ -49,16 +49,44 @@ import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
 import { useDescribedBy } from '../../utils/describedBy.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import { dataWhenText } from '../../utils/dataText.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
-export const FieldLayoutContext = React.createContext(null);
+export type FieldLayout = 'stacked' | 'inline' | 'row';
+export const FieldLayoutContext = React.createContext<FieldLayout | null>(null);
 
-const countText = (t, n) => String(t).replace('{n}', formatNumber(n));
+const countText = (t: unknown, n: number) => String(t).replace('{n}', formatNumber(n));
 
-export function Field({ label, hideLabel = false, description, error, warning, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
+// what Field reads from, and gives, its one control
+type FieldControlProps = { id?: string; maxLength?: number | string; defaultValue?: unknown; value?: unknown; 'aria-describedby'?: string; invalid?: boolean;
+  required?: boolean; warning?: unknown; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; [prop: string]: unknown };
+export type FieldProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
+  label?: React.ReactNode;
+  hideLabel?: boolean;
+  description?: React.ReactNode;
+  error?: React.ReactNode;
+  /** a caution that does not block; true marks the control only */
+  warning?: React.ReactNode;
+  required?: boolean;
+  info?: React.ReactNode;
+  infoLabel?: string;
+  layout?: FieldLayout;
+  /** a size name for the label column (plx-field--label-<value>) */
+  labelWidth?: string;
+  /** true (the limit is the control's maxLength) or the limit */
+  counter?: boolean | number;
+  strings?: Catalog | null;
+  type?: string;
+  inputMode?: React.HTMLAttributes<HTMLElement>['inputMode'];
+  autoComplete?: string;
+  enterKeyHint?: React.HTMLAttributes<HTMLElement>['enterKeyHint'];
+  /** the control: one element */
+  children: React.ReactElement;
+};
+export function Field({ label, hideLabel = false, description, error, warning, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }: FieldProps) {
   const id = React.useId();
   const formLayout = React.useContext(FieldLayoutContext);
   const lay = layout || formLayout || 'stacked';
@@ -66,27 +94,27 @@ export function Field({ label, hideLabel = false, description, error, warning, r
   const descId = description ? controlId + '-d' : undefined, errId = error ? controlId + '-e' : undefined;
   const showWarning = !!warning && !error, warnId = showWarning ? controlId + '-w' : undefined;
   const [showInfo, setShowInfo] = React.useState(false);
-  const labelRef = React.useRef(null);
+  const labelRef = React.useRef<HTMLLabelElement>(null);
   const cut = useTruncated(labelRef);
-  const child = React.Children.only(children);
+  const child = React.Children.only(children) as React.ReactElement<FieldControlProps>;
   // the character counter: the limit, the length (the control's value, else what was typed), what is left
   const max = counter ? (typeof counter === 'number' ? counter : Number(child.props.maxLength) || 0) : 0;
   const [typed, setTyped] = React.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
-  const t = useStrings('field.counter', strings);
-  const about = useStrings('field').about;
-  const warnWord = useStrings('field').warning;
+  const t = useStrings('field.counter', strings) as { over: string; left: string };
+  const about = useStrings('field').about as string;
+  const warnWord = useStrings('field').warning as string;
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
-  const said = React.useRef(null);
+  const said = React.useRef<number | null>(null);
   React.useEffect(() => {
     if (!max || !near || said.current === null) { said.current = length; return; }
     if (said.current !== length) { said.current = length; announce(over ? countText(t.over, length - max) : countText(t.left, max - length)); }
   }, [length, max, near, over, t.over, t.left]);
   // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.ts)
   const describedBy = useDescribedBy(child.props['aria-describedby'], descId, countId, errId, warnId);
-  const props = {
+  const props: Record<string, unknown> = {
     id: child.props.id || controlId,
     'aria-describedby': describedBy,
     invalid: child.props.invalid !== undefined ? child.props.invalid : (error || over ? true : undefined),
@@ -97,10 +125,10 @@ export function Field({ label, hideLabel = false, description, error, warning, r
   if (max) {
     // people may type past the limit (the count shows it); the length is followed for an uncontrolled control
     props.maxLength = undefined;
-    props.onChange = (e) => { setTyped(e.target.value.length); if (child.props.onChange) child.props.onChange(e); };
+    props.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setTyped(e.target.value.length); if (child.props.onChange) child.props.onChange(e); };
   }
   // keyboard hints given on the Field reach the control, unless it has its own
-  const hints = { type, inputMode, autoComplete, enterKeyHint };
+  const hints: Record<string, unknown> = { type, inputMode, autoComplete, enterKeyHint };
   Object.keys(hints).forEach((k) => { if (hints[k] !== undefined && child.props[k] === undefined) props[k] = hints[k]; });
   const control = React.cloneElement(child, props);
   return (
@@ -109,7 +137,7 @@ export function Field({ label, hideLabel = false, description, error, warning, r
         <Tooltip content={label} disabled={!cut} describe={false} className="plx-field__label-tip">
           <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
         </Tooltip>
-        {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || about.replace('{label}', label)} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
+        {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || about.replace('{label}', label as string)} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
         {lay === 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}
       </div>
       <div className="plx-field__control">
