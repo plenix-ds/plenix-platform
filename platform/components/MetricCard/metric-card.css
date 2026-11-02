@@ -14,8 +14,8 @@
 
 /* the styles: edge, soft, filled, gradient (data colors only) */
 .plx-metric-card--edge{border-inline-start-color:var(--plx-comp-data-color);border-inline-start-width:var(--plx-comp-metric-card-edge-width);}
-.plx-metric-card--soft{--_metric-card-text:var(--plx-comp-data-color-on-soft);--_metric-card-muted:var(--plx-comp-data-color-on-soft);--_metric-card-subtle:var(--plx-comp-data-color-on-soft);background-color:var(--plx-comp-data-color-soft);}
-.plx-metric-card--filled,.plx-metric-card--gradient{--_metric-card-text:var(--plx-comp-metric-card-on-color-text);--_metric-card-muted:var(--plx-comp-metric-card-on-color-text);--_metric-card-subtle:var(--plx-comp-metric-card-on-color-text);--_metric-card-divider:var(--plx-comp-metric-card-on-color-divider);--plx-comp-button-context-icon-color:var(--plx-comp-metric-card-on-color-text);background-color:var(--plx-comp-data-color);border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-top-color:transparent;}
+.plx-metric-card--soft{--_metric-card-lead-icon:var(--plx-comp-data-color-on-soft);--_metric-card-text:var(--plx-comp-data-color-on-soft);--_metric-card-muted:var(--plx-comp-data-color-on-soft);--_metric-card-subtle:var(--plx-comp-data-color-on-soft);background-color:var(--plx-comp-data-color-soft);}
+.plx-metric-card--filled,.plx-metric-card--gradient{--_metric-card-lead-icon:var(--plx-comp-metric-card-on-color-text);--_metric-card-text:var(--plx-comp-metric-card-on-color-text);--_metric-card-muted:var(--plx-comp-metric-card-on-color-text);--_metric-card-subtle:var(--plx-comp-metric-card-on-color-text);--_metric-card-divider:var(--plx-comp-metric-card-on-color-divider);--plx-comp-button-context-icon-color:var(--plx-comp-metric-card-on-color-text);background-color:var(--plx-comp-data-color);border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-top-color:transparent;}
 .plx-metric-card--gradient{background-image:radial-gradient(circle at 0% 0%,var(--plx-comp-data-color),var(--_metric-card-gradient-to));}
 .plx-metric-card[data-plx-gradient-to="blue"]{--_metric-card-gradient-to:var(--plx-sys-data-color-blue);}
 .plx-metric-card[data-plx-gradient-to="green"]{--_metric-card-gradient-to:var(--plx-sys-data-color-green);}
@@ -38,6 +38,12 @@
 .plx-metric-card__title{color:var(--_metric-card-text);font-family:var(--plx-comp-metric-card-title-font-family);font-size:var(--plx-comp-metric-card-title-font-size);font-weight:var(--plx-comp-metric-card-title-font-weight);letter-spacing:var(--plx-sys-text-title-letter-spacing);line-height:var(--plx-ref-line-height-tight);margin-block-end:0;margin-block-start:0;word-spacing:normal;}
 .plx-metric-card__title--icon{align-items:center;column-gap:var(--plx-comp-metric-card-title-gap);display:flex;}
 .plx-metric-card__icon{color:var(--_metric-card-text);display:inline-flex;flex-shrink:0;}
+/* the plain icons of icon-start and of list rows (no tile, #882): gray by default, a data hue its data color; on a soft,
+   filled or gradient card the lead icon takes the card's text color */
+.plx-metric-card__lead-icon{color:var(--_metric-card-lead-icon,var(--plx-comp-metric-card-icon-color));}
+.plx-metric-card__lead-icon[data-plx-color]{color:var(--_metric-card-lead-icon,var(--plx-comp-data-color));}
+.plx-metric-card__row-icon{color:var(--plx-comp-metric-card-icon-color);}
+.plx-metric-card__row-icon[data-plx-color]{color:var(--plx-comp-data-color);}
 .plx-metric-card__context{color:var(--_metric-card-muted);font-size:var(--plx-comp-metric-card-context-font-size);margin-block-end:0;margin-block-start:0;}
 .plx-metric-card__actions{align-items:center;column-gap:var(--plx-comp-metric-card-actions-gap);display:flex;flex-shrink:0;position:relative;}
 
@@ -118,7 +124,7 @@
 /* footer */
 .plx-metric-card__footer{border-block-start-color:var(--_metric-card-divider);border-block-start-style:solid;border-block-start-width:var(--plx-comp-metric-card-divider-width);color:var(--_metric-card-subtle);font-size:var(--plx-comp-metric-card-footer-font-size);padding-block-end:var(--plx-comp-metric-card-footer-padding-block);padding-block-start:var(--plx-comp-metric-card-footer-padding-block);padding-inline-end:var(--plx-comp-metric-card-padding-inline);padding-inline-start:var(--plx-comp-metric-card-padding-inline);text-align:end;}
 
-/* the headerless layouts: tile (title, then the value at the end) and icon-start (a large tile, the value, the title) */
+/* the headerless layouts: tile (title, then the value at the end) and icon-start (a large icon, the value, the title) */
 .plx-metric-card--tile,.plx-metric-card--icon-start{align-items:center;column-gap:var(--plx-comp-metric-card-header-gap);flex-direction:row;padding-block-end:var(--plx-comp-metric-card-header-padding-block);padding-block-start:var(--plx-comp-metric-card-header-padding-block);padding-inline-end:var(--plx-comp-metric-card-padding-inline);padding-inline-start:var(--plx-comp-metric-card-padding-inline);}
 .plx-metric-card__compact{display:grid;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-metric-card-heading-row-gap);}
 .plx-metric-card--tile .plx-metric-card__compact{align-items:center;column-gap:var(--plx-comp-metric-card-header-gap);grid-template-columns:minmax(0,1fr) auto;}

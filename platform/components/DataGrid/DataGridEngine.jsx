@@ -203,7 +203,7 @@ function NextEngine(props) {
   const unreadKey = React.useCallback((record) => record[index], [index]);
   const [ownOpen, setOwnOpen] = React.useState(null);
   const unread = useUnread(canonical, unreadKey, props),
-    [localUnreadOnly, setUnreadOnly] = React.useState(false);
+    [localUnreadOnly] = React.useState(false);
   const unreadOnly = props.unreadOnly ?? localUnreadOnly;
   const activeFilter = React.useMemo(
     () => (unreadOnly ? { keys: unread.keys, filter: deferredFilter } : deferredFilter),
@@ -620,7 +620,7 @@ function NextEngine(props) {
   const openId = props.openKey !== undefined ? (props.openKey == null ? null : recordKey(props.openKey)) : ownOpen;
   const isOpen = (id) => openId != null && String(id) === String(openId),
     marked = (id) => !!selection[id] || (!selectable && !options.selectableRows && isOpen(id));
-  const { selectionRows, selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow } = selectionActions({
+  const { selectedVisible, allVisible, selectAll, pickCheckbox, chooseRow } = selectionActions({
     table,
     live,
     selection,

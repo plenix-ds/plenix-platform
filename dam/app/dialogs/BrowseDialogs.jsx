@@ -20,7 +20,7 @@
 import React from 'react';
 import {
   Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataGrid, Tag, TagList, TagInput, Button, Icon,
-  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorPicker, CATEGORY_COLORS,
+  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, ColorPicker, CATEGORY_COLORS,
 } from 'plenix-platform';
 
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
@@ -206,7 +206,7 @@ function FieldVisibilityDialog({ open, onClose, value, onSave, title, descriptio
           { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, sortable: false, render: () => <Icon name="menu-lines" size="sm" /> },
           { title: 'Field', field: 'name', kind: 'name', sortable: false },
           { title: 'Type', field: 'type', kind: 'data', sortable: false },
-          { title: 'Show', field: 'show', kind: 'center', align: 'right', headerAlign: 'right', sortable: false, render: (r) => (
+          { title: 'Show', field: 'show', kind: 'center', align: 'right', sortable: false, render: (r) => (
             <Switch label={'Show ' + r.name} labelHidden checked={!!draft[r.name]} onChange={(e) => setDraft({ ...draft, [r.name]: e.target.checked })} />) },
         ]} />
       </Stack>
@@ -245,7 +245,7 @@ function CatEditFieldsDialog({ open, onClose, onDone }) {
           { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, sortable: false, render: () => <Icon name="menu-lines" size="sm" /> },
           { title: 'Field', field: 'name', kind: 'name', sortable: false },
           { title: 'Type', field: 'type', kind: 'data', sortable: false },
-          { title: 'Remove', field: 'remove', kind: 'center', align: 'right', headerAlign: 'right', sortable: false, render: (r) => (
+          { title: 'Remove', field: 'remove', kind: 'center', align: 'right', sortable: false, render: (r) => (
             <Button size="xs" variant="ghost" iconOnly icon="close" label={'Remove ' + r.name} onClick={() => remove(r.name)} />) },
         ]} />
         <Select name="addAnotherField" aria-label="Add another field" value="" onChange={add}>

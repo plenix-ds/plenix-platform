@@ -7,11 +7,11 @@
      <EntityPicker kind="teams" options={teams} value={team} onChange={setTeam} label="Team" />
      <EntityPicker entityName="projects" options={projects} value={p} onChange={setP} onBrowse={openProjectDialog} label="Project" />
    Props:
-     kind: "records" (default: an icon tile, the name, a detail and an ID) | "people" (the avatar with presence, the name
-       and an email or role) | "teams" (a team icon tile, the name and the member count)
+     kind: "records" (default: an icon, the name, a detail and an ID) | "people" (the avatar with presence, the name
+       and an email or role) | "teams" (a team icon, the name and the member count)
      options: the records: [{ value, label, description, meta, icon, src, color, presence, disabled }]: description is the
        second line (an email, a role, a path), meta a technical value at the end (an ID, a count) in the data font, icon
-       the tile's icon (records), src, color and presence the person's (people)
+       the icon (records), src, color and presence the person's (people)
      value: the chosen value, single; onChange(value, option) runs with it
      values: the chosen values, with multiple; onChange(values) runs with the new array
      multiple: several records, shown as tags before the text (default false)
@@ -49,7 +49,6 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { Tag } from '../Tag/Tag.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { IconTile } from '../IconTile/IconTile.tsx';
 import { Icon } from '../Icon/Icon.tsx';
 import { Spinner } from '../Loading/Loading.tsx';
 import { announce } from '../../utils/announce.tsx';
@@ -137,7 +136,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
   const visual = (o, size) => {
     if (kind === 'people') return <Avatar name={o.label} src={o.src} color={o.color} presence={o.presence} size={size === 'field' ? 'xs' : 'sm'} />;
     const name = o.icon || (kind === 'teams' ? SettingsUsersIcon : DocumentIcon);
-    return size === 'field' ? <Icon name={name} /> : <IconTile icon={name} size="sm" />;
+    return size === 'field' ? <Icon name={name} /> : <Icon name={name} size="sm" className="plx-entity-picker__icon" />;
   };
   const optId = (i) => auto + '-o' + i;
   const hint = placeholder || (kind === 'people' && !entityName ? t.placeholderPeople : fill(t.placeholder, { entityName: noun }));

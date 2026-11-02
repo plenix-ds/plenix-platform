@@ -45,6 +45,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { elementMs as ms } from '../../utils/tokenTime.ts';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.ts';
 import { useDescriptionId, useDescribedBy } from '../../utils/describedBy.ts';
 
@@ -53,13 +54,6 @@ type Timer = ReturnType<typeof setTimeout>;
 
 // true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
 export const InTooltip = React.createContext(false);
-
-// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el: Element | null, name: string) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
 
 // the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
 // the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.

@@ -48,7 +48,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
 import { focusables, useLayer, useUid } from '../../utils/layer.ts';
-import { Icon, asIcon } from '../Icon/Icon.tsx';
+import { asIcon } from '../Icon/Icon.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Dialog, Drawer } from '../Dialog/Dialog.jsx';
 import { useGesture } from '../../hooks/useGesture.ts';

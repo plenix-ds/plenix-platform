@@ -10,7 +10,7 @@
      dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
      locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
      lang: the lang attribute, when it is not the locale
-     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     root: true sets dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
      follow: the page decides (default false): the direction is <html>'s dir as it is and as it changes; nothing is
        written and no wrapper is added, so an application root (mountSuite, the Asset Manager's islands) gets the
        context without any change to the page; setDir sets <html>'s dir
