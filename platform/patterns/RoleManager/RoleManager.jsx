@@ -50,6 +50,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { around } from '../../utils/fillNodes.tsx';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
@@ -81,7 +82,6 @@ import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 import { fill } from '../../utils/fill.ts';
 
 const ROLE_ICONS = { owner: SettingsPermissionsIcon, editor: PencilIcon, viewer: VisibilityIcon };
-const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const H = React.forwardRef(function H({ level, ...props }, ref) { return React.createElement('h' + Math.min(6, Math.max(2, level)), Object.assign({ ref }, props)); });
 
 function groupsOf(permissions) {

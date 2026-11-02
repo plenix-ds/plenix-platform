@@ -89,6 +89,7 @@ child({ units: ['components/Metric', 'charts', 'patterns/RecordPage', 'patterns/
 // the Messages app on the Chat parts and the Chat spec page (issue 637, slice 6): messages/ is an app in changed.js, not a unit (issue 756)
 child({ units: ['components/Chat', 'components/Avatar'], apps: ['messages'] }, 'messages-chat-s6.test.js');
 child({ units: ['utils/richTextClean.ts', 'components/RichText', 'components/RichTextEditor'] }, 'rich-text-clean-689.test.js');   // the rich-text sanitizer against hostile input (issue 689)
+child({ units: ['utils/richTextClean.ts', 'components/RichTextEditor'] }, 'rte-insert-image-884.test.js');   // the editor's Insert image works, left to right and right to left (issue 884)
 // the keyboard patterns of the parts keyboard.test.js does not cover (issue 691)
 child({ units: ['components/Menu', 'components/SplitButton', 'components/Combobox', 'components/Dialog', 'components/Sheet', 'components/Popover', 'patterns/Popconfirm', 'components/Slider', 'components/Checkbox', 'patterns/SplitView', 'components/Resizable', 'components/Calendar', 'components/OtpInput'] }, 'keyboard-apg-691.test.js');
 // the last parts without a keyboard test, and the APG gaps (issue 706)
@@ -98,6 +99,7 @@ child({ units: ['components/Rating', 'components/Divider'] }, 'rating-divider-80
 child({ units: ['components/DataGrid'] }, 'data-grid-setvalue-736.test.js');   // api.cell(id, field).setValue reaches the record by the application's id (issue 736)
 child({ units: ['components/DataGrid'] }, 'data-grid-default-cards-679.test.js');   // every grid's narrow cards are the row template by default; plain stays reachable; wide unchanged (issue 679)
 child({ units: ['components/DataGrid'] }, 'data-grid-edit-keys-737.test.js');   // F2 and typing start editing; not read-only, IME, Ctrl/Alt/Meta, Space; Shift+arrows keep working (issue 737)
+child({ units: ['components/Carousel'] }, 'carousel-fit-883.test.js');   // perView shows fewer slides in a narrow strip (least slide width), pages follow; wider shows more; perView 1 unchanged
 child({ units: ['components/MenuBar', 'components/Menu'] }, 'menubar-805.test.js');   // the MenuBar: one Tab stop, the arrows, open and switch, Escape, hover, type-ahead, More (issue 805)
 child({ units: ['components/DataGrid'] }, 'data-grid-cell-range-465.test.js');   // cell range selection: Shift with the arrows, the border, copy, announcement, 600 rows (issue 465)
 child({ units: ['components/Text', 'components/Isolate', 'components/DataGrid'] }, 'bidi-data-838.test.js');   // a spaced phone number and IBAN keep their digit groups in order in an Arabic page (issue 838)
@@ -113,6 +115,7 @@ child({ units: ['components/CollapsibleSection', 'components/NavList', 'componen
 // platform/providers/ is not a unit in tests/changed.js: it reaches the slice, which starts every child here.
 // a date with no time is that calendar day in every time zone (issue 342)
 child({ units: ['components/DatePicker', 'components/Time', 'utils/format.ts'] }, 'date-only.test.js');
+child({ units: ['components/Time'] }, 'time-hook-order-885.test.js');   // Time keeps its hooks in order when its value comes and goes (issue 885)
 // DatePicker and TimePicker follow LocaleProvider's time zone (issue 813)
 child({ units: ['components/DatePicker', 'components/TimePicker', 'components/Calendar', 'utils/zone.ts'] }, 'picker-timezone-813.test.js');
 // a branch loads only when it is first opened: Tree, TreeSelect, Cascader through MillerColumns (issue 814)

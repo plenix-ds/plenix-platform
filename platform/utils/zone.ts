@@ -36,7 +36,7 @@ export function wallOf(ms: number, zone: string): { date: string; time: string; 
 }
 
 // the zone's offset from UTC at a moment, in milliseconds (east positive)
-export function zoneOffset(ms: number, zone: string): number {
+function zoneOffset(ms: number, zone: string): number {
   const whole = Math.floor(ms / 1000) * 1000;
   return wallOf(whole, zone).wall - whole;
 }
