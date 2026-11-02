@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Design system (submodule)
         env:
@@ -88,7 +88,7 @@ jobs:
       TEST_SHARD: ${{ matrix.shard }}
       TEST_TIMEOUT_MS: '5400000'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v5
         with:
@@ -98,7 +98,7 @@ jobs:
       - run: npm ci
 
       - name: The St. John test site (its own public repository, on the owner's account; no token needed)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: LighthouseCollection/st-john-test-site
           # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and

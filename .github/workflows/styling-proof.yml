@@ -63,9 +63,9 @@ jobs:
           if [ -z "$DS_TOKEN" ]; then echo "::error::DS_TOKEN is not set: the design system cannot be checked out"; exit 1; fi
           git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with: { ref: '${{ inputs.head }}', path: head, persist-credentials: false }
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with: { ref: '${{ inputs.base }}', path: base, persist-credentials: false }
       # the design system with DS_TOKEN (checkout's own token cannot read the private repository)
       - name: Design system (submodule) in both
