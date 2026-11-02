@@ -89,6 +89,7 @@ child({ units: ['components/Metric', 'charts', 'patterns/RecordPage', 'patterns/
 // the Messages app on the Chat parts and the Chat spec page (issue 637, slice 6): messages/ is an app in changed.js, not a unit (issue 756)
 child({ units: ['components/Chat', 'components/Avatar'], apps: ['messages'] }, 'messages-chat-s6.test.js');
 child({ units: ['utils/richTextClean.ts', 'components/RichText', 'components/RichTextEditor'] }, 'rich-text-clean-689.test.js');   // the rich-text sanitizer against hostile input (issue 689)
+child({ units: ['utils/richTextClean.ts', 'components/RichTextEditor'] }, 'rte-insert-image-884.test.js');   // the editor's Insert image works, left to right and right to left (issue 884)
 // the keyboard patterns of the parts keyboard.test.js does not cover (issue 691)
 child({ units: ['components/Menu', 'components/SplitButton', 'components/Combobox', 'components/Dialog', 'components/Sheet', 'components/Popover', 'patterns/Popconfirm', 'components/Slider', 'components/Checkbox', 'patterns/SplitView', 'components/Resizable', 'components/Calendar', 'components/OtpInput'] }, 'keyboard-apg-691.test.js');
 // the last parts without a keyboard test, and the APG gaps (issue 706)
