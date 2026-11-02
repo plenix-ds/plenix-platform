@@ -16,7 +16,7 @@ const path = require('path');
 
 const NAME = 'bare-icons';
 // generated bundles and copies are checked through their sources
-const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs)[\\/]|(^|[\\/])(app|assets|spec-parts|native-guidance|native-guidance-full)\.js$|\.min\.js$|[\\/]plenix-icons-[a-z0-9-]+\.js$/;
+const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs|spec-chunks)[\\/]|(^|[\\/])(app|assets|spec-index|spec-parts|native-guidance|native-guidance-full)\.js$|\.min\.js$|[\\/]plenix-icons-[a-z0-9-]+\.js$/;
 // "plx-icon plx-icon--<a name, or the start of a name built in code>" inside one class string
 const BARE = /\bplx-icon\s+plx-icon--(?:[a-z0-9]|['"]\s*\+)/;
 
