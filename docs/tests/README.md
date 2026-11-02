@@ -155,6 +155,7 @@ Each line links to the test's page. A test that a group test starts is listed un
 - [labs](labs.md): In the design spec, each component lab's Edit dialog changes the setting it says it changes, so a designer adjusting a color or size edits the right token.
 - [messages-chat-s6](messages-chat-s6.md): The Messages app shows conversations with the shared chat parts (date lines, grouped messages, photos and sent/read status) and still sends replies, and the design spec's Chat page shows every part with the owner's rules.
 - [project-notes-632](project-notes-632.md): In the Projects app, each project shows the notes that belong to it.
+- [drawer-motion-912](drawer-motion-912.md): A side drawer slides in from its own edge, in both reading directions, instead of popping in like a dialog, and stands still with reduced motion.
 
 ### Charts
 
