@@ -125,7 +125,8 @@ function first(part, what, m) {
     notFirst('Table', 'a hovered row (selectable class forced)', await page.evaluate(MEASURE, row('t', 'r5')));
     await away(); await settle();
 
-    // the stylesheet: Table's two row-line rules are DataGrid's with the block name swapped
+    // the stylesheet: DataGrid's two row-line rules, which apply to a static Table too: since issue 882 (one shared copy of the
+    // table and grid styles) a Table's rows carry DataGrid's classes and there is no Table copy of the rules
     const rules = await page.evaluate(() => {
       const out = [];
       const walk = (list) => { for (const r of list) {
@@ -138,8 +139,10 @@ function first(part, what, m) {
     });
     const of = (block) => rules.filter((r) => r.sel.startsWith('.plx-' + block + '__')).map((r) => ({ sel: r.sel.split('plx-' + block + '__').join('B__'), css: r.css })).sort((a, b) => (a.sel < b.sel ? -1 : 1));
     const grid = of('data-grid'), table = of('table');
-    check('Table: the shadow rule and the first-row rule are in the stylesheet', table.some((r) => /box-shadow/.test(r.css) && /:not\(\.B__grid-row--first\)/.test(r.sel)) && table.some((r) => /::after/.test(r.sel) && /B__grid-row--first/.test(r.sel)), rules);
-    check('Table: its row-line rules match DataGrid\'s', grid.length >= 2 && JSON.stringify(grid) === JSON.stringify(table), { grid, table });
+    check('DataGrid: the shadow rule and the first-row rule are in the stylesheet', grid.some((r) => /box-shadow/.test(r.css) && /:not\(\.B__grid-row--first\)/.test(r.sel)) && grid.some((r) => /::after/.test(r.sel) && /B__grid-row--first/.test(r.sel)), rules);
+    check('Table: no copy of the row-line rules of its own (the grid\'s apply)', table.length === 0, table);
+    const tableRow = await page.evaluate((s) => { const r = document.querySelector(s); return r ? r.className : null; }, row('t', 'r2'));
+    check('Table: its rows carry DataGrid\'s row class, so DataGrid\'s row-line rules draw them', !!tableRow && /\bplx-data-grid__grid-row\b/.test(tableRow) && !/plx-table__/.test(tableRow), tableRow);
 
     check('DataGrid: no script errors', errors.length === 0, errors);
   } finally { if (browser) await browser.close(); server.close(); }
