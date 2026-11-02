@@ -1,7 +1,7 @@
 /* Plenix tests · a split view resizes as far as its room allows (issue 873, P1; the owner, 2026-11-01: "I need to be able to
    resize any split view screen!!!!!"). Written before the fix: on the old SplitView it fails at the 720px ceiling.
    Summary (the browser, side by side unless said):
-     an AITEAM-shaped split (defaultSize 540, no maxSize) starts at 540 and End, a pointer drag to the window's edge, and
+     an AITEAM-shaped split (defaultSize 540, no maxSize) starts at 544 (540 on the nearest 8px line, issue 882) and End, a pointer drag to the window's edge, and
        aria-valuemax all reach the room: the split view's panels less the gap and the second panel's token minimum, never
        720; the second panel keeps that minimum; the words at the limit say so ("The other pane needs at least …")
      maxSize 960 and maxSize 600 do not cap it (deprecated, no error): the same ceiling
@@ -75,7 +75,8 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
       await open(1440);
       await draw({ defaultSize: 540 }, { dir });
       let f = await facts();
-      assert.equal(f.now, 540, d + 'defaultSize stays the starting width');
+      // the 8px drag grid (issue 882): a defaultSize settles on the nearest 8px line, a tie going up (540 opens at 544)
+      assert.equal(f.now, 544, d + 'defaultSize opens on the nearest 8px line (540 -> 544)');
       const ceiling = Math.min(f.room, f.win);
       assert.ok(ceiling > 720, d + 'the room at 1440 is wider than the old 720px ceiling (' + ceiling + ')');
       assert.equal(f.max, ceiling, d + 'aria-valuemax is the room (the second panel keeps its minimum), never 720; got ' + f.max + ' for ' + ceiling);

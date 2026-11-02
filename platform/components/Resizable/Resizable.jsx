@@ -26,7 +26,7 @@
      minWidth, maxWidth, minHeight, maxHeight: the limits in pixels (defaults: the tokens --plx-comp-resizable-min-width,
        -max-width, -min-height and -max-height: 120 to 560 wide, 80 to 400 high)
      steps: the only sizes allowed, smallest first (each a size token): an array for the resized axis, or { width: [],
-       height: [] }; without it the settled size is on the 8px drag grid within the limits
+       height: [] }; without it the settled size is on the 8px drag grid within the limits: the nearest line, a tie going up (a default of 540 opens at 544; issue 882)
      strings: the words it says, for other languages: { width: "{label} width", height: "{label} height" }
        "Reset size" }
      strings.minWidth, maxWidth, minHeight, maxHeight: optional explanations at those limits.

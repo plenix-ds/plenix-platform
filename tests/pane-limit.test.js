@@ -32,7 +32,8 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
       await page.close(); return got;
     };
     const share = (w) => Math.floor(w * 0.9 / 4) * 4;
-    for (const [width, expectPane] of [[1000, 896], [1280, 1152], [2000, 1600]])   // a pane on the 8px drag grid (issue 882): 90% of 1000 is 900, the line below it 896 {
+    // a pane on the 8px drag grid (issue 882): 90% of 1000 is 900, the 8px line below it 896
+    for (const [width, expectPane] of [[1000, 896], [1280, 1152], [2000, 1600]]) {
       const got = await run(width);
       assert.equal(got.paneMax, expectPane, 'the pane limit at ' + width + 'px is the smaller of 90% of the window and 1600');
       assert.equal(got.end, expectPane, 'End goes to that limit at ' + width + 'px');
