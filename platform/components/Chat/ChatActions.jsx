@@ -28,11 +28,11 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 import AddReactionIcon from 'plenix-platform/icons/material/add-reaction';
 
 // the quick reactions, in the owner's order, each with its name for assistive technology (the strings' keys)
-export const QUICK_REACTIONS = [['👍', 'thumbsUp'], ['❤️', 'heart'], ['😂', 'laugh'], ['😮', 'wow'], ['😢', 'sad'], ['🙏', 'thanks']];
+const QUICK_REACTIONS = [['👍', 'thumbsUp'], ['❤️', 'heart'], ['😂', 'laugh'], ['😮', 'wow'], ['😢', 'sad'], ['🙏', 'thanks']];
 const nameOf = (emoji, t) => { const q = QUICK_REACTIONS.find((r) => r[0] === emoji); return q ? t[q[1]] : emoji; };
 
 // React: a panel of the quick reactions and More reactions (a placeholder until the emoji picker, issue 646)
-export function ReactionPicker({ onReact, t, trigger }) {
+function ReactionPicker({ onReact, t, trigger }) {
   const [more, setMore] = React.useState(false);
   return (
     <Popover title={t.addReaction} size="md" placement="bottom-start" trigger={trigger}>

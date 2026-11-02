@@ -45,6 +45,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { around } from '../../utils/fillNodes.tsx';
 import { useUid } from '../../utils/layer.ts';
 import { announce } from '../../utils/announce.tsx';
 import { Button } from '../../components/Button/Button.tsx';
@@ -53,7 +54,6 @@ import { useStrings } from '../../providers/LocaleProvider.tsx';
 import { fill } from '../../utils/fill.ts';
 
 const clock = (sec) => { const s = Math.max(0, Math.ceil(sec)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
-const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const MILESTONES = [60, 30, 10];
 
 // the seconds left, from expiresAt (ticking every second) or from remaining
