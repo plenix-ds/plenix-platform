@@ -140,6 +140,8 @@ child({ units: ['patterns/AppShell', 'patterns/AppHeader', 'patterns/NavPane', '
 child({ units: ['providers/DirectionProvider'] }, 'rtl-charts.test.js');
 child({ units: ['components/NavList', 'components/Fieldset', 'components/Checkbox', 'providers/DirectionProvider'] }, 'rtl-ctm-question.test.js');
 child({ units: ['components/RichTextEditor', 'components/DatePicker', 'patterns/TimeGrid', 'components/Carousel', 'components/DocumentViewer'] }, 'rtl-editing-time.test.js');
+// a Drawer slides in with its own motion, not the dialog's pop-in; reduced motion stills both (issue 912)
+child({ units: ['components/Dialog'] }, 'drawer-motion-912.test.js');
 // Carousel and Tabs effects run when their inputs change, not after every render (issue 882, item 5)
 child({ units: ['components/Carousel', 'components/Tabs'] }, 'effect-deps-882.test.js');
 child({ units: ['patterns/AppShell'], apps: ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'] }, 'rtl-whole-page.test.js');
