@@ -39,21 +39,36 @@ import { formatBytes } from '../../utils/format.ts';
 import { Icon } from '../Icon/Icon.tsx';
 import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
+import type { Catalog } from '../../providers/LocaleProvider.tsx';
 import AttachmentIcon from 'plenix-platform/icons/plenix/attachment';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
 
+type FileInputWords = { none: string; count: string; choose: string; chooseMany: string; remove: string };
+export type FileInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type'> & {
+  accept?: string;
+  multiple?: boolean;
+  /** lists the chosen files, each with Remove */
+  showList?: boolean;
+  hideSummary?: boolean;
+  /** the chosen files, after a choice or a removal */
+  onChange?: (files: File[], event: React.SyntheticEvent) => void;
+  /** the accessible name when no Field labels it */
+  label?: string;
+  invalid?: boolean;
+  strings?: Catalog | null;
+};
 export const FileInput = React.forwardRef(function FileInput({ accept, multiple = false, showList = false, hideSummary = false, onChange, label, disabled = false, required, invalid,
-  id, 'aria-describedby': describedBy, strings, className, ...rest }, ref) {
-  const t = useStrings('fileInput', strings);
-  const input = React.useRef(null);
-  const [files, setFiles] = React.useState([]);
+  id, 'aria-describedby': describedBy, strings, className, ...rest }: FileInputProps, ref: React.ForwardedRef<HTMLInputElement>) {
+  const t = useStrings('fileInput', strings) as FileInputWords;
+  const input = React.useRef<HTMLInputElement | null>(null);
+  const [files, setFiles] = React.useState<File[]>([]);
   const [focus, setFocus] = React.useState(false);
   const sumId = 'plx-fi' + React.useId().replace(/[^a-zA-Z0-9]/g, '') + '-s';
   const describedAt = useDescribedBy(describedBy, sumId);   // what its owner (a Field) described, then the line that names the chosen file
-  const setRef = (node) => { input.current = node; if (typeof ref === 'function') ref(node); else if (ref) ref.current = node; };
-  const chosen = (e) => { const list = Array.from(e.target.files || []); setFiles(list); if (onChange) onChange(list, e); };
-  const remove = (i) => (e) => {
+  const setRef = (node: HTMLInputElement | null) => { input.current = node; if (typeof ref === 'function') ref(node); else if (ref) ref.current = node; };
+  const chosen = (e: React.ChangeEvent<HTMLInputElement>) => { const list = Array.from(e.target.files || []); setFiles(list); if (onChange) onChange(list, e); };
+  const remove = (i: number) => (e: React.MouseEvent<HTMLElement>) => {
     const next = files.filter((_, j) => j !== i);
     // the input's own list follows, so a form sends what the list shows
     if (typeof DataTransfer !== 'undefined' && input.current) { const dt = new DataTransfer(); next.forEach((f) => dt.items.add(f)); input.current.files = dt.files; }
@@ -61,7 +76,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
     if (onChange) onChange(next, e);
     if (input.current) input.current.focus();
   };
-  const summary = !files.length ? t.none : files.length === 1 ? files[0].name : t.count.replace('{count}', files.length);
+  const summary = !files.length ? t.none : files.length === 1 ? files[0].name : t.count.replace('{count}', files.length as unknown as string);
   const choose = multiple ? t.chooseMany : t.choose;
   return (
     <div className={cx('plx-file-input', hideSummary && 'plx-file-input--hide-summary', disabled && 'is-disabled', className)}>
@@ -70,7 +85,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
           <input ref={setRef} type="file" className="plx-file-input__native plx-visually-hidden" accept={accept} multiple={multiple} disabled={disabled}
             required={required} aria-invalid={invalid || undefined} id={id} aria-label={label || (id ? undefined : choose)}
             aria-describedby={describedAt} onChange={chosen}
-            onFocus={(e) => setFocus(e.target.matches(':focus-visible'))} onBlur={() => setFocus(false)} {...rest} />
+            onFocus={(e) => setFocus((e.target as HTMLInputElement).matches(':focus-visible'))} onBlur={() => setFocus(false)} {...rest} />
           <span className={cx('plx-button', 'plx-button--secondary', 'plx-file-input__button', focus && 'is-focus-visible')} aria-hidden="true" aria-disabled={disabled || undefined}>
             <span className="plx-button__icon"><Icon name={AttachmentIcon} /></span><span className="plx-button__label">{choose}</span>
           </span>

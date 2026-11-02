@@ -133,9 +133,9 @@ for (const f of require('./tools/icons/site-icons.js').buildPages(ROOT, { check:
 // index.js and platform.css (build-exports.js) match their parts (platform/design-system/parts/, platform/exports/)
 for (const f of require('./build-spec-parts.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/design-system/parts: run node build-app.js');
 for (const f of require('./build-exports.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ': its library block differs from platform/exports: run node build-app.js');
-// lanes: a lane carries sources only (#692). The design system's 8 generated files are built here and ignored in its
+// lanes: a lane carries sources only (#692). The design system's generated files (the parts' bundle, index and chunks among them) are built here and ignored in its
 // repository, so a copy under lanes/<task>/design-system/ would overlay a stale build onto the submodule
-const SPEC_GENERATED = ['spec-parts.js', 'ds-sample-parts.css', 'native-guidance.js', 'native-guidance-full.js', 'platforms-standard.js', 'styling-standard.js', 'reviewed.js', 'usage.js'];
+const SPEC_GENERATED = ['spec-parts.js', 'spec-index.js', 'spec-chunks', 'ds-sample-parts.css', 'native-guidance.js', 'native-guidance-full.js', 'platforms-standard.js', 'styling-standard.js', 'reviewed.js', 'usage.js'];
 // A lane's one-line lanes/<task>/BASE names the design-system commit it was built on (the carry merges with it): it is
 // accepted, and a lane without one gets a warning (printed, not a finding)
 if (fs.existsSync(path.join(ROOT, 'lanes'))) for (const lane of fs.readdirSync(path.join(ROOT, 'lanes'))) {

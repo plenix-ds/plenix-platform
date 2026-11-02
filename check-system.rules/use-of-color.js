@@ -15,7 +15,7 @@ const path = require('path');
 
 const NAME = 'use-of-color';
 // generated bundles and copies are checked through their sources
-const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs)[\\/]|(^|[\\/])(app|assets|spec-parts|native-guidance)\.js$|\.min\.js$/;
+const SKIP_FILE = /[\\/](dist|release|node_modules|vendor|Archived|archive|backups|audit|docs|spec-chunks)[\\/]|(^|[\\/])(app|assets|spec-index|spec-parts|native-guidance)\.js$|\.min\.js$/;
 
 function lineOf(text, i) { return text.slice(0, i).split('\n').length; }
 
