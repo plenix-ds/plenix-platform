@@ -12,7 +12,7 @@ const cap=(s)=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 // definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
 const FIND_SOURCES={
   projects:{label:"Projects",noun:"project",filters:[{id:"status",label:"Status"},{id:"tags",label:"Tags",multiple:true}],
-    columns:[{title:"Project",field:"name",kind:"name"},{title:"Status",field:"status",kind:"center",render:r=><Badge tone={r.status==="Active"?"success":"neutral"}>{r.status}</Badge>},{title:"Tags",field:"tags"},{title:"Files",field:"files",kind:"data",align:"right",headerAlign:"right"}],
+    columns:[{title:"Project",field:"name",kind:"name"},{title:"Status",field:"status",kind:"center",render:r=><Badge tone={r.status==="Active"?"success":"neutral"}>{r.status}</Badge>},{title:"Tags",field:"tags"},{title:"Files",field:"files",kind:"data",align:"right"}],
     rows:()=>PROJECTS.map(p=>({key:"p"+p.id,name:p.name,sub:p.desc,cells:{status:cap(p.status),tags:p.tags.join(", "),files:p.files},facets:{status:cap(p.status),tags:p.tags}}))},
   messaging:{label:"Messages",noun:"conversation",filters:[{id:"ch",label:"Channel",multiple:true}],
     columns:[{title:"Conversation",field:"name",kind:"name"},{title:"Last message",field:"preview"},{title:"Channel",field:"ch"},{title:"Time",field:"time",kind:"data"}],
@@ -33,7 +33,7 @@ const FIND_SOURCES={
     columns:[{title:"Bookmark",field:"name",kind:"name"},{title:"Site",field:"url",kind:"data"},{title:"Collection",field:"col"},{title:"Date",field:"date",kind:"data"}],
     rows:()=>ALL_BOOKMARKS.map(b=>({key:"b"+b.id,name:b.title,sub:b.url,cells:{url:b.url,col:b.col,date:b.date},facets:{col:b.col,tags:b.tags}}))},
   files:{label:"Files",noun:"file",filters:[{id:"t",label:"Type",multiple:true},{id:"folder",label:"Folder",multiple:true}],
-    columns:[{title:"Name",field:"name",kind:["name","data"]},{title:"Type",field:"t",kind:"data"},{title:"Size",field:"s",kind:"data",align:"right",headerAlign:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
+    columns:[{title:"Name",field:"name",kind:["name","data"]},{title:"Type",field:"t",kind:"data"},{title:"Size",field:"s",kind:"data",align:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
     rows:()=>ALL_FILES.map((f,i)=>({key:"f"+i,name:f.name,sub:f.folder,cells:{t:f.t,s:f.s,folder:f.folder,d:f.d},facets:{t:f.t,folder:f.folder}}))},
 };
 // the dashboard home: everything, with the section each row comes from (a file is named by its file name: the data font)
