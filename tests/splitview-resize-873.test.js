@@ -5,7 +5,7 @@
        aria-valuemax all reach the room: the split view's panels less the gap and the second panel's token minimum, never
        720; the second panel keeps that minimum; the words at the limit say so ("The other pane needs at least …")
      maxSize 960 and maxSize 600 do not cap it (deprecated, no error): the same ceiling
-     a split view wider than the window stops at the window's share (--plx-sys-shell-pane-window-share, 90%, on the 4px grid),
+     a split view wider than the window stops at the window's share (--plx-sys-shell-pane-window-share, 90%, on the 8px drag grid since issue 882),
        with "Largest width for … (Npx)"
      minSize above the ceiling is capped: aria-valuemin never passes aria-valuemax
      a remembered size (size 1000 with onSizeChange) is honoured, not cut to 720
@@ -54,9 +54,9 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
       const sep = document.querySelector(SEP);
       const min = parseFloat(getComputedStyle(second).minInlineSize) || 0, gap = parseFloat(getComputedStyle(panels).columnGap) || 0;
       const share = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--plx-sys-shell-pane-window-share')) / 100;
-      const room = panels.getBoundingClientRect().width - gap - min, win = Math.floor(window.innerWidth * share / 4) * 4;
+      const room = panels.getBoundingClientRect().width - gap - min, win = Math.floor(window.innerWidth * share / 8) * 8;   // the 8px drag grid (issue 882)
       return { first: Math.round(first.getBoundingClientRect().width), second: Math.round(second.getBoundingClientRect().width), secondMin: min,
-        room: Math.floor(room / 4) * 4, win, now: sep ? +sep.getAttribute('aria-valuenow') : null, min: sep ? +sep.getAttribute('aria-valuemin') : null, max: sep ? +sep.getAttribute('aria-valuemax') : null,
+        room: Math.floor(room / 8) * 8, win, now: sep ? +sep.getAttribute('aria-valuenow') : null, min: sep ? +sep.getAttribute('aria-valuemin') : null, max: sep ? +sep.getAttribute('aria-valuemax') : null,
         stackedOnly: !sep && !!document.querySelector('.plx-split-view [role="separator"][aria-orientation="horizontal"]') };
     }, SEP);
     const words = () => page.evaluate(() => { const t = [...document.querySelectorAll('[popover]')].find((x) => x.matches(':popover-open')); return t ? t.textContent : ''; });
