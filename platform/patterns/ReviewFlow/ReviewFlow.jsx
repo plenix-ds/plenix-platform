@@ -66,7 +66,7 @@ import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { PromptDialog } from '../../components/Dialog/Dialog.jsx';
 import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
-import { useToast } from '../../components/Toast/Toast.jsx';
+import { useOptionalToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
@@ -102,10 +102,6 @@ export function WorkflowStatus({ status = 'draft', label, size, strings, classNa
   return <Badge tone={s.tone} icon={s.icon} size={size} className={cx('plx-workflow-status', className)} {...rest}>{words}</Badge>;
 }
 
-// a toast when the page has a ToastProvider; nothing otherwise (the decision is still announced)
-export function useOptionalToast() {
-  try { return useToast(); } catch (e) { return null; }
-}
 
 const VERB = { approved: 'approve', 'changes-requested': 'changes', rejected: 'reject' };
 const LOOK = { approved: 'primary', 'changes-requested': 'secondary', rejected: 'danger-secondary' };

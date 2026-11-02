@@ -40,7 +40,6 @@
      Charts draw once, with no animation: reduced motion has nothing to remove. A chart that adds motion must drop it under
        prefers-reduced-motion. */
 import React from 'react';
-import { cx } from '../utils/cx.ts';
 import { formatNumber, formatPercent } from '../utils/format.ts';
 import { useChartInteraction } from './interaction.js';
 import { fill } from '../utils/fill.ts';

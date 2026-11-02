@@ -26,9 +26,9 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { reducedMotion as reduced } from '../../utils/tokenTime.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 
-const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const flatten = (items, out = []) => { items.forEach((it) => { out.push(it); if (it.children) flatten(it.children, out); }); return out; };
 // how long a press keeps its section current while the smooth scroll passes the others
 const HOLD = 900;

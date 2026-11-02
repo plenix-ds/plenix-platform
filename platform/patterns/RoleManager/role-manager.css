@@ -7,6 +7,7 @@
 .plx-role-manager--list{row-gap:var(--plx-comp-role-manager-list-gap);}
 .plx-role-manager--detail{row-gap:var(--plx-comp-role-manager-section-gap);}
 .plx-role-manager__list{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-role-manager-list-gap);}
+.plx-role-manager__icon{color:var(--plx-comp-role-manager-icon-color);}
 .plx-role-manager__detail{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-role-manager-section-gap);}
 .plx-role-manager__bar{display:flex;justify-content:flex-end;}
 .plx-role-manager__meta{align-items:baseline;column-gap:var(--plx-comp-role-manager-meta-gap);display:inline-flex;white-space:nowrap;}

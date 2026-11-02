@@ -79,7 +79,7 @@ import { devWarn } from '../../utils/devWarn.ts';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.ts';
 import { focusables, useLayer, useUid } from '../../utils/layer.ts';
-import { Icon, asIcon } from '../Icon/Icon.tsx';
+import { asIcon } from '../Icon/Icon.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Field } from '../Field/Field.jsx';
 import { Input } from '../Input/Input.jsx';

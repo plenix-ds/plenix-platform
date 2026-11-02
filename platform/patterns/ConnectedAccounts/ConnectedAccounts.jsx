@@ -31,7 +31,7 @@
      onDisconnect(account): runs after the Disconnect question is confirmed
      onReconnect(account): Reconnect on a failed connection (no question: the person already agreed)
      confirm: false connects and disconnects without the questions (default true)
-     headingLevel: the level of each service's name (default 3)
+     headingLevel: the number of the heading level of each service's name (default 3)
      strings: the words, for other languages: { label: "Connected accounts", connect: "Connect", disconnect: "Disconnect",
        reconnect: "Reconnect", cancel: "Cancel", connected: "Connected", disconnected: "Not connected", error:
        "Connection error", as: "As {account}", since: "since {date}", connectTitle: "Connect {service}?", connectMessage:
@@ -52,12 +52,13 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
+import { around } from '../../utils/fillNodes.tsx';
 import { announce } from '../../utils/announce.tsx';
 import { formatDate, dateTimeAttr } from '../../utils/format.ts';
 import { Badge } from '../../components/Badge/Badge.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
-import { IconTile } from '../../components/IconTile/IconTile.tsx';
+import { Icon } from '../../components/Icon/Icon.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import LinkIcon from 'plenix-platform/icons/plenix/link';
@@ -65,7 +66,6 @@ import { fill } from '../../utils/fill.ts';
 
 const STATUS = { connected: ['success', 'check'], disconnected: ['neutral', 'link'], error: ['negative', 'alert'] };
 // a sentence with a node in place of {key}: the words around it stay in the UI font
-const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const H = ({ level, ...props }) => React.createElement('h' + Math.min(6, Math.max(2, level || 3)), props);
 
 export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect, confirm = true, headingLevel = 3, strings, as = 'div', className, ...rest }) {
@@ -89,7 +89,7 @@ export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect
 
   return (
     <Tag className={cx('plx-connected-accounts__item', className)} data-plx-state={status} {...rest}>
-      <IconTile className="plx-connected-accounts__tile" icon={a.icon || LinkIcon} size="md" />
+      <Icon className="plx-connected-accounts__icon" name={a.icon || LinkIcon} size="md" />
       <div className="plx-connected-accounts__body">
         <div className="plx-connected-accounts__head">
           <H level={headingLevel} className="plx-connected-accounts__service">{a.service}</H>

@@ -158,13 +158,19 @@ function tokenIndex(root, written, groups = styleDictionary(root)) {
     const uniq = [...new Set(Object.values(vals))];
     t.resolved = uniq.length === 1 ? { all: uniq[0] } : vals;
   }
-  // what uses each token: the Platform's stylesheets other than the token files
+  // what uses each token: the Platform's stylesheets other than the token files (var(--plx-…)), and its scripts (a token
+  // name in the code, outside comments: getPropertyValue('--plx-…'), tokenValue('--plx-…'), var(--plx-…) in a string;
+  // #882: a token only JavaScript reads was listed as unused)
+  const CODE = /\.(js|jsx|ts|tsx|mjs)$/;
   const used = (dir) => { if (!fs.existsSync(dir)) return; for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, f.name);
-    if (f.isDirectory()) { if (!/^(dist|vendor|tokens|design-system|icons)$/.test(f.name)) used(p); continue; }
-    if (!f.name.endsWith('.css') || /themes[\\/]plenix\.css$/.test(p)) continue;
-    const rel = path.relative(root, p).replace(/\\/g, '/'), css = fs.readFileSync(p, 'utf8');
-    for (const m of new Set([...css.matchAll(/var\((--plx-[a-z0-9-]+)/g)].map((x) => x[1]))) if (byName[m]) byName[m].usedBy.push(rel);
+    if (f.isDirectory()) { if (!/^(dist|vendor|tokens|design-system|icons|mobile)$/.test(f.name)) used(p); continue; }
+    const css = f.name.endsWith('.css') && !/themes[\\/]plenix\.css$/.test(p), code = CODE.test(f.name) && !f.name.endsWith('.d.ts');
+    if (!css && !code) continue;
+    const rel = path.relative(root, p).replace(/\\/g, '/'), text = fs.readFileSync(p, 'utf8');
+    const names = css ? [...text.matchAll(/var\((--plx-[a-z0-9-]+)/g)].map((x) => x[1])
+      : [...text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1').matchAll(/--plx-[a-z0-9-]*[a-z0-9]/g)].map((x) => x[0]);
+    for (const m of new Set(names)) if (byName[m]) byName[m].usedBy.push(rel);
   } };
   used(path.join(root, 'platform'));
   // the native values (Platforms Standard 7.1: one set of names, values per platform): each value of the iOS and Android

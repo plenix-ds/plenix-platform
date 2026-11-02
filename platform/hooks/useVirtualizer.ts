@@ -16,7 +16,7 @@
        size; the token is the estimate for the items not rendered)
      axis: "y" (default, a vertical list) or "x" (a horizontal strip)
      grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
-     overscan: rows rendered beyond each edge of the view (default 4)
+     overscan: how many rows are rendered beyond each edge of the view (default 4)
      sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
      returns: { viewportRef, segments, itemProps(index), scrollToIndex(index, { align }), range: { start, end }, columns }
      scrollToIndex(index, { align: "nearest" }): scrolls only as far as brings the item into view (none when it is in view),

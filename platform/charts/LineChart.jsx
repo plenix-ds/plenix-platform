@@ -14,14 +14,14 @@
    Props:
      title, description: the chart's name and its takeaway (ChartFrame) (title required)
      data: the rows, in the x order: [{ month: 'Jan', web: 120, ios: 80 }, …]; a missing value (null) breaks the line
-     x: the field of each row that holds its x value (default "x"): a name (categories), a Date (time) or a number
+     x: a string: the field of each row that holds its x value (default "x"): a name (categories), a Date (time) or a number
      series: the lines, in the legend's order: [{ id, label, field }] (field defaults to id); colors follow that order
        (seriesColor(i))
      xType: "auto" (default: from the first x value) | "band" (categories) | "time" | "linear"
      curve: "linear" (default: straight between values) | "step" (holds each value until the next one: the Step chart)
      step: where a step changes: "after" (default: at the next value) | "before" (at this value)
      points: draws a point on every value (default false; true for few values, or when the moments matter)
-     zero: starts the value axis at zero (default true); false lets a trend fill the plot (say so in the description)
+     zero: true starts the value axis at zero (default true); false lets a trend fill the plot (say so in the description)
      yDomain: [min, max] of the value axis, instead of the data's
      format: (value) => text for values (ticks, tooltip, table), default formatNumber; formatX: (x) => text for x values
        (default: formatDate for time, formatNumber for numbers, the name for categories)
@@ -29,8 +29,8 @@
      size, legendPosition: as ChartFrame; margin: more room around the plot ({ top, end, bottom, start }, pixels on the
        4px grid; default none: the labels' room is made inside the plot)
      legend: "auto" (default: a legend when there are two or more series; interactive toggles) | false | a node
-     interactive: keyboard, pointer, tooltip and live region (default true)
-     zoom: a brush (a drag, or Shift with the arrow keys) zooms to a range of x values; Reset zoom shows all (default false)
+     interactive: true gives it the keyboard, pointer, tooltip and live region (default true)
+     zoom: true adds a brush (a drag, or Shift with the arrow keys) that zooms to a range of x values; Reset zoom shows all (default false)
      onSelect({ r, c, row, series }): a click or Enter on a value selects it (the selected value keeps its ring)
      overlay({ inner, x, y, at }): more SVG on top of the lines: reference lines, thresholds, annotations (x and y place a
        value in the plot, as scales do: y(250), y.ticks(); at(i) the x position of row i)

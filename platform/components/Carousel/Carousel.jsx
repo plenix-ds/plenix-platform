@@ -34,7 +34,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { isRtl } from '../../utils/direction.ts';
-import { tokenMs } from '../../utils/tokenTime.ts';
+import { tokenMs, reducedMotion as reduced } from '../../utils/tokenTime.ts';
 import { useGesture } from '../../hooks/useGesture.ts';
 import { Button } from '../Button/Button.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
@@ -42,7 +42,6 @@ import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { fill } from '../../utils/fill.ts';
 
-const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
 export function Carousel({ label, children, perView = 1, controls = 'both', autoplay = false, page: pageProp, onPageChange, strings, className, ...rest }) {
