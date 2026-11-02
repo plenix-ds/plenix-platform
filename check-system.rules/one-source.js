@@ -6,7 +6,7 @@
 //   one place   no other tag loads a Plenix file: no ../platform/ stylesheet or script besides the loader's two files, no CDN
 //               address (/cdn/), no icon file, data file or application script of its own (the loader adds them)
 //   its files   the application's files the loader asks for exist: <app>/app.js and <app>/plenix-icons-<app>.js
-//               (dam/app/assets.js and dam/plenix-icons-dam.js), suite/plenix-app-data.js
+//               (dam/app/assets.js and dam/plenix-icons-dam.js), suite/plenix-app-data.js, suite/settings-data.js
 // deploy.sh checks the published side: every published page names one release (issue 842, PR 3).
 // Alone: node check-system.rules/one-source.js   -> ONE_SOURCE_OK, or the findings and exit 1
 const fs = require('fs');
@@ -44,11 +44,11 @@ function findings(root = ROOT) {
     if (first !== loader) say(file, lineOf(first.at), 'the loader is not the page\'s first script: ' + first.text);
     for (const t of tags) {
       if (t === loader || t === sheet || !t.src) continue;
-      if (/(^|\/)platform\//.test(t.src) || /\/cdn\//.test(t.src) || /plenix-icons-[a-z]+\.js$|plenix-app-data\.js$|(^|\/)app\.js$|app\/assets\.js$/.test(t.src)) say(file, lineOf(t.at), 'loads a Plenix file itself (the loader loads every one, from one place): ' + t.text);
+      if (/(^|\/)platform\//.test(t.src) || /\/cdn\//.test(t.src) || /plenix-icons-[a-z]+\.js$|(plenix-app-data|settings-data)\.js$|(^|\/)app\.js$|app\/assets\.js$/.test(t.src)) say(file, lineOf(t.at), 'loads a Plenix file itself (the loader loads every one, from one place): ' + t.text);
     }
   }
   // the files the loader asks for, in the source copy
-  const need = ['suite/plenix-app-data.js', 'dam/app/assets.js', 'dam/plenix-icons-dam.js'];
+  const need = ['suite/plenix-app-data.js', 'suite/settings-data.js', 'dam/app/assets.js', 'dam/plenix-icons-dam.js'];
   for (const { app } of pages(root)) if (app !== 'dam') need.push(app + '/app.js', app + '/plenix-icons-' + app + '.js');
   for (const f of [...new Set(need)]) if (!fs.existsSync(path.join(root, f))) say(path.join(root, f), 0, f + ' is missing: the page loader loads it (run npm ci first, or node build-app.js)');
   return out;

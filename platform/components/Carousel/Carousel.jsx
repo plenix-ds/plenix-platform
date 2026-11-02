@@ -10,7 +10,8 @@
      label: the carousel's accessible name (required)
      children: the slides, one child each (cards, images, short panels of equal weight)
      perView: how many slides show at once: 1 (default) | 2 | 3 | 4; with more than one, a part of the next slide shows
-       at the end so people see there is more
+       at the end so people see there is more; in a strip too narrow for the least slide width
+       (--plx-comp-carousel-slide-min) fewer show, down to one
      controls: "both" (default: Previous and Next and the dots) | "arrows" | "dots"
      autoplay: the pages advance by themselves every --plx-comp-carousel-autoplay-interval (default false); a Pause
        button shows; people who ask their system for less motion get it paused
@@ -48,14 +49,32 @@ export function Carousel({ label, children, perView = 1, controls = 'both', auto
   const t = useStrings('carousel', strings);
   const slides = React.Children.toArray(children).filter(Boolean);
   const n = slides.length;
-  const per = clamp(Math.round(perView) || 1, 1, 4);
+  const asked = clamp(Math.round(perView) || 1, 1, 4);
+  const [room, setRoom] = React.useState(0);   // the strip's width in px, 0 until measured
+  const [minSlide, setMinSlide] = React.useState(0);   // --plx-comp-carousel-slide-min in px
+  // the slides keep their least width: in a narrow strip fewer show at once (320px wide: one, with the next peeking)
+  const per = room && minSlide ? clamp(Math.floor(room / minSlide), 1, asked) : asked;
   const pages = Math.max(1, Math.ceil(n / per));
   const [own, setOwn] = React.useState(0);
   const page = clamp(pageProp !== undefined ? pageProp : own, 0, pages - 1);
   const [playing, setPlaying] = React.useState(() => !!autoplay && !reduced());
   const [held, setHeld] = React.useState(false);   // pointer over it or focus in it: autoplay waits
-  const root = React.useRef(null), track = React.useRef(null);
+  const root = React.useRef(null), track = React.useRef(null), shown = React.useRef(0);
   const setPage = (p) => { if (pageProp === undefined) setOwn(p); if (onPageChange && p !== page) onPageChange(p); };
+
+  // the strip's width and the least slide width, kept current as the room changes
+  React.useLayoutEffect(() => {
+    const el = track.current;
+    if (!el) return undefined;
+    const measure = () => {
+      const v = parseFloat(getComputedStyle(el).getPropertyValue('--plx-comp-carousel-slide-min'));
+      setMinSlide(v > 0 ? v : 0); setRoom(el.clientWidth);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure); ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // scrolls the strip so the page's first slide is at its start edge
   const scrollTo = React.useCallback((p) => {
@@ -84,6 +103,7 @@ export function Carousel({ label, children, perView = 1, controls = 'both', auto
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(read); };
     el.addEventListener('scroll', onScroll, { passive: true });
+    if (shown.current !== per) { if (shown.current) onScroll(); shown.current = per; }   // fewer or more slides at once move the pages under the same scroll position: read them again
     return () => { el.removeEventListener('scroll', onScroll); if (frame) cancelAnimationFrame(frame); };
   });
 
