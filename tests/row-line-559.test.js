@@ -10,7 +10,7 @@
          is the line inside its top edge (top 0, height w, bottom border w in c).
      Without the fix the shadow is "none" and no row carries --first, so every check fails.
    Table: a Table has no selection and no row hover (its rows are static), so the states are forced: the test adds
-     plx-table__grid-selected to one row and plx-table__grid-selectable to another and hovers it, then checks the same
+     plx-data-grid__grid-selected to one row and plx-data-grid__grid-selectable to another and hovers it, then checks the same
      computed styles. It also reads the two rules from the loaded stylesheets and checks that Table's are DataGrid's with
      the block name swapped, so the two stay the same rule.
    Usage: node tests/row-line-559.test.js   (started by tests/data-grid.test.js when the DataGrid or the Table changed).
@@ -111,12 +111,12 @@ function first(part, what, m) {
     check('DataGrid: a row that is neither hovered nor selected has no top line', await page.evaluate((s) => getComputedStyle(document.querySelector(s)).boxShadow === 'none', row('g1', 'r2')), 'r2');
 
     // ---- Table (no selection, no row hover: the states are forced with the classes the rule keys on)
-    const tableFirst = await page.evaluate((s) => { const r = document.querySelector(s); return !!r && /plx-table__grid-row--first\b/.test(r.className); }, row('t', 'r1'));
-    check('Table: the first row carries plx-table__grid-row--first', tableFirst, 'r1');
+    const tableFirst = await page.evaluate((s) => { const r = document.querySelector(s); return !!r && /plx-data-grid__grid-row--first\b/.test(r.className); }, row('t', 'r1'));
+    check('Table: the first row carries plx-data-grid__grid-row--first', tableFirst, 'r1');
     await page.evaluate((a, b, c) => {
-      document.querySelector(a).classList.add('plx-table__grid-selected');
-      document.querySelector(b).classList.add('plx-table__grid-selectable');
-      document.querySelector(c).classList.add('plx-table__grid-selected');
+      document.querySelector(a).classList.add('plx-data-grid__grid-selected');
+      document.querySelector(b).classList.add('plx-data-grid__grid-selectable');
+      document.querySelector(c).classList.add('plx-data-grid__grid-selected');
     }, row('t', 'r3'), row('t', 'r5'), row('t', 'r1'));
     await settle();
     notFirst('Table', 'a selected row (class forced)', await page.evaluate(MEASURE, row('t', 'r3')));
