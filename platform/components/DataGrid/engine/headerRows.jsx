@@ -164,10 +164,8 @@ export function headerRows({
   const headerCell = (column) => {
     const c = column.columnDef.meta,
       pinned = column.getIsPinned() === 'left',
-      sorted = column.getIsSorted(),
       filtered = column.getIsFiltered(),
       icon = kinds(c).includes('icon'),
-      hasFilter = !!(c.filter || filterField === c.field || filtered),
       titleFixed = icon ? 'flush' : null,
       offset = pinned ? pinStart(column) : 0;
     const node = (

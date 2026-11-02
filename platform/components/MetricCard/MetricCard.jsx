@@ -24,7 +24,7 @@
        | "week" a value or a yes / no per day | "month" a level per day of a month | "table" a total and its 3–8 rows
      layout: "stacked" (default) | "beside" (the visual at the end, beside the figure: a card two columns wide)
        | "inline" (value types: the context beside the value) | "tile" (no header: the title, then the value at the end)
-       | "icon-start" (no header: a large icon tile before the value and the title)
+       | "icon-start" (no header: a large icon, in the card's color, before the value and the title)
      appearance: "plain" (default) | "edge" (a start edge in the color) | "soft" (the color's soft fill) | "filled" (the
        color as the fill, every text white) | "gradient" (a radial gradient from color to gradientTo, every text white);
        filled and gradient only for the value and summary types, which draw no colored visual
@@ -83,7 +83,6 @@ import { formatPercent } from '../../utils/format.ts';
 import { Icon, asIcon as iconElement, isIconModule } from '../Icon/Icon.tsx';
 import { Badge } from '../Badge/Badge.tsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
-import { IconTile } from '../IconTile/IconTile.tsx';
 import { Count } from '../Count/Count.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Menu } from '../Menu/Menu.jsx';
@@ -110,6 +109,8 @@ const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison',
 const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];
 const APPEARANCES = ['plain', 'edge', 'soft', 'filled', 'gradient'];
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
+// a plain icon (no tile, #882) takes its data color from one of these hues; gray, or none, is the muted icon color
+const iconHue = (c) => (c && c !== 'gray' && HUES.indexOf(c) >= 0 ? c : undefined);
 const ORDER = ['blue', 'purple', 'brown', 'green', 'red', 'gray'];   // breakdown parts without a color, by their order
 
 function toneOf(change, goodWhen) {
@@ -224,7 +225,7 @@ function ListVisual({ items = [], variant, t }) {
           <li key={i.id} className="plx-metric-card__list-row">
             {variant === 'records' ? null : <span className="plx-metric-card__rank">{dataPhrase(t.rank, { n: n + 1 })}</span>}
             {variant === 'records' ? null : (i.person ? <Avatar name={i.person.name} src={i.person.src} gender={i.person.gender} size="sm" />
-              : i.icon ? <IconTile icon={i.icon} hue={i.color} size="sm" /> : <span />)}
+              : i.icon ? <Icon name={i.icon} size="sm" className="plx-metric-card__row-icon" data-plx-color={iconHue(i.color)} /> : <span />)}
             <span className="plx-metric-card__row-label">{label}</span>
             {i.status ? <Badge tone={i.status.tone} icon={i.status.icon}>{i.status.label}</Badge> : <Count variant="pill" tone="neutral" value={i.value} />}
           </li>
@@ -338,7 +339,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
   if (layout === 'tile' || layout === 'icon-start') {
     return (
       <article {...rootProps}>
-        {layout === 'icon-start' && icon ? <IconTile icon={typeof icon === 'string' || isIconModule(icon) ? icon : undefined} hue={hue} size="lg" /> : null}
+        {layout === 'icon-start' && icon ? <Icon name={typeof icon === 'string' || isIconModule(icon) ? icon : undefined} size="lg" className="plx-metric-card__lead-icon" data-plx-color={iconHue(hue)} /> : null}
         <div className="plx-metric-card__compact">
           <span className={cx('plx-metric-card__value', empty && 'plx-metric-card__value--empty')}>{empty || value === undefined ? '–' : value}</span>
           <H id={id} className="plx-metric-card__title">{titleText}</H>

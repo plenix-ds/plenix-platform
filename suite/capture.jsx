@@ -1,6 +1,6 @@
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
-import { Button, Chat, CodeBlock, Table, Dialog, Inline, Notice, PropertyList, RadioTiles, Skeleton, Stack, Tag, TagList, Text, useUnsavedGuard } from 'plenix-platform';
+import { Button, Chat, CodeBlock, Table, Dialog, Inline, Notice, RadioTiles, Skeleton, Stack, Tag, TagList, Text, useUnsavedGuard } from 'plenix-platform';
 // a name/value table as a static Table (batches 229, 234: every table runs on DataGrid): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
 // name/value facts as the defined data grid, with a header row (owner, 2026-10-09: all name/value lists in the DataGrid's look)

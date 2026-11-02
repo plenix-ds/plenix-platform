@@ -15,7 +15,7 @@ import { Text } from '../../components/Text/Text.tsx';
 import { cx } from '../../utils/cx.ts';
 import { Timeline } from '../../components/Timeline/Timeline.tsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
-import { ConfirmDialog,Dialog } from '../../components/Dialog/Dialog.jsx';
+import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Badge } from '../../components/Badge/Badge.tsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';

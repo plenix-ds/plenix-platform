@@ -57,7 +57,7 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.tsx';
 import { Input } from '../../components/Input/Input.tsx';
 import { Text } from '../../components/Text/Text.tsx';
-import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useOptionalToast } from '../../components/Toast/Toast.jsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.tsx';
 import { dataPhrase } from '../../utils/dataText.tsx';
 import { fill } from '../../utils/fill.ts';

@@ -27,7 +27,7 @@
      onChange(next, name): runs with the whole new value and the option that changed
      quantity: how many to buy; with onQuantityChange the quantity stepper shows (quantity)
      onQuantityChange(n): runs with the new quantity
-     min: the least quantity (default 1)
+     min: how many units at least (default 1)
      max: the greatest quantity (the stock or a limit per order; default 99)
      product: the product's name, for the controls' accessible names ("Quantity, Choir robe")
      sizeGuide: an element after the first button option: a Link to the size guide (a link goes somewhere)

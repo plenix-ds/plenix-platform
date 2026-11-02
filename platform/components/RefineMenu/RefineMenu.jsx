@@ -7,9 +7,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.ts';
-import { Stack, Inline } from '../Stack/Stack.tsx';
+import { Stack } from '../Stack/Stack.tsx';
 import { Button } from '../Button/Button.tsx';
-import { Text } from '../Text/Text.tsx';
 import { Notice } from '../Notice/Notice.tsx';
 import { Menu, MenuItem, MenuSub } from '../Menu/Menu.jsx';
 import { Dialog } from '../Dialog/Dialog.jsx';

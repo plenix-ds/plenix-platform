@@ -42,7 +42,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.ts';
 import { announce } from '../../utils/announce.tsx';
 import { formatNumber } from '../../utils/format.ts';
-import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.ts';
+import { WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords, blank } from '../../utils/fields.ts';
 import { Button } from '../../components/Button/Button.tsx';
 import { Input, Select } from '../../components/Input/Input.tsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.tsx';
@@ -58,7 +58,6 @@ import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TrashIcon from 'plenix-platform/icons/plenix/trash';
 import { fill } from '../../utils/fill.ts';
 
-const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 const NO_VALUE = { empty: true, nempty: true };
 const quote = (s) => '“' + s + '”';
 

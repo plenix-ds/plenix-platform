@@ -28,7 +28,6 @@ import { Field } from '../Field/Field.tsx';
 import { Text } from '../Text/Text.tsx';
 import { Notice } from '../Notice/Notice.tsx';
 import { Image } from '../Image/Image.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.tsx';
 import { cx } from '../../utils/cx.ts';
 import { engine } from '../../utils/engines.ts';
 import { useStrings } from '../../providers/LocaleProvider.tsx';

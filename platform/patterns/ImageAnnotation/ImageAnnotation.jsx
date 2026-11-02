@@ -10,7 +10,6 @@ import { cx } from '../../utils/cx.ts';
 import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { Button } from '../../components/Button/Button.tsx';
-import { Badge } from '../../components/Badge/Badge.tsx';
 import { Field } from '../../components/Field/Field.tsx';
 import { Textarea } from '../../components/Input/Input.tsx';
 import { useReposition } from '../../utils/dnd.ts';

@@ -8,8 +8,7 @@
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.ts';
-import { Stack, Inline } from '../../components/Stack/Stack.tsx';
-import { Button } from '../../components/Button/Button.tsx';
+import { Stack } from '../../components/Stack/Stack.tsx';
 import { Notice } from '../../components/Notice/Notice.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { cx } from '../../utils/cx.ts';

@@ -118,7 +118,6 @@ export const TimePicker = React.forwardRef(function TimePicker({ value, defaultV
     if (value === undefined) setOwn(out);
     if (onChange && v !== current) onChange(out);
   };
-  const digits = useDigits();
   const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? <input type="hidden" name={name} value={value0 || ''} /> : null;
   if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, warning, disabled, locked, id, cls, hidden, rest }} />;

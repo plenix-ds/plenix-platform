@@ -25,6 +25,8 @@
     // loaded by script tags in the pages: each app's icon file, the engines and the icon uses
     "*/plenix-icons-*.js",
     "platform/engines/plenix-engines.js",
+    // every application page loads it first, by a script tag (issue 842)
+    "platform/loader/loader.js",
     "platform/icons/uses.js",
     // run by node build-packages.js through the Vite command line (#709 step 5); the Arabic opt-in is one of its entries
     "vite.packages.config.mjs",

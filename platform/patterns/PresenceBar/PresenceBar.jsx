@@ -11,8 +11,6 @@ import { Stack, Inline } from '../../components/Stack/Stack.tsx';
 import { Text } from '../../components/Text/Text.tsx';
 import { Button } from '../../components/Button/Button.tsx';
 import { Badge } from '../../components/Badge/Badge.tsx';
-import { Field } from '../../components/Field/Field.tsx';
-import { Textarea } from '../../components/Input/Input.tsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { useStrings } from '../../providers/LocaleProvider.tsx';
