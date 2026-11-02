@@ -56,7 +56,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Lane design-system files (lanes/<task>/design-system into the submodule), before npm ci: its build (prepare) reads the design system, so a lane's new page must be there
+      - name: Lane design-system files (lanes/<task>/design-system into the submodule) before npm ci, whose build reads the design system
         run: node tools/agent/lane-overlay.js
 
       - run: npm ci
@@ -159,7 +159,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Lane design-system files (before npm ci, whose build reads the design system)
+      - name: Lane design-system files before npm ci (its build reads the design system)
         run: node tools/agent/lane-overlay.js
 
       - run: npm ci
