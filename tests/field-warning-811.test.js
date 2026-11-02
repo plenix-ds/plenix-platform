@@ -29,7 +29,8 @@ check('the control gets warning unless it sets its own', () => assert.ok(/child\
 
 const controls = ['Input/Input', 'Combobox/Combobox', 'Cascader/Cascader', 'TreeSelect/TreeSelect', 'TimeZoneSelect/TimeZoneSelect', 'TimePicker/TimePicker', 'DatePicker/DatePicker', 'EntityPicker/EntityPicker', 'OtpInput/OtpInput'];
 check('every control that sets aria-invalid marks data-plx-warning beside it', () => controls.forEach((c) => {
-  const s = read('components/' + c + '.jsx');
+  // the control's source under whichever name it has now: TypeScript (.tsx, #708) or not yet (.jsx)
+  const s = read(['.tsx', '.jsx'].map((x) => 'components/' + c + x).find((f) => fs.existsSync(path.join(ROOT, f))) || 'components/' + c + '.jsx');
   const a = (s.match(/aria-invalid=\{/g) || []).length, w = (s.match(/data-plx-warning=\{warning \|\| undefined\}/g) || []).length;
   assert.ok(a > 0 && w === a, c + ': ' + a + ' aria-invalid, ' + w + ' data-plx-warning');
 }));
