@@ -63,7 +63,7 @@
     "postcss": "^8.5.32",
     "puppeteer-core": "25.12.0",
     "style-dictionary": "5.7.0",
-    "stylelint": "^17.16.0",
+    "stylelint": "^18.0.0",
     "typescript": "5.6.3",
     "vite": "7.3.7"
   },
